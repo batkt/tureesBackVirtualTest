@@ -1,28 +1,31 @@
 const asyncHandler = require('express-async-handler')
+const Ajiltan = require("../models/ajiltan");
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
-    const ajiltan = Ajiltan.findOne()
-        .where("mail")
-        .equals(req.body.mail)
-        .where("nuutsUg")
-        .equals(req.body.nuutsUg)
-        .then(async (result) => {
-            if (!result)
-                throw new aldaa('Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!');
-            let license = await License.findOne().where("baiguullagiinId").equals(result.baiguullagiinId);
-            if (!license || license.duusakhOgnoo < new Date)
-                throw new aldaa("Лицензийн хугацаа дууссан байна!")
-            const jwt = result.tokenUusgeye(license.duusakhOgnoo);
-            res.status(200).json({
-                duusakhOgnoo: license.duusakhOgnoo,
-                success: true,
-                token: jwt,
-                result: result
-            })
-        })
+    const ajiltan = await Ajiltan.findOne()
+        .select("+nuutsUg")
+        .where("ner")
+        .equals(req.body.ner)
         .catch((err) => {
             next(err);
         });
+
+    if (!ajiltan)
+        throw new aldaa('Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!');
+    var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
+    if (!ok)
+        throw new aldaa('Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!');
+    //let license = await License.findOne().where("baiguullagiinId").equals(result.baiguullagiinId);
+    //if (!license || license.duusakhOgnoo < new Date)
+    //    throw new aldaa("Лицензийн хугацаа дууссан байна!")
+    //const jwt = result.tokenUusgeye(license.duusakhOgnoo);
+    res.status(200).json({
+        //duusakhOgnoo: license.duusakhOgnoo,
+        success: true,
+        //token: jwt,
+        result: ajiltan
+    })
+
 });
 
 

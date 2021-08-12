@@ -14,11 +14,7 @@ const ajiltanSchema = new Schema({
     type: String,
     select: false
   },
-  register: {
-    type: String,
-    unique: true,
-    required: true
-  },
+  register: String,
   khayag: String,
   ajildOrsonOgnoo: Date,
   baiguullagiinId: String,
@@ -48,8 +44,12 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo) {
   return token;
 };
 ajiltanSchema.pre("save", async function () {
-  const salt = await bcrypt.genSalt(10);
+  const salt = await bcrypt.genSalt(12);
   this.nuutsUg = await bcrypt.hash(this.nuutsUg, salt);
 })
+
+ajiltanSchema.methods.passwordShalgaya = async function (pass) {
+  return await bcrypt.compare(pass, this.nuutsUg)
+}
 
 module.exports = mongoose.model("ajiltan", ajiltanSchema);
