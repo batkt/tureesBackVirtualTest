@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
-const ajiltanSchema = new Schema({
+const languuSchema = new Schema({
   id: String,
   davkhar: String,
   talbainKhemjee: Number,
@@ -16,4 +16,4 @@ const ajiltanSchema = new Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model("ajiltan", ajiltanSchema);
+module.exports = mongoose.model("languu", languuSchema);
