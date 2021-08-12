@@ -49,7 +49,6 @@ function crud(router, modelName, Model, req, data) {
         async (req, res, next) => {
             try {
                 const data = new Model(req.body);
-                data.isNew = !data._id
                 data.save().then((result) => {
                     res.send("Amjilttai");
                 }).catch((err) => {
