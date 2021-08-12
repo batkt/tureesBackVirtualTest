@@ -36,7 +36,7 @@ async function fileUpload(path, baiguullagiinId, req, data, next) {
         });
         await sharp(req.file.buffer).resize({
             fit: "contain"
-        }).toFile("./zurag/ajiltan/" + baiguullagiinId + "/" + req.body.ner).then(() => {
+        }).toFile(`${path}/${baiguullagiinId}/${req.body.ner}`).then(() => {
             data.zurgiinNer = req.body.ner
         });
     } catch (error) {
