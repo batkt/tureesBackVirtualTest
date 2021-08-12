@@ -44,7 +44,7 @@ async function fileUpload(path, baiguullagiinId, req, data, next) {
     }
 }
 
-function crud(router, modelName, Model, req, data) {
+function crud(router, modelName, Model) {
     router.post(`/${modelName}`, tokenShalgakh,
         async (req, res, next) => {
             try {
