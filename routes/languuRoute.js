@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const GereeniiZagvar = require('../models/gereeniiZagvar')
+const Languu = require('../models/languu')
 const {
     crudWithFile,
     crud
@@ -10,13 +10,11 @@ const storage = multer.memoryStorage();
 const uploadFile = multer({
     storage: storage
 });
-
-crud(router, 'gereeniiZagvar', GereeniiZagvar);
+crud(router, 'languu', Languu);
 
 const {
-    gereeniiZagvarTatya
+    languuTatya
 } = require('../controller/excel')
 
-router.route('/gereeniiZagvarTatya').post(uploadFile.single('file'), gereeniiZagvarTatya);
-
+router.route('/languuTatya').post(uploadFile.single('file'), languuTatya);
 module.exports = router;

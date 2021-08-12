@@ -5,18 +5,11 @@ mongoose.pluralize(null)
 const baiguullagaSchema = new Schema({
     id: String,
     ner: String,
-    tolgoinId: String,
-    tolgoinNer: String,
     khayag: String,
     mail: String,
     register: String,
     utas: String,
     zurgiinNer: String,
-    ajillakhUdruud: [{
-        neekhTsag: String,
-        khaakhTsag: String,
-        udruud: Array
-    }],
     bairshil: {
         type: {
             type: String,

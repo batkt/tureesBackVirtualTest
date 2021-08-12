@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const GereeniiZagvar = require('../models/gereeniiZagvar')
+const Languu = require('../models/languu')
 const xlsx = require('xlsx');
 const mongoose = require('mongoose');
 
@@ -47,6 +48,52 @@ exports.gereeniiZagvarTatya = asyncHandler(async (req, res, next) => {
         if (aldaaniiMsg)
             throw new aldaa(aldaaniiMsg);
         GereeniiZagvar.insertMany(jagsaalt, function (err) {
+            if (err) {
+                next(err);
+            };
+            res.status(200).send("Amjilttai");
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+exports.languuTatya = asyncHandler(async (req, res, next) => {
+    try {
+        const workbook = xlsx.read(req.file.buffer);
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jagsaalt = [];
+        var tolgoinObject = {};
+        for (let cell in worksheet) {
+            var cellAsString = cell.toString();
+            if (cellAsString[1] === "1" && !!worksheet[cellAsString].v) {
+                if (worksheet[cellAsString].v.includes("Давхар"))
+                    tolgoinObject.davkhar = cellAsString[0];
+                else if (worksheet[cellAsString].v.includes("Талбайн хэмжээ"))
+                    tolgoinObject.talbainKhemjee = cellAsString[0];
+                else if (worksheet[cellAsString].v.includes("Код"))
+                    tolgoinObject.kod = cellAsString[0];
+                else if (worksheet[cellAsString].v.includes("Тайлбар"))
+                    tolgoinObject.tailbar = cellAsString[0];
+            }
+        }
+        var data = xlsx.utils.sheet_to_json(worksheet, {
+            header: 1,
+            range: 1
+        });
+        data.forEach(mur => {
+            let object = new Languu();
+            object.davkhar = mur[usegTooruuKhurvuulekh(tolgoinObject.davkhar)];
+            object.talbainKhemjee = mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)];
+            object.kod = mur[usegTooruuKhurvuulekh(tolgoinObject.kod)];
+            object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
+            //object.baiguullagiinId = req.body.baiguullagiinId;
+            jagsaalt.push(object);
+        });
+        var aldaaniiMsg = '';
+        if (aldaaniiMsg)
+            throw new aldaa(aldaaniiMsg);
+        Languu.insertMany(jagsaalt, function (err) {
             if (err) {
                 next(err);
             };

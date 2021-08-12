@@ -13,6 +13,7 @@ const aldaaBarigch = require("./middlewares/aldaaBarigch");
 const tailanRoute = require("./routes/tailanRoute");
 const gereeRoute = require("./routes/gereeRoute");
 const gereeniiZagvarRoute = require("./routes/gereeniiZagvarRoute");
+const languu = require("./routes/languu");
 
 const dbUrl =
     "mongodb://localhost:27017/turees?readPreference=primary&ssl=false";
@@ -41,6 +42,7 @@ app.use(tailanRoute);
 app.use(aldaaBarigch);
 app.use(gereeRoute);
 app.use(gereeniiZagvarRoute);
+app.use(languu);
 
 io.on('connection', (socket) => {
     console.log('connected');
