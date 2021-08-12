@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
+    "pm2": "pm2 --name \"tureesapi\" start index.js",
+    "pm2update": "pm2 restart tureesapi",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -22,5 +25,8 @@
     "socket.io": "^4.1.3",
     "systeminformation": "^5.8.0",
     "xlsx": "^0.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   }
 }
