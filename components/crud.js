@@ -36,7 +36,7 @@ async function fileUpload(path, baiguullagiinId, req, data, next) {
         });
         await sharp(req.file.buffer).resize({
             fit: "contain"
-        }).toFile("./zurag/ajiltan/" + baiguullagiinId + "/" + req.body.ner).then(() => {
+        }).toFile(`${path}/${baiguullagiinId}/${req.body.ner}`).then(() => {
             data.zurgiinNer = req.body.ner
         });
     } catch (error) {
@@ -44,12 +44,11 @@ async function fileUpload(path, baiguullagiinId, req, data, next) {
     }
 }
 
-function crud(router, modelName, Model, req, data) {
+function crud(router, modelName, Model) {
     router.post(`/${modelName}`, tokenShalgakh,
         async (req, res, next) => {
             try {
                 const data = new Model(req.body);
-                data.isNew = !data._id
                 data.save().then((result) => {
                     res.send("Amjilttai");
                 }).catch((err) => {
