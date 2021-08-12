@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const aldaa = require('../components/aldaa');
 const Ajiltan = require('../models/ajiltan');
 const License = require('../models/license');
-
+const jwt = require('jsonwebtoken')
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     const ajiltan = Ajiltan.findOne()
         .where("mail")
