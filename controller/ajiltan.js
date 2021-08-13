@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const Ajiltan = require("../models/ajiltan");
 const License = require("../models/license");
+const aldaa = require("../components/aldaa");
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     const ajiltan = await Ajiltan.findOne()
