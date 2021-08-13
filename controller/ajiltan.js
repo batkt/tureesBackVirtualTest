@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const Ajiltan = require("../models/ajiltan");
+const License = require("../models/license");
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     const ajiltan = await Ajiltan.findOne()
@@ -15,14 +16,14 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
     if (!ok)
         throw new aldaa('Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!');
-    //let license = await License.findOne().where("baiguullagiinId").equals(result.baiguullagiinId);
-    //if (!license || license.duusakhOgnoo < new Date)
-    //    throw new aldaa("Лицензийн хугацаа дууссан байна!")
-    //const jwt = result.tokenUusgeye(license.duusakhOgnoo);
+    let license = await License.findOne().where("baiguullagiinId").equals(result.baiguullagiinId);
+    if (!license || license.duusakhOgnoo < new Date)
+        throw new aldaa("Лицензийн хугацаа дууссан байна!")
+    const jwt = result.tokenUusgeye(license.duusakhOgnoo);
     res.status(200).json({
-        //duusakhOgnoo: license.duusakhOgnoo,
+        duusakhOgnoo: license.duusakhOgnoo,
         success: true,
-        //token: jwt,
+        token: jwt,
         result: ajiltan
     })
 
