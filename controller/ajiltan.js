@@ -16,10 +16,10 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
     if (!ok)
         throw new aldaa('Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!');
-    let license = await License.findOne().where("baiguullagiinId").equals(result.baiguullagiinId);
+    let license = await License.findOne().where("baiguullagiinId").equals(ajiltan.baiguullagiinId);
     if (!license || license.duusakhOgnoo < new Date)
         throw new aldaa("Лицензийн хугацаа дууссан байна!")
-    const jwt = result.tokenUusgeye(license.duusakhOgnoo);
+    const jwt = ajiltan.tokenUusgeye(license.duusakhOgnoo);
     res.status(200).json({
         duusakhOgnoo: license.duusakhOgnoo,
         success: true,
