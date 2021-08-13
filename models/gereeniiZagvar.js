@@ -3,17 +3,17 @@ const jwt = require('jsonwebtoken');
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
-const gereeniiZagvarSchema = new Schema({
+
+const gereeniiZaaltSchema = new Schema({
   id: String,
-  baiguullagiinId: String,
-  baiguullagiinNer: String,
-  desDugaar: String,
-  kharagdakhDugaar: String,
-  zaalt: String,
-  khamaarakhKheseg: String,
-  ashilgakhEsekh: String
+  ner: String,
+  tolgoi: String,
+  baruunTolgoi: String,
+  zuunTolgoi: String,
+  khul: String,
+  dedKhesguud: Array
 }, {
   timestamps: true
 });
 
-module.exports = mongoose.model("gereeniiZagvar", gereeniiZagvarSchema);
+module.exports = mongoose.model("gereeniiZaalt", gereeniiZaaltSchema);
