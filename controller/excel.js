@@ -39,7 +39,6 @@ exports.gereeniiZagvarTatya = asyncHandler(async (req, res, next) => {
       object.khamaarakh = mur[usegTooruuKhurvuulekh(tolgoinObject.khamaarakh)];
       object.baiguullagiinId = req.body.baiguullagiinId;
       jagsaalt.push(object);
-      rowNum = rowNum + 1;
     });
     var aldaaniiMsg = "";
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
