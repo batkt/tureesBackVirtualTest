@@ -9,7 +9,7 @@ function usegTooruuKhurvuulekh(useg) {
   else return 0;
 }
 
-exports.gereeniiZagvarTatya = asyncHandler(async (req, res, next) => {
+exports.gereeniiZaaltTatya = asyncHandler(async (req, res, next) => {
   try {
     console.log("req.body", req.body);
     const workbook = xlsx.read(req.file.buffer);
