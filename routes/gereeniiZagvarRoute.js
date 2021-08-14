@@ -12,10 +12,10 @@ const uploadFile = multer({
 crud(router, "gereeniiZagvar", GereeniiZagvar);
 crud(router, "gereeniiZaalt", GereeniiZaalt);
 
-const { gereeniiZagvarTatya } = require("../controller/excel");
+const { gereeniiZaaltTatya } = require("../controller/excel");
 
 router
-  .route("/gereeniiZagvarTatya")
-  .post(uploadFile.single("file"), gereeniiZagvarTatya);
+  .route("/gereeniiZaaltTatya")
+  .post(uploadFile.single("file"), gereeniiZaaltTatya);
 
 module.exports = router;
