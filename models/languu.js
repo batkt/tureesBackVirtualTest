@@ -1,19 +1,24 @@
-const mongoose = require("mongoose");
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
+const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
+const Schema = mongoose.Schema
 
-mongoose.pluralize(null);
-const languuSchema = new Schema({
-  id: String,
-  davkhar: String,
-  talbainKhemjee: Number,
-  kod: String,
-  tailbar: Number,
-  baiguullagiinId: String,
-  baiguullagiinNer: String
-}, {
-  timestamps: true
-});
+mongoose.pluralize(null)
+const languuSchema = new Schema(
+  {
+    id: String,
+    davkhar: String,
+    talbainKhemjee: Number,
+    kod: String,
+    tailbar: String,
+    baiguullagiinId: String,
+    baiguullagiinNer: String,
+    talbainNegjUne: Number,
+    talbainNiitUne: Number,
+  },
+  {
+    timestamps: true,
+  }
+)
 
-module.exports = mongoose.model("languu", languuSchema);
+module.exports = mongoose.model("languu", languuSchema)
