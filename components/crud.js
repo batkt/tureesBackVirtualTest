@@ -80,6 +80,7 @@ function crud(router, modelName, Model) {
       next(error);
     }
   });
+
   router.get(`/${modelName}`, tokenShalgakh, async (req, res, next) => {
     try {
       const body = req.query;
