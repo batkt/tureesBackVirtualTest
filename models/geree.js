@@ -29,6 +29,9 @@ const gereeSchema = new Schema(
     talbainNiitUne: String,
     talbainKhemjee: String,
     davkhar: String,
+    baritsaaAvakhDun: String,
+    baritsaaBairshuulakhKhugatsaa: String,
+    baritsaaAvakhKhugatsaa: String,
   },
   {
     timestamps: true,
