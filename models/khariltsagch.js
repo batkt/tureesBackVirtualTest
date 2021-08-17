@@ -1,8 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-mongoose.pluralize(null)
-const khariltsagchSchema = new Schema({
+mongoose.pluralize(null);
+const khariltsagchSchema = new Schema(
+  {
     id: String,
     ner: String,
     ovog: String,
@@ -11,15 +12,14 @@ const khariltsagchSchema = new Schema({
     register: String,
     firebaseToken: String,
     turul: String,
-    khungulukhKhuvi: Number,
     nuutsUg: {
-        type: String,
-        default: "123"
+      type: String,
+      default: "123",
     },
-    zurgiinNer: String,
-    baiguullaguud: [String]
-}, {
-    timestamps: true
-});
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = mongoose.model('khariltsagch', khariltsagchSchema);
+module.exports = mongoose.model("khariltsagch", khariltsagchSchema);
