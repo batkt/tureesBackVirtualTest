@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
 
-mongoose.pluralize(null);
+mongoose.pluralize(null)
 const khariltsagchSchema = new Schema(
   {
     id: String,
@@ -12,6 +12,8 @@ const khariltsagchSchema = new Schema(
     register: String,
     firebaseToken: String,
     turul: String,
+    tuluv: String,
+    khayag: String,
     nuutsUg: {
       type: String,
       default: "123",
@@ -20,6 +22,6 @@ const khariltsagchSchema = new Schema(
   {
     timestamps: true,
   }
-);
+)
 
-module.exports = mongoose.model("khariltsagch", khariltsagchSchema);
+module.exports = mongoose.model("khariltsagch", khariltsagchSchema)
