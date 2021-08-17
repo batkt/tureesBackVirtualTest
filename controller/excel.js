@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const GereeniiZaalt = require("../models/gereeniiZaalt");
+const GereeniiZagvar = require("../models/gereeniiZagvar");
 const Languu = require("../models/languu");
 const xlsx = require("xlsx");
 const mongoose = require("mongoose");
@@ -94,6 +95,44 @@ exports.languuTatya = asyncHandler(async (req, res, next) => {
       }
       res.status(200).send("Amjilttai");
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+exports.gereeniiZagvarTatya = asyncHandler(async (req, res, next) => {
+  try {
+    const workbook = xlsx.read(req.file.buffer);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jagsaalt = [];
+    var tolgoinObject = {};
+    var data = xlsx.utils.sheet_to_json(worksheet, {
+      header: 1,
+      range: 1,
+    });
+    var zagvariinNer = worksheet["B1"].v;
+    const zagvar = new GereeniiZagvar();
+    zagvar.ner = zagvariinNer;
+    data.forEach((mur) => {
+      let object = new GereeniiZaalt();
+      object.kharagdakhDugaar = mur[0];
+      object.zaalt = mur[1];
+      object.khamaarakhKheseg = mur[2];
+      object.baiguullagiinId = req.body.baiguullagiinId;
+      if (!object.kharagdakhDugaar) object.kharagdakhDugaar = "";
+      jagsaalt.push(object);
+    });
+    zagvar.dedKhesguud = jagsaalt;
+    var aldaaniiMsg = "";
+    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
+    zagvar
+      .save()
+      .then((result) => {
+        res.status(200).send("Amjilttai");
+      })
+      .catch((err) => {
+        next(err);
+      });
   } catch (error) {
     next(error);
   }
