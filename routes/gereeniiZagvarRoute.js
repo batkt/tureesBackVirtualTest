@@ -15,6 +15,7 @@ crud(router, "gereeniiZaalt", GereeniiZaalt);
 const {
   gereeniiZaaltTatya,
   gereeniiZagvarTatya,
+  gereeniiZagvarAvya,
 } = require("../controller/excel");
 
 router
@@ -23,5 +24,6 @@ router
 router
   .route("/gereeniiZagvarTatya")
   .post(uploadFile.single("file"), gereeniiZagvarTatya);
+router.route("/gereeniiZagvarAvya").get(gereeniiZagvarAvya);
 
 module.exports = router;

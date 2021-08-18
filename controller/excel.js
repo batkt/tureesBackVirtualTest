@@ -3,6 +3,7 @@ const GereeniiZaalt = require("../models/gereeniiZaalt");
 const GereeniiZagvar = require("../models/gereeniiZagvar");
 const Languu = require("../models/languu");
 const xlsx = require("xlsx");
+const excel = require("exceljs");
 const mongoose = require("mongoose");
 
 function usegTooruuKhurvuulekh(useg) {
@@ -136,4 +137,33 @@ exports.gereeniiZagvarTatya = asyncHandler(async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
+  let workbook = new excel.Workbook();
+  let worksheet = workbook.addWorksheet("Гэрээ");
+  worksheet.columns = [
+    {
+      header: "Загварын нэр",
+      width: 20,
+    },
+    {
+      header: "",
+      key: "",
+      width: 30,
+    },
+    {
+      header: "Хамаарагдах алхам",
+      key: "Хамаарагдах алхам",
+      width: 20,
+    },
+  ];
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "attachment; filename=" + "Гэрээний загвар"
+  );
+
+  return workbook.xlsx.write(res).then(function () {
+    res.status(200).end();
+  });
 });
