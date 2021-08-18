@@ -70,6 +70,10 @@ exports.languuTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject.talbainKhemjee = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Код"))
           tolgoinObject.kod = cellAsString[0];
+        else if (worksheet[cellAsString].v.includes("Талбайн нэгж үнэ"))
+          tolgoinObject.talbainNegjUne = cellAsString[0];
+        else if (worksheet[cellAsString].v.includes("Талбайн нийт үнэ"))
+          tolgoinObject.talbainNiitUne = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Тайлбар"))
           tolgoinObject.tailbar = cellAsString[0];
       }
@@ -84,6 +88,10 @@ exports.languuTatya = asyncHandler(async (req, res, next) => {
       object.talbainKhemjee =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)];
       object.kod = mur[usegTooruuKhurvuulekh(tolgoinObject.kod)];
+      object.talbainNegjUne =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.talbainNegjUne)];
+      object.talbainNiitUne =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.talbainNiitUne)];
       object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
       //object.baiguullagiinId = req.body.baiguullagiinId;
       jagsaalt.push(object);
@@ -154,6 +162,51 @@ exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
     {
       header: "Хамаарагдах алхам",
       key: "Хамаарагдах алхам",
+      width: 20,
+    },
+  ];
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "attachment; filename=" + "Гэрээний загвар"
+  );
+
+  return workbook.xlsx.write(res).then(function () {
+    res.status(200).end();
+  });
+});
+exports.languuniiZagvarAvya = asyncHandler(async (req, res, next) => {
+  let workbook = new excel.Workbook();
+  let worksheet = workbook.addWorksheet("Гэрээ");
+  worksheet.columns = [
+    {
+      header: "Давхар",
+      key: "Давхар",
+      width: 20,
+    },
+    {
+      header: "Код",
+      key: "Код",
+      width: 30,
+    },
+    {
+      header: "Талбайн хэмжээ",
+      key: "Талбайн хэмжээ",
+      width: 30,
+    },
+    {
+      header: "Талбайн нэгж үнэ",
+      key: "Талбайн нэгж үнэ",
+      width: 20,
+    },
+    {
+      header: "Талбайн нийт үнэ",
+      key: "Талбайн нийт үнэ",
+      width: 20,
+    },
+    {
+      header: "Тайлбар",
+      key: "Тайлбар",
       width: 20,
     },
   ];
