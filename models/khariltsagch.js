@@ -10,6 +10,9 @@ const khariltsagchSchema = new Schema(
     utas: String,
     mail: String,
     register: String,
+    albanTushaal: String,
+    zakhirliinOvog: String,
+    zakhirliinNer: String,
     firebaseToken: String,
     turul: String,
     nuutsUg: {

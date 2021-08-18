@@ -45,22 +45,32 @@ async function fileUpload(path, baiguullagiinId, req, data, next) {
   }
 }
 
-function crud(router, modelName, Model) {
-  router.post(`/${modelName}`, tokenShalgakh, async (req, res, next) => {
-    try {
-      const data = new Model(req.body);
-      data
-        .save()
-        .then((result) => {
-          res.send("Amjilttai");
-        })
-        .catch((err) => {
-          next(err);
-        });
-    } catch (error) {
-      next(error);
+function crud(
+  router,
+  modelName,
+  Model,
+  khadgalkhiinUmnukhMethod = tokenShalgakh
+) {
+  router.post(
+    `/${modelName}`,
+    tokenShalgakh,
+    khadgalkhiinUmnukhMethod,
+    async (req, res, next) => {
+      try {
+        const data = new Model(req.body);
+        data
+          .save()
+          .then((result) => {
+            res.send("Amjilttai");
+          })
+          .catch((err) => {
+            next(err);
+          });
+      } catch (error) {
+        next(error);
+      }
     }
-  });
+  );
   router.put(`/${modelName}/:id`, tokenShalgakh, async (req, res, next) => {
     try {
       const data = new Model(req.body);
