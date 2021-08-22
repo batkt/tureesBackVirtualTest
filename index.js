@@ -11,6 +11,7 @@ const ajiltanRoute = require("./routes/ajiltanRoute");
 const licenseRoute = require("./routes/licenseRoute");
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
 const tailanRoute = require("./routes/tailanRoute");
+const zuragRoute = require("./routes/zuragRoute");
 const gereeRoute = require("./routes/gereeRoute");
 const gereeniiZagvarRoute = require("./routes/gereeniiZagvarRoute");
 const languuRoute = require("./routes/languuRoute");
@@ -46,6 +47,7 @@ app.use(gereeRoute);
 app.use(gereeniiZagvarRoute);
 app.use(languuRoute);
 app.use(khariltsagchRoute);
+app.use(zuragRoute);
 
 io.on("connection", (socket) => {
   console.log("connected");
