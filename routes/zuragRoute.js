@@ -68,7 +68,7 @@ router.post(
   }
 );
 
-router.get("/zuragAvya", (req, res, next) => {
+router.get("/zuragAvya", tokenShalgakh, (req, res, next) => {
   res.download(
     "./zurag/" +
       req.body.turul +
