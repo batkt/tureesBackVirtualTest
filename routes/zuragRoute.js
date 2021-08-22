@@ -68,19 +68,23 @@ router.post(
   }
 );
 
-router.get("/zuragAvya", tokenShalgakh, (req, res, next) => {
-  res.download(
-    "./zurag/" +
-      req.body.turul +
-      "/" +
-      req.body.baiguullagiinId +
-      "/" +
-      req.body.id,
-    req.body.id,
-    (err) => {
-      if (err) next(err);
-    }
-  );
-});
+router.get(
+  "/zuragAvya/:turul/:baiguullagiinId/:zurgiinNer",
+  tokenShalgakh,
+  (req, res, next) => {
+    res.download(
+      "./zurag/" +
+        req.params.turul +
+        "/" +
+        req.params.baiguullagiinId +
+        "/" +
+        req.params.id,
+      req.params.id,
+      (err) => {
+        if (err) next(err);
+      }
+    );
+  }
+);
 
 module.exports = router;
