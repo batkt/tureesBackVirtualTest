@@ -4,6 +4,7 @@ const multer = require("multer");
 const mimetype = require("mime");
 const storage = multer.memoryStorage();
 const fs = require("fs");
+const { tokenShalgakh } = require("../middleware/tokenShalgakh");
 
 const filter = (req, file, cb) => {
   if (
@@ -24,6 +25,7 @@ const router = express.Router();
 router.post(
   "/zuragKhadgalya",
   upload.single("file"),
+  tokenShalgakh,
   async (req, res, next) => {
     var turul = req.body.turul;
     var id = require("uuid").v1().toString();

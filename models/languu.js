@@ -16,6 +16,7 @@ const languuSchema = new Schema(
     baiguullagiinNer: String,
     talbainNegjUne: Number,
     talbainNiitUne: Number,
+    zurgiinId: String,
     khurunguud: [
       {
         id: String,
@@ -23,6 +24,7 @@ const languuSchema = new Schema(
         too: Number,
         une: Number,
         niit: Number,
+        zurgiinId: String,
       },
     ],
   },
