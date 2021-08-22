@@ -70,7 +70,6 @@ router.post(
 
 router.get(
   "/zuragAvya/:turul/:baiguullagiinId/:zurgiinNer",
-  tokenShalgakh,
   (req, res, next) => {
     res.download(
       "./zurag/" +
@@ -78,8 +77,8 @@ router.get(
         "/" +
         req.params.baiguullagiinId +
         "/" +
-        req.params.id,
-      req.params.id,
+        req.params.zurgiinNer,
+      req.params.zurgiinNer,
       (err) => {
         if (err) next(err);
       }
