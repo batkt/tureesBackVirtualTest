@@ -4,7 +4,7 @@ const multer = require("multer");
 const mimetype = require("mime");
 const storage = multer.memoryStorage();
 const fs = require("fs");
-const { tokenShalgakh } = require("../middleware/tokenShalgakh");
+const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 
 const filter = (req, file, cb) => {
   if (
