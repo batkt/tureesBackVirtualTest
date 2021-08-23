@@ -34,6 +34,7 @@ const gereeSchema = new Schema(
     baritsaaAvakhKhugatsaa: Number,
     baiguullagiinId: String,
     baiguullagiinNer: String,
+    gereeniiZagvariinId: String,
   },
   {
     timestamps: true,
