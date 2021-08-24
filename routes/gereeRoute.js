@@ -33,6 +33,7 @@ crud(router, "geree", Geree, async (req, res, next) => {
       ognoo: unuudur,
       isNew: true,
     });
+    req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
     khariltsagch
       .save()
       .then((result) => {
