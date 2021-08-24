@@ -7,7 +7,8 @@ const { crud } = require("../components/crud");
 crud(router, "geree", Geree, async (req, res, next) => {
   try {
     const khariltsagch = new Khariltsagch(req.body);
-    khariltsagch
+    khariltsagch.id = khariltsagch.register;
+    khariltsagch.khariltsagch
       .save()
       .then((result) => {
         next();
