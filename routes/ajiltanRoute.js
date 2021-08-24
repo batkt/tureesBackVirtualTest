@@ -1,31 +1,23 @@
 const express = require("express");
-const multer = require("multer");
 const router = express.Router();
 const Ajiltan = require("../models/ajiltan");
-const License = require("../models/license");
-const khuudaslalt = require("../components/khuudaslalt");
+
 const {
-  crudWithFile,
-  crud
+  crudWithFile
 } = require('../components/crud');
 const {
   tokenShalgakh
 } = require("../middlewares/tokenShalgakh");
-const aldaa = require("../components/aldaa");
-const jwt = require('jsonwebtoken');
 
 const {
   ajiltanNevtrey,
   tokenoorAjiltanAvya
 } = require('../controller/ajiltan')
 
-
 crudWithFile(router, 'ajiltan', Ajiltan, {
   fileZam: './zurag/ajiltan',
   fileName: 'zurag'
 })
-//crud(router, 'ajiltan', Ajiltan);
-
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 

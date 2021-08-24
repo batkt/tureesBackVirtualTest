@@ -74,7 +74,7 @@ function crud(
   router.put(`/${modelName}/:id`, tokenShalgakh, async (req, res, next) => {
     try {
       const data = new Model(req.body);
-      Model.findByIdAndUpdate(
+      Model.updateOne(
         {
           _id: req.params.id,
         },
@@ -190,7 +190,7 @@ function crudWithFile(
             data,
             next
           );
-        Model.findByIdAndUpdate(
+        Model.updateOne(
           {
             _id: req.params.id,
           },

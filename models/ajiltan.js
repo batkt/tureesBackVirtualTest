@@ -59,6 +59,12 @@ ajiltanSchema.pre("save", async function () {
   this.nuutsUg = await bcrypt.hash(this.nuutsUg, salt);
 });
 
+ajiltanSchema.pre("updateOne", async function () {
+  this.indexTalbar = this._update.baiguullagiinId + this._update.mail;
+  const salt = await bcrypt.genSalt(12);
+  this._update.nuutsUg = await bcrypt.hash(this._update.nuutsUg, salt);
+});
+
 ajiltanSchema.methods.passwordShalgaya = async function (pass) {
   return await bcrypt.compare(pass, this.nuutsUg);
 };
