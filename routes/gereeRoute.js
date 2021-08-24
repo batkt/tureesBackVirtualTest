@@ -17,7 +17,7 @@ crud(router, "geree", Geree, async (req, res, next) => {
     );
     var maxDugaar = 1;
     await Dugaarlalt.find({
-      baiguullagiinId: zakhialga.baiguullagiinId,
+      baiguullagiinId: req.body.baiguullagiinId,
       ognoo: unuudur,
     })
       .sort({
@@ -28,7 +28,7 @@ crud(router, "geree", Geree, async (req, res, next) => {
         if (result != 0) maxDugaar = result[0].dugaar + 1;
       });
     var dugaarlalt = new Dugaarlalt({
-      baiguullagiinId: zakhialga.baiguullagiinId,
+      baiguullagiinId: req.body.baiguullagiinId,
       dugaar: maxDugaar,
       ognoo: unuudur,
       isNew: true,
