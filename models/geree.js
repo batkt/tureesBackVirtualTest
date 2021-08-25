@@ -3,6 +3,20 @@ const jwt = require("jsonwebtoken");
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
+var avlagiinTurul = new Schema({
+  daraagiinTulukhOgnoo: Date,
+  daraagiinSanuulakhOgnoo: Date,
+  daraagiinKhuleekhOgnoo: Date,
+  guilgeenuud: [
+    {
+      ognoo: Date,
+      tulukhDun: Number,
+      tulsunDun: Number,
+      khyamdral: Number,
+      turul: String,
+    },
+  ],
+});
 const gereeSchema = new Schema(
   {
     id: String,
@@ -35,6 +49,10 @@ const gereeSchema = new Schema(
     baiguullagiinId: String,
     baiguullagiinNer: String,
     gereeniiZagvariinId: String,
+    tulukhUdur: [String],
+    sanuulakhKhonog: Number,
+    khuleekhKhonog: Number,
+    avlaga: { type: avlagiinTurul, select: false },
   },
   {
     timestamps: true,

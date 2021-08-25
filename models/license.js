@@ -5,18 +5,16 @@ mongoose.pluralize(null);
 const licenseSchema = new Schema(
   {
     baiguullagiinId: {
-      type : String,
-      unique : true,
+      type: String,
+      unique: true,
       index: true,
-      required : true
+      required: true,
     },
-    duusakhOgnoo: 
-    {
-      type : Date,
-      required : true
-    }
+    duusakhOgnoo: {
+      type: Date,
+      required: true,
+    },
   },
-  { _id : false },
   { timestamps: true }
 );
 
