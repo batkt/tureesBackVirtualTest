@@ -14,7 +14,7 @@ const tailanRoute = require("./routes/tailanRoute");
 const zuragRoute = require("./routes/zuragRoute");
 const gereeRoute = require("./routes/gereeRoute");
 const gereeniiZagvarRoute = require("./routes/gereeniiZagvarRoute");
-const languuRoute = require("./routes/languuRoute");
+const talbaiRoute = require("./routes/talbaiRoute");
 const khariltsagchRoute = require("./routes/khariltsagchRoute");
 
 const dbUrl =
@@ -45,7 +45,7 @@ app.use(tailanRoute);
 app.use(aldaaBarigch);
 app.use(gereeRoute);
 app.use(gereeniiZagvarRoute);
-app.use(languuRoute);
+app.use(talbaiRoute);
 app.use(khariltsagchRoute);
 app.use(zuragRoute);
 

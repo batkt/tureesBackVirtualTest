@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const GereeniiZaalt = require("../models/gereeniiZaalt");
 const GereeniiZagvar = require("../models/gereeniiZagvar");
-const Languu = require("../models/languu");
+const talbai = require("../models/talbai");
 const xlsx = require("xlsx");
 const excel = require("exceljs");
 const mongoose = require("mongoose");
@@ -55,7 +55,7 @@ exports.gereeniiZaaltTatya = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.languuTatya = asyncHandler(async (req, res, next) => {
+exports.talbaiTatya = asyncHandler(async (req, res, next) => {
   try {
     const workbook = xlsx.read(req.file.buffer);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -83,7 +83,7 @@ exports.languuTatya = asyncHandler(async (req, res, next) => {
       range: 1,
     });
     data.forEach((mur) => {
-      let object = new Languu();
+      let object = new talbai();
       object.davkhar = mur[usegTooruuKhurvuulekh(tolgoinObject.davkhar)];
       object.talbainKhemjee =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)];
@@ -98,7 +98,7 @@ exports.languuTatya = asyncHandler(async (req, res, next) => {
     });
     var aldaaniiMsg = "";
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
-    Languu.insertMany(jagsaalt, function (err) {
+    talbai.insertMany(jagsaalt, function (err) {
       if (err) {
         next(err);
       }
@@ -175,7 +175,7 @@ exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
     res.status(200).end();
   });
 });
-exports.languuniiZagvarAvya = asyncHandler(async (req, res, next) => {
+exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Гэрээ");
   worksheet.columns = [
@@ -212,8 +212,7 @@ exports.languuniiZagvarAvya = asyncHandler(async (req, res, next) => {
   ];
   res.setHeader(
     "Content-Type",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "attachment; filename=" + "Гэрээний загвар"
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   );
 
   return workbook.xlsx.write(res).then(function () {

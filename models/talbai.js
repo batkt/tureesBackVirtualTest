@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
 
-const languuSchema = new Schema(
+const talbaiSchema = new Schema(
   {
     id: String,
     davkhar: String,
@@ -33,4 +33,4 @@ const languuSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("languu", languuSchema);
+module.exports = mongoose.model("talbai", talbaiSchema);
