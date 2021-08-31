@@ -5,18 +5,47 @@ const Baiguullaga = require("../models/baiguullaga");
 const Khariltsagch = require("../models/khariltsagch");
 const Ajiltan = require("../models/ajiltan");
 const khuudaslalt = require("../components/khuudaslalt");
-const {
-  crudWithFile,
-  crud
-} = require('../components/crud');
-const {
-  tokenShalgakh
-} = require("../middlewares/tokenShalgakh");
+const { crudWithFile, crud } = require("../components/crud");
+const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 
-crud(router, 'baiguullaga', Baiguullaga);
+crud(router, "baiguullaga", Baiguullaga);
 
-router.post("/khyanakhSambariinUgugdulAvya", tokenShalgakh, (req, res, next) => {
-  res.send({});
+router.post("/baiguullagaBurtgekh", async (req, res, next) => {
+  try {
+    console.log(req.body);
+    const data = new Baiguullaga(req.body);
+    data
+      .save()
+      .then((result) => {
+        if (req.body.ajiltan) {
+          let ajiltan = new Ajiltan(req.body.ajiltan);
+          ajiltan.erkh = "Admin";
+          ajiltan.baiguullagiinId = result._id;
+          ajiltan.baiguullagiinNer = result.ner;
+          ajiltan
+            .save()
+            .then((result1) => {
+              res.send("Amjilttai");
+            })
+            .catch((err) => {
+              res.send(err);
+            });
+        } else res.send("Amjilttai");
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } catch (error) {
+    next(error);
+  }
 });
+
+router.post(
+  "/khyanakhSambariinUgugdulAvya",
+  tokenShalgakh,
+  (req, res, next) => {
+    res.send({});
+  }
+);
 
 module.exports = router;

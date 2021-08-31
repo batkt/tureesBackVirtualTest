@@ -4,6 +4,32 @@ const License = require("../models/license");
 const aldaa = require("../components/aldaa");
 var request = require("request");
 const jwt = require("jsonwebtoken");
+const http = require("http");
+
+function duusakhOgnooAvya(ugugdul) {
+  const data = new TextEncoder().encode(JSON.stringify(ugugdul));
+  const options = {
+    hostname: "127.0.0.1",
+    port: 8081,
+    path: "/baiguullagiinDuusakhKhugatsaaAvya",
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  const request = http.request(options, (response) => {
+    response.on("data", (d) => {
+      if (response.statusCode == 200) return d;
+    });
+  });
+
+  request.on("error", (error) => {
+    throw new aldaa(error);
+  });
+
+  request.write(data);
+  request.end();
+}
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   const ajiltan = await Ajiltan.findOne()
@@ -13,28 +39,13 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     .catch((err) => {
       next(err);
     });
-
   if (!ajiltan) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
   var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
   if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-  let duusakhOgnoo;
-  request({
-    method: "POST",
-    uri: "localhost:8082/baiguullagiinDuusakhKhugatsaaAvya",
-    qs: {
-      baiguullagiinId: baiguullagiinId,
-    },
-    function(error, response, body) {
-      if (!error && response.statusCode === 200) {
-        duusakhOgnoo = body;
-      } else {
-        next(error);
-      }
-    },
-  });
+  let duusakhOgnoo = duusakhOgnooAvya(ajiltan.baiguullagiinId);
   const jwt = ajiltan.tokenUusgeye(duusakhOgnoo);
   res.status(200).json({
-    duusakhOgnoo: license.duusakhOgnoo,
+    duusakhOgnoo: duusakhOgnoo,
     success: true,
     token: jwt,
     result: ajiltan,
