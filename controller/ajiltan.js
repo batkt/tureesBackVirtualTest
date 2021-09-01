@@ -1,8 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Ajiltan = require("../models/ajiltan");
-const License = require("../models/license");
+const Baiguullaga = require("../models/baiguullaga");
 const aldaa = require("../components/aldaa");
-var request = require("request");
 const jwt = require("jsonwebtoken");
 const http = require("http");
 
@@ -10,7 +9,7 @@ function duusakhOgnooAvya(ugugdul) {
   const data = new TextEncoder().encode(JSON.stringify(ugugdul));
   const options = {
     hostname: "127.0.0.1",
-    port: 8081,
+    port: 8282,
     path: "/baiguullagiinDuusakhKhugatsaaAvya",
     method: "GET",
     headers: {
@@ -42,7 +41,8 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   if (!ajiltan) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
   var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
   if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-  let duusakhOgnoo = duusakhOgnooAvya(ajiltan.baiguullagiinId);
+  var baiguullaga = await Baiguullaga.findById(ajiltan.baiguullagiinId);
+  let duusakhOgnoo = await duusakhOgnooAvya({"register" : baiguullaga.register});
   const jwt = ajiltan.tokenUusgeye(duusakhOgnoo);
   res.status(200).json({
     duusakhOgnoo: duusakhOgnoo,
