@@ -5,6 +5,9 @@ const GereeniiZaalt = require("../models/gereeniiZaalt");
 const { crudWithFile, crud } = require("../components/crud");
 const multer = require("multer");
 const storage = multer.memoryStorage();
+const {
+  tokenShalgakh
+} = require("../middlewares/tokenShalgakh");
 const uploadFile = multer({
   storage: storage,
 });
@@ -20,10 +23,10 @@ const {
 
 router
   .route("/gereeniiZaaltTatya")
-  .post(uploadFile.single("file"), gereeniiZaaltTatya);
+  .post(uploadFile.single("file"),tokenShalgakh, gereeniiZaaltTatya);
 router
   .route("/gereeniiZagvarTatya")
-  .post(uploadFile.single("file"), gereeniiZagvarTatya);
+  .post(uploadFile.single("file"),tokenShalgakh, gereeniiZagvarTatya);
 router.route("/gereeniiZagvarAvya").get(gereeniiZagvarAvya);
 
 module.exports = router;
