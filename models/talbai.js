@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
+const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
+const Schema = mongoose.Schema
 
-mongoose.pluralize(null);
+mongoose.pluralize(null)
 
 const talbaiSchema = new Schema(
   {
@@ -17,6 +17,7 @@ const talbaiSchema = new Schema(
     talbainNegjUne: Number,
     talbainNiitUne: Number,
     zurgiinId: String,
+    ashiglaltiinZardal: Number,
     khurunguud: [
       {
         id: String,
@@ -31,6 +32,6 @@ const talbaiSchema = new Schema(
   {
     timestamps: true,
   }
-);
+)
 
-module.exports = mongoose.model("talbai", talbaiSchema);
+module.exports = mongoose.model("talbai", talbaiSchema)
