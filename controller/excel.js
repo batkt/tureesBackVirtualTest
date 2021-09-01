@@ -129,11 +129,11 @@ exports.gereeniiZagvarTatya = asyncHandler(async (req, res, next) => {
       object.kharagdakhDugaar = mur[0];
       object.zaalt = mur[1];
       object.khamaarakhKheseg = mur[2];
-      object.baiguullagiinId = req.body.baiguullagiinId;
       if (!object.kharagdakhDugaar) object.kharagdakhDugaar = "";
       jagsaalt.push(object);
     });
     zagvar.dedKhesguud = jagsaalt;
+    zagvar.baiguullagiinId = req.body.baiguullagiinId;
     var aldaaniiMsg = "";
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     zagvar
