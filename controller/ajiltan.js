@@ -34,8 +34,8 @@ function duusakhOgnooAvya(ugugdul) {
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   const ajiltan = await Ajiltan.findOne()
     .select("+nuutsUg")
-    .where("ner")
-    .equals(req.body.ner)
+    .where("nevtrekhNer")
+    .equals(req.body.nevtrekhNer)
     .catch((err) => {
       next(err);
     });

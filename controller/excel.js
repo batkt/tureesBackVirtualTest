@@ -20,7 +20,7 @@ exports.gereeniiZaaltTatya = asyncHandler(async (req, res, next) => {
     var tolgoinObject = {};
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
-      if (cellAsString[1] === "1" && !!worksheet[cellAsString].v) {
+      if (cellAsString[1] === "1" && cellAsString.length == 2 && !!worksheet[cellAsString].v) {
         if (worksheet[cellAsString].v.includes("Харагдах дугаар"))
           tolgoinObject.kharagdakhDugaar = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Заалт"))
@@ -63,7 +63,9 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     var tolgoinObject = {};
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
-      if (cellAsString[1] === "1" && !!worksheet[cellAsString].v) {
+      if (cellAsString[1] === "1" && cellAsString.length == 2 && !!worksheet[cellAsString].v) {
+        console.log('cellAsString', cellAsString)
+        console.log(worksheet[cellAsString]);
         if (worksheet[cellAsString].v.includes("Давхар"))
           tolgoinObject.davkhar = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Талбайн хэмжээ"))
@@ -93,7 +95,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       object.talbainNiitUne =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainNiitUne)];
       object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
-      //object.baiguullagiinId = req.body.baiguullagiinId;
+      object.baiguullagiinId = req.body.baiguullagiinId;
       jagsaalt.push(object);
     });
     var aldaaniiMsg = "";

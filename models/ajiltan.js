@@ -25,6 +25,7 @@ const ajiltanSchema = new Schema(
     firebaseToken: String,
     albanTushaal: String,
     zurgiinId: String,
+    nevtrekhNer: String,
     indexTalbar: {
       type: String,
       unique: true,
