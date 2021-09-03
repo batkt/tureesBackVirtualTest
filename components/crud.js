@@ -94,11 +94,11 @@ function crud(
   router.get(`/${modelName}`, tokenShalgakh, async (req, res, next) => {
     try {
       const body = req.query;
-      if(!!body?.query) body.query = JSON.parse(body.query);
-      if(!!body?.order) body.order = JSON.parse(body.order);
-      if(!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-      if(!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-      if(!!body?.search) body.search = String(body.search);
+      if (!!body?.query) body.query = JSON.parse(body.query);
+      if (!!body?.order) body.order = JSON.parse(body.order);
+      if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+      if (!!body?.search) body.search = String(body.search);
       khuudaslalt(Model, body)
         .then((result) => {
           res.send(result);
@@ -153,8 +153,8 @@ function crudWithFile(
 ) {
   router.post(
     `/${modelName}`,
-    tokenShalgakh,
     upload.single(fileProp.fileName),
+    tokenShalgakh,
     async (req, res, next) => {
       try {
         const data = new Model(req.body);
@@ -181,8 +181,8 @@ function crudWithFile(
   );
   router.put(
     `/${modelName}/:id`,
-    tokenShalgakh,
     upload.single(fileProp.fileName),
+    tokenShalgakh,
     async (req, res, next) => {
       try {
         const data = new Model(req.body);
@@ -214,11 +214,11 @@ function crudWithFile(
   router.get(`/${modelName}`, tokenShalgakh, async (req, res, next) => {
     try {
       const body = req.query;
-      if(!!body?.query) body.query = JSON.parse(body.query);
-      if(!!body?.order) body.order = JSON.parse(body.order);
-      if(!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-      if(!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-      if(!!body?.search) body.search = String(body.search);
+      if (!!body?.query) body.query = JSON.parse(body.query);
+      if (!!body?.order) body.order = JSON.parse(body.order);
+      if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+      if (!!body?.search) body.search = String(body.search);
       khuudaslalt(Model, body)
         .then((result) => {
           res.send(result);
