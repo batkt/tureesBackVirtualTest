@@ -22,7 +22,8 @@ function duusakhOgnooAvya(ugugdul) {
     });
   });
 
-  request.on("error", (error) => {
+  request.
+  on("error", (error) => {
     throw new aldaa(error);
   });
 
