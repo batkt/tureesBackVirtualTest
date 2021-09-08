@@ -36,7 +36,7 @@ exports.toololtAvya = asyncHandler(async (req, res, next) => {
         }
       }
     }, {
-      '$count': 'niit'
+      '$count': 'khugatsaaKhetersen'
     }
   ]
   Geree.aggregate(query).then((result) => {
