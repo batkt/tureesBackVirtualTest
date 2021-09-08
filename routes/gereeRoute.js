@@ -4,6 +4,13 @@ const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
 const Dugaarlalt = require("../models/dugaarlalt");
 const { crud } = require("../components/crud");
+const {
+  tokenShalgakh
+} = require("../middlewares/tokenShalgakh");
+
+const {
+  toololtAvya
+} = require('../controller/toololt')
 
 crud(router, "geree", Geree, async (req, res, next) => {
   try {
@@ -47,5 +54,7 @@ crud(router, "geree", Geree, async (req, res, next) => {
     next(error);
   }
 });
+
+router.route("/toololtAvya").get(tokenShalgakh, toololtAvya);
 
 module.exports = router;
