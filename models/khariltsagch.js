@@ -13,6 +13,7 @@ const khariltsagchSchema = new Schema(
     albanTushaal: String,
     zakhirliinOvog: String,
     zakhirliinNer: String,
+    baiguullagiinId: String,
     firebaseToken: String,
     turul: String,
     tuluv: String,
