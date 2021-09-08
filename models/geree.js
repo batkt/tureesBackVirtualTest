@@ -42,7 +42,7 @@ const gereeSchema = new Schema(
     talbainNegjUne: Number,
     talbainNiitUne: Number,
     talbainKhemjee: Number,
-    davkhar: Number,
+    davkhar: String,
     baritsaaAvakhDun: Number,
     baritsaaBairshuulakhKhugatsaa: Number,
     baritsaaAvakhKhugatsaa: Number,
