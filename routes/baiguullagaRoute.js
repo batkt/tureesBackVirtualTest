@@ -14,8 +14,7 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
   try {
     console.log(req.body);
     const data = new Baiguullaga(req.body);
-    data
-      .save()
+    data.save()
       .then((result) => {
         if (req.body.ajiltan) {
           let ajiltan = new Ajiltan(req.body.ajiltan);

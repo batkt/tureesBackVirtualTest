@@ -6,29 +6,12 @@ const jwt = require("jsonwebtoken");
 const http = require("http");
 
 function duusakhOgnooAvya(ugugdul) {
-  const data = new TextEncoder().encode(JSON.stringify(ugugdul));
-  const options = {
-    hostname: "127.0.0.1",
-    port: 8282,
-    path: "/baiguullagiinDuusakhKhugatsaaAvya",
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-  const request = http.request(options, (response) => {
-    response.on("data", (d) => {
-      if (response.statusCode == 200) return d;
-    });
+  request.get("http://127.0.0.1:8282/baiguullagiinDuusakhKhugatsaaAvya", { json: true, body: ugugdul }, (err, res1, body) => {
+    if (err) next(err);
+    else {
+      onFinish(body);
+    }
   });
-
-  request.
-  on("error", (error) => {
-    throw new aldaa(error);
-  });
-
-  request.write(data);
-  request.end();
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
@@ -43,14 +26,24 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
   if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
   var baiguullaga = await Baiguullaga.findById(ajiltan.baiguullagiinId);
-  let duusakhOgnoo = await duusakhOgnooAvya({"register" : baiguullaga.register});
-  const jwt = ajiltan.tokenUusgeye(duusakhOgnoo);
-  res.status(200).json({
-    duusakhOgnoo: duusakhOgnoo,
-    success: true,
-    token: jwt,
+  let duusakhOgnoo = null;
+  var butsaakhObject = {
     result: ajiltan,
-  });
+    success: true
+  };
+  duusakhOgnooAvya({ "register": baiguullaga.register }, async (khariu) => {
+    console.log(khariu);
+    if (khariu.success) {
+      if (khariu.duusakhOgnoo && khariu.duusakhOgnoo < new Date())
+        throw new aldaa("Лицензийн хугацаа дууссан байна!")
+      const jwt = await ajiltan.tokenUusgeye(khariu.duusakhOgnoo);
+      butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
+      butsaakhObject.token = jwt;
+      res.status(200).json(butsaakhObject)
+    }
+    else
+      next(new aldaa(khariu.msg));
+  }, next);
 });
 
 exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
