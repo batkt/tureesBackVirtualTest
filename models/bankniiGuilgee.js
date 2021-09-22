@@ -1,0 +1,26 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+mongoose.pluralize(null);
+const Schema = new Schema({
+  id: String,
+  baiguullagiinId: String,
+  record: String,
+  tranDate: String,
+  postDate: String,
+  time: String,
+  branch: String,
+  teller: String,
+  journal: Number,
+  code: String,
+  amount: Number,
+  balance: Number,
+  debit: Number,
+  correction: Number,
+  description: String,
+  relatedAccount: String
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.model("dugaarlalt", dugaarlaltSchema);

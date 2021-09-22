@@ -3,9 +3,10 @@ const Ajiltan = require("../models/ajiltan");
 const Baiguullaga = require("../models/baiguullaga");
 const aldaa = require("../components/aldaa");
 const jwt = require("jsonwebtoken");
+const request = require('request');
 const http = require("http");
 
-function duusakhOgnooAvya(ugugdul) {
+function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get("http://127.0.0.1:8282/baiguullagiinDuusakhKhugatsaaAvya", { json: true, body: ugugdul }, (err, res1, body) => {
     if (err) next(err);
     else {
