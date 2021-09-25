@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
 const Token = require("../models/token");
+const BankniiGuilgee = require("../models/bankniiGuilgee");
 const got = require('got');
 const { URL } = require('url');
 const instance = got.extend({
@@ -48,6 +49,8 @@ async function dansniiKhuulgaAvya(token, next, body) {
         var url = "https://api.khanbank.com/v1/statements/" + body.dansniiDugaar
             + "?from=" + body.ekhlekhOgnoo + "&to=" + body.duusakhOgnoo + "&page="
             + body.khuudasniiDugaar + "&&size=" + body.khuudasniiKhemjee;
+        if (body.record)
+            url = url + "&&record=" + body.record;
         url = new URL(url);
         const context = {
             token: "Bearer " + token
@@ -83,4 +86,45 @@ exports.bankniiDansniiKhuulgaAvya = asyncHandler(async (req, res, next) => {
         token = tokenObject.token
     var khariu = await dansniiKhuulgaAvya(token, next, req.body);
     res.send(khariu);
+});
+
+
+exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
+    var tokenObject = await Token.findOne({ baiguullagiinId: req.body.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
+    var token;
+    if (!tokenObject) {
+        tokenObject = await tokenAvya("0CAhOZ85wlmRzrPAkBycQFeTBnewDX7O", "Rv1eLukuzQirNgD3", next, req.body.baiguullagiinId);
+        token = tokenObject.access_token;
+    }
+    else
+        token = tokenObject.token
+    var query = [
+        {
+            '$match': {
+                'dansniiDugaar': req.body.dansniiDugaar
+            }
+        }, {
+            '$group': {
+                '_id': '$dansniiDugaar',
+                'max': {
+                    '$max': '$record'
+                }
+            }
+        }
+    ]
+    var max = await BankniiGuilgee.aggregate(query);
+    var maxDugaar = 1;
+    if (max && max.length !== 0)
+        maxDugaar = max[0].max;
+    if (maxDugaar != 1)
+        req.body.record = maxDugaar
+    var khariu = await dansniiKhuulgaAvya(token, next, req.body);
+    if (khariu && khariu.transactions) {
+        var guilgeenuud = []
+        khariu.transactions.forEach(mur => guilgeenuud.push(new BankniiGuilgee(mur)));
+        guilgeenuud.forEach(x => x.dansniiDugaar = req.body.dansniiDugaar);
+        BankniiGuilgee.insertMany(guilgeenuud).then((result) => { res.send(khariu) }).catch((err) => { next(err) });
+    }
+    else
+        res.send("Татах гүйлгээ байхгүй байна!");
 });

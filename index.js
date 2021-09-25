@@ -16,6 +16,7 @@ const gereeRoute = require("./routes/gereeRoute");
 const gereeniiZagvarRoute = require("./routes/gereeniiZagvarRoute");
 const talbaiRoute = require("./routes/talbaiRoute");
 const khariltsagchRoute = require("./routes/khariltsagchRoute");
+const bankniiGuilgeeRoute = require("./routes/bankniiGuilgeeRoute");
 
 const dbUrl =
   "mongodb://localhost:27017/turees?readPreference=primary&ssl=false";
@@ -42,12 +43,13 @@ app.use(baiguullagaRoute);
 app.use(ajiltanRoute);
 app.use(licenseRoute);
 app.use(tailanRoute);
-app.use(aldaaBarigch);
 app.use(gereeRoute);
 app.use(gereeniiZagvarRoute);
 app.use(talbaiRoute);
 app.use(khariltsagchRoute);
+app.use(bankniiGuilgeeRoute);
 app.use(zuragRoute);
+app.use(aldaaBarigch);
 
 io.on("connection", (socket) => {
   console.log("connected");

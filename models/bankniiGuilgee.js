@@ -2,9 +2,10 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
-const Schema = new Schema({
+const bankniiGuilgeeSchema = new Schema({
   id: String,
   baiguullagiinId: String,
+  dansniiDugaar: String,
   record: String,
   tranDate: String,
   postDate: String,
@@ -23,4 +24,4 @@ const Schema = new Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model("dugaarlalt", dugaarlaltSchema);
+module.exports = mongoose.model("bankniiGuilgee", bankniiGuilgeeSchema);
