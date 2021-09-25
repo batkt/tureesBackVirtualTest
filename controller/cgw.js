@@ -12,7 +12,6 @@ const instance = got.extend({
                 if (options.context && options.context.token) {
                     options.headers['Authorization'] = options.context.token;
                 }
-                console.log(options)
             }
         ]
     }
@@ -56,8 +55,11 @@ async function dansniiKhuulgaAvya(token, next, body) {
             token: "Bearer " + token
         };
         const response = await instance.get(url, { context });
+        if (!response.body)
+            next(new aldaa("Татах хуулга байхгүй"));
         return JSON.parse(response.body);
     } catch (error) {
+        console.log("error", error);
         next(error);
     }
 }
@@ -128,8 +130,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
             x.dansniiDugaar = req.body.dansniiDugaar;
             x.baiguullagiinId = req.body.baiguullagiinId;
         });
-        BankniiGuilgee.insertMany(guilgeenuud).then((result) => { res.send(khariu) }).catch((err) => { next(err) });
+        BankniiGuilgee.insertMany(guilgeenuud).then((result) => { res.send("Amjilttai") }).catch((err) => { next(err) });
     }
     else
-        res.send("Татах гүйлгээ байхгүй байна!");
+        res.status(200).send("Tatah guilgee baihgui!");
 });
