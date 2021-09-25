@@ -56,7 +56,7 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo) {
   return token;
 };
 ajiltanSchema.pre("save", async function () {
-  this.indexTalbar = this.baiguullagiinId + this.$nevtrekhNer;
+  this.indexTalbar = this.baiguullagiinId + this.nevtrekhNer;
   const salt = await bcrypt.genSalt(12);
   this.nuutsUg = await bcrypt.hash(this.nuutsUg, salt);
 });
