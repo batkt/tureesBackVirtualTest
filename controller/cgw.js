@@ -107,7 +107,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
             '$group': {
                 '_id': '$dansniiDugaar',
                 'max': {
-                    '$max': '$record'
+                    '$max': {
+                        $toInt: "$record"
+                    }
                 }
             }
         }
@@ -122,7 +124,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
     if (khariu && khariu.transactions) {
         var guilgeenuud = []
         khariu.transactions.forEach(mur => guilgeenuud.push(new BankniiGuilgee(mur)));
-        guilgeenuud.forEach(x => x.dansniiDugaar = req.body.dansniiDugaar);
+        guilgeenuud.forEach(x => {
+            x.dansniiDugaar = req.body.dansniiDugaar;
+            x.baiguullagiinId = req.body.baiguullagiinId;
+        });
         BankniiGuilgee.insertMany(guilgeenuud).then((result) => { res.send(khariu) }).catch((err) => { next(err) });
     }
     else

@@ -28,7 +28,7 @@ function aldaagIlgeeye(aldaa, req) {
     });
   });
   request.on("error", (error) => {
-    throw new aldaa(error);
+    console.log("aldaag shidsengui!");
   });
 
   request.write(data);
