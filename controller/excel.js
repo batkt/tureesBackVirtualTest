@@ -22,7 +22,11 @@ exports.gereeniiZaaltTatya = asyncHandler(async (req, res, next) => {
     var tolgoinObject = {};
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
-      if (cellAsString[1] === "1" && cellAsString.length == 2 && !!worksheet[cellAsString].v) {
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!worksheet[cellAsString].v
+      ) {
         if (worksheet[cellAsString].v.includes("Харагдах дугаар"))
           tolgoinObject.kharagdakhDugaar = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Заалт"))
@@ -65,8 +69,12 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     var tolgoinObject = {};
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
-      if (cellAsString[1] === "1" && cellAsString.length == 2 && !!worksheet[cellAsString].v) {
-        console.log('cellAsString', cellAsString)
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!worksheet[cellAsString].v
+      ) {
+        console.log("cellAsString", cellAsString);
         console.log(worksheet[cellAsString]);
         if (worksheet[cellAsString].v.includes("Давхар"))
           tolgoinObject.davkhar = cellAsString[0];
@@ -224,7 +232,6 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 exports.irgenZagvarAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Иргэн");
@@ -265,12 +272,17 @@ exports.irgenZagvarAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
   ];
-  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  res.setHeader("Content-Disposition", "attachment; filename=" + encodeURI("Иргэн.xlsx"));
-  workbook.xlsx.write(res)
-    .then(function () {
-      res.end();
-    });
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=" + encodeURI("Иргэн.xlsx")
+  );
+  workbook.xlsx.write(res).then(function () {
+    res.end();
+  });
 });
 
 exports.baiguullagaZagvarAvya = asyncHandler(async (req, res, next) => {
@@ -308,12 +320,17 @@ exports.baiguullagaZagvarAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
   ];
-  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-  res.setHeader("Content-Disposition", "attachment; filename=" + encodeURI("Иргэн.xlsx"));
-  workbook.xlsx.write(res)
-    .then(function () {
-      res.end();
-    });
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=" + encodeURI("Иргэн.xlsx")
+  );
+  workbook.xlsx.write(res).then(function () {
+    res.end();
+  });
 });
 
 exports.irgenTatya = asyncHandler(async (req, res, next) => {
@@ -326,7 +343,11 @@ exports.irgenTatya = asyncHandler(async (req, res, next) => {
     var tolgoinObject = {};
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
-      if (cellAsString[1] === "1" && cellAsString.length == 2 && !!worksheet[cellAsString].v) {
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!worksheet[cellAsString].v
+      ) {
         if (worksheet[cellAsString].v.includes("Код"))
           tolgoinObject.id = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Нэр"))
@@ -355,7 +376,8 @@ exports.irgenTatya = asyncHandler(async (req, res, next) => {
       object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
       object.utas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
       object.mail = mur[usegTooruuKhurvuulekh(tolgoinObject.mail)];
-      object.khayag = req.body.khayag;
+      object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];
+      object.baiguullagiinId = req.body.baiguullagiinId;
       jagsaalt.push(object);
     });
     Khariltsagch.insertMany(jagsaalt, function (err) {
