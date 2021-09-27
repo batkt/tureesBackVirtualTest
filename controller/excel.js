@@ -232,7 +232,7 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
   });
 });
 
-exports.irgenZagvarAvya = asyncHandler(async (req, res, next) => {
+exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Иргэн");
   worksheet.columns = [
@@ -272,23 +272,8 @@ exports.irgenZagvarAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
   ];
-  res.setHeader(
-    "Content-Type",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  );
-  res.setHeader(
-    "Content-Disposition",
-    "attachment; filename=" + encodeURI("Иргэн.xlsx")
-  );
-  workbook.xlsx.write(res).then(function () {
-    res.end();
-  });
-});
-
-exports.baiguullagaZagvarAvya = asyncHandler(async (req, res, next) => {
-  let workbook = new excel.Workbook();
-  let worksheet = workbook.addWorksheet("Иргэн");
-  worksheet.columns = [
+  let worksheet1 = workbook.addWorksheet("ААН");
+  worksheet1.columns = [
     {
       header: "Код",
       key: "Код",
@@ -300,18 +285,28 @@ exports.baiguullagaZagvarAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
     {
-      header: "Улсын бүртгэлын дугаар",
-      key: "Улсын бүртгэлын дугаар",
+      header: "Улсын бүртгэлийн дугаар",
+      key: "Улсын бүртгэлийн дугаар",
       width: 20,
     },
     {
-      header: "Утас",
-      key: "Утас",
+      header: "Захирлын овог",
+      key: "Захирлын овог",
+      width: 20,
+    },
+    {
+      header: "Захирлын нэр",
+      key: "Захирлын нэр",
       width: 20,
     },
     {
       header: "Мэйл",
       key: "Мэйл",
+      width: 20,
+    },
+    {
+      header: "Утас",
+      key: "Утас",
       width: 20,
     },
     {
@@ -326,45 +321,46 @@ exports.baiguullagaZagvarAvya = asyncHandler(async (req, res, next) => {
   );
   res.setHeader(
     "Content-Disposition",
-    "attachment; filename=" + encodeURI("Иргэн.xlsx")
+    "attachment; filename=" + encodeURI("Харилцагч.xlsx")
   );
   workbook.xlsx.write(res).then(function () {
     res.end();
   });
 });
 
-exports.irgenTatya = asyncHandler(async (req, res, next) => {
+
+exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
   try {
     const workbook = xlsx.read(req.file.buffer);
-    if (workbook.SheetNames[0] !== "Иргэн")
+    if (workbook.SheetNames[0] !== "Иргэн" || workbook.SheetNames[1] !== "ААН")
       throw new aldaa("Буруу файл байна!");
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const irgenSheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
     var tolgoinObject = {};
-    for (let cell in worksheet) {
+    for (let cell in irgenSheet) {
       var cellAsString = cell.toString();
       if (
         cellAsString[1] === "1" &&
         cellAsString.length == 2 &&
-        !!worksheet[cellAsString].v
+        !!irgenSheet[cellAsString].v
       ) {
-        if (worksheet[cellAsString].v.includes("Код"))
+        if (irgenSheet[cellAsString].v.includes("Код"))
           tolgoinObject.id = cellAsString[0];
-        else if (worksheet[cellAsString].v.includes("Нэр"))
+        else if (irgenSheet[cellAsString].v.includes("Нэр"))
           tolgoinObject.ner = cellAsString[0];
-        else if (worksheet[cellAsString].v.includes("Овог"))
+        else if (irgenSheet[cellAsString].v.includes("Овог"))
           tolgoinObject.ovog = cellAsString[0];
-        else if (worksheet[cellAsString].v.includes("Улсын бүртгэлын дугаар"))
+        else if (irgenSheet[cellAsString].v.includes("Регистр"))
           tolgoinObject.register = cellAsString[0];
-        else if (worksheet[cellAsString].v.includes("Утас"))
+        else if (irgenSheet[cellAsString].v.includes("Утас"))
           tolgoinObject.utas = cellAsString[0];
-        else if (worksheet[cellAsString].v.includes("Мэйл"))
+        else if (irgenSheet[cellAsString].v.includes("Мэйл"))
           tolgoinObject.mail = cellAsString[0];
-        else if (worksheet[cellAsString].v.includes("Хаяг"))
+        else if (irgenSheet[cellAsString].v.includes("Хаяг"))
           tolgoinObject.khayag = cellAsString[0];
       }
     }
-    var data = xlsx.utils.sheet_to_json(worksheet, {
+    var data = xlsx.utils.sheet_to_json(irgenSheet, {
       header: 1,
       range: 1,
     });
@@ -374,6 +370,53 @@ exports.irgenTatya = asyncHandler(async (req, res, next) => {
       object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ovog = mur[usegTooruuKhurvuulekh(tolgoinObject.ovog)];
       object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
+      object.utas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
+      object.mail = mur[usegTooruuKhurvuulekh(tolgoinObject.mail)];
+      object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];
+      object.baiguullagiinId = req.body.baiguullagiinId;
+      jagsaalt.push(object);
+    });
+
+    const aanSheet = workbook.Sheets[workbook.SheetNames[1]];
+    tolgoinObject = {};
+    for (let cell in aanSheet) {
+      var cellAsString = cell.toString();
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!aanSheet[cellAsString].v
+      ) {
+        if (aanSheet[cellAsString].v.includes("Код"))
+          tolgoinObject.id = cellAsString[0];
+        else if (aanSheet[cellAsString].v.includes("Нэр"))
+          tolgoinObject.ner = cellAsString[0];
+        else if (aanSheet[cellAsString].v.includes("Улсын бүртгэлийн дугаар"))
+          tolgoinObject.register = cellAsString[0];
+        else if (aanSheet[cellAsString].v.includes("Захирлын овог"))
+          tolgoinObject.zakhirliinOvog = cellAsString[0];
+        else if (aanSheet[cellAsString].v.includes("Захирлын нэр"))
+          tolgoinObject.zakhirliinNer = cellAsString[0];
+        else if (aanSheet[cellAsString].v.includes("Утас"))
+          tolgoinObject.utas = cellAsString[0];
+        else if (aanSheet[cellAsString].v.includes("Мэйл"))
+          tolgoinObject.mail = cellAsString[0];
+        else if (aanSheet[cellAsString].v.includes("Хаяг"))
+          tolgoinObject.khayag = cellAsString[0];
+      }
+    }
+    data = xlsx.utils.sheet_to_json(aanSheet, {
+      header: 1,
+      range: 1,
+    });
+    console.log("tolgoinObject", tolgoinObject);
+    data.forEach((mur) => {
+      let object = new Khariltsagch();
+      object.id = mur[usegTooruuKhurvuulekh(tolgoinObject.id)];
+      object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
+      object.ovog = mur[usegTooruuKhurvuulekh(tolgoinObject.ovog)];
+      object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
+      object.zakhirliinOvog = mur[usegTooruuKhurvuulekh(tolgoinObject.zakhirliinOvog)];
+      object.zakhirliinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.zakhirliinNer)];
       object.utas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
       object.mail = mur[usegTooruuKhurvuulekh(tolgoinObject.mail)];
       object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];

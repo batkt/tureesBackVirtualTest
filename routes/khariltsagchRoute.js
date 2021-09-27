@@ -13,22 +13,14 @@ const {
   bankniiDansniiKhuulgaAvya,
   bankniiKhuulgaTatajKhadgalya,
 } = require("../controller/cgw");
-const { irgenZagvarAvya, irgenTatya } = require("../controller/excel");
+const { khariltsagchZagvarAvya, khariltsagchTatya } = require("../controller/excel");
 
 crud(router, "khariltsagch", Khariltsagch);
 
-router
-  .route("/bankniiDansniiJagsaaltAvya")
-  .get(tokenShalgakh, bankniiDansniiJagsaaltAvya);
-router
-  .route("/bankniiDansniiKhuulgaAvya")
-  .post(tokenShalgakh, bankniiDansniiKhuulgaAvya);
-router
-  .route("/bankniiKhuulgaTatajKhadgalya")
-  .post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
-router.route("/irgenZagvarAvya").get(irgenZagvarAvya);
-router
-  .route("/irgenTatya")
-  .post(uploadFile.single("file"), tokenShalgakh, irgenTatya);
+router.route("/bankniiDansniiJagsaaltAvya").get(tokenShalgakh, bankniiDansniiJagsaaltAvya);
+router.route("/bankniiDansniiKhuulgaAvya").post(tokenShalgakh, bankniiDansniiKhuulgaAvya);
+router.route("/bankniiKhuulgaTatajKhadgalya").post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
+router.route("/khariltsagchZagvarAvya").get(khariltsagchZagvarAvya);
+router.route("/khariltsagchTatya").post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);
 
 module.exports = router;
