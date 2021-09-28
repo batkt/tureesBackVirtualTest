@@ -5,6 +5,7 @@ const http = require("http");
 const cors = require("cors");
 const server = http.Server(app);
 const io = require("socket.io")(server);
+const cron = require("node-cron");
 
 const baiguullagaRoute = require("./routes/baiguullagaRoute");
 const ajiltanRoute = require("./routes/ajiltanRoute");
@@ -17,6 +18,7 @@ const gereeniiZagvarRoute = require("./routes/gereeniiZagvarRoute");
 const talbaiRoute = require("./routes/talbaiRoute");
 const khariltsagchRoute = require("./routes/khariltsagchRoute");
 const bankniiGuilgeeRoute = require("./routes/bankniiGuilgeeRoute");
+const cgw = require("./controller/cgw");
 
 const dbUrl =
   "mongodb://localhost:27017/turees?readPreference=primary&ssl=false";
@@ -51,6 +53,33 @@ app.use(bankniiGuilgeeRoute);
 app.use(zuragRoute);
 app.use(aldaaBarigch);
 
+
+cron.schedule("*/5 * * * *", function () {
+  console.log("xuulga tatlaa", new Date());
+  cgw.bankniiKhuulgaTatajKhadgalya({
+    body: {
+      baiguullagiinId: "6115f350b35689cdbf1b9da3",
+      dansniiDugaar: "5129057717",
+      ekhlekhOgnoo: "20210101",
+      duusakhOgnoo: "20211231",
+      khuudasniiKhemjee: 100,
+      khuudasniiDugaar: 0
+    }
+  }, null, null)
+  cgw.bankniiKhuulgaTatajKhadgalya({
+    body: {
+      baiguullagiinId: "6115f350b35689cdbf1b9da3",
+      dansniiDugaar: "5129062239",
+      ekhlekhOgnoo: "20210101",
+      duusakhOgnoo: "20211231",
+      khuudasniiKhemjee: 100,
+      khuudasniiDugaar: 0
+    }
+  }, null, null)
+}, {
+  scheduled: true,
+  timezone: "Asia/Ulaanbaatar"
+});
 io.on("connection", (socket) => {
   console.log("connected");
   socket.on("disconnect", () => {

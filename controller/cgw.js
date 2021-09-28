@@ -55,8 +55,11 @@ async function dansniiKhuulgaAvya(token, next, body) {
             token: "Bearer " + token
         };
         const response = await instance.get(url, { context });
-        if (!response.body)
-            next(new aldaa("Татах хуулга байхгүй"));
+        if (!response.body) {
+            if (next)
+                next(new aldaa("Татах хуулга байхгүй"));
+            else return null;
+        }
         return JSON.parse(response.body);
     } catch (error) {
         console.log("error", error);
@@ -130,8 +133,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
             x.dansniiDugaar = req.body.dansniiDugaar;
             x.baiguullagiinId = req.body.baiguullagiinId;
         });
-        BankniiGuilgee.insertMany(guilgeenuud).then((result) => { res.send("Amjilttai") }).catch((err) => { next(err) });
+        BankniiGuilgee.insertMany(guilgeenuud).then((result) => { if (res) res.send("Amjilttai") }).catch((err) => { console.log(err); next(err) });
     }
-    else
+    else if (res)
         res.status(200).send("Tatah guilgee baihgui!");
 });
