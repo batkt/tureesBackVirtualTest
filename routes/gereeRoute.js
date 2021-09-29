@@ -3,6 +3,11 @@ const router = express.Router();
 const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
 const Dugaarlalt = require("../models/dugaarlalt");
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const uploadFile = multer({
+  storage: storage,
+});
 const { crud } = require("../components/crud");
 const {
   tokenShalgakh
@@ -11,6 +16,13 @@ const {
 const {
   toololtAvya
 } = require('../controller/toololt')
+
+const { gereeniiExcelAvya, gereeniiExcelTatya } = require("../controller/excel");
+
+router.route("/toololtAvya").get(tokenShalgakh, toololtAvya);
+
+router.route("/gereeniiExcelAvya").get(gereeniiExcelAvya);
+router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
 
 crud(router, "geree", Geree, async (req, res, next) => {
   try {
@@ -55,6 +67,5 @@ crud(router, "geree", Geree, async (req, res, next) => {
   }
 });
 
-router.route("/toololtAvya").get(tokenShalgakh, toololtAvya);
 
 module.exports = router;

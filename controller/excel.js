@@ -158,6 +158,7 @@ exports.gereeniiZagvarTatya = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
+
 exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Гэрээ");
@@ -328,6 +329,108 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
   });
 });
 
+
+exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
+  let workbook = new excel.Workbook();
+  let worksheet = workbook.addWorksheet("Гэрээ");
+  worksheet.columns = [
+    {
+      header: "Гэрээний дугаар",
+      key: "Гэрээний дугаар",
+      width: 30,
+    },
+    {
+      header: "Регистр/Бүртгэлийн дугаар",
+      key: "Регистр/Бүртгэлийн дугаар",
+      width: 30,
+    },
+    {
+      header: "Эхлэх огноо",
+      key: "Эхлэх огноо",
+      width: 20,
+    },
+    {
+      header: "Хугацаа(Сараар)",
+      key: "Хугацаа(Сараар)",
+      width: 20,
+    },
+    {
+      header: "Төлөлт хийх өдөр",
+      key: "Төлөлт хийх өдөр",
+      width: 20,
+    },
+    {
+      header: "Талбайн код",
+      key: "Талбайн код",
+      width: 20,
+    },
+    {
+      header: "Барьцаа авах хугацаа",
+      key: "Барьцаа авах хугацаа",
+      width: 20,
+    },
+    {
+      header: "Барьцаа байршуулах хугацаа",
+      key: "Барьцаа байршуулах хугацаа",
+      width: 20,
+    },
+    {
+      header: "Авлага",
+      key: "Авлага",
+      width: 20,
+    }
+  ];
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=" + encodeURI("Гэрээ.xlsx")
+  );
+  workbook.xlsx.write(res).then(function () {
+    res.end();
+  });
+});
+
+
+exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
+  try {
+    const workbook = xlsx.read(req.file.buffer);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jagsaalt = [];
+    var tolgoinObject = {};
+    var data = xlsx.utils.sheet_to_json(worksheet, {
+      header: 1,
+      range: 1,
+    });
+    var zagvariinNer = worksheet["B1"].v;
+    const zagvar = new GereeniiZagvar();
+    zagvar.ner = zagvariinNer;
+    data.forEach((mur) => {
+      let object = new GereeniiZaalt();
+      object.kharagdakhDugaar = mur[0];
+      object.zaalt = mur[1];
+      object.khamaarakhKheseg = mur[2];
+      if (!object.kharagdakhDugaar) object.kharagdakhDugaar = "";
+      jagsaalt.push(object);
+    });
+    zagvar.dedKhesguud = jagsaalt;
+    zagvar.baiguullagiinId = req.body.baiguullagiinId;
+    var aldaaniiMsg = "";
+    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
+    zagvar
+      .save()
+      .then((result) => {
+        res.status(200).send("Amjilttai");
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } catch (error) {
+    next(error);
+  }
+});
 
 exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
   try {
