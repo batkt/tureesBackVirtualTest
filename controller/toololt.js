@@ -47,3 +47,27 @@ exports.toololtAvya = asyncHandler(async (req, res, next) => {
     });;
 });
 
+
+exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
+  let query = [
+    {
+      '$match': {
+        'baiguullagiinId': req.body.baiguullagiinId
+      }
+    }, {
+      '$group': {
+        '_id': '$turul',
+        'too': {
+          '$sum': 1
+        }
+      }
+    }
+  ]
+  Geree.aggregate(query).then((result) => {
+    res.send(result);
+  })
+    .catch((err) => {
+      next(err);
+    });;
+});
+

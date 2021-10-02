@@ -38,13 +38,9 @@ async function gereeBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg) {
     var tukhainKhariltsagch;
     gereenuud.forEach(x => {
       tukhainKhariltsagch = khariltsagchiinJagsaalt.find(a => a.register == x.register);;
-      if (tukhainKhariltsagch.ovog) {
-        x.ovog = tukhainKhariltsagch.ovog;
-        x.turul = "ААН";
-      }
-      else
-        x.turul = "Иргэн";
+      x.ovog = tukhainKhariltsagch.ovog;
       x.ner = tukhainKhariltsagch.ner;
+      x.turul = tukhainKhariltsagch.turul;
       x.zakhirliinOvog = tukhainKhariltsagch.zakhirliinOvog;
       x.zakhirliinNer = tukhainKhariltsagch.zakhirliinNer;
       x.utas = tukhainKhariltsagch.utas;
@@ -78,7 +74,6 @@ async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg) {
     var tukhainTalbai;
     gereenuud.forEach(x => {
       tukhainTalbai = talbainJagsaalt.find(a => a.kod == x.talbainDugaar);
-      console.log(tukhainTalbai);
       x.davkhar = tukhainTalbai.davkhar;
       x.talbainNegjUne = tukhainTalbai.talbainNegjUne;
       x.talbainNiitUne = tukhainTalbai.talbainNiitUne;
@@ -92,7 +87,6 @@ async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg) {
 
 exports.gereeniiZaaltTatya = asyncHandler(async (req, res, next) => {
   try {
-    console.log("req.body", req.body);
     const workbook = xlsx.read(req.file.buffer);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
@@ -151,8 +145,6 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!worksheet[cellAsString].v
       ) {
-        console.log("cellAsString", cellAsString);
-        console.log(worksheet[cellAsString]);
         if (worksheet[cellAsString].v.includes("Давхар"))
           tolgoinObject.davkhar = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Талбайн хэмжээ"))
@@ -475,6 +467,11 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
 exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
   try {
     const workbook = xlsx.read(req.file.buffer);
+    var zagvariinId
+    if (req.body.zagvariinId)
+      zagvariinId = req.body.zagvariinId;
+    else
+      throw new aldaa("Загвараа сонгоно уу!")
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
     var tolgoinObject = {};
@@ -509,14 +506,12 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
-    var registeriinDugaaruud = [];
-    var talbainKoduud = [];
     data.forEach((mur) => {
       let object = new Geree();
       object.gereeniiDugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiDugaar)];
       object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
-      object.gereeniiOgnoo = mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiOgnoo)];
-      object.khugatsaa = new Date(mur[usegTooruuKhurvuulekh(tolgoinObject.khugatsaa)]);
+      object.gereeniiOgnoo = new Date(mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiOgnoo)]);
+      object.khugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.khugatsaa)];
       var ekhlekhOgnoo = new Date(object.gereeniiOgnoo);
       object.duusakhOgnoo = new Date(ekhlekhOgnoo.setMonth(ekhlekhOgnoo.getMonth() + object.khugatsaa));;
       object.tulukhUdur = mur[usegTooruuKhurvuulekh(tolgoinObject.tulukhUdur)];
@@ -530,7 +525,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             tulukhDun: mur[usegTooruuKhurvuulekh(tolgoinObject.avlaga)]
           }]
       }
-      object.gereeniiZagvariinId = "6138ad5cd90a242810f919b3";
+      object.gereeniiZagvariinId = zagvariinId;
       object.baiguullagiinId = req.body.baiguullagiinId;
       jagsaalt.push(object);
     });
@@ -629,7 +624,6 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
-    console.log("tolgoinObject", tolgoinObject);
     data.forEach((mur) => {
       let object = new Khariltsagch();
       object.id = mur[usegTooruuKhurvuulekh(tolgoinObject.id)];

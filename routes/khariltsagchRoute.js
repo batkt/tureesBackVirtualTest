@@ -13,10 +13,16 @@ const {
   bankniiDansniiKhuulgaAvya,
   bankniiKhuulgaTatajKhadgalya,
 } = require("../controller/cgw");
+
+const {
+  khariltsagchiinTooAvya
+} = require("../controller/toololt");
+
 const { khariltsagchZagvarAvya, khariltsagchTatya } = require("../controller/excel");
 
 crud(router, "khariltsagch", Khariltsagch);
 
+router.route("/khariltsagchiinTooAvya").get(tokenShalgakh, khariltsagchiinTooAvya);
 router.route("/bankniiDansniiJagsaaltAvya").get(tokenShalgakh, bankniiDansniiJagsaaltAvya);
 router.route("/bankniiDansniiKhuulgaAvya").post(tokenShalgakh, bankniiDansniiKhuulgaAvya);
 router.route("/bankniiKhuulgaTatajKhadgalya").post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
