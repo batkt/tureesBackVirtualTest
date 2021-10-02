@@ -38,7 +38,7 @@ const gereeSchema = new Schema(
     gerchilgeeniiZurag: String,
     unemlekhniiZurag: String,
     zuvshuurliinZurag: String,
-    talbainiiDugaar: String,
+    talbainDugaar: String,
     talbainNegjUne: Number,
     talbainNiitUne: Number,
     talbainKhemjee: Number,
