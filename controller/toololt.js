@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
+const Khariltsagch = require("../models/khariltsagch");
 
 exports.toololtAvya = asyncHandler(async (req, res, next) => {
   let query = [
@@ -63,7 +64,7 @@ exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
       }
     }
   ]
-  Geree.aggregate(query).then((result) => {
+  Khariltsagch.aggregate(query).then((result) => {
     res.send(result);
   })
     .catch((err) => {
