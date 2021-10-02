@@ -13,13 +13,32 @@ function usegTooruuKhurvuulekh(useg) {
   if (!!useg) return useg.charCodeAt() - 65;
   else return 0;
 }
-async function gereeBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg) {
+async function gereeBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId) {
+  var jagsaalt = []
+  var shineAldaaniiMsg = ""
+  gereenuud.forEach(a => {
+    jagsaalt.push(a.gereeniiDugaar);
+  });
+  var gereeniiJagsaalt = await Geree.find({ "gereeniiDugaar": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId });
+  if (gereeniiJagsaalt.length !== 0) {
+    gereeniiDugaaruud = [];
+    gereeniiJagsaalt.forEach(x => {
+      gereeniiDugaaruud.push(x.gereeniiDugaar);
+    })
+    shineAldaaniiMsg = aldaaniiMsg + "Гэрээний дугаар давхардаж байна! : " + gereeniiDugaaruud + '<br/>';
+  }
+  if (shineAldaaniiMsg)
+    aldaaniiMsg = shineAldaaniiMsg;
+  return aldaaniiMsg;
+}
+
+async function khariltsagchBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId) {
   var jagsaalt = []
   var shineAldaaniiMsg = ""
   gereenuud.forEach(a => {
     jagsaalt.push(a.register);
   });
-  var khariltsagchiinJagsaalt = await Khariltsagch.find({ "register": { $in: jagsaalt } });
+  var khariltsagchiinJagsaalt = await Khariltsagch.find({ "register": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId });
   if (khariltsagchiinJagsaalt.length !== 0) {
     oldooguiJagsaalt = [];
     jagsaalt.forEach(x => {
@@ -27,10 +46,10 @@ async function gereeBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg) {
         oldooguiJagsaalt.push(x);
     })
     if (oldooguiJagsaalt.length !== 0)
-      shineAldaaniiMsg = aldaaniiMsg + "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " + oldooguiJagsaalt + '\n';
+      shineAldaaniiMsg = aldaaniiMsg + "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " + oldooguiJagsaalt + '<br/>';
   }
   else
-    shineAldaaniiMsg = aldaaniiMsg + "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " + jagsaalt + '\n';
+    shineAldaaniiMsg = aldaaniiMsg + "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " + jagsaalt + '<br/>';
 
   if (shineAldaaniiMsg)
     aldaaniiMsg = shineAldaaniiMsg;
@@ -49,13 +68,13 @@ async function gereeBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg) {
   return aldaaniiMsg;
 }
 
-async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg) {
+async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId) {
   var jagsaalt = []
   var shineAldaaniiMsg = ""
   gereenuud.forEach(a => {
     jagsaalt.push(a.talbainDugaar);
   });
-  var talbainJagsaalt = await Talbai.find({ "kod": { $in: jagsaalt } });
+  var talbainJagsaalt = await Talbai.find({ "kod": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId });
   if (talbainJagsaalt.length !== 0) {
     oldooguiJagsaalt = [];
     jagsaalt.forEach(x => {
@@ -63,10 +82,10 @@ async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg) {
         oldooguiJagsaalt.push(x);
     })
     if (oldooguiJagsaalt.length !== 0)
-      shineAldaaniiMsg = aldaaniiMsg + "Дараах дугаартай талбайнуудын мэдээлэл олдсонгүй! : " + oldooguiJagsaalt + '\n';
+      shineAldaaniiMsg = aldaaniiMsg + "Дараах дугаартай талбайнуудын мэдээлэл олдсонгүй! : " + oldooguiJagsaalt + '<br/>';
   }
   else
-    shineAldaaniiMsg = aldaaniiMsg + "Дараах дугаартай талбайнуудын мэдээлэл олдсонгүй! : " + jagsaalt + '\n';
+    shineAldaaniiMsg = aldaaniiMsg + "Дараах дугаартай талбайнуудын мэдээлэл олдсонгүй! : " + jagsaalt + '<br/>';
 
   if (shineAldaaniiMsg)
     aldaaniiMsg = shineAldaaniiMsg;
@@ -467,7 +486,7 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
 exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
   try {
     const workbook = xlsx.read(req.file.buffer);
-    var zagvariinId
+    var zagvariinId;
     if (req.body.zagvariinId)
       zagvariinId = req.body.zagvariinId;
     else
@@ -530,8 +549,9 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       jagsaalt.push(object);
     });
     var aldaaniiMsg = "";
-    aldaaniiMsg = await gereeBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg);
-    aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg);
+    aldaaniiMsg = await gereeBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
+    aldaaniiMsg = await khariltsagchBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
+    aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     Geree.insertMany(jagsaalt, function (err) {
       if (err) {
