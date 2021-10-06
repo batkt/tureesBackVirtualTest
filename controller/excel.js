@@ -525,11 +525,15 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
+    var aldaaniiMsg = "";
+    var muriinDugaar = 1;
     data.forEach((mur) => {
+      muriinDugaar++;
+      console.log(mur)
       let object = new Geree();
       object.gereeniiDugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiDugaar)];
       object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
-      object.gereeniiOgnoo = new Date(mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiOgnoo)]);
+      object.gereeniiOgnoo = new ExcelDateToJSDate(mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiOgnoo)]);
       object.khugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.khugatsaa)];
       var ekhlekhOgnoo = new Date(object.gereeniiOgnoo);
       object.duusakhOgnoo = new Date(ekhlekhOgnoo.setMonth(ekhlekhOgnoo.getMonth() + object.khugatsaa));;
@@ -546,9 +550,21 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       }
       object.gereeniiZagvariinId = zagvariinId;
       object.baiguullagiinId = req.body.baiguullagiinId;
-      jagsaalt.push(object);
+      if (!object.register || !object.gereeniiOgnoo || !object.khugatsaa || !object.talbainDugaar) {
+        aldaaniiMsg = aldaaniiMsg + muriinDugaar + " дугаар мөрөнд ";
+        if (!object.register)
+          aldaaniiMsg = aldaaniiMsg + "Регистр "
+        if (!object.gereeniiOgnoo)
+          aldaaniiMsg = aldaaniiMsg + "Гэрээний огноо "
+        if (!object.khugatsaa)
+          aldaaniiMsg = aldaaniiMsg + "Хугацаа "
+        if (!object.talbainDugaar)
+          aldaaniiMsg = aldaaniiMsg + "Талбайн код "
+        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+      }
+      else
+        jagsaalt.push(object);
     });
-    var aldaaniiMsg = "";
     aldaaniiMsg = await gereeBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
     aldaaniiMsg = await khariltsagchBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
     aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
@@ -563,6 +579,10 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
+
+function ExcelDateToJSDate(date) {
+  return new Date(Math.round((date - 25569) * 86400 * 1000));
+}
 
 exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
   try {
