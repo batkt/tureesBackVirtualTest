@@ -40,6 +40,9 @@ const aldaaBarigch = (err, req, res, next) => {
     aldaagIlgeeye(err, req);
   if (err.message.includes("indexTalbar_1 dup key"))
     err.message = "Нэвтрэх нэр давхардаж байна!";
+  else if (err.message.includes("connect ECONNREFUSED 127.0.0.1:8282")) {
+    err.message = " Лицензийн хэсэгтэй холбогдоход алдаа гарлаа!";
+  }
   res.status(err.kod || 500).json({
     success: false,
     aldaa: err.message,
