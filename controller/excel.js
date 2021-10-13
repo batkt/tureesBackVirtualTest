@@ -6,6 +6,7 @@ const Geree = require("../models/geree");
 const Talbai = require("../models/talbai");
 const aldaa = require("../components/aldaa");
 const xlsx = require("xlsx");
+const moment = require("moment");
 const excel = require("exceljs");
 const mongoose = require("mongoose");
 
@@ -489,6 +490,11 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       header: "Авлага",
       key: "Авлага",
       width: 20,
+    },
+    {
+      header: "Хөнгөлөх эсэх",
+      key: "Хөнгөлөх эсэх",
+      width: 20,
     }
   ];
   res.setHeader(
@@ -513,6 +519,11 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       zagvariinId = req.body.zagvariinId;
     else
       throw new aldaa("Загвараа сонгоно уу!")
+    var ognoo;
+    if (req.body.ognoo)
+      ognoo = req.body.ognoo;
+    else
+      throw new aldaa("Огноо сонгоно уу!")
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
     var tolgoinObject = {};
@@ -542,6 +553,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             tolgoinObject.baritsaaBairshuulakhKhugatsaa = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Авлага"))
             tolgoinObject.avlaga = cellAsString[0];
+          else if (worksheet[cellAsString].v.includes("Хөнгөлөх эсэх"))
+            tolgoinObject.khungulukhEsekh = cellAsString[0];
         }
         catch (err) {
           throw new aldaa("Буруу файл байна! " + err);
@@ -557,7 +570,6 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     try {
       data.forEach((mur) => {
         muriinDugaar++;
-        console.log(mur)
         let object = new Geree();
         object.gereeniiDugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiDugaar)];
         object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
@@ -572,10 +584,11 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.avlaga = {
           guilgeenuud: [
             {
-              ognoo: new Date,
+              ognoo,
               tulukhDun: mur[usegTooruuKhurvuulekh(tolgoinObject.avlaga)]
             }]
         }
+        object.khungulukhEsekh = (mur[usegTooruuKhurvuulekh(tolgoinObject.khungulukhEsekh)] == "Тийм" || mur[usegTooruuKhurvuulekh(tolgoinObject.khungulukhEsekh)] == "тийм")
         object.gereeniiZagvariinId = zagvariinId;
         object.baiguullagiinId = req.body.baiguullagiinId;
         if (!object.register || !object.gereeniiOgnoo || !object.khugatsaa || !object.talbainDugaar) {
@@ -601,6 +614,24 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     aldaaniiMsg = await khariltsagchBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
     aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
+
+    jagsaalt.forEach(x => {
+      if (!x.khungulukhEsekh) {
+        var data = []
+        new Array(x.khugatsaa || 0).fill('').map((mur, index) => {
+          x.tulukhUdur.forEach((udur) => {
+            if (moment(ognoo).add(index + 1, 'month').set('date', udur) <= moment(x.duusakhOgnoo))
+              data.push({
+                ognoo: moment(ognoo).add(index + 1, 'month').set('date', udur),
+                khyamdral: 0,
+                tulukhDun: x.talbainNiitUne
+              })
+          })
+        })
+        x.avlaga.guilgeenuud = [...x.avlaga.guilgeenuud, ...data];
+      }
+    })
+    console.log("jagsaalt", jagsaalt)
     Geree.insertMany(jagsaalt, function (err) {
       if (err) {
         next(err);

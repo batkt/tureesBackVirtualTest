@@ -52,6 +52,7 @@ const gereeSchema = new Schema(
     tulukhUdur: [String],
     sanuulakhKhonog: Number,
     khuleekhKhonog: Number,
+    khungulukhEsekh: Boolean,
     avlaga: { type: avlagiinTurul, select: false },
   },
   {
