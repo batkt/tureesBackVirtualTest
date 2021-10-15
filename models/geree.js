@@ -4,16 +4,20 @@ const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
 var avlagiinTurul = new Schema({
-  daraagiinTulukhOgnoo: Date,
-  daraagiinSanuulakhOgnoo: Date,
-  daraagiinKhuleekhOgnoo: Date,
   guilgeenuud: [
     {
       ognoo: Date,
+      undsenDun: Number,
       tulukhDun: Number,
       tulsunDun: Number,
       khyamdral: Number,
       turul: String,
+      guilgeeniiId: String,
+      dansniiDugaar: String,
+      tulsunDans: String,
+      guilgeeKhiisenOgnoo: Date,
+      guilgeeKhiisenAjiltniiNer: String,
+      guilgeeKhiisenAjiltniiId: String,
     },
   ],
 });
@@ -53,6 +57,10 @@ const gereeSchema = new Schema(
     sanuulakhKhonog: Number,
     khuleekhKhonog: Number,
     khungulukhEsekh: Boolean,
+    daraagiinTulukhOgnoo: Date,
+    daraagiinSanuulakhOgnoo: Date,
+    daraagiinKhuleekhOgnoo: Date,
+    uldegdel: Number,
     avlaga: { type: avlagiinTurul, select: false },
   },
   {

@@ -17,13 +17,28 @@ const {
   toololtAvya
 } = require('../controller/toololt')
 
+const {
+  tulultKhadgalya
+} = require('../controller/tulbur')
+const lodash = require('lodash')
+
 const { gereeniiExcelAvya, gereeniiExcelTatya } = require("../controller/excel");
 
 router.route("/toololtAvya").get(tokenShalgakh, toololtAvya);
 
 router.route("/gereeniiExcelAvya").get(gereeniiExcelAvya);
 router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
-
+router.route("/tulultKhadgalya").post(tokenShalgakh, tulultKhadgalya);
+router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
+  Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
+    if (lodash.isArray(lodash.get(result, 'avlaga.guilgeenuud'))) {
+      var a = lodash.get(result, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date());
+      res.send(a)
+    }
+  }).catch((err) => {
+    next(err);
+  });
+});
 crud(router, "geree", Geree, async (req, res, next) => {
   try {
     const khariltsagch = new Khariltsagch(req.body);

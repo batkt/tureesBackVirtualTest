@@ -19,7 +19,8 @@ const bankniiGuilgeeSchema = new Schema({
   debit: Number,
   correction: Number,
   description: String,
-  relatedAccount: String
+  relatedAccount: String,
+  kholbosonGereeniiId: String
 }, {
   timestamps: true
 });

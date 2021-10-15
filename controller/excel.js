@@ -581,11 +581,14 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.talbainDugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.talbainDugaar)];
         object.baritsaaAwakhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaAwakhKhugatsaa)];
         object.baritsaaBairshuulakhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaBairshuulakhKhugatsaa)];
+        object.uldegdel = mur[usegTooruuKhurvuulekh(tolgoinObject.avlaga)];
+        object.daraagiinTulukhOgnoo = moment(ognoo).add(1, 'month').set('date', object.tulukhUdur);
         object.avlaga = {
           guilgeenuud: [
             {
               ognoo,
-              tulukhDun: mur[usegTooruuKhurvuulekh(tolgoinObject.avlaga)]
+              tulukhDun: object.uldegdel,
+              undsenDun: object.uldegdel
             }]
         }
         object.khungulukhEsekh = (mur[usegTooruuKhurvuulekh(tolgoinObject.khungulukhEsekh)] == "Тийм" || mur[usegTooruuKhurvuulekh(tolgoinObject.khungulukhEsekh)] == "тийм")
@@ -624,6 +627,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
               data.push({
                 ognoo: moment(ognoo).add(index + 1, 'month').set('date', udur),
                 khyamdral: 0,
+                undsenDun: x.talbainNiitUne,
                 tulukhDun: x.talbainNiitUne
               })
           })

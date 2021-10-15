@@ -20,6 +20,7 @@
     "fs": "^0.0.1-security",
     "got": "^11.8.2",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
     "mime": "^1.6.0",
     "moment": "^2.29.1",
     "mongoose": "^5.13.7",

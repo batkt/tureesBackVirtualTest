@@ -1,43 +1,69 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
+const moment = require("moment");
 
 exports.toololtAvya = asyncHandler(async (req, res, next) => {
   let query = [
     {
       '$match': {
-        'baiguullagiinId': req.body.baiguullagiinId,
-        'avlaga.guilgeenuud.ognoo': {
-          '$lte': new Date()
-        }
+        'baiguullagiinId': req.body.baiguullagiinId
       }
     }, {
       '$project': {
-        'gereeniiDugaar': '$gereeniiDugaar',
-        'niitTulukh': {
-          '$sum': '$avlaga.guilgeenuud.tulukhDun'
-        },
-        'niitTulsun': {
-          '$sum': '$avlaga.guilgeenuud.tulsunDun'
-        },
-        'uldegdel': {
-          '$subtract': [
+        'unuudurTulukh': {
+          '$cond': [
             {
-              '$sum': '$avlaga.guilgeenuud.tulukhDun'
-            }, {
-              '$sum': '$avlaga.guilgeenuud.tulsunDun'
-            }
+              '$eq': [
+                '$daraagiinTulukhOgnoo', new Date()
+              ]
+            }, 1, 0
+          ]
+        },
+        'khugatsaaKhetersen': {
+          '$cond': [
+            {
+              '$lt': [
+                '$daraagiinTulukhOgnoo', new Date()
+              ]
+            }, 1, 0
+          ]
+        },
+        'kheviin': {
+          '$cond': [
+            {
+              '$gte': [
+                '$daraagiinTulukhOgnoo', new Date()
+              ]
+            }, 1, 0
+          ]
+        },
+        'sungakh': {
+          '$cond': [
+            {
+              '$lte': [
+                '$duusakhOgnoo', moment(new Date).add(1, 'month')
+              ]
+            }, 1, 0
           ]
         }
       }
     }, {
-      '$match': {
-        'uldegdel': {
-          '$gt': 0
+      '$group': {
+        '_id': 'Too',
+        'unuudurTulukh': {
+          '$sum': '$unuudurTulukh'
+        },
+        'khugatsaaKhetersen': {
+          '$sum': '$khugatsaaKhetersen'
+        },
+        'kheviin': {
+          '$sum': '$kheviin'
+        },
+        'sungakh': {
+          '$sum': '$sungakh'
         }
       }
-    }, {
-      '$count': 'khugatsaaKhetersen'
     }
   ]
   Geree.aggregate(query).then((result) => {
