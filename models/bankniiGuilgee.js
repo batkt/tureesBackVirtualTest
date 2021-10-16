@@ -20,7 +20,8 @@ const bankniiGuilgeeSchema = new Schema({
   correction: Number,
   description: String,
   relatedAccount: String,
-  kholbosonGereeniiId: String
+  kholbosonGereeniiId: String,
+  kholbosonTalbainId: String
 }, {
   timestamps: true
 });

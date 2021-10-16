@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const lodash = require('lodash')
 
 exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
   var tulbur = {
@@ -22,8 +23,9 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
     },
     $inc: { "uldegdel": - req.body.tulsunDun }
   }).then((result) => {
+    daraagiinTulukhOgnooZasya(req.body.gereeniiId);
     if (req.body.guilgeeniiId)
-      BankniiGuilgee.updateOne({ _id: req.body.guilgeeniiId }, { $set: { kholbosonGereeniiId: req.body.gereeniiId } }).then((result1) => {
+      BankniiGuilgee.updateOne({ _id: req.body.guilgeeniiId }, { $set: { kholbosonGereeniiId: req.body.gereeniiId, kholbosonTalbainId: req.body.gereeniiId } }).then((result1) => {
         res.send(result1);
       })
         .catch((err) => {
@@ -36,4 +38,30 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
       next(err);
     });
 });
+
+async function daraagiinTulukhOgnooZasya(gereeniiId) {
+  var geree = await Geree.findById(gereeniiId).select('avlaga');
+  var jagsaalt = []
+  if (lodash.isArray(lodash.get(geree, 'avlaga.guilgeenuud'))) {
+    jagsaalt = lodash.get(geree, 'avlaga.guilgeenuud');
+  }
+  var niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
+    return object.tulsunDun;
+  });
+  console.log("niitTulsunDun", niitTulsunDun);
+  jagsaalt = lodash.filter(jagsaalt, a => a.tulukhDun != null);
+  jagsaalt = lodash.orderBy(jagsaalt, ['ognoo'], ['asc']);
+  var tulukhOgnoo;
+  jagsaalt.forEach(element => {
+    if (niitTulsunDun > 0) {
+      tulukhOgnoo = element.ognoo;
+      niitTulsunDun = niitTulsunDun - element.tulukhDun;
+    }
+  });
+  Geree.findByIdAndUpdate(gereeniiId, { $set: { daraagiinTulukhOgnoo: tulukhOgnoo } }).then((result) => {
+    console.log("amjilttai", result)
+  }).catch((err) => {
+    console.log("aldaatai", err)
+  })
+}
 
