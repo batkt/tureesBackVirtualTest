@@ -3,7 +3,7 @@ const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
 const moment = require("moment");
 
-exports.toololtAvya = asyncHandler(async (req, res, next) => {
+exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
   let query = [
     {
       '$match': {

@@ -14,7 +14,7 @@ const {
 } = require("../middlewares/tokenShalgakh");
 
 const {
-  toololtAvya
+  gereeniiToololtAvya
 } = require('../controller/toololt')
 
 const {
@@ -24,7 +24,7 @@ const lodash = require('lodash')
 
 const { gereeniiExcelAvya, gereeniiExcelTatya } = require("../controller/excel");
 
-router.route("/toololtAvya").get(tokenShalgakh, toololtAvya);
+router.route("/gereeniiToololtAvya").get(tokenShalgakh, toololgereeniiToololtAvyatAvya);
 
 router.route("/gereeniiExcelAvya").get(gereeniiExcelAvya);
 router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
