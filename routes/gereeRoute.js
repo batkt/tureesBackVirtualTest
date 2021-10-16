@@ -24,7 +24,7 @@ const lodash = require('lodash')
 
 const { gereeniiExcelAvya, gereeniiExcelTatya } = require("../controller/excel");
 
-router.route("/gereeniiToololtAvya").get(tokenShalgakh, toololgereeniiToololtAvyatAvya);
+router.route("/gereeniiToololtAvya").get(tokenShalgakh, gereeniiToololtAvya);
 
 router.route("/gereeniiExcelAvya").get(gereeniiExcelAvya);
 router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
