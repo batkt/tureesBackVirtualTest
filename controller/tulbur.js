@@ -17,7 +17,7 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
     tulbur.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
     tulbur.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id
   }
-  Geree.updateOne({ _id: req.body.gereeniiId }, {
+  Geree.findByIdAndUpdate({ _id: req.body.gereeniiId }, {
     $push: {
       [`avlaga.guilgeenuud`]: tulbur
     },
@@ -25,7 +25,7 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
   }).then((result) => {
     daraagiinTulukhOgnooZasya(req.body.gereeniiId);
     if (req.body.guilgeeniiId)
-      BankniiGuilgee.updateOne({ _id: req.body.guilgeeniiId }, { $set: { kholbosonGereeniiId: req.body.gereeniiId, kholbosonTalbainId: req.body.gereeniiId } }).then((result1) => {
+      BankniiGuilgee.updateOne({ _id: req.body.guilgeeniiId }, { $set: { kholbosonGereeniiId: req.body.gereeniiId, kholbosonTalbainId: result.talbainDugaar } }).then((result1) => {
         res.send(result1);
       })
         .catch((err) => {
