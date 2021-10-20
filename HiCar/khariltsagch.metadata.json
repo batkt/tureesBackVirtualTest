@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"unique":true,"key":{"utas":{"$numberDouble":"1.0"}},"name":"utas_1"},{"v":{"$numberInt":"2"},"unique":true,"key":{"mail":{"$numberDouble":"1.0"}},"name":"mail_1"}],"uuid":"6b8a4ea2b8e24bd29208c3fae16bc256","collectionName":"khariltsagch"}
