@@ -18,7 +18,8 @@ const {
 } = require('../controller/toololt')
 
 const {
-  tulultKhadgalya
+  tulultKhadgalya,
+  tulultUstgaya
 } = require('../controller/tulbur')
 const lodash = require('lodash')
 
@@ -29,6 +30,7 @@ router.route("/gereeniiToololtAvya").get(tokenShalgakh, gereeniiToololtAvya);
 router.route("/gereeniiExcelAvya").get(gereeniiExcelAvya);
 router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
 router.route("/tulultKhadgalya").post(tokenShalgakh, tulultKhadgalya);
+router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);
 router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
   Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
     if (lodash.isArray(lodash.get(result, 'avlaga.guilgeenuud'))) {

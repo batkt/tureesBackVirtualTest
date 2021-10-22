@@ -39,6 +39,32 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
     });
 });
 
+
+exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
+  Geree.findByIdAndUpdate({ _id: req.body.gereeniiId }, {
+    $pull: {
+      [`avlaga.guilgeenuud`]: {
+        _id: req.body.objectiinId
+      }
+    },
+    $inc: { "uldegdel": req.body.tulsunDun }
+  }).then((result) => {
+    daraagiinTulukhOgnooZasya(req.body.gereeniiId);
+    if (req.body.guilgeeniiId)
+      BankniiGuilgee.updateOne({ _id: req.body.guilgeeniiId }, { $set: { kholbosonGereeniiId: null, kholbosonTalbainId: null } }).then((result1) => {
+        res.send(result1);
+      })
+        .catch((err) => {
+          next(err);
+        });
+    else
+      res.send(result);
+  })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 async function daraagiinTulukhOgnooZasya(gereeniiId) {
   var geree = await Geree.findById(gereeniiId).select('avlaga');
   var jagsaalt = []
