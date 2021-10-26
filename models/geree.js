@@ -54,6 +54,7 @@ const gereeSchema = new Schema(
     baiguullagiinNer: String,
     gereeniiZagvariinId: String,
     tulukhUdur: [String],
+    tuluv: Number,
     sanuulakhKhonog: Number,
     khuleekhKhonog: Number,
     khungulukhEsekh: Boolean,
@@ -62,6 +63,10 @@ const gereeSchema = new Schema(
     daraagiinKhuleekhOgnoo: Date,
     uldegdel: Number,
     avlaga: { type: avlagiinTurul, select: false },
+    gereeniiTuukhuud: {
+      type: [Schema.Types.Mixed],
+      select: false
+    }
   },
   {
     timestamps: true,
