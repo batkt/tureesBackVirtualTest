@@ -39,6 +39,45 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
     });
 });
 
+module.exports.tulultTaniya = async function tulultTaniya() {
+  var guilgeenuud = await BankniiGuilgee.find({ "createdAt": { $gte: new Date(new Date().getTime() - 5 * 60000) }, "amount": { $gt: 0 } });
+  console.log("tulult taniya", guilgeenuud);
+  var khaikhNukhtsul;
+  var tailbar = []
+  if (guilgeenuud != null && guilgeenuud.length > 0) {
+    try {
+      guilgeenuud.forEach(async (x) => {
+        khaikhNukhtsul = [];
+        tailbar = x.description.split(" ")
+        if (x.relatedAccount != null)
+          khaikhNukhtsul.push({ "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount })
+        tailbar.forEach(y => {
+          khaikhNukhtsul.push({ "utas": y });
+          khaikhNukhtsul.push({ "register": y });
+          y = y.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '');
+          khaikhNukhtsul.push({ "talbainDugaar": { $regex: '.*' + y + '.*' } });
+
+        });
+        console.log(khaikhNukhtsul);
+        var oldsonGereenuud = await Geree.find({ $or: khaikhNukhtsul });
+        if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
+          oldsonGereenuud.forEach(a => {
+            if (x.magadlaltaiGereenuud != null && !x.magadlaltaiGereenuud.includes(a._id))
+              x.magadlaltaiGereenuud.push(a._id)
+            else
+              x.magadlaltaiGereenuud = [a._id];
+          });
+          x.isNew = false;
+          x.save();
+        }
+      });
+    }
+    catch (error) {
+      next(error);
+    }
+  }
+}
+
 
 exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
   Geree.findByIdAndUpdate({ _id: req.body.gereeniiId }, {

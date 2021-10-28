@@ -19,6 +19,7 @@ const talbaiRoute = require("./routes/talbaiRoute");
 const khariltsagchRoute = require("./routes/khariltsagchRoute");
 const bankniiGuilgeeRoute = require("./routes/bankniiGuilgeeRoute");
 const cgw = require("./controller/cgw");
+const tulbur = require("./controller/tulbur");
 
 const dbUrl =
   "mongodb://localhost:27017/turees?readPreference=primary&ssl=false";
@@ -54,7 +55,7 @@ app.use(zuragRoute);
 app.use(aldaaBarigch);
 
 
-cron.schedule("*/5 * * * *", function () {
+cron.schedule("*/5 * * * * ", function () {
   console.log("xuulga tatlaa", new Date());
   cgw.bankniiKhuulgaTatajKhadgalya({
     body: {
@@ -80,6 +81,14 @@ cron.schedule("*/5 * * * *", function () {
   scheduled: true,
   timezone: "Asia/Ulaanbaatar"
 });
+
+cron.schedule("1,6,11,16,21,26,31,36,41,46,51,56 * * * * ", function () {
+  tulbur.tulultTaniya();
+}, {
+  scheduled: true,
+  timezone: "Asia/Ulaanbaatar"
+});
+
 io.on("connection", (socket) => {
   console.log("connected");
   socket.on("disconnect", () => {

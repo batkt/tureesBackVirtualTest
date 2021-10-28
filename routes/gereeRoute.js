@@ -19,8 +19,10 @@ const {
 
 const {
   tulultKhadgalya,
-  tulultUstgaya
+  tulultUstgaya,
+  tulultTaniya
 } = require('../controller/tulbur')
+router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require('lodash')
 
 const { gereeniiExcelAvya, gereeniiExcelTatya } = require("../controller/excel");
