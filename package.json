@@ -7,7 +7,8 @@
     "dev": "nodemon index.js",
     "pm2": "pm2 --name \"tureesapi\" start index.js",
     "pm2update": "pm2 restart tureesapi",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update": "git pull && pm2 reload tureesapi"
   },
   "author": "",
   "license": "ISC",
