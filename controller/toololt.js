@@ -46,6 +46,15 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
               ]
             }, 1, 0
           ]
+        },
+        'tsutsalsan': {
+          '$cond': [
+            {
+              '$eq': [
+                '$tuluv','-1'
+              ]
+            }, 1, 0
+          ]
         }
       }
     }, {
@@ -62,6 +71,9 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
         },
         'sungakh': {
           '$sum': '$sungakh'
+        },
+        'tsutsalsan': {
+          '$sum': '$tsutsalsan'
         }
       }
     }
