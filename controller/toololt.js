@@ -51,7 +51,7 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
           '$cond': [
             {
               '$eq': [
-                '$tuluv','-1'
+                '$tuluv',-1
               ]
             }, 1, 0
           ]
