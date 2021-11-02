@@ -87,7 +87,8 @@ crud(router, "geree", Geree, async (req, res, next) => {
     next(error);
   }
 });
-router.route("/gereeSungaya").get(tokenShalgakh, async (req, res, next) => {
+
+router.route("/gereeSungaya").post(tokenShalgakh, async (req, res, next) => {
   var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
   var tuukh = {
     umnukhDuusakhOgnoo: geree.duusakhOgnoo,
@@ -130,7 +131,7 @@ router.route("/gereeSungaya").get(tokenShalgakh, async (req, res, next) => {
   }
 });
 
-router.route("/gereeTsutslaya").get(tokenShalgakh, async (req, res, next) => {
+router.route("/gereeTsutslaya").post(tokenShalgakh, async (req, res, next) => {
   var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
   var tuukh = {
     umnukhDuusakhOgnoo: geree.duusakhOgnoo,
