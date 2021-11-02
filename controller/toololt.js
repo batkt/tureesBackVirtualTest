@@ -106,6 +106,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           'baiguullagiinId': req.body.baiguullagiinId,
           'tuluv': {
             '$ne': -1
+          },
+          "uldegdel": {
+            "$gte": 0
           }
         }
       }, {
@@ -181,7 +184,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }
     ];
 
-    var khugatsaaKhersen = await Geree.aggregate(query);
+    var khugatsaaKhetersen = await Geree.aggregate(query);
     query = [
       {
         '$unwind': {
@@ -285,7 +288,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }
     ]
     var khungulult = await Geree.aggregate(query);
-    res.json({ avlaga, khugatsaaKhersen, eneSardTulukh, eneSardTulsun, khungulult });
+    res.json({ avlaga, khugatsaaKhetersen, eneSardTulukh, eneSardTulsun, khungulult });
   }
   catch (err) {
     next(err);
