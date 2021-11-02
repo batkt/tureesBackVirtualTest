@@ -51,7 +51,7 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
           '$cond': [
             {
               '$eq': [
-                '$tuluv',-1
+                '$tuluv', -1
               ]
             }, 1, 0
           ]
@@ -233,7 +233,38 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }
     ]
     var eneSardTulsun = await Geree.aggregate(query);
-    res.json({ avlaga, khugatsaaKhersen, eneSardTulukh, eneSardTulsun });
+
+    query = [
+      {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': {
+          'avlaga.guilgeenuud.ognoo': {
+            '$gte': ekhlekhOgnoo,
+            '$lte': duusakhOgnoo
+          }
+        }
+      }, {
+        '$project': {
+          'khyamdral': {
+            '$ifNull': [
+              '$avlaga.guilgeenuud.khyamdral', 0
+            ]
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'khyamdral',
+          'dun': {
+            '$sum': '$khyamdral'
+          }
+        }
+      }
+    ]
+    var khungulult = await Geree.aggregate(query);
+    res.json({ avlaga, khugatsaaKhersen, eneSardTulukh, eneSardTulsun, khungulult });
   }
   catch (err) {
     next(err);
