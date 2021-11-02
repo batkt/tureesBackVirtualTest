@@ -74,6 +74,159 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
     });;
 });
 
+exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
+  try {
+    var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+    var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+    console.log(ekhlekhOgnoo);
+    console.log(duusakhOgnoo);
+    let query = [
+      {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': {
+          'avlaga.guilgeenuud.ognoo': {
+            '$gte': duusakhOgnoo
+          }
+        }
+      }, {
+        '$project': {
+          'uldegdel': {
+            '$subtract': [
+              {
+                '$ifNull': [
+                  '$avlaga.guilgeenuud.tulukhDun', 0
+                ]
+              }, {
+                '$ifNull': [
+                  '$avlaga.guilgeenuud.tulsunDun', 0
+                ]
+              }
+            ]
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'avlaga',
+          'dun': {
+            '$sum': '$uldegdel'
+          }
+        }
+      }
+    ]
+    var avlaga = await Geree.aggregate(query);
+    query = [
+      {
+        '$match': {
+          'daraagiinTulukhOgnoo': {
+            '$gte': duusakhOgnoo
+          }
+        }
+      }, {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': {
+          'avlaga.guilgeenuud.ognoo': {
+            '$gte': duusakhOgnoo
+          }
+        }
+      }, {
+        '$project': {
+          'uldegdel': {
+            '$subtract': [
+              {
+                '$ifNull': [
+                  '$avlaga.guilgeenuud.tulukhDun', 0
+                ]
+              }, {
+                '$ifNull': [
+                  '$avlaga.guilgeenuud.tulsunDun', 0
+                ]
+              }
+            ]
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'khugatsaaKhetersen',
+          'dun': {
+            '$sum': '$uldegdel'
+          }
+        }
+      }
+    ];
+
+    var khugatsaaKhersen = await Geree.aggregate(query);
+    query = [
+      {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': {
+          'avlaga.guilgeenuud.ognoo': {
+            '$gte': ekhlekhOgnoo,
+            '$lte': duusakhOgnoo
+          }
+        }
+      }, {
+        '$project': {
+          'tulukh': {
+            '$ifNull': [
+              '$avlaga.guilgeenuud.tulukhDun', 0
+            ]
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'tulukh',
+          'dun': {
+            '$sum': '$tulukh'
+          }
+        }
+      }
+    ]
+    var eneSardTulukh = await Geree.aggregate(query);
+    query = [
+      {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': {
+          'avlaga.guilgeenuud.ognoo': {
+            '$gte': ekhlekhOgnoo,
+            '$lte': duusakhOgnoo
+          }
+        }
+      }, {
+        '$project': {
+          'tulsun': {
+            '$ifNull': [
+              '$avlaga.guilgeenuud.tulsunDun', 0
+            ]
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'tulsun',
+          'dun': {
+            '$sum': '$tulsun'
+          }
+        }
+      }
+    ]
+    var eneSardTulsun = await Geree.aggregate(query);
+    res.json({ avlaga, khugatsaaKhersen, eneSardTulukh, eneSardTulsun });
+  }
+  catch (err) {
+    next(err);
+  }
+});
 
 exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
   let query = [
