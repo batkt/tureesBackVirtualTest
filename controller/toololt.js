@@ -92,6 +92,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
     console.log(ekhlekhOgnoo);
     console.log(duusakhOgnoo);
+    console.log(req.body.baiguullagiinId);
     let query = [
       {
         '$unwind': {
@@ -102,7 +103,10 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           'avlaga.guilgeenuud.ognoo': {
             '$gte': duusakhOgnoo
           },
-          'baiguullagiinId': req.body.baiguullagiinId
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'tuluv': {
+            $ne: -1
+          }
         }
       }, {
         '$project': {
@@ -136,7 +140,10 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           'daraagiinTulukhOgnoo': {
             '$gte': duusakhOgnoo
           },
-          'baiguullagiinId': req.body.baiguullagiinId
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'tuluv': {
+            $ne: -1
+          }
         }
       }, {
         '$unwind': {
@@ -186,7 +193,10 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$gte': ekhlekhOgnoo,
             '$lte': duusakhOgnoo
           },
-          'baiguullagiinId': req.body.baiguullagiinId
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'tuluv': {
+            $ne: -1
+          }
         }
       }, {
         '$project': {
@@ -217,7 +227,10 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$gte': ekhlekhOgnoo,
             '$lte': duusakhOgnoo
           },
-          'baiguullagiinId': req.body.baiguullagiinId
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'tuluv': {
+            $ne: -1
+          }
         }
       }, {
         '$project': {
@@ -249,7 +262,10 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$gte': ekhlekhOgnoo,
             '$lte': duusakhOgnoo
           },
-          'baiguullagiinId': req.body.baiguullagiinId
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'tuluv': {
+            $ne: -1
+          }
         }
       }, {
         '$project': {
