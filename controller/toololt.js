@@ -101,11 +101,11 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }, {
         '$match': {
           'avlaga.guilgeenuud.ognoo': {
-            '$gte': duusakhOgnoo
+            '$lte': duusakhOgnoo
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'tuluv': {
-            $ne: -1
+            '$ne': -1
           }
         }
       }, {
@@ -138,11 +138,11 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       {
         '$match': {
           'daraagiinTulukhOgnoo': {
-            '$gte': duusakhOgnoo
+            '$lte': duusakhOgnoo
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'tuluv': {
-            $ne: -1
+            '$ne': -1
           }
         }
       }, {
@@ -152,12 +152,12 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }, {
         '$match': {
           'avlaga.guilgeenuud.ognoo': {
-            '$gte': duusakhOgnoo
+            '$lte': duusakhOgnoo
           }
         }
       }, {
         '$project': {
-          'uldegdel': {
+          'avlaga': {
             '$subtract': [
               {
                 '$ifNull': [
@@ -175,7 +175,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         '$group': {
           '_id': 'khugatsaaKhetersen',
           'dun': {
-            '$sum': '$uldegdel'
+            '$sum': '$avlaga'
           }
         }
       }
@@ -195,7 +195,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'tuluv': {
-            $ne: -1
+            '$ne': -1
           }
         }
       }, {
@@ -229,7 +229,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'tuluv': {
-            $ne: -1
+            '$ne': -1
           }
         }
       }, {
