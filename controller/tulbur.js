@@ -25,7 +25,7 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
   }).then((result) => {
     daraagiinTulukhOgnooZasya(req.body.gereeniiId);
     if (req.body.guilgeeniiId)
-      BankniiGuilgee.updateOne({ _id: req.body.guilgeeniiId }, { $set: { kholbosonGereeniiId: req.body.gereeniiId, kholbosonTalbainId: result.talbainDugaar } }).then((result1) => {
+      BankniiGuilgee.updateOne({ _id: req.body.guilgeeniiId }, { $set: { kholbosonGereeniiId: req.body.gereeniiId, kholbosonTalbainId: result.talbainDugaar, magadlaltaiGereenuud: null } }).then((result1) => {
         res.send(result1);
       })
         .catch((err) => {
