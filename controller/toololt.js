@@ -15,7 +15,7 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
           '$cond': [
             {
               '$eq': [
-                '$daraagiinTulukhOgnoo', new Date()
+                '$daraagiinTulukhOgnoo', new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate())
               ]
             }, 1, 0
           ]
