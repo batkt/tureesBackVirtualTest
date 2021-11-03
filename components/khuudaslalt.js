@@ -6,16 +6,29 @@ async function khuudaslalt(model, body) {
         khuudasniiKhemjee = 10,
         search,
         zuvkhunTooAvakhEsekh = false,
+        lean = false,
     } = body;
     if (!!search) query["$text"] = { $search: search };
-    let jagsaalt = zuvkhunTooAvakhEsekh ? null : await model
-        .find(query)
-        .sort(order)
-        .skip((khuudasniiDugaar - 1) * khuudasniiKhemjee)
-        .limit(khuudasniiKhemjee)
-        .catch((err) => {
-            console.log(err);
-        });
+    let jagsaalt;
+    if (lean)
+        jagsaalt = zuvkhunTooAvakhEsekh ? null : await model
+            .find(query)
+            .lean()
+            .sort(order)
+            .skip((khuudasniiDugaar - 1) * khuudasniiKhemjee)
+            .limit(khuudasniiKhemjee)
+            .catch((err) => {
+                console.log(err);
+            });
+    else
+        jagsaalt = zuvkhunTooAvakhEsekh ? null : await model
+            .find(query)
+            .sort(order)
+            .skip((khuudasniiDugaar - 1) * khuudasniiKhemjee)
+            .limit(khuudasniiKhemjee)
+            .catch((err) => {
+                console.log(err);
+            });
     let niitMur = await model.countDocuments(query);
     let niitKhuudas =
         niitMur % khuudasniiKhemjee == 0

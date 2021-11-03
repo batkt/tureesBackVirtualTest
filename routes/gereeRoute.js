@@ -3,6 +3,7 @@ const router = express.Router();
 const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
 const Dugaarlalt = require("../models/dugaarlalt");
+const khuudaslalt = require("../components/khuudaslalt");
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const uploadFile = multer({
@@ -171,6 +172,82 @@ router.route("/gereeTsutslaya").post(tokenShalgakh, async (req, res, next) => {
       .catch((err) => {
         next(err);
       });
+  }
+});
+
+router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, next) => {
+
+  try {
+    var query = [
+      {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': {
+          'avlaga.guilgeenuud.ognoo': {
+            '$lt': new Date(req.body.ognoo)
+          }
+        }
+      }, {
+        '$group': {
+          '_id': '$gereeniiDugaar',
+          'tulukh': {
+            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+          },
+          'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+          }
+        }
+      }, {
+        '$project': {
+          'gereeniiDugaar': '$gereeniiDugaar',
+          'uldegdel': {
+            '$subtract': [
+              '$tulukh', '$tulsun'
+            ]
+          }
+        }
+      }, {
+        '$match': {
+          'uldegdel': {
+            '$gt': 0
+          }
+        }
+      }
+    ]
+    var gereenuud = await Geree.aggregate(query);
+    console.log(gereenuud);
+    if (gereenuud.length < 1)
+      res.send(null);
+    else {
+      var turJagsaalt = [];
+      gereenuud.forEach(x => {
+        turJagsaalt.push(x._id)
+      });
+      const body = req.body.query;
+      console.log("body", body);
+      if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      console.log("body3");
+      if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+      console.log("body4");
+      if (!!body?.search) body.search = String(body.search);
+
+      body.query["gereeniiDugaar"] = turJagsaalt;
+      console.log("body.query", body.query);
+      body.lean = true;
+      khuudaslalt(Geree, body)
+        .then((result) => {
+          if (result && result.jagsaalt && result.jagsaalt.length > 0)
+            result.jagsaalt.forEach(x => x.eneSardTulukhDun = gereenuud.find(a => a._id == x.gereeniiDugaar).uldegdel);
+          res.send(result);
+        })
+        .catch((err) => {
+          next(err);
+        });
+    }
+  } catch (error) {
+    next(error);
   }
 });
 
