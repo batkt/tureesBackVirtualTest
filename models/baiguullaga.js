@@ -18,7 +18,9 @@ const baiguullagaSchema = new Schema({
         coordinates: {
             type: [Number]
         }
-    }
+    },
+    davkhar:Number,
+    talbai:Number,
 }, {
     timestamps: true
 });

@@ -292,7 +292,10 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
       khuudaslalt(Geree, body)
         .then((result) => {
           if (result && result.jagsaalt && result.jagsaalt.length > 0)
-            result.jagsaalt.forEach(x => x.eneSardTulukhDun = gereenuud.find(a => a._id == x.gereeniiDugaar).uldegdel);
+            result.jagsaalt.forEach(x => {
+              x.eneSardTulukhDun = gereenuud.find(a => a._id == x.gereeniiDugaar).uldegdel
+              x.umnukhSariinUrTulbur = x.eneSardTulukhDun - x.uldegdel
+            });
           res.send(result);
         })
         .catch((err) => {
