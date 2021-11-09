@@ -15,7 +15,7 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
           '$cond': [
             {
               '$eq': [
-                '$daraagiinTulukhOgnoo', new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate())
+                '$daraagiinTulukhOgnoo', new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
               ]
             }, 1, 0
           ]
@@ -146,6 +146,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           'baiguullagiinId': req.body.baiguullagiinId,
           'tuluv': {
             '$ne': -1
+          },
+          "uldegdel": {
+            "$gte": 0
           }
         }
       }, {

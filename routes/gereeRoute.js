@@ -46,6 +46,57 @@ router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, ne
     next(err);
   });
 });
+
+router.route("/nekhemjlekhiinDugaarlaltAvya").get(tokenShalgakh, async (req, res, next) => {
+  try {
+    var maxDugaar = 1;
+    var ognoo = {
+      $gte: new Date(
+        (new Date).getFullYear(),
+        0,
+        1),
+      $lte: new Date(
+        (new Date).getFullYear(),
+        11,
+        31)
+    }
+    console.log(ognoo);
+    await Dugaarlalt.find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      turul: "nekhemjlekh",
+      ognoo: ognoo
+    })
+      .sort({
+        dugaar: -1,
+      })
+      .limit(1)
+      .then((result) => {
+        if (result != 0) maxDugaar = result[0].dugaar + 1;
+      });
+    res.send(maxDugaar.toString());
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
+router.route("/nekhemjlekhiinDugaarlaltKhadgalya").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    var dugaarlalt = new Dugaarlalt({
+      baiguullagiinId: req.body.baiguullagiinId,
+      dugaar: req.body.dugaar,
+      turul: "nekhemjlekh",
+      ognoo: new Date(),
+      isNew: true,
+    });
+    dugaarlalt.save();
+    res.send("Amjilttai");
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
 crud(router, "geree", Geree, async (req, res, next) => {
   try {
     const khariltsagch = new Khariltsagch(req.body);
@@ -59,6 +110,7 @@ crud(router, "geree", Geree, async (req, res, next) => {
     var maxDugaar = 1;
     await Dugaarlalt.find({
       baiguullagiinId: req.body.baiguullagiinId,
+      turul: "geree",
       ognoo: unuudur,
     })
       .sort({
@@ -71,6 +123,7 @@ crud(router, "geree", Geree, async (req, res, next) => {
     var dugaarlalt = new Dugaarlalt({
       baiguullagiinId: req.body.baiguullagiinId,
       dugaar: maxDugaar,
+      turul: "geree",
       ognoo: unuudur,
       isNew: true,
     });

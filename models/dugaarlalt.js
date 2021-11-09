@@ -5,7 +5,8 @@ mongoose.pluralize(null);
 const dugaarlaltSchema = new Schema({
   id: String,
   baiguullagiinId: String,
-  ognoo: String,
+  turul: String,
+  ognoo: Date,
   dugaar: Number
 }, {
   timestamps: true
