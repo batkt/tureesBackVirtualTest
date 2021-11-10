@@ -10,17 +10,30 @@ const baiguullagaSchema = new Schema({
     register: String,
     utas: String,
     zurgiinNer: String,
-    bairshil: {
-        type: {
-            type: String,
-            enum: ['Point']
-        },
-        coordinates: {
-            type: [Number]
+    barilguud: [
+        {
+            bairshil: {
+                type: {
+                    type: String,
+                    enum: ['Point']
+                },
+                coordinates: {
+                    type: [Number]
+                }
+            },
+            ner: String,
+            khayag: String,
+            register: String,
+            davkharuud: [
+                {
+                    davkhar: String,
+                    tariff: Number
+                }
+            ]
         }
-    },
-    davkhar:Number,
-    talbai:Number,
+    ],
+    davkhar: Number,
+    talbai: Number,
 }, {
     timestamps: true
 });
