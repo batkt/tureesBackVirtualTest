@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
@@ -22,11 +24,43 @@ const khariltsagchSchema = new Schema(
     nuutsUg: {
       type: String,
       default: "123",
+      select: false,
     },
   },
   {
     timestamps: true,
   }
 );
+
+khariltsagchSchema.methods.tokenUusgeye = function () {
+  const token = jwt.sign(
+    {
+      id: this._id,
+      ner: this.ner,
+      baiguullagiinId: this.baiguullagiinId
+    },
+    "tokenUusgexTest0123",
+    {
+      expiresIn: "12h",
+    }
+  );
+  return token;
+};
+
+khariltsagchSchema.pre("save", async function () {
+  const salt = await bcrypt.genSalt(12);
+  if (this.nuutsUg != '123')
+    this.nuutsUg = await bcrypt.hash(this.nuutsUg, salt);
+});
+
+khariltsagchSchema.pre("updateOne", async function () {
+  const salt = await bcrypt.genSalt(12);
+  if (this.nuutsUg != '123')
+    this._update.nuutsUg = await bcrypt.hash(this._update.nuutsUg, salt);
+});
+
+khariltsagchSchema.methods.passwordShalgaya = async function (pass) {
+  return await bcrypt.compare(pass, this.nuutsUg);
+};
 
 module.exports = mongoose.model("khariltsagch", khariltsagchSchema);
