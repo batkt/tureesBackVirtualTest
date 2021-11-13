@@ -63,7 +63,8 @@ async function dansniiKhuulgaAvya(token, next, body) {
         return JSON.parse(response.body);
     } catch (error) {
         console.log("error", error);
-        next(error);
+        if (next)
+            next(error);
     }
 }
 
