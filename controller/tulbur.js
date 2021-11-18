@@ -39,6 +39,39 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
     });
 });
 
+exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
+  var guilgee = req.body.guilgee;
+  console.log("guilgee", guilgee);
+  var guilgeeniiDun = (guilgee?.tulsunDun || 0) - (guilgee?.tulukhDun || 0);
+  guilgee.guilgeeKhiisenOgnoo = new Date();
+  if (req.body.nevtersenAjiltniiToken) {
+    guilgee.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+    guilgee.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id
+  }
+  Geree.findByIdAndUpdate({ _id: guilgee.gereeniiId }, {
+    $push: {
+      [`avlaga.guilgeenuud`]: guilgee
+    },
+    $inc: { "uldegdel": - guilgeeniiDun }
+  }).then((result) => {
+    daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
+    if (guilgee.guilgeeniiId) {
+      console.log("guilgee.guilgeeniiId", guilgee.guilgeeniiId);
+      BankniiGuilgee.updateOne({ _id: guilgee.guilgeeniiId }, { $set: { kholbosonGereeniiId: guilgee.gereeniiId, kholbosonTalbainId: result.talbainDugaar, magadlaltaiGereenuud: null } }).then((result1) => {
+        res.send(result1);
+      })
+        .catch((err) => {
+          next(err);
+        });
+    }
+    else
+      res.send(result);
+  })
+    .catch((err) => {
+      next(err);
+    });
+});
+
 module.exports.tulultTaniya = async function tulultTaniya() {
   var guilgeenuud = await BankniiGuilgee.find({ "createdAt": { $gte: new Date(new Date().getTime() - 5 * 60000) }, "amount": { $gt: 0 } });
   console.log("tulult taniya", guilgeenuud);
