@@ -34,6 +34,31 @@ const baiguullagaSchema = new Schema({
     ],
     davkhar: Number,
     talbai: Number,
+    tokhirgoo:{
+        /**Жилийн эцэсээр гэрээ хаах бол 12 гэж байна ИХ Наяд дээр бүх гэрээ жилийн эцэст хаагддаг учир ийл тохиргоо авлаа */
+        gereeDuusgakhSar:Number,
+        
+        /**Хөнгөлөлт ажилтан харгалзахгүй өгөх боломж олгоно */
+        bukhAjiltanKhungulultOruulakhEsekh:Boolean,
+        
+        /**Тухайн байгууллагын хөнгөлж болох дээд хувь байна */
+        deedKhungulultiinKhuvi:Number,
+        
+        /**Гэрээний хугацаа дуусах үед автоматаар сунгах эсэх */
+        gereeAvtomataarSungakhEsekh:Boolean,
+        
+        /**Гэрээ засах эрх бүх ажилтанд олгох эсэх */
+        bukhAjiltanGereendZasvarOruulakhEsekh:Boolean,
+    },
+    SUKH:{
+        tseverUsKhaluun:Number,
+        tseverUsKhuiten:Number,
+        bokhirUs:Number,
+        khaluunUsKhalaasanDulaan:Number,
+        usniiSuuriKhuraamj:Number,
+        khalaalt:Number,
+        dulaaniiSuuriKhuraamj:Number,
+    }
 }, {
     timestamps: true
 });
