@@ -49,6 +49,9 @@ const baiguullagaSchema = new Schema({
         
         /**Гэрээ засах эрх бүх ажилтанд олгох эсэх */
         bukhAjiltanGereendZasvarOruulakhEsekh:Boolean,
+        /**Системд И Баримт ашиглах эсэх */
+        eBarimtAshiglakhEsekh:Boolean,
+        
     },
     SUKH:{
         tseverUsKhaluun:Number,
