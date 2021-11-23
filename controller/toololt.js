@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
 const moment = require("moment");
+const bankniiGuilgee = require("../models/bankniiGuilgee");
 
 exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
   let query = [
@@ -342,6 +343,66 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
+  let query = [
+    {
+      '$match': {
+        'baiguullagiinId': req.body.baiguullagiinId,
+        "tranDate": {
+          $gte: new Date(req.body.ekhlekhOgnoo),
+          $lte: new Date(req.body.duusakhOgnoo)
+        }
+      }
+    }, {
+      '$project': {
+        'id': '$_id',
+        'kholbosonGereeniiId': {
+          '$cond': [
+            {
+              '$not': '$kholbosonGereeniiId'
+            }, 0, 1
+          ]
+        },
+        'magadlaltaiGereenuud': {
+          '$cond': [
+            {
+              '$not': '$magadlaltaiGereenuud'
+            }, 0, 1
+          ]
+        }
+      }
+    }, {
+      '$group': {
+        '_id': {
+          'kholbosonGereeniiId': '$kholbosonGereeniiId',
+          'magadlaltaiGereenuud': '$magadlaltaiGereenuud'
+        },
+        'niit': {
+          '$sum': 1
+        }
+      }
+    }
+  ]
+  bankniiGuilgee.aggregate(query).then((result) => {
+    if (result && result.length > 0) {
+      var butsaakh = {}
+      var khobolson = result.find(x => (x._id.kholbosonGereeniiId == 1));
+      var magadlaltai = result.find(x => (x._id.magadlaltaiGereenuud == 1 && x._id.kholbosonGereeniiId == 0));
+      var todorkhoigui = result.find(x => (x._id.magadlaltaiGereenuud == 0 && x._id.kholbosonGereeniiId == 0));
+      butsaakh.khobolson = khobolson?.niit || 0;
+      butsaakh.magadlaltai = magadlaltai?.niit || 0;
+      butsaakh.todorkhoigui = todorkhoigui?.niit || 0;
+      res.send(butsaakh);
+    }
+    else
+      res.send(result);
+  })
+    .catch((err) => {
+      next(err);
+    });;
+});
+
 
 exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
   let query = [
