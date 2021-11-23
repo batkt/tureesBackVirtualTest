@@ -54,7 +54,7 @@ router.post('/ajiltandTokenOnooyo', tokenShalgakh, (req, res, next) => {
   }
 });
 
-router.post('/ajiltniiTokhirgooZasya',async (req, res, next) => {
+router.post('/ajiltniiTokhirgooZasya',tokenShalgakh,async (req, res, next) => {
   try {
     if(!!req.body)
       {
