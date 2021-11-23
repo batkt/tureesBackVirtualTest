@@ -349,9 +349,13 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
     {
       '$match': {
         'baiguullagiinId': req.body.baiguullagiinId,
+        'dansniiDugaar': req.body.dansniiDugaar,
         "tranDate": {
           $gte: new Date(req.body.ekhlekhOgnoo),
           $lte: new Date(req.body.duusakhOgnoo)
+        },
+        "amount": {
+          $gte: 0
         }
       }
     }, {
@@ -387,12 +391,13 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
   bankniiGuilgee.aggregate(query).then((result) => {
     if (result && result.length > 0) {
       var butsaakh = {}
-      var khobolson = result.find(x => (x._id.kholbosonGereeniiId == 1));
+      var kholboson = result.find(x => (x._id.kholbosonGereeniiId == 1));
       var magadlaltai = result.find(x => (x._id.magadlaltaiGereenuud == 1 && x._id.kholbosonGereeniiId == 0));
       var todorkhoigui = result.find(x => (x._id.magadlaltaiGereenuud == 0 && x._id.kholbosonGereeniiId == 0));
-      butsaakh.khobolson = khobolson?.niit || 0;
+      butsaakh.kholboson = kholboson?.niit || 0;
       butsaakh.magadlaltai = magadlaltai?.niit || 0;
       butsaakh.todorkhoigui = todorkhoigui?.niit || 0;
+      butsaakh.niit = butsaakh.kholboson + butsaakh.magadlaltai + butsaakh.todorkhoigui;
       res.send(butsaakh);
     }
     else

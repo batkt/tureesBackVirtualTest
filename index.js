@@ -18,6 +18,7 @@ const gereeniiZagvarRoute = require("./routes/gereeniiZagvarRoute");
 const talbaiRoute = require("./routes/talbaiRoute");
 const khariltsagchRoute = require("./routes/khariltsagchRoute");
 const bankniiGuilgeeRoute = require("./routes/bankniiGuilgeeRoute");
+const ebarimtRoute = require("./routes/ebarimtRoute");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
 
@@ -52,6 +53,7 @@ app.use(talbaiRoute);
 app.use(khariltsagchRoute);
 app.use(bankniiGuilgeeRoute);
 app.use(zuragRoute);
+app.use(ebarimtRoute);
 app.use(aldaaBarigch);
 
 
@@ -59,7 +61,7 @@ cron.schedule("*/5 * * * * ", function () {
   console.log("xuulga tatlaa", new Date());
   cgw.bankniiKhuulgaTatajKhadgalya({
     body: {
-      baiguullagiinId: "6115f350b35689cdbf1b9da3",
+      baiguullagiinId: "612f2155ba64be1388f9971b",
       dansniiDugaar: "5129057717",
       ekhlekhOgnoo: "20210101",
       duusakhOgnoo: "20211231",
@@ -69,7 +71,7 @@ cron.schedule("*/5 * * * * ", function () {
   }, null, null)
   cgw.bankniiKhuulgaTatajKhadgalya({
     body: {
-      baiguullagiinId: "6115f350b35689cdbf1b9da3",
+      baiguullagiinId: "612f2155ba64be1388f9971b",
       dansniiDugaar: "5129062239",
       ekhlekhOgnoo: "20210101",
       duusakhOgnoo: "20211231",
