@@ -12,20 +12,11 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }
     }, {
       '$project': {
-        'unuudurTulukh': {
-          '$cond': [
-            {
-              '$eq': [
-                '$daraagiinTulukhOgnoo', new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
-              ]
-            }, 1, 0
-          ]
-        },
         'khugatsaaKhetersen': {
           '$cond': [
             {
               '$lt': [
-                '$daraagiinTulukhOgnoo', new Date()
+                '$duusakhOgnoo', new Date()
               ]
             }, 1, 0
           ]
@@ -34,7 +25,7 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
           '$cond': [
             {
               '$gte': [
-                '$daraagiinTulukhOgnoo', new Date()
+                '$duusakhOgnoo', new Date()
               ]
             }, 1, 0
           ]
@@ -61,9 +52,6 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
     }, {
       '$group': {
         '_id': 'Too',
-        'unuudurTulukh': {
-          '$sum': '$unuudurTulukh'
-        },
         'khugatsaaKhetersen': {
           '$sum': '$khugatsaaKhetersen'
         },
