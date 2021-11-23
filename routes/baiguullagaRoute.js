@@ -48,4 +48,21 @@ router.post(
   }
 );
 
+router.post(
+  "/baiguullagaTokhirgooZasya",
+  (req, res, next) => {
+    try {
+      if(!!req.body)
+        {
+          const {baiguullagiinId,tokhirgoo} = req.body
+          Baiguullaga.findOneAndUpdate({_id:baiguullagiinId},{$set:tokhirgoo}).then()
+        }
+      else
+        next(new aldaa("Засах боломжгүй байна"))
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 module.exports = router;
