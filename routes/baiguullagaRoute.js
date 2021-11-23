@@ -50,6 +50,7 @@ router.post(
 
 router.post(
   "/baiguullagaTokhirgooZasya",
+  tokenShalgakh,
   (req, res, next) => {
     try {
       if(!!req.body)
