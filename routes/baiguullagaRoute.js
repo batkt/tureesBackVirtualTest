@@ -53,11 +53,10 @@ router.post(
   tokenShalgakh,
   (req, res, next) => {
     try {
-      if(!!req.body)
-        {
-          const {baiguullagiinId,tokhirgoo} = req.body
-          Baiguullaga.findOneAndUpdate({_id:baiguullagiinId},{$set:tokhirgoo}).then(()=>res.send("Amjilttai"))
-        }
+      if (!!req.body) {
+        const { baiguullagiinId, tokhirgoo } = req.body;
+        Baiguullaga.findOneAndUpdate({ _id: baiguullagiinId }, { $set: tokhirgoo }).then(() => res.send("Amjilttai"))
+      }
       else
         next(new aldaa("Засах боломжгүй байна"))
     } catch (error) {
