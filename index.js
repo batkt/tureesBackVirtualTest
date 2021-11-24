@@ -6,11 +6,13 @@ const cors = require("cors");
 const server = http.Server(app);
 const io = require("socket.io")(server);
 const cron = require("node-cron");
+const dotenv = require("dotenv");
+
+dotenv.config({ path: "./tokhirgoo/tokhirgoo.env" });
 
 const baiguullagaRoute = require("./routes/baiguullagaRoute");
 const ajiltanRoute = require("./routes/ajiltanRoute");
 const licenseRoute = require("./routes/licenseRoute");
-const aldaaBarigch = require("./middlewares/aldaaBarigch");
 const tailanRoute = require("./routes/tailanRoute");
 const zuragRoute = require("./routes/zuragRoute");
 const gereeRoute = require("./routes/gereeRoute");
@@ -19,8 +21,10 @@ const talbaiRoute = require("./routes/talbaiRoute");
 const khariltsagchRoute = require("./routes/khariltsagchRoute");
 const bankniiGuilgeeRoute = require("./routes/bankniiGuilgeeRoute");
 const ebarimtRoute = require("./routes/ebarimtRoute");
+const mailRoute = require("./routes/mailRoute");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
+const aldaaBarigch = require("./middlewares/aldaaBarigch");
 
 const dbUrl =
   "mongodb://localhost:27017/turees?readPreference=primary&ssl=false";
@@ -54,6 +58,7 @@ app.use(khariltsagchRoute);
 app.use(bankniiGuilgeeRoute);
 app.use(zuragRoute);
 app.use(ebarimtRoute);
+app.use(mailRoute);
 app.use(aldaaBarigch);
 
 

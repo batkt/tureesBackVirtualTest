@@ -13,7 +13,7 @@ function nuatBodyo(bodokhDun) {
     return (bodokhDun - nuatguiDun).toFixed(2).toString();
 }
 
-function guilgeeneesEbarimtUusgye(guilgee, register, turul) {
+async function guilgeeneesEbarimtUusgye(guilgee, register, turul) {
     var ebarimt = new Ebarimt();
     if (register) {
         if (turul) ebarimt.billType = turul;
@@ -47,8 +47,9 @@ function guilgeeneesEbarimtUusgye(guilgee, register, turul) {
 
 async function ebarimtDuudya(ugugdul, onFinish, next) {
     const data = new TextEncoder().encode(JSON.stringify(ugugdul));
-    request.post(
-        "http://127.0.0.1:5000/put",
+    var url = process.env.EBARIMT_IP + "/put";
+    if (ugugdul.baiguullagiinId) url = url + "?lib=" + ugugdul.baiguullagiinId.toString();
+    request.post(url,
         { json: true, body: { data: ugugdul } },
         (err, res1, body) => {
             if (err) next(err);
@@ -60,8 +61,8 @@ async function ebarimtDuudya(ugugdul, onFinish, next) {
 }
 
 async function ebarimtMedeelelAvya(ugugdul, onFinish, next) {
-    var url = "http://127.0.0.1:5000/getInformation";
-    if (ugugdul) url = url + "?lib={" + ugugdul.toString() + "}";
+    var url = process.env.EBARIMT_IP + "/getInformation";
+    if (ugugdul) url = url + "?lib=" + ugugdul.toString();
     console.log("url", url);
     request(url,
         { json: true },
@@ -73,7 +74,7 @@ async function ebarimtMedeelelAvya(ugugdul, onFinish, next) {
         }
     );
 }
-router.get("/ebarimtMedeelelAvya", async (req, res, next) => {
+router.get("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
     try {
         ebarimtMedeelelAvya(
             req.body.baiguullagiinId,
@@ -90,8 +91,9 @@ router.get("/ebarimtMedeelelAvya", async (req, res, next) => {
 
 async function ebarimtButsaaya(ugugdul, onFinish, next) {
     const data = new TextEncoder().encode(JSON.stringify(ugugdul));
-    request.post(
-        "http://127.0.0.1:5000/returnBill",
+    var url = process.env.EBARIMT_IP + "/returnBill";
+    if (ugugdul.baiguullagiinId) url = url + "?lib=" + ugugdul.baiguullagiinId.toString();
+    request.post(url,
         { json: true, body: { data: ugugdul } },
         (err, res1, body) => {
             if (err) next(err);
@@ -106,7 +108,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
     try {
         var guilgee = await BankniiGuilgee.findById(req.body.id);
         console.log("guilgee", guilgee);
-        var ebarimt = guilgeeneesEbarimtUusgye(
+        var ebarimt = await guilgeeneesEbarimtUusgye(
             guilgee,
             req.body.register,
             req.body.turul
@@ -173,8 +175,8 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
 
 router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
     try {
-        var url = "http://127.0.0.1:5000/sendData";
-        if (req.body.baiguullagiinId) url = url + "?lib={" + req.body.baiguullagiinId.toString() + "}";
+        var url = process.env.EBARIMT_IP + "/sendData";
+        if (req.body.baiguullagiinId) url = url + "?lib=" + req.body.baiguullagiinId.toString();
         console.log('url', url);
         request.get(url,
             { json: true },
