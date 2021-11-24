@@ -38,10 +38,10 @@ router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgak
 router.route("/tulultKhadgalya").post(tokenShalgakh, tulultKhadgalya);
 router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);
 router.route("/gereeniiGuilgeeKhadgalya").post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
-router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
+router.route("/gereeniiTulultAvya/:gereeniiId/:duusakhOgnoo").get(tokenShalgakh, (req, res, next) => {
   Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
     if (lodash.isArray(lodash.get(result, 'avlaga.guilgeenuud'))) {
-      var a = lodash.get(result, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date());
+      var a = lodash.get(result, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date(req.params.duusakhOgnoo));
       res.send(a)
     }
   }).catch((err) => {
