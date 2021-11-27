@@ -203,8 +203,8 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
         if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
         if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
         if (!!body?.search) body.search = String(body.search);
-        body.query["baiguullagiinId"] = req.body.baiguullagiinId;
-        
+        body.query && (body.query["baiguullagiinId"] = req.body.baiguullagiinId)
+
         khuudaslalt(Ebarimt, body)
             .then((result) => {
                 res.send(result);
