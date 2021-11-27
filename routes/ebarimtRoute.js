@@ -4,11 +4,9 @@ const Ebarimt = require("../models/ebarimt");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const router = express.Router();
 const aldaa = require("../components/aldaa");
-const Geree = require("../models/geree");
 const khuudaslalt = require("../components/khuudaslalt");
 const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 const request = require("request");
-const lodash = require("lodash");
 
 function nuatBodyo(bodokhDun) {
     var nuatguiDun = bodokhDun / 1.1;
@@ -197,7 +195,6 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
     }
 });
 
-
 router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
     try {
         const body = req.query;
@@ -209,24 +206,8 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
         body.query && (body.query["baiguullagiinId"] = req.body.baiguullagiinId)
 
         khuudaslalt(Ebarimt, body)
-            .then(async(result) => {
-                const gereeniiDugaaruud = result?.jagsaalt?.map(a=>a.gereeniiDugaar)
-                if(!!gereeniiDugaaruud)
-                {
-                   Geree.find({_id:gereeniiDugaaruud}).then(rows=>{
-                        for (let index = 0; index < result.jagsaalt.length; index++) {
-                            const mur = result.jagsaalt[index]
-                            const geree = rows.find(b=>b._id === mur.gereeniiDugaar)
-                            if(!!geree){
-                                lodash.set(result,`jagsaalt.${index}.utas`,geree.utas)
-                                lodash.set(result,`jagsaalt.${index}.talbainDugaar`,geree.talbainDugaar)
-                            }
-                        }
-                        return result
-                   }).then(zasagdsanUtga=>{
-                        res.send(zasagdsanUtga);
-                   })
-                }
+            .then((result) => {
+                res.send(result);
             })
             .catch((err) => {
                 next(err);
