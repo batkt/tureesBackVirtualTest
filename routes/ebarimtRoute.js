@@ -197,9 +197,15 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
 
 router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
     try {
-        if (!req.body.query) req.body.query = {};
-        req.body.query["baiguullagiinId"] = req.body.baiguullagiinId;
-        khuudaslalt(Ebarimt, req.body)
+        const body = req.query;
+        if (!!body?.query) body.query = JSON.parse(body.query);
+        if (!!body?.order) body.order = JSON.parse(body.order);
+        if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+        if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+        if (!!body?.search) body.search = String(body.search);
+        body.query["baiguullagiinId"] = req.body.baiguullagiinId;
+        
+        khuudaslalt(Ebarimt, body)
             .then((result) => {
                 res.send(result);
             })
