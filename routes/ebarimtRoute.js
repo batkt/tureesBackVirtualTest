@@ -197,12 +197,6 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
     }
 });
 
-async function setter(result,index,geree){
-    if(!!geree){
-        lodash.set(result,`jagsaalt.${index}.utas`,geree.utas)
-        lodash.set(result,`jagsaalt.${index}.talbainDugaar`,geree.talbainDugaar)
-    }
-}
 
 router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
     try {
@@ -219,13 +213,18 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
                 const gereeniiDugaaruud = result?.jagsaalt?.map(a=>a.gereeniiDugaar)
                 if(!!gereeniiDugaaruud)
                 {
-                   Geree.find({_id:gereeniiDugaaruud}).then(async rows=>{
+                   Geree.find({_id:gereeniiDugaaruud}).then(rows=>{
                         for (let index = 0; index < result.jagsaalt.length; index++) {
                             const mur = result.jagsaalt[index]
                             const geree = rows.find(b=>b._id === mur.gereeniiDugaar)
-                            await setter(result,index,geree)
+                            if(!!geree){
+                                lodash.set(result,`jagsaalt.${index}.utas`,geree.utas)
+                                lodash.set(result,`jagsaalt.${index}.talbainDugaar`,geree.talbainDugaar)
+                            }
                         }
-                        res.send(result);
+                        return result
+                   }).then(zasagdsanUtga=>{
+                        res.send(zasagdsanUtga);
                    })
                 }
             })
