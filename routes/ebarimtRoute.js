@@ -212,6 +212,7 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
                 if(!!gereeniiDugaaruud)
                 {
                    Geree.find({_id:gereeniiDugaaruud}).then(rows=>{
+                        result.rows = rows
                         result.jagsaalt.forEach(a=>{
                             const geree = rows.find(b=>b._id === a.gereeniiDugaar)
                             if(geree){
