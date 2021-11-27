@@ -8,6 +8,7 @@ const Geree = require("../models/geree");
 const khuudaslalt = require("../components/khuudaslalt");
 const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 const request = require("request");
+const lodash = require("lodash");
 
 function nuatBodyo(bodokhDun) {
     var nuatguiDun = bodokhDun / 1.1;
@@ -196,6 +197,13 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
     }
 });
 
+async function setter(result,index,geree){
+    if(!!geree){
+        lodash.set(result,`jagsaalt.${index}.utas`,geree.utas)
+        lodash.set(result,`jagsaalt.${index}.talbainDugaar`,geree.talbainDugaar)
+    }
+}
+
 router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
     try {
         const body = req.query;
@@ -214,11 +222,8 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
                    Geree.find({_id:gereeniiDugaaruud}).then(async rows=>{
                         for (let index = 0; index < result.jagsaalt.length; index++) {
                             const mur = result.jagsaalt[index]
-                            const geree = await rows.find(async b=>b._id === mur.gereeniiDugaar)
-                            if(geree){
-                                mur.utas = geree.utas
-                                mur.talbainDugaar = geree.talbainDugaar
-                            }
+                            const geree = rows.find(b=>b._id === mur.gereeniiDugaar)
+                            await setter(result,index,geree)
                         }
                         res.send(result);
                    })
