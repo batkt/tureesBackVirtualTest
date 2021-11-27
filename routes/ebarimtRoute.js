@@ -20,7 +20,7 @@ async function guilgeeneesEbarimtUusgye(guilgee, register, turul) {
         ebarimt.customerNo = register;
     }
     ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
-    ebarimt.gereeniiDugaar = guilgee.zakhialgiinDugaar;
+    ebarimt.gereeniiDugaar = guilgee.kholbosonGereeniiId;
     ebarimt.amount = guilgee.amount.toFixed(2).toString();
     ebarimt.vat = nuatBodyo(guilgee.amount);
     ebarimt.cashAmount = guilgee.amount.toFixed(2).toString();
