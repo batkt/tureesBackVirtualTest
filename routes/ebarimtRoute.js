@@ -211,16 +211,16 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
                 const gereeniiDugaaruud = result?.jagsaalt?.map(a=>a.gereeniiDugaar)
                 if(!!gereeniiDugaaruud)
                 {
-                   Geree.find({_id:gereeniiDugaaruud}).then(rows=>{
-                        result.rows = rows
-                        result.jagsaalt.forEach(a=>{
-                            const geree = rows.find(b=>b._id === a.gereeniiDugaar)
+                   Geree.find({_id:gereeniiDugaaruud}).then(async rows=>{
+                        for (let index = 0; index < result.jagsaalt.length; index++) {
+                            const mur = result.jagsaalt[index]
+                            const geree = await rows.find(async b=>b._id === mur.gereeniiDugaar)
                             if(geree){
-                                a.utas = geree.utas
-                                a.talbainDugaar = geree.talbainDugaar
+                                mur.utas = geree.utas
+                                mur.talbainDugaar = geree.talbainDugaar
                             }
-                        })
-                    res.send(result);
+                        }
+                        res.send(result);
                    })
                 }
             })
