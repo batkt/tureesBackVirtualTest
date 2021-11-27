@@ -4,6 +4,7 @@ const Ebarimt = require("../models/ebarimt");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const router = express.Router();
 const aldaa = require("../components/aldaa");
+const Geree = require("../models/geree");
 const khuudaslalt = require("../components/khuudaslalt");
 const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 const request = require("request");
@@ -206,7 +207,19 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
         body.query && (body.query["baiguullagiinId"] = req.body.baiguullagiinId)
 
         khuudaslalt(Ebarimt, body)
-            .then((result) => {
+            .then(async(result) => {
+                const gereeniiDugaaruud = result?.jagsaalt?.map(a=>a.gereeniiDugaar)
+                if(!!gereeniiDugaaruud)
+                {
+                   const gereenuud = await Geree.find({_id:gereeniiDugaaruud})
+                   result.jagsaalt.forEach(a=>{
+                       const geree = gereenuud.find(b=>b._id === a.gereeniiDugaar)
+                       if(geree){
+                        a.utas = geree.utas
+                        a.talbainDugaar = geree.talbainDugaar
+                       }
+                   })
+                }
                 res.send(result);
             })
             .catch((err) => {
