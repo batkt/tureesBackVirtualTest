@@ -107,7 +107,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
     var query = [
         {
             '$match': {
-                'dansniiDugaar': req.body.dansniiDugaar
+                'dansniiDugaar': req.body.dansniiDugaar,
+                'baiguullagiinId': req.body.baiguullagiinId
             }
         }, {
             '$group': {

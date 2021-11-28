@@ -30,6 +30,11 @@ const ajiltanSchema = new Schema(
       type: String,
       unique: true,
     },
+    tokhirgoo:{
+      gereeZasakhErkh:Boolean,
+      khungulultUzuulekhEsekh:Boolean,
+      m2UneTokhiruulakhEsekh:Boolean
+    }
   },
   {
     timestamps: true,

@@ -12,7 +12,8 @@ const {
 const {
   ajiltanNevtrey,
   tokenoorAjiltanAvya
-} = require('../controller/ajiltan')
+} = require('../controller/ajiltan');
+const aldaa = require("../components/aldaa");
 
 crudWithFile(router, 'ajiltan', Ajiltan, {
   fileZam: './zurag/ajiltan',
@@ -48,6 +49,27 @@ router.post('/ajiltandTokenOnooyo', tokenShalgakh, (req, res, next) => {
       .catch((err) => {
         next(err);
       });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/ajiltniiTokhirgooZasya',tokenShalgakh,async (req, res, next) => {
+  try {
+    if(!!req.body)
+      {
+        const {turul,ajiltnuud} = req.body
+        for await (const ajiltan of ajiltnuud)
+        {
+          await Ajiltan.findOneAndUpdate({_id:ajiltan._id}, {$set:{[turul]:ajiltan.utga}})
+          .catch((err) => {
+            next(err);
+          });
+        }
+        res.send("Amjilttai")
+      }
+    else
+      next(new aldaa("Засах боломжгүй байна"))
   } catch (error) {
     next(error);
   }

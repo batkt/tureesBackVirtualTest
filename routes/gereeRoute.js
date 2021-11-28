@@ -41,7 +41,7 @@ router.route("/gereeniiGuilgeeKhadgalya").post(tokenShalgakh, gereeniiGuilgeeKha
 router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
   Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
     if (lodash.isArray(lodash.get(result, 'avlaga.guilgeenuud'))) {
-      var a = lodash.get(result, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date());
+      var a = lodash.get(result, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date(req.query.duusakhOgnoo));
       res.send(a)
     }
   }).catch((err) => {
