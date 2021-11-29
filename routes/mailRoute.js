@@ -117,14 +117,15 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
 
         const gereenuud = await Geree.find(query)
         var msgnuud = []
-        gereenuud.forEach(mur=>{
+        for await (const mur of gereenuud)
+        {
             let text  = req.body.msj + " "
             for (const [key, value] of Object.entries(mur)) {
                 text = text.replace(new RegExp(`<${key}>`, "g"),value);
             }
             console.log('text',text,mur)
             msgnuud.push({text,to:mur?.utas,mur})
-        })
+        }
         var khariu = [];
         res.send(msgnuud)
         //msgIlgeeye(msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, res)
