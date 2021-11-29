@@ -108,10 +108,10 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
 
         const query = {baiguullagiinId:req.body.baiguullagiinId}
 
-        if(req.body.turul === 'davkharaar'){
+        if(req.body.turul == 'davkharaar'){
             query['davkhar'] = req.body.davkhar
         }
-        else if(req.body.turul === 'avlagaar'){
+        else if(req.body.turul == 'avlagaar'){
             query['uldegdel'] = {$gt:0}
         }
 
@@ -125,7 +125,8 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
             msgnuud.push({text,to:mur?.utas})
         })
         var khariu = [];
-        msgIlgeeye(msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, res)
+        res.send(msgnuud)
+        //msgIlgeeye(msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, res)
     }
     catch (err) {
         next(err);
