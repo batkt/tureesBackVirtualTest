@@ -20,8 +20,9 @@ const ebarimtSchema = new Schema({
   "returnBillId": String,
   "billId": String,
   "date": String,
-  "utas":String,
-  "talbainDugaar":String,
+  "talbainDugaar": String,
+  "gereeniiDugaar": String,
+  "utas": String,
   "stocks": [
     {
       "code": String,

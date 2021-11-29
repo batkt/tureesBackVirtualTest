@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const Ebarimt = require("../models/ebarimt");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const Geree = require("../models/geree");
 const router = express.Router();
 const aldaa = require("../components/aldaa");
 const khuudaslalt = require("../components/khuudaslalt");
@@ -13,14 +14,16 @@ function nuatBodyo(bodokhDun) {
     return (bodokhDun - nuatguiDun).toFixed(2).toString();
 }
 
-async function guilgeeneesEbarimtUusgye(guilgee, register, turul) {
+async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
     var ebarimt = new Ebarimt();
     if (register) {
         if (turul) ebarimt.billType = turul;
         ebarimt.customerNo = register;
     }
     ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
-    ebarimt.gereeniiDugaar = guilgee.kholbosonGereeniiId;
+    ebarimt.gereeniiDugaar = geree.gereeniiDugaar;
+    ebarimt.talbainDugaar = geree.talbainDugaar;
+    ebarimt.utas = geree.utas;
     ebarimt.amount = guilgee.amount.toFixed(2).toString();
     ebarimt.vat = nuatBodyo(guilgee.amount);
     ebarimt.cashAmount = guilgee.amount.toFixed(2).toString();
@@ -108,8 +111,14 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
     try {
         var guilgee = await BankniiGuilgee.findById(req.body.id);
         console.log("guilgee", guilgee);
+        if (guilgee.ebarimtAvsanEsekh)
+            throw new aldaa("Ибаримт хэвлэж авсан байна!");
+        var geree = await Geree.findById(guilgee.kholbosonGereeniiId);
+        if (!geree)
+            throw new aldaa("Холбогдсон гэрээ байхгүй тул ибаримт хэвлэх боломжгүй");
         var ebarimt = await guilgeeneesEbarimtUusgye(
             guilgee,
+            geree,
             req.body.register,
             req.body.turul
         );
