@@ -122,11 +122,12 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
             for (const [key, value] of Object.entries(mur)) {
                 text = text.replace(new RegExp(`<${key}>`, "g"),value);
             }
-            console.log('text',text)
+            console.log('text',text,mur)
             msgnuud.push({text,to:mur?.utas})
         })
         var khariu = [];
-        msgIlgeeye(msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, res)
+        res.send(msgnuud)
+        //msgIlgeeye(msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, res)
     }
     catch (err) {
         next(err);
