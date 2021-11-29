@@ -119,7 +119,7 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         var msgnuud = []
         gereenuud.forEach(mur=>{
             let text  = req.body.msj + " "
-            for await (const [key, value] of Object.entries(mur)) {
+            for (const [key, value] of Object.entries(mur)) {
                 text = text.replace(new RegExp(`<${key}>`, "g"),value);
             }
             console.log('text',text,mur)
