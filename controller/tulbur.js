@@ -119,7 +119,7 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
         _id: req.body.objectiinId
       }
     },
-    $inc: { "uldegdel": req.body.tulsunDun }
+    $inc: { "uldegdel": req.body.tulsunDun ? req.body.tulsunDun : 0 }
   }).then((result) => {
     daraagiinTulukhOgnooZasya(req.body.gereeniiId);
     if (req.body.guilgeeniiId)
