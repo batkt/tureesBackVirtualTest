@@ -89,6 +89,14 @@ router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
     }
 });
 
+async function replaceAll(mur,text) {
+    const returnText = text
+    for (const [key, value] of Object.entries(mur)) {
+        returnText = returnText.replace(new RegExp(`<${key}>`, "g"),value);
+    }
+    return returnText
+}
+
 
 router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     try {
@@ -119,18 +127,8 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         var msgnuud = []
         for await (const mur of gereenuud)
         {
-            let text  = req.body.msj + " "
-            for (const [key, value] of Object.entries(mur)) {
-                text = text.replace(new RegExp(`<${key}>`, "g"),value);
-            }
-            console.log('text',text,mur)
+            const text = await replaceAll(mur,req.body.msj)
             msgnuud.push({text,to:mur?.utas,mur})
-        }
-
-        for await (const msg of msgnuud){
-            for (const [key, value] of Object.entries(msg.mur)) {
-                msg.text = msg.text.replace(new RegExp(`<${key}>`, "g"),value);
-            }
         }
         var khariu = [];
         res.send(msgnuud)
