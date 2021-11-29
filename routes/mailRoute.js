@@ -104,25 +104,25 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         }
         if (!msgIlgeekhKey || !msgIlgeekhDugaar)
             throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
-       
 
-        const query = {baiguullagiinId:req.body.baiguullagiinId}
 
-        if(req.body.turul == 'davkharaar'){
+        const query = { baiguullagiinId: req.body.baiguullagiinId }
+
+        if (req.body.turul == 'davkharaar') {
             query['davkhar'] = req.body.davkhar
         }
-        else if(req.body.turul == 'avlagaar'){
-            query['uldegdel'] = {$gt:0}
+        else if (req.body.turul == 'avlagaar') {
+            query['uldegdel'] = { $gt: 0 }
         }
 
-        const gereenuud = await Geree.find(query)
+        const gereenuud = await Geree.find(query).lean();
         var msgnuud = []
-        gereenuud.forEach(mur=>{
-            let text  = req.body.msj
+        gereenuud.forEach(mur => {
+            let text = req.body.msj
             for (const [key, value] of Object.entries(mur)) {
-                text = text.replace(new RegExp(`<${key}>`, "g"),value);
+                text = text.replace(new RegExp(`<${key}>`, "g"), value);
             }
-            msgnuud.push({text,to:mur?.utas})
+            msgnuud.push({ text, to: mur?.utas })
         })
         var khariu = [];
         res.send(msgnuud)
