@@ -5,6 +5,8 @@ const {
 } = require("../middlewares/tokenShalgakh");
 const MailiinZagvar = require("../models/mailiinZagvar");
 const Baiguullaga = require("../models/baiguullaga");
+const Geree = require("../models/geree");
+
 const aldaa = require("../components/aldaa");
 const MailIlgeeye = require("../components/mailIlgeeye");
 const request = require("request");
@@ -81,6 +83,49 @@ router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
             throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
         var khariu = [];
         msgIlgeeye(req.body.msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, res)
+    }
+    catch (err) {
+        next(err);
+    }
+});
+
+
+router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
+    try {
+        var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+        var msgIlgeekhKey;
+        var msgIlgeekhDugaar;
+        try {
+            msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
+            msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
+        }
+        catch (error) {
+            throw new aldaa("Тохиргоо хийгдээгүй байна!");
+        }
+        if (!msgIlgeekhKey || !msgIlgeekhDugaar)
+            throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
+       
+
+        const query = {baiguullagiinId:req.body.baiguullagiinId}
+
+        if(req.body.turul === 'davkharaar'){
+            query['davkhar'] = req.body.davkhar
+        }
+        else if(req.body.turul === 'avlagaar'){
+            query['uldegdel'] = {$gt:0}
+        }
+
+        const gereenuud = Geree.find(query)
+        var msgnuud = []
+        gereenuud.forEach(mur=>{
+            let text  = req.body.msj
+            for (const [key, value] of Object.entries(mur)) {
+                text = text?.replace(new RegExp(`<${key}>`, "g"),value);
+            }
+            msgnuud.push({text,to:mur?.utas})
+        })
+        var khariu = [];
+        msgIlgeeye(msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, res)
     }
     catch (err) {
         next(err);
