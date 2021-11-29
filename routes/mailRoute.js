@@ -91,7 +91,7 @@ router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
 
 async function replaceAll(mur,text) {
     const returnText = text
-    for (const [key, value] of Object.entries(mur)) {
+    for await (const [key, value] of Object.entries(mur)) {
         returnText = returnText.replace(new RegExp(`<${key}>`, "g"),value);
     }
     return returnText
