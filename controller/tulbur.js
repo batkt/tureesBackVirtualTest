@@ -113,13 +113,14 @@ module.exports.tulultTaniya = async function tulultTaniya() {
 
 
 exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
+  var uurchlukhDun = (req.body.tulsunDun ? req.body.tulsunDun : 0) - (req.body.khyamdral ? req.body.khyamdral : 0)
   Geree.findByIdAndUpdate({ _id: req.body.gereeniiId }, {
     $pull: {
       [`avlaga.guilgeenuud`]: {
         _id: req.body.objectiinId
       }
     },
-    $inc: { "uldegdel": req.body.tulsunDun ? req.body.tulsunDun : 0 }
+    $inc: { "uldegdel": uurchlukhDun }
   }).then((result) => {
     daraagiinTulukhOgnooZasya(req.body.gereeniiId);
     if (req.body.guilgeeniiId)
