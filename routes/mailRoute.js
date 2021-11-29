@@ -115,7 +115,7 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
             query['uldegdel'] = {$gt:0}
         }
 
-        const gereenuud = Geree.find(query)
+        const gereenuud = await Geree.find(query)
         var msgnuud = []
         gereenuud.forEach(mur=>{
             let text  = req.body.msj
