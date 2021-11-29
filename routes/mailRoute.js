@@ -128,11 +128,10 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         for await (const mur of gereenuud)
         {
             const text = await replaceAll(mur,req.body.msj)
-            msgnuud.push({text,to:mur?.utas,mur})
+            msgnuud.push({text,to:mur?.utas})
         }
         var khariu = [];
-        res.send(msgnuud)
-        //msgIlgeeye(msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, res)
+        msgIlgeeye(msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, res)
     }
     catch (err) {
         next(err);
