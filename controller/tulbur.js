@@ -137,6 +137,61 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
     });
 });
 
+
+exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
+  var query = [
+    {
+      '$match': {
+        'gereeniiDugaar': req.body.gereeniiDugaar,
+        'baiguullagiinId': req.body.baiguullagiinId
+      }
+    }, {
+      '$unwind': {
+        'path': '$avlaga.guilgeenuud'
+      }
+    }, {
+      '$match': {
+        'avlaga.guilgeenuud.ognoo': {
+          '$lte': new Date()
+        }
+      }
+    }, {
+      '$group': {
+        '_id': 'aaa',
+        'tulukh': {
+          '$sum': '$avlaga.guilgeenuud.tulukhDun'
+        },
+        'khyamdral': {
+          '$sum': '$avlaga.guilgeenuud.khyamdral'
+        },
+        'tulsun': {
+          '$sum': '$avlaga.guilgeenuud.tulsunDun'
+        }
+      }
+    }, {
+      '$project': {
+        'uldegdel': {
+          '$subtract': [
+            '$tulukh', {
+              '$sum': [
+                '$tulsun', '$khyamdral'
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+  Geree.aggregate(query).then((result) => {
+    res.send({
+      "uldegdel": (result[0]?.uldegdel || 0)
+    });
+  }).catch((err) => {
+    next(err);
+    console.log("aldaatai", err)
+  })
+});
+
 async function daraagiinTulukhOgnooZasya(gereeniiId) {
   var geree = await Geree.findById(gereeniiId).select('avlaga');
   var jagsaalt = []

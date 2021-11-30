@@ -23,7 +23,8 @@ const {
   tulultKhadgalya,
   tulultUstgaya,
   tulultTaniya,
-  gereeniiGuilgeeKhadgalya
+  gereeniiGuilgeeKhadgalya,
+  uldegdelBodyo
 } = require('../controller/tulbur')
 router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require('lodash')
@@ -36,7 +37,8 @@ router.route("/guilgeeniiToololtAvya").post(tokenShalgakh, guilgeeniiToololtAvya
 router.route("/gereeniiExcelAvya").get(gereeniiExcelAvya);
 router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
 router.route("/tulultKhadgalya").post(tokenShalgakh, tulultKhadgalya);
-router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);
+router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);;
+router.route("/uldegdelBodyo").post(tokenShalgakh, uldegdelBodyo);
 router.route("/gereeniiGuilgeeKhadgalya").post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
 router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
   Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
