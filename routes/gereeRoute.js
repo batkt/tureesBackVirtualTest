@@ -43,6 +43,11 @@ router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, ne
     if (lodash.isArray(lodash.get(result, 'avlaga.guilgeenuud'))) {
       var a = lodash.get(result, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date(req.query.duusakhOgnoo));
       a = lodash.orderBy(a, ['ognoo'], ['asc']);
+      var uldegdel = 0;
+      a.forEach(x => {
+        uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
+        a.uldegdel = uldegdel;
+      });
       res.send(a)
     }
   }).catch((err) => {
