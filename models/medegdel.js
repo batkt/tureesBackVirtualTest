@@ -5,14 +5,17 @@ mongoose.pluralize(null);
 const medegdelSchema = new Schema(
   {
     khariltsagchiinId: String,
+    khariltsagchiinNer: String,
     baiguullagiinId: String,
+    ognoo: Date,
     turul: {
       type: String,
       enum: ["chat", "sanal", "gomdol"],
       default: "chat",
     },
     message: String,
-    kharsanEsekh: Boolean,
+    baiguullagaKharsanEsekh: Boolean,
+    khariltsagchKharsanEsekh: Boolean,
     reply: String,
   },
   { timestamps: true }

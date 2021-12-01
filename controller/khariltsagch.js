@@ -27,3 +27,23 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
         next(err);
     }
 });
+
+exports.khariltsagchidTokenOnooyo = asyncHandler(async (req, res, next) => {
+    try {
+        let filter = {
+            "_id": req.body.id
+        }
+        let update = {
+            "firebaseToken": req.body.token
+        }
+        Khariltsagch.findOneAndUpdate(filter, update)
+            .then((result) => {
+                res.send("Amjilttai")
+            })
+            .catch((err) => {
+                next(err);
+            });
+    } catch (error) {
+        next(error);
+    }
+});

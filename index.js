@@ -25,6 +25,7 @@ const medegdelRoute = require("./routes/medegdelRoute");
 const mailRoute = require("./routes/mailRoute");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
+const medegdel = require("./controller/medegdel");
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
 
 const dbUrl =
@@ -61,7 +62,6 @@ app.use(medegdelRoute);
 app.use(zuragRoute);
 app.use(ebarimtRoute);
 app.use(mailRoute);
-app.use(medegdelRoute);
 app.use(aldaaBarigch);
 
 cron.schedule(
@@ -116,6 +116,21 @@ cron.schedule(
 
 io.on("connection", (socket) => {
   console.log("connected");
+  // socket.on('joinRoom', ({ ajiltan }) => {
+  //   console.log("ug n irchixlee", ajiltan);
+  //   medegdel.uruunuudOlyo(ajiltan, (uruunuud) => {
+  //     console.log("uruunuud", uruunuud)
+  //     if (uruunuud) {
+  //       socket.join(uruunuud[0]._id);
+  //       // Broadcast when a user connects
+  //       socket.broadcast
+  //         .to(uruunuud[0]._id)
+  //         .emit(
+  //           'message', 'has joined the chat'
+  //         );
+  //     }
+  //   })
+  // });
   socket.on("disconnect", () => {
     console.log("disconnected");
   });
