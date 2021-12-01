@@ -5,7 +5,7 @@ var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://hicarapp-f2967.firebaseio.com"
+    databaseURL: "https://turees-fe156.firebaseio.com"
 })
 
 module.exports.admin = admin
