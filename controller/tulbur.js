@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const lodash = require('lodash')
+const moment = require("moment");
 
 exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
   var tulbur = {
@@ -190,6 +191,44 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     next(err);
     console.log("aldaatai", err)
   })
+});
+
+exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(async (req, res, next) => {
+  try {
+    var gereenuud = await Geree.find({
+      "avlaga.guilgeenuud.ognoo": {
+        $not: {
+          $gte: new Date(req.body.ekhlekhOgnoo),
+          $lte: new Date(req.body.duusakhOgnoo)
+        }
+      }
+    });
+    var khariu = [];
+    console.log("gereenuud", gereenuud);
+    var object;
+    if (gereenuud)
+      for await (const element of gereenuud) {
+        object = {
+          tulukhDun: element.talbainNiitUne,
+          undsenDun: element.talbainNiitUne,
+          ognoo: moment(req.body.duusakhOgnoo).set('date', element.tulukhUdur[0]),
+          khyamdral: 0
+        }
+        console.log("object", object)
+        Geree.updateOne({ _id: element._id }, {
+          $push: {
+            ["avlaga.guilgeenuud"]: object
+          }
+        }).then(async (result) => {
+          console.log("result", result);
+          khariu.push(result);
+        })
+      }
+    res.send(khariu);
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 async function daraagiinTulukhOgnooZasya(gereeniiId) {
