@@ -22,6 +22,7 @@ exports.medegdelKhadgalya = asyncHandler((req, res, next) => {
                 io.emit("baiguullaga" + req.body.baiguullagiinId, { turul: req.body.turul, msg: req.body.msg });
             else
                 io.emit("khariltsagch" + req.body.khariltsagchiinId, { msg: req.body.msg });
+            res.send("Amjilttai");
         });
     }
     catch (err) {
