@@ -33,13 +33,13 @@ async function gereeBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinI
   return aldaaniiMsg;
 }
 
-async function khariltsagchBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId) {
+async function khariltsagchBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId, barilgiinId) {
   var jagsaalt = []
   var shineAldaaniiMsg = ""
   gereenuud.forEach(a => {
     jagsaalt.push(a.register);
   });
-  var khariltsagchiinJagsaalt = await Khariltsagch.find({ "register": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId });
+  var khariltsagchiinJagsaalt = await Khariltsagch.find({ "register": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId, "barilgiinId": barilgiinId });
   if (khariltsagchiinJagsaalt.length !== 0) {
     oldooguiJagsaalt = [];
     jagsaalt.forEach(x => {
@@ -69,7 +69,7 @@ async function khariltsagchBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguul
   return aldaaniiMsg;
 }
 
-async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId) {
+async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId, barilgiinId) {
   var jagsaalt = []
   var shineAldaaniiMsg = ""
   gereenuud.forEach(a => {
@@ -79,7 +79,7 @@ async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiin
     else
       jagsaalt.push(a.talbainDugaar);
   });
-  var talbainJagsaalt = await Talbai.find({ "kod": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId });
+  var talbainJagsaalt = await Talbai.find({ "kod": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId, "barilgiinId": barilgiinId });
   if (talbainJagsaalt.length !== 0) {
     oldooguiJagsaalt = [];
     jagsaalt.forEach(x => {
@@ -158,7 +158,8 @@ exports.gereeniiZaaltTatya = asyncHandler(async (req, res, next) => {
         mur[usegTooruuKhurvuulekh(tolgoinObject.kharagdakhDugaar)];
       object.zaalt = mur[usegTooruuKhurvuulekh(tolgoinObject.zaalt)];
       object.khamaarakh = mur[usegTooruuKhurvuulekh(tolgoinObject.khamaarakh)];
-      object.baiguullagiinId = req.body.baiguullagiinId;
+      object.baiguullagiinId = req.body.baiguullagiinId;;
+      object.barilgiinId = req.body.barilgiinId;
       jagsaalt.push(object);
     });
     var aldaaniiMsg = "";
@@ -216,7 +217,8 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       object.talbainNiitUne =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainNiitUne)];
       object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
-      object.baiguullagiinId = req.body.baiguullagiinId;
+      object.baiguullagiinId = req.body.baiguullagiinId;;
+      object.barilgiinId = req.body.barilgiinId;
       jagsaalt.push(object);
     });
     var aldaaniiMsg = "";
@@ -255,6 +257,7 @@ exports.gereeniiZagvarTatya = asyncHandler(async (req, res, next) => {
     });
     zagvar.dedKhesguud = jagsaalt;
     zagvar.baiguullagiinId = req.body.baiguullagiinId;
+    zagvar.barilgiinId = req.body.barilgiinId;
     var aldaaniiMsg = "";
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     zagvar
@@ -519,11 +522,14 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       zagvariinId = req.body.zagvariinId;
     else
       throw new aldaa("Загвараа сонгоно уу!")
+
     var ognoo;
     if (req.body.ognoo)
       ognoo = req.body.ognoo;
     else
       throw new aldaa("Огноо сонгоно уу!")
+    if (!req.body.barilgiinId)
+      throw new aldaa("Барилгаа сонгоно уу!")
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
     var tolgoinObject = {};
@@ -594,6 +600,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.khungulukhEsekh = (mur[usegTooruuKhurvuulekh(tolgoinObject.khungulukhEsekh)] == "Тийм" || mur[usegTooruuKhurvuulekh(tolgoinObject.khungulukhEsekh)] == "тийм")
         object.gereeniiZagvariinId = zagvariinId;
         object.baiguullagiinId = req.body.baiguullagiinId;
+        object.barilgiinId = req.body.barilgiinId;
         if (!object.register || !object.gereeniiOgnoo || !object.khugatsaa || !object.talbainDugaar) {
           aldaaniiMsg = aldaaniiMsg + muriinDugaar + " дугаар мөрөнд ";
           if (!object.register)
@@ -614,8 +621,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       throw new aldaa(aldaaniiMsg + muriinDugaar + " дугаар мөрөнд алдаа гарлаа" + err);
     }
     aldaaniiMsg = await gereeBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
-    aldaaniiMsg = await khariltsagchBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
-    aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
+    aldaaniiMsg = await khariltsagchBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId, req.body.barilgiinId);
+    aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId, req.body.barilgiinId);
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
 
     jagsaalt.forEach(x => {
@@ -697,6 +704,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];
       object.turul = "Иргэн";
       object.baiguullagiinId = req.body.baiguullagiinId;
+      object.barilgiinId = req.body.barilgiinId;
       jagsaalt.push(object);
     });
 
@@ -744,6 +752,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];
       object.turul = "ААН";
       object.baiguullagiinId = req.body.baiguullagiinId;
+      object.barilgiinId = req.body.barilgiinId;
       jagsaalt.push(object);
     });
     Khariltsagch.insertMany(jagsaalt, function (err) {

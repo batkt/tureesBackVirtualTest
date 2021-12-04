@@ -8,7 +8,8 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
   let query = [
     {
       '$match': {
-        'baiguullagiinId': req.body.baiguullagiinId
+        'baiguullagiinId': req.body.baiguullagiinId,
+        'barilgiinId': req.body.barilgiinId
       }
     }, {
       '$project': {
@@ -79,9 +80,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
   try {
     var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
     var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
-    console.log(ekhlekhOgnoo);
-    console.log(duusakhOgnoo);
-    console.log(req.body.baiguullagiinId);
     let query = [
       {
         '$unwind': {
@@ -93,6 +91,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$lte': duusakhOgnoo
           },
           'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             '$ne': -1
           },
@@ -137,6 +136,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$lte': duusakhOgnoo
           },
           'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             '$ne': -1
           },
@@ -178,6 +178,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$lte': duusakhOgnoo
           },
           'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             '$ne': -1
           },
@@ -234,6 +235,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$lte': duusakhOgnoo
           },
           'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             '$ne': -1
           }
@@ -268,6 +270,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$lte': duusakhOgnoo
           },
           'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             '$ne': -1
           }
@@ -303,6 +306,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$lte': duusakhOgnoo
           },
           'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             $ne: -1
           }
@@ -337,6 +341,7 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
     {
       '$match': {
         'baiguullagiinId': req.body.baiguullagiinId,
+        'barilgiinId': req.body.barilgiinId,
         'dansniiDugaar': req.body.dansniiDugaar,
         "tranDate": {
           $gte: new Date(req.body.ekhlekhOgnoo),
@@ -401,7 +406,8 @@ exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
   let query = [
     {
       '$match': {
-        'baiguullagiinId': req.body.baiguullagiinId
+        'baiguullagiinId': req.body.baiguullagiinId,
+        'barilgiinId': req.body.barilgiinId
       }
     }, {
       '$group': {

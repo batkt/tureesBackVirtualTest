@@ -17,6 +17,12 @@ const ajiltanSchema = new Schema(
     },
     register: String,
     tsonkhniiErkhuud: [String],
+    barilguud: [String],
+    tuukh: [{
+      barilgiinId: String,
+      ekhelsenOgnoo: Date,
+      duussanOgnoo: Date
+    }],
     khayag: String,
     ajildOrsonOgnoo: Date,
     baiguullagiinId: String,
@@ -30,10 +36,10 @@ const ajiltanSchema = new Schema(
       type: String,
       unique: true,
     },
-    tokhirgoo:{
-      gereeZasakhErkh:Boolean,
-      khungulultUzuulekhEsekh:Boolean,
-      m2UneTokhiruulakhEsekh:Boolean
+    tokhirgoo: {
+      gereeZasakhErkh: Boolean,
+      khungulultUzuulekhEsekh: Boolean,
+      m2UneTokhiruulakhEsekh: Boolean
     }
   },
   {

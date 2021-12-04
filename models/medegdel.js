@@ -7,6 +7,7 @@ const medegdelSchema = new Schema(
     khariltsagchiinId: String,
     khariltsagchiinNer: String,
     baiguullagiinId: String,
+    barilgiinId: String,
     ognoo: Date,
     turul: {
       type: String,

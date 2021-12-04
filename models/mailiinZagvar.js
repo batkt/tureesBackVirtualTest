@@ -5,6 +5,7 @@ mongoose.pluralize(null);
 const mailiinZagvarSchema = new Schema({
   id: String,
   baiguullagiinId: String,
+  barilgiinId: String,
   ner: String,
   turul: String,
   zurag: String,

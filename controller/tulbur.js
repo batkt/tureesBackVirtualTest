@@ -144,7 +144,8 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     {
       '$match': {
         'gereeniiDugaar': req.body.gereeniiDugaar,
-        'baiguullagiinId': req.body.baiguullagiinId
+        'baiguullagiinId': req.body.baiguullagiinId,
+        'barilgiinId': req.body.barilgiinId
       }
     }, {
       '$unwind': {

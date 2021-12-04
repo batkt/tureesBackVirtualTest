@@ -14,6 +14,7 @@ const talbaiSchema = new Schema(
     tailbar: String,
     baiguullagiinId: String,
     baiguullagiinNer: String,
+    barilgiinId: String,
     talbainNegjUne: Number,
     talbainNiitUne: Number,
     zurgiinId: String,

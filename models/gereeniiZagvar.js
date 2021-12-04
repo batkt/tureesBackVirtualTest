@@ -10,6 +10,7 @@ const gereeniiZaaltSchema = new Schema(
     ner: String,
     baiguullagiinId: String,
     baiguullagiinNer: String,
+    barilgiinId: String,
     tolgoi: String,
     baruunTolgoi: String,
     zuunTolgoi: String,

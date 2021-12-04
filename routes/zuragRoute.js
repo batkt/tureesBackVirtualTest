@@ -73,11 +73,11 @@ router.get(
   (req, res, next) => {
     res.download(
       "./zurag/" +
-        req.params.turul +
-        "/" +
-        req.params.baiguullagiinId +
-        "/" +
-        req.params.zurgiinNer,
+      req.params.turul +
+      "/" +
+      req.params.baiguullagiinId +
+      "/" +
+      req.params.zurgiinNer,
       req.params.zurgiinNer,
       (err) => {
         if (err) next(err);

@@ -21,6 +21,7 @@ async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
         ebarimt.customerNo = register;
     }
     ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
+    ebarimt.barilgiinId = guilgee.barilgiinId;
     ebarimt.gereeniiDugaar = geree.gereeniiDugaar;
     ebarimt.talbainDugaar = geree.talbainDugaar;
     ebarimt.utas = geree.utas;

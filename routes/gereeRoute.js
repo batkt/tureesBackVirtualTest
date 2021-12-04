@@ -75,6 +75,7 @@ router.route("/nekhemjlekhiinDugaarlaltAvya").get(tokenShalgakh, async (req, res
     console.log(ognoo);
     await Dugaarlalt.find({
       baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
       turul: "nekhemjlekh",
       ognoo: ognoo
     })
@@ -96,6 +97,7 @@ router.route("/nekhemjlekhiinDugaarlaltKhadgalya").post(tokenShalgakh, async (re
   try {
     var dugaarlalt = new Dugaarlalt({
       baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
       dugaar: req.body.dugaar,
       turul: "nekhemjlekh",
       ognoo: new Date(),
@@ -122,6 +124,7 @@ crud(router, "geree", Geree, async (req, res, next) => {
     var maxDugaar = 1;
     await Dugaarlalt.find({
       baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
       turul: "geree",
       ognoo: unuudur,
     })
@@ -134,6 +137,7 @@ crud(router, "geree", Geree, async (req, res, next) => {
       });
     var dugaarlalt = new Dugaarlalt({
       baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
       dugaar: maxDugaar,
       turul: "geree",
       ognoo: unuudur,
@@ -253,7 +257,8 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
           'avlaga.guilgeenuud.ognoo': {
             '$lt': new Date(req.body.ognoo)
           },
-          'baiguullagiinId': req.body.baiguullagiinId
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId
         }
       }, {
         '$group': {

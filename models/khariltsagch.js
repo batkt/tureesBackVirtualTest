@@ -16,6 +16,7 @@ const khariltsagchSchema = new Schema(
     zakhirliinOvog: String,
     zakhirliinNer: String,
     baiguullagiinId: String,
+    barilgiinId: String,
     firebaseToken: String,
     turul: String,
     tuluv: String,
