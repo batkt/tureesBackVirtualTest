@@ -10,6 +10,7 @@ async function khuudaslalt(model, body) {
     } = body;
     if (!!search) query["$text"] = { $search: search };
     let jagsaalt;
+    console.log("query,==>", query);
     if (lean)
         jagsaalt = zuvkhunTooAvakhEsekh ? null : await model
             .find(query)
