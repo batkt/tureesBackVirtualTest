@@ -300,8 +300,8 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
       if (!!body?.search) body.search = String(body.search);
 
       body.query["gereeniiDugaar"] = turJagsaalt;
-      console.log("body.query", body.query);
       body.lean = true;
+      console.log("body", body);
       khuudaslalt(Geree, body)
         .then((result) => {
           if (result && result.jagsaalt && result.jagsaalt.length > 0)
