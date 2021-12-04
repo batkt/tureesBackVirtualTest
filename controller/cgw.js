@@ -134,6 +134,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
         guilgeenuud.forEach(x => {
             x.dansniiDugaar = req.body.dansniiDugaar;
             x.baiguullagiinId = req.body.baiguullagiinId;
+            x.barilgiinId = req.body.barilgiinId;
         });
         BankniiGuilgee.insertMany(guilgeenuud).then((result) => { if (res) res.send("Amjilttai") }).catch((err) => { console.log(err); next(err) });
     }
