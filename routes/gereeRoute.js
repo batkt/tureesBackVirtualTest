@@ -32,7 +32,7 @@ const lodash = require('lodash')
 
 const { gereeniiExcelAvya, gereeniiExcelTatya } = require("../controller/excel");
 
-router.route("/gereeniiToololtAvya").get(tokenShalgakh, gereeniiToololtAvya);
+router.route("/gereeniiToololtAvya").post(tokenShalgakh, gereeniiToololtAvya);
 router.route("/guilgeeniiToololtAvya").post(tokenShalgakh, guilgeeniiToololtAvya);
 
 router.route("/gereeniiExcelAvya").get(gereeniiExcelAvya);
