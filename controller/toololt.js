@@ -329,7 +329,55 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }
     ]
     var khungulult = await Geree.aggregate(query);
-    res.json({ avlaga, uglug, khugatsaaKhetersen, eneSardTulukh, eneSardTulsun, khungulult });
+
+    query = [
+      {
+        '$match': {
+          'daraagiinTulukhOgnoo': {
+            '$lte': duusakhOgnoo
+          },
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId,
+          'tuluv': {
+            '$eq': -1
+          },
+          "uldegdel": {
+            "$gte": 0
+          }
+        }
+      }, {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$group': {
+          '_id': 'tsutslagdsanAvlaga',
+          'tulukh': {
+            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+          },
+          'khyamdral': {
+            '$sum': '$avlaga.guilgeenuud.khyamdral'
+          },
+          'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+          }
+        }
+      }, {
+        '$project': {
+          'tsutslagdsanAvlaga': {
+            '$subtract': [
+              '$tulukh', {
+                '$sum': [
+                  '$tulsun', '$khyamdral'
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ];
+    var tsutslagdsanAvlaga = await Geree.aggregate(query);
+    res.json({ avlaga, uglug, khugatsaaKhetersen, eneSardTulukh, eneSardTulsun, khungulult, tsutslagdsanAvlaga });
   }
   catch (err) {
     next(err);
