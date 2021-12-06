@@ -279,12 +279,6 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             ]
           }
         }
-      }, {
-        '$match': {
-          'uldegdel': {
-            '$gt': 0
-          }
-        }
       }
     ]
     var gereenuud = await Geree.aggregate(query);
