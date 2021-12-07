@@ -349,11 +349,12 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
       if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) body.search = String(body.search);
 
-      console.log("body", body);
       if (!body.query) body.query = {}
       if (!!body?.query) body.query = JSON.parse(body.query);
       body.query["gereeniiDugaar"] = { $in: turJagsaalt };
       body.lean = true;
+
+      console.log("body", body);
       khuudaslalt(Geree, body)
         .then((result) => {
           console.log("result", result);
