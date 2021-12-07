@@ -255,39 +255,93 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
       }, {
         '$match': {
           'avlaga.guilgeenuud.ognoo': {
-            '$lt': new Date(req.body.ognoo)
+            '$lt': new Date(req.body.duusakhOgnoo)
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId
         }
       }, {
-        '$group': {
-          '_id': '$gereeniiDugaar',
-          'tulukh': {
-            '$sum': '$avlaga.guilgeenuud.tulukhDun'
-          },
-          'tulsun': {
-            '$sum': '$avlaga.guilgeenuud.tulsunDun'
-          }
-        }
-      }, {
-        '$project': {
-          'gereeniiDugaar': '$gereeniiDugaar',
-          'uldegdel': {
-            '$subtract': [
-              '$tulukh', '$tulsun'
-            ]
-          }
+        '$facet': {
+          'ekhlekhOgnoo': [
+            {
+              '$match': {
+                'avlaga.guilgeenuud.ognoo': {
+                  '$lte': new Date(req.body.ekhlekhOgnoo)
+                }
+              }
+            }, {
+              '$group': {
+                '_id': '$gereeniiDugaar',
+                'tulukh': {
+                  '$sum': '$avlaga.guilgeenuud.tulukhDun'
+                },
+                'khyamdral': {
+                  '$sum': '$avlaga.guilgeenuud.khyamdral'
+                },
+                'tulsun': {
+                  '$sum': '$avlaga.guilgeenuud.tulsunDun'
+                }
+              }
+            }, {
+              '$project': {
+                'gereeniiDugaar': '$gereeniiDugaar',
+                'uldegdel': {
+                  '$subtract': [
+                    '$tulukh', {
+                      '$sum': [
+                        '$tulsun', '$khyamdral'
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          'duusakhOgnoo': [
+            {
+              '$match': {
+                'avlaga.guilgeenuud.ognoo': {
+                  '$lte': new Date(req.body.duusakhOgnoo)
+                }
+              }
+            }, {
+              '$group': {
+                '_id': '$gereeniiDugaar',
+                'tulukh': {
+                  '$sum': '$avlaga.guilgeenuud.tulukhDun'
+                },
+                'khyamdral': {
+                  '$sum': '$avlaga.guilgeenuud.khyamdral'
+                },
+                'tulsun': {
+                  '$sum': '$avlaga.guilgeenuud.tulsunDun'
+                }
+              }
+            }, {
+              '$project': {
+                'gereeniiDugaar': '$gereeniiDugaar',
+                'uldegdel': {
+                  '$subtract': [
+                    '$tulukh', {
+                      '$sum': [
+                        '$tulsun', '$khyamdral'
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ]
         }
       }
     ]
     var gereenuud = await Geree.aggregate(query);
     console.log(gereenuud);
-    if (gereenuud.length < 1)
+    if (gereenuud.length < 0 || gereenuud[0].duusakhOgnoo.length < 1)
       res.send(null);
     else {
       var turJagsaalt = [];
-      gereenuud.forEach(x => {
+      gereenuud[0].duusakhOgnoo.forEach(x => {
         turJagsaalt.push(x._id)
       });
       const body = req.body.query;
@@ -295,14 +349,18 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
       if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) body.search = String(body.search);
 
+      console.log("body", body);
+      if (!!body?.query) body.query = JSON.parse(body.query);
+      if (!body.query) body.query = {}
       body.query["gereeniiDugaar"] = { $in: turJagsaalt };
       body.lean = true;
       khuudaslalt(Geree, body)
         .then((result) => {
+          console.log("result", result);
           if (result && result.jagsaalt && result.jagsaalt.length > 0)
             result.jagsaalt.forEach(x => {
-              x.eneSardTulukhDun = gereenuud.find(a => a._id == x.gereeniiDugaar).uldegdel
-              x.umnukhSariinUrTulbur = x.eneSardTulukhDun - x.uldegdel
+              x.eneSardTulukhDun = gereenuud[0].duusakhOgnoo.find(a => a._id == x.gereeniiDugaar).uldegdel
+              x.umnukhSariinUrTulbur = (gereenuud[0].ekhlekhOgnoo.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
             });
           res.send(result);
         })
