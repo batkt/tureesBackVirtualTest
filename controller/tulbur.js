@@ -239,33 +239,12 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
 
 exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(async (req, res, next) => {
   try {
-    var query = [
-      {
-        '$match': {
-          'tuluv': 1,
-          "baiguullagiinId": req.body.baiguullagiinId
-        }
-      }, {
-        '$unwind': {
-          'path': '$avlaga.guilgeenuud'
-        }
-      }, {
-        '$match': {
-          'avlaga.guilgeenuud.ognoo': {
-            '$gte': new Date(req.body.ekhlekhOgnoo),
-            '$lte': new Date(req.body.duusakhOgnoo)
-          },
-          "avlaga.guilgeenuud.tulukhDun": 0
-        }
-      }
-    ]
-    agg = await Geree.aggregate(query);
-    var gereeniiIdnuud = []
-    agg.forEach(x => gereeniiIdnuud.push(x._id));
-    console.log("gereeniiIdnuud", gereeniiIdnuud);
     var gereenuud = await Geree.find({
-      "_id": {
-        $in: gereeniiIdnuud
+      "avlaga.guilgeenuud.ognoo": {
+        $not: {
+          $gte: new Date(req.body.ekhlekhOgnoo),
+          $lte: new Date(req.body.duusakhOgnoo)
+        }
       }
     });
     var khariu = [];
