@@ -88,15 +88,12 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }, {
         '$match': {
           'avlaga.guilgeenuud.ognoo': {
-            '$lte': duusakhOgnoo
+            '$lte': ekhlekhOgnoo
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             '$ne': -1
-          },
-          "uldegdel": {
-            "$gte": 0
           }
         }
       }, {
@@ -141,9 +138,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             '$ne': -1
-          },
-          "uldegdel": {
-            "$lt": 0
           }
         }
       }, {
