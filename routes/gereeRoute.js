@@ -255,7 +255,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
       }, {
         '$match': {
           'avlaga.guilgeenuud.ognoo': {
-            '$lt': new Date(req.body.ognoo)
+            '$lt': new Date(req.body.duusakhOgnoo)
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId
@@ -266,7 +266,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             {
               '$match': {
                 'avlaga.guilgeenuud.ognoo': {
-                  '$lte': new Date()
+                  '$lte': new Date(req.body.ekhlekhOgnoo)
                 }
               }
             }, {
@@ -301,7 +301,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             {
               '$match': {
                 'avlaga.guilgeenuud.ognoo': {
-                  '$lte': new Date(req.body.ognoo)
+                  '$lte': new Date(req.body.duusakhOgnoo)
                 }
               }
             }, {
