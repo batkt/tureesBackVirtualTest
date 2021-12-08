@@ -270,10 +270,12 @@ exports.khungulultUstgaya = asyncHandler(async (req, res, next) => {
 
 exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(async (req, res, next) => {
   try {
-    var gereeniiDugaar = req.body.gereeniiDugaar;
     var gereenuud = await Geree.find({
-      "gereeniiDugaar": {
-        $in: gereeniiDugaar
+      "avlaga.guilgeenuud.ognoo": {
+        $not: {
+          $gte: new Date(req.body.ekhlekhOgnoo),
+          $lte: new Date(req.body.duusakhOgnoo)
+        }
       }
     });
     var khariu = [];
@@ -282,8 +284,8 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(async (req, res, next)
     if (gereenuud)
       for await (const element of gereenuud) {
         object = {
-          tulukhDun: element.davkhar == "B1" ? element.sariinTurees : ((element.sariinTurees * 80) / 100),
-          undsenDun: element.davkhar == "B1" ? element.sariinTurees : ((element.sariinTurees * 80) / 100),
+          tulukhDun: element.davkhar == element.sariinTurees,
+          undsenDun: element.davkhar == element.sariinTurees,
           ognoo: moment(req.body.duusakhOgnoo).set('date', element.tulukhUdur[0]),
           khyamdral: 0
         }
