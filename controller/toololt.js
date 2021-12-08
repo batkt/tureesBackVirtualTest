@@ -100,26 +100,28 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           }
         }
       }, {
-        '$project': {
-          'uldegdel': {
-            '$subtract': [
-              {
-                '$ifNull': [
-                  '$avlaga.guilgeenuud.tulukhDun', 0
-                ]
-              }, {
-                '$ifNull': [
-                  '$avlaga.guilgeenuud.tulsunDun', 0
-                ]
-              }
-            ]
+        '$group': {
+          '_id': 'avlaga',
+          'tulukh': {
+            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+          },
+          'khyamdral': {
+            '$sum': '$avlaga.guilgeenuud.khyamdral'
+          },
+          'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
           }
         }
       }, {
-        '$group': {
-          '_id': 'avlaga',
+        '$project': {
           'dun': {
-            '$sum': '$uldegdel'
+            '$subtract': [
+              '$tulukh', {
+                '$sum': [
+                  '$tulsun', '$khyamdral'
+                ]
+              }
+            ]
           }
         }
       }
@@ -145,27 +147,28 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           }
         }
       }, {
-        '$project': {
-          'uldegdel': {
-            '$subtract': [
-              {
-                '$ifNull': [
-                  '$avlaga.guilgeenuud.tulsunDun', 0
-                ]
-              },
-              {
-                '$ifNull': [
-                  '$avlaga.guilgeenuud.tulukhDun', 0
-                ]
-              }
-            ]
+        '$group': {
+          '_id': 'uglugu',
+          'tulukh': {
+            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+          },
+          'khyamdral': {
+            '$sum': '$avlaga.guilgeenuud.khyamdral'
+          },
+          'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
           }
         }
       }, {
-        '$group': {
-          '_id': 'uglugu',
+        '$project': {
           'dun': {
-            '$sum': '$uldegdel'
+            '$subtract': [{
+              '$sum': [
+                '$tulsun', '$khyamdral'
+              ]
+            },
+              '$tulukh'
+            ]
           }
         }
       }
@@ -197,26 +200,28 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           }
         }
       }, {
-        '$project': {
-          'avlaga': {
-            '$subtract': [
-              {
-                '$ifNull': [
-                  '$avlaga.guilgeenuud.tulukhDun', 0
-                ]
-              }, {
-                '$ifNull': [
-                  '$avlaga.guilgeenuud.tulsunDun', 0
-                ]
-              }
-            ]
+        '$group': {
+          '_id': 'khugatsaaKhetersen',
+          'tulukh': {
+            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+          },
+          'khyamdral': {
+            '$sum': '$avlaga.guilgeenuud.khyamdral'
+          },
+          'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
           }
         }
       }, {
-        '$group': {
-          '_id': 'khugatsaaKhetersen',
+        '$project': {
           'dun': {
-            '$sum': '$avlaga'
+            '$subtract': [
+              '$tulukh', {
+                '$sum': [
+                  '$tulsun', '$khyamdral'
+                ]
+              }
+            ]
           }
         }
       }
@@ -241,18 +246,21 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           }
         }
       }, {
-        '$project': {
+        '$group': {
+          '_id': 'tulukh',
           'tulukh': {
-            '$ifNull': [
-              '$avlaga.guilgeenuud.tulukhDun', 0
-            ]
+            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+          },
+          'khyamdral': {
+            '$sum': '$avlaga.guilgeenuud.khyamdral'
           }
         }
       }, {
-        '$group': {
-          '_id': 'tulukh',
+        '$project': {
           'dun': {
-            '$sum': '$tulukh'
+            '$subtract': [
+              '$tulukh', '$khyamdral'
+            ]
           }
         }
       }
