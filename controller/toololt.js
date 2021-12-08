@@ -364,7 +364,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         }
       }, {
         '$project': {
-          'tsutslagdsanAvlaga': {
+          'dun': {
             '$subtract': [
               '$tulukh', {
                 '$sum': [
