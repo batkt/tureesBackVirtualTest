@@ -270,12 +270,10 @@ exports.khungulultUstgaya = asyncHandler(async (req, res, next) => {
 
 exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(async (req, res, next) => {
   try {
+    var gereeniiDugaar = req.body.gereeniiDugaar;
     var gereenuud = await Geree.find({
-      "avlaga.guilgeenuud.ognoo": {
-        $not: {
-          $gte: new Date(req.body.ekhlekhOgnoo),
-          $lte: new Date(req.body.duusakhOgnoo)
-        }
+      "gereeniiDugaar": {
+        $in: gereeniiDugaar
       }
     });
     var khariu = [];
