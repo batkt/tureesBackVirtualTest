@@ -253,8 +253,8 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(async (req, res, next)
     if (gereenuud)
       for await (const element of gereenuud) {
         object = {
-          tulukhDun: element.davkhar == "B1" ? element.talbainNiitUne : ((element.talbainNiitUne * 80) / 100),
-          undsenDun: element.davkhar == "B1" ? element.talbainNiitUne : ((element.talbainNiitUne * 80) / 100),
+          tulukhDun: element.davkhar == "B1" ? element.sariinTurees : ((element.sariinTurees * 80) / 100),
+          undsenDun: element.davkhar == "B1" ? element.sariinTurees : ((element.sariinTurees * 80) / 100),
           ognoo: moment(req.body.duusakhOgnoo).set('date', element.tulukhUdur[0]),
           khyamdral: 0
         }
