@@ -284,8 +284,8 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(async (req, res, next)
     if (gereenuud)
       for await (const element of gereenuud) {
         object = {
-          tulukhDun: element.davkhar == element.sariinTurees,
-          undsenDun: element.davkhar == element.sariinTurees,
+          tulukhDun: element.sariinTurees,
+          undsenDun: element.sariinTurees,
           ognoo: moment(req.body.duusakhOgnoo).set('date', element.tulukhUdur[0]),
           khyamdral: 0
         }
