@@ -25,7 +25,8 @@ const {
   tulultTaniya,
   gereeniiGuilgeeKhadgalya,
   uldegdelBodyo,
-  tukhainOgnoogoorAvlagaBodojOruulya
+  tukhainOgnoogoorAvlagaBodojOruulya,
+  khungulultKhadgalya
 } = require('../controller/tulbur')
 router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require('lodash')
@@ -40,6 +41,7 @@ router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgak
 router.route("/tulultKhadgalya").post(tokenShalgakh, tulultKhadgalya);
 router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);
 router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
+router.route("/khungulultKhadgalya").post(tokenShalgakh, khungulultKhadgalya);
 router.route("/uldegdelBodyo").post(tokenShalgakh, uldegdelBodyo);
 router.route("/gereeniiGuilgeeKhadgalya").post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
 router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
@@ -254,9 +256,6 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
         }
       }, {
         '$match': {
-          'avlaga.guilgeenuud.ognoo': {
-            '$lt': new Date(req.body.duusakhOgnoo)
-          },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId
         }

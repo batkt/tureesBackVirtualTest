@@ -3,6 +3,8 @@ const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const lodash = require('lodash')
 const moment = require("moment");
+const mongoose = require('mongoose');
+const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 
 exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
   var tulbur = {
@@ -192,6 +194,47 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     next(err);
     console.log("aldaatai", err)
   })
+});
+
+exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      var khungulult = new KhungulultiinTuukh(req.body);
+      gereeniiDugaaruud = [];
+      khungulult.khamaataiGereenuud.forEach(x => gereeniiDugaaruud.push(x));
+      var gereenuud = await Geree.find({ _id: { $in: gereeniiDugaaruud } });
+      for await (const geree of gereenuud) {
+        khyamdraluud = [];
+        for await (const ognoo of khungulult.ognoonuud) {
+          khyamdral = {
+            tulukhDun: 0,
+            ognoo: ognoo,
+            khyamdral: (geree.sariinTurees * khungulult.khungulukhKhuvi) / 100,
+            tailbar: khungulult.shaltgaan,
+            guilgeeKhiisenOgnoo: new Date,
+            guilgeeKhiisenAjiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
+            guilgeeKhiisenAjiltniiId: req.body.nevtersenAjiltniiToken?.id
+          }
+          khyamdraluud.push(khyamdral);
+        }
+        console.log("khyamdraluud", khyamdraluud);
+        await Geree.updateOne({ _id: geree._id }, { $push: { "avlaga.guilgeenuud": { $each: khyamdraluud } } });
+      }
+      await session.commitTransaction();
+      session.endSession();
+      res.send("Amjilttai")
+    }
+    catch (err1) {
+      console.log("err1", err1);
+      await session.abortTransaction();
+      next(err1);
+    }
+  }
+  catch (err) {
+    next(err);
+  }
 });
 
 exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(async (req, res, next) => {
