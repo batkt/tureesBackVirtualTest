@@ -204,6 +204,8 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
       var khungulult = new KhungulultiinTuukh(req.body);
       gereeniiDugaaruud = [];
       khungulult.khamaataiGereenuud.forEach(x => gereeniiDugaaruud.push(x));
+      khariu = await khungulult.save();
+      console.log("khariu", khariu);
       var gereenuud = await Geree.find({ _id: { $in: gereeniiDugaaruud } });
       for await (const geree of gereenuud) {
         khyamdraluud = [];
@@ -213,6 +215,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
             ognoo: ognoo,
             khyamdral: (geree.sariinTurees * khungulult.khungulukhKhuvi) / 100,
             tailbar: khungulult.shaltgaan,
+            khyamdraliinId: khariu._id,
             guilgeeKhiisenOgnoo: new Date,
             guilgeeKhiisenAjiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
             guilgeeKhiisenAjiltniiId: req.body.nevtersenAjiltniiToken?.id
@@ -237,35 +240,40 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.khungulultUstgaya = asyncHandler(async (req, res, next) => {
+  try {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      var khungulult = await KhungulultiinTuukh.findOne({ _id: req.body.id });
+      gereeniiDugaaruud = [];
+      khungulult.khamaataiGereenuud.forEach(x => gereeniiDugaaruud.push(x));
+      for await (const gereeniiDugaar of gereeniiDugaaruud) {
+        khyamdraluud = [];
+        await Geree.findOneAndUpdate({ _id: gereeniiDugaar }, { $pull: { "avlaga.guilgeenuud": { "khyamdraliinId": khungulult._id } } });
+      }
+      await KhungulultiinTuukh.deleteOne({ _id: khungulult._id });
+      await session.commitTransaction();
+      session.endSession();
+      res.send("Amjilttai")
+    }
+    catch (err1) {
+      console.log("err1", err1);
+      await session.abortTransaction();
+      next(err1);
+    }
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
 exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(async (req, res, next) => {
   try {
-    var query = [
-      {
-        '$match': {
-          'tuluv': 1,
-          "baiguullagiinId": req.body.baiguullagiinId
-        }
-      }, {
-        '$unwind': {
-          'path': '$avlaga.guilgeenuud'
-        }
-      }, {
-        '$match': {
-          'avlaga.guilgeenuud.ognoo': {
-            '$gte': new Date(req.body.ekhlekhOgnoo),
-            '$lte': new Date(req.body.duusakhOgnoo)
-          },
-          "avlaga.guilgeenuud.tulukhDun": 0
-        }
-      }
-    ]
-    agg = await Geree.aggregate(query);
-    var gereeniiIdnuud = []
-    agg.forEach(x => gereeniiIdnuud.push(x._id));
-    console.log("gereeniiIdnuud", gereeniiIdnuud);
+    var gereeniiDugaar = req.body.gereeniiDugaar;
     var gereenuud = await Geree.find({
-      "_id": {
-        $in: gereeniiIdnuud
+      "gereeniiDugaar": {
+        $in: gereeniiDugaar
       }
     });
     var khariu = [];

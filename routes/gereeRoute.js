@@ -3,6 +3,7 @@ const router = express.Router();
 const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
 const Dugaarlalt = require("../models/dugaarlalt");
+const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const khuudaslalt = require("../components/khuudaslalt");
 const multer = require("multer");
 const storage = multer.memoryStorage();
@@ -26,7 +27,8 @@ const {
   gereeniiGuilgeeKhadgalya,
   uldegdelBodyo,
   tukhainOgnoogoorAvlagaBodojOruulya,
-  khungulultKhadgalya
+  khungulultKhadgalya,
+  khungulultUstgaya
 } = require('../controller/tulbur')
 router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require('lodash')
@@ -42,6 +44,7 @@ router.route("/tulultKhadgalya").post(tokenShalgakh, tulultKhadgalya);
 router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);
 router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
 router.route("/khungulultKhadgalya").post(tokenShalgakh, khungulultKhadgalya);
+router.route("/khungulultUstgaya").post(tokenShalgakh, khungulultUstgaya);
 router.route("/uldegdelBodyo").post(tokenShalgakh, uldegdelBodyo);
 router.route("/gereeniiGuilgeeKhadgalya").post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
 router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
@@ -113,6 +116,7 @@ router.route("/nekhemjlekhiinDugaarlaltKhadgalya").post(tokenShalgakh, async (re
   }
 });
 
+crud(router, "khungulultiinTuukh", KhungulultiinTuukh)
 crud(router, "geree", Geree, async (req, res, next) => {
   try {
     const khariltsagch = new Khariltsagch(req.body);
