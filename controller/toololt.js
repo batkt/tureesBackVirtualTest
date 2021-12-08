@@ -333,16 +333,10 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     query = [
       {
         '$match': {
-          'daraagiinTulukhOgnoo': {
-            '$lte': duusakhOgnoo
-          },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             '$eq': -1
-          },
-          "uldegdel": {
-            "$gte": 0
           }
         }
       }, {
