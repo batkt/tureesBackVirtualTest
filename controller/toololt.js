@@ -281,14 +281,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           }
         }
       }, {
-        '$project': {
-          'tulsun': {
-            '$ifNull': [
-              '$avlaga.guilgeenuud.tulsunDun', 0
-            ]
-          }
-        }
-      }, {
         '$group': {
           '_id': 'tulsun',
           'dun': {
