@@ -369,11 +369,11 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
     ]
     var gereenuud = await Geree.aggregate(query);
     console.log(gereenuud);
-    if (gereenuud.length < 0 || gereenuud[0].duusakhOgnoo.length < 1)
+    if (gereenuud.length < 0 || gereenuud[0].eneSardTulukhDun.length < 1)
       res.send(null);
     else {
       var turJagsaalt = [];
-      gereenuud[0].duusakhOgnoo.forEach(x => {
+      gereenuud[0].eneSardTulukhDun.forEach(x => {
         turJagsaalt.push(x._id)
       });
       const body = req.body.query;
@@ -391,7 +391,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
           console.log("result", result);
           if (result && result.jagsaalt && result.jagsaalt.length > 0)
             result.jagsaalt.forEach(x => {
-              x.eneSardTulukhDun = gereenuud[0].eneSardTulukhDun.find(a => a._id == x.gereeniiDugaar).uldegdel
+              x.eneSardTulukhDun = (gereenuud[0].eneSardTulukhDun.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               if (x.umnukhSariinUrTulbur < 0)
