@@ -265,7 +265,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
         }
       }, {
         '$facet': {
-          'eneSardTulukhDun': [
+          'umnukhSariinUrTulbur': [
             {
               '$match': {
                 'avlaga.guilgeenuud.ognoo': {
