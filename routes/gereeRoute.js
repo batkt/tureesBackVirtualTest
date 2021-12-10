@@ -392,8 +392,8 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
           if (result && result.jagsaalt && result.jagsaalt.length > 0)
             result.jagsaalt.forEach(x => {
               x.eneSardTulukhDun = gereenuud[0].duusakhOgnoo.find(a => a._id == x.gereeniiDugaar).uldegdel
-              x.umnukhSariinUrTulbur = (gereenuud[0].ekhlekhOgnoo.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-              x.tuluvluguut = (gereenuud[0].tuluvluguut.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
+              x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
+              x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               if (x.umnukhSariinUrTulbur < 0)
                 x.umnukhSariinUrTulbur = 0
               if (x.eneSardTulukhDun < 0)
