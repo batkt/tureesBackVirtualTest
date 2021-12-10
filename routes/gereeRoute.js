@@ -28,7 +28,8 @@ const {
   uldegdelBodyo,
   tukhainOgnoogoorAvlagaBodojOruulya,
   khungulultKhadgalya,
-  khungulultUstgaya
+  khungulultUstgaya,
+  tukhainOgnoogoorGuilgeegOruulya
 } = require('../controller/tulbur')
 router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require('lodash')
@@ -43,6 +44,7 @@ router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgak
 router.route("/tulultKhadgalya").post(tokenShalgakh, tulultKhadgalya);
 router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);
 router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
+router.route("/tukhainOgnoogoorGuilgeegOruulya").post(tokenShalgakh, tukhainOgnoogoorGuilgeegOruulya);
 router.route("/khungulultKhadgalya").post(tokenShalgakh, khungulultKhadgalya);
 router.route("/khungulultUstgaya").post(tokenShalgakh, khungulultUstgaya);
 router.route("/uldegdelBodyo").post(tokenShalgakh, uldegdelBodyo);
@@ -265,7 +267,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
         }
       }, {
         '$facet': {
-          'ekhlekhOgnoo': [
+          'umnukhSariinUrTulbur': [
             {
               '$match': {
                 'avlaga.guilgeenuud.ognoo': {
@@ -300,7 +302,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               }
             }
           ],
-          'duusakhOgnoo': [
+          'niitUldegdel': [
             {
               '$match': {
                 'avlaga.guilgeenuud.ognoo': {
@@ -334,17 +336,46 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                 }
               }
             }
+          ],
+          'eneSardTulukhDun': [
+            {
+              '$match': {
+                'avlaga.guilgeenuud.ognoo': {
+                  '$lte': new Date(req.body.duusakhOgnoo),
+                  '$gte': new Date(req.body.ekhlekhOgnoo)
+                }
+              }
+            }, {
+              '$group': {
+                '_id': '$gereeniiDugaar',
+                'tulukh': {
+                  '$sum': '$avlaga.guilgeenuud.tulukhDun'
+                },
+                'khyamdral': {
+                  '$sum': '$avlaga.guilgeenuud.khyamdral'
+                }
+              }
+            }, {
+              '$project': {
+                'gereeniiDugaar': '$gereeniiDugaar',
+                'uldegdel': {
+                  '$subtract': [
+                    '$tulukh', '$khyamdral'
+                  ]
+                }
+              }
+            }
           ]
         }
       }
     ]
     var gereenuud = await Geree.aggregate(query);
     console.log(gereenuud);
-    if (gereenuud.length < 0 || gereenuud[0].duusakhOgnoo.length < 1)
+    if (gereenuud.length < 0 || gereenuud[0].eneSardTulukhDun.length < 1)
       res.send(null);
     else {
       var turJagsaalt = [];
-      gereenuud[0].duusakhOgnoo.forEach(x => {
+      gereenuud[0].eneSardTulukhDun.forEach(x => {
         turJagsaalt.push(x._id)
       });
       const body = req.body.query;
@@ -362,12 +393,15 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
           console.log("result", result);
           if (result && result.jagsaalt && result.jagsaalt.length > 0)
             result.jagsaalt.forEach(x => {
-              x.eneSardTulukhDun = gereenuud[0].duusakhOgnoo.find(a => a._id == x.gereeniiDugaar).uldegdel
-              x.umnukhSariinUrTulbur = (gereenuud[0].ekhlekhOgnoo.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
+              x.eneSardTulukhDun = (gereenuud[0].eneSardTulukhDun.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
+              x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
+              x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               if (x.umnukhSariinUrTulbur < 0)
                 x.umnukhSariinUrTulbur = 0
               if (x.eneSardTulukhDun < 0)
                 x.eneSardTulukhDun = 0
+              if (x.niitUldegdel < 0)
+                x.niitUldegdel = 0
             });
           res.send(result);
         })

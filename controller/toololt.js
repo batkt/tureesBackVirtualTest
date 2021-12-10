@@ -98,7 +98,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         }
       }, {
         '$group': {
-          '_id': 'avlaga',
+          '_id': '$gereeniiDugaar',
           'tulukh': {
             '$sum': '$avlaga.guilgeenuud.tulukhDun'
           },
@@ -121,6 +121,19 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             ]
           }
         }
+      }, {
+        '$match': {
+          'dun': {
+            '$gt': 0
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'avlaga',
+          'dun': {
+            '$sum': '$dun'
+          }
+        }
       }
     ]
     var avlaga = await Geree.aggregate(query);
@@ -138,14 +151,11 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             '$ne': -1
-          },
-          "uldegdel": {
-            "$lt": 0
           }
         }
       }, {
         '$group': {
-          '_id': 'uglugu',
+          '_id': '$gereeniiDugaar',
           'tulukh': {
             '$sum': '$avlaga.guilgeenuud.tulukhDun'
           },
@@ -166,6 +176,19 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             },
               '$tulukh'
             ]
+          }
+        }
+      }, {
+        '$match': {
+          'dun': {
+            '$gt': 0
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'uglugu',
+          'dun': {
+            '$sum': '$dun'
           }
         }
       }
@@ -446,7 +469,7 @@ exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
     {
       '$match': {
         'baiguullagiinId': req.body.baiguullagiinId,
-        'barilgiinId': req.body.barilgiinId
+        'barilgiinId': req.params.barilgiinId
       }
     }, {
       '$group': {
