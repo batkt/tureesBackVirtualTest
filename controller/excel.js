@@ -699,7 +699,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ovog = mur[usegTooruuKhurvuulekh(tolgoinObject.ovog)];
       object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
-      object.utas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
+      object.utas = [mur[usegTooruuKhurvuulekh(tolgoinObject.utas)]];
       object.mail = mur[usegTooruuKhurvuulekh(tolgoinObject.mail)];
       object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];
       object.turul = "Иргэн";
@@ -747,7 +747,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
       object.zakhirliinOvog = mur[usegTooruuKhurvuulekh(tolgoinObject.zakhirliinOvog)];
       object.zakhirliinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.zakhirliinNer)];
-      object.utas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
+      object.utas = [mur[usegTooruuKhurvuulekh(tolgoinObject.utas)]];
       object.mail = mur[usegTooruuKhurvuulekh(tolgoinObject.mail)];
       object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];
       object.turul = "ААН";

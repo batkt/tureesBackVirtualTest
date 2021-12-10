@@ -36,7 +36,7 @@ const gereeSchema = new Schema(
     albanTushaal: String,
     zakhirliinOvog: String,
     zakhirliinNer: String,
-    utas: String,
+    utas: [String],
     khayag: String,
     khugatsaa: Number,
     duusakhOgnoo: Date,

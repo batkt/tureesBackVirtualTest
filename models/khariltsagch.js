@@ -9,7 +9,7 @@ const khariltsagchSchema = new Schema(
     id: String,
     ner: String,
     ovog: String,
-    utas: String,
+    utas: [String],
     mail: String,
     register: String,
     albanTushaal: String,
