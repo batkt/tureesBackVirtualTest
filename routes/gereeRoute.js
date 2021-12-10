@@ -315,9 +315,6 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                 },
                 'khyamdral': {
                   '$sum': '$avlaga.guilgeenuud.khyamdral'
-                },
-                'tulsun': {
-                  '$sum': '$avlaga.guilgeenuud.tulsunDun'
                 }
               }
             }, {
@@ -325,11 +322,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                 'gereeniiDugaar': '$gereeniiDugaar',
                 'uldegdel': {
                   '$subtract': [
-                    '$tulukh', {
-                      '$sum': [
-                        '$tulsun', '$khyamdral'
-                      ]
-                    }
+                    '$tulukh', '$khyamdral'
                   ]
                 }
               }
