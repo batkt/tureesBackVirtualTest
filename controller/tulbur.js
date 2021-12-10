@@ -304,6 +304,59 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(async (req, res, next)
   }
 });
 
+exports.tukhainOgnoogoorGuilgeegOruulya = asyncHandler(async (req, res, next) => {
+  try {
+    var guilgeenuud = await BankniiGuilgee.find({
+      "tranDate": {
+        $gte: new Date(req.body.ekhlekhOgnoo),
+        $lte: new Date(req.body.duusakhOgnoo)
+      },
+      "kholbosonGereeniiId": {
+        $exists: true,
+        $ne: null
+      }
+    });
+    var khariu = [];
+    console.log("guilgeenuud", guilgeenuud)
+    if (guilgeenuud) {
+      for await (const guilgee of guilgeenuud) {
+        var geree = await Geree.findOne({ _id: guilgee.kholbosonGereeniiId, "avlaga.guilgeenuud.guilgeeniiId": { $nin: [guilgee._id] } });
+        console.log(geree);
+        var oroxGuilgee = {
+          dansniiDugaar: guilgee.dansniiDugaar,
+          guilgeeniiId: guilgee._id,
+          ognoo: guilgee.tranDate,
+          tulsunDans: guilgee.relatedAccount,
+          tulsunDun: guilgee.amount,
+          turul: "bank",
+        }
+        oroxGuilgee.guilgeeKhiisenOgnoo = new Date();
+        if (req.body.nevtersenAjiltniiToken) {
+          oroxGuilgee.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+          oroxGuilgee.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id
+        }
+        if (geree) {
+          await Geree.findByIdAndUpdate({ _id: geree._id }, {
+            $push: {
+              [`avlaga.guilgeenuud`]: oroxGuilgee
+            }
+          }).then((result) => {
+            khariu.push(result)
+          })
+            .catch((err) => {
+              next(err);
+            });
+        }
+      }
+    }
+    console.log("==============================>", guilgeenuud)
+    res.send(khariu);
+  }
+  catch (err) {
+    next(err);
+  }
+});
+
 async function daraagiinTulukhOgnooZasya(gereeniiId) {
   var geree = await Geree.findById(gereeniiId).select('avlaga');
   var jagsaalt = []
