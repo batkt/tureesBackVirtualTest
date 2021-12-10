@@ -98,7 +98,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         }
       }, {
         '$group': {
-          '_id': 'avlaga',
+          '_id': '$gereeniiDugaar',
           'tulukh': {
             '$sum': '$avlaga.guilgeenuud.tulukhDun'
           },
@@ -119,6 +119,19 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
                 ]
               }
             ]
+          }
+        }
+      }, {
+        '$match': {
+          'dun': {
+            '$gt': 0
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'avlaga',
+          'dun': {
+            '$sum': '$dun'
           }
         }
       }
@@ -145,7 +158,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         }
       }, {
         '$group': {
-          '_id': 'uglugu',
+          '_id': '$gereeniiDugaar',
           'tulukh': {
             '$sum': '$avlaga.guilgeenuud.tulukhDun'
           },
@@ -166,6 +179,19 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             },
               '$tulukh'
             ]
+          }
+        }
+      }, {
+        '$match': {
+          'dun': {
+            '$lt': 0
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'uglugu',
+          'dun': {
+            '$sum': '$dun'
           }
         }
       }
