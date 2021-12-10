@@ -181,7 +181,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }, {
         '$match': {
           'dun': {
-            '$lt': 0
+            '$gt': 0
           }
         }
       }, {
