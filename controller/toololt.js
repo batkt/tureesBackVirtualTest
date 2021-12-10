@@ -469,7 +469,7 @@ exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
     {
       '$match': {
         'baiguullagiinId': req.body.baiguullagiinId,
-        'barilgiinId': req.body.barilgiinId
+        'barilgiinId': req.params.barilgiinId
       }
     }, {
       '$group': {
