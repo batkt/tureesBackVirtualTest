@@ -307,8 +307,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                   '$lte': new Date(req.body.duusakhOgnoo)
                 }
               }
-            },
-            {
+            }, {
               '$group': {
                 '_id': '$gereeniiDugaar',
                 'tulukh': {
