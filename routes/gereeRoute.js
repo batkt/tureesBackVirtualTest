@@ -327,6 +327,35 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                 }
               }
             }
+          ],
+          'tuluvluguut': [
+            {
+              '$match': {
+                'avlaga.guilgeenuud.ognoo': {
+                  '$lte': new Date(req.body.duusakhOgnoo),
+                  '$gt': new Date(req.body.ekhlekhOgnoo)
+                }
+              }
+            }, {
+              '$group': {
+                '_id': '$gereeniiDugaar',
+                'tulukh': {
+                  '$sum': '$avlaga.guilgeenuud.tulukhDun'
+                },
+                'khyamdral': {
+                  '$sum': '$avlaga.guilgeenuud.khyamdral'
+                }
+              }
+            }, {
+              '$project': {
+                'gereeniiDugaar': '$gereeniiDugaar',
+                'uldegdel': {
+                  '$subtract': [
+                    '$tulukh', '$khyamdral'
+                  ]
+                }
+              }
+            }
           ]
         }
       }
@@ -357,10 +386,13 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             result.jagsaalt.forEach(x => {
               x.eneSardTulukhDun = gereenuud[0].duusakhOgnoo.find(a => a._id == x.gereeniiDugaar).uldegdel
               x.umnukhSariinUrTulbur = (gereenuud[0].ekhlekhOgnoo.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
+              x.tuluvluguut = (gereenuud[0].tuluvluguut.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               if (x.umnukhSariinUrTulbur < 0)
                 x.umnukhSariinUrTulbur = 0
               if (x.eneSardTulukhDun < 0)
                 x.eneSardTulukhDun = 0
+              if (x.tuluvluguut < 0)
+                x.tuluvluguut = 0
             });
           res.send(result);
         })
