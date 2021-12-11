@@ -5,10 +5,8 @@ const Khariltsagch = require("../models/khariltsagch");
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
     try {
         console.log("asdasd");
-        const khariltsagch = await Khariltsagch.findOne()
+        const khariltsagch = await Khariltsagch.findOne({utas:req.body.utas})
             .select("+nuutsUg")
-            .where("utas")
-            .equals(req.body.utas)
             .catch((err) => {
                 next(err);
             });
