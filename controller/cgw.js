@@ -24,7 +24,7 @@ async function tokenAvya(username, password, next, baiguullagiinId) {
         url.password = password
         const response = await instance.post(url);
         var khariu = JSON.parse(response.body)
-        Token.updateOne({ "baiguullagiinId": baiguullagiinId }, { "ognoo": new Date(), "token": khariu.access_token }, { upsert: true }).then((x) => { console.log(x) }).catch((e) => { console.log(e) });
+        Token.updateOne({ "turul": "khaanCorporate", "baiguullagiinId": baiguullagiinId }, { "ognoo": new Date(), "token": khariu.access_token }, { upsert: true }).then((x) => { console.log(x) }).catch((e) => { console.log(e) });
         return khariu;
     } catch (error) {
         next(error);
@@ -43,6 +43,7 @@ async function dansniiJagsaaltAvya(token, next) {
         next(error);
     }
 }
+
 async function dansniiKhuulgaAvya(token, next, body) {
     try {
         var url = "https://api.khanbank.com/v1/statements/" + body.dansniiDugaar
@@ -69,7 +70,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
 }
 
 exports.bankniiDansniiJagsaaltAvya = asyncHandler(async (req, res, next) => {
-    var tokenObject = await Token.findOne({ baiguullagiinId: req.body.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
+    var tokenObject = await Token.findOne({ "turul": "khaanCorporate", baiguullagiinId: req.body.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
     var token;
     if (!tokenObject) {
         tokenObject = await tokenAvya("0CAhOZ85wlmRzrPAkBycQFeTBnewDX7O", "Rv1eLukuzQirNgD3", next, req.body.baiguullagiinId);
@@ -82,7 +83,7 @@ exports.bankniiDansniiJagsaaltAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.bankniiDansniiKhuulgaAvya = asyncHandler(async (req, res, next) => {
-    var tokenObject = await Token.findOne({ baiguullagiinId: req.body.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
+    var tokenObject = await Token.findOne({ "turul": "khaanCorporate", baiguullagiinId: req.body.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
     var token;
     if (!tokenObject) {
         tokenObject = await tokenAvya("0CAhOZ85wlmRzrPAkBycQFeTBnewDX7O", "Rv1eLukuzQirNgD3", next, req.body.baiguullagiinId);
@@ -96,7 +97,7 @@ exports.bankniiDansniiKhuulgaAvya = asyncHandler(async (req, res, next) => {
 
 
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
-    var tokenObject = await Token.findOne({ baiguullagiinId: req.body.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
+    var tokenObject = await Token.findOne({ "turul": "khaanCorporate", baiguullagiinId: req.body.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
     var token;
     if (!tokenObject) {
         tokenObject = await tokenAvya("0CAhOZ85wlmRzrPAkBycQFeTBnewDX7O", "Rv1eLukuzQirNgD3", next, req.body.baiguullagiinId);

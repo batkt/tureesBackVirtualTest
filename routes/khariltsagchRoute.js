@@ -15,6 +15,10 @@ const {
 } = require("../controller/cgw");
 
 const {
+  qpayGargaya
+} = require("../controller/qpay");
+
+const {
   khariltsagchNevtrey,
   khariltsagchidTokenOnooyo
 } = require('../controller/khariltsagch')
@@ -32,6 +36,7 @@ router.route("/khariltsagchidTokenOnooyo").post(khariltsagchidTokenOnooyo);
 router.route("/khariltsagchiinTooAvya/:barilgiinId").get(tokenShalgakh, khariltsagchiinTooAvya);
 router.route("/bankniiDansniiJagsaaltAvya").get(tokenShalgakh, bankniiDansniiJagsaaltAvya);
 router.route("/bankniiDansniiKhuulgaAvya").post(tokenShalgakh, bankniiDansniiKhuulgaAvya);
+router.route("/qpayGargaya").post(tokenShalgakh, qpayGargaya);
 router.route("/bankniiKhuulgaTatajKhadgalya").post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
 router.route("/khariltsagchZagvarAvya").get(khariltsagchZagvarAvya);
 router.route("/khariltsagchTatya").post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);

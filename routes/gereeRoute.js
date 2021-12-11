@@ -253,7 +253,6 @@ router.route("/gereeTsutslaya").post(tokenShalgakh, async (req, res, next) => {
 });
 
 router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, next) => {
-
   try {
     var query = [
       {
