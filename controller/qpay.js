@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
 const Token = require("../models/token");
+const Dugaarlalt = require("../models/dugaarlalt");
 const QpayObject = require("../models/qpayObject");
 const got = require('got');
 const { URL } = require('url');
@@ -58,57 +59,30 @@ async function qpayShivye(token, qpayObject, next) {
 
 async function qpayObjectUusgeye(body, next) {
     try {
+        var maxDugaar = 1;
+        await Dugaarlalt.find({
+            baiguullagiinId: body.baiguullagiinId,
+            barilgiinId: body.barilgiinId,
+            turul: "qpay"
+        })
+            .sort({
+                dugaar: -1,
+            })
+            .limit(1)
+            .then((result) => {
+                if (result != 0) maxDugaar = result[0].dugaar + 1;
+            });
         object = {
             "invoice_code": "TEST_INVOICE",
-            "sender_invoice_no": "123455678",
-            "invoice_receiver_code": "83",
-            "invoice_description": "Order No1311 200.00",
+            "sender_invoice_no": maxDugaar.toString(),
+            "invoice_receiver_code": body.burtgeliinDugaar,
+            "invoice_description": "Түрээсийн төлбөр",
             "allow_partial": false,
             "minimum_amount": null,
             "allow_exceed": false,
             "maximum_amount": null,
-            "amount": 200,
-            "callback_url": "https://bd5492c3ee85.ngrok.io/payments?payment_id=12345678",
-            "sender_staff_code": "online",
-            "invoice_receiver_data": {
-                "register": "UZ96021105",
-                "name": "Ganzul",
-                "email": "test@gmail.com",
-                "phone": "88614450"
-            },
-            "lines": [
-                {
-                    "tax_product_code": "6401",
-                    "line_description": " Order No1311 200.00 .",
-                    "line_quantity": "1.00",
-                    "line_unit_price": "200.00",
-                    "note": "-.",
-                    "discounts": [
-                        {
-                            "discount_code": "NONE",
-                            "description": " discounts",
-                            "amount": 10,
-                            "note": " discounts"
-                        }
-                    ],
-                    "surcharges": [
-                        {
-                            "surcharge_code": "NONE",
-                            "description": "Хүргэлтийн зардал",
-                            "amount": 10,
-                            "note": " Хүргэлт"
-                        }
-                    ],
-                    "taxes": [
-                        {
-                            "tax_code": "VAT",
-                            "description": "НӨАТ",
-                            "amount": 20,
-                            "note": " НӨАТ"
-                        }
-                    ]
-                }
-            ]
+            "amount": body.dun,
+            "callback_url": "http://zevtabs.mn/qpayTulye/" + body.baiguullagiinId.toString() + "/" + body.barilgiinId.toString() + "/" + maxDugaar.toString()
         }
         return object;
     } catch (error) {
@@ -128,6 +102,20 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
     else
         token = tokenObject.token
     var qpayObject = await qpayObjectUusgeye(req.body, next);
+    console.log("qpayObject", qpayObject);
     var khariu = await qpayShivye(token, qpayObject, next);
+    var dugaarlalt = new Dugaarlalt();
+    dugaarlalt.baiguullagiinId = req.body.baiguullagiinId;
+    dugaarlalt.barilgiinId = req.body.barilgiinId;;
+    dugaarlalt.ognoo = new Date();
+    dugaarlalt.turul = "qpay";
+    dugaarlalt.dugaar = qpayObject.sender_invoice_no + 1
+    dugaarlalt.save();
     res.send(khariu);
+});
+
+exports.qpayTulye = asyncHandler(async (req, res, next) => {
+    console.log("qpay orj irlee body ===>", req.body);
+    console.log("qpay orj irlee params ===>", req.params);
+    res.send(200);
 });
