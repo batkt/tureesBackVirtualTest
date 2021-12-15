@@ -1,8 +1,10 @@
 const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
 const Token = require("../models/token");
+const Tulbur = require("./tulbur");
 const Dugaarlalt = require("../models/dugaarlalt");
 const QpayObject = require("../models/qpayObject");
+const Geree = require("../models/geree");
 const got = require('got');
 const { URL } = require('url');
 const instance = got.extend({
@@ -109,13 +111,42 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
     dugaarlalt.barilgiinId = req.body.barilgiinId;;
     dugaarlalt.ognoo = new Date();
     dugaarlalt.turul = "qpay";
-    dugaarlalt.dugaar = qpayObject.sender_invoice_no + 1
+    dugaarlalt.dugaar = Number(qpayObject.sender_invoice_no) + 1
     dugaarlalt.save();
+    var khadgalakhQpay = new QpayObject();
+    khadgalakhQpay.qpay = qpayObject;
+    khadgalakhQpay.baiguullagiinId = req.body.baiguullagiinId;
+    khadgalakhQpay.barilgiinId = req.body.barilgiinId;
+    khadgalakhQpay.ognoo = new Date();
+    khadgalakhQpay.gereeniiId = req.body.gereeniiId;
+    khadgalakhQpay.tulsunEsekh = false;
+    khadgalakhQpay.save();
     res.send(khariu);
 });
 
 exports.qpayTulye = asyncHandler(async (req, res, next) => {
     console.log("qpay orj irlee body ===>", req.body);
     console.log("qpay orj irlee params ===>", req.params);
-    res.send(200);
+    var qpayBarimt = await QpayObject.findOne({ "qpay.sender_invoice_no": req.params.dugaar, baiguullagiinId: req.params.baiguullagiinId, barilgiinId: req.params.barilgiinId });
+    console.log("qpayBarimt", qpayBarimt);
+    qpayBarimt.tulsunEsekh = true;
+    qpayBarimt.isNew = false;
+    var tulbur = {
+        turul: "qpay",
+        tulsunDun: qpayBarimt.qpay.amount,
+        ognoo: qpayBarimt.ognoo,
+        guilgeeKhiisenOgnoo: new Date(),
+    }
+    Geree.findByIdAndUpdate({ _id: qpayBarimt.gereeniiId }, {
+        $push: {
+            [`avlaga.guilgeenuud`]: tulbur
+        }
+    }).then((result) => {
+        qpayBarimt.save();
+        Tulbur.daraagiinTulukhOgnooZasya(qpayBarimt.gereeniiId);
+    })
+        .catch((err) => {
+            next(err);
+        });
+    res.sendStatus(200);
 });

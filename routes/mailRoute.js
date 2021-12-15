@@ -5,6 +5,7 @@ const {
 } = require("../middlewares/tokenShalgakh");
 const MailiinZagvar = require("../models/mailiinZagvar");
 const Baiguullaga = require("../models/baiguullaga");
+const MsgTuukh = require("../models/msgTuukh");
 const Geree = require("../models/geree");
 
 const aldaa = require("../components/aldaa");
@@ -16,6 +17,7 @@ const {
 } = require('../components/crud');
 
 crud(router, 'mailiinZagvar', MailiinZagvar);
+crud(router, 'msgTuukh', MsgTuukh);
 
 router.post("/duriinMailIlgeeye", tokenShalgakh, (req, res, next) => {
     let id = req.body.id;
@@ -32,7 +34,7 @@ router.post("/duriinMailIlgeeye", tokenShalgakh, (req, res, next) => {
         });
 });
 
-function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, res) {
+function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
     try {
         url = process.env.MSG_SERVER + "/send"
             + "?key=" + key + "&from=" + dugaar + "&to="
@@ -46,6 +48,12 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, res) {
                     next(err1);
                 }
                 else {
+                    var msg = new MsgTuukh();
+                    msg.baiguullagiinId = req.body.baiguullagiinId;
+                    msg.dugaar = jagsaalt[index].to;
+                    msg.gereeniiId = jagsaalt[index].gereeniiId;
+                    msg.msg = jagsaalt[index].text;
+                    msg.save();
                     if (jagsaalt.length > index + 1) {
                         console.log("url", url);
                         console.log("body", body)
@@ -82,7 +90,7 @@ router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
         if (!msgIlgeekhKey || !msgIlgeekhDugaar)
             throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
         var khariu = [];
-        msgIlgeeye(req.body.msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, res)
+        msgIlgeeye(req.body.msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, req, res)
     }
     catch (err) {
         next(err);

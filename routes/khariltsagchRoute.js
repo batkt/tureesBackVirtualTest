@@ -38,7 +38,7 @@ router.route("/khariltsagchiinTooAvya/:barilgiinId").get(tokenShalgakh, kharilts
 router.route("/bankniiDansniiJagsaaltAvya").get(tokenShalgakh, bankniiDansniiJagsaaltAvya);
 router.route("/bankniiDansniiKhuulgaAvya").post(tokenShalgakh, bankniiDansniiKhuulgaAvya);
 router.route("/qpayGargaya").post(tokenShalgakh, qpayGargaya);
-router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").post(qpayTulye);
+router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").get(qpayTulye);
 router.route("/bankniiKhuulgaTatajKhadgalya").post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
 router.route("/khariltsagchZagvarAvya").get(khariltsagchZagvarAvya);
 router.route("/khariltsagchTatya").post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);

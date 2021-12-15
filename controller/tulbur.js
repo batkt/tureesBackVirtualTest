@@ -43,36 +43,36 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
 });
 
 exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
-  var guilgee = req.body.guilgee;
-  console.log("guilgee", guilgee);
-  var guilgeeniiDun = (guilgee?.tulsunDun || 0) - (guilgee?.tulukhDun || 0);
-  guilgee.guilgeeKhiisenOgnoo = new Date();
-  if (req.body.nevtersenAjiltniiToken) {
-    guilgee.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
-    guilgee.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id
-  }
-  Geree.findByIdAndUpdate({ _id: guilgee.gereeniiId }, {
-    $push: {
-      [`avlaga.guilgeenuud`]: guilgee
-    },
-    $inc: { "uldegdel": - guilgeeniiDun }
-  }).then((result) => {
-    daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
-    if (guilgee.guilgeeniiId) {
-      console.log("guilgee.guilgeeniiId", guilgee.guilgeeniiId);
-      BankniiGuilgee.updateOne({ _id: guilgee.guilgeeniiId }, { $set: { kholbosonGereeniiId: guilgee.gereeniiId, kholbosonTalbainId: result.talbainDugaar, magadlaltaiGereenuud: null } }).then((result1) => {
-        res.send(result1);
+  var guilgeenuud = req.body.guilgee;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    for await (const guilgee of guilgeenuud) {
+      guilgee.guilgeeKhiisenOgnoo = new Date();
+      if (req.body.nevtersenAjiltniiToken) {
+        guilgee.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+        guilgee.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id
+      }
+      await Geree.findByIdAndUpdate({ _id: guilgee.gereeniiId }, {
+        $push: {
+          [`avlaga.guilgeenuud`]: guilgee
+        }
       })
-        .catch((err) => {
+      await daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
+      if (guilgee.guilgeeniiId) {
+        await BankniiGuilgee.updateOne({ _id: guilgee.guilgeeniiId }, { $set: { kholbosonGereeniiId: guilgee.gereeniiId, kholbosonTalbainId: result.talbainDugaar, magadlaltaiGereenuud: null } }).catch((err) => {
           next(err);
         });
+      }
     }
-    else
-      res.send(result);
-  })
-    .catch((err) => {
-      next(err);
-    });
+    await session.commitTransaction();
+    session.endSession();
+    res.send("Amjilttai");
+  }
+  catch (err) {
+    await session.abortTransaction();
+    next(err);
+  }
 });
 
 module.exports.tulultTaniya = async function tulultTaniya() {

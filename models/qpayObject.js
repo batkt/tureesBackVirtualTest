@@ -4,8 +4,11 @@ const Schema = mongoose.Schema;
 mongoose.pluralize(null);
 const qpayObjectSchema = new Schema({
   gereeniiId: String,
+  baiguullagiinId: String,
+  barilgiinId: String,
+  tulsunEsekh: Boolean,
   ognoo: Date,
-  khariu: Schema.Types.Mixed
+  qpay: Schema.Types.Mixed
 }, {
   timestamps: true
 });
