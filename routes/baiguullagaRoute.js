@@ -49,6 +49,22 @@ router.post(
 );
 
 router.post(
+  "/baiguullagaAvya",
+  (req, res, next) => {
+    Baiguullaga.findOne({
+      "register": req.body.register,
+    })
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        next(err);
+      });
+
+  }
+);
+
+router.post(
   "/baiguullagaTokhirgooZasya",
   tokenShalgakh,
   (req, res, next) => {

@@ -34,6 +34,29 @@ async function tokenAvya(username, password, next, baiguullagiinId) {
     }
 }
 
+async function tokenSungaya(token, next) {
+    try {
+        var url = "https://merchant-sandbox.qpay.mn/v2/auth/refresh"
+        url = new URL(url);
+        const context = {
+            token: "Bearer " + token
+        };
+        const response = await instance.post(url, { context });
+        if (!response.body) {
+            if (next) {
+                next(new aldaa("Алдаа гарлаа!"));
+                console.log("response =>", response)
+            }
+            else return null;
+        }
+        return JSON.parse(response.body);
+    } catch (error) {
+        console.log("error", error);
+        if (next)
+            next(error);
+    }
+}
+
 
 async function qpayShivye(token, qpayObject, next) {
     try {
@@ -101,8 +124,11 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
         tokenObject = await tokenAvya("TEST_MERCHANT", "123456", next, req.body.baiguullagiinId);
         token = tokenObject.access_token;
     }
-    else
-        token = tokenObject.token
+    else {
+        var tokenO = await tokenSungaya(tokenObject.refreshToken, next)
+        console.log("tokenO", tokenO);
+        token = tokenO.access_token
+    }
     var qpayObject = await qpayObjectUusgeye(req.body, next);
     console.log("qpayObject", qpayObject);
     var khariu = await qpayShivye(token, qpayObject, next);
