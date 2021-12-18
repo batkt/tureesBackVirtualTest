@@ -22,8 +22,9 @@ const bankniiGuilgeeSchema = new Schema({
   description: String,
   relatedAccount: String,
   ebarimtAvsanEsekh: Boolean,
-  kholbosonGereeniiId: String,
-  kholbosonTalbainId: String,
+  kholbosonGereeniiId: [String],
+  kholbosonDun: Number,
+  kholbosonTalbainId: [String],
   magadlaltaiGereenuud: {
     type: [String],
     default: undefined

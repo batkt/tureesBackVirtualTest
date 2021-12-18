@@ -55,6 +55,77 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
     });
 });
 
+exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
+  var guilgeenuud = req.body.guilgeenuud;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    var aldaaniiMsg;
+    for await (const tulbur of guilgeenuud) {
+      tulbur.guilgeeKhiisenOgnoo = new Date();
+      if (req.body.nevtersenAjiltniiToken) {
+        tulbur.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+        tulbur.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id;
+      }
+      await Geree.findByIdAndUpdate(
+        { _id: tulbur.gereeniiId },
+        {
+          $push: {
+            [`avlaga.guilgeenuud`]: tulbur,
+          }
+        }
+      ).catch((err) => {
+        next(err);
+      });
+
+      daraagiinTulukhOgnooZasya(tulbur.gereeniiId);
+      if (tulbur.guilgeeniiId) {
+        await BankniiGuilgee.updateOne(
+          { _id: tulbur.guilgeeniiId },
+          {
+            $push: {
+              "kholbosonGereeniiId": tulbur.gereeniiId,
+              "kholbosonTalbainId": tulbur.talbainDugaar
+            }
+          }
+        ).catch((err) => {
+          next(err);
+        });
+        await BankniiGuilgee.updateOne(
+          { _id: tulbur.guilgeeniiId },
+          [{
+            $set: {
+              "kholbosonDun": {
+                "$add": [
+                  { $ifNull: ["$kholbosonDun", 0] }, tulbur.tulsunDun
+                ]
+              },
+              magadlaltaiGereenuud: null,
+            }
+          }]
+        ).catch((err) => {
+          next(err);
+        });
+      }
+
+    }
+    if (!aldaaniiMsg) {
+      console.log("aldaaniiMsg", aldaaniiMsg);
+      await session.commitTransaction();
+    }
+    else {
+      console.log("aldaaniiMsg1", aldaaniiMsg);
+      await session.abortTransaction();
+    }
+    session.endSession();
+    res.send("Amjilttai");
+  }
+  catch (err1) {
+    await session.abortTransaction();
+    next(err1);
+  }
+});
+
 exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
   var guilgee = req.body.guilgee;
   console.log("guilgee", guilgee);
@@ -145,35 +216,56 @@ module.exports.tulultTaniya = async function tulultTaniya() {
 };
 
 exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
-  Geree.findByIdAndUpdate(
-    { _id: req.body.gereeniiId },
-    {
-      $pull: {
-        [`avlaga.guilgeenuud`]: {
-          _id: req.body.objectiinId,
-        },
-      },
-      $inc: { uldegdel: req.body.tulsunDun ? req.body.tulsunDun : 0 },
-    }
-  )
-    .then((result) => {
-      daraagiinTulukhOgnooZasya(req.body.gereeniiId);
-      if (req.body.guilgeeniiId)
-        BankniiGuilgee.updateOne(
-          { _id: req.body.guilgeeniiId },
-          { $set: { kholbosonGereeniiId: null, kholbosonTalbainId: null } }
-        )
-          .then((result1) => {
-            res.send(result1);
-          })
-          .catch((err) => {
-            next(err);
-          });
-      else res.send(result);
-    })
-    .catch((err) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    await Geree.findByIdAndUpdate(
+      { _id: req.body.gereeniiId },
+      {
+        $pull: {
+          [`avlaga.guilgeenuud`]: {
+            _id: req.body.objectiinId,
+          },
+        }
+      }
+    ).catch((err) => {
       next(err);
     });
+
+    daraagiinTulukhOgnooZasya(req.body.gereeniiId);
+    if (req.body.guilgeeniiId) {
+      await BankniiGuilgee.updateOne(
+        { _id: req.body.guilgeeniiId },
+
+        [{
+          $set: {
+            "kholbosonDun": {
+              "$add": [
+                { $ifNull: ["$kholbosonDun", 0] }, req.body.tulsunDun * (-1)
+              ]
+            }
+          }
+        }]
+      ).catch((err) => {
+        next(err);
+      });
+      await BankniiGuilgee.updateOne(
+        { _id: req.body.guilgeeniiId },
+        {
+          $pull: { "kholbosonGereeniiId": req.body.gereeniiId, kholbosonTalbainId: req.body.talbainDugaar },
+        }
+      ).catch((err) => {
+        next(err);
+      });
+    }
+    await session.commitTransaction();
+    session.endSession();
+    res.send("Amjilttai");
+  }
+  catch (err) {
+    await session.abortTransaction();
+    next(err);
+  }
 });
 
 exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
@@ -262,7 +354,6 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
           };
           khyamdraluud.push(khyamdral);
         }
-        console.log("khyamdraluud", khyamdraluud);
         await Geree.updateOne(
           { _id: geree._id },
           { $push: { "avlaga.guilgeenuud": { $each: khyamdraluud } } }
@@ -427,7 +518,6 @@ async function daraagiinTulukhOgnooZasya(gereeniiId) {
   var niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
     return object.tulsunDun;
   });
-  console.log("niitTulsunDun", niitTulsunDun);
   jagsaalt = lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
   jagsaalt = lodash.orderBy(jagsaalt, ["ognoo"], ["asc"]);
   var tulukhOgnoo;
