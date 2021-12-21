@@ -67,13 +67,13 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo) {
   return token;
 };
 ajiltanSchema.pre("save", async function () {
-  this.indexTalbar = this.baiguullagiinId + this.nevtrekhNer;
+  this.indexTalbar = this.register + this.nevtrekhNer;
   const salt = await bcrypt.genSalt(12);
   this.nuutsUg = await bcrypt.hash(this.nuutsUg, salt);
 });
 
 ajiltanSchema.pre("updateOne", async function () {
-  this.indexTalbar = this._update.baiguullagiinId + this._update.nevtrekhNer;
+  this.indexTalbar = this._update.register + this._update.nevtrekhNer;
   const salt = await bcrypt.genSalt(12);
   this._update.nuutsUg = await bcrypt.hash(this._update.nuutsUg, salt);
 });
