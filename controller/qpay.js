@@ -3,6 +3,7 @@ const aldaa = require("../components/aldaa");
 const Token = require("../models/token");
 const Tulbur = require("./tulbur");
 const Dugaarlalt = require("../models/dugaarlalt");
+const Baiguullaga = require("../models/baiguullaga");
 const QpayObject = require("../models/qpayObject");
 const Geree = require("../models/geree");
 const got = require('got');
@@ -22,12 +23,13 @@ const instance = got.extend({
 
 async function tokenAvya(username, password, next, baiguullagiinId) {
     try {
-        var url = new URL('https://merchant-sandbox.qpay.mn/v2/auth/token/')
+        var url = new URL(process.env.QPAY_SERVER + "v2/auth/token/")
         url.username = username
         url.password = password
         const response = await instance.post(url);
         var khariu = JSON.parse(response.body)
         Token.updateOne({ "turul": "qpay", "baiguullagiinId": baiguullagiinId }, { "ognoo": new Date(), "token": khariu.access_token, "refreshToken": khariu.refresh_token }, { upsert: true }).then((x) => { console.log(x) }).catch((e) => { console.log(e) });
+        console.log("khariu", khariu);
         return khariu;
     } catch (error) {
         next(error);
@@ -36,7 +38,7 @@ async function tokenAvya(username, password, next, baiguullagiinId) {
 
 async function tokenSungaya(token, next) {
     try {
-        var url = "https://merchant-sandbox.qpay.mn/v2/auth/refresh"
+        var url = process.env.QPAY_SERVER + "v2/auth/refresh"
         url = new URL(url);
         const context = {
             token: "Bearer " + token
@@ -60,7 +62,7 @@ async function tokenSungaya(token, next) {
 
 async function qpayShivye(token, qpayObject, next) {
     try {
-        var url = "https://merchant-sandbox.qpay.mn/v2/invoice"
+        var url = process.env.QPAY_SERVER + "v2/invoice"
         url = new URL(url);
         const context = {
             token: "Bearer " + token
@@ -82,7 +84,7 @@ async function qpayShivye(token, qpayObject, next) {
     }
 }
 
-async function qpayObjectUusgeye(body, next) {
+async function qpayObjectUusgeye(body, invoiceCode, next) {
     try {
         var maxDugaar = 1;
         await Dugaarlalt.find({
@@ -98,7 +100,7 @@ async function qpayObjectUusgeye(body, next) {
                 if (result != 0) maxDugaar = result[0].dugaar + 1;
             });
         object = {
-            "invoice_code": "TEST_INVOICE",
+            "invoice_code": invoiceCode,
             "sender_invoice_no": maxDugaar.toString(),
             "invoice_receiver_code": body.burtgeliinDugaar,
             "invoice_description": "Түрээсийн төлбөр",
@@ -118,10 +120,16 @@ async function qpayObjectUusgeye(body, next) {
 }
 
 exports.qpayGargaya = asyncHandler(async (req, res, next) => {
+
+    var baiguullaga = await Baiguullaga.findOne({ _id: req.body.baiguullagiinId });
+    if (!baiguullaga.tokhirgoo.qpayUsername || !baiguullaga.tokhirgoo.qpayPassword || !baiguullaga.tokhirgoo.qpayInvoiceCode)
+        throw new aldaa("Qpay тохиргоо хийгдээгүй байна!");
+
     var tokenObject = await Token.findOne({ "turul": "qpay", baiguullagiinId: req.body.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
     var token;
     if (!tokenObject) {
-        tokenObject = await tokenAvya("TEST_MERCHANT", "123456", next, req.body.baiguullagiinId);
+        console.log("token bxgu");
+        tokenObject = await tokenAvya(baiguullaga.tokhirgoo.qpayUsername, baiguullaga.tokhirgoo.qpayPassword, next, req.body.baiguullagiinId);
         token = tokenObject.access_token;
     }
     else {
@@ -129,7 +137,7 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
         console.log("tokenO", tokenO);
         token = tokenO.access_token
     }
-    var qpayObject = await qpayObjectUusgeye(req.body, next);
+    var qpayObject = await qpayObjectUusgeye(req.body, baiguullaga.tokhirgoo.qpayInvoiceCode, next);
     console.log("qpayObject", qpayObject);
     var khariu = await qpayShivye(token, qpayObject, next);
     var dugaarlalt = new Dugaarlalt();
@@ -151,8 +159,6 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
 });
 
 exports.qpayTulye = asyncHandler(async (req, res, next) => {
-    console.log("qpay orj irlee body ===>", req.body);
-    console.log("qpay orj irlee params ===>", req.params);
     var qpayBarimt = await QpayObject.findOne({ "qpay.sender_invoice_no": req.params.dugaar, baiguullagiinId: req.params.baiguullagiinId, barilgiinId: req.params.barilgiinId });
     console.log("qpayBarimt", qpayBarimt);
     qpayBarimt.tulsunEsekh = true;

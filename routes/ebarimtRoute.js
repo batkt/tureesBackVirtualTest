@@ -52,7 +52,7 @@ async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
 async function ebarimtDuudya(ugugdul, onFinish, next) {
     const data = new TextEncoder().encode(JSON.stringify(ugugdul));
     var url = process.env.EBARIMT_IP + "/put";
-    if (ugugdul.baiguullagiinId) url = url + "?lib=" + ugugdul.baiguullagiinId.toString();
+    if (ugugdul.barilgiinId) url = url + "?lib=" + ugugdul.barilgiinId.toString();
     request.post(url,
         { json: true, body: { data: ugugdul } },
         (err, res1, body) => {
@@ -81,7 +81,7 @@ async function ebarimtMedeelelAvya(ugugdul, onFinish, next) {
 router.get("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
     try {
         ebarimtMedeelelAvya(
-            req.body.baiguullagiinId,
+            req.body.barilgiinId,
             (d) => {
                 console.log("duuslaa", d);
                 res.send(d);
@@ -96,7 +96,7 @@ router.get("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
 async function ebarimtButsaaya(ugugdul, onFinish, next) {
     const data = new TextEncoder().encode(JSON.stringify(ugugdul));
     var url = process.env.EBARIMT_IP + "/returnBill";
-    if (ugugdul.baiguullagiinId) url = url + "?lib=" + ugugdul.baiguullagiinId.toString();
+    if (ugugdul.barilgiinId) url = url + "?lib=" + ugugdul.barilgiinId.toString();
     request.post(url,
         { json: true, body: { data: ugugdul } },
         (err, res1, body) => {
@@ -186,7 +186,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
 router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
     try {
         var url = process.env.EBARIMT_IP + "/sendData";
-        if (req.body.baiguullagiinId) url = url + "?lib=" + req.body.baiguullagiinId.toString();
+        if (req.body.barilgiinId) url = url + "?lib=" + req.body.barilgiinId.toString();
         console.log('url', url);
         request.get(url,
             { json: true },

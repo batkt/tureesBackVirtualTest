@@ -52,8 +52,10 @@ const baiguullagaSchema = new Schema({
         /**Системд И Баримт ашиглах эсэх */
         eBarimtAshiglakhEsekh: Boolean,
         msgIlgeekhKey: String,
-        msgIlgeekhDugaar: String
-
+        msgIlgeekhDugaar: String,
+        qpayUsername: String,
+        qpayPassword: String,
+        qpayInvoiceCode: String
     },
     SUKH: {
         tseverUsKhaluun: Number,
