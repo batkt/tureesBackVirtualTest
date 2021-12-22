@@ -115,7 +115,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         console.log("guilgee", guilgee);
         if (guilgee.ebarimtAvsanEsekh)
             throw new aldaa("Ибаримт хэвлэж авсан байна!");
-        var geree = await Geree.findById(guilgee.kholbosonGereeniiId);
+        var geree = await Geree.findById(guilgee.kholbosonGereeniiId[0]);
         if (!geree)
             throw new aldaa("Холбогдсон гэрээ байхгүй тул ибаримт хэвлэх боломжгүй");
         var ebarimt = await guilgeeneesEbarimtUusgye(
