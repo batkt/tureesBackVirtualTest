@@ -176,7 +176,8 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
             butsaakhBarimt.ustgasanOgnoo = new Date();
             butsaakhBarimt.isNew = false;
             await butsaakhBarimt.save().catch((err) => { next(err); console.log("aldaa", err) });
-            await BankniiGuilgee.findByIdAndUpdate({ _id: butsaakhBarimt.guilgeeniiId }, { ebarimtAvsanEsekh: false }).catch((err) => { next(err); console.log("aldaa", err) });
+            if (butsaakhBarimt.guilgeeniiId)
+                await BankniiGuilgee.findByIdAndUpdate({ _id: butsaakhBarimt.guilgeeniiId }, { ebarimtAvsanEsekh: false }).catch((err) => { next(err); console.log("aldaa", err) });
             console.log("duuslaa", d);
             res.json(d);
         }, next);
