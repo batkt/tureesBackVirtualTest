@@ -109,7 +109,7 @@ async function qpayObjectUusgeye(body, invoiceCode, next) {
             "allow_exceed": false,
             "maximum_amount": null,
             "amount": body.dun,
-            "callback_url": "http://zevtabs.mn/qpayTulye/" + body.baiguullagiinId.toString() + "/" + body.barilgiinId.toString() + "/" + maxDugaar.toString()
+            "callback_url": "http://zevtabs.mn:8081/qpayTulye/" + body.baiguullagiinId.toString() + "/" + body.barilgiinId.toString() + "/" + maxDugaar.toString()
         }
         return object;
     } catch (error) {
