@@ -78,7 +78,7 @@ async function ebarimtMedeelelAvya(ugugdul, onFinish, next) {
         }
     );
 }
-router.get("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
+router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
     try {
         ebarimtMedeelelAvya(
             req.body.barilgiinId,
