@@ -176,9 +176,9 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
     }).then((result) => {
         qpayBarimt.save();
         Tulbur.daraagiinTulukhOgnooZasya(qpayBarimt.gereeniiId);
+        res.sendStatus(200);
     })
         .catch((err) => {
-            next(err);
+            res.sendStatus(200);
         });
-    res.sendStatus(200);
 });

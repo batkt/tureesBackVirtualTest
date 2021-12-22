@@ -21,7 +21,8 @@ const {
 
 const {
   khariltsagchNevtrey,
-  khariltsagchidTokenOnooyo
+  khariltsagchidTokenOnooyo,
+  tokenoorKhariltsagchAvya
 } = require('../controller/khariltsagch')
 
 const {
@@ -33,6 +34,7 @@ const { khariltsagchZagvarAvya, khariltsagchTatya } = require("../controller/exc
 crud(router, "khariltsagch", Khariltsagch);
 
 router.route("/khariltsagchNevtrey").post(khariltsagchNevtrey);
+router.route("/tokenoorKhariltsagchAvya").post(tokenoorKhariltsagchAvya)
 router.route("/khariltsagchidTokenOnooyo").post(khariltsagchidTokenOnooyo);
 router.route("/khariltsagchiinTooAvya/:barilgiinId").get(tokenShalgakh, khariltsagchiinTooAvya);
 router.route("/bankniiDansniiJagsaaltAvya").get(tokenShalgakh, bankniiDansniiJagsaaltAvya);
