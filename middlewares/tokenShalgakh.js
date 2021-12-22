@@ -8,8 +8,8 @@ exports.tokenShalgakh = asyncHandler(async (req, res, next) => {
   const token = req.headers.authorization.split(" ")[1];
   if (!token) throw new Error("Токен байхгүй байна!");
   const tokenObject = jwt.verify(token, "tokenUusgexTest0123", 401);
+  req.body.baiguullagiinId = tokenObject.baiguullagiinId;
   if (!tokenObject.turul) {
-    req.body.baiguullagiinId = tokenObject.baiguullagiinId;
     req.body.nevtersenAjiltniiToken = tokenObject;
   }
   next();
