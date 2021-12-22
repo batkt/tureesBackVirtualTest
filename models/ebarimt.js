@@ -6,6 +6,7 @@ const ebarimtSchema = new Schema({
   "baiguullagiinId": String,
   "barilgiinId": String,
   "gereeniiDugaar": String,
+  "guilgeeniiId": String,
   "tulultiinId": String,
   "ustgasanOgnoo": Date,
   "amount": String,

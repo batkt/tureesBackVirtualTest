@@ -20,6 +20,7 @@ async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
         if (turul) ebarimt.billType = turul;
         ebarimt.customerNo = register;
     }
+    ebarimt.guilgeeniiId = guilgee._id;
     ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
     ebarimt.barilgiinId = guilgee.barilgiinId;
     ebarimt.gereeniiDugaar = geree.gereeniiDugaar;
@@ -171,12 +172,13 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
     try {
         var butsaakhBarimt = new Ebarimt(req.body);
         butsaakhBarimt.returnBillId = butsaakhBarimt.billId;
-        ebarimtButsaaya(butsaakhBarimt, (d) => {
+        ebarimtButsaaya(butsaakhBarimt, async (d) => {
             butsaakhBarimt.ustgasanOgnoo = new Date();
             butsaakhBarimt.isNew = false;
-            butsaakhBarimt.save().catch((err) => { next(err) });
+            await butsaakhBarimt.save().catch((err) => { next(err); console.log("aldaa", err) });
+            await BankniiGuilgee.findByIdAndUpdate({ _id: butsaakhBarimt.guilgeeniiId }, { ebarimtAvsanEsekh: false }).catch((err) => { next(err); console.log("aldaa", err) });
             console.log("duuslaa", d);
-            res.send(d);
+            res.json(d);
         }, next);
     } catch (error) {
         next(error);
