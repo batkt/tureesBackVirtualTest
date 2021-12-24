@@ -128,7 +128,8 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         ebarimtDuudya(
             ebarimt,
             (d) => {
-                Ebarimt.insertMany(d).catch((err) => {
+                var ebarimt = new Ebarimt(d)
+                ebarimt.save().catch((err) => {
                     next(err);
                 });
                 BankniiGuilgee.findByIdAndUpdate({ "_id": req.body.id }, { ebarimtAvsanEsekh: true }).then((xariu) => { console.log(xariu) }).catch((err) => { console.log(err) });
@@ -225,6 +226,88 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
             .catch((err) => {
                 next(err);
             });
+    } catch (error) {
+        next(error);
+    }
+});
+router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
+    try {
+        var query = [{
+            $match: {
+                baiguullagiinId: req.body.baiguullagiinId,
+                barilgiinId: req.body.barilgiinId,
+                dateOgnoo: {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                    $lte: new Date(req.body.duusakhOgnoo)
+                }
+            }
+        }, {
+            $facet: {
+                butsaasan: [{
+                    $match: {
+                        ustgasanOgnoo: {
+                            $exists: true
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: 'butsaasan',
+                        too: {
+                            $sum: 1
+                        },
+                        dun: {
+                            $sum: {
+                                "$toDecimal": '$amount'
+                            }
+                        }
+                    }
+                }
+                ],
+                ilgeesen: [{
+                    $match: {
+                        ustgasanOgnoo: {
+                            $exists: false
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: 'ilgeesen',
+                        too: {
+                            $sum: 1
+                        },
+                        dun: {
+                            $sum: {
+                                $toDecimal: '$amount'
+                            }
+                        }
+                    }
+                }
+                ]
+            }
+        }];
+        Ebarimt.aggregate(query).then((result) => {
+            khariu = {
+                ilgeesenDun: 0,
+                ilgeesenToo: 0,
+                butsaasanDun: 0,
+                butsaasanToo: 0
+            }
+            if (result[0]) {
+                if (result[0].butsaasan[0]) {
+                    khariu.butsaasanDun = parseFloat(result[0].butsaasan[0].dun);
+                    khariu.butsaasanToo = result[0].butsaasan[0].too;
+                }
+                if (result[0].ilgeesen[0]) {
+                    khariu.ilgeesenDun = parseFloat(result[0].ilgeesen[0].dun);
+                    khariu.ilgeesenToo = result[0].ilgeesen[0].too;
+                }
+            }
+            res.send(khariu);
+        }).catch(err => {
+            next(err);
+        })
     } catch (error) {
         next(error);
     }
