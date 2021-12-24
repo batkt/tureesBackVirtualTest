@@ -324,7 +324,9 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
             ilgeesenDun: 0,
             ilgeesenToo: 0,
             butsaasanDun: 0,
-            butsaasanToo: 0
+            butsaasanToo: 0,
+            avakhDun: 0,
+            avakhToo: 0
         }
         if (result[0]) {
             if (result[0].butsaasan[0]) {
