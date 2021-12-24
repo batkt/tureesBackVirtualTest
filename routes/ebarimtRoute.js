@@ -287,27 +287,61 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
                 ]
             }
         }];
-        Ebarimt.aggregate(query).then((result) => {
-            khariu = {
-                ilgeesenDun: 0,
-                ilgeesenToo: 0,
-                butsaasanDun: 0,
-                butsaasanToo: 0
-            }
-            if (result[0]) {
-                if (result[0].butsaasan[0]) {
-                    khariu.butsaasanDun = parseFloat(result[0].butsaasan[0].dun);
-                    khariu.butsaasanToo = result[0].butsaasan[0].too;
+        var result = await Ebarimt.aggregate(query).catch(err => { next(err); })
+
+        query = [{
+            $match: {
+                baiguullagiinId: req.body.baiguullagiinId,
+                barilgiinId: req.body.barilgiinId,
+                amount: {
+                    $gt: 0
+                },
+                tranDate: {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                    $lte: new Date(req.body.duusakhOgnoo)
+                },
+                ebarimtAvsanEsekh: {
+                    $ne: true
+                },
+                kholbosonGereeniiId: {
+                    $exists: true
                 }
-                if (result[0].ilgeesen[0]) {
-                    khariu.ilgeesenDun = parseFloat(result[0].ilgeesen[0].dun);
-                    khariu.ilgeesenToo = result[0].ilgeesen[0].too;
+            }
+        }, {
+            $group: {
+                _id: 'ebarimt',
+                dun: {
+                    $sum: '$amount'
+                },
+                too: {
+                    $sum: 1
                 }
             }
-            res.send(khariu);
-        }).catch(err => {
-            next(err);
-        })
+        }]
+        var result1 = await BankniiGuilgee.aggregate(query).catch(err => { next(err); })
+
+        khariu = {
+            ilgeesenDun: 0,
+            ilgeesenToo: 0,
+            butsaasanDun: 0,
+            butsaasanToo: 0
+        }
+        if (result[0]) {
+            if (result[0].butsaasan[0]) {
+                khariu.butsaasanDun = parseFloat(result[0].butsaasan[0].dun);
+                khariu.butsaasanToo = result[0].butsaasan[0].too;
+            }
+            if (result[0].ilgeesen[0]) {
+                khariu.ilgeesenDun = parseFloat(result[0].ilgeesen[0].dun);
+                khariu.ilgeesenToo = result[0].ilgeesen[0].too;
+            }
+        }
+
+        if (result1[0]) {
+            khariu.avakhDun = result1[0].dun;
+            khariu.avakhToo = result1[0].too;
+        }
+        res.send(khariu);
     } catch (error) {
         next(error);
     }
