@@ -1,8 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-mongoose.pluralize(null)
-const baiguullagaSchema = new Schema({
+mongoose.pluralize(null);
+const baiguullagaSchema = new Schema(
+  {
     id: String,
     ner: String,
     khayag: String,
@@ -11,63 +12,79 @@ const baiguullagaSchema = new Schema({
     utas: String,
     zurgiinNer: String,
     barilguud: [
-        {
-            bairshil: {
-                type: {
-                    type: String,
-                    enum: ['Point']
-                },
-                coordinates: {
-                    type: [Number]
-                }
-            },
-            ner: String,
-            khayag: String,
-            register: String,
-            davkharuud: [
-                {
-                    davkhar: String,
-                    tariff: Number
-                }
-            ]
-        }
+      {
+        bairshil: {
+          type: {
+            type: String,
+            enum: ["Point"],
+          },
+          coordinates: {
+            type: [Number],
+          },
+        },
+        ner: String,
+        khayag: String,
+        register: String,
+        davkharuud: [
+          {
+            davkhar: String,
+            tariff: Number,
+          },
+        ],
+      },
     ],
     davkhar: Number,
     talbai: Number,
     tokhirgoo: {
-        /**Жилийн эцэсээр гэрээ хаах бол 12 гэж байна ИХ Наяд дээр бүх гэрээ жилийн эцэст хаагддаг учир ийл тохиргоо авлаа */
-        gereeDuusgakhSar: Number,
+      /**Жилийн эцэсээр гэрээ хаах бол 12 гэж байна ИХ Наяд дээр бүх гэрээ жилийн эцэст хаагддаг учир ийл тохиргоо авлаа */
+      gereeDuusgakhSar: Number,
 
-        /**Хөнгөлөлт ажилтан харгалзахгүй өгөх боломж олгоно */
-        bukhAjiltanKhungulultOruulakhEsekh: Boolean,
+      /**Хөнгөлөлт ажилтан харгалзахгүй өгөх боломж олгоно */
+      bukhAjiltanKhungulultOruulakhEsekh: Boolean,
 
-        /**Тухайн байгууллагын хөнгөлж болох дээд хувь байна */
-        deedKhungulultiinKhuvi: Number,
+      /**Тухайн байгууллагын хөнгөлж болох дээд хувь байна */
+      deedKhungulultiinKhuvi: Number,
 
-        /**Гэрээний хугацаа дуусах үед автоматаар сунгах эсэх */
-        gereeAvtomataarSungakhEsekh: Boolean,
+      /**Гэрээний хугацаа дуусах үед автоматаар сунгах эсэх */
+      gereeAvtomataarSungakhEsekh: Boolean,
 
-        /**Гэрээ засах эрх бүх ажилтанд олгох эсэх */
-        bukhAjiltanGereendZasvarOruulakhEsekh: Boolean,
-        /**Системд И Баримт ашиглах эсэх */
-        eBarimtAshiglakhEsekh: Boolean,
-        msgIlgeekhKey: String,
-        msgIlgeekhDugaar: String,
-        qpayUsername: String,
-        qpayPassword: String,
-        qpayInvoiceCode: String
+      /**Гэрээ засах эрх бүх ажилтанд олгох эсэх */
+      bukhAjiltanGereendZasvarOruulakhEsekh: Boolean,
+      /**Системд И Баримт ашиглах эсэх */
+      eBarimtAshiglakhEsekh: Boolean,
+      msgIlgeekhKey: String,
+      msgIlgeekhDugaar: String,
+      qpayUsername: String,
+      qpayPassword: String,
+      qpayInvoiceCode: String,
     },
     SUKH: {
-        tseverUsKhaluun: Number,
-        tseverUsKhuiten: Number,
-        bokhirUs: Number,
-        khaluunUsKhalaasanDulaan: Number,
-        usniiSuuriKhuraamj: Number,
-        khalaalt: Number,
-        dulaaniiSuuriKhuraamj: Number,
-    }
-}, {
-    timestamps: true
-});
+      tseverUsKhaluun: Number,
+      tseverUsKhuiten: Number,
+      bokhirUs: Number,
+      khaluunUsKhalaasanDulaan: Number,
+      usniiSuuriKhuraamj: Number,
+      khalaalt: Number,
+      dulaaniiSuuriKhuraamj: Number,
+    },
+    erkhuud: [
+      {
+        zam: String,
+        ner: String,
+        tailbar: String,
+        tokhirgoo: [
+          {
+            utga: String,
+            ner: String,
+            tailbar: String,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = mongoose.model('baiguullaga', baiguullagaSchema);
+module.exports = mongoose.model("baiguullaga", baiguullagaSchema);
