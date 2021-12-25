@@ -20,6 +20,7 @@ async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
         if (turul) ebarimt.billType = turul;
         ebarimt.customerNo = register;
     }
+    ebarimt.guilgeeniiId = guilgee._id;
     ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
     ebarimt.barilgiinId = guilgee.barilgiinId;
     ebarimt.gereeniiDugaar = geree.gereeniiDugaar;
@@ -114,7 +115,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         console.log("guilgee", guilgee);
         if (guilgee.ebarimtAvsanEsekh)
             throw new aldaa("Ибаримт хэвлэж авсан байна!");
-        var geree = await Geree.findById(guilgee.kholbosonGereeniiId);
+        var geree = await Geree.findById(guilgee.kholbosonGereeniiId[0]);
         if (!geree)
             throw new aldaa("Холбогдсон гэрээ байхгүй тул ибаримт хэвлэх боломжгүй");
         var ebarimt = await guilgeeneesEbarimtUusgye(
@@ -127,7 +128,8 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         ebarimtDuudya(
             ebarimt,
             (d) => {
-                Ebarimt.insertMany(d).catch((err) => {
+                var ebarimt = new Ebarimt(d)
+                ebarimt.save().catch((err) => {
                     next(err);
                 });
                 BankniiGuilgee.findByIdAndUpdate({ "_id": req.body.id }, { ebarimtAvsanEsekh: true }).then((xariu) => { console.log(xariu) }).catch((err) => { console.log(err) });
@@ -171,12 +173,14 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
     try {
         var butsaakhBarimt = new Ebarimt(req.body);
         butsaakhBarimt.returnBillId = butsaakhBarimt.billId;
-        ebarimtButsaaya(butsaakhBarimt, (d) => {
+        ebarimtButsaaya(butsaakhBarimt, async (d) => {
             butsaakhBarimt.ustgasanOgnoo = new Date();
             butsaakhBarimt.isNew = false;
-            butsaakhBarimt.save().catch((err) => { next(err) });
+            await butsaakhBarimt.save().catch((err) => { next(err); console.log("aldaa", err) });
+            if (butsaakhBarimt.guilgeeniiId)
+                await BankniiGuilgee.findByIdAndUpdate({ _id: butsaakhBarimt.guilgeeniiId }, { ebarimtAvsanEsekh: false }).catch((err) => { next(err); console.log("aldaa", err) });
             console.log("duuslaa", d);
-            res.send(d);
+            res.json(d);
         }, next);
     } catch (error) {
         next(error);
@@ -222,6 +226,124 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
             .catch((err) => {
                 next(err);
             });
+    } catch (error) {
+        next(error);
+    }
+});
+router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
+    try {
+        var query = [{
+            $match: {
+                baiguullagiinId: req.body.baiguullagiinId,
+                barilgiinId: req.body.barilgiinId,
+                dateOgnoo: {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                    $lte: new Date(req.body.duusakhOgnoo)
+                }
+            }
+        }, {
+            $facet: {
+                butsaasan: [{
+                    $match: {
+                        ustgasanOgnoo: {
+                            $exists: true
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: 'butsaasan',
+                        too: {
+                            $sum: 1
+                        },
+                        dun: {
+                            $sum: {
+                                "$toDecimal": '$amount'
+                            }
+                        }
+                    }
+                }
+                ],
+                ilgeesen: [{
+                    $match: {
+                        ustgasanOgnoo: {
+                            $exists: false
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: 'ilgeesen',
+                        too: {
+                            $sum: 1
+                        },
+                        dun: {
+                            $sum: {
+                                $toDecimal: '$amount'
+                            }
+                        }
+                    }
+                }
+                ]
+            }
+        }];
+        var result = await Ebarimt.aggregate(query).catch(err => { next(err); })
+
+        query = [{
+            $match: {
+                baiguullagiinId: req.body.baiguullagiinId,
+                barilgiinId: req.body.barilgiinId,
+                amount: {
+                    $gt: 0
+                },
+                tranDate: {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                    $lte: new Date(req.body.duusakhOgnoo)
+                },
+                ebarimtAvsanEsekh: {
+                    $ne: true
+                },
+                kholbosonGereeniiId: {
+                    $exists: true
+                }
+            }
+        }, {
+            $group: {
+                _id: 'ebarimt',
+                dun: {
+                    $sum: '$amount'
+                },
+                too: {
+                    $sum: 1
+                }
+            }
+        }]
+        var result1 = await BankniiGuilgee.aggregate(query).catch(err => { next(err); })
+
+        khariu = {
+            ilgeesenDun: 0,
+            ilgeesenToo: 0,
+            butsaasanDun: 0,
+            butsaasanToo: 0,
+            avakhDun: 0,
+            avakhToo: 0
+        }
+        if (result[0]) {
+            if (result[0].butsaasan[0]) {
+                khariu.butsaasanDun = parseFloat(result[0].butsaasan[0].dun);
+                khariu.butsaasanToo = result[0].butsaasan[0].too;
+            }
+            if (result[0].ilgeesen[0]) {
+                khariu.ilgeesenDun = parseFloat(result[0].ilgeesen[0].dun);
+                khariu.ilgeesenToo = result[0].ilgeesen[0].too;
+            }
+        }
+
+        if (result1[0]) {
+            khariu.avakhDun = result1[0].dun;
+            khariu.avakhToo = result1[0].too;
+        }
+        res.send(khariu);
     } catch (error) {
         next(error);
     }

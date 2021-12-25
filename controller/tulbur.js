@@ -37,8 +37,7 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
           {
             $set: {
               kholbosonGereeniiId: req.body.gereeniiId,
-              kholbosonTalbainId: result.talbainDugaar,
-              magadlaltaiGereenuud: null,
+              kholbosonTalbainId: result.talbainDugaar
             },
           }
         )
@@ -67,7 +66,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         tulbur.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
         tulbur.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id;
       }
-      await Geree.findByIdAndUpdate(
+      var updatedGeree = await Geree.findByIdAndUpdate(
         { _id: tulbur.gereeniiId },
         {
           $push: {
@@ -85,7 +84,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
           {
             $push: {
               "kholbosonGereeniiId": tulbur.gereeniiId,
-              "kholbosonTalbainId": tulbur.talbainDugaar
+              "kholbosonTalbainId": updatedGeree.talbainDugaar
             }
           }
         ).catch((err) => {
@@ -99,8 +98,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
                 "$add": [
                   { $ifNull: ["$kholbosonDun", 0] }, tulbur.tulsunDun
                 ]
-              },
-              magadlaltaiGereenuud: null,
+              }
             }
           }]
         ).catch((err) => {
@@ -153,8 +151,7 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
           {
             $set: {
               kholbosonGereeniiId: guilgee.gereeniiId,
-              kholbosonTalbainId: result.talbainDugaar,
-              magadlaltaiGereenuud: null,
+              kholbosonTalbainId: result.talbainDugaar
             },
           }
         )

@@ -6,6 +6,7 @@ const ebarimtSchema = new Schema({
   "baiguullagiinId": String,
   "barilgiinId": String,
   "gereeniiDugaar": String,
+  "guilgeeniiId": String,
   "tulultiinId": String,
   "ustgasanOgnoo": Date,
   "amount": String,
@@ -21,6 +22,7 @@ const ebarimtSchema = new Schema({
   "returnBillId": String,
   "billId": String,
   "date": String,
+  "dateOgnoo": Date,
   "talbainDugaar": String,
   "gereeniiDugaar": String,
   "utas": String,
@@ -48,5 +50,12 @@ const ebarimtSchema = new Schema({
   ]
 }, {
   timestamps: true
+});
+ebarimtSchema.pre("save", async function () {
+  this.dateOgnoo = new Date(this.date);
+});
+
+ebarimtSchema.pre("updateOne", async function () {
+  this._update.dateOgnoo = new Date(this._update.date);
 });
 module.exports = mongoose.model("ebarimt", ebarimtSchema);
