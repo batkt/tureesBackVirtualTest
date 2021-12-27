@@ -96,7 +96,7 @@ router.post('/erkhteiEsekh',tokenShalgakh,async (req, res, next) => {
   try {
     if(!!req.body.zam)
       {
-        const khariu = await Ajiltan.countDocuments({_id:req.body.nevtersenAjiltniiToken?.id,tsonkhniiErkhuud:req.body.zam})
+        const khariu = await Ajiltan.countDocuments({_id:req.body.nevtersenAjiltniiToken?.id,$or:[{tsonkhniiErkhuud:req.body.zam},{erkh:'Admin'}]})
           .catch((err) => {
             next(err);
           });
