@@ -92,4 +92,22 @@ router.post('/ajiltandErkhUgyu/:id',tokenShalgakh,async (req, res, next) => {
   }
 })
 
+router.post('/erkhteiEsekh',tokenShalgakh,async (req, res, next) => {
+  try {
+    if(!!req.body.zam)
+      {
+        Ajiltan.findOne({_id:req.body.nevtersenAjiltniiToken?._id,tsonkhniiErkhuud:req.body.zam}).then(a=>res.send(JSON.stringify(a)))
+          .catch((err) => {
+            next(err);
+          });
+      }
+    else
+      next(new aldaa("Засах боломжгүй байна"))
+  } catch (error) {
+    next(error);
+  }
+})
+
+
+
 module.exports = router;
