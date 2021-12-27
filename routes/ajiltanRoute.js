@@ -75,4 +75,21 @@ router.post('/ajiltniiTokhirgooZasya',tokenShalgakh,async (req, res, next) => {
   }
 });
 
+router.post('/ajiltandErkhUgyu/:id',tokenShalgakh,async (req, res, next) => {
+  try {
+    if(!!req.body)
+      {
+        await Ajiltan.findOneAndUpdate({_id:ajiltan._id}, {$set:req.body})
+          .catch((err) => {
+            next(err);
+          });
+          res.send("Amjilttai")
+      }
+    else
+      next(new aldaa("Засах боломжгүй байна"))
+  } catch (error) {
+    next(error);
+  }
+})
+
 module.exports = router;
