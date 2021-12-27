@@ -96,11 +96,11 @@ router.post('/erkhteiEsekh',tokenShalgakh,async (req, res, next) => {
   try {
     if(!!req.body.zam)
       {
-        const khariu = await Ajiltan.findOne({_id:req.body.nevtersenAjiltniiToken?._id,tsonkhniiErkhuud:req.body.zam})
+        const khariu = await Ajiltan.findOne({_id:req.body.nevtersenAjiltniiToken?.id,tsonkhniiErkhuud:req.body.zam})
           .catch((err) => {
             next(err);
           });
-        res.send({khariu,nevtersenAjiltniiToken:req.body.nevtersenAjiltniiToken,tsonkhniiErkhuud:req.body.zam})
+        res.send(khariu)
       }
     else
       next(new aldaa("Засах боломжгүй байна"))
