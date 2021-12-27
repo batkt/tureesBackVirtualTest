@@ -79,7 +79,7 @@ router.post('/ajiltandErkhUgyu/:id',tokenShalgakh,async (req, res, next) => {
   try {
     if(!!req.body)
       {
-        await Ajiltan.findOneAndUpdate({_id:ajiltan._id}, {$set:req.body})
+        await Ajiltan.findOneAndUpdate({_id:req.params.id}, {$set:req.body})
           .catch((err) => {
             next(err);
           });
