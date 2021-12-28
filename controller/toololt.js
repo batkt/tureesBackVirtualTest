@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
 const moment = require("moment");
-const bankniiGuilgee = require("../models/bankniiGuilgee");
+const BankniiGuilgee = require("../models/bankniiGuilgee");
 
 exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
   let query = [
@@ -424,8 +424,8 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
         },
         {
           $group: {
-            _id: '',
-            niit: {
+            "_id": "''",
+            "niit": {
               $sum: 1
             }
           }
@@ -443,8 +443,8 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
         },
         {
           $group: {
-            _id: '',
-            niit: {
+            "_id": "",
+            "niit": {
               $sum: 1
             }
           }
@@ -470,7 +470,7 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
       }
     }
   ]
-  bankniiGuilgee.aggregate(query).then((result) => {
+  BankniiGuilgee.aggregate(query).then((result) => {
     console.log("bankniiGuilgee", result);
     if (result && result.length > 0) {
       var butsaakh = {
