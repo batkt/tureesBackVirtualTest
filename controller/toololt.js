@@ -417,8 +417,11 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
       $facet: {
         kholboson: [{
           $match: {
-            'kholbosonGereeniiId.0': {
-              $exists: true
+            "kholbosonGereeniiId": {
+              $exists: true,
+              $ne: {
+                $size: 0
+              }
             }
           }
         },
@@ -433,12 +436,21 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
         ],
         magadlaltai: [{
           $match: {
-            'magadlaltaiGereenuud.0': {
+            "magadlaltaiGereenuud": {
               $exists: true
             },
-            'kholbosonGereeniiId.0': {
-              $exists: false
-            }
+            $or: [
+              {
+                "kholbosonGereeniiId": {
+                  $exists: false
+                }
+              },
+              {
+                "kholbosonGereeniiId": {
+                  $size: 0
+                }
+              }
+            ]
           }
         },
         {
