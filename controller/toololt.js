@@ -444,6 +444,7 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
     }
   ]
   bankniiGuilgee.aggregate(query).then((result) => {
+    console.log("bankniiGuilgee", result);
     if (result && result.length > 0) {
       var butsaakh = {}
       var kholboson = result.find(x => (x._id.kholbosonGereeniiId == 1));
