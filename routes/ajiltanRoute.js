@@ -75,4 +75,40 @@ router.post('/ajiltniiTokhirgooZasya',tokenShalgakh,async (req, res, next) => {
   }
 });
 
+router.post('/ajiltandErkhUgyu/:id',tokenShalgakh,async (req, res, next) => {
+  try {
+    if(!!req.body)
+      {
+        await Ajiltan.findOneAndUpdate({_id:req.params.id}, {$set:req.body})
+          .catch((err) => {
+            next(err);
+          });
+          res.send("Amjilttai")
+      }
+    else
+      next(new aldaa("Засах боломжгүй байна"))
+  } catch (error) {
+    next(error);
+  }
+})
+
+router.post('/erkhteiEsekh',tokenShalgakh,async (req, res, next) => {
+  try {
+    if(!!req.body.zam)
+      {
+        const khariu = await Ajiltan.countDocuments({_id:req.body.nevtersenAjiltniiToken?.id,$or:[{tsonkhniiErkhuud:req.body.zam},{erkh:'Admin'}]})
+          .catch((err) => {
+            next(err);
+          });
+        res.send(!!khariu)
+      }
+    else
+      next(new aldaa("Засах боломжгүй байна"))
+  } catch (error) {
+    next(error);
+  }
+})
+
+
+
 module.exports = router;
