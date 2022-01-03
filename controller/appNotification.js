@@ -1,6 +1,6 @@
 const {
     admin
-} = require("../middleware/firebase-config");
+} = require("../middlewares/firebase-config");
 
 async function sonorduulgaIlgeeye(req, res,next) {
     const {token,medeelel} = req.body
