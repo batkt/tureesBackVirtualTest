@@ -30,6 +30,7 @@ const {
 } = require("../controller/toololt");
 
 const { khariltsagchZagvarAvya, khariltsagchTatya } = require("../controller/excel");
+const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 
 crud(router, "khariltsagch", Khariltsagch);
 
@@ -44,5 +45,7 @@ router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").get(qpayTulye);
 router.route("/bankniiKhuulgaTatajKhadgalya").post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
 router.route("/khariltsagchZagvarAvya").get(khariltsagchZagvarAvya);
 router.route("/khariltsagchTatya").post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);
+router.route("/sonorduulgaIlgeeye").post(tokenShalgakh,sonorduulgaIlgeeye)
+
 
 module.exports = router;
