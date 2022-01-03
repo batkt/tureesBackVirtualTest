@@ -79,6 +79,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
 
       daraagiinTulukhOgnooZasya(tulbur.gereeniiId);
       if (tulbur.guilgeeniiId) {
+        console.log("updatedGeree", updatedGeree);
         await BankniiGuilgee.updateOne(
           { _id: tulbur.guilgeeniiId },
           {

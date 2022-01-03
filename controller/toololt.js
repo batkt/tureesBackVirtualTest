@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
 const moment = require("moment");
-const bankniiGuilgee = require("../models/bankniiGuilgee");
+const BankniiGuilgee = require("../models/bankniiGuilgee");
 
 exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
   let query = [
@@ -414,45 +414,85 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
         }
       }
     }, {
-      '$project': {
-        'id': '$_id',
-        'kholbosonGereeniiId': {
-          '$cond': [
-            {
-              '$not': '$kholbosonGereeniiId'
-            }, 0, 1
-          ]
+      $facet: {
+        kholboson: [{
+          $match: {
+            "kholbosonGereeniiId": {
+              $exists: true,
+              $ne: {
+                $size: 0
+              }
+            }
+          }
         },
-        'magadlaltaiGereenuud': {
-          '$cond': [
-            {
-              '$not': '$magadlaltaiGereenuud'
-            }, 0, 1
-          ]
+        {
+          $group: {
+            "_id": "''",
+            "niit": {
+              $sum: 1
+            }
+          }
         }
-      }
-    }, {
-      '$group': {
-        '_id': {
-          'kholbosonGereeniiId': '$kholbosonGereeniiId',
-          'magadlaltaiGereenuud': '$magadlaltaiGereenuud'
+        ],
+        magadlaltai: [{
+          $match: {
+            "magadlaltaiGereenuud": {
+              $exists: true
+            },
+            $or: [
+              {
+                "kholbosonGereeniiId": {
+                  $exists: false
+                }
+              },
+              {
+                "kholbosonGereeniiId": {
+                  $size: 0
+                }
+              }
+            ]
+          }
         },
-        'niit': {
-          '$sum': 1
+        {
+          $group: {
+            "_id": "",
+            "niit": {
+              $sum: 1
+            }
+          }
         }
+        ],
+        "todorkhoigui": [{
+          "$match": {
+            "magadlaltaiGereenuud.0": {
+              $exists: false
+            },
+            "kholbosonGereeniiId.0": {
+              $exists: false
+            }
+          }
+        }, {
+          "$group": {
+            "_id": "",
+            "niit": {
+              $sum: 1
+            }
+          }
+        }]
       }
     }
   ]
-  bankniiGuilgee.aggregate(query).then((result) => {
+  BankniiGuilgee.aggregate(query).then((result) => {
     console.log("bankniiGuilgee", result);
     if (result && result.length > 0) {
-      var butsaakh = {}
-      var kholboson = result.find(x => (x._id.kholbosonGereeniiId == 1));
-      var magadlaltai = result.find(x => (x._id.magadlaltaiGereenuud == 1 && x._id.kholbosonGereeniiId == 0));
-      var todorkhoigui = result.find(x => (x._id.magadlaltaiGereenuud == 0 && x._id.kholbosonGereeniiId == 0));
-      butsaakh.kholboson = kholboson?.niit || 0;
-      butsaakh.magadlaltai = magadlaltai?.niit || 0;
-      butsaakh.todorkhoigui = todorkhoigui?.niit || 0;
+      var butsaakh = {
+        kholboson: 0,
+        magadlaltai: 0,
+        todorkhoigui: 0
+      }
+      if (result[0].kholboson[0]) butsaakh.kholboson = result[0].kholboson[0].niit;
+      if (result[0].magadlaltai[0]) butsaakh.magadlaltai = result[0].magadlaltai[0].niit;
+      if (result[0].todorkhoigui[0]) butsaakh.todorkhoigui = result[0].todorkhoigui[0].niit;
       butsaakh.niit = butsaakh.kholboson + butsaakh.magadlaltai + butsaakh.todorkhoigui;
       res.send(butsaakh);
     }
