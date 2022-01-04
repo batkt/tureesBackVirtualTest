@@ -6,6 +6,8 @@ const medegdelSchema = new Schema(
   {
     khariltsagchiinId: String,
     khariltsagchiinNer: String,
+    ajiltniiId: String,
+    ajiltniiNer: String,
     baiguullagiinId: String,
     barilgiinId: String,
     ognoo: Date,
@@ -14,6 +16,7 @@ const medegdelSchema = new Schema(
       enum: ["chat", "sanal", "gomdol"],
       default: "chat",
     },
+    title:String,
     message: String,
     baiguullagaKharsanEsekh: Boolean,
     khariltsagchKharsanEsekh: Boolean,
