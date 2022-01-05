@@ -517,7 +517,7 @@ exports.gereeAutomataarSungaya = asyncHandler(
           console.log("baiguullaga", baiguullaga);
           var gereenuud = await Geree.find({
             "tuluv": {
-              ne: -1
+              $ne: -1
             },
             "baiguullagiinId": baiguullaga._id,
             "duusakhOgnoo": {
