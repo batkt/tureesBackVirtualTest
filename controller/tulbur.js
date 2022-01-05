@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const Baiguullaga = require("../models/baiguullaga");
 const lodash = require("lodash");
 const moment = require("moment");
 const mongoose = require("mongoose");
@@ -499,10 +500,81 @@ exports.tukhainOgnoogoorGuilgeegOruulya = asyncHandler(
           }
         }
       }
-      console.log("==============================>", guilgeenuud);
       res.send(khariu);
     } catch (err) {
       next(err);
+    }
+  }
+);
+
+exports.gereeAutomataarSungaya = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var baiguullaguud = await Baiguullaga.find({ "tokhirgoo.gereeAvtomataarSungakhEsekh": true });
+      var tulultiinJagsaalt = [];
+      if (baiguullaguud)
+        for await (const baiguullaga of baiguullaguud) {
+          console.log("baiguullaga", baiguullaga);
+          var gereenuud = await Geree.find({
+            "tuluv": 1,
+            "baiguullagiinId": baiguullaga._id,
+            "duusakhOgnoo": {
+              $lte: new Date()
+            }
+          });
+          console.log("gereenuud", gereenuud);
+          if (gereenuud) {
+            for await (const geree of gereenuud) {
+              tulultiinJagsaalt = [];
+              console.log("end bna");
+              for (index = 0; index < geree.khugatsaa; index++) {
+                for await (const udur of geree.tulukhUdur) {
+                  var ognoo = new Date()
+                  var uusgexOgnoo = moment(ognoo).add(index, 'month').set('date', udur);
+                  console.log("uusgexOgnoo", uusgexOgnoo);
+                  console.log("uusgexOgnoo", geree.duusakhOgnoo);
+                  if (uusgexOgnoo <= moment(geree.duusakhOgnoo))
+                    console.log("iishee ch bas orloo");
+                  tulultiinJagsaalt.push({
+                    ognoo: moment(ognoo).add(index, 'month').set('date', udur),
+                    khyamdral: 0,
+                    undsenDun: geree.talbainNiitUne,
+                    tulukhDun: geree.talbainNiitUne
+                  })
+                }
+              }
+              console.log("tulultiinJagsaalt", tulultiinJagsaalt);
+              var shineDuusakhOgnoo = new Date(moment(geree.duusakhOgnoo).add(geree.khugatsaa, 'month'));
+              if (tulultiinJagsaalt)
+                await Geree.findByIdAndUpdate(
+                  { _id: geree._id },
+                  {
+                    $push: {
+                      [`avlaga.guilgeenuud`]: {
+                        $each: tulultiinJagsaalt,
+                      },
+                      [`gereeniiTuukhuud`]: geree,
+                    },
+                    $set: {
+                      duusakhOgnoo: shineDuusakhOgnoo
+                    }
+                  }
+                ).catch((err) => {
+                  console.log(err)
+                  if (next)
+                    next(err);
+                });
+              console.log("tulultiinJagsaalt", tulultiinJagsaalt);
+            }
+          }
+          console.log("iim toonii geree sungalaa", gereenuud.length);
+        }
+      if (res)
+        res.send(khariu);
+    } catch (err) {
+      console.log(err)
+      if (next)
+        next(err);
     }
   }
 );

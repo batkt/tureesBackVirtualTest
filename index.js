@@ -116,6 +116,17 @@ cron.schedule(
   }
 );
 
+cron.schedule(
+  "18 12 * * * ",
+  function () {
+    tulbur.gereeAutomataarSungaya();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
 io.on("connection", (socket) => {
   console.log("connected");
   // socket.on('joinRoom', ({ ajiltan }) => {
