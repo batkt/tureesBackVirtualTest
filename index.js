@@ -117,7 +117,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "17 12 * * * ",
+  "22 12 * * * ",
   function () {
     tulbur.gereeAutomataarSungaya();
   },
