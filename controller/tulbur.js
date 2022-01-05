@@ -524,28 +524,22 @@ exports.gereeAutomataarSungaya = asyncHandler(
               $lte: new Date()
             }
           });
-          console.log("gereenuud", gereenuud);
           if (gereenuud) {
             for await (const geree of gereenuud) {
               tulultiinJagsaalt = [];
-              console.log("end bna");
               for (index = 0; index < geree.khugatsaa; index++) {
                 for await (const udur of geree.tulukhUdur) {
                   var ognoo = new Date()
                   var uusgexOgnoo = moment(ognoo).add(index, 'month').set('date', udur);
-                  console.log("uusgexOgnoo", uusgexOgnoo);
-                  console.log("uusgexOgnoo", geree.duusakhOgnoo);
                   if (uusgexOgnoo <= moment(geree.duusakhOgnoo))
-                    console.log("iishee ch bas orloo");
-                  tulultiinJagsaalt.push({
-                    ognoo: moment(ognoo).add(index, 'month').set('date', udur),
-                    khyamdral: 0,
-                    undsenDun: geree.talbainNiitUne,
-                    tulukhDun: geree.talbainNiitUne
-                  })
+                    tulultiinJagsaalt.push({
+                      ognoo: moment(ognoo).add(index, 'month').set('date', udur),
+                      khyamdral: 0,
+                      undsenDun: geree.talbainNiitUne,
+                      tulukhDun: geree.talbainNiitUne
+                    })
                 }
               }
-              console.log("tulultiinJagsaalt", tulultiinJagsaalt);
               var shineDuusakhOgnoo = new Date(moment(geree.duusakhOgnoo).add(geree.khugatsaa, 'month'));
               if (tulultiinJagsaalt)
                 await Geree.findByIdAndUpdate(
