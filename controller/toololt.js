@@ -417,11 +417,8 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
       $facet: {
         kholboson: [{
           $match: {
-            "kholbosonGereeniiId": {
-              $exists: true,
-              $ne: {
-                $size: 0
-              }
+            "kholbosonGereeniiId.0": {
+              $exists: true
             }
           }
         },
