@@ -39,6 +39,9 @@ const baiguullagaSchema = new Schema(
       /**Жилийн эцэсээр гэрээ хаах бол 12 гэж байна ИХ Наяд дээр бүх гэрээ жилийн эцэст хаагддаг учир ийл тохиргоо авлаа */
       gereeDuusgakhSar: Number,
 
+      /**Хэдэн сараар барьцаа авах вэ */
+      baritsaaAvakhSar: Number,
+
       /**Хөнгөлөлт ажилтан харгалзахгүй өгөх боломж олгоно */
       bukhAjiltanKhungulultOruulakhEsekh: Boolean,
 
