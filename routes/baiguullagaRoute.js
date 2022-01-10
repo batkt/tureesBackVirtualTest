@@ -9,7 +9,16 @@ const { crudWithFile, crud } = require("../components/crud");
 const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 
 crud(router, "baiguullaga", Baiguullaga);
+router.post("/test", async (req, res, next) => {
 
+  var baritsaaAvakhSar = await Baiguullaga.findById({ _id: req.body.baiguullagiinId }).select({ "tokhirgoo.baritsaaAvakhSar": 1 });
+  if (baritsaaAvakhSar && baritsaaAvakhSar.tokhirgoo && baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar)
+    baritsaaAvakhSar = baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar
+  else
+    baritsaaAvakhSar = 0
+  console.log("baritsaaAvakhSar", baritsaaAvakhSar);
+  res.sendStatus(200);
+});
 router.post("/baiguullagaBurtgekh", async (req, res, next) => {
   try {
     console.log(req.body);

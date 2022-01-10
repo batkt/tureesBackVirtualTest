@@ -533,6 +533,11 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
     var tolgoinObject = {};
+    var baritsaaAvakhSar = await Baiguullaga.findById({ _id: req.body.baiguullagiinId }).select({ "tokhirgoo.baritsaaAvakhSar": 1 });
+    if (baritsaaAvakhSar && baritsaaAvakhSar.tokhirgoo && baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar)
+      baritsaaAvakhSar = baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar
+    else
+      baritsaaAvakhSar = 0
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
       if (
@@ -589,6 +594,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.baritsaaBairshuulakhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaBairshuulakhKhugatsaa)];
         object.uldegdel = mur[usegTooruuKhurvuulekh(tolgoinObject.avlaga)];
         object.daraagiinTulukhOgnoo = moment(ognoo).add(1, 'month').set('date', object.tulukhUdur);
+        objec.baritsaaAvakhKhugatsaa = baritsaaAvakhSar;
         object.avlaga = {
           guilgeenuud: [
             {
@@ -597,7 +603,6 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
               undsenDun: object.uldegdel
             }]
         }
-        object.khungulukhEsekh = (mur[usegTooruuKhurvuulekh(tolgoinObject.khungulukhEsekh)] == "Тийм" || mur[usegTooruuKhurvuulekh(tolgoinObject.khungulukhEsekh)] == "тийм")
         object.gereeniiZagvariinId = zagvariinId;
         object.baiguullagiinId = req.body.baiguullagiinId;
         object.barilgiinId = req.body.barilgiinId;
@@ -624,22 +629,28 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     aldaaniiMsg = await khariltsagchBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId, req.body.barilgiinId);
     aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId, req.body.barilgiinId);
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
-
     jagsaalt.forEach(x => {
-      if (!x.khungulukhEsekh) {
-        var data = []
-        new Array(x.khugatsaa || 0).fill('').map((mur, index) => {
-          x.tulukhUdur.forEach((udur) => {
-            if (moment(ognoo).add(index + 1, 'month').set('date', udur) <= moment(x.duusakhOgnoo))
-              data.push({
-                ognoo: moment(ognoo).add(index + 1, 'month').set('date', udur),
-                khyamdral: 0,
-                undsenDun: x.talbainNiitUne,
-                tulukhDun: x.talbainNiitUne
-              })
-          })
+      var data = []
+      new Array(x.khugatsaa || 0).fill('').map((mur, index) => {
+        x.tulukhUdur.forEach((udur) => {
+          if (moment(ognoo).add(index + 1, 'month').set('date', udur) <= moment(x.duusakhOgnoo))
+            data.push({
+              ognoo: moment(ognoo).add(index + 1, 'month').set('date', udur),
+              khyamdral: 0,
+              undsenDun: x.talbainNiitUne,
+              tulukhDun: x.talbainNiitUne
+            })
         })
-        x.avlaga.guilgeenuud = [...x.avlaga.guilgeenuud, ...data];
+      })
+      x.avlaga.guilgeenuud = [...x.avlaga.guilgeenuud, ...data];
+      if (baritsaaAvakhSar > 0) {
+        x.avlaga.guilgeenuud = [...x.avlaga.guilgeenuud, ...{
+          turul: "baritsaa",
+          ognoo: x.gereeniiOgnoo,
+          khyamdral: 0,
+          undsenDun: x.talbainNiitUne * baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar,
+          tulukhDun: x.talbainNiitUne * baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar
+        }];
       }
     })
     console.log("jagsaalt", jagsaalt)

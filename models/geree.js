@@ -51,6 +51,10 @@ const gereeSchema = new Schema(
     talbainKhemjee: Number,
     davkhar: String,
     baritsaaAvakhDun: Number,
+    baritsaaniiUldegdel: {
+      type: Number,
+      default: 0
+    },
     baritsaaBairshuulakhKhugatsaa: Number,
     baritsaaAvakhKhugatsaa: Number,
     baiguullagiinId: String,
