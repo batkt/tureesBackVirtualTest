@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
-const medegdelSchema = new Schema(
+const gomdolSchema = new Schema(
   {
     khariltsagchiinId: String,
     khariltsagchiinNer: String,
@@ -11,18 +11,12 @@ const medegdelSchema = new Schema(
     baiguullagiinId: String,
     barilgiinId: String,
     ognoo: Date,
-    turul: {
-      type: String,
-      enum: ["chat", "sanal", "gomdol"],
-      default: "chat",
-    },
-    title:String,
+    title: String,
     message: String,
-    baiguullagaKharsanEsekh: Boolean,
-    khariltsagchKharsanEsekh: Boolean,
-    reply: String,
+    khariu: [Schema.Types.Mixed],
+    kharsanEsekh: Boolean
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("medegdel", medegdelSchema);
+module.exports = mongoose.model("gomdol", gomdolSchema);

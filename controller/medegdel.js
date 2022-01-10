@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
-const Medegdel = require("../models/medegdel");
+const Sanal = require("../models/sanal");;
+const Gomdol = require("../models/gomdol");
 const jwt = require("jsonwebtoken");
 
 exports.uruunuudOlyo = asyncHandler((ajiltan, callback) => {
@@ -12,16 +13,13 @@ exports.uruunuudOlyo = asyncHandler((ajiltan, callback) => {
     }
 });
 
-exports.medegdelKhadgalya = asyncHandler((req, res, next) => {
+exports.sanalKhadgalya = asyncHandler((req, res, next) => {
     try {
-        var medegdel = new Medegdel(req.body);
+        var medegdel = new Sanal(req.body);
         medegdel.ognoo = new Date();
         medegdel.save(req.body).then((khariu) => {
             const io = req.app.get('socketio')
-            if (req.body.khariltsagchiinId)
-                io.emit("baiguullaga" + req.body.baiguullagiinId, { turul: req.body.turul, msg: req.body.msg });
-            else
-                io.emit("khariltsagch" + req.body.khariltsagchiinId, { msg: req.body.msg });
+            io.emit("baiguullaga" + req.body.baiguullagiinId, { msg: req.body.message });
             res.send("Amjilttai");
         });
     }
@@ -30,9 +28,35 @@ exports.medegdelKhadgalya = asyncHandler((req, res, next) => {
     }
 });
 
-exports.medegdelKharlaa = asyncHandler((req, res, next) => {
+exports.sanalKharlaa = asyncHandler((turul, req, res, next) => {
     try {
-        Medegdel.updateOne({ _id: req.body.id }, { $set: { baiguullagaKharsanEsekh: true, khariltsagchKharsanEsekh: true } })
+        var medegdel = new Sanal(req.body);
+        medegdel.updateOne({ _id: req.body.id }, { $set: { kharsanEsekh: true } })
+    }
+    catch (err) {
+        next(err);
+    }
+});
+
+exports.gomdolKhadgalya = asyncHandler((req, res, next) => {
+    try {
+        var medegdel = new Gomdol(req.body);
+        medegdel.ognoo = new Date();
+        medegdel.save(req.body).then((khariu) => {
+            const io = req.app.get('socketio')
+            io.emit("baiguullaga" + req.body.baiguullagiinId, { msg: req.body.message });
+            res.send("Amjilttai");
+        });
+    }
+    catch (err) {
+        next(err);
+    }
+});
+
+exports.gomdolKharlaa = asyncHandler((turul, req, res, next) => {
+    try {
+        var medegdel = new Gomdol(req.body);
+        medegdel.updateOne({ _id: req.body.id }, { $set: { kharsanEsekh: true } })
     }
     catch (err) {
         next(err);
