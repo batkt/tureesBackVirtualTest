@@ -648,8 +648,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
           turul: "baritsaa",
           ognoo: x.gereeniiOgnoo,
           khyamdral: 0,
-          undsenDun: x.talbainNiitUne * baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar,
-          tulukhDun: x.talbainNiitUne * baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar
+          undsenDun: x.talbainNiitUne * baritsaaAvakhSar,
+          tulukhDun: x.talbainNiitUne * baritsaaAvakhSar
         }];
       }
     })
