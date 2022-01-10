@@ -644,7 +644,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       })
       x.avlaga.guilgeenuud = [...x.avlaga.guilgeenuud, ...data];
       if (baritsaaAvakhSar > 0) {
-        x.avlaga.guilgeenuud = [...x.avlaga.guilgeenuud, ...{
+        x.avlaga.guilgeenuud = [...x.avlaga.guilgeenuud, {
           turul: "baritsaa",
           ognoo: x.gereeniiOgnoo,
           khyamdral: 0,
