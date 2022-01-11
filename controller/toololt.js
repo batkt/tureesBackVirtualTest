@@ -16,17 +16,8 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
         'khugatsaaKhetersen': {
           '$cond': [
             {
-              $and: [
-                {
-                  '$tuluv': {
-                    '$ne': -1
-                  }
-                },
-                {
-                  '$duusakhOgnoo': {
-                    '$lt': new Date()
-                  }
-                }
+              '$lt': [
+                '$duusakhOgnoo', new Date()
               ]
             }, 1, 0
           ]
