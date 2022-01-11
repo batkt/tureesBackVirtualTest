@@ -20,12 +20,14 @@ const gereeniiZagvarRoute = require("./routes/gereeniiZagvarRoute");
 const talbaiRoute = require("./routes/talbaiRoute");
 const khariltsagchRoute = require("./routes/khariltsagchRoute");
 const bankniiGuilgeeRoute = require("./routes/bankniiGuilgeeRoute");
+const nekhemjlekhiinZagvarRoute = require("./routes/nekhemjlekhiinZagvarRoute");
 const ebarimtRoute = require("./routes/ebarimtRoute");
 const medegdelRoute = require("./routes/medegdelRoute");
 const mailRoute = require("./routes/mailRoute");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
-const medegdel = require("./controller/medegdel");
+
+const aldaaBarigch = require("./middlewares/aldaaBarigch");
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
 
 const dbUrl =
@@ -62,6 +64,8 @@ app.use(medegdelRoute);
 app.use(zuragRoute);
 app.use(ebarimtRoute);
 app.use(mailRoute);
+app.use(nekhemjlekhiinZagvarRoute);
+
 app.use(aldaaBarigch);
 
 cron.schedule(
