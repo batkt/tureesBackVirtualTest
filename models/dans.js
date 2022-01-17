@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 mongoose.pluralize(null);
 const dansSchema = new Schema({
   dugaar: Number,
+  dansniiNer:String,
   baiguullagiinId: String,
   barilgiinId: String,
   bank: String,
