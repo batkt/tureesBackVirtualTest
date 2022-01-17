@@ -24,6 +24,7 @@ const nekhemjlekhiinZagvarRoute = require("./routes/nekhemjlekhiinZagvarRoute");
 const ebarimtRoute = require("./routes/ebarimtRoute");
 const medegdelRoute = require("./routes/medegdelRoute");
 const mailRoute = require("./routes/mailRoute");
+const dansRoute = require("./routes/dansRoute");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
 
@@ -64,6 +65,7 @@ app.use(zuragRoute);
 app.use(ebarimtRoute);
 app.use(mailRoute);
 app.use(nekhemjlekhiinZagvarRoute);
+app.use(dansRoute);
 
 app.use(aldaaBarigch);
 
