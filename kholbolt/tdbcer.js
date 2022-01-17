@@ -41,6 +41,7 @@ exports.tdbcer = asyncHandler(async (req, res, next) => {
             method: 'POST',
             key: fs.readFileSync("./kholbolt/corptdb.key"),
             cert: fs.readFileSync("./kholbolt/corptdb.cer"),
+            passphrase: "1234",
             headers: {
                 'Content-Type': 'text/xml; charset=utf-8',
                 'Content-Length': Buffer.byteLength(xml)
