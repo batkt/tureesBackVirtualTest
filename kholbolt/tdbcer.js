@@ -43,6 +43,7 @@ exports.tdbcer = asyncHandler(async (req, res, next) => {
             cert: fs.readFileSync("./kholbolt/corptdb.pem"),
             passphrase: "1234",
             password: "1234",
+            rejectUnauthorized: false,
             headers: {
                 'Content-Type': 'text/xml; charset=utf-8',
                 'Content-Length': Buffer.byteLength(xml)
