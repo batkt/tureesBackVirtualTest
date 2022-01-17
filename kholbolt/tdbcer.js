@@ -45,13 +45,11 @@ exports.tdbcer = asyncHandler(async (req, res, next) => {
             cert: fs.readFileSync("./kholbolt/corptdb.pem", "utf8"),
             ca: fs.readFileSync("./kholbolt/corptdb.cer", "utf8"),
             passphrase: "1234",
-            requestCert: true,
             headers: {
                 'Content-Type': 'text/xml; charset=utf-8',
                 'Content-Length': Buffer.byteLength(xml)
             }
         };
-        options.agent = https.Agent(options);
         const req1 = https.request(options, (res1) => {
             console.log("bolson!!");
             console.log('statusCode:', res1.statusCode);
