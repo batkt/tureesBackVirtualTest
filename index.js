@@ -137,6 +137,7 @@ cron.schedule(
 cron.schedule(
   "30 * * * * * ",
   function () {
+    console.log("ug n yawlaa tdbcer");
     tdbcer.tdbcer(null, null, null);
   },
   {

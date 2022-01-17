@@ -5,6 +5,8 @@ const fs = require("fs");
 
 exports.tdbcer = asyncHandler(async (req, res, next) => {
     try {
+
+        console.log("ug n irlee tdbcer");
         var xml = `<?xml version="1.0" encoding="UTF-8"?>
             < Document >
             <GrpHdr>
