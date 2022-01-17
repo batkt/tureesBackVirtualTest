@@ -44,6 +44,7 @@ mongoose
   .catch((err) => console.log(err));
 
 process.env.TZ = "Asia/Ulaanbaatar";
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
 app.set("socketio", io);
 app.use(cors());
