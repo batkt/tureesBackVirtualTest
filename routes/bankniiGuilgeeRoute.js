@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const { tdbcer } = require("../kholbolt/tdbcer");
 const {
   bankniiGuilgeeToololtAvya
 } = require("../controller/toololt");
@@ -14,5 +15,6 @@ const {
 
 crud(router, 'bankniiGuilgee', BankniiGuilgee)
 router.post("/bankniiGuilgeeToololtAvya", tokenShalgakh, bankniiGuilgeeToololtAvya);
+router.get("/tdbcer", tdbcer);
 
 module.exports = router;
