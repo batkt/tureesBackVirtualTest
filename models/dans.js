@@ -8,6 +8,8 @@ const dansSchema = new Schema({
   baiguullagiinId: String,
   barilgiinId: String,
   bank: String,
+  valiut:String,
+  corporateAshiglakhEsekh:Boolean
 }, {
   timestamps: true
 });
