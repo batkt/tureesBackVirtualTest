@@ -134,7 +134,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "52 * * * * ",
+  "54 * * * * ",
   function () {
     tdbcer.tdbcer(null, null, null);
   },

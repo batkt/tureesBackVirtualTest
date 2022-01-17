@@ -64,6 +64,7 @@ exports.tdbcer = asyncHandler(async (req, res, next) => {
         req1.end();
     } catch (error) {
         console.log(error);
-        next(error);
+        if (next)
+            next(error);
     }
 });
