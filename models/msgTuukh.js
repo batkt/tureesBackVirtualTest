@@ -6,7 +6,7 @@ const msgTuukhSchema = new Schema(
   {
     baiguullagiinId: String,
     gereeniiId: String,
-    dugaar: String,
+    dugaar: [String],
     msg: String
   },
   { timestamps: true }
