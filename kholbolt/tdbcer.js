@@ -41,7 +41,7 @@ exports.tdbcer = asyncHandler(async (req, res, next) => {
             port: 8080,
             path: '/api/trusted',
             method: 'POST',
-            key: fs.readFileSync("./kholbolt/corptdb.key"),
+            key: fs.readFileSync("./kholbolt/corptdb.pem"),
             cert: fs.readFileSync("./kholbolt/corptdb.pem"),
             passphrase: "1234",
             headers: {
