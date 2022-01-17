@@ -33,7 +33,7 @@ exports.tdbcer = asyncHandler(async (req, res, next) => {
                 <Ccy>MNT</Ccy>
             </EnqInf>
         </Document >
-            `
+            `;
         const options = {
             hostname: '192.168.190.189',
             port: 8080,
