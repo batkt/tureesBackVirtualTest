@@ -48,6 +48,7 @@ exports.tdbcer = asyncHandler(async (req, res, next) => {
             }
         };
         const req1 = https.request(options, (res1) => {
+            console.log("bolson!!");
             console.log('statusCode:', res1.statusCode);
             console.log('headers:', res1.headers);
 
@@ -63,6 +64,7 @@ exports.tdbcer = asyncHandler(async (req, res, next) => {
         });
         req1.end();
     } catch (error) {
+        console.log("aldaatai!!");
         console.log(error);
         if (next)
             next(error);
