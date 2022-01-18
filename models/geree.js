@@ -23,6 +23,17 @@ var avlagiinTurul = new Schema({
       guilgeeKhiisenAjiltniiId: String,
     },
   ],
+  baritsaa: [
+    {
+      ognoo: Date,
+      orlogo: Number,
+      zarlaga: Number,
+      tailbar: String,
+      guilgeeKhiisenOgnoo: Date,
+      guilgeeKhiisenAjiltniiNer: String,
+      guilgeeKhiisenAjiltniiId: String,
+    }
+  ]
 });
 const gereeSchema = new Schema(
   {

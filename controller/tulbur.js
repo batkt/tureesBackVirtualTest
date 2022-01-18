@@ -7,7 +7,7 @@ const moment = require("moment");
 const mongoose = require("mongoose");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 
-exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
+/*exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
   var tulbur = {
     turul: req.body.turul,
     tulsunDun: req.body.tulsunDun,
@@ -53,7 +53,7 @@ exports.tulultKhadgalya = asyncHandler(async (req, res, next) => {
     .catch((err) => {
       next(err);
     });
-});
+});*/
 
 exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
   var guilgeenuud = req.body.guilgeenuud;
@@ -107,8 +107,68 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
           next(err);
         });
       }
-
     }
+    if (!aldaaniiMsg) {
+      console.log("aldaaniiMsg", aldaaniiMsg);
+      await session.commitTransaction();
+    }
+    else {
+      console.log("aldaaniiMsg1", aldaaniiMsg);
+      await session.abortTransaction();
+    }
+    session.endSession();
+    res.send("Amjilttai");
+  }
+  catch (err1) {
+    await session.abortTransaction();
+    next(err1);
+  }
+});
+
+exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
+  var guilgee = req.body;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    var aldaaniiMsg;
+    guilgee.guilgeeKhiisenOgnoo = new Date();
+    if (req.body.nevtersenAjiltniiToken) {
+      guilgee.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+      guilgee.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id;
+    }
+    var updatequery = {
+      $push: {
+        [`avlaga.baritsaa`]: guilgee
+      }
+    }
+    if (guilgee.zarlaga > 0) {
+      var tulbur = guilgee;
+      tulbur.tulsunDun = guilgee.zarlaga;
+      updatequery["$push"]["avlaga.guilgeenuud"] = tulbur
+    }
+    await Geree.findByIdAndUpdate(
+      { _id: guilgee.gereeniiId },
+      updatequery
+    ).then((result) => console.log(result)).catch((err) => {
+      next(err);
+    });
+    updatequery = [{
+      $set: {
+        "baritsaaniiUldegdel": {
+          "$add": [
+            { $ifNull: ["$baritsaaniiUldegdel", 0] }, (guilgee.orlogo - guilgee.zarlaga)
+          ]
+        }
+      }
+    }]
+    await Geree.findByIdAndUpdate(
+      { _id: guilgee.gereeniiId },
+      updatequery
+    ).then((result) => console.log(result)).catch((err) => {
+      next(err);
+    });
+
+    await daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
     if (!aldaaniiMsg) {
       console.log("aldaaniiMsg", aldaaniiMsg);
       await session.commitTransaction();

@@ -27,7 +27,6 @@ const mailRoute = require("./routes/mailRoute");
 const dansRoute = require("./routes/dansRoute");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
-const tdbcer = require("./kholbolt/tdbcer");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
 
@@ -126,17 +125,6 @@ cron.schedule(
   "02 00 * * * ",
   function () {
     tulbur.gereeAutomataarSungaya();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
-
-cron.schedule(
-  "30 * * * * * ",
-  function () {
-    tdbcer.tdbcer(null, null, null);
   },
   {
     scheduled: true,

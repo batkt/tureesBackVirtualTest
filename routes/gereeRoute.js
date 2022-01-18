@@ -21,8 +21,8 @@ const {
 } = require('../controller/toololt')
 
 const {
-  tulultKhadgalya,
   tulultOlnoorKhadgalya,
+  baritsaaniiGuilgeeKhiie,
   tulultUstgaya,
   tulultTaniya,
   gereeniiGuilgeeKhadgalya,
@@ -42,8 +42,8 @@ router.route("/guilgeeniiToololtAvya").post(tokenShalgakh, guilgeeniiToololtAvya
 
 router.route("/gereeniiExcelAvya").get(gereeniiExcelAvya);
 router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
-router.route("/tulultKhadgalya").post(tokenShalgakh, tulultKhadgalya);
 router.route("/tulultOlnoorKhadgalya").post(tokenShalgakh, tulultOlnoorKhadgalya);
+router.route("/baritsaaniiGuilgeeKhiie").post(tokenShalgakh, baritsaaniiGuilgeeKhiie);
 router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);
 router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
 router.route("/tukhainOgnoogoorGuilgeegOruulya").post(tokenShalgakh, tukhainOgnoogoorGuilgeegOruulya);
