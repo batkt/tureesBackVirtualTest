@@ -58,7 +58,7 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
                         console.log("url", url);
                         console.log("body", body)
                         khariu.push(body[0]);
-                        msgIlgeeye(jagsaalt, key, dugaar, khariu, index + 1, next, res)
+                        msgIlgeeye(jagsaalt, key, dugaar, khariu, index + 1, next, req, res)
                     }
                     else {
                         console.log("url", url);
