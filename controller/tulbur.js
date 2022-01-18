@@ -144,6 +144,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
     if (guilgee.zarlaga > 0) {
       var tulbur = guilgee;
       tulbur.tulsunDun = guilgee.zarlaga;
+      tulbur.turul = "baritsaa";
       updatequery["$push"]["avlaga.guilgeenuud"] = tulbur
     }
     await Geree.findByIdAndUpdate(
