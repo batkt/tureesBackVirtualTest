@@ -9,7 +9,19 @@ const dansSchema = new Schema({
   barilgiinId: String,
   bank: String,
   valiut:String,
-  corporateAshiglakhEsekh:Boolean
+  corporateAshiglakhEsekh:Boolean,
+  corporateNevtrekhNer:{
+    select:false,
+    type:String
+  },
+  corporateNuutsUg:{
+    select:false,
+    type:String
+  },
+  corporateGuilgeeniiNuutsUg:{
+    select:false,
+    type:String
+  },
 }, {
   timestamps: true
 });
