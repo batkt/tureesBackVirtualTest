@@ -29,6 +29,7 @@ var avlagiinTurul = new Schema({
       orlogo: Number,
       zarlaga: Number,
       tailbar: String,
+      guilgeeniiId: String,
       guilgeeKhiisenOgnoo: Date,
       guilgeeKhiisenAjiltniiNer: String,
       guilgeeKhiisenAjiltniiId: String,
