@@ -149,7 +149,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
       tulbur.turul = "baritsaa";
       updatequery["$push"]["avlaga.guilgeenuud"] = tulbur
     }
-    await Geree.findByIdAndUpdate(
+    var updatedGeree = await Geree.findByIdAndUpdate(
       { _id: guilgee.gereeniiId },
       updatequery
     ).then((result) => console.log(result)).catch((err) => {
@@ -164,7 +164,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
         }
       }
     }]
-    var updatedGeree = await Geree.findByIdAndUpdate(
+    await Geree.findByIdAndUpdate(
       { _id: guilgee.gereeniiId },
       updatequery
     ).then((result) => console.log(result)).catch((err) => {
