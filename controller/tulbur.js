@@ -171,7 +171,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
       next(err);
     });
 
-    await daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
+    daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
     if (guilgee.guilgeeniiId) {
       console.log("updatedGeree", updatedGeree);
       await BankniiGuilgee.updateOne(
