@@ -157,13 +157,16 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
       next(err);
     });
     var updatedGeree = await Geree.findByIdAndUpdate(
-      { _id: tulbur.gereeniiId },
-      {
-        $push: {
-          [`avlaga.guilgeenuud`]: tulbur,
+      { _id: guilgee.gereeniiId },
+      [{
+        $set: {
+          "baritsaaniiUldegdel": {
+            "$add": [
+              { $ifNull: ["$baritsaaniiUldegdel", 0] }, (guilgee.orlogo - guilgee.zarlaga)
+            ]
+          }
         }
-      },
-      { new: true }
+      }]
     ).catch((err) => {
       aldaaniiMsg = aldaaniiMsg + err.message;
       next(err);
