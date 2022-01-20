@@ -24,6 +24,7 @@ const {
   tulultOlnoorKhadgalya,
   baritsaaniiGuilgeeKhiie,
   tulultUstgaya,
+  baritsaaniiGuilgeeUstgaya,
   tulultTaniya,
   gereeniiGuilgeeKhadgalya,
   uldegdelBodyo,
@@ -45,6 +46,7 @@ router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgak
 router.route("/tulultOlnoorKhadgalya").post(tokenShalgakh, tulultOlnoorKhadgalya);
 router.route("/baritsaaniiGuilgeeKhiie").post(tokenShalgakh, baritsaaniiGuilgeeKhiie);
 router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);
+router.route("/baritsaaniiGuilgeeUstgaya").post(tokenShalgakh, baritsaaniiGuilgeeUstgaya);
 router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
 router.route("/tukhainOgnoogoorGuilgeegOruulya").post(tokenShalgakh, tukhainOgnoogoorGuilgeegOruulya);
 router.route("/khungulultKhadgalya").post(tokenShalgakh, khungulultKhadgalya);

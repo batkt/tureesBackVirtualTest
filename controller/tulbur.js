@@ -131,6 +131,8 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
   session.startTransaction();
   try {
     var aldaaniiMsg;
+    var id = new mongoose.Types.ObjectId();
+    guilgee._id = id;
     guilgee.guilgeeKhiisenOgnoo = new Date();
     if (req.body.nevtersenAjiltniiToken) {
       guilgee.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
@@ -318,6 +320,36 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
         next(err);
       });
     }
+    await session.commitTransaction();
+    session.endSession();
+    res.send("Amjilttai");
+  }
+  catch (err) {
+    await session.abortTransaction();
+    next(err);
+  }
+});
+
+exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    await Geree.findByIdAndUpdate(
+      { _id: req.body.gereeniiId },
+      {
+        $pull: {
+          [`avlaga.guilgeenuud`]: {
+            _id: req.body.objectiinId,
+          },
+          [`avlaga.baritsaa`]: {
+            _id: req.body.objectiinId,
+          }
+        }
+      }
+    ).catch((err) => {
+      next(err);
+    });
+    await daraagiinTulukhOgnooZasya(req.body.gereeniiId);
     await session.commitTransaction();
     session.endSession();
     res.send("Amjilttai");
