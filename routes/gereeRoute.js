@@ -73,7 +73,7 @@ router.route("/baritsaaTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, ne
   Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
     console.log("baritsaaTulultAvya", result)
     if (lodash.isArray(lodash.get(result, 'avlaga.baritsaa'))) {
-      var a = lodash.get(result, 'avlaga.baritsaa').filter(a => a.ognoo < new Date(req.query.duusakhOgnoo));
+      var a = lodash.get(result, 'avlaga.baritsaa');
       a = lodash.orderBy(a, ['ognoo'], ['asc']);
       res.send(a)
     }
