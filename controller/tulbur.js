@@ -349,6 +349,21 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
     ).catch((err) => {
       next(err);
     });
+
+    await Geree.findByIdAndUpdate(
+      { _id: req.body.gereeniiId },
+      [{
+        $set: {
+          "baritsaaniiUldegdel": {
+            "$add": [
+              { $ifNull: ["$baritsaaniiUldegdel", 0] }, (req.body.zarlaga - req.body.orlogo)
+            ]
+          }
+        }
+      }]
+    ).catch((err) => {
+      next(err);
+    });
     await daraagiinTulukhOgnooZasya(req.body.gereeniiId);
     await session.commitTransaction();
     session.endSession();
