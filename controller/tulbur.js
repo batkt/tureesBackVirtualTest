@@ -153,6 +153,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
       { _id: guilgee.gereeniiId },
       updatequery
     ).then((result) => console.log(result)).catch((err) => {
+      aldaaniiMsg = aldaaniiMsg + err.message;
       next(err);
     });
     var updatedGeree = await Geree.findByIdAndUpdate(
@@ -161,8 +162,10 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
         $push: {
           [`avlaga.guilgeenuud`]: tulbur,
         }
-      }
+      },
+      { new: true }
     ).catch((err) => {
+      aldaaniiMsg = aldaaniiMsg + err.message;
       next(err);
     });
     if (guilgee.guilgeeniiId) {
@@ -176,6 +179,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
           }
         }
       ).catch((err) => {
+        aldaaniiMsg = aldaaniiMsg + err.message;
         next(err);
       });
       await BankniiGuilgee.updateOne(
@@ -190,6 +194,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
           }
         }]
       ).catch((err) => {
+        aldaaniiMsg = aldaaniiMsg + err.message;
         next(err);
       });
     }
