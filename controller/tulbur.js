@@ -164,7 +164,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
         }
       }
     }]
-    await Geree.findByIdAndUpdate(
+    var updatedGeree = await Geree.findByIdAndUpdate(
       { _id: guilgee.gereeniiId },
       updatequery
     ).then((result) => console.log(result)).catch((err) => {
@@ -172,6 +172,34 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
     });
 
     await daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
+    if (guilgee.guilgeeniiId) {
+      console.log("updatedGeree", updatedGeree);
+      await BankniiGuilgee.updateOne(
+        { _id: guilgee.guilgeeniiId },
+        {
+          $push: {
+            "kholbosonGereeniiId": guilgee.gereeniiId,
+            "kholbosonTalbainId": updatedGeree.talbainDugaar
+          }
+        }
+      ).catch((err) => {
+        next(err);
+      });
+      await BankniiGuilgee.updateOne(
+        { _id: guilgee.guilgeeniiId },
+        [{
+          $set: {
+            "kholbosonDun": {
+              "$add": [
+                { $ifNull: ["$kholbosonDun", 0] }, (guilgee.orlogo - guilgee.zarlaga)
+              ]
+            }
+          }
+        }]
+      ).catch((err) => {
+        next(err);
+      });
+    }
     if (!aldaaniiMsg) {
       console.log("aldaaniiMsg", aldaaniiMsg);
       await session.commitTransaction();
