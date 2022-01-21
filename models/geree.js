@@ -49,6 +49,7 @@ const gereeSchema = new Schema(
     zakhirliinOvog: String,
     zakhirliinNer: String,
     utas: [String],
+    mail: String,
     khayag: String,
     khugatsaa: Number,
     duusakhOgnoo: Date,
