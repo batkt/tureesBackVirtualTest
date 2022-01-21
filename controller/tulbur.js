@@ -380,7 +380,7 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
       next(err);
     });
 
-    await Geree.findByIdAndUpdate(
+    var updatedGeree = await Geree.findByIdAndUpdate(
       { _id: req.body.gereeniiId },
       [{
         $set: {
@@ -394,6 +394,30 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
     ).catch((err) => {
       next(err);
     });
+    if (req.body.guilgeeniiId) {
+      await BankniiGuilgee.updateOne(
+        { _id: req.body.guilgeeniiId },
+        [{
+          $set: {
+            "kholbosonDun": {
+              "$add": [
+                { $ifNull: ["$kholbosonDun", 0] }, (req.body.zarlaga - req.body.orlogo)
+              ]
+            }
+          }
+        }]
+      ).catch((err) => {
+        next(err);
+      });
+      await BankniiGuilgee.updateOne(
+        { _id: req.body.guilgeeniiId },
+        {
+          $pull: { "kholbosonGereeniiId": req.body.gereeniiId, kholbosonTalbainId: updatedGeree.talbainDugaar },
+        }
+      ).catch((err) => {
+        next(err);
+      });
+    }
     await daraagiinTulukhOgnooZasya(req.body.gereeniiId);
     await session.commitTransaction();
     session.endSession();
