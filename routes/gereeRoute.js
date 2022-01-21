@@ -24,6 +24,7 @@ const {
   tulultOlnoorKhadgalya,
   baritsaaniiGuilgeeKhiie,
   tulultUstgaya,
+  baritsaaniiGuilgeeUstgaya,
   tulultTaniya,
   gereeniiGuilgeeKhadgalya,
   uldegdelBodyo,
@@ -45,6 +46,7 @@ router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgak
 router.route("/tulultOlnoorKhadgalya").post(tokenShalgakh, tulultOlnoorKhadgalya);
 router.route("/baritsaaniiGuilgeeKhiie").post(tokenShalgakh, baritsaaniiGuilgeeKhiie);
 router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);
+router.route("/baritsaaniiGuilgeeUstgaya").post(tokenShalgakh, baritsaaniiGuilgeeUstgaya);
 router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
 router.route("/tukhainOgnoogoorGuilgeegOruulya").post(tokenShalgakh, tukhainOgnoogoorGuilgeegOruulya);
 router.route("/khungulultKhadgalya").post(tokenShalgakh, khungulultKhadgalya);
@@ -61,6 +63,18 @@ router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, ne
         uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
         a.uldegdel = uldegdel;
       });
+      res.send(a)
+    }
+  }).catch((err) => {
+    next(err);
+  });
+});
+router.route("/baritsaaTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
+  Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
+    console.log("baritsaaTulultAvya", result)
+    if (lodash.isArray(lodash.get(result, 'avlaga.baritsaa'))) {
+      var a = lodash.get(result, 'avlaga.baritsaa');
+      a = lodash.orderBy(a, ['ognoo'], ['asc']);
       res.send(a)
     }
   }).catch((err) => {
