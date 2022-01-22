@@ -701,6 +701,10 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!irgenSheet[cellAsString].v
       ) {
+        if (!irgenSheet[cellAsString].v.includes("Код") || !irgenSheet[cellAsString].v.includes("Нэр") ||
+          !irgenSheet[cellAsString].v.includes("Овог") || !irgenSheet[cellAsString].v.includes("Регистр") ||
+          !irgenSheet[cellAsString].v.includes("Утас") || !irgenSheet[cellAsString].v.includes("Мэйл") || !irgenSheet[cellAsString].v.includes("Хаяг"))
+          throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
         if (irgenSheet[cellAsString].v.includes("Код"))
           tolgoinObject.id = cellAsString[0];
         else if (irgenSheet[cellAsString].v.includes("Нэр"))
@@ -760,6 +764,11 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!aanSheet[cellAsString].v
       ) {
+        if (!aanSheet[cellAsString].v.includes("Код") || !aanSheet[cellAsString].v.includes("Нэр") ||
+          !aanSheet[cellAsString].v.includes("Улсын бүртгэлийн дугаар") || !aanSheet[cellAsString].v.includes("Захирлын овог") ||
+          !aanSheet[cellAsString].v.includes("Захирлын нэр") || !aanSheet[cellAsString].v.includes("Мэйл")
+          || !aanSheet[cellAsString].v.includes("Хаяг") || !aanSheet[cellAsString].v.includes("Утас"))
+          throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
         if (aanSheet[cellAsString].v.includes("Код"))
           tolgoinObject.id = cellAsString[0];
         else if (aanSheet[cellAsString].v.includes("Нэр"))
