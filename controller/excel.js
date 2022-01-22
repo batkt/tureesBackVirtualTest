@@ -181,6 +181,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
     var tolgoinObject = {};
+    var muriinDugaar = 1;
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
       if (
@@ -219,13 +220,28 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
       object.baiguullagiinId = req.body.baiguullagiinId;;
       object.barilgiinId = req.body.barilgiinId;
-      jagsaalt.push(object);
+      if (!object.davkhar || !object.talbainKhemjee || !object.kod || !object.talbainNegjUne || !object.talbainNiitUne) {
+        aldaaniiMsg = aldaaniiMsg + muriinDugaar + " дугаар мөрөнд ";
+        if (!object.davkhar)
+          aldaaniiMsg = aldaaniiMsg + "Давхар "
+        if (!object.talbainKhemjee)
+          aldaaniiMsg = aldaaniiMsg + "Талбайн хэмжээ "
+        if (!object.kod)
+          aldaaniiMsg = aldaaniiMsg + "Код "
+        if (!object.talbainNegjUne)
+          aldaaniiMsg = aldaaniiMsg + "Талбайн нэгж үнэ "
+        if (!object.talbainNiitUne)
+          aldaaniiMsg = aldaaniiMsg + "Талбайн нийт үнэ "
+        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+      }
+      else
+        jagsaalt.push(object);
     });
     var aldaaniiMsg = "";
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     Talbai.insertMany(jagsaalt, function (err) {
       if (err) {
-        next(err);
+        throw new aldaa(aldaaniiMsg + muriinDugaar + " дугаар мөрөнд алдаа гарлаа" + err);
       }
       res.status(200).send("Amjilttai");
     });
@@ -673,10 +689,11 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
   try {
     const workbook = xlsx.read(req.file.buffer);
     if (workbook.SheetNames[0] !== "Иргэн" || workbook.SheetNames[1] !== "ААН")
-      throw new aldaa("Буруу файл байна!");
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const irgenSheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
     var tolgoinObject = {};
+    var muriinDugaar = 1;
     for (let cell in irgenSheet) {
       var cellAsString = cell.toString();
       if (
@@ -704,6 +721,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
+    var aldaaniiMsg = "";
     data.forEach((mur) => {
       let object = new Khariltsagch();
       object.id = mur[usegTooruuKhurvuulekh(tolgoinObject.id)];
@@ -716,10 +734,24 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.turul = "Иргэн";
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      jagsaalt.push(object);
+      if (!object.id || !object.ner || !object.register || !object.utas) {
+        aldaaniiMsg = aldaaniiMsg + "Иргэн sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
+        if (!object.id)
+          aldaaniiMsg = aldaaniiMsg + "Код "
+        if (!object.ner)
+          aldaaniiMsg = aldaaniiMsg + "Нэр "
+        if (!object.register)
+          aldaaniiMsg = aldaaniiMsg + "Регистр "
+        if (!object.utas)
+          aldaaniiMsg = aldaaniiMsg + "Утас "
+        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+      }
+      else
+        jagsaalt.push(object);
     });
 
     const aanSheet = workbook.Sheets[workbook.SheetNames[1]];
+    muriinDugaar = 1;
     tolgoinObject = {};
     for (let cell in aanSheet) {
       var cellAsString = cell.toString();
@@ -764,8 +796,22 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.turul = "ААН";
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      jagsaalt.push(object);
+      if (!object.id || !object.ner || !object.register || !object.utas) {
+        aldaaniiMsg = aldaaniiMsg + "ААН sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
+        if (!object.id)
+          aldaaniiMsg = aldaaniiMsg + "Код "
+        if (!object.ner)
+          aldaaniiMsg = aldaaniiMsg + "Нэр "
+        if (!object.register)
+          aldaaniiMsg = aldaaniiMsg + "Улсын бүртгэлийн дугаар "
+        if (!object.utas)
+          aldaaniiMsg = aldaaniiMsg + "Утас "
+        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+      }
+      else
+        jagsaalt.push(object);
     });
+    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     Khariltsagch.insertMany(jagsaalt, function (err) {
       if (err) {
         next(err);
