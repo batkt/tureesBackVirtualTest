@@ -691,9 +691,21 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
     if (workbook.SheetNames[0] !== "Иргэн" || workbook.SheetNames[1] !== "ААН")
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const irgenSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const aanSheet = workbook.Sheets[workbook.SheetNames[1]];
     const jagsaalt = [];
     var tolgoinObject = {};
     var muriinDugaar = 1;
+    if (!irgenSheet["A1"].v.includes("Код") || !irgenSheet["C1"].v.includes("Нэр") ||
+      !irgenSheet["B1"].v.includes("Овог") || !irgenSheet["D1"].v.includes("Регистр") ||
+      !irgenSheet["E1"].v.includes("Утас") || !irgenSheet["F1"].v.includes("Мэйл") || !irgenSheet["G1"].v.includes("Хаяг")) {
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    }
+    if (!aanSheet["A1"].v.includes("Код") || !aanSheet["C1"].v.includes("Улсын бүртгэлийн дугаар") ||
+      !aanSheet["B1"].v.includes("Нэр") || !aanSheet["D1"].v.includes("Захирлын овог") ||
+      !aanSheet["E1"].v.includes("Захирлын нэр") || !aanSheet["F1"].v.includes("Мэйл") ||
+      !aanSheet["G1"].v.includes("Утас") || !aanSheet["H1"].v.includes("Хаяг")) {
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    }
     for (let cell in irgenSheet) {
       var cellAsString = cell.toString();
       if (
@@ -701,10 +713,6 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!irgenSheet[cellAsString].v
       ) {
-        if (!irgenSheet[cellAsString].v.includes("Код") || !irgenSheet[cellAsString].v.includes("Нэр") ||
-          !irgenSheet[cellAsString].v.includes("Овог") || !irgenSheet[cellAsString].v.includes("Регистр") ||
-          !irgenSheet[cellAsString].v.includes("Утас") || !irgenSheet[cellAsString].v.includes("Мэйл") || !irgenSheet[cellAsString].v.includes("Хаяг"))
-          throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
         if (irgenSheet[cellAsString].v.includes("Код"))
           tolgoinObject.id = cellAsString[0];
         else if (irgenSheet[cellAsString].v.includes("Нэр"))
@@ -727,6 +735,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
     });
     var aldaaniiMsg = "";
     data.forEach((mur) => {
+      muriinDugaar++;
       let object = new Khariltsagch();
       object.id = mur[usegTooruuKhurvuulekh(tolgoinObject.id)];
       object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
@@ -741,20 +750,21 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       if (!object.id || !object.ner || !object.register || !object.utas) {
         aldaaniiMsg = aldaaniiMsg + "Иргэн sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
         if (!object.id)
-          aldaaniiMsg = aldaaniiMsg + "Код "
+          aldaaniiMsg = aldaaniiMsg + "'Код', "
         if (!object.ner)
-          aldaaniiMsg = aldaaniiMsg + "Нэр "
+          aldaaniiMsg = aldaaniiMsg + "'Нэр', "
         if (!object.register)
-          aldaaniiMsg = aldaaniiMsg + "Регистр "
-        if (!object.utas)
-          aldaaniiMsg = aldaaniiMsg + "Утас "
+          aldaaniiMsg = aldaaniiMsg + "'Регистр', "
+        if (!object.utas || !object.utas[0])
+          aldaaniiMsg = aldaaniiMsg + "'Утас', "
+        aldaaniiMsg = aldaaniiMsg.slice(0, -2)
+        aldaaniiMsg = aldaaniiMsg + " "
         aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
       }
       else
         jagsaalt.push(object);
     });
 
-    const aanSheet = workbook.Sheets[workbook.SheetNames[1]];
     muriinDugaar = 1;
     tolgoinObject = {};
     for (let cell in aanSheet) {
@@ -764,11 +774,6 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!aanSheet[cellAsString].v
       ) {
-        if (!aanSheet[cellAsString].v.includes("Код") || !aanSheet[cellAsString].v.includes("Нэр") ||
-          !aanSheet[cellAsString].v.includes("Улсын бүртгэлийн дугаар") || !aanSheet[cellAsString].v.includes("Захирлын овог") ||
-          !aanSheet[cellAsString].v.includes("Захирлын нэр") || !aanSheet[cellAsString].v.includes("Мэйл")
-          || !aanSheet[cellAsString].v.includes("Хаяг") || !aanSheet[cellAsString].v.includes("Утас"))
-          throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
         if (aanSheet[cellAsString].v.includes("Код"))
           tolgoinObject.id = cellAsString[0];
         else if (aanSheet[cellAsString].v.includes("Нэр"))
@@ -792,6 +797,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       range: 1,
     });
     data.forEach((mur) => {
+      muriinDugaar++;
       let object = new Khariltsagch();
       object.id = mur[usegTooruuKhurvuulekh(tolgoinObject.id)];
       object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
@@ -808,13 +814,16 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       if (!object.id || !object.ner || !object.register || !object.utas) {
         aldaaniiMsg = aldaaniiMsg + "ААН sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
         if (!object.id)
-          aldaaniiMsg = aldaaniiMsg + "Код "
+          aldaaniiMsg = aldaaniiMsg + "'Код', "
         if (!object.ner)
-          aldaaniiMsg = aldaaniiMsg + "Нэр "
+          aldaaniiMsg = aldaaniiMsg + "'Нэр', "
         if (!object.register)
-          aldaaniiMsg = aldaaniiMsg + "Улсын бүртгэлийн дугаар "
-        if (!object.utas)
-          aldaaniiMsg = aldaaniiMsg + "Утас "
+          aldaaniiMsg = aldaaniiMsg + "'Улсын бүртгэлийн дугаар', "
+        if (!object.utas || !object.utas[0])
+          aldaaniiMsg = aldaaniiMsg + "'Утас', "
+        console.log("object", object);
+        aldaaniiMsg = aldaaniiMsg.slice(0, -2)
+        aldaaniiMsg = aldaaniiMsg + " "
         aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
       }
       else
