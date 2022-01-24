@@ -57,6 +57,8 @@ const baiguullagaSchema = new Schema(
       eBarimtAshiglakhEsekh: Boolean,
       msgIlgeekhKey: String,
       msgIlgeekhDugaar: String,
+      gmailKhayag: String,
+      mailPassword: String,
       qpayUsername: String,
       qpayPassword: String,
       qpayInvoiceCode: String,
