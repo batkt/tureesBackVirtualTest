@@ -84,6 +84,7 @@ const gereeSchema = new Schema(
     daraagiinKhuleekhOgnoo: Date,
     uldegdel: Number,
     avlaga: { type: avlagiinTurul, select: false },
+    dans: String,
     gereeniiTuukhuud: {
       type: [Schema.Types.Mixed],
       select: false
