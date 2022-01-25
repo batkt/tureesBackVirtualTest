@@ -22,6 +22,8 @@ const dansSchema = new Schema({
     select: false,
     type: String
   },
+  qpayAshiglakhEsekh: Boolean,
+  qpayInvoiceCode: String
 }, {
   timestamps: true
 });
