@@ -8,7 +8,7 @@ const dansSchema = new Schema({
   baiguullagiinId: String,
   barilgiinId: String,
   bank: String,
-  valiut:String,
+  valyut:String,
   corporateAshiglakhEsekh:Boolean,
   corporateNevtrekhNer:{
     select:false,
