@@ -58,10 +58,7 @@ const baiguullagaSchema = new Schema(
       msgIlgeekhKey: String,
       msgIlgeekhDugaar: String,
       gmailKhayag: String,
-      gmailPassword: String,
-      qpayUsername: String,
-      qpayPassword: String,
-      qpayInvoiceCode: String,
+      gmailPassword: String
     },
     SUKH: {
       tseverUsKhaluun: Number,
