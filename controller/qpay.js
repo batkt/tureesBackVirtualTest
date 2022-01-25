@@ -3,7 +3,7 @@ const aldaa = require("../components/aldaa");
 const Token = require("../models/token");
 const Tulbur = require("./tulbur");
 const Dugaarlalt = require("../models/dugaarlalt");
-const Baiguullaga = require("../models/baiguullaga");
+const Dans = require("../models/dans");
 const QpayObject = require("../models/qpayObject");
 const Geree = require("../models/geree");
 const got = require('got');
@@ -120,16 +120,15 @@ async function qpayObjectUusgeye(body, invoiceCode, next) {
 }
 
 exports.qpayGargaya = asyncHandler(async (req, res, next) => {
-
-    var baiguullaga = await Baiguullaga.findOne({ _id: req.body.baiguullagiinId });
-    if (!baiguullaga.tokhirgoo.qpayUsername || !baiguullaga.tokhirgoo.qpayPassword || !baiguullaga.tokhirgoo.qpayInvoiceCode)
+    var dans = await Dans.findOne({ dugaar: req.body.dansniiDugaar });
+    if (!dans.qpayAshiglakhEsekh || !dans.qpayUsername || !dans.qpayPassword || !dans.qpayInvoiceCode)
         throw new aldaa("Qpay тохиргоо хийгдээгүй байна!");
 
     var tokenObject = await Token.findOne({ "turul": "qpay", baiguullagiinId: req.body.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
     var token;
     if (!tokenObject) {
         console.log("token bxgu");
-        tokenObject = await tokenAvya(baiguullaga.tokhirgoo.qpayUsername, baiguullaga.tokhirgoo.qpayPassword, next, req.body.baiguullagiinId);
+        tokenObject = await tokenAvya(dans.qpayUsername, dans.qpayPassword, next, req.body.baiguullagiinId);
         token = tokenObject.access_token;
     }
     else {
@@ -137,7 +136,7 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
         console.log("tokenO", tokenO);
         token = tokenO.access_token
     }
-    var qpayObject = await qpayObjectUusgeye(req.body, baiguullaga.tokhirgoo.qpayInvoiceCode, next);
+    var qpayObject = await qpayObjectUusgeye(req.body, dans.qpayInvoiceCode, next);
     console.log("qpayObject", qpayObject);
     var khariu = await qpayShivye(token, qpayObject, next);
     var dugaarlalt = new Dugaarlalt();
