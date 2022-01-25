@@ -120,6 +120,7 @@ async function qpayObjectUusgeye(body, invoiceCode, next) {
 }
 
 exports.qpayGargaya = asyncHandler(async (req, res, next) => {
+    console.log("qpayGargaya", req.body);
     var dans = await Dans.findOne({ dugaar: req.body.dansniiDugaar });
     if (!dans.qpayAshiglakhEsekh || !dans.qpayUsername || !dans.qpayPassword || !dans.qpayInvoiceCode)
         throw new aldaa("Qpay тохиргоо хийгдээгүй байна!");
