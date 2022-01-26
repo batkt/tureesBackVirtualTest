@@ -11,15 +11,15 @@ const dansSchema = new Schema({
   valyut: String,
   corporateAshiglakhEsekh: Boolean,
   corporateNevtrekhNer: {
-    select: false,
+    //select: false,
     type: String
   },
   corporateNuutsUg: {
-    select: false,
+    //select: false,
     type: String
   },
   corporateGuilgeeniiNuutsUg: {
-    select: false,
+    //select: false,
     type: String
   },
   qpayAshiglakhEsekh: Boolean,
