@@ -70,7 +70,7 @@ app.use(dansRoute);
 app.use(aldaaBarigch);
 
 cron.schedule(
-  "*/2 * * * * ",
+  "*/5 * * * * ",
   function () {
     console.log("xuulga tatlaa", new Date());
     /*cgw.bankniiKhuulgaTatajKhadgalya(
