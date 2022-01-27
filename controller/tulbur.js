@@ -265,20 +265,27 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
 
 module.exports.tulultTaniya = async function tulultTaniya() {
   var guilgeenuud = await BankniiGuilgee.find({
-    createdAt: { $gte: new Date(new Date().getTime() - 5 * 60000) },
+    createdAt: { $gte: new Date(new Date().getTime() - 8 * 60 * 60000) },
     amount: { $gt: 0 },
   });
-  console.log("tulult taniya", guilgeenuud);
+  console.log("tulult taniya", guilgeenuud); 5
   var khaikhNukhtsul;
   var tailbar = [];
   if (guilgeenuud != null && guilgeenuud.length > 0) {
     try {
       guilgeenuud.forEach(async (x) => {
         khaikhNukhtsul = [];
-        tailbar = x.description.split(" ");
+        if (x.description)
+          tailbar = x.description.split(" ");
+        else if (x.TxAddInf)
+          tailbar = x.TxAddInf.split(" ");
         if (x.relatedAccount != null)
           khaikhNukhtsul.push({
             "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
+          });
+        else if (x.CtAcntOrg != null)
+          khaikhNukhtsul.push({
+            "avlaga.guilgeenuud.dansniiDugaar": x.CtAcntOrg,
           });
         tailbar.forEach((y) => {
           khaikhNukhtsul.push({ utas: y });
