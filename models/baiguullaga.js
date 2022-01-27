@@ -57,8 +57,8 @@ const baiguullagaSchema = new Schema(
       eBarimtAshiglakhEsekh: Boolean,
       msgIlgeekhKey: String,
       msgIlgeekhDugaar: String,
-      gmailKhayag: String,
-      gmailPassword: String
+      mailNevtrekhNer: String,
+      mailPassword: String
     },
     SUKH: {
       tseverUsKhaluun: Number,
