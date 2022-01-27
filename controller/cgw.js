@@ -218,7 +218,7 @@ exports.bankniiDansniiKhuulgaAvya = asyncHandler(async (req, res, next) => {
 });
 */
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
-    var dansnuud = await Dans.find({ corporateAshiglakhEsekh: true }).select({ baiguullagiinId: 1, bank: 1, corporateNevtrekhNer: 1, corporateNuutsUg: 1, dugaar: 1, valyut: 1 }).lean();
+    var dansnuud = await Dans.find({ corporateAshiglakhEsekh: true }).select({ baiguullagiinId: 1, barilgiinId: 1, bank: 1, corporateNevtrekhNer: 1, corporateNuutsUg: 1, dugaar: 1, valyut: 1 }).lean();
     if (dansnuud)
         for await (const dans of dansnuud) {
             if (dans.bank == "khanbank") {
