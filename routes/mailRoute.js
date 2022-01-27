@@ -34,6 +34,16 @@ router.post("/duriinMailIlgeeye", tokenShalgakh, (req, res, next) => {
         });
 });
 
+router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
+    var baiguullaga = await Baiguullaga.findById({ id: req.body.baiguullagiinId });
+    if (!baiguullaga || !baiguullaga.tokhirgoo || !baiguullaga.tokhirgoo.mailNevtrekhNer || !baiguullaga.tokhirgoo.mailPassword)
+        throw new aldaa('И-Мэйлын тохиргоо хийгдээгүй байна!')
+    for await (const mail of req.body.mailuud) {
+        await MailIlgeeye.mailIlgeeye(baiguullaga.tokhirgoo.mailNevtrekhNer, baiguullaga.tokhirgoo.mailPassword, mail.mail, req.body.subject, mail.content, null);
+    }
+    res.send("Amjilttai");
+});
+
 function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
     try {
         url = process.env.MSG_SERVER + "/send"
