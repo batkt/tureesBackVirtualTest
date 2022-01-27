@@ -42,7 +42,9 @@ async function tokenAvya(username, password, next, baiguullagiinId) {
         Token.updateOne({ "turul": "khaanCorporate", "baiguullagiinId": baiguullagiinId }, { "ognoo": new Date(), "token": khariu.access_token }, { upsert: true }).then((x) => { console.log(x) }).catch((e) => { console.log(e) });
         return khariu;
     } catch (error) {
-        next(error);
+        console.log("tokenAvya -> error ", error);
+        if (next)
+            next(error);
     }
 }
 
