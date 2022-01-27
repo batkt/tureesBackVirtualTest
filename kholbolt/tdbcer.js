@@ -1,72 +1,38 @@
 const asyncHandler = require("express-async-handler");
-const https = require("https");
-const fs = require("fs");
-
+const got = require('got');
+const { URL } = require('url');
+const xml2js = require('xml2js')
+const instance = got.extend({
+    hooks: {
+        beforeRequest: [
+            options => {
+                options.headers['Content-Type'] = "application/json"
+                if (options.context && options.context.token) {
+                    options.headers['Authorization'] = options.context.token;
+                }
+            }
+        ]
+    }
+});
 
 exports.tdbcer = asyncHandler(async (req, res, next) => {
     try {
-
-        console.log("ug n irlee tdbcer");
-        var xml = `<?xml version="1.0" encoding="UTF-8"?>
-            < Document >
-            <GrpHdr>
-                <MsgId>87fbf20130425/1</MsgId>
-                <CreDtTm>2014-10-21T11:16:58</CreDtTm>
-                <TxsCd>5003</TxsCd>
-                <InitgPty>
-                    <Id>
-                        <OrgId>
-                            <AnyBIC>10</AnyBIC>
-                        </OrgId>
-                    </Id>
-                </InitgPty>
-                <Crdtl>
-                    <Lang>0</Lang>
-                    <LoginID>TDB_TEST</LoginID>
-                    <RoleID>3</RoleID>
-                    <Pwds>
-                        <PwdType>1</PwdType>
-                        <Pwd>Test#123</Pwd>
-                    </Pwds>
-                </Crdtl>
-            </GrpHdr>
-            <EnqInf>
-                <IBAN>400011626</IBAN>
-                <Ccy>MNT</Ccy>
-            </EnqInf>
-        </Document >
-            `;
-        const options = {
-            hostname: '192.168.190.189',
-            port: 8080,
-            path: '/api/trusted',
-            method: 'POST',
-            key: fs.readFileSync("./kholbolt/corptdb.key"),
-            cert: fs.readFileSync("./kholbolt/corptdb.pem"),
-            passphrase: "1234",
-            rejectUnauthorized: false,
-            strictSSL: false,
-            headers: {
-                'Content-Type': 'text/xml; charset=utf-8',
-                'Content-Length': Buffer.byteLength(xml)
-            }
-        };
-        const req1 = https.request(options, (res1) => {
-            console.log("bolson!!");
-            console.log('statusCode:', res1.statusCode);
-            console.log('headers:', res1.headers);
-
-            res1.on('data', (d) => {
-                process.stdout.write(d);
-            });
-            res.sendStatus(200);
+        var xmlObject = req.body
+        var builder = new xml2js.Builder({ standalone: false, rootName: "Document" });
+        var xmlObject = builder.buildObject(xmlObject);
+        console.log("xmlObject", xmlObject);
+        var xml = {
+            xml: xmlObject
+        }
+        const objectString = JSON.stringify(xml);
+        var url = new URL(process.env.ZEV_TEST_SERVER + ":5000/")
+        const response = await instance.post(url, { body: objectString });
+        console.log("response.body", response.body);
+        var parseString = xml2js.parseString;
+        parseString(response.body, function (err, result) {
+            khariu = JSON.stringify(result);
+            res.send(khariu);
         });
-
-        req1.on('error', (e) => {
-            console.log("aldaa!!", e);
-            throw new Error(e);
-        });
-        req1.end();
     } catch (error) {
         console.log("aldaatai!!");
         console.log(error);

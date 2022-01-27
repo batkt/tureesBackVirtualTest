@@ -18,7 +18,7 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
         var medegdel = new Sanal(req.body);
         medegdel.ognoo = new Date();
         medegdel.save(req.body).then((khariu) => {
-            const io = req.app.get('socketio')
+            const io = req.app.get('socketio');
             io.emit("baiguullaga" + req.body.baiguullagiinId, { msg: req.body.message });
             res.send("Amjilttai");
         });

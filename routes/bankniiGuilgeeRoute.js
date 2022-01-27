@@ -15,6 +15,6 @@ const {
 
 crud(router, 'bankniiGuilgee', BankniiGuilgee)
 router.post("/bankniiGuilgeeToololtAvya", tokenShalgakh, bankniiGuilgeeToololtAvya);
-router.get("/tdbcer", tdbcer);
+router.post("/tdbcer", tdbcer);
 
 module.exports = router;

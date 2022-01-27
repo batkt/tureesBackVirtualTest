@@ -73,7 +73,7 @@ cron.schedule(
   "*/5 * * * * ",
   function () {
     console.log("xuulga tatlaa", new Date());
-    cgw.bankniiKhuulgaTatajKhadgalya(
+    /*cgw.bankniiKhuulgaTatajKhadgalya(
       {
         body: {
           baiguullagiinId: "6115f350b35689cdbf1b9da3",
@@ -87,19 +87,9 @@ cron.schedule(
       },
       null,
       null
-    );
+    );*/
     cgw.bankniiKhuulgaTatajKhadgalya(
-      {
-        body: {
-          baiguullagiinId: "6115f350b35689cdbf1b9da3",
-          barilgiinId: "619e267fdd4835aa2c168b28",
-          dansniiDugaar: "5129062239",
-          ekhlekhOgnoo: "20210101",
-          duusakhOgnoo: "20211231",
-          khuudasniiKhemjee: 100,
-          khuudasniiDugaar: 0,
-        },
-      },
+      null,
       null,
       null
     );
