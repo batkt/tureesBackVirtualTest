@@ -265,7 +265,7 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
 
 module.exports.tulultTaniya = async function tulultTaniya() {
   var guilgeenuud = await BankniiGuilgee.find({
-    createdAt: { $gte: new Date(new Date().getTime() - 8 * 60 * 60000) },
+    createdAt: { $gte: new Date(new Date().getTime() - 5 * 60000) },
     $or: [
       {
         amount: { $gt: 0 },
