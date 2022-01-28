@@ -63,7 +63,10 @@ router.post("/msgIlgeesenTooAvya", tokenShalgakh, async (req, res, next) => {
                 }
             }
         }
-    ]).then((result) => res.send(result[0].too)).catch((err) => next(err));
+    ]).then((result) => {
+        console.log(result);
+        res.send(result[0].too);
+    }).catch((err) => next(err));
 });
 
 function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
