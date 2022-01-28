@@ -82,17 +82,6 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         console.log("updatedGeree", updatedGeree);
         await BankniiGuilgee.updateOne(
           { _id: tulbur.guilgeeniiId },
-          {
-            $push: {
-              "kholbosonGereeniiId": tulbur.gereeniiId,
-              "kholbosonTalbainId": updatedGeree.talbainDugaar
-            }
-          }
-        ).catch((err) => {
-          next(err);
-        });
-        await BankniiGuilgee.updateOne(
-          { _id: tulbur.guilgeeniiId },
           [{
             $set: {
               "kholbosonDun": {
@@ -102,6 +91,17 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
               }
             }
           }]
+        ).catch((err) => {
+          next(err);
+        });
+        await BankniiGuilgee.updateOne(
+          { _id: tulbur.guilgeeniiId },
+          {
+            $push: {
+              "kholbosonGereeniiId": tulbur.gereeniiId,
+              "kholbosonTalbainId": updatedGeree.talbainDugaar
+            }
+          }
         ).catch((err) => {
           next(err);
         });
