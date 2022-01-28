@@ -64,8 +64,9 @@ router.post("/msgIlgeesenTooAvya", tokenShalgakh, async (req, res, next) => {
             }
         }
     ]).then((result) => {
-        console.log(result);
-        res.send(result[0].too);
+        if (result.length > 0)
+            res.send(result[0].too);
+        else res.send("0");
     }).catch((err) => next(err));
 });
 
