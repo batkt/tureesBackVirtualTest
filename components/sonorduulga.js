@@ -2,7 +2,7 @@ const Sonorduulga = require("../models/sonorduulga");
 const Ajiltan = require("../models/ajiltan");
 const {
     admin
-} = require("../middleware/firebase-config");
+} = require("../middlewares/firebase-config");
 
 async function ilgeeye(io, medegdel) {
     let sonorduulga = new Sonorduulga();
