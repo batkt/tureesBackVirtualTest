@@ -106,7 +106,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         });
       }
     }
-    daraagiinTulukhOgnooZasya(tulbur.gereeniiId);
+    await daraagiinTulukhOgnooZasya(tulbur.gereeniiId);
     if (!aldaaniiMsg) {
       console.log("aldaaniiMsg", aldaaniiMsg);
       await session.commitTransaction();
