@@ -82,7 +82,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         console.log("updatedGeree", updatedGeree);
         await BankniiGuilgee.updateOne(
           { _id: tulbur.guilgeeniiId },
-          [{
+          {
             $set: {
               "kholbosonDun": {
                 "$add": [
@@ -90,7 +90,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
                 ]
               }
             }
-          }]
+          }
         ).catch((err) => {
           next(err);
         });
