@@ -5,6 +5,7 @@ mongoose.pluralize(null);
 const msgTuukhSchema = new Schema(
   {
     baiguullagiinId: String,
+    barilgiinId: String,
     gereeniiId: String,
     dugaar: [String],
     msg: String

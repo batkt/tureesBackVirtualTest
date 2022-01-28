@@ -44,6 +44,24 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     res.send("Amjilttai");
 });
 
+router.post("/msgIlgeesenTooAvya", tokenShalgakh, async (req, res, next) => {
+    MsgTuukh.aggregate([
+        {
+            '$match': {
+                'barilgiinId': req.body.barilgiinId,
+                'baiguullagiinId': req.body.baiguullagiinId
+            }
+        }, {
+            '$group': {
+                '_id': 'aa',
+                'too': {
+                    '$sum': 1
+                }
+            }
+        }
+    ]).then((result) => res.send(result[0].too)).catch((err) => next(err));
+});
+
 function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
     try {
         url = process.env.MSG_SERVER + "/send"
@@ -60,6 +78,7 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
                 else {
                     var msg = new MsgTuukh();
                     msg.baiguullagiinId = req.body.baiguullagiinId;
+                    msg.barilgiinId = req.body.barilgiinId;
                     msg.dugaar = jagsaalt[index].to;
                     msg.gereeniiId = jagsaalt[index].gereeniiId;
                     msg.msg = jagsaalt[index].text;
