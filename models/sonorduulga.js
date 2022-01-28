@@ -7,6 +7,7 @@ const sonorduulgaSchema = new Schema({
     ognoo: Date,
     ajiltniiId: String,
     baiguullagiinId: String,
+    barilgiinId: String,
     turul: String,
     message: String,
     kharsanEsekh: Boolean,

@@ -2,12 +2,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
-const sanalSchema = new Schema(
+const sanalGomdolSchema = new Schema(
   {
     khariltsagchiinId: String,
     khariltsagchiinNer: String,
     baiguullagiinId: String,
     barilgiinId: String,
+    turul: String,
     ognoo: Date,
     title: String,
     message: String,
@@ -16,4 +17,4 @@ const sanalSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("sanal", sanalSchema);
+module.exports = mongoose.model("sanalGomdol", sanalGomdolSchema);

@@ -4,64 +4,31 @@ const {
     admin
 } = require("../middleware/firebase-config");
 
-async function ajiltan(io, zakhialga) {
+async function ilgeeye(io, medegdel) {
     let sonorduulga = new Sonorduulga();
-    sonorduulga.ajiltniiId = zakhialga.ajiltniiId;
-    sonorduulga.baiguullagiinId = zakhialga.baiguullagiinId;
+    sonorduulga.baiguullagiinId = medegdel.baiguullagiinId;
+    sonorduulga.barilgiinId = medegdel.barilgiinId;
+    sonorduulga.turul = medegdel.turul;
     sonorduulga.ognoo = new Date();
-    sonorduulga.turul = 'sonorduulga';
-    sonorduulga.object = zakhialga;
+    sonorduulga.object = medegdel;
     sonorduulga.save()
         .then((result) => {
-            io.emit("ajiltan" + zakhialga.ajiltniiId, zakhialga);
+            io.emit("baiguullaga" + medegdel.baiguullagiinId, medegdel);
         })
         .catch((err) => {
             console.log(err);
         });
-    Ajiltan.findById(zakhialga.ajiltniiId).then((result) => {
-        if (result.firebaseToken) {
-            const payload = {
-                notification: {
-                    title: "Таньд ажил хувиарлагдлаа!",
-                    body: zakhialga.mashiniiDugaar + " дугаартай машин",
-                    icon: "default",
-                    sound: 'default',
-                    badge: '1',
-                }
-            };
-            const options = {
-                priority: "high",
-                timeToLive: 60 * 60 * 24
-            };
-            admin.messaging().sendToDevice(result.firebaseToken, payload, options)
-                .then(response => {
-                    res.status(200).send("Notification sent successfully")
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        }
-    }).catch((err) => {
-        console.log(err);
-    });
 }
 
-async function sonorduulgauzsenbolgoyo(io, zakhialga) {
+async function sonorduulgauzsenbolgoyo(io, medegdel) {
     const shuult = {
-        ajiltniiId: zakhialga.ajiltniiId,
-        "object._id": zakhialga._id
+        "object._id": medegdel._id
     }
     Sonorduulga.findOneAndUpdate(shuult, {
-            kharsanEsekh: true
-        })
-        .then((result) => {
-            io.emit("ajiltan" + zakhialga.ajiltniiId);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+        kharsanEsekh: true
+    });
 }
 module.exports = {
-    ajiltan,
+    ilgeeye,
     sonorduulgauzsenbolgoyo
 }

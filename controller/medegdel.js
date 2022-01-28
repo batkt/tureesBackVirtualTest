@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
-const Sanal = require("../models/sanal");;
-const Gomdol = require("../models/gomdol");
+const SanalGomdol = require("../models/sanalGomdol");
+const Sonorduulga = require("../components/sonorduulga");
 const jwt = require("jsonwebtoken");
 
 exports.uruunuudOlyo = asyncHandler((ajiltan, callback) => {
@@ -15,11 +15,10 @@ exports.uruunuudOlyo = asyncHandler((ajiltan, callback) => {
 
 exports.sanalKhadgalya = asyncHandler((req, res, next) => {
     try {
-        var medegdel = new Sanal(req.body);
+        var medegdel = new SanalGomdol(req.body);
         medegdel.ognoo = new Date();
         medegdel.save(req.body).then((khariu) => {
-            const io = req.app.get('socketio');
-            io.emit("baiguullaga" + req.body.baiguullagiinId, { msg: req.body.message });
+            Sonorduulga.ilgeeye(io = req.app.get('socketio'), medegdel);
             res.send("Amjilttai");
         });
     }
@@ -30,33 +29,9 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
 
 exports.sanalKharlaa = asyncHandler((turul, req, res, next) => {
     try {
-        var medegdel = new Sanal(req.body);
-        medegdel.updateOne({ _id: req.body.id }, { $set: { kharsanEsekh: true } })
-    }
-    catch (err) {
-        next(err);
-    }
-});
-
-exports.gomdolKhadgalya = asyncHandler((req, res, next) => {
-    try {
-        var medegdel = new Gomdol(req.body);
-        medegdel.ognoo = new Date();
-        medegdel.save(req.body).then((khariu) => {
-            const io = req.app.get('socketio')
-            io.emit("baiguullaga" + req.body.baiguullagiinId, { msg: req.body.message });
-            res.send("Amjilttai");
-        });
-    }
-    catch (err) {
-        next(err);
-    }
-});
-
-exports.gomdolKharlaa = asyncHandler((turul, req, res, next) => {
-    try {
-        var medegdel = new Gomdol(req.body);
-        medegdel.updateOne({ _id: req.body.id }, { $set: { kharsanEsekh: true } })
+        var medegdel = new SanalGomdol(req.body);
+        medegdel.updateOne({ _id: req.body.id }, { $set: { kharsanEsekh: true } });
+        Sonorduulga.sonorduulgauzsenbolgoyo(io = req.app.get('socketio'), medegdel);
     }
     catch (err) {
         next(err);
