@@ -77,6 +77,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
       ).catch((err) => {
         next(err);
       });
+      await daraagiinTulukhOgnooZasya(tulbur.gereeniiId);
       if (tulbur.guilgeeniiId) {
         console.log("updatedGeree", updatedGeree);
         await BankniiGuilgee.updateOne(
@@ -105,7 +106,6 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
           next(err);
         });
       }
-      await daraagiinTulukhOgnooZasya(tulbur.gereeniiId);
     }
     if (!aldaaniiMsg) {
       console.log("aldaaniiMsg", aldaaniiMsg);
