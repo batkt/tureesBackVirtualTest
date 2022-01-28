@@ -49,7 +49,11 @@ router.post("/msgIlgeesenTooAvya", tokenShalgakh, async (req, res, next) => {
         {
             '$match': {
                 'barilgiinId': req.body.barilgiinId,
-                'baiguullagiinId': req.body.baiguullagiinId
+                'baiguullagiinId': req.body.baiguullagiinId,
+                'createdAt': {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                    $lte: new Date(req.body.duusakhOgnoo)
+                }
             }
         }, {
             '$group': {
