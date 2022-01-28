@@ -1,5 +1,4 @@
 const Sonorduulga = require("../models/sonorduulga");
-const Ajiltan = require("../models/ajiltan");
 const {
     admin
 } = require("../middlewares/firebase-config");
