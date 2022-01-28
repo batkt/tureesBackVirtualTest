@@ -83,12 +83,9 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         await BankniiGuilgee.updateOne(
           { _id: tulbur.guilgeeniiId },
           {
-            $set: {
-              "kholbosonDun": {
-                "$add": [
-                  { $ifNull: ["$kholbosonDun", 0] }, tulbur.tulsunDun
-                ]
-              }
+            $push: {
+              "kholbosonGereeniiId": tulbur.gereeniiId,
+              "kholbosonTalbainId": updatedGeree.talbainDugaar
             }
           }
         ).catch((err) => {
@@ -96,12 +93,15 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         });
         await BankniiGuilgee.updateOne(
           { _id: tulbur.guilgeeniiId },
-          {
-            $push: {
-              "kholbosonGereeniiId": tulbur.gereeniiId,
-              "kholbosonTalbainId": updatedGeree.talbainDugaar
+          [{
+            $set: {
+              "kholbosonDun": {
+                "$add": [
+                  { $ifNull: ["$kholbosonDun", 0] }, tulbur.tulsunDun
+                ]
+              }
             }
-          }
+          }]
         ).catch((err) => {
           next(err);
         });
