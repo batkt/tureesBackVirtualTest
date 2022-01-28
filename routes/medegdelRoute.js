@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const SanalGomdol = require("../models/sanalGomdol");
-const Sonorduulga = require("../components/sonorduulga");
+const Sonorduulga = require("../models/sonorduulga");
 const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 const { crud } = require("../components/crud");
 
