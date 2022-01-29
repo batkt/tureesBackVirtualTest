@@ -13,7 +13,7 @@ crud(router, "sonorduulga", Sonorduulga);
 
 router.route("/sanalKhadgalya").post(tokenShalgakh, sanalKhadgalya);
 router.route("/sanalKharlaa").post(tokenShalgakh, sanalKharlaa);
-router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, (req, res, next) => {
+router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, async (req, res, next) => {
     const { firebaseToken, medeelel } = req.body
     var megegdel = new SanalGomdol();
     medegdel.khariltsagchiinId = req.body.khariltsagchiinId;
@@ -21,8 +21,7 @@ router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, (req, res, next) => {
     medegdel.title = medeelel.title;
     medegdel.message = medeelel.body;
     medegdel.kharsanEsekh = false;
-    sonorduulgaIlgeeye(firebaseToken, medeelel, (r) => {
-        megegdel.save();
+    sonorduulgaIlgeeye(firebaseToken, medeelel, medegdel, (r) => {
         res.send(r)
     }, next)
 })

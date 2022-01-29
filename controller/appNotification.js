@@ -2,7 +2,7 @@ const {
     admin
 } = require("../middlewares/firebase-config");
 
-async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
+async function sonorduulgaIlgeeye(token, medeelel, khadgaluulakhObject, callback, next) {
     const payload = {
         notification: {
             title: "Таньд мэдэгдэл ирлээ!",
@@ -19,6 +19,8 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
     };
     admin.messaging().sendToDevice(token, payload, options)
         .then(response => {
+            console.log("duuslaa", khadgaluulakhObject)
+            khadgaluulakhObject.save();
             callback(response);
             console.log("Notification sent successfully", response)
         })
