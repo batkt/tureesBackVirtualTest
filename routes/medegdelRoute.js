@@ -21,6 +21,7 @@ router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, async (req, res, next) =
         sanal.khariltsagchiinNer = req.body.khariltsagchiinNer;
         sanal.baiguullagiinId = req.body.baiguullagiinId;
         sanal.barilgiinId = req.body.barilgiinId;
+        sanal.turul = "medegdel";
         sanal.title = medeelel.title;
         sanal.message = medeelel.body;
         sanal.kharsanEsekh = false;
