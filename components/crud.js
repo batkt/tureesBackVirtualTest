@@ -1,4 +1,5 @@
 const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+const UstsanBarimt = require("../models/ustsanBarimt");
 const fs = require("fs");
 const khuudaslalt = require("./khuudaslalt");
 const multer = require("multer");
@@ -150,15 +151,31 @@ function crud(
   });
   router.delete(`/${modelName}/:id`, tokenShalgakh, async (req, res, next) => {
     try {
-      Model.deleteOne({
+      Model.findOne({
         _id: req.params.id,
-      })
-        .then((result) => {
-          res.send("Amjilttai");
+      }).then((result) => {
+        var barimt = new UstsanBarimt();
+        barimt.class = modelName;
+        barimt.object = result;
+        if (req.body.nevtersenAjiltniiToken) {
+          barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+          barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+        }
+        barimt.baiguullagiinId = req.body.baiguullagiinId;
+        barimt.isNew = true;
+        barimt.save();
+        Model.deleteOne({
+          _id: req.params.id,
         })
-        .catch((err) => {
-          next(err);
-        });
+          .then((result) => {
+            res.send("Amjilttai");
+          })
+          .catch((err) => {
+            next(err);
+          });
+      }).catch((err) => {
+        next(err);
+      });
     } catch (error) {
       next(error);
     }
@@ -271,15 +288,32 @@ function crudWithFile(
   });
   router.delete(`/${modelName}/:id`, tokenShalgakh, async (req, res, next) => {
     try {
-      Model.deleteOne({
+      Model.findOne({
         _id: req.params.id,
-      })
-        .then((result) => {
-          res.send(result);
+      }).then((result) => {
+        var barimt = new UstsanBarimt();
+        barimt.class = Model;
+        barimt.object = result;
+        if (req.body.nevtersenAjiltniiToken) {
+          barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+          barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+        }
+        barimt.baiguullagiinId = req.body.baiguullagiinId;
+        barimt.isNew = true;
+        barimt.save();
+        Model.deleteOne({
+          _id: req.params.id,
         })
-        .catch((err) => {
-          next(err);
-        });
+          .then((result) => {
+            res.send("Amjilttai");
+          })
+          .catch((err) => {
+            next(err);
+          });
+      }).catch((err) => {
+        next(err);
+      });
+
     } catch (error) {
       next(error);
     }

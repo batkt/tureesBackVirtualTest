@@ -19,7 +19,7 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
     };
     admin.messaging().sendToDevice(token, payload, options)
         .then(response => {
-            callback(response)
+            callback(response);
             console.log("Notification sent successfully", response)
         })
         .catch(error => {
