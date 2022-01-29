@@ -15,13 +15,14 @@ router.route("/sanalKhadgalya").post(tokenShalgakh, sanalKhadgalya);
 router.route("/sanalKharlaa").post(tokenShalgakh, sanalKharlaa);
 router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, async (req, res, next) => {
     const { firebaseToken, medeelel } = req.body
-    var megegdel = new SanalGomdol();
-    medegdel.khariltsagchiinId = req.body.khariltsagchiinId;
-    medegdel.khariltsagchiinNer = req.body.khariltsagchiinNer;
-    medegdel.title = medeelel.title;
-    medegdel.message = medeelel.body;
-    medegdel.kharsanEsekh = false;
-    sonorduulgaIlgeeye(firebaseToken, medeelel, medegdel, (r) => {
+    sonorduulgaIlgeeye(firebaseToken, medeelel, (r) => {
+        var sanal = new SanalGomdol();
+        sanal.khariltsagchiinId = req.body.khariltsagchiinId;
+        sanal.khariltsagchiinNer = req.body.khariltsagchiinNer;
+        sanal.title = medeelel.title;
+        sanal.message = medeelel.body;
+        sanal.kharsanEsekh = false;
+        sanal.save();
         res.send(r)
     }, next)
 })
