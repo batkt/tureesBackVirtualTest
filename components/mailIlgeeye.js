@@ -32,10 +32,10 @@ async function mailIlgeeye(mailKhayag, ilgeekhMail, zurag) {
   });
 }
 
-async function duriinMailIlgeeye(user, pass, mailKhayag, subject, ilgeekhMail, zurag) {
+async function duriinMailIlgeeye(user, pass, host, port, mailKhayag, subject, ilgeekhMail, zurag) {
   let transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
+    host: host ? host : 'smtp.zevtabs.mn',
+    port: port ? 587 : port,
     secure: true, // use SSL
     auth: {
       user: user, // generated ethereal user
