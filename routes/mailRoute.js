@@ -36,6 +36,7 @@ router.post("/duriinMailIlgeeye", tokenShalgakh, (req, res, next) => {
 
 router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     var baiguullaga = await Baiguullaga.findById({ id: req.body.baiguullagiinId });
+    console.log("baiguullaga", baiguullaga);
     if (!baiguullaga || !baiguullaga.tokhirgoo || !baiguullaga.tokhirgoo.mailNevtrekhNer || !baiguullaga.tokhirgoo.mailPassword)
         throw new aldaa('И-Мэйлын тохиргоо хийгдээгүй байна!')
     for await (const mail of req.body.mailuud) {
