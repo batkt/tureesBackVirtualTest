@@ -399,86 +399,169 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
-  let query = [
-    {
-      '$match': {
-        'baiguullagiinId': req.body.baiguullagiinId,
-        'barilgiinId': req.body.barilgiinId,
-        'dansniiDugaar': req.body.dansniiDugaar,
-        "tranDate": {
-          $gte: new Date(req.body.ekhlekhOgnoo),
-          $lte: new Date(req.body.duusakhOgnoo)
-        },
-        "amount": {
-          $gte: 0
-        }
-      }
-    }, {
-      $facet: {
-        kholboson: [{
-          $match: {
-            "kholbosonGereeniiId.0": {
-              $exists: true
-            }
-          }
-        },
-        {
-          $group: {
-            "_id": "''",
-            "niit": {
-              $sum: 1
-            }
+  let query;
+  if (req.body.bank == "tdb")
+    query = [
+      {
+        '$match': {
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId,
+          'dansniiDugaar': req.body.dansniiDugaar,
+          "TxDt": {
+            $gte: new Date(req.body.ekhlekhOgnoo),
+            $lte: new Date(req.body.duusakhOgnoo)
+          },
+          "Amt": {
+            $gte: 0
           }
         }
-        ],
-        magadlaltai: [{
-          $match: {
-            "magadlaltaiGereenuud": {
-              $exists: true
-            },
-            $or: [
-              {
-                "kholbosonGereeniiId": {
-                  $exists: false
-                }
-              },
-              {
-                "kholbosonGereeniiId": {
-                  $size: 0
-                }
+      }, {
+        $facet: {
+          kholboson: [{
+            $match: {
+              "kholbosonGereeniiId.0": {
+                $exists: true
               }
-            ]
-          }
-        },
-        {
-          $group: {
-            "_id": "",
-            "niit": {
-              $sum: 1
             }
+          },
+          {
+            $group: {
+              "_id": "''",
+              "niit": {
+                $sum: 1
+              }
+            }
+          }
+          ],
+          magadlaltai: [{
+            $match: {
+              "magadlaltaiGereenuud": {
+                $exists: true
+              },
+              $or: [
+                {
+                  "kholbosonGereeniiId": {
+                    $exists: false
+                  }
+                },
+                {
+                  "kholbosonGereeniiId": {
+                    $size: 0
+                  }
+                }
+              ]
+            }
+          },
+          {
+            $group: {
+              "_id": "",
+              "niit": {
+                $sum: 1
+              }
+            }
+          }
+          ],
+          "todorkhoigui": [{
+            "$match": {
+              "magadlaltaiGereenuud.0": {
+                $exists: false
+              },
+              "kholbosonGereeniiId.0": {
+                $exists: false
+              }
+            }
+          }, {
+            "$group": {
+              "_id": "",
+              "niit": {
+                $sum: 1
+              }
+            }
+          }]
+        }
+      }
+    ]
+  else
+    query = [
+      {
+        '$match': {
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId,
+          'dansniiDugaar': req.body.dansniiDugaar,
+          "tranDate": {
+            $gte: new Date(req.body.ekhlekhOgnoo),
+            $lte: new Date(req.body.duusakhOgnoo)
+          },
+          "amount": {
+            $gte: 0
           }
         }
-        ],
-        "todorkhoigui": [{
-          "$match": {
-            "magadlaltaiGereenuud.0": {
-              $exists: false
-            },
-            "kholbosonGereeniiId.0": {
-              $exists: false
+      }, {
+        $facet: {
+          kholboson: [{
+            $match: {
+              "kholbosonGereeniiId.0": {
+                $exists: true
+              }
+            }
+          },
+          {
+            $group: {
+              "_id": "''",
+              "niit": {
+                $sum: 1
+              }
             }
           }
-        }, {
-          "$group": {
-            "_id": "",
-            "niit": {
-              $sum: 1
+          ],
+          magadlaltai: [{
+            $match: {
+              "magadlaltaiGereenuud": {
+                $exists: true
+              },
+              $or: [
+                {
+                  "kholbosonGereeniiId": {
+                    $exists: false
+                  }
+                },
+                {
+                  "kholbosonGereeniiId": {
+                    $size: 0
+                  }
+                }
+              ]
+            }
+          },
+          {
+            $group: {
+              "_id": "",
+              "niit": {
+                $sum: 1
+              }
             }
           }
-        }]
+          ],
+          "todorkhoigui": [{
+            "$match": {
+              "magadlaltaiGereenuud.0": {
+                $exists: false
+              },
+              "kholbosonGereeniiId.0": {
+                $exists: false
+              }
+            }
+          }, {
+            "$group": {
+              "_id": "",
+              "niit": {
+                $sum: 1
+              }
+            }
+          }]
+        }
       }
-    }
-  ]
+    ]
   BankniiGuilgee.aggregate(query).then((result) => {
     console.log("bankniiGuilgee", result);
     if (result && result.length > 0) {
