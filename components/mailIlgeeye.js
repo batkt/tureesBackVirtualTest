@@ -65,5 +65,5 @@ async function duriinMailIlgeeye(user, pass, host, port, mailKhayag, subject, il
   });
 }
 module.exports = {
-  mailIlgeeye
+  mailIlgeeye, duriinMailIlgeeye
 }

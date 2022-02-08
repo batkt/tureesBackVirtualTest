@@ -40,7 +40,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     if (!baiguullaga || !baiguullaga.tokhirgoo || !baiguullaga.tokhirgoo.mailNevtrekhNer || !baiguullaga.tokhirgoo.mailPassword)
         throw new aldaa('И-Мэйлын тохиргоо хийгдээгүй байна!')
     for await (const mail of req.body.mailuud) {
-        await MailIlgeeye.mailIlgeeye(baiguullaga.tokhirgoo.mailNevtrekhNer, baiguullaga.tokhirgoo.mailPassword,
+        await MailIlgeeye.duriinMailIlgeeye(baiguullaga.tokhirgoo.mailNevtrekhNer, baiguullaga.tokhirgoo.mailPassword,
             baiguullaga.tokhirgoo.mailHost, baiguullaga.tokhirgoo.mailPort, mail.mail, req.body.subject, mail.content, null);
     }
     res.send("Amjilttai");
