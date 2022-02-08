@@ -299,7 +299,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId,
-          'avlaga.guilgeenuud.tuluv': {
+          'avlaga.guilgeenuud.turul': {
             '$nin': ["baritsaa"]
           }
         }
