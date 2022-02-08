@@ -1,12 +1,12 @@
 const express = require("express");
-const http = require("http");
 const Ebarimt = require("../models/ebarimt");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Geree = require("../models/geree");
 const router = express.Router();
 const aldaa = require("../components/aldaa");
-const khuudaslalt = require("../components/khuudaslalt");
-const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+//const khuudaslalt = require("../components/khuudaslalt");
+//const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+const { tokenShalgakh, khuudaslalt } = require("zevback");
 const request = require("request");
 
 function nuatBodyo(bodokhDun) {

@@ -2,18 +2,16 @@ const express = require("express");
 const router = express.Router();
 const GereeniiZagvar = require("../models/gereeniiZagvar");
 const GereeniiZaalt = require("../models/gereeniiZaalt");
-const { crudWithFile, crud } = require("../components/crud");
+//const { crud } = require("../components/crud");
+//const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud } = require("zevback");
 const multer = require("multer");
 const storage = multer.memoryStorage();
-const {
-  tokenShalgakh
-} = require("../middlewares/tokenShalgakh");
-const uploadFile = multer({
-  storage: storage,
-});
+const uploadFile = multer({ storage: storage });
 
-crud(router, "gereeniiZagvar", GereeniiZagvar);
-crud(router, "gereeniiZaalt", GereeniiZaalt);
+crud(router, "gereeniiZagvar", GereeniiZagvar, UstsanBarimt);
+crud(router, "gereeniiZaalt", GereeniiZaalt, UstsanBarimt);
 
 const {
   gereeniiZaaltTatya,
@@ -23,10 +21,10 @@ const {
 
 router
   .route("/gereeniiZaaltTatya")
-  .post(uploadFile.single("file"),tokenShalgakh, gereeniiZaaltTatya);
+  .post(uploadFile.single("file"), tokenShalgakh, gereeniiZaaltTatya);
 router
   .route("/gereeniiZagvarTatya")
-  .post(uploadFile.single("file"),tokenShalgakh, gereeniiZagvarTatya);
+  .post(uploadFile.single("file"), tokenShalgakh, gereeniiZagvarTatya);
 router.route("/gereeniiZagvarAvya").get(gereeniiZagvarAvya);
 
 module.exports = router;

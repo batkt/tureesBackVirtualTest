@@ -2,12 +2,12 @@ const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 const Khariltsagch = require("../models/khariltsagch");
-const { crud } = require("../components/crud");
-const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+//const { crud } = require("../components/crud");
+//const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud } = require("zevback");
 const storage = multer.memoryStorage();
-const uploadFile = multer({
-  storage: storage,
-});
+const uploadFile = multer({ storage: storage });
 const {
   bankniiDansniiJagsaaltAvya,
   bankniiDansniiKhuulgaAvya,
@@ -31,7 +31,7 @@ const {
 
 const { khariltsagchZagvarAvya, khariltsagchTatya } = require("../controller/excel");
 
-crud(router, "khariltsagch", Khariltsagch);
+crud(router, "khariltsagch", Khariltsagch, UstsanBarimt);
 
 router.route("/khariltsagchNevtrey").post(khariltsagchNevtrey);
 router.route("/tokenoorKhariltsagchAvya").post(tokenoorKhariltsagchAvya)

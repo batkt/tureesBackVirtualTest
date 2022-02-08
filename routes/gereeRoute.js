@@ -7,11 +7,11 @@ const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
-const { crud } = require("../components/crud");
-const khuudaslalt = require("../components/khuudaslalt");
-const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
-//const UstsanBarimt = require("../models/ustsanBarimt");
-//const { tokenShalgakh, crud, khuudaslalt } = require("zevback");
+//const { crud } = require("../components/crud");
+//const khuudaslalt = require("../components/khuudaslalt");
+//const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud, khuudaslalt } = require("zevback");
 
 const {
   gereeniiToololtAvya,
@@ -132,8 +132,8 @@ router.route("/nekhemjlekhiinDugaarlaltKhadgalya").post(tokenShalgakh, async (re
   }
 });
 
-crud(router, "khungulultiinTuukh", KhungulultiinTuukh)
-crud(router, "geree", Geree, async (req, res, next) => {
+crud(router, "khungulultiinTuukh", KhungulultiinTuukh, UstsanBarimt)
+crud(router, "geree", Geree, UstsanBarimt, async (req, res, next) => {
   try {
     const khariltsagch = new Khariltsagch(req.body);
     khariltsagch.id = khariltsagch.register;

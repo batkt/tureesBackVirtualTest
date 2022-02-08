@@ -1,23 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const {
-    tokenShalgakh
-} = require("../middlewares/tokenShalgakh");
 const MailiinZagvar = require("../models/mailiinZagvar");
 const Baiguullaga = require("../models/baiguullaga");
 const MsgTuukh = require("../models/msgTuukh");
 const Geree = require("../models/geree");
-
 const aldaa = require("../components/aldaa");
 const MailIlgeeye = require("../components/mailIlgeeye");
 const request = require("request");
-const {
-    crudWithFile,
-    crud
-} = require('../components/crud');
+//const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+//const { crud } = require('../components/crud');
+const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud } = require("zevback");
 
-crud(router, 'mailiinZagvar', MailiinZagvar);
-crud(router, 'msgTuukh', MsgTuukh);
+crud(router, 'mailiinZagvar', MailiinZagvar, UstsanBarimt);
+crud(router, 'msgTuukh', MsgTuukh, UstsanBarimt);
 
 router.post("/duriinMailIlgeeye", tokenShalgakh, (req, res, next) => {
     let id = req.body.id;

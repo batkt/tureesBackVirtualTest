@@ -2,18 +2,13 @@ const express = require("express");
 const router = express.Router();
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const { tdbcer } = require("../kholbolt/tdbcer");
-const {
-  bankniiGuilgeeToololtAvya
-} = require("../controller/toololt");
+const { bankniiGuilgeeToololtAvya } = require("../controller/toololt");
+const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud } = require("zevback");
+//const { crud } = require('../components/crud');
+//const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 
-const {
-  crud
-} = require('../components/crud');
-const {
-  tokenShalgakh
-} = require("../middlewares/tokenShalgakh");
-
-crud(router, 'bankniiGuilgee', BankniiGuilgee)
+crud(router, 'bankniiGuilgee', BankniiGuilgee, UstsanBarimt)
 router.post("/bankniiGuilgeeToololtAvya", tokenShalgakh, bankniiGuilgeeToololtAvya);
 router.post("/tdbcer", tdbcer);
 

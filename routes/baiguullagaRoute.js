@@ -1,24 +1,13 @@
 const express = require("express");
-const multer = require("multer");
 const router = express.Router();
 const Baiguullaga = require("../models/baiguullaga");
-const Khariltsagch = require("../models/khariltsagch");
 const Ajiltan = require("../models/ajiltan");
-const khuudaslalt = require("../components/khuudaslalt");
-const { crudWithFile, crud } = require("../components/crud");
-const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+//const { crudWithFile, crud } = require("../components/crud");
+//const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud } = require("zevback");
 
-crud(router, "baiguullaga", Baiguullaga);
-router.post("/test", async (req, res, next) => {
-
-  var baritsaaAvakhSar = await Baiguullaga.findById({ _id: req.body.baiguullagiinId }).select({ "tokhirgoo.baritsaaAvakhSar": 1 });
-  if (baritsaaAvakhSar && baritsaaAvakhSar.tokhirgoo && baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar)
-    baritsaaAvakhSar = baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar
-  else
-    baritsaaAvakhSar = 0
-  console.log("baritsaaAvakhSar", baritsaaAvakhSar);
-  res.sendStatus(200);
-});
+crud(router, "baiguullaga", Baiguullaga, UstsanBarimt);
 router.post("/baiguullagaBurtgekh", async (req, res, next) => {
   try {
     console.log(req.body);
@@ -69,7 +58,6 @@ router.post(
       .catch((err) => {
         next(err);
       });
-
   }
 );
 

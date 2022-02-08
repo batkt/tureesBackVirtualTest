@@ -2,14 +2,15 @@ const express = require("express");
 const router = express.Router();
 const SanalGomdol = require("../models/sanalGomdol");
 const Sonorduulga = require("../models/sonorduulga");
-const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
-const { crud } = require("../components/crud");
+//const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
+//const { crud } = require("../components/crud");
+const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud } = require("zevback");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
-
 const { sanalKhadgalya, sanalKharlaa } = require("../controller/medegdel");
 
-crud(router, "sanalGomdol", SanalGomdol);
-crud(router, "sonorduulga", Sonorduulga);
+crud(router, "sanalGomdol", SanalGomdol, UstsanBarimt);
+crud(router, "sonorduulga", Sonorduulga, UstsanBarimt);
 
 router.route("/sanalKhadgalya").post(tokenShalgakh, sanalKhadgalya);
 router.route("/sanalKharlaa").post(tokenShalgakh, sanalKharlaa);

@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Ajiltan = require("../models/ajiltan");
-
-const {
-  crudWithFile
-} = require('../components/crud');
-const {
-  tokenShalgakh
-} = require("../middlewares/tokenShalgakh");
+const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crudWithFile } = require("zevback");
+//const { crudWithFile } = require('../components/crud');
+//const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 
 const {
   ajiltanNevtrey,
@@ -18,7 +15,7 @@ const aldaa = require("../components/aldaa");
 crudWithFile(router, 'ajiltan', Ajiltan, {
   fileZam: './zurag/ajiltan',
   fileName: 'zurag'
-})
+}, UstsanBarimt)
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 
