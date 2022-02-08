@@ -301,6 +301,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           'barilgiinId': req.body.barilgiinId,
           'tuluv': {
             '$ne': -1
+          },
+          'avlaga.guilgeenuud.tuluv': {
+            '$nin': ["baritsaa"]
           }
         }
       }, {
