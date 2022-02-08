@@ -17,14 +17,17 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
         priority: "high",
         timeToLive: 60 * 60 * 24
     };
-    admin.messaging().sendToDevice(token, payload, options)
-        .then(response => {
-            callback(response);
-            console.log("Notification sent successfully", response)
-        })
-        .catch(error => {
-            next(error);
-        });
+    if (token)
+        admin.messaging().sendToDevice(token, payload, options)
+            .then(response => {
+                callback(response);
+                console.log("Notification sent successfully", response)
+            })
+            .catch(error => {
+                next(error);
+            });
+    else
+        callback({ successCount: 1 });
 }
 
 async function khariltsagchidSonorduulgaIlgeeye(token, medeelel, callback, next) {
