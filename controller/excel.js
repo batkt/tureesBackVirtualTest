@@ -633,7 +633,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.baritsaaBairshuulakhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaBairshuulakhKhugatsaa)];
         object.uldegdel = mur[usegTooruuKhurvuulekh(tolgoinObject.avlaga)];
         object.daraagiinTulukhOgnoo = moment(ognoo).add(1, 'month').set('date', object.tulukhUdur);
-        objec.baritsaaAvakhKhugatsaa = baritsaaAvakhSar;
+        object.baritsaaAvakhKhugatsaa = baritsaaAvakhSar;
         object.avlaga = {
           guilgeenuud: [
             {
