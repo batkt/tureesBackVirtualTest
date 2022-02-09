@@ -151,7 +151,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             result.forEach((a) => {
                 niitAvlaga = niitAvlaga + a.tulukh;
                 niitTulsun = niitTulsun + a.tulsun;
-                if (a["_id"].year > ekhlekhOn || (a["_id"].year = ekhlekhOn && a["_id"].month >= ekhlekhSar)) {
+                if (a["_id"].year > ekhlekhOn || (a["_id"].year == ekhlekhOn && a["_id"].month >= ekhlekhSar)) {
                     labels.push(a["_id"].year + "-" + a["_id"].month);
                     tuluvluguunuud.push(niitAvlaga.toFixed(2));
                     guitsetgeluud.push(niitTulsun.toFixed(2));
