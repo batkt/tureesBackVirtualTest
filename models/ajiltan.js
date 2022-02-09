@@ -37,11 +37,11 @@ const ajiltanSchema = new Schema(
       unique: true,
     },
     tokhirgoo: {
-      gereeKharakhErkh: Boolean,
-      gereeZasakhErkh: Boolean,
-      guilgeeUstgakhErkh: Boolean,
-      khungulultUzuulekhEsekh: Boolean,
-      m2UneTokhiruulakhEsekh: Boolean
+      gereeKharakhErkh: [String],
+      gereeZasakhErkh: [String],
+      guilgeeUstgakhErkh: [String],
+      khungulultUzuulekhEsekh: [String],
+      m2UneTokhiruulakhEsekh: [String]
     }
   },
   {
