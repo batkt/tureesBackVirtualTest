@@ -161,7 +161,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                 labels,
                 datasets: [
                     {
-                        label: "Төлөвлөгөө",
+                        label: "Нийт авлага",
                         data: tuluvluguunuud,
                         backgroundColor: "rgba(255, 99, 132, 0.5)",
                         borderColor: "rgba(255, 99, 132, 0.5)",
@@ -169,7 +169,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                         lineWidth: 10,
                     },
                     {
-                        label: "Гүйцэтгэл",
+                        label: "Нийт үлдэгдэл",
                         data: guitsetgeluud,
                         fill: false,
                         borderColor: "rgba(53, 162, 235, 0.5)",
