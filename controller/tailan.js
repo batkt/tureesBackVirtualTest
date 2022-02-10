@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 
-exports.guitsetgeliinTailanAvya = asyncHandler(async (req, res, next) => {
+exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
     let query = [
         {
             '$match': {
