@@ -23,7 +23,7 @@ async function sonorduulgauzsenbolgoyo(id) {
     const shuult = {
         "object._id": id
     }
-    Sonorduulga.updateOne(shuult, { kharsanEsekh: true });
+    Sonorduulga.updateOne(shuult, { $set: { kharsanEsekh: true } }).then((res) => console.log(res));
 }
 module.exports = {
     ilgeeye,

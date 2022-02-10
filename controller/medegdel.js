@@ -29,7 +29,7 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
 
 exports.sanalKharlaa = asyncHandler((req, res, next) => {
     try {
-        SanalGomdol.updateOne({ _id: req.body.id }, { kharsanEsekh: true });
+        SanalGomdol.updateOne({ _id: req.body.id }, { $set: { kharsanEsekh: true } }).then((res) => console.log(res));
         Sonorduulga.sonorduulgauzsenbolgoyo(req.body.id);
         res.send(200);
     }
