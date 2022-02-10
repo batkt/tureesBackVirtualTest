@@ -5,6 +5,7 @@ const Khariltsagch = require("../models/khariltsagch");
 const Ajiltan = require("../models/ajiltan");
 const Dugaarlalt = require("../models/dugaarlalt");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
+const { gereeZasakhShalguur, guilgeeUstgakhShalguur } = require("../components/shalguur");
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
@@ -44,8 +45,8 @@ router.route("/gereeniiExcelAvya").get(gereeniiExcelAvya);
 router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
 router.route("/tulultOlnoorKhadgalya").post(tokenShalgakh, tulultOlnoorKhadgalya);
 router.route("/baritsaaniiGuilgeeKhiie").post(tokenShalgakh, baritsaaniiGuilgeeKhiie);
-router.route("/tulultUstgaya").post(tokenShalgakh, tulultUstgaya);
-router.route("/baritsaaniiGuilgeeUstgaya").post(tokenShalgakh, baritsaaniiGuilgeeUstgaya);
+router.route("/tulultUstgaya").post(tokenShalgakh, guilgeeUstgakhShalguur, tulultUstgaya);
+router.route("/baritsaaniiGuilgeeUstgaya").post(tokenShalgakh, guilgeeUstgakhShalguur, baritsaaniiGuilgeeUstgaya);
 router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
 router.route("/tukhainOgnoogoorGuilgeegOruulya").post(tokenShalgakh, tukhainOgnoogoorGuilgeegOruulya);
 router.route("/khungulultKhadgalya").post(tokenShalgakh, khungulultKhadgalya);
@@ -133,20 +134,6 @@ router.route("/nekhemjlekhiinDugaarlaltKhadgalya").post(tokenShalgakh, async (re
   }
 });
 
-async function shalguur(req, res, next) {
-  if (req.body.nevtersenAjiltniiToken && req.body.barilgiinId) {
-    var ajiltan = await Ajiltan.findById(req.body.nevtersenAjiltniiToken.id);
-    if (ajiltan.erkh == "Admin" || (ajiltan.tokhirgoo && ajiltan.tokhirgoo.gereeZasakhErkh &&
-      ajiltan.tokhirgoo.gereeZasakhErkh.length > 0 && ajiltan.tokhirgoo.gereeZasakhErkh.includes(req.body.barilgiinId))) {
-      console.log("yawchixlaa");
-      next();
-    }
-    else
-      next(new Error("Энэ үйлдлийн эрхгүй байна!"));
-  }
-  else
-    next(new Error("Энэ үйлдлийн эрхгүй байна!"));
-}
 crud(router, "khungulultiinTuukh", KhungulultiinTuukh, UstsanBarimt)
 crud(router, "geree", Geree, UstsanBarimt, async (req, res, next) => {
   try {
@@ -193,9 +180,9 @@ crud(router, "geree", Geree, UstsanBarimt, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-}, shalguur);
+}, gereeZasakhShalguur);
 
-router.route("/gereeSungaya").post(tokenShalgakh, shalguur, async (req, res, next) => {
+router.route("/gereeSungaya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
   var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
   var tuukh = {
     umnukhDuusakhOgnoo: geree.duusakhOgnoo,
@@ -238,7 +225,7 @@ router.route("/gereeSungaya").post(tokenShalgakh, shalguur, async (req, res, nex
   }
 });
 
-router.route("/gereeTsutslaya").post(tokenShalgakh, shalguur, async (req, res, next) => {
+router.route("/gereeTsutslaya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
   var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
   var tuukh = {
     umnukhDuusakhOgnoo: geree.duusakhOgnoo,
