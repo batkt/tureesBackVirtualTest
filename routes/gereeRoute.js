@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
+const Ajiltan = require("../models/ajiltan");
 const Dugaarlalt = require("../models/dugaarlalt");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const multer = require("multer");
@@ -132,6 +133,20 @@ router.route("/nekhemjlekhiinDugaarlaltKhadgalya").post(tokenShalgakh, async (re
   }
 });
 
+async function shalguur(req, res, next) {
+  if (req.body.nevtersenAjiltniiToken && req.body.barilgiinId) {
+    var ajiltan = await Ajiltan.findById(req.body.nevtersenAjiltniiToken.id);
+    if (ajiltan.erkh == "Admin" || (ajiltan.tokhirgoo && ajiltan.tokhirgoo.gereeZasakhErkh &&
+      ajiltan.tokhirgoo.gereeZasakhErkh.length > 0 && ajiltan.tokhirgoo.gereeZasakhErkh.includes(req.body.barilgiinId))) {
+      console.log("yawchixlaa");
+      next();
+    }
+    else
+      next(new Error("Энэ үйлдлийн эрхгүй байна!"));
+  }
+  else
+    next(new Error("Энэ үйлдлийн эрхгүй байна!"));
+}
 crud(router, "khungulultiinTuukh", KhungulultiinTuukh, UstsanBarimt)
 crud(router, "geree", Geree, UstsanBarimt, async (req, res, next) => {
   try {
@@ -178,9 +193,9 @@ crud(router, "geree", Geree, UstsanBarimt, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+}, shalguur);
 
-router.route("/gereeSungaya").post(tokenShalgakh, async (req, res, next) => {
+router.route("/gereeSungaya").post(tokenShalgakh, shalguur, async (req, res, next) => {
   var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
   var tuukh = {
     umnukhDuusakhOgnoo: geree.duusakhOgnoo,
@@ -223,7 +238,7 @@ router.route("/gereeSungaya").post(tokenShalgakh, async (req, res, next) => {
   }
 });
 
-router.route("/gereeTsutslaya").post(tokenShalgakh, async (req, res, next) => {
+router.route("/gereeTsutslaya").post(tokenShalgakh, shalguur, async (req, res, next) => {
   var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
   var tuukh = {
     umnukhDuusakhOgnoo: geree.duusakhOgnoo,

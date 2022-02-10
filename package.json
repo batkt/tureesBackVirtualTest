@@ -38,7 +38,7 @@
     "uuid": "^8.3.2",
     "xlsx": "^0.17.0",
     "xml2js": "^0.4.23",
-    "zevback": "^1.0.14"
+    "zevback": "^1.0.15"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"
