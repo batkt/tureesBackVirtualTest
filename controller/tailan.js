@@ -228,7 +228,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                         lineWidth: 10,
                     },
                     {
-                        label: "Нийт үлдэгдэл",
+                        label: "Нийт төлсөн",
                         data: guitsetgeluud,
                         fill: false,
                         borderColor: "rgba(53, 162, 235, 0.5)",
