@@ -28,7 +28,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         sort['_id.year'] = 1
         sort['_id.month'] = 1
     }
-    else if (req.body.nariivchlal == "month") {
+    else if (req.body.nariivchlal == "day") {
         group['_id']['year'] = {
             $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
         }
@@ -42,6 +42,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         sort['_id.month'] = 1
         sort['_id.day'] = 1
     }
+    console.log(sort);
     let query = [
         {
             '$match': {
