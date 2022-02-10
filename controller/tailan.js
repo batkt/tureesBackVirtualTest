@@ -197,7 +197,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             console.log("result", result);
             var ekhlekhSar = new Date(req.body.ekhlekhOgnoo).getMonth() + 1; // returns 0 - 11
             var ekhlekhOn = new Date(req.body.ekhlekhOgnoo).getFullYear();
-            var ekhlekhUdur = new Date(req.body.ekhlekhOgnoo).getDate()
+            var ekhlekhUdur = new Date(req.body.ekhlekhOgnoo).getDate();
             var niitAvlaga = 0;
             var niitTulsun = 0;
             result.forEach((a) => {
@@ -205,7 +205,6 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                 niitTulsun = niitTulsun + a.tulsun;
                 if (a["_id"].year > ekhlekhOn || (a["_id"].year == ekhlekhOn && a["_id"].month >= ekhlekhSar)
                     || (a["_id"].year == ekhlekhOn && a["_id"].month == ekhlekhSar && a["_id"].day >= ekhlekhUdur)) {
-                    labels.push(a["_id"].year + "-" + a["_id"].month);
                     if (req.body.nariivchlal == "year")
                         labels.push(a["_id"].year);
                     else if (req.body.nariivchlal == "month")
