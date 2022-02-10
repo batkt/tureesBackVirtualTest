@@ -23,10 +23,8 @@ async function sonorduulgauzsenbolgoyo(id) {
     const shuult = {
         "object._id": id
     }
-    Sonorduulga.findOne(shuult, {
-        $set: {
-            kharsanEsekh: true
-        }
+    Sonorduulga.findOneAndUpdate(shuult, {
+        kharsanEsekh: true
     });
 }
 module.exports = {
