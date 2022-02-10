@@ -21,7 +21,7 @@ async function ilgeeye(io, medegdel) {
 
 async function sonorduulgauzsenbolgoyo(id) {
     const shuult = {
-        "object._id": id
+        "object.id": id
     }
     Sonorduulga.updateOne(shuult, { $set: { kharsanEsekh: true } }).then((res) => console.log(res));
 }
