@@ -1,3 +1,4 @@
+const Ajiltan = require("../models/ajiltan");
 
 async function gereeZasakhShalguur(req, res, next) {
     if (req.body.nevtersenAjiltniiToken && req.body.barilgiinId) {
