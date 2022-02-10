@@ -30,7 +30,8 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
 exports.sanalKharlaa = asyncHandler((req, res, next) => {
     try {
         SanalGomdol.updateMany({ _id: req.body.id }, { $set: { kharsanEsekh: true } }).then((res) => console.log(res));
-        Sonorduulga.sonorduulgauzsenbolgoyo(req.body.sonorduulgaId);
+        if (req.body.sonorduulgaId)
+            Sonorduulga.sonorduulgauzsenbolgoyo(req.body.sonorduulgaId);
         res.send(200);
     }
     catch (err) {
