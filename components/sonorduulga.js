@@ -24,7 +24,9 @@ async function sonorduulgauzsenbolgoyo(id) {
         "object._id": id
     }
     Sonorduulga.findOneAndUpdate(shuult, {
-        kharsanEsekh: true
+        $set: {
+            kharsanEsekh: true
+        }
     });
 }
 module.exports = {
