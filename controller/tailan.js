@@ -199,10 +199,9 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             var ekhlekhOn = new Date(req.body.ekhlekhOgnoo).getFullYear();
             var ekhlekhUdur = new Date(req.body.ekhlekhOgnoo).getDate();
             var niitAvlaga = 0;
-            var niitTulsun = 0;
             result.forEach((a) => {
                 niitAvlaga = niitAvlaga + a.tulukh;
-                niitTulsun = niitTulsun + a.tulsun;
+                niitAvlaga = niitAvlaga - a.tulsun;
                 if (a["_id"].year > ekhlekhOn || (a["_id"].year == ekhlekhOn && a["_id"].month >= ekhlekhSar)
                     || (a["_id"].year == ekhlekhOn && a["_id"].month == ekhlekhSar && a["_id"].day >= ekhlekhUdur)) {
                     if (req.body.nariivchlal == "year")
@@ -212,7 +211,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                     else if (req.body.nariivchlal == "day")
                         labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
                     tuluvluguunuud.push(niitAvlaga.toFixed(2));
-                    guitsetgeluud.push(niitTulsun.toFixed(2));
+                    guitsetgeluud.push(a.tulsun.toFixed(2));
                 }
             });
             var data = {
