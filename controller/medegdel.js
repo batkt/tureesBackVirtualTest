@@ -32,6 +32,7 @@ exports.sanalKharlaa = asyncHandler((turul, req, res, next) => {
         var medegdel = new SanalGomdol(req.body);
         medegdel.updateOne({ _id: req.body.id }, { $set: { kharsanEsekh: true } });
         Sonorduulga.sonorduulgauzsenbolgoyo(io = req.app.get('socketio'), medegdel);
+        res.send(200);
     }
     catch (err) {
         next(err);
