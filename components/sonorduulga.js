@@ -20,7 +20,7 @@ async function ilgeeye(io, medegdel) {
 }
 
 async function sonorduulgauzsenbolgoyo(id) {
-    Sonorduulga.updateOne({ _id: id }, { $set: { kharsanEsekh: true } }).then((res) => console.log(res));
+    Sonorduulga.updateMany({ _id: id }, { $set: { kharsanEsekh: true } }).then((res) => console.log(res));
 }
 module.exports = {
     ilgeeye,
