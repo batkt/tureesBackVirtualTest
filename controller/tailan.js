@@ -42,7 +42,6 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         sort['_id.month'] = 1
         sort['_id.day'] = 1
     }
-    console.log(sort);
     let query = [
         {
             '$match': {
@@ -120,6 +119,46 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
+    var group = {
+        '_id': {
+        }, 'tulukh': {
+            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+        },
+        'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+        }
+    }
+    var sort = {}
+    if (req.body.nariivchlal == "year") {
+        group['_id']['year'] = {
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+    }
+    else if (req.body.nariivchlal == "month") {
+        group['_id']['year'] = {
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['month'] = {
+            $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+        sort['_id.month'] = 1
+    }
+    else if (req.body.nariivchlal == "day") {
+        group['_id']['year'] = {
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['month'] = {
+            $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['day'] = {
+            $dayOfMonth: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+        sort['_id.month'] = 1
+        sort['_id.day'] = 1
+    }
     let query = [
         {
             '$match': {
@@ -145,26 +184,9 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                 }
             }
         }, {
-            '$group': {
-                '_id': {
-                    'year': {
-                        $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
-                    },
-                    'month': {
-                        $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
-                    }
-                }, 'tulukh': {
-                    '$sum': '$avlaga.guilgeenuud.tulukhDun'
-                },
-                'tulsun': {
-                    '$sum': '$avlaga.guilgeenuud.tulsunDun'
-                }
-            }
+            '$group': group
         }, {
-            '$sort': {
-                '_id.year': 1,
-                '_id.month': 1
-            }
+            '$sort': sort
         }
     ]
     Geree.aggregate(query).then((result) => {
@@ -175,13 +197,21 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             console.log("result", result);
             var ekhlekhSar = new Date(req.body.ekhlekhOgnoo).getMonth() + 1; // returns 0 - 11
             var ekhlekhOn = new Date(req.body.ekhlekhOgnoo).getFullYear();
+            var ekhlekhUdur = new Date(req.body.ekhlekhOgnoo).getDate()
             var niitAvlaga = 0;
             var niitTulsun = 0;
             result.forEach((a) => {
                 niitAvlaga = niitAvlaga + a.tulukh;
                 niitTulsun = niitTulsun + a.tulsun;
-                if (a["_id"].year > ekhlekhOn || (a["_id"].year == ekhlekhOn && a["_id"].month >= ekhlekhSar)) {
+                if (a["_id"].year > ekhlekhOn || (a["_id"].year == ekhlekhOn && a["_id"].month >= ekhlekhSar)
+                    || (a["_id"].year == ekhlekhOn && a["_id"].month == ekhlekhSar && a["_id"].day >= ekhlekhUdur)) {
                     labels.push(a["_id"].year + "-" + a["_id"].month);
+                    if (req.body.nariivchlal == "year")
+                        labels.push(a["_id"].year);
+                    else if (req.body.nariivchlal == "month")
+                        labels.push(a["_id"].year + "/" + a["_id"].month);
+                    else if (req.body.nariivchlal == "day")
+                        labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
                     tuluvluguunuud.push(niitAvlaga.toFixed(2));
                     guitsetgeluud.push(niitTulsun.toFixed(2));
                 }
