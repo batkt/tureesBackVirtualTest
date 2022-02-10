@@ -58,8 +58,8 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
             console.log("result", result);
             result.forEach((a) => {
                 labels.push(a["_id"].year + "-" + a["_id"].month);
-                tuluvluguunuud.push(a.tulukh.toFixed(2));
-                guitsetgeluud.push(a.tulsun.toFixed(2));
+                tuluvluguunuud.push(a.tulukh.toLocaleString(undefined, { minimumFractionDigits: 2 }));
+                guitsetgeluud.push(a.tulsun.toLocaleString(undefined, { minimumFractionDigits: 2 }));
             });
             var data = {
                 labels,
@@ -153,8 +153,8 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                 niitTulsun = niitTulsun + a.tulsun;
                 if (a["_id"].year > ekhlekhOn || (a["_id"].year == ekhlekhOn && a["_id"].month >= ekhlekhSar)) {
                     labels.push(a["_id"].year + "-" + a["_id"].month);
-                    tuluvluguunuud.push(niitAvlaga.toFixed(2));
-                    guitsetgeluud.push(niitTulsun.toFixed(2));
+                    tuluvluguunuud.push(niitAvlaga.toLocaleString(undefined, { minimumFractionDigits: 2 }));
+                    guitsetgeluud.push(niitTulsun.toLocaleString(undefined, { minimumFractionDigits: 2 }));
                 }
             });
             var data = {
