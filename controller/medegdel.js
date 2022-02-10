@@ -29,9 +29,8 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
 
 exports.sanalKharlaa = asyncHandler((req, res, next) => {
     try {
-        var medegdel = new SanalGomdol(req.body);
-        medegdel.updateOne({ _id: req.body.id }, { $set: { kharsanEsekh: true } });
-        Sonorduulga.sonorduulgauzsenbolgoyo(io = req.app.get('socketio'), medegdel);
+        SanalGomdol.updateOne({ _id: req.body.id }, { $set: { kharsanEsekh: true } });
+        Sonorduulga.sonorduulgauzsenbolgoyo(req.body.id);
         res.send(200);
     }
     catch (err) {

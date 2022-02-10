@@ -19,9 +19,9 @@ async function ilgeeye(io, medegdel) {
         });
 }
 
-async function sonorduulgauzsenbolgoyo(io, medegdel) {
+async function sonorduulgauzsenbolgoyo(id) {
     const shuult = {
-        "object._id": medegdel.id
+        "object._id": id
     }
     Sonorduulga.findOneAndUpdate(shuult, {
         kharsanEsekh: true
