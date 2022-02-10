@@ -20,10 +20,7 @@ async function ilgeeye(io, medegdel) {
 }
 
 async function sonorduulgauzsenbolgoyo(id) {
-    const shuult = {
-        "object.id": id
-    }
-    Sonorduulga.updateOne(shuult, { $set: { kharsanEsekh: true } }).then((res) => console.log(res));
+    Sonorduulga.updateOne({ _id: id }, { $set: { kharsanEsekh: true } }).then((res) => console.log(res));
 }
 module.exports = {
     ilgeeye,
