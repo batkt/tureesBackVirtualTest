@@ -2,6 +2,46 @@ const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 
 exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
+    var group = {
+        '_id': {
+        }, 'tulukh': {
+            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+        },
+        'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+        }
+    }
+    var sort = {}
+    if (req.body.nariivchlal == "year") {
+        group['_id']['year'] = {
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+    }
+    else if (req.body.nariivchlal == "month") {
+        group['_id']['year'] = {
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['month'] = {
+            $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+        sort['_id.month'] = 1
+    }
+    else if (req.body.nariivchlal == "month") {
+        group['_id']['year'] = {
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['month'] = {
+            $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['day'] = {
+            $dayOfMonth: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+        sort['_id.month'] = 1
+        sort['_id.day'] = 1
+    }
     let query = [
         {
             '$match': {
@@ -28,26 +68,9 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                 }
             }
         }, {
-            '$group': {
-                '_id': {
-                    'year': {
-                        $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
-                    },
-                    'month': {
-                        $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
-                    }
-                }, 'tulukh': {
-                    '$sum': '$avlaga.guilgeenuud.tulukhDun'
-                },
-                'tulsun': {
-                    '$sum': '$avlaga.guilgeenuud.tulsunDun'
-                }
-            }
+            '$group': group
         }, {
-            '$sort': {
-                '_id.year': 1,
-                '_id.month': 1
-            }
+            '$sort': sort
         }
     ]
     Geree.aggregate(query).then((result) => {
@@ -57,7 +80,12 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
             var guitsetgeluud = []
             console.log("result", result);
             result.forEach((a) => {
-                labels.push(a["_id"].year + "-" + a["_id"].month);
+                if (req.body.nariivchlal == "year")
+                    labels.push(a["_id"].year);
+                else if (req.body.nariivchlal == "month")
+                    labels.push(a["_id"].year + "/" + a["_id"].month);
+                else if (req.body.nariivchlal == "day")
+                    labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
                 tuluvluguunuud.push(a.tulukh.toFixed(2));
                 guitsetgeluud.push(a.tulsun.toFixed(2));
             });
