@@ -27,7 +27,7 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
     }
 });
 
-exports.sanalKharlaa = asyncHandler((turul, req, res, next) => {
+exports.sanalKharlaa = asyncHandler((req, res, next) => {
     try {
         var medegdel = new SanalGomdol(req.body);
         medegdel.updateOne({ _id: req.body.id }, { $set: { kharsanEsekh: true } });
