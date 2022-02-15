@@ -18,6 +18,9 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
             {
               '$lt': [
                 '$duusakhOgnoo', new Date()
+              ],
+              '$ne':[
+                '$tuluv',-1
               ]
             }, 1, 0
           ]
