@@ -77,6 +77,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         if (result && result.length > 0) {
             var labels = []
             var tuluvluguunuud = []
+            var tuluvluguu = 0;
             var guitsetgeluud = []
             console.log("result", result);
             result.forEach((a) => {
@@ -86,7 +87,8 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                     labels.push(a["_id"].year + "/" + a["_id"].month);
                 else if (req.body.nariivchlal == "day")
                     labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
-                tuluvluguunuud.push(a.tulukh.toFixed(2));
+                tuluvluguu = tuluvluguu + a.tulukh - a.tulsun;
+                tuluvluguunuud.push(tuluvluguu.toFixed(2));
                 guitsetgeluud.push(a.tulsun.toFixed(2));
             });
             var data = {
