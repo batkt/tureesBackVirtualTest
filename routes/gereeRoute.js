@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
-const Ajiltan = require("../models/ajiltan");
 const Dugaarlalt = require("../models/dugaarlalt");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const { gereeZasakhShalguur, guilgeeUstgakhShalguur } = require("../components/shalguur");

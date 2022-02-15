@@ -710,8 +710,8 @@ exports.gereeAutomataarSungaya = asyncHandler(
                     tulultiinJagsaalt.push({
                       ognoo: moment(ognoo).add(index, 'month').set('date', udur),
                       khyamdral: 0,
-                      undsenDun: geree.talbainNiitUne,
-                      tulukhDun: geree.talbainNiitUne
+                      undsenDun: geree.sariinTurees,
+                      tulukhDun: geree.sariinTurees
                     })
                 }
               }

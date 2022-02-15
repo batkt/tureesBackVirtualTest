@@ -10,6 +10,7 @@ const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
 const {
   bankniiDansniiJagsaaltAvya,
+  dansniiUldegdelAvya,
   bankniiDansniiKhuulgaAvya,
   bankniiKhuulgaTatajKhadgalya,
 } = require("../controller/cgw");
@@ -38,6 +39,7 @@ router.route("/tokenoorKhariltsagchAvya").post(tokenoorKhariltsagchAvya)
 router.route("/khariltsagchidTokenOnooyo").post(khariltsagchidTokenOnooyo);
 router.route("/khariltsagchiinTooAvya/:barilgiinId").get(tokenShalgakh, khariltsagchiinTooAvya);
 router.route("/bankniiDansniiJagsaaltAvya").get(tokenShalgakh, bankniiDansniiJagsaaltAvya);
+router.route("/dansniiUldegdelAvya").post(tokenShalgakh, dansniiUldegdelAvya);
 router.route("/bankniiDansniiKhuulgaAvya").post(tokenShalgakh, bankniiDansniiKhuulgaAvya);
 router.route("/qpayGargaya").post(tokenShalgakh, qpayGargaya);
 router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").get(qpayTulye);
