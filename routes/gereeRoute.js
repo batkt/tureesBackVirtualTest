@@ -443,6 +443,31 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
         }
       }, {
         '$facet': {
+          'khariltsagch': [
+            {
+              "$lookup":
+              {
+                from: 'khariltsagch',
+                localField: 'register',
+                foreignField: 'register',
+                as: 'khariltsagch'
+              }
+            },
+            {
+              "$set":
+              {
+                "token": {
+                  $arrayElemAt: ["$khariltsagch.firebaseToken", 0]
+                },
+                "khariltsagchiinId": {
+                  $arrayElemAt: ["$khariltsagch._id", 0]
+                },
+                "register": {
+                  $arrayElemAt: ["$khariltsagch.register", 0]
+                }
+              }
+            }
+          ],
           'umnukhSariinUrTulbur': [
             {
               '$match': {
@@ -560,6 +585,8 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
             x.eneSardTulukhDun = (gereenuud[0].eneSardTulukhDun.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
             x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
             x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
+            x.khariltsagchiinId = gereenuud[0].khariltsagch.find(a => a.register == x.register)?._id;
+            x.firebaseToken = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.token;
             if (x.umnukhSariinUrTulbur < 0)
               x.umnukhSariinUrTulbur = 0
             if (x.eneSardTulukhDun < 0)
