@@ -438,7 +438,7 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
 
     body.lean = true;
     khuudaslalt(Geree, body)
-      .then((result) => {
+      .then(async (result) => {
         if (result && result.jagsaalt && result.jagsaalt.length > 0) {
           var idnuud = [];
           result.jagsaalt.forEach(a => idnuud.push(a._id));
