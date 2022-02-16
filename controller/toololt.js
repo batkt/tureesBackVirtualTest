@@ -95,7 +95,8 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
   ]
   Geree.aggregate(query).then((result) => {
     if (result && result.length > 0) {
-      result[0].busad[0].tsutsalsan = result[0].tsutsalsan[0].tsutsalsan;
+      if (result[0].tsutsalsan && result[0].tsutsalsan.length > 0)
+        result[0].busad[0].tsutsalsan = result[0].tsutsalsan[0].tsutsalsan;
       result = result[0].busad;
     }
     res.send(result);
