@@ -62,6 +62,9 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         },
         {
             '$match': {
+                "geree.tuluv": {
+                    $ne: -1
+                },
                 "avlaga.guilgeenuud.ognoo": {
                     $gte: new Date(req.body.ekhlekhOgnoo),
                     $lte: new Date(req.body.duusakhOgnoo)
@@ -181,6 +184,9 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
         },
         {
             '$match': {
+                "geree.tuluv": {
+                    $ne: -1
+                },
                 "avlaga.guilgeenuud.ognoo": {
                     $lte: new Date(req.body.duusakhOgnoo)
                 },
