@@ -94,11 +94,10 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
     }
   ]
   Geree.aggregate(query).then((result) => {
-    console.log(JSON.stringify(result, undefined, 3));
-    result[0].busad[0].tsutsalsan = result[0].tsutsalsan[0].tsutsalsan;
-    console.log(JSON.stringify(result, undefined, 3));
-    result = result[0].busad;
-    console.log(JSON.stringify(result, undefined, 3));
+    if (result && result.length > 0) {
+      result[0].busad[0].tsutsalsan = result[0].tsutsalsan[0].tsutsalsan;
+      result = result[0].busad;
+    }
     res.send(result);
   })
     .catch((err) => {
