@@ -106,7 +106,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                         backgroundColor: "rgba(255, 99, 132, 0.5)",
                         borderColor: "rgba(255, 99, 132, 0.5)",
                         fill: false,
-                        lineWidth: 10,
+                        lineWidth: 10
                     },
                     {
                         label: "Гүйцэтгэл",
@@ -114,7 +114,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                         fill: false,
                         borderColor: "rgba(53, 162, 235, 0.5)",
                         backgroundColor: "rgba(53, 162, 235, 0.5)",
-                        borderDash: [10, 10]
+                        lineWidth: 10
                     },
                 ],
             }
