@@ -243,7 +243,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                         fill: false,
                         borderColor: "rgba(53, 162, 235, 0.5)",
                         backgroundColor: "rgba(53, 162, 235, 0.5)",
-                        borderDash: [10, 10]
+                        lineWidth: 10,
                     },
                 ],
             }
