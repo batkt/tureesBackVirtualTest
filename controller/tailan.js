@@ -134,6 +134,9 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
         },
         'tulsun': {
             '$sum': '$avlaga.guilgeenuud.tulsunDun'
+        },
+        'khyamdral': {
+            '$sum': '$avlaga.guilgeenuud.khyamdral'
         }
     }
     var sort = {}
