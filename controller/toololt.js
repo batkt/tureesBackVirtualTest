@@ -41,7 +41,7 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
           {
             '$match': {
               'tuluv': {
-                $nin: [-1, 9]
+                $nin: [-1]
               }
             }
           },
