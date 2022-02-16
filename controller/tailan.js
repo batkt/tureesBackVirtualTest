@@ -9,6 +9,9 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         },
         'tulsun': {
             '$sum': '$avlaga.guilgeenuud.tulsunDun'
+        },
+        'khyamdral': {
+            '$sum': '$avlaga.guilgeenuud.khyamdral'
         }
     }
     var sort = {}
@@ -87,7 +90,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                     labels.push(a["_id"].year + "/" + a["_id"].month);
                 else if (req.body.nariivchlal == "day")
                     labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
-                tuluvluguu = tuluvluguu + a.tulukh - a.tulsun;
+                tuluvluguu = tuluvluguu + a.tulukh - a.tulsun - a.khyamdral;
                 tuluvluguunuud.push(tuluvluguu.toFixed(2));
                 guitsetgeluud.push(a.tulsun.toFixed(2));
             });
@@ -204,6 +207,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             result.forEach((a) => {
                 niitAvlaga = niitAvlaga + a.tulukh;
                 niitAvlaga = niitAvlaga - a.tulsun;
+                niitAvlaga = niitAvlaga - a.khyamdral;
                 if (a["_id"].year > ekhlekhOn || (a["_id"].year == ekhlekhOn && a["_id"].month >= ekhlekhSar)
                     || (a["_id"].year == ekhlekhOn && a["_id"].month == ekhlekhSar && a["_id"].day >= ekhlekhUdur)) {
                     if (req.body.nariivchlal == "year")
