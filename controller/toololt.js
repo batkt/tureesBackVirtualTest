@@ -11,64 +11,94 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
         'baiguullagiinId': req.body.baiguullagiinId,
         'barilgiinId': req.body.barilgiinId
       }
-    }, {
-      '$project': {
-        'khugatsaaKhetersen': {
-          '$cond': [
-            {
-              '$lt': [
-                '$duusakhOgnoo', new Date()
-              ]
-            }, 1, 0
-          ]
-        },
-        'kheviin': {
-          '$cond': [
-            {
-              '$gte': [
-                '$duusakhOgnoo', new Date()
-              ]
-            }, 1, 0
-          ]
-        },
-        'sungakh': {
-          '$cond': [
-            {
-              '$lte': [
-                '$duusakhOgnoo', moment(new Date).add(1, 'month')
-              ]
-            }, 1, 0
-          ]
-        },
-        'tsutsalsan': {
-          '$cond': [
-            {
-              '$eq': [
-                '$tuluv', -1
-              ]
-            }, 1, 0
-          ]
-        }
-      }
-    }, {
-      '$group': {
-        '_id': 'Too',
-        'khugatsaaKhetersen': {
-          '$sum': '$khugatsaaKhetersen'
-        },
-        'kheviin': {
-          '$sum': '$kheviin'
-        },
-        'sungakh': {
-          '$sum': '$sungakh'
-        },
-        'tsutsalsan': {
-          '$sum': '$tsutsalsan'
-        }
+    },
+    {
+      $facet: {
+        "tsutsalsan": [
+          {
+            '$project': {
+              'tsutsalsan': {
+                '$cond': [
+                  {
+                    '$eq': [
+                      '$tuluv', -1
+                    ]
+                  }, 1, 0
+                ]
+              }
+            }
+          },
+          {
+            '$group': {
+              '_id': 'Too',
+              'tsutsalsan': {
+                '$sum': '$tsutsalsan'
+              }
+            }
+          }
+        ],
+        "busad": [
+          {
+            '$match': {
+              'tuluv': {
+                $nin: [-1, 9]
+              }
+            }
+          },
+          {
+            '$project': {
+              'khugatsaaKhetersen': {
+                '$cond': [
+                  {
+                    '$lt': [
+                      '$duusakhOgnoo', new Date()
+                    ]
+                  }, 1, 0
+                ]
+              },
+              'kheviin': {
+                '$cond': [
+                  {
+                    '$gte': [
+                      '$duusakhOgnoo', new Date()
+                    ]
+                  }, 1, 0
+                ]
+              },
+              'sungakh': {
+                '$cond': [
+                  {
+                    '$lte': [
+                      '$duusakhOgnoo', moment(new Date).add(1, 'month')
+                    ]
+                  }, 1, 0
+                ]
+              }
+            }
+          }, {
+            '$group': {
+              '_id': 'Too',
+              'khugatsaaKhetersen': {
+                '$sum': '$khugatsaaKhetersen'
+              },
+              'kheviin': {
+                '$sum': '$kheviin'
+              },
+              'sungakh': {
+                '$sum': '$sungakh'
+              }
+            }
+          }
+        ]
       }
     }
   ]
   Geree.aggregate(query).then((result) => {
+    console.log(JSON.stringify(result, undefined, 3));
+    result[0].busad[0].tsutsalsan = result[0].tsutsalsan[0].tsutsalsan;
+    console.log(JSON.stringify(result, undefined, 3));
+    result = result[0].busad;
+    console.log(JSON.stringify(result, undefined, 3));
     res.send(result);
   })
     .catch((err) => {
