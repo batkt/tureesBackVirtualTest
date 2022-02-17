@@ -277,7 +277,10 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
       }, {
         '$match': {
           'baiguullagiinId': req.body.baiguullagiinId,
-          'barilgiinId': req.body.barilgiinId
+          'barilgiinId': req.body.barilgiinId,
+          'tuluv': {
+            $ne: -1
+          }
         }
       }, {
         '$facet': {
