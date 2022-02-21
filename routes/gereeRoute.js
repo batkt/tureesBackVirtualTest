@@ -621,7 +621,10 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
       }, {
         '$match': {
           'baiguullagiinId': req.body.baiguullagiinId,
-          'barilgiinId': req.body.barilgiinId
+          'barilgiinId': req.body.barilgiinId,
+          'tuluv': {
+            $ne: -1
+          }
         }
       }, {
         '$facet': {
@@ -672,7 +675,7 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
               '$group': {
                 '_id': '$gereeniiDugaar',
                 'tulsun': {
-                  '$sum': '$avlaga.guilgeenuud.khyamdral'
+                  '$sum': '$avlaga.guilgeenuud.tulsun'
                 }
               }
             }
@@ -720,6 +723,7 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
     next(error);
   }
 });
+
 
 module.exports = router;
 
