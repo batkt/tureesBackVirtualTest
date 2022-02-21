@@ -724,7 +724,7 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
   }
 });
 
-router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, res, next) => {
+router.route("/eneSardTuluuguiGereeniiTooAvya").post(tokenShalgakh, async (req, res, next) => {
   try {
     var query = [
       {
@@ -750,11 +750,23 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
             '$sum': '$avlaga.guilgeenuud.tulsunDun'
           }
         }
+      }, {
+        '$match': {
+          'tulsun': 0
+        }
+      }, {
+        '$group': {
+          '_id': 'aa',
+          'niit': {
+            '$sum': 1
+          }
+        }
       }
     ]
     var gereenuud = await Geree.aggregate(query);
-    console.log(gereenuud);
     tuluuguiToo = 0;
+    if (gereenuud && gereenuud.length > 0)
+      tuluuguiToo = gereenuud[0].niit
     res.send({ too: tuluuguiToo });
   } catch (error) {
     next(error);
