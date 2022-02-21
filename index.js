@@ -25,11 +25,11 @@ const ebarimtRoute = require("./routes/ebarimtRoute");
 const medegdelRoute = require("./routes/medegdelRoute");
 const mailRoute = require("./routes/mailRoute");
 const dansRoute = require("./routes/dansRoute");
+const zogsoolRoute = require("./routes/zogsoolRoute");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
-
 const dbUrl =
   "mongodb://localhost:27017/turees?readPreference=primary&ssl=false";
 mongoose
@@ -64,6 +64,7 @@ app.use(medegdelRoute);
 app.use(zuragRoute);
 app.use(ebarimtRoute);
 app.use(mailRoute);
+app.use(zogsoolRoute);
 app.use(nekhemjlekhiinZagvarRoute);
 app.use(dansRoute);
 
