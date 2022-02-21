@@ -675,7 +675,7 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
               '$group': {
                 '_id': '$gereeniiDugaar',
                 'tulsun': {
-                  '$sum': '$avlaga.guilgeenuud.tulsun'
+                  '$sum': '$avlaga.guilgeenuud.tulsunDun'
                 }
               }
             }
@@ -724,6 +724,42 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
   }
 });
 
+router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    var query = [
+      {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': {
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId,
+          'tuluv': {
+            $ne: -1
+          },
+          'avlaga.guilgeenuud.ognoo': {
+            '$lte': new Date(req.body.duusakhOgnoo),
+            '$gte': new Date(req.body.ekhlekhOgnoo)
+          }
+        }
+      }, {
+        '$group': {
+          '_id': '$gereeniiDugaar',
+          'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+          }
+        }
+      }
+    ]
+    var gereenuud = await Geree.aggregate(query);
+    console.log(gereenuud);
+    tuluuguiToo = 0;
+    res.send({ too: tuluuguiToo });
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;
 
