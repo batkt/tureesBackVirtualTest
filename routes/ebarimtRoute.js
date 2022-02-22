@@ -293,13 +293,25 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
             $match: {
                 baiguullagiinId: req.body.baiguullagiinId,
                 barilgiinId: req.body.barilgiinId,
-                amount: {
-                    $gt: 0
-                },
-                tranDate: {
-                    $gte: new Date(req.body.ekhlekhOgnoo),
-                    $lte: new Date(req.body.duusakhOgnoo)
-                },
+                $or: [
+                    {
+                        amount: {
+                            $gt: 0
+                        },
+                        tranDate: {
+                            $gte: new Date(req.body.ekhlekhOgnoo),
+                            $lte: new Date(req.body.duusakhOgnoo)
+                        },
+                    }, {
+                        Amt: {
+                            $gt: 0
+                        },
+                        TxDt: {
+                            $gte: new Date(req.body.ekhlekhOgnoo),
+                            $lte: new Date(req.body.duusakhOgnoo)
+                        }
+                    }
+                ],
                 ebarimtAvsanEsekh: {
                     $ne: true
                 },
@@ -312,6 +324,9 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
                 _id: 'ebarimt',
                 dun: {
                     $sum: '$amount'
+                },
+                dunTdb: {
+                    $sum: '$Amt'
                 },
                 too: {
                     $sum: 1
@@ -340,7 +355,7 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
         }
 
         if (result1[0]) {
-            khariu.avakhDun = result1[0].dun;
+            khariu.avakhDun = result1[0].dun + result1[0].dunTdb;
             khariu.avakhToo = result1[0].too;
         }
         res.send(khariu);
