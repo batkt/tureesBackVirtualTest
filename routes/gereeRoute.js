@@ -613,6 +613,7 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
 
 router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, res, next) => {
   try {
+    console.log("ene sard", req.body);
     var query = [
       {
         '$unwind': {
