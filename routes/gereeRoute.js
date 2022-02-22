@@ -698,6 +698,7 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
       if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
       if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) body.search = String(body.search);
+      console.log("turJagsaalt", turJagsaalt);
       body.query["gereeniiDugaar"] = { $in: turJagsaalt };
       body.lean = true;
 
@@ -707,10 +708,10 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
           console.log("result", result);
           if (result && result.jagsaalt && result.jagsaalt.length > 0)
             result.jagsaalt.forEach(x => {
-              x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
+              x.eneSardTuluugui = (gereenuud[0].eneSardTuluugui.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-              if (x.umnukhSariinUrTulbur < 0)
-                x.umnukhSariinUrTulbur = 0
+              if (x.eneSardTuluugui < 0)
+                x.eneSardTuluugui = 0
               if (x.niitUldegdel < 0)
                 x.niitUldegdel = 0
             });
