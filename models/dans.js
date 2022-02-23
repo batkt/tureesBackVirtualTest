@@ -10,6 +10,8 @@ const dansSchema = new Schema({
   bank: String,
   valyut: String,
   corporateAshiglakhEsekh: Boolean,
+  corporateAnyBIC: String,
+  corporateRoleID: String,
   corporateNevtrekhNer: {
     //select: false,
     type: String
