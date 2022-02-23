@@ -96,14 +96,14 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish) {
                 "InitgPty": {
                     "Id": {
                         "OrgId": {
-                            "AnyBIC": "225"
+                            "AnyBIC": khuselt.AnyBIC
                         }
                     }
                 },
                 "Crdtl": {
                     "Lang": "0",
                     "LoginID": khuselt.loginId, //"tdb_test",
-                    "RoleID": "4",
+                    "RoleID": khuselt.RoleID,
                     "Pwds": {
                         "PwdType": "1",
                         "Pwd": khuselt.pwd
@@ -151,14 +151,14 @@ async function tdbDansniiUldegdelAvya(khuselt, next, onFinish) {
                 "InitgPty": {
                     "Id": {
                         "OrgId": {
-                            "AnyBIC": "225"
+                            "AnyBIC": khuselt.AnyBIC
                         }
                     }
                 },
                 "Crdtl": {
                     "Lang": "0",
                     "LoginID": khuselt.loginId, //"tdb_test",
-                    "RoleID": "4",
+                    "RoleID": khuselt.RoleID,
                     "Pwds": {
                         "PwdType": "1",
                         "Pwd": khuselt.pwd
@@ -273,6 +273,8 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         tdbDansniiUldegdelAvya({
             msgId: "ZTR" + await pad(maxKhuseltiinDugaar, 12),
             loginId: dans.corporateNevtrekhNer,
+            AnyBIC: dans.AnyBIC,
+            RoleID: dans.RoleID,
             pwd: dans.corporateNuutsUg,
             dansniiDugaar: dans.dugaar,
             valyut: dans.valyut
@@ -350,7 +352,7 @@ exports.bankniiDansniiKhuulgaAvya = asyncHandler(async (req, res, next) => {
 });
 */
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
-    var dansnuud = await Dans.find({ corporateAshiglakhEsekh: true }).select({ baiguullagiinId: 1, barilgiinId: 1, bank: 1, corporateNevtrekhNer: 1, corporateNuutsUg: 1, dugaar: 1, valyut: 1 }).lean();
+    var dansnuud = await Dans.find({ corporateAshiglakhEsekh: true }).lean();
     if (dansnuud)
         for await (const dans of dansnuud) {
             if (dans.bank == "khanbank") {
@@ -448,17 +450,28 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     new: true,
                     upsert: true
                 }).then((resa) => console.log(resa)).catch((err) => console.log(err));
-                var firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-                var lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+                var firstDay;
+                var lastDay;
+                if (req && req.body && req.body.ognoo) {
+                    var ognoo = new Date(req.body.ognoo);
+                    firstDay = new Date(ognoo.getFullYear(), ognoo.getMonth(), 1);
+                    lastDay = new Date(ognoo.getFullYear(), ognoo.getMonth() + 1, 0);
+                }
+                else {
+                    firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+                    lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+                }
                 khariu = await tdbDansniiKhuulgaAvya({
                     msgId: "ZTR" + await pad(maxKhuseltiinDugaar, 12),
                     loginId: dans.corporateNevtrekhNer,
+                    AnyBIC: dans.AnyBIC,
+                    RoleID: dans.RoleID,
                     pwd: dans.corporateNuutsUg,
                     dansniiDugaar: dans.dugaar,
                     valyut: dans.valyut,
                     ekhlekhOgnoo: firstDay.getFullYear() + "-" + (firstDay.getMonth() + 1) + "-" + firstDay.getDate(),
                     duusakhOgnoo: lastDay.getFullYear() + "-" + (lastDay.getMonth() + 1) + "-" + lastDay.getDate(),
-                    jurnaliinDugaar: await pad(maxDugaar, 7)
+                    jurnaliinDugaar: await pad((req && req.body && req.body.ognoo) ? 0 : maxDugaar, 7)
                 }, next, async (khariu) => {
                     console.log("khariu", new Date(), khariu);
                     if (khariu && khariu.Document && khariu.Document.GrpHdr && khariu.Document.GrpHdr[0].RspCd && khariu.Document.GrpHdr[0].RspCd[0] == "10") {
