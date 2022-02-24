@@ -194,7 +194,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         }
       }
     ]
-    var uglug = await Geree.aggregate(query);
+    var voucher = await Geree.aggregate(query);
     query = [
       {
         '$match': {
@@ -401,7 +401,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }
     ];
     var tsutslagdsanAvlaga = await Geree.aggregate(query);
-    res.json({ avlaga, uglug, khugatsaaKhetersen, eneSardTulukh, eneSardTulsun, khungulult, tsutslagdsanAvlaga });
+    res.json({ avlaga, voucher, khugatsaaKhetersen, eneSardTulukh, eneSardTulsun, khungulult, tsutslagdsanAvlaga });
   }
   catch (err) {
     next(err);
