@@ -300,7 +300,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
           khaikhNukhtsul.push({ talbainDugaar: { $regex: ".*" + y + ".*" } });
         });
         console.log(khaikhNukhtsul);
-        var oldsonGereenuud = await Geree.find({ $or: khaikhNukhtsul });
+        var oldsonGereenuud = await Geree.find({ $or: khaikhNukhtsul, barilgiinId: guilgeenuud.barilgiinId });
         if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
           oldsonGereenuud.forEach((a) => {
             if (
