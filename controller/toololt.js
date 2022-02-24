@@ -177,6 +177,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           'avlaga.guilgeenuud.ognoo': {
             '$lte': duusakhOgnoo
           },
+          'avlaga.guilgeenuud.turul': "voucher",
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId,
           'tuluv': {
@@ -185,40 +186,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         }
       }, {
         '$group': {
-          '_id': '$gereeniiDugaar',
-          'tulukh': {
-            '$sum': '$avlaga.guilgeenuud.tulukhDun'
-          },
-          'khyamdral': {
-            '$sum': '$avlaga.guilgeenuud.khyamdral'
-          },
+          '_id': '$uglugu',
           'tulsun': {
             '$sum': '$avlaga.guilgeenuud.tulsunDun'
-          }
-        }
-      }, {
-        '$project': {
-          'dun': {
-            '$subtract': [{
-              '$sum': [
-                '$tulsun', '$khyamdral'
-              ]
-            },
-              '$tulukh'
-            ]
-          }
-        }
-      }, {
-        '$match': {
-          'dun': {
-            '$gt': 0
-          }
-        }
-      }, {
-        '$group': {
-          '_id': 'uglugu',
-          'dun': {
-            '$sum': '$dun'
           }
         }
       }
