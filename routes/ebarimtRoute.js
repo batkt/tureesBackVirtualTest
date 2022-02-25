@@ -15,6 +15,7 @@ function nuatBodyo(bodokhDun) {
 }
 
 async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
+    var dun = guilgee.amount ? guilgee.amount : guilgee.Amt
     var ebarimt = new Ebarimt();
     if (register) {
         if (turul) ebarimt.billType = turul;
@@ -26,9 +27,9 @@ async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
     ebarimt.gereeniiDugaar = geree.gereeniiDugaar;
     ebarimt.talbainDugaar = geree.talbainDugaar;
     ebarimt.utas = geree.utas;
-    ebarimt.amount = guilgee.amount.toFixed(2).toString();
-    ebarimt.vat = nuatBodyo(guilgee.amount);
-    ebarimt.cashAmount = guilgee.amount.toFixed(2).toString();
+    ebarimt.amount = dun.toFixed(2).toString();
+    ebarimt.vat = nuatBodyo(dun);
+    ebarimt.cashAmount = dun.toFixed(2).toString();
     ebarimt.nonCashAmount = "0.00";
     ebarimt.cityTax = "0.00";
     ebarimt.districtCode = "12";
@@ -39,10 +40,10 @@ async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
         name: "Үл хөдлөх хөрөнгийг түрээслэх, худалдаалах үйлчилгээ",
         measureUnit: "шир",
         qty: "1.00",
-        unitPrice: guilgee.amount.toFixed(2).toString(),
-        totalAmount: guilgee.amount.toFixed(2).toString(),
+        unitPrice: dun.toFixed(2).toString(),
+        totalAmount: dun.toFixed(2).toString(),
         cityTax: "0.00",
-        vat: nuatBodyo(guilgee.amount),
+        vat: nuatBodyo(dun),
         barCode: "721",
     };
     stocks.push(stock);
