@@ -4,6 +4,10 @@ const Schema = mongoose.Schema;
 mongoose.pluralize(null);
 const zogsoolSchema = new Schema(
   {
+    id: {
+      type: String,
+      unique: true
+    },
     car_number: String,
     check_in_time: Date,
     check_out_time: Date,
