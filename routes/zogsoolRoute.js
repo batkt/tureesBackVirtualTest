@@ -19,8 +19,10 @@ const instanceJson = got.extend({
   }
 });
 crud(router, "zogsool", Zogsool, UstsanBarimt);
+const { mashiniiExcelAvya } = require("../controller/excel");
 
 
+router.route("/mashiniiExcelAvya").get(mashiniiExcelAvya);
 
 router.get("/zogsooloosTatya",
   async (req, res, next) => {
@@ -36,7 +38,7 @@ router.get("/zogsooloosTatya",
       + "DATE_PART('hour', min(check_out_time) - check_in_time)) * 60 +"
       + "DATE_PART('minute', min(check_out_time) - check_in_time) as khugatsaa"
       + " from park_park_recordin a inner join park_recordout b on a.car_number = b.car_number "
-      + "where a.check_in_time < b.check_out_time "
+      + "where a.check_in_time < b.check_out_time and a.check_in_time > '2022-01-01 10:53:26'"
       + "group by a.id, a.car_number, a.check_in_time "
       + "order by check_in_time", async (err, res1) => {
         console.log(err, res1)

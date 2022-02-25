@@ -708,6 +708,61 @@ function ExcelDateToJSDate(date) {
   return new Date(Math.round((date - 25569) * 86400 * 1000));
 }
 
+exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
+  let workbook = new excel.Workbook();
+  let worksheet = workbook.addWorksheet("Машины мэдээлэл");
+  console.log("here");
+  worksheet.columns = [
+    {
+      header: "Машины дугаар",
+      key: "Машины дугаар",
+      headerRow: true,
+      width: 30,
+      style: {
+        font: { bgColor: { argb: 'a0d6a0' } }
+      }
+    },
+    {
+      header: "Эзэмшигчийн нэр",
+      key: "Эзэмшигчийн нэр",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Эзэмшигчийн утас",
+      key: "Эзэмшигчийн утас",
+      headerRow: true,
+      width: 20,
+    },
+    {
+      header: "Төрөл",
+      key: "Төрөл",
+      headerRow: true,
+      width: 20,
+    }
+  ];
+  console.log("worksheet", worksheet);
+  for (let i = 1; i < 100; i++) {
+    worksheet.getCell(`D${i}`).dataValidation = {
+      type: 'list',
+      allowBlank: false,
+      formulae: ['"Гэрээт,Түрээслэгч,Дотоод"']
+    }
+  }
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=" + encodeURI("Машины мэдээлэл.xlsx")
+  );
+  workbook.xlsx.write(res).then(function () {
+    res.end();
+  });
+});
+
+
 exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
   try {
     const workbook = xlsx.read(req.file.buffer);
