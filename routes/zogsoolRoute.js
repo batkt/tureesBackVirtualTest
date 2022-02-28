@@ -24,6 +24,7 @@ const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
 
 crud(router, "zogsool", Zogsool, UstsanBarimt);
+crud(router, "mashin", Mashin, UstsanBarimt);
 const { mashiniiExcelAvya, mashiniiExcelTatya } = require("../controller/excel");
 
 
