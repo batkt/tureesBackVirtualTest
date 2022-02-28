@@ -717,10 +717,7 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       header: "Машины дугаар",
       key: "Машины дугаар",
       headerRow: true,
-      width: 30,
-      style: {
-        font: { bgColor: { argb: 'a0d6a0' } }
-      }
+      width: 30
     },
     {
       header: "Эзэмшигчийн нэр",
@@ -741,14 +738,22 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     }
   ];
-  console.log("worksheet", worksheet);
-  for (let i = 1; i < 100; i++) {
-    worksheet.getCell(`D${i}`).dataValidation = {
-      type: 'list',
-      allowBlank: false,
-      formulae: ['"Гэрээт,Түрээслэгч,Дотоод"']
-    }
-  }
+  /*['A1', 'B1', 'C1', 'D1'].map(key => {
+    worksheet.getCell(key).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      bgColor: { argb: 'FF008000' }
+    };
+  });*/
+  worksheet.dataValidations.add('D2:D9999', {
+    type: 'list',
+    allowBlank: false,
+    formulae: ['"Гэрээт,Түрээслэгч,Дотоод"'],
+    showErrorMessage: true,
+    errorStyle: 'error',
+    error: 'Тохирох утгыг сонгоно уу!',
+  });
+
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
