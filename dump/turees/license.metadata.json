@@ -1,1 +1,0 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"unique":true,"key":{"baiguullagiinId":{"$numberInt":"1"}},"name":"baiguullagiinId_1","background":true}],"uuid":"d0dd89f79fa3441f8e738e3744d1aa20","collectionName":"license"}

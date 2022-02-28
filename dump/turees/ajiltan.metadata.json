@@ -1,1 +1,0 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"unique":true,"key":{"indexTalbar":{"$numberDouble":"1.0"}},"name":"indexTalbar_1"}],"uuid":"309741a9756e4599a67a8540cb665bf7","collectionName":"ajiltan"}
