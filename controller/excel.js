@@ -805,17 +805,17 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       let object = new Mashin();
       object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar)];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
-      object.utas = [mur[usegTooruuKhurvuulekh(tolgoinObject.utas)]];
+      object.ezemshigchiinUtas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
       object.turul = [mur[usegTooruuKhurvuulekh(tolgoinObject.turul)]][0];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      if (!object.dugaar || !object.turul || !object.utas) {
+      if (!object.dugaar || !object.turul || !object.ezemshigchiinUtas) {
         aldaaniiMsg = aldaaniiMsg + "Алдаа! " + muriinDugaar + " дугаар мөрөнд ";
         if (!object.dugaar)
           aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', "
         if (!object.turul)
           aldaaniiMsg = aldaaniiMsg + "'Төрөл', "
-        if (!object.utas || !object.utas[0])
+        if (!object.ezemshigchiinUtas)
           aldaaniiMsg = aldaaniiMsg + "'Утас', "
         aldaaniiMsg = aldaaniiMsg.slice(0, -2)
         aldaaniiMsg = aldaaniiMsg + " "
