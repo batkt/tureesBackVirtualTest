@@ -2,16 +2,23 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
+
+const dedSchema = new Schema(
+  {
+    desDugaar: String,
+    ner: String
+  }
+);
+
+dedSchema.add({ dedKhesguud: [dedSchema] });
+
 const zardalSchema = new Schema(
   {
-    id: {
-      type: String,
-      unique: true
-    },
+    desDugaar: String,
     ner: String,
     baiguullagiinId: String,
     barilgiinId: String,
-    dedKheseg: [Schema.Types.Mixed]
+    dedKhesguud: [dedSchema]
   },
   {
     timestamps: true,
