@@ -11,7 +11,9 @@ const zogsoolSchema = new Schema(
     car_number: String,
     check_in_time: Date,
     check_out_time: Date,
-    khugatsaa: Number
+    khugatsaa: Number,
+    turul: String,
+    mashin: Schema.Types.Mixed
   },
   {
     timestamps: true,

@@ -65,7 +65,6 @@ router.get("/zogsooloosTatya",
 
 router.post("/zogsoolOlnoorKhadgalya",
   async (req, res, next) => {
-    console.log("orj ir")
     var bulkOps = [];
     req.body.jagsaalt.forEach(element => {
       let upsertDoc = {
@@ -86,10 +85,52 @@ router.post("/zogsoolOlnoorKhadgalya",
         console.log('BULK update error');
         next(err)
       });
-    //Zogsool.updateMany(req.body.jagsaalt, { upsert: true }).catch((err) => next(err));
   });
 
-module.exports.mashinTaniya = async function mashinTaniya() {
+router.post("/zogsooliinTooAvya",
+  async (req, res, next) => {
+    var query = [
+      {
+        '$match': {
+          'check_in_time': {
+            $gte: new Date(req.body.ekhlekhOgnoo),
+            $lte: new Date(req.body.duusakhOgnoo)
+          }
+        }
+      },
+      {
+        '$group': {
+          '_id': '$turul',
+          'too': {
+            '$sum': 1
+          }
+        }
+      }
+    ]
+    Zogsool.aggregate(query).then((result) => {
+      res.send(result);
+    }).catch((err) => {
+      next(err);
+    })
+  });
 
-};
+router.post("/mashiniiTooAvya",
+  async (req, res, next) => {
+    var query = [
+      {
+        '$group': {
+          '_id': '$turul',
+          'too': {
+            '$sum': 1
+          }
+        }
+      }
+    ]
+    Mashin.aggregate(query).then((result) => {
+      res.send(result);
+    }).catch((err) => {
+      next(err);
+    })
+  });
+
 module.exports = router;

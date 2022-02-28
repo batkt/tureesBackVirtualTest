@@ -26,6 +26,7 @@ const medegdelRoute = require("./routes/medegdelRoute");
 const mailRoute = require("./routes/mailRoute");
 const dansRoute = require("./routes/dansRoute");
 const zogsoolRoute = require("./routes/zogsoolRoute");
+const zogsool = require("./controller/zogsool");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
 
@@ -105,6 +106,16 @@ cron.schedule(
   "1,6,11,16,21,26,31,36,41,46,51,56 * * * * ",
   function () {
     tulbur.tulultTaniya();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+cron.schedule(
+  "12 * * * * ",
+  function () {
+    zogsool.mashinTaniya();
   },
   {
     scheduled: true,
