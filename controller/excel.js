@@ -776,7 +776,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     const mashinSheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
     var tolgoinObject = {};
-    var muriinDugaar = 1;
     if (!mashinSheet["A1"].v.includes("Машины дугаар") || !mashinSheet["C1"].v.includes("Эзэмшигчийн утас") ||
       !mashinSheet["B1"].v.includes("Эзэмшигчийн нэр") || !mashinSheet["D1"].v.includes("Төрөл")) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
@@ -799,16 +798,18 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       range: 1,
     });
     var aldaaniiMsg = "";
+    var muriinDugaar = 1;
+    console.log(tolgoinObject);
     data.forEach((mur) => {
       muriinDugaar++;
       let object = new Mashin();
       object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar)];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.utas = [mur[usegTooruuKhurvuulekh(tolgoinObject.utas)]];
-      object.turul = [mur[usegTooruuKhurvuulekh(tolgoinObject.turul)]];
+      object.turul = [mur[usegTooruuKhurvuulekh(tolgoinObject.turul)]][0];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      if (!object.dugaar || !object.ner || !object.turul || !object.utas) {
+      if (!object.dugaar || !object.turul || !object.utas) {
         aldaaniiMsg = aldaaniiMsg + "Алдаа! " + muriinDugaar + " дугаар мөрөнд ";
         if (!object.dugaar)
           aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', "
