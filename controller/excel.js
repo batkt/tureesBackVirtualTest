@@ -5,6 +5,7 @@ const Khariltsagch = require("../models/khariltsagch");;
 const Baiguullaga = require("../models/baiguullaga");
 const Geree = require("../models/geree");
 const Talbai = require("../models/talbai");
+const Mashin = require("../models/mashin");
 const aldaa = require("../components/aldaa");
 const xlsx = require("xlsx");
 const moment = require("moment");
@@ -766,6 +767,74 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
     res.end();
   });
 });
+
+exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
+  try {
+    const workbook = xlsx.read(req.file.buffer);
+    if (workbook.SheetNames[0] !== "Машины мэдээлэл")
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    const mashinSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const jagsaalt = [];
+    var tolgoinObject = {};
+    var muriinDugaar = 1;
+    if (!mashinSheet["A1"].v.includes("Машины дугаар") || !mashinSheet["C1"].v.includes("Эзэмшигчийн утас") ||
+      !mashinSheet["B1"].v.includes("Эзэмшигчийн нэр") || !mashinSheet["D1"].v.includes("Төрөл")) {
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    }
+    for (let cell in mashinSheet) {
+      var cellAsString = cell.toString();
+      if (cellAsString[1] === "1" && cellAsString.length == 2 && !!mashinSheet[cellAsString].v) {
+        if (mashinSheet[cellAsString].v.includes("Машины дугаар"))
+          tolgoinObject.dugaar = cellAsString[0];
+        else if (mashinSheet[cellAsString].v.includes("Эзэмшигчийн нэр"))
+          tolgoinObject.ner = cellAsString[0];
+        else if (mashinSheet[cellAsString].v.includes("Эзэмшигчийн утас"))
+          tolgoinObject.utas = cellAsString[0];
+        else if (mashinSheet[cellAsString].v.includes("Төрөл"))
+          tolgoinObject.turul = cellAsString[0];
+      }
+    }
+    var data = xlsx.utils.sheet_to_json(mashinSheet, {
+      header: 1,
+      range: 1,
+    });
+    var aldaaniiMsg = "";
+    data.forEach((mur) => {
+      muriinDugaar++;
+      let object = new Mashin();
+      object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar)];
+      object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
+      object.utas = [mur[usegTooruuKhurvuulekh(tolgoinObject.utas)]];
+      object.turul = [mur[usegTooruuKhurvuulekh(tolgoinObject.turul)]];
+      object.baiguullagiinId = req.body.baiguullagiinId;
+      object.barilgiinId = req.body.barilgiinId;
+      if (!object.dugaar || !object.ner || !object.turul || !object.utas) {
+        aldaaniiMsg = aldaaniiMsg + "Алдаа! " + muriinDugaar + " дугаар мөрөнд ";
+        if (!object.dugaar)
+          aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', "
+        if (!object.turul)
+          aldaaniiMsg = aldaaniiMsg + "'Төрөл', "
+        if (!object.utas || !object.utas[0])
+          aldaaniiMsg = aldaaniiMsg + "'Утас', "
+        aldaaniiMsg = aldaaniiMsg.slice(0, -2)
+        aldaaniiMsg = aldaaniiMsg + " "
+        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+      }
+      else
+        jagsaalt.push(object);
+    });
+    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
+    Mashin.insertMany(jagsaalt, function (err) {
+      if (err) {
+        next(err);
+      }
+      res.status(200).send("Amjilttai");
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 
 exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
