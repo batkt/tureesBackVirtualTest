@@ -88,7 +88,7 @@ router.post("/zogsoolOlnoorKhadgalya",
       });
   });
 
-router.post("/zogsooliinTooAvya",
+router.post("/zogsooliinTooAvya", tokenShalgakh,
   async (req, res, next) => {
     var query = [
       {
@@ -115,7 +115,7 @@ router.post("/zogsooliinTooAvya",
     })
   });
 
-router.post("/mashiniiTooAvya",
+router.post("/mashiniiTooAvya", tokenShalgakh,
   async (req, res, next) => {
     var query = [
       {
