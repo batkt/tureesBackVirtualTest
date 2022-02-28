@@ -4,6 +4,7 @@ const { tokenShalgakh, crud } = require("zevback");
 const UstsanBarimt = require("../models/ustsanBarimt");
 const { Pool } = require('pg')
 const Zogsool = require("../models/zogsool");
+const Mashin = require("../models/mashin");
 const got = require('got');
 const { URL } = require('url');
 const instanceJson = got.extend({
@@ -18,11 +19,16 @@ const instanceJson = got.extend({
     ]
   }
 });
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const uploadFile = multer({ storage: storage });
+
 crud(router, "zogsool", Zogsool, UstsanBarimt);
-const { mashiniiExcelAvya } = require("../controller/excel");
+const { mashiniiExcelAvya, mashiniiExcelTatya } = require("../controller/excel");
 
 
 router.route("/mashiniiExcelAvya").get(mashiniiExcelAvya);
+router.route("/mashiniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, mashiniiExcelTatya);
 
 router.get("/zogsooloosTatya",
   async (req, res, next) => {
@@ -61,7 +67,6 @@ router.post("/zogsoolOlnoorKhadgalya",
   async (req, res, next) => {
     console.log("orj ir")
     var bulkOps = [];
-    // for ( ... each gasStation to upsert ...) {
     req.body.jagsaalt.forEach(element => {
       let upsertDoc = {
         'updateOne': {
@@ -84,4 +89,7 @@ router.post("/zogsoolOlnoorKhadgalya",
     //Zogsool.updateMany(req.body.jagsaalt, { upsert: true }).catch((err) => next(err));
   });
 
+module.exports.mashinTaniya = async function mashinTaniya() {
+
+};
 module.exports = router;
