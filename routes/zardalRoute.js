@@ -20,13 +20,13 @@ router.post("/zardliinDunAvya", tokenShalgakh, async (req, res, next) => {
                     {
                         "TxDt": {
                             $gte: new Date(req.body.ekhlekhOgnoo),
-                            $lte: new Date(req.body.ekhlekhOgnoo)
+                            $lte: new Date(req.body.duusakhOgnoo)
                         }
                     },
                     {
                         "tranDate": {
                             $gte: new Date(req.body.ekhlekhOgnoo),
-                            $lte: new Date(req.body.ekhlekhOgnoo)
+                            $lte: new Date(req.body.duusakhOgnoo)
                         }
                     }
                 ]
