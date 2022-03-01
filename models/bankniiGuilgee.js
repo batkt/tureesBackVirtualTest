@@ -37,6 +37,8 @@ const bankniiGuilgeeSchema = new Schema({
   ebarimtAvsanEsekh: Boolean,
   kholbosonGereeniiId: [String],
   kholbosonDun: Number,
+  zardliinBulgiinId: String,
+  zardliinBulgiinNer: String,
   kholbosonTalbainId: [String],
   magadlaltaiGereenuud: {
     type: [String],
