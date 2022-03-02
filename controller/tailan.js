@@ -102,7 +102,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                     labels.push(a["_id"].year + "/" + a["_id"].month);
                 else if (req.body.nariivchlal == "day")
                     labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
-                zardluud.push((dun * -1).toFixed(2));
+                zardluud.push((a.dun * -1).toFixed(2));
             });
             var data = {
                 labels,
