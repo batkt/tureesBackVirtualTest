@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 
-exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
+exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
     var group = {
         '_id': {
         }, 'dun': {
@@ -125,8 +125,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
     });;
 });
 
-//borluulaltiinTailanAvya
-exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
+exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
     var group = {
         '_id': {
         }, 'tulukh': {
