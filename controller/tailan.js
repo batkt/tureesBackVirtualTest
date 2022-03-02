@@ -109,7 +109,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                 datasets: [
                     {
                         label: "Зардал",
-                        data: tuluvluguunuud,
+                        data: zardluud,
                         backgroundColor: "rgba(255, 99, 132, 0.5)",
                         borderColor: "rgba(255, 99, 132, 0.5)",
                         fill: false,
