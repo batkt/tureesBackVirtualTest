@@ -1,7 +1,132 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
+const BankniiGuilgee = require("../models/bankniiGuilgee");
 
 exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
+    var group = {
+        '_id': {
+        }, 'dun': {
+            $sum: "$dun"
+        }
+    }
+    var sort = {}
+    if (req.body.nariivchlal == "year") {
+        group['_id']['year'] = {
+            $year: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+    }
+    else if (req.body.nariivchlal == "month") {
+        group['_id']['year'] = {
+            $year: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['month'] = {
+            $month: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+        sort['_id.month'] = 1
+    }
+    else if (req.body.nariivchlal == "day") {
+        group['_id']['year'] = {
+            $year: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['month'] = {
+            $month: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['day'] = {
+            $dayOfMonth: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+        sort['_id.month'] = 1
+        sort['_id.day'] = 1
+    }
+    let query = [
+        {
+            '$match': {
+                'baiguullagiinId': req.body.baiguullagiinId,
+                'barilgiinId': req.body.barilgiinId,
+                "$or": [
+                    {
+                        "$and": [
+                            {
+                                "TxDt": {
+                                    $gte: new Date(req.body.ekhlekhOgnoo),
+                                    $lte: new Date(req.body.duusakhOgnoo)
+                                }
+                            },
+                            {
+                                "Amt": {
+                                    $lt: 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "$and": [
+                            {
+                                "tranDate": {
+                                    $gte: new Date(req.body.ekhlekhOgnoo),
+                                    $lte: new Date(req.body.duusakhOgnoo)
+                                }
+                            },
+                            {
+                                "amount": {
+                                    $lt: 0
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            '$project': {
+                "dun": { "$ifNull": ["$Amt", "$amount"] },
+                "ognoo": { "$ifNull": ["$TxDt", "$tranDate"] }
+            }
+        },
+        {
+            '$group': group
+        }, {
+            '$sort': sort
+        }
+    ]
+    BankniiGuilgee.aggregate(query).then((result) => {
+        if (result && result.length > 0) {
+            var labels = []
+            var zardluud = []
+            result.forEach((a) => {
+                if (req.body.nariivchlal == "year")
+                    labels.push(a["_id"].year);
+                else if (req.body.nariivchlal == "month")
+                    labels.push(a["_id"].year + "/" + a["_id"].month);
+                else if (req.body.nariivchlal == "day")
+                    labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
+                zardluud.push(dun.toFixed(2));
+            });
+            var data = {
+                labels,
+                datasets: [
+                    {
+                        label: "Зардал",
+                        data: tuluvluguunuud,
+                        backgroundColor: "rgba(255, 99, 132, 0.5)",
+                        borderColor: "rgba(255, 99, 132, 0.5)",
+                        fill: false,
+                        lineWidth: 10
+                    }
+                ],
+            }
+            res.send(data);
+        }
+        res.send(result);
+    }).catch((err) => {
+        next(err);
+    });;
+});
+
+//borluulaltiinTailanAvya
+exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
     var group = {
         '_id': {
         }, 'tulukh': {
