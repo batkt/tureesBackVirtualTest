@@ -672,7 +672,7 @@ exports.gereenuudedZalruulgaOruulya = asyncHandler(
               }
             }
           ]);
-          if (geree && geree.length > 0 && geree[0].uldegdel != element.dun) {
+          if (geree && geree.length > 0 && geree[0].uldegdel !== element.dun) {
             console.log('geree', geree);
             console.log('element', element);
             zoruu = element.dun - geree[0].uldegdel;
