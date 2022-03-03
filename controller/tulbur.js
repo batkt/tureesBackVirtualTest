@@ -620,6 +620,90 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
   }
 );
 
+exports.gereenuudedZalruulgaOruulya = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var bodokhOgnoo = new Date(req.body.bodokhOgnoo);
+      var oruulakhOgnoo = new Date(req.body.oruulakhOgnoo);
+      var baiguullagiinId = req.body.baiguullagiinId;
+      var barilgiinId = req.body.barilgiinId;
+      var zoruu = 0;
+      objectuud = req.body.objectuud
+      var khariu = [];
+      var object;
+      if (!req.body.bodokhOgnoo || !req.body.oruulakhOgnoo || !req.body.barilgiinId || !req.body.oruulakhOgnoo || !req.body.objectuud)
+        throw new Error("Талбар дутуу!");
+      if (objectuud)
+        for await (const element of objectuud) {
+          var geree = await Geree.aggregate([
+            {
+              '$unwind': {
+                'path': '$avlaga.guilgeenuud'
+              }
+            }, {
+              '$match': {
+                'baiguullagiinId': baiguullagiinId,
+                'barilgiinId': barilgiinId,
+                'gereeniiDugaar': element.gereeniiDugaar,
+                'avlaga.guilgeenuud.ognoo': {
+                  '$lte': bodokhOgnoo
+                }
+              }
+            }, {
+              '$project': {
+                'gereeniiDugaar': '$gereeniiDugaar',
+                'tulukhDun': {
+                  '$subtract': [
+                    '$avlaga.guilgeenuud.tulukhDun', {
+                      '$sum': [
+                        '$avlaga.guilgeenuud.tulsunDun', '$avlaga.guilgeenuud.khyamdral'
+                      ]
+                    }
+                  ]
+                }
+              }
+            }, {
+              '$group': {
+                '_id': '$gereeniiDugaar',
+                'uldegdel': {
+                  '$sum': '$tulukhDun'
+                }
+              }
+            }
+          ]);
+          if (geree && geree.length > 0 && geree[0].uldegdel != element.dun) {
+            console.log('geree', geree);
+            console.log('element', element);
+            zoruu = element.dun - geree[0].uldegdel;
+            object = {
+              tulukhDun: zoruu > 0 ? zoruu : 0,
+              tulsunDun: zoruu < 0 ? (zoruu * -1) : 0,
+              ognoo: oruulakhOgnoo,
+              tailbar: "Залруулга гүйлгээ",
+              turul: "System",
+              guilgeeKhiisenAjiltniiNer: "System",
+              khyamdral: 0,
+            };
+            await Geree.updateOne(
+              { gereeniiDugaar: geree[0]._id },
+              {
+                $push: {
+                  ["avlaga.guilgeenuud"]: object,
+                },
+              }
+            ).then(async (result) => {
+              console.log("result", result);
+              khariu.push(result);
+            });
+          }
+        }
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 exports.tukhainOgnoogoorGuilgeegOruulya = asyncHandler(
   async (req, res, next) => {
     try {
