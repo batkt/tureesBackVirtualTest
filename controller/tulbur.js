@@ -676,7 +676,7 @@ exports.gereenuudedZalruulgaOruulya = asyncHandler(
             console.log('geree', geree);
             console.log('element', element);
             zoruu = element.dun - geree[0].uldegdel;
-            if (zoruu != 0) {
+            if (zoruu !== 0) {
               object = {
                 tulukhDun: zoruu > 0 ? zoruu : 0,
                 tulsunDun: zoruu < 0 ? (zoruu * -1) : 0,
