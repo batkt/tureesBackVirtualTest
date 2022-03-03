@@ -47,7 +47,11 @@ router.post("/zardliinDunAvya", tokenShalgakh, async (req, res, next) => {
         }
     ]
     BankniiGuilgee.aggregate(query).then((result) => {
-        res.send(result);
+        var dun = 0;
+        if (result && result.length > 0) {
+            dun = result[0].niitDun
+        }
+        res.send(dun.toString());
     }).catch((err) => {
         next(err);
     })
