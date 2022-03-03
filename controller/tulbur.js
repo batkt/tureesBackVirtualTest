@@ -655,9 +655,18 @@ exports.gereenuudedZalruulgaOruulya = asyncHandler(
                 'gereeniiDugaar': '$gereeniiDugaar',
                 'tulukhDun': {
                   '$subtract': [
-                    '$avlaga.guilgeenuud.tulukhDun', {
+                    {
+                      "$ifNull": ["$avlaga.guilgeenuud.tulukhDun", 0]
+                    }
+                    , {
                       '$sum': [
-                        '$avlaga.guilgeenuud.tulsunDun', '$avlaga.guilgeenuud.khyamdral'
+                        {
+                          "$ifNull": ['$avlaga.guilgeenuud.tulsunDun', 0]
+                        }
+                        ,
+                        {
+                          "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
+                        }
                       ]
                     }
                   ]
