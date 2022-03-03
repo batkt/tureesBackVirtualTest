@@ -676,26 +676,28 @@ exports.gereenuudedZalruulgaOruulya = asyncHandler(
             console.log('geree', geree);
             console.log('element', element);
             zoruu = element.dun - geree[0].uldegdel;
-            object = {
-              tulukhDun: zoruu > 0 ? zoruu : 0,
-              tulsunDun: zoruu < 0 ? (zoruu * -1) : 0,
-              ognoo: oruulakhOgnoo,
-              tailbar: "Залруулга гүйлгээ",
-              turul: "System",
-              guilgeeKhiisenAjiltniiNer: "System",
-              khyamdral: 0,
-            };
-            await Geree.updateOne(
-              { gereeniiDugaar: geree[0]._id },
-              {
-                $push: {
-                  ["avlaga.guilgeenuud"]: object,
-                },
-              }
-            ).then(async (result) => {
-              console.log("result", result);
-              khariu.push(result);
-            });
+            if (zoruu != 0) {
+              object = {
+                tulukhDun: zoruu > 0 ? zoruu : 0,
+                tulsunDun: zoruu < 0 ? (zoruu * -1) : 0,
+                ognoo: oruulakhOgnoo,
+                tailbar: "Залруулга гүйлгээ",
+                turul: "System",
+                guilgeeKhiisenAjiltniiNer: "System",
+                khyamdral: 0,
+              };
+              await Geree.updateOne(
+                { gereeniiDugaar: geree[0]._id },
+                {
+                  $push: {
+                    ["avlaga.guilgeenuud"]: object,
+                  },
+                }
+              ).then(async (result) => {
+                console.log("result", result);
+                khariu.push(result);
+              });
+            }
           }
         }
       res.send(khariu);
