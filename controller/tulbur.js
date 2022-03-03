@@ -644,7 +644,8 @@ exports.gereenuudedZalruulgaOruulya = asyncHandler(
               '$match': {
                 'baiguullagiinId': baiguullagiinId,
                 'barilgiinId': barilgiinId,
-                'gereeniiDugaar': element.gereeniiDugaar,
+                'talbainDugaar': element.gereeniiDugaar,
+                'tuluv': 1,
                 'avlaga.guilgeenuud.ognoo': {
                   '$lte': bodokhOgnoo
                 }
