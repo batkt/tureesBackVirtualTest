@@ -678,8 +678,8 @@ exports.gereenuudedZalruulgaOruulya = asyncHandler(
             zoruu = element.dun - geree[0].uldegdel;
             if (zoruu !== 0) {
               object = {
-                tulukhDun: zoruu < 0 ? (zoruu * -1) : 0,
-                tulsunDun: zoruu > 0 ? zoruu : 0,
+                tulukhDun: zoruu > 0 ? zoruu : 0,
+                tulsunDun: zoruu < 0 ? (zoruu * -1) : 0,
                 ognoo: oruulakhOgnoo,
                 tailbar: "Залруулга гүйлгээ",
                 turul: "System",
