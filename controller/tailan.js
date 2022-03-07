@@ -179,10 +179,6 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
             '$unwind': {
                 'path': '$avlaga.guilgeenuud'
             }
-        }, {
-            '$unwind': {
-                'path': '$avlaga.guilgeenuud.ognoo'
-            }
         },
         {
             '$match': {
@@ -203,6 +199,41 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
             '$sort': sort
         }
     ]
+    var turluur = await Geree.aggregate([
+        {
+            '$match': {
+                'baiguullagiinId': req.body.baiguullagiinId,
+                'barilgiinId': req.body.barilgiinId
+            }
+        }, {
+            '$unwind': {
+                'path': '$avlaga.guilgeenuud'
+            }
+        },
+        {
+            '$match': {
+                "geree.tuluv": {
+                    $ne: -1
+                },
+                "avlaga.guilgeenuud.ognoo": {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                    $lte: new Date(req.body.duusakhOgnoo)
+                },
+                "avlaga.guilgeenuud.turul": {
+                    $nin: ["baritsaa"]
+                }
+            }
+        }, {
+            '$group': {
+                _id: "$avlaga.guilgeenuud.turul",
+                "tulsun": {
+                    $sum: {
+                        $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0]
+                    }
+                }
+            }
+        }
+    ]);
     Geree.aggregate(query).then((result) => {
         if (result && result.length > 0) {
             var labels = []
@@ -221,8 +252,42 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                 tuluvluguunuud.push(tuluvluguu.toFixed(2));
                 guitsetgeluud.push(a.tulsun.toFixed(2));
             });
+            var jagsaalt = [];
+            if (turluur && turluur.length > 0) {
+                turluur.forEach(x => {
+                    if (x._id == "bank") {
+                        jagsaalt.push({
+                            ner: "Харилцах",
+                            dun: x.tulsun,
+                            ungu: "rgba(255, 99, 132, 0.5)"
+                        });
+                    }
+                    else if (x._id == "barter") {
+                        jagsaalt.push({
+                            ner: "Бартер",
+                            dun: x.tulsun,
+                            ungu: "rgba(53, 162, 235, 0.5)"
+                        });
+                    }
+                    else if (x._id == "qpay") {
+                        jagsaalt.push({
+                            ner: "Qpay",
+                            dun: x.tulsun,
+                            ungu: "rgba(0, 255, 0, 0.5)"
+                        });
+                    }
+                    else if (x._id == "voucher") {
+                        jagsaalt.push({
+                            ner: "Ваучер",
+                            dun: x.tulsun,
+                            ungu: "rgba(255, 0, 255, 0.5)"
+                        });
+                    }
+                });
+            }
             var data = {
                 labels,
+                jagsaalt,
                 datasets: [
                     {
                         label: "Төлөвлөгөө",

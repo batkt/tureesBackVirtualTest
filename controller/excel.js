@@ -244,7 +244,8 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
       object.baiguullagiinId = req.body.baiguullagiinId;;
       object.barilgiinId = req.body.barilgiinId;
-      if (!object.davkhar || !object.talbainKhemjee || !object.kod || !object.talbainNegjUne || !object.talbainNiitUne) {
+      if (!object.davkhar || !object.talbainKhemjee || !object.kod || !object.talbainNegjUne
+        || !object.talbainNiitUne || /[а-яА-ЯЁё]/.test(object.davkhar)) {
         aldaaniiMsg = aldaaniiMsg + muriinDugaar + " дугаар мөрөнд ";
         if (!object.davkhar)
           aldaaniiMsg = aldaaniiMsg + "Давхар "
@@ -256,7 +257,11 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
           aldaaniiMsg = aldaaniiMsg + "Талбайн нэгж үнэ "
         if (!object.talbainNiitUne)
           aldaaniiMsg = aldaaniiMsg + "Талбайн нийт үнэ "
-        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+        if (!object.davkhar || !object.talbainKhemjee || !object.kod || !object.talbainNegjUne || !object.talbainNiitUne)
+          aldaaniiMsg = aldaaniiMsg + "талбар хоосон "
+        if (/[а-яА-ЯЁё]/.test(object.davkhar))
+          aldaaniiMsg = aldaaniiMsg + "давхар хэсэгт буруу тэмдэгт оруулсан ! <br/>"
+        aldaaniiMsg = aldaaniiMsg + "байна! <br/>"
       }
       else
         jagsaalt.push(object);
@@ -646,7 +651,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.gereeniiZagvariinId = zagvariinId;
         object.baiguullagiinId = req.body.baiguullagiinId;
         object.barilgiinId = req.body.barilgiinId;
-        if (!object.register || !object.gereeniiOgnoo || !object.khugatsaa || !object.talbainDugaar) {
+        if (!object.register || !object.gereeniiOgnoo || !object.khugatsaa || !object.talbainDugaar
+          || object.gereeniiOgnoo < Date.parse("2010-01-01") || !object.tulukhUdur || !Number.isInteger(object.tulukhUdur[0])) {
           aldaaniiMsg = aldaaniiMsg + muriinDugaar + " дугаар мөрөнд ";
           if (!object.register)
             aldaaniiMsg = aldaaniiMsg + "Регистр "
@@ -656,7 +662,13 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             aldaaniiMsg = aldaaniiMsg + "Хугацаа "
           if (!object.talbainDugaar)
             aldaaniiMsg = aldaaniiMsg + "Талбайн код "
-          aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+          if (!object.register || !object.gereeniiOgnoo || !object.khugatsaa || !object.talbainDugaar)
+            aldaaniiMsg = aldaaniiMsg + "талбар хоосон "
+          if (object.gereeniiOgnoo < Date.parse("2010-01-01"))
+            aldaaniiMsg = aldaaniiMsg + "Гэрээний огноо буруу "
+          if (!object.tulukhUdur || !Number.isInteger(object.tulukhUdur[0]))
+            aldaaniiMsg = aldaaniiMsg + "Төлөх өдөр буруу "
+          aldaaniiMsg = aldaaniiMsg + "байна! <br/>"
         }
         else
           jagsaalt.push(object);
