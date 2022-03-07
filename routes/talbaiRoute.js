@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const talbai = require("../models/talbai");
+const Geree = require("../models/geree");
 const multer = require("multer");
 const storage = multer.memoryStorage();
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
@@ -15,4 +16,11 @@ const { talbaiTatya, talbainZagvarAvya } = require("../controller/excel");
 
 router.route("/talbaiTatya").post(uploadFile.single("file"), tokenShalgakh, talbaiTatya);
 router.route("/talbainZagvarAvya").get(talbainZagvarAvya);
+router.route("/talbainSulEskhiigShalgay").get(tokenShalgakh, async (req, res, next) => {
+    var geree = await Geree.findOne({ talbainDugaar: req.params.talbainDugaar, barilgiinId: req.params.barilgiinId, tuluv: 1, duusakhOgnoo: { $lte: new Date() } });
+    if (geree)
+        res.send(geree.gereeniiDugaar);
+    else
+        res.send(200)
+});
 module.exports = router;
