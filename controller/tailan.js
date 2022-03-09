@@ -172,25 +172,20 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                     labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
                 zardluud.push((a.dun * -1).toFixed(2));
             });
-
-            console.log("zardliinDunguud", zardliinDunguud);
             if (zardliinDunguud && zardliinDunguud.length > 0 && zardaluud && zardaluud.length > 0) {
                 var idnuud = [];
                 var unguniiId = 0;
                 zardaluud.forEach(zardal => {
-                    idnuud.push(zardal._id)
+                    idnuud = [zardal._id]
                     if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0)
                         zardal.dedKhesguud.forEach((a) => {
                             console.log(typeof a._id)
                             idnuud.push(a._id)
                         });
-                    console.log("idnuud", idnuud);
                     var shuugdsenZardluud = lodash.filter(zardliinDunguud, (a) => JSON.stringify(idnuud).includes(a._id));
-                    console.log("shuugdsenZardluud", shuugdsenZardluud);
                     var niitDun = lodash.sumBy(shuugdsenZardluud, function (object) {
                         return object.dun * (-1);
                     });
-                    console.log("niitDun", niitDun);
                     jagsaalt.push({
                         ner: zardal.ner,
                         dun: niitDun,
