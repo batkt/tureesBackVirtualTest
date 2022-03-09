@@ -196,6 +196,8 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                     }
                 });
             }
+            if (jagsaalt)
+                jagsaalt = lodash.orderBy(jagsaalt, ["dun"], ["asc"]);
             var data = {
                 labels,
                 jagsaalt,
