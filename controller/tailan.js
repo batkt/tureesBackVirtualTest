@@ -151,7 +151,8 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
         },
         {
             '$group': {
-                '_id': "$zardliinBulgiinId", 'dun': {
+                '_id': "$zardliinBulgiinId",
+                'dun': {
                     $sum: "$dun"
                 }
             }
@@ -182,8 +183,8 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                         //  return object.tulsunDun;                        });
                         //jagsaalt = lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
                         zardal.dedKhesguud.forEach((a) => idnuud.push(a._id));
-                        console.log("idnuu", idnuud);
-                        var niitDun = lodash.sumBy(zardliinDunguud.filter(a => idnuud.includes(a._id)), function (object) {
+                        var shuugdsenZardluud = zardliinDunguud.filter(a => idnuud.includes(a._id));
+                        var niitDun = lodash.sumBy(shuugdsenZardluud, function (object) {
                             return object.dun;
                         });
                         console.log("niitDun", niitDun);
