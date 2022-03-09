@@ -578,7 +578,8 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
             }
         ]
         var orloguud = await Geree.aggregate(query);
-
+        var niitZardal = 0;
+        var niitOrlogo = 0;
         var zardliinObjectuud = [];
         var orlogiinObjectuud = [];
         if (zardluud && zardluud.length > 0) {
@@ -594,6 +595,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
                     zardliinObject.ognoo = new Date(a["_id"].year, a["_id"].month - 1, a["_id"].day);
                 //zardliinObject.ognoo = a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day;
                 zardliinObject.dun = (a.dun * -1).toFixed(2);
+                niitZardal = niitZardal + zardliinObject.dun;
                 zardliinObjectuud.push(zardliinObject);
             });
         }
@@ -611,6 +613,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
                     orlogiinObject.ognoo = new Date(a["_id"].year, a["_id"].month - 1, a["_id"].day);
                 //orlogiinObject.ognoo = a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day;
                 orlogiinObject.dun = a.tulsun.toFixed(2);
+                niitOrlogo = niitOrlogo + orlogiinObject.dun;
                 orlogiinObjectuud.push(orlogiinObject);
             });
         }
@@ -650,8 +653,26 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
                 orlogoDatanuud.push(a.dun)
             });
         }
+        var jagsaalt = [
+            {
+                "ner": "Гүйцэтгэл",
+                "dun": niitOrlogo,
+                ungu: unguud[0]
+            },
+            {
+                "ner": "Зарлага",
+                "dun": niitZarlaga,
+                ungu: unguud[1]
+            },
+            {
+                "ner": "Ашин",
+                "dun": niitOrlogo - niitZarlaga,
+                ungu: unguud[2]
+            }
+        ]
         var data = {
             labels,
+            jagsaalt,
             datasets: [
                 {
                     label: "Зарлага",
