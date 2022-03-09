@@ -595,7 +595,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
                     zardliinObject.ognoo = new Date(a["_id"].year, a["_id"].month - 1, a["_id"].day);
                 //zardliinObject.ognoo = a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day;
                 zardliinObject.dun = (a.dun * -1).toFixed(2);
-                niitZardal = niitZardal + zardliinObject.dun;
+                niitZardal = niitZardal + (a.dun * -1);
                 zardliinObjectuud.push(zardliinObject);
             });
         }
@@ -613,7 +613,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
                     orlogiinObject.ognoo = new Date(a["_id"].year, a["_id"].month - 1, a["_id"].day);
                 //orlogiinObject.ognoo = a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day;
                 orlogiinObject.dun = a.tulsun.toFixed(2);
-                niitOrlogo = niitOrlogo + orlogiinObject.dun;
+                niitOrlogo = niitOrlogo + a.tulsun;
                 orlogiinObjectuud.push(orlogiinObject);
             });
         }
