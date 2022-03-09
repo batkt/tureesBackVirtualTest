@@ -175,11 +175,11 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             if (zardliinDunguud && zardliinDunguud.length > 0 && zardaluud && zardaluud.length > 0) {
                 var idnuud = [];
                 var unguniiId = 0;
-                console.log("zardal", zardaluud);
                 zardaluud.forEach(zardal => {
                     if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0) {
                         idnuud = [zardal._id];
                         zardal.dedKhesguud.forEach((a) => idnuud.push(a._id));
+                        console.log("idnuud", idnuud);
                         var shuugdsenZardluud = lodash.filter(zardliinDunguud, (a) => { console.log("a", a); idnuud.includes(a._id) });
                         console.log("shuugdsenZardluud", shuugdsenZardluud);
                         var niitDun = lodash.sumBy(shuugdsenZardluud, function (object) {
