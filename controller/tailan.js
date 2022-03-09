@@ -180,7 +180,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                         idnuud = [zardal._id];
                         zardal.dedKhesguud.forEach((a) => idnuud.push(a._id));
                         console.log("idnuud", idnuud);
-                        var shuugdsenZardluud = lodash.filter(zardliinDunguud, (a) => { console.log("a", a); idnuud.includes(a['_id']) });
+                        var shuugdsenZardluud = lodash.filter(zardliinDunguud, (a) => { console.log("a", a._id); idnuud.includes(a._id) });
                         console.log("shuugdsenZardluud", shuugdsenZardluud);
                         var niitDun = lodash.sumBy(shuugdsenZardluud, function (object) {
                             return object.dun;
