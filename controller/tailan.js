@@ -175,7 +175,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             if (zardliinDunguud && zardliinDunguud.length > 0 && zardaluud && zardaluud.length > 0) {
                 var idnuud = [];
                 var unguniiId = 0;
-                console.log("zardalruu orj irsen", zardaluud);
+                console.log("zardal", zardaluud);
                 zardaluud.forEach(zardal => {
                     if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0) {
                         idnuud = [zardal._id];
