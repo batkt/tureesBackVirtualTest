@@ -638,7 +638,12 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
             zardliinObjectuud = lodash.orderBy(zardliinObjectuud, ["ognoo"], ["asc"]);
             orlogiinObjectuud = lodash.orderBy(orlogiinObjectuud, ["ognoo"], ["asc"]);
             zardliinObjectuud.forEach((a) => {
-                labels.push(moment(a.ognoo).format('YYYY/MM/DD'));
+                if (req.body.nariivchlal == "year")
+                    labels.push(moment(a.ognoo).format('YYYY'));
+                else if (req.body.nariivchlal == "month")
+                    labels.push(moment(a.ognoo).format('YYYY/MM'));
+                else if (req.body.nariivchlal == "day")
+                    labels.push(moment(a.ognoo).format('YYYY/MM/DD'));
                 zarlagaDatanuud.push(a.dun)
             });
             orlogiinObjectuud.forEach((a) => {
