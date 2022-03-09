@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
-const Zardal = require("../models/bankniiGuilgee");
+const Zardal = require("../models/zardal");
 const lodash = require("lodash");
 
 const unguud = [
