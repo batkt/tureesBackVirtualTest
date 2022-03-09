@@ -417,6 +417,230 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
     });;
 });
 
+exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
+    var group = {
+        '_id': {
+        }, 'dun': {
+            $sum: "$dun"
+        }
+    }
+    var sort = {}
+    if (req.body.nariivchlal == "year") {
+        group['_id']['year'] = {
+            $year: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+    }
+    else if (req.body.nariivchlal == "month") {
+        group['_id']['year'] = {
+            $year: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['month'] = {
+            $month: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+        sort['_id.month'] = 1
+    }
+    else if (req.body.nariivchlal == "day") {
+        group['_id']['year'] = {
+            $year: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['month'] = {
+            $month: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['day'] = {
+            $dayOfMonth: { date: "$ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+        sort['_id.month'] = 1
+        sort['_id.day'] = 1
+    }
+    let query = [
+        {
+            '$match': {
+                'baiguullagiinId': req.body.baiguullagiinId,
+                'barilgiinId': req.body.barilgiinId,
+                "$or": [
+                    {
+                        "$and": [
+                            {
+                                "TxDt": {
+                                    $gte: new Date(req.body.ekhlekhOgnoo),
+                                    $lte: new Date(req.body.duusakhOgnoo)
+                                }
+                            },
+                            {
+                                "Amt": {
+                                    $lt: 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "$and": [
+                            {
+                                "tranDate": {
+                                    $gte: new Date(req.body.ekhlekhOgnoo),
+                                    $lte: new Date(req.body.duusakhOgnoo)
+                                }
+                            },
+                            {
+                                "amount": {
+                                    $lt: 0
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            '$project': {
+                "dun": { "$ifNull": ["$Amt", "$amount"] },
+                "ognoo": { "$ifNull": ["$TxDt", "$tranDate"] }
+            }
+        },
+        {
+            '$group': group
+        }, {
+            '$sort': sort
+        }
+    ]
+    var data = {
+        datasets: [],
+        labels: []
+    }
+    var unguniiId = 0;
+    var result = await BankniiGuilgee.aggregate(query)
+    if (result && result.length > 0) {
+        var zardluud = []
+        result.forEach((a) => {
+            if (req.body.nariivchlal == "year")
+                data.labels.push(a["_id"].year);
+            else if (req.body.nariivchlal == "month")
+                data.labels.push(a["_id"].year + "/" + a["_id"].month);
+            else if (req.body.nariivchlal == "day")
+                data.labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
+            zardluud.push((a.dun * -1).toFixed(2));
+        });
+        data.datasets.push({
+            label: "Зардал",
+            data: zardluud,
+            backgroundColor: unguud[unguniiId],
+            borderColor: unguud[unguniiId],
+            fill: false,
+            lineWidth: 10
+        });
+        unguniiId++;
+    }
+
+    group = {
+        '_id': {
+        }, 'tulukh': {
+            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+        },
+        'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+        },
+        'khyamdral': {
+            '$sum': '$avlaga.guilgeenuud.khyamdral'
+        }
+    }
+    sort = {}
+    if (req.body.nariivchlal == "year") {
+        group['_id']['year'] = {
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+    }
+    else if (req.body.nariivchlal == "month") {
+        group['_id']['year'] = {
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['month'] = {
+            $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+        sort['_id.month'] = 1
+    }
+    else if (req.body.nariivchlal == "day") {
+        group['_id']['year'] = {
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['month'] = {
+            $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        group['_id']['day'] = {
+            $dayOfMonth: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+        }
+        sort['_id.year'] = 1
+        sort['_id.month'] = 1
+        sort['_id.day'] = 1
+    }
+    query = [
+        {
+            '$match': {
+                'baiguullagiinId': req.body.baiguullagiinId,
+                'barilgiinId': req.body.barilgiinId
+            }
+        }, {
+            '$unwind': {
+                'path': '$avlaga.guilgeenuud'
+            }
+        },
+        {
+            '$match': {
+                "geree.tuluv": {
+                    $ne: -1
+                },
+                "avlaga.guilgeenuud.ognoo": {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                    $lte: new Date(req.body.duusakhOgnoo)
+                },
+                "avlaga.guilgeenuud.turul": {
+                    $nin: ["baritsaa"]
+                }
+            }
+        }, {
+            '$group': group
+        }, {
+            '$sort': sort
+        }
+    ]
+    Geree.aggregate(query).then((result) => {
+        if (result && result.length > 0) {
+            var tuluvluguunuud = []
+            var tuluvluguu = 0;
+            var guitsetgeluud = []
+            console.log("result", result);
+            result.forEach((a) => {
+                if (req.body.nariivchlal == "year")
+                    data.labels.push(a["_id"].year);
+                else if (req.body.nariivchlal == "month")
+                    data.labels.push(a["_id"].year + "/" + a["_id"].month);
+                else if (req.body.nariivchlal == "day")
+                    data.labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
+                tuluvluguu = tuluvluguu + a.tulukh - a.tulsun - a.khyamdral;
+                tuluvluguunuud.push(tuluvluguu.toFixed(2));
+                guitsetgeluud.push(a.tulsun.toFixed(2));
+            });
+
+            data.datasets.push({
+                label: "Орлого",
+                data: zardluud,
+                backgroundColor: unguud[unguniiId],
+                borderColor: unguud[unguniiId],
+                fill: false,
+                lineWidth: 10
+            });
+            unguniiId++;
+        }
+        res.send(data);
+    }).catch((err) => {
+        next(err);
+    });;
+});
+
 exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
     var group = {
         '_id': {
