@@ -171,10 +171,10 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                 zardluud.push((a.dun * -1).toFixed(2));
             });
             var jagsaalt = [];
-            console.log("zardliinDunguud", zardliinDunguud);
             if (zardliinDunguud && zardliinDunguud.length > 0 && zardaluud && zardaluud.length > 0) {
                 var idnuud = [];
                 var unguniiId = 0;
+                console.log("zardalruu orj irsen");
                 zardaluud.forEach(zardal => {
                     if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0) {
                         idnuud = [];
@@ -182,9 +182,11 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                         //  return object.tulsunDun;                        });
                         //jagsaalt = lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
                         zardal.dedKhesguud.forEach((a) => idnuud.push(a._id));
+                        console.log("idnuu", idnuud);
                         var niitDun = lodash.sumBy(zardliinDunguud.filter(a => idnuud.includes(a._id)), function (object) {
                             return object.dun;
                         });
+                        console.log("niitDun", niitDun);
                         jagsaalt.push({
                             ner: zardal.ner,
                             dun: niitDun,
