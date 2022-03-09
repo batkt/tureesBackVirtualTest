@@ -100,13 +100,15 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             '$sort': sort
         }
     ]
-    var zardluud = await Zardal.find({ barilgiinId: req.body.barilgiinId, baiguullagiinId: req.body.baiguullagiinId }).lean();
+    var zardaluud = await Zardal.find({ barilgiinId: req.body.barilgiinId, baiguullagiinId: req.body.baiguullagiinId }).lean();
     var zardliinDunguud = await BankniiGuilgee.aggregate([
         {
             '$match': {
                 'baiguullagiinId': req.body.baiguullagiinId,
                 'barilgiinId': req.body.barilgiinId,
-                'barilgiinId': req.body.barilgiinId,
+                'zardliinBulgiinId': {
+                    $ne: null
+                },
                 "$or": [
                     {
                         "$and": [
@@ -144,7 +146,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
         {
             '$project': {
                 "dun": { "$ifNull": ["$Amt", "$amount"] },
-                "zardliinBulgiinId": { $ne: null }
+                "zardliinBulgiinId": "$zardliinBulgiinId"
             }
         },
         {
@@ -170,10 +172,10 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             });
             var jagsaalt = [];
 
-            if (zardliinDunguud && zardliinDunguud.length > 0 && zardluud && zardluud.length > 0) {
+            if (zardliinDunguud && zardliinDunguud.length > 0 && zardaluud && zardaluud.length > 0) {
                 var idnuud = [];
                 var unguniiId = 0;
-                zardluud.forEach(zardal => {
+                zardaluud.forEach(zardal => {
                     if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0) {
                         idnuud = [];
                         //var niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
