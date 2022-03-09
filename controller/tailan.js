@@ -661,12 +661,12 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
             },
             {
                 "ner": "Зарлага",
-                "dun": niitZarlaga,
+                "dun": niitZardal,
                 ungu: unguud[1]
             },
             {
                 "ner": "Ашин",
-                "dun": niitOrlogo - niitZarlaga,
+                "dun": niitOrlogo - niitZardal,
                 ungu: unguud[2]
             }
         ]
