@@ -179,11 +179,9 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                 zardaluud.forEach(zardal => {
                     if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0) {
                         idnuud = [zardal._id];
-                        //var niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
-                        //  return object.tulsunDun;                        });
-                        //jagsaalt = lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
                         zardal.dedKhesguud.forEach((a) => idnuud.push(a._id));
                         var shuugdsenZardluud = zardliinDunguud.filter(a => idnuud.includes(a._id));
+                        console.log("shuugdsenZardluud", shuugdsenZardluud);
                         var niitDun = lodash.sumBy(shuugdsenZardluud, function (object) {
                             return object.dun;
                         });
