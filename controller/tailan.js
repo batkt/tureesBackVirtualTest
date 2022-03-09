@@ -160,6 +160,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
     ]);
     BankniiGuilgee.aggregate(query).then(async (result) => {
         if (result && result.length > 0) {
+            var jagsaalt = [];
             var labels = []
             var zardluud = []
             result.forEach((a) => {
@@ -171,28 +172,30 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                     labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
                 zardluud.push((a.dun * -1).toFixed(2));
             });
-            var jagsaalt = [];
+
             if (zardliinDunguud && zardliinDunguud.length > 0 && zardaluud && zardaluud.length > 0) {
                 var idnuud = [];
                 var unguniiId = 0;
                 await zardaluud.forEach(zardal => {
-                    if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0) {
-                        idnuud = [zardal._id];
-                        zardal.dedKhesguud.forEach((a) => idnuud.push(a._id));
-                        console.log("idnuud", idnuud);
-                        var shuugdsenZardluud = lodash.filter(zardliinDunguud, (a) => { console.log("a", a._id); idnuud.includes(a._id) });
-                        console.log("shuugdsenZardluud", shuugdsenZardluud);
-                        var niitDun = lodash.sumBy(shuugdsenZardluud, function (object) {
-                            return object.dun;
+                    idnuud.push(zardal._id)
+                    if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0)
+                        zardal.dedKhesguud.forEach((a) => {
+                            console.log(typeof a._id)
+                            idnuud.push(a._id)
                         });
-                        console.log("niitDun", niitDun);
-                        jagsaalt.push({
-                            ner: zardal.ner,
-                            dun: niitDun,
-                            ungu: unguud[unguniiId]
-                        });
-                        unguniiId++;
-                    }
+                    console.log("idnuud", idnuud);
+                    var shuugdsenZardluud = lodash.filter(zardliinDunguud, (a) => JSON.stringify(idnuud).includes(a._id));
+                    console.log("shuugdsenZardluud", shuugdsenZardluud);
+                    var niitDun = lodash.sumBy(shuugdsenZardluud, function (object) {
+                        return object.dun * (-1);
+                    });
+                    console.log("niitDun", niitDun);
+                    jagsaalt.push({
+                        ner: zardal.ner,
+                        dun: niitDun,
+                        ungu: unguud[unguniiId]
+                    });
+                    unguniiId++;
                 });
             }
             var data = {
@@ -211,7 +214,8 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             }
             res.send(data);
         }
-        res.send(result);
+        else
+            res.send(result);
     }).catch((err) => {
         next(err);
     });;
