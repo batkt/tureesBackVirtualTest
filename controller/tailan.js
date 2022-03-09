@@ -598,7 +598,6 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
             });
         }
 
-        console.log("orloguud", orloguud);
         if (orloguud && orloguud.length > 0) {
             orloguud.forEach((a) => {
                 var orlogiinObject = {}
@@ -621,7 +620,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
         var zarlagaDatanuud = []
         if (zardliinObjectuud && orlogiinObjectuud) {
             zardliinObjectuud.forEach((x) => {
-                var oldson = orlogiinObjectuud.filter(element => element.ognoo === x.ognoo);
+                var oldson = orlogiinObjectuud.find(element => element.ognoo === x.ognoo);
                 if (!oldson)
                     orlogiinObjectuud.push({
                         ognoo: x.ognoo,
@@ -629,7 +628,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
                     })
             });
             orlogiinObjectuud.forEach((x) => {
-                var oldson = zardliinObjectuud.filter(element => element.ognoo === x.ognoo);
+                var oldson = zardliinObjectuud.find(element => element.ognoo === x.ognoo);
                 if (!oldson)
                     zardliinObjectuud.push({
                         ognoo: x.ognoo,
