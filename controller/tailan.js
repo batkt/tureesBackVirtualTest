@@ -186,12 +186,14 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                     var niitDun = lodash.sumBy(shuugdsenZardluud, function (object) {
                         return object.dun * (-1);
                     });
-                    jagsaalt.push({
-                        ner: zardal.ner,
-                        dun: niitDun,
-                        ungu: unguud[unguniiId]
-                    });
-                    unguniiId++;
+                    if (niitDun > 0) {
+                        jagsaalt.push({
+                            ner: zardal.ner,
+                            dun: niitDun,
+                            ungu: unguud[unguniiId]
+                        });
+                        unguniiId++;
+                    }
                 });
             }
             var data = {
