@@ -585,13 +585,13 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
             zardluud.forEach((a) => {
                 var zardliinObject = {}
                 if (req.body.nariivchlal == "year")
-                    zardliinObject.ognoo = new Date(a["_id"].year, 1, 1);
+                    zardliinObject.ognoo = new Date(a["_id"].year, 0, 1);
                 //zardliinObject.ognoo = a["_id"].year;
                 else if (req.body.nariivchlal == "month")
-                    zardliinObject.ognoo = new Date(a["_id"].year, a["_id"].month, 1);
+                    zardliinObject.ognoo = new Date(a["_id"].year, a["_id"].month - 1, 1);
                 //zardliinObject.ognoo = a["_id"].year + "/" + a["_id"].month;
                 else if (req.body.nariivchlal == "day")
-                    zardliinObject.ognoo = new Date(a["_id"].year, a["_id"].month, a["_id"].day);
+                    zardliinObject.ognoo = new Date(a["_id"].year, a["_id"].month - 1, a["_id"].day);
                 //zardliinObject.ognoo = a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day;
                 zardliinObject.dun = (a.dun * -1).toFixed(2);
                 zardliinObjectuud.push(zardliinObject);
@@ -602,13 +602,13 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
             orloguud.forEach((a) => {
                 var orlogiinObject = {}
                 if (req.body.nariivchlal == "year")
-                    orlogiinObject.ognoo = new Date(a["_id"].year, 1, 1);
+                    orlogiinObject.ognoo = new Date(a["_id"].year, 0, 1);
                 //orlogiinObject.ognoo = a["_id"].year;
                 else if (req.body.nariivchlal == "month")
-                    orlogiinObject.ognoo = new Date(a["_id"].year, a["_id"].month, 1);
+                    orlogiinObject.ognoo = new Date(a["_id"].year, a["_id"].month - 1, 1);
                 //orlogiinObject.ognoo = a["_id"].year + "/" + a["_id"].month;
                 else if (req.body.nariivchlal == "day")
-                    orlogiinObject.ognoo = new Date(a["_id"].year, a["_id"].month, a["_id"].day);
+                    orlogiinObject.ognoo = new Date(a["_id"].year, a["_id"].month - 1, a["_id"].day);
                 //orlogiinObject.ognoo = a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day;
                 orlogiinObject.dun = a.tulsun.toFixed(2);
                 orlogiinObjectuud.push(orlogiinObject);
