@@ -620,7 +620,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
         var zarlagaDatanuud = []
         if (zardliinObjectuud && orlogiinObjectuud) {
             zardliinObjectuud.forEach((x) => {
-                var oldson = orlogiinObjectuud.find(element => element.ognoo == x.ognoo);
+                var oldson = orlogiinObjectuud.find(element => element.ognoo.getTime() === x.ognoo.getTime());
                 if (!oldson)
                     orlogiinObjectuud.push({
                         ognoo: x.ognoo,
@@ -628,7 +628,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
                     })
             });
             orlogiinObjectuud.forEach((x) => {
-                var oldson = zardliinObjectuud.find(element => element.ognoo == x.ognoo);
+                var oldson = zardliinObjectuud.find(element => element.ognoo.getTime() === x.ognoo.getTime());
                 if (!oldson)
                     zardliinObjectuud.push({
                         ognoo: x.ognoo,
