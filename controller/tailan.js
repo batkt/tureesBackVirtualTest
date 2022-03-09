@@ -232,6 +232,12 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                     }
                 }
             }
+        }, {
+            '$sort':
+            {
+                "tulsun": -1
+
+            }
         }
     ]);
     Geree.aggregate(query).then((result) => {
