@@ -171,7 +171,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                 zardluud.push((a.dun * -1).toFixed(2));
             });
             var jagsaalt = [];
-
+            console.log("zardliinDunguud", zardliinDunguud);
             if (zardliinDunguud && zardliinDunguud.length > 0 && zardaluud && zardaluud.length > 0) {
                 var idnuud = [];
                 var unguniiId = 0;
