@@ -1,6 +1,15 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const Zardal = require("../models/bankniiGuilgee");
+const lodash = require("lodash");
+
+const unguud = [
+    "rgba(255, 99, 132, 0.5)",
+    "rgba(53, 162, 235, 0.5)",
+    "rgba(0, 255, 0, 0.5)",
+    "rgba(255, 0, 255, 0.5)"
+]
 
 exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
     var group = {
@@ -91,6 +100,61 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             '$sort': sort
         }
     ]
+    var zardluud = await Zardal.find({ barilgiinId: req.body.barilgiinId, baiguullagiinId: req.body.baiguullagiinId }).lean();
+    var zardliinDunguud = await BankniiGuilgee.aggregate([
+        {
+            '$match': {
+                'baiguullagiinId': req.body.baiguullagiinId,
+                'barilgiinId': req.body.barilgiinId,
+                'barilgiinId': req.body.barilgiinId,
+                "$or": [
+                    {
+                        "$and": [
+                            {
+                                "TxDt": {
+                                    $gte: new Date(req.body.ekhlekhOgnoo),
+                                    $lte: new Date(req.body.duusakhOgnoo)
+                                }
+                            },
+                            {
+                                "Amt": {
+                                    $lt: 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "$and": [
+                            {
+                                "tranDate": {
+                                    $gte: new Date(req.body.ekhlekhOgnoo),
+                                    $lte: new Date(req.body.duusakhOgnoo)
+                                }
+                            },
+                            {
+                                "amount": {
+                                    $lt: 0
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            '$project': {
+                "dun": { "$ifNull": ["$Amt", "$amount"] },
+                "zardliinBulgiinId": { $ne: null }
+            }
+        },
+        {
+            '$group': {
+                '_id': "$zardliinBulgiinId", 'dun': {
+                    $sum: "$dun"
+                }
+            }
+        }
+    ]);
     BankniiGuilgee.aggregate(query).then((result) => {
         if (result && result.length > 0) {
             var labels = []
@@ -104,8 +168,33 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                     labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
                 zardluud.push((a.dun * -1).toFixed(2));
             });
+            var jagsaalt = [];
+
+            if (zardliinDunguud && zardliinDunguud.length > 0 && zardluud && zardluud.length > 0) {
+                var idnuud = [];
+                var unguniiId = 0;
+                zardluud.forEach(zardal => {
+                    if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0) {
+                        idnuud = [];
+                        //var niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
+                        //  return object.tulsunDun;                        });
+                        //jagsaalt = lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
+                        zardal.dedKhesguud.forEach((a) => idnuud.push(a._id));
+                        var niitDun = lodash.sumBy(zardliinDunguud.filter(a => idnuud.includes(a._id)), function (object) {
+                            return object.dun;
+                        });
+                        jagsaalt.push({
+                            ner: zardal.ner,
+                            dun: niitDun,
+                            ungu: unguud[unguniiId]
+                        });
+                        unguniiId++;
+                    }
+                });
+            }
             var data = {
                 labels,
+                jagsaalt,
                 datasets: [
                     {
                         label: "Зардал",
