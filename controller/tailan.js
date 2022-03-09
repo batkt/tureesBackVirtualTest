@@ -158,7 +158,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             }
         }
     ]);
-    BankniiGuilgee.aggregate(query).then((result) => {
+    BankniiGuilgee.aggregate(query).then(async (result) => {
         if (result && result.length > 0) {
             var labels = []
             var zardluud = []
@@ -175,7 +175,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             if (zardliinDunguud && zardliinDunguud.length > 0 && zardaluud && zardaluud.length > 0) {
                 var idnuud = [];
                 var unguniiId = 0;
-                zardaluud.forEach(zardal => {
+                await zardaluud.forEach(zardal => {
                     if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0) {
                         idnuud = [zardal._id];
                         zardal.dedKhesguud.forEach((a) => idnuud.push(a._id));
