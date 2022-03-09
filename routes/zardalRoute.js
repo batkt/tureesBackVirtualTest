@@ -65,4 +65,12 @@ router.post("/zardalKhuvaarilya", tokenShalgakh, async (req, res, next) => {
     })
 });
 
+router.post("/zardalTsutslaya", tokenShalgakh, async (req, res, next) => {
+    BankniiGuilgee.updateOne({ _id: req.body.guilgeeniiId }, { $set: { zardliinBulgiinId: null } }).then((result) => {
+        res.send("Amjilttai");
+    }).then((err) => {
+        next(err);
+    })
+});
+
 module.exports = router;
