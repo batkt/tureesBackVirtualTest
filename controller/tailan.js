@@ -598,6 +598,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
             });
         }
 
+        console.log("orloguud", orloguud);
         if (orloguud && orloguud.length > 0) {
             orloguud.forEach((a) => {
                 var orlogiinObject = {}
