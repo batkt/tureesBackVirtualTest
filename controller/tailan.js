@@ -656,17 +656,17 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
         var jagsaalt = [
             {
                 "ner": "Гүйцэтгэл",
-                "dun": niitOrlogo.toFixed(2),
+                "dun": niitOrlogo,
                 ungu: unguud[0]
             },
             {
                 "ner": "Зарлага",
-                "dun": niitZardal.toFixed(2),
+                "dun": niitZardal,
                 ungu: unguud[1]
             },
             {
-                "ner": "Ашин",
-                "dun": (niitOrlogo - niitZardal).toFixed(2),
+                "ner": "Ашиг",
+                "dun": niitOrlogo - niitZardal,
                 ungu: unguud[2]
             }
         ]
