@@ -858,7 +858,6 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                 "umnukhSariin": [
                     {
                         '$match': {
-                            tuluv: 1,
                             "avlaga.guilgeenuud.ognoo": {
                                 $gte: new Date(umnukhSar),
                                 $lte: new Date(req.body.ekhlekhOgnoo)
