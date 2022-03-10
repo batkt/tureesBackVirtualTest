@@ -776,12 +776,168 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             '$sort': sort
         }
     ]
+    var umnukhSar = moment(new Date(req.body.ekhlekhOgnoo)).add(-1, 'month').set('date', 1);
+    console.log("umnukhSar", umnukhSar);
+    var turluur = await Geree.aggregate([
+        {
+            '$match': {
+                'barilgiinId': req.body.barilgiinId,
+                'baiguullagiinId': req.body.baiguullagiinId
+            }
+        }, {
+            '$unwind': {
+                'path': '$avlaga.guilgeenuud'
+            }
+        }, {
+            '$match': {
+                'avlaga.guilgeenuud.ognoo': {
+                    '$lte': new Date(req.body.duusakhOgnoo)
+                },
+                'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+                    '$ne': 'System'
+                },
+                'avlaga.guilgeenuud.turul': {
+                    '$nin': [
+                        'baritsaa'
+                    ]
+                }
+            }
+        },
+        {
+            '$facet': {
+                "tsutslagdsan": [
+                    {
+                        '$match': {
+                            tuluv: -1
+                        }
+                    },
+                    {
+                        '$project': {
+                            'uldegdel': {
+                                '$subtract': [
+                                    {
+                                        '$ifNull': [
+                                            '$avlaga.guilgeenuud.tulukhDun', 0
+                                        ]
+                                    }, {
+                                        '$add': [
+                                            {
+                                                '$ifNull': [
+                                                    '$avlaga.guilgeenuud.tulsunDun', 0
+                                                ]
+                                            }, {
+                                                '$ifNull': [
+                                                    '$avlaga.guilgeenuud.khyamdral', 0
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }, {
+                        '$group': {
+                            '_id': "tsutslagdsan",
+                            'uldegdel': {
+                                '$sum': '$uldegdel'
+                            }
+                        }
+                    }
+                ],
+                "umnukhSariin": [
+                    {
+                        '$match': {
+                            tuluv: 1,
+                            "avlaga.guilgeenuud.ognoo": {
+                                $gte: new Date(umnukhSar),
+                                $lte: new Date(req.body.ekhlekhOgnoo)
+                            }
+                        }
+                    },
+                    {
+                        '$project': {
+                            'uldegdel': {
+                                '$subtract': [
+                                    {
+                                        '$ifNull': [
+                                            '$avlaga.guilgeenuud.tulukhDun', 0
+                                        ]
+                                    }, {
+                                        '$add': [
+                                            {
+                                                '$ifNull': [
+                                                    '$avlaga.guilgeenuud.tulsunDun', 0
+                                                ]
+                                            }, {
+                                                '$ifNull': [
+                                                    '$avlaga.guilgeenuud.khyamdral', 0
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }, {
+                        '$group': {
+                            '_id': "umnukhSariin",
+                            'uldegdel': {
+                                '$sum': '$uldegdel'
+                            }
+                        }
+                    }
+                ],
+                "niit": [
+                    {
+                        '$match': {
+                            tuluv: 1,
+                            "avlaga.guilgeenuud.ognoo": {
+                                $lte: new Date(req.body.ekhlekhOgnoo)
+                            }
+                        }
+                    },
+                    {
+                        '$project': {
+                            'uldegdel': {
+                                '$subtract': [
+                                    {
+                                        '$ifNull': [
+                                            '$avlaga.guilgeenuud.tulukhDun', 0
+                                        ]
+                                    }, {
+                                        '$add': [
+                                            {
+                                                '$ifNull': [
+                                                    '$avlaga.guilgeenuud.tulsunDun', 0
+                                                ]
+                                            }, {
+                                                '$ifNull': [
+                                                    '$avlaga.guilgeenuud.khyamdral', 0
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }, {
+                        '$group': {
+                            '_id': "niit",
+                            'uldegdel': {
+                                '$sum': '$uldegdel'
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]);
+    console.log("turluur", JSON.stringify(turluur, null, 4));
     Geree.aggregate(query).then((result) => {
         if (result && result.length > 0) {
             var labels = []
             var tuluvluguunuud = []
             var guitsetgeluud = []
-            console.log("result", result);
             var ekhlekhSar = new Date(req.body.ekhlekhOgnoo).getMonth() + 1; // returns 0 - 11
             var ekhlekhOn = new Date(req.body.ekhlekhOgnoo).getFullYear();
             var ekhlekhUdur = new Date(req.body.ekhlekhOgnoo).getDate();
@@ -802,8 +958,30 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                     guitsetgeluud.push(a.tulsun.toFixed(2));
                 }
             });
+            var jagsaalt = [];
+            if (turluur && turluur.length > 0) {
+                if (turluur[0] && turluur[0].tsutslagdsan && turluur[0].tsutslagdsan.length > 0)
+                    jagsaalt.push({
+                        "ner": "Цуцлагдсан гэрээний авлага",
+                        "dun": turluur[0].tsutslagdsan[0].uldegdel,
+                        ungu: unguud[0]
+                    })
+                if (turluur[0] && turluur[0].umnukhSariin && turluur[0].umnukhSariin.length > 0)
+                    jagsaalt.push({
+                        "ner": "Өмнөх сарын авлага",
+                        "dun": turluur[0].umnukhSariin[0].uldegdel,
+                        ungu: unguud[1]
+                    })
+                if (turluur[0] && turluur[0].niit && turluur[0].niit.length > 0)
+                    jagsaalt.push({
+                        "ner": "Нийт авлага",
+                        "dun": turluur[0].niit[0].uldegdel,
+                        ungu: unguud[2]
+                    })
+            }
             var data = {
                 labels,
+                jagsaalt,
                 datasets: [
                     {
                         label: "Нийт авлага",
@@ -825,7 +1003,8 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             }
             res.send(data);
         }
-        res.send(result);
+        else
+            res.send(result);
     }).catch((err) => {
         next(err);
     });;
