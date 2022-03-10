@@ -120,6 +120,14 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           'avlaga.guilgeenuud.ognoo': {
             '$lt': ekhlekhOgnoo
           },
+          'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+            '$ne': 'System'
+          },
+          'avlaga.guilgeenuud.turul': {
+            '$nin': [
+              'baritsaa'
+            ]
+          },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId,
           'tuluv': {
@@ -178,6 +186,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$lte': duusakhOgnoo,
             '$gte': ekhlekhOgnoo
           },
+          'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+            '$ne': 'System'
+          },
           'avlaga.guilgeenuud.turul': "voucher",
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId,
@@ -200,6 +211,14 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         '$match': {
           'daraagiinTulukhOgnoo': {
             '$lte': duusakhOgnoo
+          },
+          'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+            '$ne': 'System'
+          },
+          'avlaga.guilgeenuud.turul': {
+            '$nin': [
+              'baritsaa'
+            ]
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId,
@@ -262,6 +281,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId,
+          'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+            '$ne': 'System'
+          },
           "avlaga.guilgeenuud.turul": {
             $nin: ["baritsaa"]
           },
@@ -301,6 +323,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             '$gte': ekhlekhOgnoo,
             '$lte': duusakhOgnoo
           },
+          'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+            '$ne': 'System'
+          },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId,
           'avlaga.guilgeenuud.turul': {
@@ -328,6 +353,14 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           'avlaga.guilgeenuud.ognoo': {
             '$gte': ekhlekhOgnoo,
             '$lte': duusakhOgnoo
+          },
+          'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+            '$ne': 'System'
+          },
+          'avlaga.guilgeenuud.turul': {
+            '$nin': [
+              'baritsaa'
+            ]
           },
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.body.barilgiinId,
@@ -369,6 +402,14 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         }
       }, {
         '$match': {
+          'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+            '$ne': 'System'
+          },
+          'avlaga.guilgeenuud.turul': {
+            '$nin': [
+              'baritsaa'
+            ]
+          },
           'avlaga.guilgeenuud.ognoo': {
             '$lte': duusakhOgnoo
           },
