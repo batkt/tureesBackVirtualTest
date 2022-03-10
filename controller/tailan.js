@@ -900,11 +900,6 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                 ],
                 "niit": [
                     {
-                        '$match': {
-                            tuluv: 1
-                        }
-                    },
-                    {
                         '$project': {
                             'uldegdel': {
                                 '$subtract': [
