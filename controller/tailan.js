@@ -964,13 +964,13 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             if (turluur && turluur.length > 0) {
                 if (turluur[0] && turluur[0].tsutslagdsan && turluur[0].tsutslagdsan.length > 0)
                     jagsaalt.push({
-                        "ner": "Цуцлагдсан гэрээний авлага",
+                        "ner": "Цуцлагдсан гэрээний",
                         "dun": turluur[0].tsutslagdsan[0].uldegdel,
                         ungu: unguud[0]
                     })
                 if (turluur[0] && turluur[0].umnukhSariin && turluur[0].umnukhSariin.length > 0)
                     jagsaalt.push({
-                        "ner": "Өмнөх сарын авлага",
+                        "ner": "Өмнөх сарын",
                         "dun": turluur[0].umnukhSariin[0].uldegdel,
                         ungu: unguud[1]
                     })

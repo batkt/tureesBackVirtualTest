@@ -60,6 +60,7 @@ async function ebarimtDuudya(ugugdul, onFinish, next) {
         (err, res1, body) => {
             if (err) next(err);
             else {
+                console.log("ebarimt body", body);
                 onFinish(body);
             }
         }

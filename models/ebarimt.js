@@ -21,6 +21,7 @@ const ebarimtSchema = new Schema({
   "billIdSuffix": String,
   "returnBillId": String,
   "billId": String,
+  "reportMonth": String,
   "date": String,
   "dateOgnoo": Date,
   "talbainDugaar": String,
