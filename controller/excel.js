@@ -16,6 +16,48 @@ function usegTooruuKhurvuulekh(useg) {
   if (!!useg) return useg.charCodeAt() - 65;
   else return 0;
 }
+
+async function gereeBaivalBugluy(mashiniiJagsaalt, baiguullagiinId) {
+  var utasnuud = []
+  mashiniiJagsaalt.forEach(a => {
+    utasnuud.push(a.ezemshigchiinUtas);
+  });
+  console.log("utasnuud", utasnuud)
+  var gereeniiJagsaalt = await Geree.find({ "utas": { $in: utasnuud }, "baiguullagiinId": baiguullagiinId });
+  console.log("gereeniiJagsaalt", gereeniiJagsaalt)
+  if (gereeniiJagsaalt.length !== 0) {
+    var tukhainMashin;
+    gereeniiJagsaalt.forEach(x => {
+      tukhainMashin = mashiniiJagsaalt.find(a => x.utas.includes(a.ezemshigchiinUtas));
+      if (tukhainMashin) {
+        tukhainMashin.ezemshigchiinRegister = x.register;
+        tukhainMashin.ezemshigchiinTalbainDugaar = x.talbainDugaar
+        tukhainMashin.ezemshigchiinNer = x.ner;
+        tukhainMashin.gereeniiDugaar = x.gereeniiDugaar;
+      }
+    })
+  }
+  return mashiniiJagsaalt;
+}
+
+async function gereeBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId) {
+  var jagsaalt = []
+  var shineAldaaniiMsg = ""
+  gereenuud.forEach(a => {
+    jagsaalt.push(a.gereeniiDugaar);
+  });
+  var gereeniiJagsaalt = await Geree.find({ "gereeniiDugaar": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId });
+  if (gereeniiJagsaalt.length !== 0) {
+    gereeniiDugaaruud = [];
+    gereeniiJagsaalt.forEach(x => {
+      gereeniiDugaaruud.push(x.gereeniiDugaar);
+    })
+    shineAldaaniiMsg = aldaaniiMsg + "Гэрээний дугаар давхардаж байна! : " + gereeniiDugaaruud + '<br/>';
+  }
+  if (shineAldaaniiMsg)
+    aldaaniiMsg = shineAldaaniiMsg;
+  return aldaaniiMsg;
+}
 async function gereeBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId) {
   var jagsaalt = []
   var shineAldaaniiMsg = ""
@@ -61,7 +103,7 @@ async function khariltsagchBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguul
     var tukhainKhariltsagch;
     if (gereenuud)
       gereenuud.forEach(x => {
-        tukhainKhariltsagch = khariltsagchiinJagsaalt.find(a => a.register == x.register);;
+        tukhainKhariltsagch = khariltsagchiinJagsaalt.find(a => a.register == x.register);
         x.ovog = tukhainKhariltsagch.ovog;
         x.ner = tukhainKhariltsagch.ner;
         x.turul = tukhainKhariltsagch.turul;
@@ -786,7 +828,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     if (workbook.SheetNames[0] !== "Машины мэдээлэл")
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const mashinSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const jagsaalt = [];
+    var jagsaalt = [];
     var tolgoinObject = {};
     if (!mashinSheet["A1"].v.includes("Машины дугаар") || !mashinSheet["C1"].v.includes("Эзэмшигчийн утас") ||
       !mashinSheet["B1"].v.includes("Эзэмшигчийн нэр") || !mashinSheet["D1"].v.includes("Төрөл")) {
@@ -836,6 +878,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       else
         jagsaalt.push(object);
     });
+    if (jagsaalt)
+      jagsaalt = await gereeBaivalBugluy(jagsaalt, req.body.baiguullagiinId);
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     Mashin.insertMany(jagsaalt, function (err) {
       if (err) {
