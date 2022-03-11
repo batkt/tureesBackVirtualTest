@@ -569,7 +569,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
                 '$sort': sort
             }
         ]
-        var orloguud = await Geree.aggregate(query);
+        var orloguud = await BankniiGuilgee.aggregate(query);
         var niitZardal = 0;
         var niitOrlogo = 0;
         var zardliinObjectuud = [];
@@ -604,8 +604,8 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
                 else if (req.body.nariivchlal == "day")
                     orlogiinObject.ognoo = new Date(a["_id"].year, a["_id"].month - 1, a["_id"].day);
                 //orlogiinObject.ognoo = a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day;
-                orlogiinObject.dun = a.tulsun.toFixed(2);
-                niitOrlogo = niitOrlogo + a.tulsun;
+                orlogiinObject.dun = a.dun.toFixed(2);
+                niitOrlogo = niitOrlogo + a.dun;
                 orlogiinObjectuud.push(orlogiinObject);
             });
         }
@@ -647,7 +647,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
         }
         var jagsaalt = [
             {
-                "ner": "Гүйцэтгэл",
+                "ner": "Орлого",
                 "dun": niitOrlogo,
                 ungu: unguud[0]
             },
