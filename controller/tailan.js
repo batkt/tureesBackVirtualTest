@@ -557,30 +557,51 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
             {
                 '$match': {
                     'baiguullagiinId': req.body.baiguullagiinId,
-                    'barilgiinId': req.body.barilgiinId
-                }
-            }, {
-                '$unwind': {
-                    'path': '$avlaga.guilgeenuud'
+                    'barilgiinId': req.body.barilgiinId,
+                    'kholbosonGereeniiId.0': {
+                        $exists: true
+                    },
+                    "$or": [
+                        {
+                            "$and": [
+                                {
+                                    "TxDt": {
+                                        $gte: new Date(req.body.ekhlekhOgnoo),
+                                        $lte: new Date(req.body.duusakhOgnoo)
+                                    }
+                                },
+                                {
+                                    "Amt": {
+                                        $gt: 0
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "$and": [
+                                {
+                                    "tranDate": {
+                                        $gte: new Date(req.body.ekhlekhOgnoo),
+                                        $lte: new Date(req.body.duusakhOgnoo)
+                                    }
+                                },
+                                {
+                                    "amount": {
+                                        $gt: 0
+                                    }
+                                }
+                            ]
+                        }
+                    ]
                 }
             },
             {
-                '$match': {
-                    "geree.tuluv": {
-                        $ne: -1
-                    },
-                    'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
-                        '$ne': 'System'
-                    },
-                    "avlaga.guilgeenuud.ognoo": {
-                        $gte: new Date(req.body.ekhlekhOgnoo),
-                        $lte: new Date(req.body.duusakhOgnoo)
-                    },
-                    "avlaga.guilgeenuud.turul": {
-                        $nin: ["baritsaa"]
-                    }
+                '$project': {
+                    "dun": { "$ifNull": ["$Amt", "$amount"] },
+                    "ognoo": { "$ifNull": ["$TxDt", "$tranDate"] }
                 }
-            }, {
+            },
+            {
                 '$group': group
             }, {
                 '$sort': sort
