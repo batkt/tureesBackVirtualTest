@@ -612,6 +612,17 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
   }
 });
 
+router.route("/utasniiDugaaraarGereeAvya").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    var geree = await Geree.find({ "utas": { $in: [req.body.utas] }, "baiguullagiinId": baiguullagiinId });
+    if (geree)
+      res.send(geree);
+    else
+      res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, res, next) => {
   try {
