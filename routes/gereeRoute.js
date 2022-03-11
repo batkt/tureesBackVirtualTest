@@ -614,7 +614,7 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
 
 router.route("/utasniiDugaaraarGereeAvya").post(tokenShalgakh, async (req, res, next) => {
   try {
-    var geree = await Geree.find({ "utas": { $in: [req.body.utas] }, "baiguullagiinId": baiguullagiinId });
+    var geree = await Geree.find({ "utas": { $in: [req.body.utas] }, "baiguullagiinId": req.body.baiguullagiinId });
     if (geree)
       res.send(geree);
     else
