@@ -10,7 +10,9 @@ const mashinSchema = new Schema({
   dugaar: String,
   ezemshigchiinNer: String,
   ezemshigchiinRegister: String,
-  ezemshigchiinUtas: String
+  ezemshigchiinUtas: String,
+  ezemshigchiinTalbainDugaar: String,
+  gereeniiDugaar: String
 }, {
   timestamps: true
 });
