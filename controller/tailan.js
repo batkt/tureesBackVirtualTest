@@ -9,7 +9,9 @@ const unguud = [
     "rgba(255, 99, 132, 0.5)",
     "rgba(53, 162, 235, 0.5)",
     "rgba(0, 255, 0, 0.5)",
-    "rgba(255, 0, 255, 0.5)"
+    "rgba(255, 0, 255, 0.5)",
+    "rgba(0, 0, 255, 0.5)",
+    "rgba(255, 255, 0, 0.5)"
 ]
 
 exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
@@ -844,6 +846,9 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                             "avlaga.guilgeenuud.ognoo": {
                                 $gte: new Date(umnukhSar),
                                 $lt: new Date(req.body.ekhlekhOgnoo)
+                            },
+                            "tuluv": {
+                                $ne: -1
                             }
                         }
                     },
