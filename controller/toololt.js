@@ -138,13 +138,19 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         '$group': {
           '_id': '$gereeniiDugaar',
           'tulukh': {
-            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulukhDun', 0]
+            }
           },
           'khyamdral': {
-            '$sum': '$avlaga.guilgeenuud.khyamdral'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.khyamdral', 0]
+            }
           },
           'tulsun': {
-            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulsunDun', 0]
+            }
           }
         }
       }, {
@@ -200,7 +206,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         '$group': {
           '_id': 'uglugu',
           'dun': {
-            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulsunDun', 0]
+            }
           }
         }
       }
@@ -243,13 +251,19 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         '$group': {
           '_id': 'khugatsaaKhetersen',
           'tulukh': {
-            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulukhDun', 0]
+            }
           },
           'khyamdral': {
-            '$sum': '$avlaga.guilgeenuud.khyamdral'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.khyamdral', 0]
+            }
           },
           'tulsun': {
-            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulsunDun', 0]
+            }
           }
         }
       }, {
@@ -295,10 +309,14 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         '$group': {
           '_id': 'tulukh',
           'tulukh': {
-            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulukhDun', 0]
+            }
           },
           'khyamdral': {
-            '$sum': '$avlaga.guilgeenuud.khyamdral'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.khyamdral', 0]
+            }
           }
         }
       }, {
@@ -336,7 +354,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         '$group': {
           '_id': 'tulsun',
           'dun': {
-            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulsunDun', 0]
+            }
           }
         }
       }
@@ -418,13 +438,19 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         '$group': {
           '_id': 'tsutslagdsanAvlaga',
           'tulukh': {
-            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulukhDun', 0]
+            }
           },
           'khyamdral': {
-            '$sum': '$avlaga.guilgeenuud.khyamdral'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.khyamdral', 0]
+            }
           },
           'tulsun': {
-            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulsunDun', 0]
+            }
           }
         }
       }, {
