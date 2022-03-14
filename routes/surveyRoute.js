@@ -5,8 +5,8 @@ const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud } = require("zevback");
 
 crud(router, "survey", Survey, UstsanBarimt);
-router.route("/surveyKhadgalya").get(async (req, res, next) => {
+router.route("/surveyKhadgalya").post(async (req, res, next) => {
     const data = new Survey(req.body);
-    data.save().then((result) => res.send("Amjilttai"))
+    data.save().then((result) => res.send("Amjilttai")).catch((err) => next(err));
 });
 module.exports = router;
