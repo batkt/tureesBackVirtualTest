@@ -7,7 +7,7 @@ const surveySchema = new Schema({
   baiguullagiinId: String,
   barilgiinId: String,
   chiglel: String,
-  uilAjillagaaniiChiglel: String,
+  uilAjillagaa: String,
   ner: String,
   ajiltniiToo: String,
   webKhuudas: String,
