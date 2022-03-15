@@ -193,7 +193,6 @@ router.route("/gereeSungaya").post(tokenShalgakh, gereeZasakhShalguur, async (re
     ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
     ajiltniiId: req.body.nevtersenAjiltniiToken.id
   }
-  console.log(tuukh);
   if (geree.gereeniiTuukhuud) {
     Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
       $push: {
@@ -211,7 +210,6 @@ router.route("/gereeSungaya").post(tokenShalgakh, gereeZasakhShalguur, async (re
   }
   else {
     tuukh = [tuukh]
-    console.log(tuukh);
     Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
       $set: {
         "duusakhOgnoo": req.body.duusakhOgnoo,
@@ -223,6 +221,54 @@ router.route("/gereeSungaya").post(tokenShalgakh, gereeZasakhShalguur, async (re
       .catch((err) => {
         next(err);
       });
+  }
+});
+
+router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+  try {
+    var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1, "tuluv": 1 });
+    if (geree.tuluv !== -1)
+      throw new Error("Зөвхөн цуцалсан төлөвтэй гэрээг сэргээх боломжтой!");
+    var tuukh = {
+      umnukhDuusakhOgnoo: geree.duusakhOgnoo,
+      shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
+      khiisenOgnoo: new Date(),
+      turul: "Sergeekh",
+      ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+      ajiltniiId: req.body.nevtersenAjiltniiToken.id
+    }
+    if (geree.gereeniiTuukhuud) {
+      Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
+        $push: {
+          [`gereeniiTuukhuud`]: tuukh
+        },
+        $set: {
+          "tuluv": 1
+        }
+      }).then((result) => {
+        res.send("Amjilttai");
+      })
+        .catch((err) => {
+          next(err);
+        });
+    }
+    else {
+      tuukh = [tuukh]
+      Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
+        $set: {
+          "tuluv": 1,
+          "gereeniiTuukhuud": tuukh
+        }
+      }).then((result) => {
+        res.send("Amjilttai");
+      })
+        .catch((err) => {
+          next(err);
+        });
+    }
+  }
+  catch (err) {
+    next(err);
   }
 });
 
