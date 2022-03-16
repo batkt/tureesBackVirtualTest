@@ -420,7 +420,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             }, {
               '$project': {
                 'gereeniiDugaar': '$gereeniiDugaar',
-                'niitAshiglaltiinZardal': 'niitAshiglaltiinZardal',
+                'niitAshiglaltiinZardal': '$niitAshiglaltiinZardal',
                 'uldegdel': {
                   '$subtract': [
                     '$tulukh', {
