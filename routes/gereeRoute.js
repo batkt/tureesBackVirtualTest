@@ -404,6 +404,9 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             }, {
               '$group': {
                 '_id': '$gereeniiDugaar',
+                'niitAshiglaltiinZardal': {
+                  '$max': '$talbai.0.niitAshiglaltiinZardal'
+                },
                 'tulukh': {
                   '$sum': '$avlaga.guilgeenuud.tulukhDun'
                 },
@@ -417,7 +420,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             }, {
               '$project': {
                 'gereeniiDugaar': '$gereeniiDugaar',
-                'niitAshiglaltiinZardal': '$talbai.0.niitAshiglaltiinZardal',
+                'niitAshiglaltiinZardal': 'niitAshiglaltiinZardal',
                 'uldegdel': {
                   '$subtract': [
                     '$tulukh', {
