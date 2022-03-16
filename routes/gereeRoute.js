@@ -401,11 +401,16 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                   '$lte': new Date(req.body.duusakhOgnoo)
                 }
               }
+            },
+            {
+              '$unwind': {
+                'path': "$talbai"
+              }
             }, {
               '$group': {
                 '_id': '$gereeniiDugaar',
                 'niitAshiglaltiinZardal': {
-                  '$max': '$talbai.0.niitAshiglaltiinZardal'
+                  '$max': '$talbai.niitAshiglaltiinZardal'
                 },
                 'tulukh': {
                   '$sum': '$avlaga.guilgeenuud.tulukhDun'
@@ -466,7 +471,6 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
       }
     ]
     var gereenuud = await Geree.aggregate(query);
-    console.log(gereenuud);
     if (gereenuud.length < 0 || gereenuud[0].eneSardTulukhDun.length < 1)
       res.send(null);
     else {
