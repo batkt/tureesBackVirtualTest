@@ -330,6 +330,33 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             $ne: -1
           }
         }
+      },
+      {
+        '$lookup': {
+          'from': 'talbai',
+          'let': {
+            "talbainDugaar": "$talbainDugaar",
+            "baiguullagiinId": "$baiguullagiinId",
+            "barilgiinId": "$barilgiinId"
+          },
+          'pipeline': [
+            {
+              '$match':
+              {
+                '$expr':
+                {
+                  '$and':
+                    [
+                      { '$eq': ["$kod", "$$talbainDugaar"] },
+                      { '$eq': ["$baiguullagiinId", "$$baiguullagiinId"] },
+                      { '$eq': ["$barilgiinId", "$$barilgiinId"] }
+                    ]
+                }
+              }
+            }
+          ],
+          'as': 'talbai'
+        }
       }, {
         '$facet': {
           'umnukhSariinUrTulbur': [
@@ -390,6 +417,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             }, {
               '$project': {
                 'gereeniiDugaar': '$gereeniiDugaar',
+                'niitAshiglaltiinZardal': '$talbai.niitAshiglaltiinZardal',
                 'uldegdel': {
                   '$subtract': [
                     '$tulukh', {
@@ -461,6 +489,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               x.eneSardTulukhDun = (gereenuud[0].eneSardTulukhDun.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
+              x.niitAshiglaltiinZardal = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.niitAshiglaltiinZardal || 0)
               if (x.umnukhSariinUrTulbur < 0)
                 x.umnukhSariinUrTulbur = 0
               if (x.eneSardTulukhDun < 0)
