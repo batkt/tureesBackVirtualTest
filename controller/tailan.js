@@ -311,7 +311,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         '$match': {
             'baiguullagiinId': req.body.baiguullagiinId,
             'barilgiinId': req.body.barilgiinId,
-            "geree.tuluv": {
+            "tuluv": {
                 $ne: -1
             },
             'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
