@@ -770,7 +770,6 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
         }
     ]
     var umnukhSar = moment(new Date(req.body.ekhlekhOgnoo)).add(-1, 'month').set('date', 1);
-    console.log("umnukhSar", new Date(umnukhSar));
     var turluur = await Geree.aggregate([
         {
             '$match': {
@@ -841,7 +840,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                     {
                         '$match': {
                             "avlaga.guilgeenuud.ognoo": {
-                                $gte: new Date("2022-02-01 00:00:00"),
+                                $gte: new Date(umnukhSar),
                                 $lt: new Date(req.body.ekhlekhOgnoo)
                             },
                             "tuluv": {
@@ -850,34 +849,47 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                         }
                     },
                     {
+                        '$group': {
+                            '_id': '$gereeniiDugaar',
+                            'tulukh': {
+                                '$sum': {
+                                    '$ifNull': ['$avlaga.guilgeenuud.tulukhDun', 0]
+                                }
+                            },
+                            'khyamdral': {
+                                '$sum': {
+                                    '$ifNull': ['$avlaga.guilgeenuud.khyamdral', 0]
+                                }
+                            },
+                            'tulsun': {
+                                '$sum': {
+                                    '$ifNull': ['$avlaga.guilgeenuud.tulsunDun', 0]
+                                }
+                            }
+                        }
+                    }, {
                         '$project': {
-                            'uldegdel': {
+                            'dun': {
                                 '$subtract': [
-                                    {
-                                        '$ifNull': [
-                                            '$avlaga.guilgeenuud.tulukhDun', 0
-                                        ]
-                                    }, {
-                                        '$add': [
-                                            {
-                                                '$ifNull': [
-                                                    '$avlaga.guilgeenuud.tulsunDun', 0
-                                                ]
-                                            }, {
-                                                '$ifNull': [
-                                                    '$avlaga.guilgeenuud.khyamdral', 0
-                                                ]
-                                            }
+                                    '$tulukh', {
+                                        '$sum': [
+                                            '$tulsun', '$khyamdral'
                                         ]
                                     }
                                 ]
                             }
                         }
                     }, {
+                        '$match': {
+                            'dun': {
+                                '$gt': 0
+                            }
+                        }
+                    }, {
                         '$group': {
-                            '_id': "umnukhSariin",
+                            '_id': 'avlaga',
                             'uldegdel': {
-                                '$sum': '$uldegdel'
+                                '$sum': '$dun'
                             }
                         }
                     }
