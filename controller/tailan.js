@@ -302,49 +302,45 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
             '$sort': sort
         }
     ]
-    var turluur = await Geree.aggregate([
-        {
-            '$match': {
-                'baiguullagiinId': req.body.baiguullagiinId,
-                'barilgiinId': req.body.barilgiinId
-            }
-        }, {
-            '$unwind': {
-                'path': '$avlaga.guilgeenuud'
-            }
-        },
-        {
-            '$match': {
-                "geree.tuluv": {
-                    $ne: -1
-                },
-                'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
-                    '$ne': 'System'
-                },
-                "avlaga.guilgeenuud.ognoo": {
-                    $gte: new Date(req.body.ekhlekhOgnoo),
-                    $lte: new Date(req.body.duusakhOgnoo)
-                },
-                "avlaga.guilgeenuud.turul": {
-                    $nin: ["baritsaa"]
-                }
-            }
-        }, {
-            '$group': {
-                _id: "$avlaga.guilgeenuud.turul",
-                "tulsun": {
-                    $sum: {
-                        $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0]
-                    }
-                }
-            }
-        }, {
-            '$sort':
-            {
-                "tulsun": -1
-
+    var turluur = await Geree.aggregate([{
+        '$unwind': {
+            'path': '$avlaga.guilgeenuud'
+        }
+    },
+    {
+        '$match': {
+            'baiguullagiinId': req.body.baiguullagiinId,
+            'barilgiinId': req.body.barilgiinId,
+            "geree.tuluv": {
+                $ne: -1
+            },
+            'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+                '$ne': 'System'
+            },
+            "avlaga.guilgeenuud.ognoo": {
+                $gte: new Date(req.body.ekhlekhOgnoo),
+                $lte: new Date(req.body.duusakhOgnoo)
+            },
+            "avlaga.guilgeenuud.turul": {
+                $nin: ["baritsaa"]
             }
         }
+    }, {
+        '$group': {
+            _id: "$avlaga.guilgeenuud.turul",
+            "tulsun": {
+                $sum: {
+                    $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0]
+                }
+            }
+        }
+    }, {
+        '$sort':
+        {
+            "tulsun": -1
+
+        }
+    }
     ]);
     Geree.aggregate(query).then((result) => {
         if (result && result.length > 0) {
