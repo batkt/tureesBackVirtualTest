@@ -322,7 +322,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                 $lte: new Date(req.body.duusakhOgnoo)
             },
             "avlaga.guilgeenuud.turul": {
-                $nin: ["baritsaa"]
+                $eq: "voucher"
             }
         }
     }, {
