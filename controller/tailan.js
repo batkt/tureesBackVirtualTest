@@ -784,7 +784,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
         }, {
             '$match': {
                 'avlaga.guilgeenuud.ognoo': {
-                    '$lte': new Date("2022-02-01 00:00:00")
+                    '$lte': new Date(req.body.duusakhOgnoo)
                 },
                 'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
                     '$ne': 'System'
@@ -841,7 +841,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                     {
                         '$match': {
                             "avlaga.guilgeenuud.ognoo": {
-                                $gte: new Date(umnukhSar),
+                                $gte: new Date("2022-02-01 00:00:00"),
                                 $lt: new Date(req.body.ekhlekhOgnoo)
                             },
                             "tuluv": {
