@@ -282,7 +282,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         },
         {
             '$match': {
-                "geree.tuluv": {
+                "tuluv": {
                     $ne: -1
                 },
                 "avlaga.guilgeenuud.ognoo": {
@@ -750,7 +750,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
         },
         {
             '$match': {
-                "geree.tuluv": {
+                "tuluv": {
                     $ne: -1
                 },
                 'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
