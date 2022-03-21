@@ -189,8 +189,8 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }, {
         '$match': {
           'avlaga.guilgeenuud.ognoo': {
-            '$lte': duusakhOgnoo,
-            '$gte': ekhlekhOgnoo
+            '$lte': new Date(duusakhOgnoo),
+            '$gte': new Date(ekhlekhOgnoo)
           },
           'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
             '$ne': 'System'
