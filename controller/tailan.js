@@ -338,7 +338,6 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         '$sort':
         {
             "tulsun": -1
-
         }
     }
     ]);
