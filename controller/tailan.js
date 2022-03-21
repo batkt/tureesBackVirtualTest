@@ -836,11 +836,67 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                         }
                     }
                 ],
-                "umnukhSariin": [
+                "umnukhSariin1": [
                     {
                         '$match': {
                             "avlaga.guilgeenuud.ognoo": {
-                                $gte: new Date(umnukhSar),
+                                $lt: new Date(umnukhSar)
+                            },
+                            "tuluv": {
+                                $ne: -1
+                            }
+                        }
+                    },
+                    {
+                        '$group': {
+                            '_id': '$gereeniiDugaar',
+                            'tulukh': {
+                                '$sum': {
+                                    '$ifNull': ['$avlaga.guilgeenuud.tulukhDun', 0]
+                                }
+                            },
+                            'khyamdral': {
+                                '$sum': {
+                                    '$ifNull': ['$avlaga.guilgeenuud.khyamdral', 0]
+                                }
+                            },
+                            'tulsun': {
+                                '$sum': {
+                                    '$ifNull': ['$avlaga.guilgeenuud.tulsunDun', 0]
+                                }
+                            }
+                        }
+                    }, {
+                        '$project': {
+                            'dun': {
+                                '$subtract': [
+                                    '$tulukh', {
+                                        '$sum': [
+                                            '$tulsun', '$khyamdral'
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }, {
+                        '$match': {
+                            'dun': {
+                                '$gt': 0
+                            }
+                        }
+                    }, {
+                        '$group': {
+                            '_id': 'umnukhSariin',
+                            'uldegdel': {
+                                '$sum': '$dun'
+                            }
+                        }
+                    }
+                ],
+                "umnukhSariin2": [
+                    {
+                        '$match': {
+                            "avlaga.guilgeenuud.ognoo": {
                                 $lt: new Date(req.body.ekhlekhOgnoo)
                             },
                             "tuluv": {
@@ -887,7 +943,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                         }
                     }, {
                         '$group': {
-                            '_id': 'avlaga',
+                            '_id': 'umnukhSariin',
                             'uldegdel': {
                                 '$sum': '$dun'
                             }
@@ -965,12 +1021,13 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                         "dun": turluur[0].tsutslagdsan[0].uldegdel,
                         ungu: unguud[0]
                     })
-                if (turluur[0] && turluur[0].umnukhSariin && turluur[0].umnukhSariin.length > 0)
-                    jagsaalt.push({
-                        "ner": "Өмнөх сар",
-                        "dun": turluur[0].umnukhSariin[0].uldegdel,
-                        ungu: unguud[1]
-                    })
+                if (turluur[0] && turluur[0].umnukhSariin2 && turluur[0].umnukhSariin2.length > 0)
+                    var dun = (turluur[0].umnukhSariin2[0].uldegdel ? turluur[0].umnukhSariin2[0].uldegdel : 0) - (turluur[0].umnukhSariin1[0]?.uldegdel ? turluur[0].umnukhSariin1[0]?.uldegdel : 0)
+                jagsaalt.push({
+                    "ner": "Өмнөх сар",
+                    "dun": dun,
+                    ungu: unguud[1]
+                })
                 if (turluur[0] && turluur[0].niit && turluur[0].niit.length > 0)
                     jagsaalt.push({
                         "ner": "Нийт",
