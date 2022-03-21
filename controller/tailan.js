@@ -770,6 +770,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
         }
     ]
     var umnukhSar = moment(new Date(req.body.ekhlekhOgnoo)).add(-1, 'month').set('date', 1);
+    console.log("umnukhSar", umnukhSar);
     var turluur = await Geree.aggregate([
         {
             '$match': {
