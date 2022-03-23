@@ -28,14 +28,16 @@ module.exports.mashinTaniya = async function mashinTaniya() {
 
 module.exports.tulburZooyo = async function tulburZooyo() {
   var baiguullaguud = await Baiguullaga.find({ "tokhirgoo.zogsooliinMinut": { $exists: true }, "tokhirgoo.zogsooliinDun": { $exists: true } })
-  console.log("tulbur zooyo orj irlee ", baiguullaguud)
   if (baiguullaguud) {
     baiguullaguud.forEach((baiguullaga) => {
       var bulkOps = [];
       let upsertDoc = {
         'updateMany': {
           'filter': {
-            'tulbur': { $exists: false }
+            'tulbur': { $exists: false },
+            'turul': {
+              $nin: ["Гэрээт", "Дотоод"]
+            }
           },
           'update': [{
             $set: {

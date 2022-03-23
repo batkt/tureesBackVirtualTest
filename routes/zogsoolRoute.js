@@ -88,6 +88,33 @@ router.post("/zogsoolOlnoorKhadgalya",
       });
   });
 
+router.post("/zogsooliinDunAvya", tokenShalgakh,
+  async (req, res, next) => {
+    var query = [
+      {
+        '$match': {
+          'check_in_time': {
+            $gte: new Date(req.body.ekhlekhOgnoo),
+            $lte: new Date(req.body.duusakhOgnoo)
+          }
+        }
+      },
+      {
+        '$group': {
+          '_id': 'aa',
+          'too': {
+            '$sum': "$tulbur"
+          }
+        }
+      }
+    ]
+    Zogsool.aggregate(query).then((result) => {
+      res.send(result);
+    }).catch((err) => {
+      next(err);
+    })
+  });
+
 router.post("/zogsooliinTooAvya", tokenShalgakh,
   async (req, res, next) => {
     var query = [
