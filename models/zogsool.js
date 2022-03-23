@@ -13,6 +13,7 @@ const zogsoolSchema = new Schema(
     check_out_time: Date,
     khugatsaa: Number,
     turul: String,
+    tulbur: Number,
     mashin: Schema.Types.Mixed
   },
   {

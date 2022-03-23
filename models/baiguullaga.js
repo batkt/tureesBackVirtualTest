@@ -60,7 +60,9 @@ const baiguullagaSchema = new Schema(
       mailNevtrekhNer: String,
       mailPassword: String,
       mailHost: String,
-      mailPort: String
+      mailPort: String,
+      zogsooliinMinut: Number,
+      zogsooliinDun: Number
     },
     SUKH: {
       tseverUsKhaluun: Number,

@@ -1,5 +1,6 @@
 const Zogsool = require("../models/zogsool");
 const Mashin = require("../models/mashin");
+const Baiguullaga = require("../models/baiguullaga");
 
 module.exports.mashinTaniya = async function mashinTaniya() {
   var mashinuud = await Mashin.find();
@@ -23,4 +24,29 @@ module.exports.mashinTaniya = async function mashinTaniya() {
     .catch(err => {
       console.log('BULK update error', err);
     });
+};
+
+module.exports.tulburZooyo = async function tulburZooyo() {
+  var baiguullaguud = await Baiguullaga.find({ "tokhirgoo.zogsooliinMinut": { $exists: true }, "tokhirgoo.zogsooliinDun": { $exists: true } })
+  console.log("tulbur zooyo orj irlee ", baiguullaguud)
+  if (baiguullaguud) {
+    baiguullaguud.forEach((baiguullaga) => {
+      Zogsool.updateMany({ 'tulbur': { $exists: false }, 'khugatsaa': { $gte: baiguullaga.tokhirgoo.zogsooliinMinut } },
+        [
+          {
+            $set: {
+              "tulbur": {
+                $multiply: [
+                  {
+                    $round: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
+                  },
+                  baiguullaga.tokhirgoo.zogsooliinDun
+                ]
+              }
+            }
+          }
+        ]
+      )
+    })
+  }
 };
