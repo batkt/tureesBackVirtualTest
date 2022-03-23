@@ -37,7 +37,7 @@ module.exports.tulburZooyo = async function tulburZooyo() {
           'filter': {
             'tulbur': { $exists: false }
           },
-          'update': {
+          'update': [{
             $set: {
               "tulbur": {
                 $multiply: [
@@ -48,7 +48,7 @@ module.exports.tulburZooyo = async function tulburZooyo() {
                 ]
               }
             }
-          }
+          }]
         }
       }
       bulkOps.push(upsertDoc);
