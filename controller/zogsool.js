@@ -31,22 +31,22 @@ module.exports.tulburZooyo = async function tulburZooyo() {
   console.log("tulbur zooyo orj irlee ", baiguullaguud)
   if (baiguullaguud) {
     baiguullaguud.forEach((baiguullaga) => {
-      Zogsool.updateMany({ 'tulbur': { $exists: false }, 'khugatsaa': { $gte: baiguullaga.tokhirgoo.zogsooliinMinut } },
-        [
-          {
-            $set: {
-              "tulbur": {
-                $multiply: [
-                  {
-                    $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
-                  },
-                  baiguullaga.tokhirgoo.zogsooliinDun
-                ]
-              }
+      Zogsool.updateMany({ 'tulbur': { $exists: false } } },
+      [
+        {
+          $set: {
+            "tulbur": {
+              $multiply: [
+                {
+                  $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
+                },
+                baiguullaga.tokhirgoo.zogsooliinDun
+              ]
             }
           }
-        ]
-      )
-    })
-  }
+        }
+      ]
+    )
+  })
+}
 };
