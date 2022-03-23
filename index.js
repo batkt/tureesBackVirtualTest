@@ -111,6 +111,7 @@ cron.schedule(
   "1,6,11,16,21,26,31,36,41,46,51,56 * * * * ",
   function () {
     tulbur.tulultTaniya();
+    zogsool.tulburZooyo();
   },
   {
     scheduled: true,
