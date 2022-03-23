@@ -120,17 +120,6 @@ cron.schedule(
 );
 
 cron.schedule(
-  "30 * * * * * ",
-  function () {
-    zogsool.tulburZooyo();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
-
-cron.schedule(
   "12 * * * * ",
   function () {
     zogsool.mashinTaniya();

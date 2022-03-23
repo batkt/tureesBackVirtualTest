@@ -59,20 +59,6 @@ module.exports.tulburZooyo = async function tulburZooyo() {
         .catch(err => {
           console.log('BULK update error', err);
         });
-      /*Zogsool.updateMany({ 'tulbur': { $exists: false } },
-        {
-          $set: {
-            "tulbur": {
-              $multiply: [
-                {
-                  $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
-                },
-                baiguullaga.tokhirgoo.zogsooliinDun
-              ]
-            }
-          }
-        }
-      )*/
     })
   }
 };
