@@ -61,7 +61,8 @@ router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, ne
       a = lodash.orderBy(a, ['ognoo'], ['asc']);
       var uldegdel = 0;
       a.forEach(x => {
-        uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
+        if (a.turul != "baritsaa")
+          uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
         a.uldegdel = uldegdel;
       });
       res.send(a)
@@ -470,7 +471,9 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
         }
       }
     ]
+
     var gereenuud = await Geree.aggregate(query);
+    console.log("gereenuud", gereenuud);
     if (gereenuud.length < 0 || gereenuud[0].eneSardTulukhDun.length < 1)
       res.send(null);
     else {

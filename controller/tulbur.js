@@ -461,6 +461,9 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         "avlaga.guilgeenuud.ognoo": {
           $lte: new Date(),
         },
+        "avlaga.guilgeenuud.turul": {
+          $nin: ["baritsaa"]
+        }
       },
     },
     {
