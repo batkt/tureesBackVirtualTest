@@ -33,19 +33,19 @@ module.exports.tulburZooyo = async function tulburZooyo() {
     baiguullaguud.forEach((baiguullaga) => {
       var bulkOps = [];
       let upsertDoc = {
-        'updateOne': {
+        'updateMany': {
           'filter': {
-            'tulbur': { $exists: false },
-            'update': {
-              $set: {
-                "tulbur": {
-                  $multiply: [
-                    {
-                      $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
-                    },
-                    baiguullaga.tokhirgoo.zogsooliinDun
-                  ]
-                }
+            'tulbur': { $exists: false }
+          },
+          'update': {
+            $set: {
+              "tulbur": {
+                $multiply: [
+                  {
+                    $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
+                  },
+                  baiguullaga.tokhirgoo.zogsooliinDun
+                ]
               }
             }
           }
