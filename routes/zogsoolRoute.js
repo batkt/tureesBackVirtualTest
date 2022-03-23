@@ -109,7 +109,10 @@ router.post("/zogsooliinDunAvya", tokenShalgakh,
       }
     ]
     Zogsool.aggregate(query).then((result) => {
-      res.send(result);
+      if (result && result.length > 0)
+        res.send(result[0].too.toString())
+      else
+        res.send("0");
     }).catch((err) => {
       next(err);
     })
