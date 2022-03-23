@@ -32,20 +32,18 @@ module.exports.tulburZooyo = async function tulburZooyo() {
   if (baiguullaguud) {
     baiguullaguud.forEach((baiguullaga) => {
       Zogsool.updateMany({ 'tulbur': { $exists: false } },
-        [
-          {
-            $set: {
-              "tulbur": {
-                $multiply: [
-                  {
-                    $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
-                  },
-                  baiguullaga.tokhirgoo.zogsooliinDun
-                ]
-              }
+        {
+          $set: {
+            "tulbur": {
+              $multiply: [
+                {
+                  $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
+                },
+                baiguullaga.tokhirgoo.zogsooliinDun
+              ]
             }
           }
-        ]
+        }
       )
     })
   }
