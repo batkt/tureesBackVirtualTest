@@ -31,20 +31,47 @@ module.exports.tulburZooyo = async function tulburZooyo() {
   console.log("tulbur zooyo orj irlee ", baiguullaguud)
   if (baiguullaguud) {
     baiguullaguud.forEach((baiguullaga) => {
-      Zogsool.updateMany({ 'tulbur': { $exists: false } },
-        {
-          $set: {
-            "tulbur": {
-              $multiply: [
-                {
-                  $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
-                },
-                baiguullaga.tokhirgoo.zogsooliinDun
-              ]
+      var bulkOps = [];
+      let upsertDoc = {
+        'updateOne': {
+          'filter': {
+            'tulbur': { $exists: false },
+            'update': {
+              $set: {
+                "tulbur": {
+                  $multiply: [
+                    {
+                      $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
+                    },
+                    baiguullaga.tokhirgoo.zogsooliinDun
+                  ]
+                }
+              }
             }
           }
         }
-      )
-    })
+        bulkOps.push(upsertDoc);
+        Zogsool.bulkWrite(bulkOps)
+          .then(bulkWriteOpResult => {
+            console.log('BULK update OK', bulkWriteOpResult);
+          })
+          .catch(err => {
+            console.log('BULK update error', err);
+          });
+        /*Zogsool.updateMany({ 'tulbur': { $exists: false } },
+          {
+            $set: {
+              "tulbur": {
+                $multiply: [
+                  {
+                    $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
+                  },
+                  baiguullaga.tokhirgoo.zogsooliinDun
+                ]
+              }
+            }
+          }
+        )*/
+      })
   }
 };
