@@ -467,6 +467,23 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                 }
               }
             }
+          ],
+          'nekhemjlekhDeerGarakh': [
+            {
+              '$match': {
+                'avlaga.guilgeenuud.ognoo': {
+                  '$lte': new Date(req.body.duusakhOgnoo),
+                  '$gte': new Date(req.body.ekhlekhOgnoo)
+                },
+                "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": true
+              }
+            }, {
+              '$project': {
+                'gereeniiDugaar': '$gereeniiDugaar',
+                'tulukhDun': "avlaga.guilgeenuud.tulukhDun",
+                'tailbar': "avlaga.guilgeenuud.tailbar"
+              }
+            }
           ]
         }
       }
