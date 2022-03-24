@@ -480,8 +480,15 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             }, {
               '$project': {
                 'gereeniiDugaar': '$gereeniiDugaar',
-                'tulukhDun': "avlaga.guilgeenuud.tulukhDun",
-                'tailbar': "avlaga.guilgeenuud.tailbar"
+                "avlaga": "$avlaga.guilgeenuud"
+              }
+            },
+            {
+              $group: {
+                "_id": "$gereeniiDugaar",
+                "guilgeenuud": {
+                  $push: "$avlaga"
+                }
               }
             }
           ]
@@ -517,6 +524,8 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.niitAshiglaltiinZardal = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.niitAshiglaltiinZardal || 0)
+              x.nemeltNekhemjlekh = (gereenuud[0].nekhemjlekhDeerGarakh.find(a => a._id == x.gereeniiDugaar)?.guilgeenuud || [])
+
               if (x.umnukhSariinUrTulbur < 0)
                 x.umnukhSariinUrTulbur = 0
               if (x.eneSardTulukhDun < 0)
