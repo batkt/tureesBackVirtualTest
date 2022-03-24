@@ -273,6 +273,49 @@ router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (r
   }
 });
 
+async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud, tuluv) {
+  if (gereeniiIdnuud && gereeniiIdnuud.length > 0) {
+    var talbainBulk = [];
+    var khariltsagchiinBulk = [];
+    gereeniiIdnuud.forEach((id) => {
+      let geree = await Geree.findById(id);
+      let busadGereenuud = await Geree.findOne({ "register": geree.register, barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 } });
+      let upsertTalbai = {
+        'updateOne': {
+          'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
+          'update': {
+            "idevkhiteiEsekh": geree.tuluv == 1
+          }
+        }
+      };
+      let upsertKhariltsagch = {
+        'updateOne': {
+          'filter': { 'register': geree.register, 'barilgiinId': geree.barilgiinId },
+          'update': {
+            "idevkhiteiEsekh": busadGereenuud ? 1 : 0
+          }
+        }
+      };
+      talbainBulk.push(upsertTalbai);
+      khariltsagchiinBulk.push(upsertKhariltsagch);
+    });
+    Talbai.bulkWrite(talbainBulk)
+      .then(bulkWriteOpResult => {
+        console.log('BULK update OK', bulkWriteOpResult);
+      })
+      .catch(err => {
+        console.log('BULK update error', err);
+      });
+    Khariltsagch.bulkWrite(talbainBulk)
+      .then(bulkWriteOpResult => {
+        console.log('BULK update OK', bulkWriteOpResult);
+      })
+      .catch(err => {
+        console.log('BULK update error', err);
+      });
+  }
+}
+
 router.route("/gereeTsutslaya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
   var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
   var tuukh = {
@@ -293,6 +336,7 @@ router.route("/gereeTsutslaya").post(tokenShalgakh, gereeZasakhShalguur, async (
         "tuluv": -1
       }
     }).then((result) => {
+      talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
       res.send("Amjilttai");
     })
       .catch((err) => {
@@ -308,6 +352,7 @@ router.route("/gereeTsutslaya").post(tokenShalgakh, gereeZasakhShalguur, async (
         "tuluv": -1
       }
     }).then((result) => {
+      talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
       res.send("Amjilttai");
     })
       .catch((err) => {

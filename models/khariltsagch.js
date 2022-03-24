@@ -22,6 +22,7 @@ const khariltsagchSchema = new Schema(
     tuluv: String,
     khayag: String,
     zurgiinId: String,
+    idevkhiteiEsekh: Boolean,
     nuutsUg: {
       type: String,
       default: "123",
