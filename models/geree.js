@@ -14,6 +14,7 @@ var avlagiinTurul = new Schema({
       uldegdel: Number,
       tailbar: String,
       turul: String,
+      nekhemjlekhDeerKharagdakh: Boolean,
       khyamdraliinId: String,
       guilgeeniiId: String,
       dansniiDugaar: String,
