@@ -277,7 +277,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud, tuluv) {
   if (gereeniiIdnuud && gereeniiIdnuud.length > 0) {
     var talbainBulk = [];
     var khariltsagchiinBulk = [];
-    gereeniiIdnuud.forEach((id) => {
+    gereeniiIdnuud.forEach(async (id) => {
       let geree = await Geree.findById(id);
       let busadGereenuud = await Geree.findOne({ "register": geree.register, barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 } });
       let upsertTalbai = {
