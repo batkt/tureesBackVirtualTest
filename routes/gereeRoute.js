@@ -542,7 +542,9 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
     ]
 
     var gereenuud = await Geree.aggregate(query);
-    console.log("gereenuud", gereenuud);
+    console.log("gereenuud");
+    console.log(JSON.stringify(gereenuud, null, 2))
+
     if (gereenuud.length < 0 || gereenuud[0].eneSardTulukhDun.length < 1)
       res.send(null);
     else {
