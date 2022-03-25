@@ -121,7 +121,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         var geree = await Geree.findById(guilgee.kholbosonGereeniiId[0]);
         if (!geree)
             throw new aldaa("Холбогдсон гэрээ байхгүй тул ибаримт хэвлэх боломжгүй");
-        if (baiguullaga.tokhirgoo.eBarimtAutomataarShivikh) {
+        if (baiguullaga && baiguullaga.tokhirgoo && baiguullaga.tokhirgoo.eBarimtAutomataarShivikh) {
             req.body.register = geree.register;
             req.body.turul = "3"
         }
