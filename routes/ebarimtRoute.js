@@ -1,6 +1,7 @@
 const express = require("express");
 const Ebarimt = require("../models/ebarimt");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const Baiguullaga = require("../models/baiguullaga");
 const Geree = require("../models/geree");
 const router = express.Router();
 const aldaa = require("../components/aldaa");
@@ -114,12 +115,16 @@ async function ebarimtButsaaya(ugugdul, onFinish, next) {
 router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
     try {
         var guilgee = await BankniiGuilgee.findById(req.body.id);
-        console.log("guilgee", guilgee);
+        var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
         if (guilgee.ebarimtAvsanEsekh)
             throw new aldaa("Ибаримт хэвлэж авсан байна!");
         var geree = await Geree.findById(guilgee.kholbosonGereeniiId[0]);
         if (!geree)
             throw new aldaa("Холбогдсон гэрээ байхгүй тул ибаримт хэвлэх боломжгүй");
+        if (baiguullaga.tokhirgoo.eBarimtAutomataarShivikh) {
+            req.body.register = geree.register;
+            req.body.turul = "3"
+        }
         var ebarimt = await guilgeeneesEbarimtUusgye(
             guilgee,
             geree,
