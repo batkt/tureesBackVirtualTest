@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Geree = require("../models/geree");
+const Talbai = require("../models/talbai");
 const Khariltsagch = require("../models/khariltsagch");
 const Dugaarlalt = require("../models/dugaarlalt");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
@@ -247,6 +248,7 @@ router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (r
           "tuluv": 1
         }
       }).then((result) => {
+        talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
         res.send("Amjilttai");
       })
         .catch((err) => {
@@ -261,6 +263,7 @@ router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (r
           "gereeniiTuukhuud": tuukh
         }
       }).then((result) => {
+        talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
         res.send("Amjilttai");
       })
         .catch((err) => {
@@ -273,18 +276,18 @@ router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (r
   }
 });
 
-async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud, tuluv) {
+async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
   if (gereeniiIdnuud && gereeniiIdnuud.length > 0) {
     var talbainBulk = [];
     var khariltsagchiinBulk = [];
-    gereeniiIdnuud.forEach(async (id) => {
+    for (const id of gereeniiIdnuud) {
       let geree = await Geree.findById(id);
       let busadGereenuud = await Geree.findOne({ "register": geree.register, barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 } });
       let upsertTalbai = {
         'updateOne': {
           'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
           'update': {
-            "idevkhiteiEsekh": geree.tuluv == 1
+            "idevkhiteiEsekh": (geree.tuluv == 1)
           }
         }
       };
@@ -292,27 +295,30 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud, tuluv) {
         'updateOne': {
           'filter': { 'register': geree.register, 'barilgiinId': geree.barilgiinId },
           'update': {
-            "idevkhiteiEsekh": busadGereenuud ? 1 : 0
+            "idevkhiteiEsekh": busadGereenuud ? true : false
           }
         }
       };
       talbainBulk.push(upsertTalbai);
       khariltsagchiinBulk.push(upsertKhariltsagch);
-    });
-    Talbai.bulkWrite(talbainBulk)
-      .then(bulkWriteOpResult => {
-        console.log('BULK update OK', bulkWriteOpResult);
-      })
-      .catch(err => {
-        console.log('BULK update error', err);
-      });
-    Khariltsagch.bulkWrite(talbainBulk)
-      .then(bulkWriteOpResult => {
-        console.log('BULK update OK', bulkWriteOpResult);
-      })
-      .catch(err => {
-        console.log('BULK update error', err);
-      });
+    }
+    if (talbainBulk)
+      Talbai.bulkWrite(talbainBulk)
+        .then(bulkWriteOpResult => {
+          console.log('BULK update OK', bulkWriteOpResult);
+        })
+        .catch(err => {
+          console.log('BULK update error', err);
+        });
+
+    if (khariltsagchiinBulk)
+      Khariltsagch.bulkWrite(khariltsagchiinBulk)
+        .then(bulkWriteOpResult => {
+          console.log('BULK update OK', bulkWriteOpResult);
+        })
+        .catch(err => {
+          console.log('BULK update error', err);
+        });
   }
 }
 
