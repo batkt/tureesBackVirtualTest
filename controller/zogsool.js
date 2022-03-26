@@ -47,7 +47,7 @@ module.exports.tulburZooyo = async function tulburZooyo() {
               "tulbur": {
                 $multiply: [
                   {
-                    $trunc: [{ $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }, 0]
+                    $ceil: { $divide: ["$khugatsaa", baiguullaga.tokhirgoo.zogsooliinMinut] }
                   },
                   baiguullaga.tokhirgoo.zogsooliinDun
                 ]
