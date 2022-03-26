@@ -55,6 +55,7 @@ const baiguullagaSchema = new Schema(
       bukhAjiltanGereendZasvarOruulakhEsekh: Boolean,
       /**Системд И Баримт ашиглах эсэх */
       eBarimtAshiglakhEsekh: Boolean,
+      eBarimtAutomataarShivikh: Boolean,
       msgIlgeekhKey: String,
       msgIlgeekhDugaar: String,
       mailNevtrekhNer: String,
