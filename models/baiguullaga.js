@@ -63,6 +63,7 @@ const baiguullagaSchema = new Schema(
       mailHost: String,
       mailPort: String,
       zogsooliinMinut: Number,
+      zogsooliinKhungulukhMinut: Number,
       zogsooliinDun: Number
     },
     SUKH: {

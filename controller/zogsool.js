@@ -37,6 +37,9 @@ module.exports.tulburZooyo = async function tulburZooyo() {
             'tulbur': { $exists: false },
             'turul': {
               $nin: ["Гэрээт", "Дотоод"]
+            },
+            'khugatsaa': {
+              $gt: baiguullaga.tokhirgoo.zogsooliinKhungulukhMinut
             }
           },
           'update': [{
