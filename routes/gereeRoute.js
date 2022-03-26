@@ -277,6 +277,7 @@ router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (r
       throw new Error("Зөвхөн цуцалсан төлөвтэй гэрээг сэргээх боломжтой!");
     var tuukh = {
       umnukhDuusakhOgnoo: geree.duusakhOgnoo,
+      sergeekhOgnoo: req.body.sergeekhOgnoo,
       shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
       tailbar: tailbar,
       khiisenOgnoo: new Date(),
