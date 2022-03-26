@@ -477,7 +477,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                         $or: [
                           {
                             'avlaga.guilgeenuud.undsenDun': {
-                              $exist: false
+                              $exists: false
                             }
                           },
                           {
