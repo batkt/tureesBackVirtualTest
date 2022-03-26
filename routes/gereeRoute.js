@@ -185,6 +185,50 @@ crud(router, "geree", Geree, UstsanBarimt, async (req, res, next) => {
   }
 }, gereeZasakhShalguur);
 
+router.route("/gereeKhadgalya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+  const khariltsagch = new Khariltsagch(req.body);
+  khariltsagch.id = khariltsagch.register;
+  var unuudur = new Date();
+  unuudur = new Date(
+    unuudur.getFullYear(),
+    unuudur.getMonth(),
+    unuudur.getDate()
+  );
+  var maxDugaar = 1;
+  await Dugaarlalt.find({
+    baiguullagiinId: req.body.baiguullagiinId,
+    barilgiinId: req.body.barilgiinId,
+    turul: "geree",
+    ognoo: unuudur,
+  })
+    .sort({
+      dugaar: -1,
+    })
+    .limit(1)
+    .then((result) => {
+      if (result != 0) maxDugaar = result[0].dugaar + 1;
+    });
+  var dugaarlalt = new Dugaarlalt({
+    baiguullagiinId: req.body.baiguullagiinId,
+    barilgiinId: req.body.barilgiinId,
+    dugaar: maxDugaar,
+    turul: "geree",
+    ognoo: unuudur,
+    isNew: true,
+  });
+  req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
+  var khariltsagchShalguur = await Khariltsagch.findOne({ register: khariltsagch.register, barilgiinId: req.body.barilgiinId });
+  if (!khariltsagchShalguur)
+    await khariltsagch.save();
+  dugaarlalt.save();
+  var geree = new Geree(req.body);
+  geree.tuluv = 1;
+  await geree.save().then((result) => {
+    talbaiKhariltsagchiinTuluvUurchluy([result._id]);
+  });
+  res.send("Amjilttai");
+})
+
 router.route("/gereeSungaya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
   var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
   var tuukh = {
@@ -234,6 +278,7 @@ router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (r
     var tuukh = {
       umnukhDuusakhOgnoo: geree.duusakhOgnoo,
       shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
+      tailbar: tailbar,
       khiisenOgnoo: new Date(),
       turul: "Sergeekh",
       ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
