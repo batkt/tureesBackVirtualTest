@@ -23,4 +23,28 @@ router.route("/talbainSulEskhiigShalgay").get(tokenShalgakh, async (req, res, ne
     else
         res.sendStatus(200)
 });
+
+router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
+    let query = [
+        {
+            '$match': {
+                'baiguullagiinId': req.body.baiguullagiinId,
+                'barilgiinId': req.params.barilgiinId
+            }
+        }, {
+            '$group': {
+                '_id': '$idevkhiteiEsekh',
+                'too': {
+                    '$sum': 1
+                }
+            }
+        }
+    ]
+    Talbai.aggregate(query).then((result) => {
+        res.send(result);
+    })
+        .catch((err) => {
+            next(err);
+        });;
+});
 module.exports = router;
