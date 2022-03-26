@@ -219,47 +219,51 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
 });
 
 exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
-  var guilgee = req.body.guilgee;
-  console.log("guilgee", guilgee);
-  var guilgeeniiDun = (guilgee?.tulsunDun || 0) - (guilgee?.tulukhDun || 0);
-  guilgee.guilgeeKhiisenOgnoo = new Date();
-  if (req.body.nevtersenAjiltniiToken) {
-    guilgee.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
-    guilgee.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id;
-  }
-  Geree.findByIdAndUpdate(
-    { _id: guilgee.gereeniiId },
-    {
-      $push: {
-        [`avlaga.guilgeenuud`]: guilgee,
-      },
-      $inc: { uldegdel: -guilgeeniiDun },
+  try {
+    var guilgee = req.body.guilgee;
+    var shalguur = await BankniiGuilgee.findOne({ "guilgee.guilgeeniiId": guilgee.guilgeeniiId, "kholbosonGereeniiId": guilgee.gereeniiId });
+    if (shalguur)
+      throw new Error("Тухайн гүйлгээ тухайн гэрээнд холбогдсон байна!");
+    var guilgeeniiDun = (guilgee?.tulsunDun || 0) - (guilgee?.tulukhDun || 0);
+    guilgee.guilgeeKhiisenOgnoo = new Date();
+    if (req.body.nevtersenAjiltniiToken) {
+      guilgee.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+      guilgee.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id;
     }
-  )
-    .then((result) => {
-      daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
-      if (guilgee.guilgeeniiId) {
-        console.log("guilgee.guilgeeniiId", guilgee.guilgeeniiId);
-        BankniiGuilgee.updateOne(
-          { _id: guilgee.guilgeeniiId },
-          {
-            $set: {
-              kholbosonGereeniiId: guilgee.gereeniiId,
-              kholbosonTalbainId: result.talbainDugaar
-            },
-          }
-        )
-          .then((result1) => {
-            res.send(result1);
-          })
-          .catch((err) => {
-            next(err);
-          });
-      } else res.send(result);
-    })
-    .catch((err) => {
-      next(err);
-    });
+    Geree.findByIdAndUpdate(
+      { _id: guilgee.gereeniiId },
+      {
+        $push: {
+          [`avlaga.guilgeenuud`]: guilgee,
+        },
+        $inc: { uldegdel: -guilgeeniiDun },
+      }
+    )
+      .then((result) => {
+        daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
+        if (guilgee.guilgeeniiId) {
+          console.log("guilgee.guilgeeniiId", guilgee.guilgeeniiId);
+          BankniiGuilgee.updateOne(
+            { _id: guilgee.guilgeeniiId },
+            {
+              $set: {
+                kholbosonGereeniiId: guilgee.gereeniiId,
+                kholbosonTalbainId: result.talbainDugaar
+              },
+            }
+          )
+            .then((result1) => {
+              res.send(result1);
+            })
+            .catch((err) => {
+              next(err);
+            });
+        } else res.send(result);
+      })
+  }
+  catch (aldaa) {
+    next(aldaa);
+  }
 });
 
 module.exports.tulultTaniya = async function tulultTaniya() {
