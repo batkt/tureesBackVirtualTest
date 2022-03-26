@@ -460,7 +460,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             {
               '$match': {
                 'avlaga.guilgeenuud.ognoo': {
-                  '$lt': new Date(req.body.ekhlekhOgnoo)
+                  '$lt': new Date(req.body.nekhemjlekhAvakhOgnoo)
                 }
               }
             }, {
