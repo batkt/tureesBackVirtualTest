@@ -459,9 +459,35 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
           'umnukhSariinUrTulbur': [
             {
               '$match': {
-                'avlaga.guilgeenuud.ognoo': {
-                  '$lt': new Date(req.body.nekhemjlekhAvakhOgnoo)
-                }
+                $or: [
+                  {
+                    'avlaga.guilgeenuud.ognoo': {
+                      '$lte': new Date(req.body.ekhlekhOgnoo)
+                    }
+                  },
+                  {
+                    $and: [
+                      {
+                        'avlaga.guilgeenuud.ognoo': {
+                          '$lte': new Date(req.body.nekhemjlekhAvakhOgnoo),
+                          '$gte': new Date(req.body.ekhlekhOgnoo)
+                        }
+                      },
+                      {
+                        $or: [
+                          {
+                            'avlaga.guilgeenuud.undsenDun': {
+                              $exist: false
+                            }
+                          },
+                          {
+                            'avlaga.guilgeenuud.undsenDun': 0
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               }
             }, {
               '$group': {
