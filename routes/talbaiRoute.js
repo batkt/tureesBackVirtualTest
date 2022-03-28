@@ -40,6 +40,7 @@ router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
             }
         }
     ]
+    console.log("query", query);
     Talbai.aggregate(query).then((result) => {
         res.send(result);
     })
