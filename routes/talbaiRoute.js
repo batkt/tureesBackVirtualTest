@@ -29,7 +29,7 @@ router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
         {
             '$match': {
                 'baiguullagiinId': req.body.baiguullagiinId,
-                'barilgiinId': req.params.barilgiinId
+                'barilgiinId': req.query.barilgiinId
             }
         }, {
             '$group': {
@@ -40,7 +40,6 @@ router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
             }
         }
     ]
-    console.log("query", query);
     Talbai.aggregate(query).then((result) => {
         res.send(result);
     })
