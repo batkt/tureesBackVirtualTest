@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const talbai = require("../models/talbai");
+const Talbai = require("../models/talbai");
 const Geree = require("../models/geree");
 const multer = require("multer");
 const storage = multer.memoryStorage();
@@ -10,7 +10,7 @@ const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud } = require("zevback");
 const uploadFile = multer({ storage: storage });
 
-crud(router, "talbai", talbai, UstsanBarimt);
+crud(router, "talbai", Talbai, UstsanBarimt);
 
 const { talbaiTatya, talbainZagvarAvya } = require("../controller/excel");
 
