@@ -221,9 +221,11 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
 exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
   try {
     var guilgee = req.body.guilgee;
-    var shalguur = await BankniiGuilgee.findOne({ "guilgee.guilgeeniiId": guilgee.guilgeeniiId, "kholbosonGereeniiId": guilgee.gereeniiId });
-    if (shalguur)
-      throw new Error("Тухайн гүйлгээ тухайн гэрээнд холбогдсон байна!");
+    if (guilgee.guilgeeniiId) {
+      var shalguur = await BankniiGuilgee.findOne({ "guilgee.guilgeeniiId": guilgee.guilgeeniiId, "kholbosonGereeniiId": guilgee.gereeniiId });
+      if (shalguur)
+        throw new Error("Тухайн гүйлгээ тухайн гэрээнд холбогдсон байна!");
+    }
     var guilgeeniiDun = (guilgee?.tulsunDun || 0) - (guilgee?.tulukhDun || 0);
     guilgee.guilgeeKhiisenOgnoo = new Date();
     if (req.body.nevtersenAjiltniiToken) {
