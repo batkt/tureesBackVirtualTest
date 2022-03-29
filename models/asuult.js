@@ -8,8 +8,15 @@ const asuultSchema = new Schema(
       type: String,
       required: true
     },
-    asuult: String,
-    khariultuud: [String],
+    ner: String,
+    turul: String,
+    asuultuud: [
+      {
+        asuult: String,
+        turul: String,
+        khariultuud: [String]
+      }
+    ],
     guilgeeKhiisenOgnoo: Date,
     guilgeeKhiisenAjiltniiNer: String,
     guilgeeKhiisenAjiltniiId: String,
