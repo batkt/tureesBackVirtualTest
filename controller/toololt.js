@@ -660,26 +660,46 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
 
 
 exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
-  let query = [
-    {
-      '$match': {
-        'baiguullagiinId': req.body.baiguullagiinId,
-        'barilgiinId': req.params.barilgiinId
-      }
-    }, {
-      '$group': {
-        '_id': '$turul',
-        'too': {
-          '$sum': 1
+  try {
+    let query = [
+      {
+        '$match': {
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.params.barilgiinId
+        }
+      }, {
+        '$group': {
+          '_id': '$turul',
+          'too': {
+            '$sum': 1
+          }
         }
       }
-    }
-  ]
-  Khariltsagch.aggregate(query).then((result) => {
-    res.send(result);
-  })
-    .catch((err) => {
-      next(err);
-    });;
+    ]
+    var khariuTurul = await Khariltsagch.aggregate(query);
+    query = [
+      {
+        '$match': {
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.params.barilgiinId
+        }
+      }, {
+        '$group': {
+          '_id': '$idevkhiteiEsekh',
+          'too': {
+            '$sum': 1
+          }
+        }
+      }
+    ]
+    var khariu = await Khariltsagch.aggregate(query);
+    if (khariuTurul && khariuTurul.length > 0 && khariuTurul && khariuTurul.length > 0)
+      khariuTurul.push(...khariu);
+    else if (!khariuTurul && khariuTurul && khariuTurul.length > 0)
+      khariuTurul = khariu
+    res.send(khariuTurul);
+  }
+  catch (err) {
+    next(err);
+  }
 });
-
