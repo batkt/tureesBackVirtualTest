@@ -726,13 +726,6 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
                     }
                   },
                   {
-                    "$project": {
-                      "_id": 1,
-                      "register": 1,
-                      "firebaseToken": 1,
-                    }
-                  },
-                  {
                     "$set":
                     {
                       "token": {
@@ -744,6 +737,13 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
                       "register": {
                         $arrayElemAt: ["$khariltsagch.register", 0]
                       }
+                    }
+                  },
+                  {
+                    "$project": {
+                      "khariltsagchiinId": 1,
+                      "token": 1,
+                      "register": 1,
                     }
                   }
                 ],
