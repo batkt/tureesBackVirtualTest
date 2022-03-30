@@ -331,7 +331,9 @@ exports.gereeniiZagvarTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
-    var zagvariinNer = worksheet["B1"].v;
+    if (!worksheet["Гэрээ"])
+      throw new Error("Буруу файл байна!");
+    var zagvariinNer = worksheet["Гэрээ"].v;
     const zagvar = new GereeniiZagvar();
     zagvar.ner = zagvariinNer;
     data.forEach((mur) => {
