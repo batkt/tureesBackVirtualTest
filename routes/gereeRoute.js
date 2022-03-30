@@ -700,10 +700,29 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
                   {
                     "$lookup":
                     {
-                      from: 'khariltsagch',
-                      localField: 'register',
-                      foreignField: 'register',
-                      as: 'khariltsagch'
+                      'from': 'khariltsagch',
+                      'let': {
+                        "register": "$register",
+                        "baiguullagiinId": "$baiguullagiinId",
+                        "barilgiinId": "$barilgiinId"
+                      },
+                      'pipeline': [
+                        {
+                          '$match':
+                          {
+                            '$expr':
+                            {
+                              '$and':
+                                [
+                                  { '$eq': ["$register", "$$register"] },
+                                  { '$eq': ["$baiguullagiinId", "$$baiguullagiinId"] },
+                                  { '$eq': ["$barilgiinId", "$$barilgiinId"] }
+                                ]
+                            }
+                          }
+                        }
+                      ],
+                      'as': 'khariltsagch'
                     }
                   },
                   {
