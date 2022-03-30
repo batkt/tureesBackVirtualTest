@@ -831,6 +831,7 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
             }
           ]
           var gereenuud = await Geree.aggregate(query);
+          console.log("gereenuud", JSON.stringify(gereenuud, null, 4));
           result.jagsaalt.forEach(x => {
             x.eneSardTulukhDun = (gereenuud[0].eneSardTulukhDun.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
             x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
