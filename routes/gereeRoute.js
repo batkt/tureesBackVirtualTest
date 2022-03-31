@@ -229,6 +229,25 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, gereeZasakhShalguur, async (
   res.send("Amjilttai");
 })
 
+router.route("/gereeZasya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+  try {
+    var geree = new Geree(req.body);
+    geree.tuluv = 1;
+    await Geree.updateOne(
+      {
+        _id: geree._id,
+      },
+      geree
+    ).then((result) => {
+      talbaiKhariltsagchiinTuluvUurchluy([result._id]);
+    });
+    res.send("Amjilttai");
+  }
+  catch (err) {
+    next(err);
+  }
+})
+
 router.route("/gereeSungaya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
   var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
   var tuukh = {
