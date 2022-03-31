@@ -66,7 +66,7 @@ router.route("/khariltsagchUstgaya").post(tokenShalgakh, async (req, res, next) 
       barimt.baiguullagiinId = req.body.baiguullagiinId;
       barimt.isNew = true;
       barimt.save();
-      Model.deleteOne({
+      Khariltsagch.deleteOne({
         _id: req.body.id,
       })
         .then((result1) => {
