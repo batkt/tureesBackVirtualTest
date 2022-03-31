@@ -52,7 +52,7 @@ router.route("/khariltsagchUstgaya").post(tokenShalgakh, async (req, res, next) 
   try {
     Khariltsagch.findOne({
       _id: req.body.id,
-    }).then((result) => {
+    }).then(async (result) => {
       var geree = await Geree.findOne({ tuluv: 1, register: result.register, barilgiinId: result.barilgiinId, baiguullagiinId: result.baiguullagiinId });
       if (geree)
         throw new Error("Тухайн харилцагч дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!");
