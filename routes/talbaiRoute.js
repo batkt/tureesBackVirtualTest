@@ -8,6 +8,7 @@ const storage = multer.memoryStorage();
 //const { crud } = require("../components/crud");
 const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud } = require("zevback");
+const moment = require("moment");
 const uploadFile = multer({ storage: storage });
 
 crud(router, "talbai", Talbai, UstsanBarimt);
@@ -47,4 +48,62 @@ router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
             next(err);
         });;
 });
+
+router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
+    var talbai = new Talbai(req.body);
+    var khuuchinTalbai = await Talbai.findById(req.body._id);
+    if (talbai.talbainNiitUne != khuuchinTalbai.talbainNiitUne || talbai.kod != khuuchinTalbai.kod) {
+        var gereenuud = await Geree.find({ talbainDugaar: khuuchinTalbai.kod, barilgiinId: khuuchinTalbai.barilgiinId, baiguullagiinId: khuuchinTalbai.baiguullagiinId }).select("+avlaga +gereeniiTuukhuud");
+        if (gereenuud)
+            for (const geree of gereenuud) {
+                var tuukh = {
+                    talbainDugaar: khuuchinTalbai.kod,
+                    talbainNegjUne: khuuchinTalbai.talbainNegjUne,
+                    talbainNiitUne: khuuchinTalbai.talbainNiitUne,
+                    talbainKhemjee: khuuchinTalbai.talbainKhemjee,
+                    davkhar: khuuchinTalbai.davkhar,
+                    khiisenOgnoo: new Date(),
+                    turul: "TalbaiUurchlukh",
+                    ajiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
+                    ajiltniiId: req.body.nevtersenAjiltniiToken?.id
+                }
+                if (geree.gereeniiTuukhuud && geree.gereeniiTuukhuud.length > 0)
+                    geree.gereeniiTuukhuud.push(tuukh);
+                else
+                    geree.gereeniiTuukhuud = [tuukh];
+                var khuvaariud = geree.avlaga.guilgeenuud;
+                khuvaariud = khuvaariud.filter((x) => x.ognoo <= new Date());
+                var today = new Date();
+                var unuudur = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+                new Array(geree.khugatsaa || 0).fill('').map((mur, index) => {
+                    geree.tulukhUdur.forEach((udur) => {
+                        if (moment(unuudur).add(index + 1, 'month').set('date', udur) <= moment(geree.duusakhOgnoo))
+                            khuvaariud.push({
+                                ognoo: moment(unuudur).add(index + 1, 'month').set('date', udur),
+                                khyamdral: 0,
+                                undsenDun: talbai.talbainNiitUne,
+                                tulukhDun: talbai.talbainNiitUne
+                            })
+                    })
+                })
+                await Geree.findOneAndUpdate({ "_id": geree._id },
+                    {
+                        "$set": {
+                            "avlaga.guilgeenuud": khuvaariud,
+                            "talbainDugaar": talbai.kod,
+                            "talbainNegjUne": talbai.talbainNegjUne,
+                            "talbainNiitUne": talbai.talbainNiitUne,
+                            "sariinTurees": talbai.talbainNiitUne,
+                            "talbainKhemjee": talbai.talbainKhemjee,
+                            "davkhar": talbai.davkhar
+                        }
+                    }
+                );
+            }
+    }
+    talbai.isNew = false;
+    talbai.save();
+    res.send("Amjilttai");
+});
+
 module.exports = router;
