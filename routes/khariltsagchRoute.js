@@ -57,7 +57,7 @@ router.route("/khariltsagchUstgaya").post(tokenShalgakh, async (req, res, next) 
       if (geree)
         throw new Error("Тухайн харилцагч дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!");
       var barimt = new UstsanBarimt();
-      barimt.class = modelName;
+      barimt.class = "Khariltsagch";
       barimt.object = result;
       if (req.body.nevtersenAjiltniiToken) {
         barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
@@ -69,18 +69,18 @@ router.route("/khariltsagchUstgaya").post(tokenShalgakh, async (req, res, next) 
       Model.deleteOne({
         _id: req.body.id,
       })
-        .then((result) => {
+        .then((result1) => {
           res.send("Amjilttai");
         })
         .catch((err) => {
           next(err);
         });
-    }).catch((err) => {
-      next(err);
+    }).catch((err1) => {
+      next(err1);
     });
   }
-  catch (err) {
-    next(err);
+  catch (err2) {
+    next(err2);
   }
 });
 
