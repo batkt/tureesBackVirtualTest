@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 const Khariltsagch = require("../models/khariltsagch");
+const Geree = require("../models/geree");
 //const { crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 const UstsanBarimt = require("../models/ustsanBarimt");
@@ -46,6 +47,42 @@ router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").get(qpayTulye);
 router.route("/bankniiKhuulgaTatajKhadgalya").post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
 router.route("/khariltsagchZagvarAvya").get(khariltsagchZagvarAvya);
 router.route("/khariltsagchTatya").post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);
+
+router.route("/khariltsagchUstgaya").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    Khariltsagch.findOne({
+      _id: req.body.id,
+    }).then((result) => {
+      var geree = await Geree.findOne({ tuluv: 1, register: result.register, barilgiinId: result.barilgiinId, baiguullagiinId: result.baiguullagiinId });
+      if (geree)
+        throw new Error("Тухайн харилцагч дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!");
+      var barimt = new UstsanBarimt();
+      barimt.class = modelName;
+      barimt.object = result;
+      if (req.body.nevtersenAjiltniiToken) {
+        barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+        barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+      }
+      barimt.baiguullagiinId = req.body.baiguullagiinId;
+      barimt.isNew = true;
+      barimt.save();
+      Model.deleteOne({
+        _id: req.body.id,
+      })
+        .then((result) => {
+          res.send("Amjilttai");
+        })
+        .catch((err) => {
+          next(err);
+        });
+    }).catch((err) => {
+      next(err);
+    });
+  }
+  catch (err) {
+    next(err);
+  }
+});
 
 
 module.exports = router;
