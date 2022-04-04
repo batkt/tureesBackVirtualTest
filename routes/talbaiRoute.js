@@ -49,6 +49,42 @@ router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
         });;
 });
 
+router.route("/talbaiUstgaya").post(tokenShalgakh, async (req, res, next) => {
+    try {
+        Talbai.findOne({
+            _id: req.body.id,
+        }).then(async (result) => {
+            var geree = await Geree.findOne({ tuluv: 1, talbainDugaar: kod, barilgiinId: result.barilgiinId, baiguullagiinId: result.baiguullagiinId });
+            if (geree)
+                throw new Error("Тухайн талбай дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!");
+            var barimt = new UstsanBarimt();
+            barimt.class = "Talbai";
+            barimt.object = result;
+            if (req.body.nevtersenAjiltniiToken) {
+                barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+                barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+            }
+            barimt.baiguullagiinId = req.body.baiguullagiinId;
+            barimt.isNew = true;
+            barimt.save();
+            Talbai.deleteOne({
+                _id: req.body.id,
+            })
+                .then((result1) => {
+                    res.send("Amjilttai");
+                })
+                .catch((err) => {
+                    next(err);
+                });
+        }).catch((err1) => {
+            next(err1);
+        });
+    }
+    catch (err2) {
+        next(err2);
+    }
+});
+
 router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
     var talbai = new Talbai(req.body);
     var khuuchinTalbai = await Talbai.findById(req.body._id);
