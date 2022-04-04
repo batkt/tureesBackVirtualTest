@@ -490,9 +490,10 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                   {
                     $and: [
                       {
-                        "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": {
-                          $ne: true
-                        }
+                        $or: [
+                          { "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": false },
+                          { "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": { $exists: false } }
+                        ]
                       },
                       {
                         'avlaga.guilgeenuud.ognoo': {
