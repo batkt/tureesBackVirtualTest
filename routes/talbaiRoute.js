@@ -77,9 +77,10 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                 var unuudur = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
                 new Array(geree.khugatsaa || 0).fill('').map((mur, index) => {
                     geree.tulukhUdur.forEach((udur) => {
-                        if (moment(unuudur).add(index + 1, 'month').set('date', udur) <= moment(geree.duusakhOgnoo))
+                        if (moment(unuudur).add(index, 'month').set('date', udur) <= moment(geree.duusakhOgnoo)
+                            && moment(unuudur).add(index, 'month').set('date', udur) > moment(new Date()))
                             khuvaariud.push({
-                                ognoo: moment(unuudur).add(index + 1, 'month').set('date', udur),
+                                ognoo: moment(unuudur).add(index, 'month').set('date', udur),
                                 khyamdral: 0,
                                 undsenDun: talbai.talbainNiitUne,
                                 tulukhDun: talbai.talbainNiitUne
