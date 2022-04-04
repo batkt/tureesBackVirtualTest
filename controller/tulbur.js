@@ -629,6 +629,59 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
   }
 );
 
+exports.tukhainOgnoogoorBukhAvlagaBodojOruulya = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var gereenuud = await Geree.find({
+        barilgiinId: req.body.barilgiinId,
+        "avlaga.guilgeenuud.0": {
+          $exists: true
+        },
+        "tulukhUdur.0": {
+          $exists: true
+        }
+      }).select("+avlaga");
+      var ajillakhGereenuud = [];
+      for await (const x of gereenuud) {
+        var tukhainSariinMur = await x.avlaga.guilgeenuud.find((a) => a.ognoo > new Date(req.body.ekhlekhOgnoo) && a.ognoo < new Date(req.body.duusakhOgnoo) && a.undsenDun > 0)
+        console.log("tukhainSariinMur", tukhainSariinMur)
+        if (!tukhainSariinMur)
+          ajillakhGereenuud.push(x);
+      }
+      var khariu = [];
+      console.log("ajillakhGereenuud", ajillakhGereenuud);
+      var object;
+      if (gereenuud)
+        for await (const element of ajillakhGereenuud) {
+          object = {
+            tulukhDun: element.sariinTurees,
+            undsenDun: element.sariinTurees,
+            ognoo: moment(req.body.duusakhOgnoo).set(
+              "date",
+              element.tulukhUdur[0]
+            ),
+            khyamdral: 0,
+          };
+          console.log("object", object);
+          Geree.updateOne(
+            { _id: element._id },
+            {
+              $push: {
+                ["avlaga.guilgeenuud"]: object,
+              },
+            }
+          ).then(async (result) => {
+            console.log("result", result);
+            khariu.push(result);
+          });
+        }
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 exports.gereenuudedZalruulgaOruulya = asyncHandler(
   async (req, res, next) => {
     try {

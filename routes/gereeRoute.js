@@ -29,6 +29,7 @@ const {
   gereeniiGuilgeeKhadgalya,
   uldegdelBodyo,
   tukhainOgnoogoorAvlagaBodojOruulya,
+  tukhainOgnoogoorBukhAvlagaBodojOruulya,
   gereenuudedZalruulgaOruulya,
   khungulultKhadgalya,
   khungulultUstgaya,
@@ -49,6 +50,7 @@ router.route("/baritsaaniiGuilgeeKhiie").post(tokenShalgakh, baritsaaniiGuilgeeK
 router.route("/tulultUstgaya").post(tokenShalgakh, guilgeeUstgakhShalguur, tulultUstgaya);
 router.route("/baritsaaniiGuilgeeUstgaya").post(tokenShalgakh, guilgeeUstgakhShalguur, baritsaaniiGuilgeeUstgaya);
 router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
+router.route("/tukhainOgnoogoorBukhAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorBukhAvlagaBodojOruulya);
 router.route("/gereenuudedZalruulgaOruulya").post(tokenShalgakh, gereenuudedZalruulgaOruulya);
 router.route("/tukhainOgnoogoorGuilgeegOruulya").post(tokenShalgakh, tukhainOgnoogoorGuilgeegOruulya);
 router.route("/khungulultKhadgalya").post(tokenShalgakh, khungulultKhadgalya);
