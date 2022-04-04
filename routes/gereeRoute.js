@@ -490,6 +490,11 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                   {
                     $and: [
                       {
+                        "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": {
+                          $ne: true
+                        }
+                      },
+                      {
                         'avlaga.guilgeenuud.ognoo': {
                           '$lte': new Date(req.body.nekhemjlekhAvakhOgnoo),
                           '$gte': new Date(req.body.ekhlekhOgnoo)
