@@ -490,16 +490,22 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                   {
                     $and: [
                       {
-                        $or: [
-                          { "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": false },
-                          { "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": { $exists: false } }
-                        ]
-                      },
-                      {
                         'avlaga.guilgeenuud.ognoo': {
                           '$lte': new Date(req.body.nekhemjlekhAvakhOgnoo),
                           '$gte': new Date(req.body.ekhlekhOgnoo)
                         }
+                      },
+                      {
+                        $or: [
+                          {
+                            "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": {
+                              $exists: false
+                            }
+                          },
+                          {
+                            "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": false
+                          }
+                        ]
                       },
                       {
                         $or: [
