@@ -515,13 +515,22 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               '$group': {
                 '_id': '$gereeniiDugaar',
                 'tulukh': {
-                  '$sum': '$avlaga.guilgeenuud.tulukhDun'
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
+                  }
                 },
                 'khyamdral': {
-                  '$sum': '$avlaga.guilgeenuud.khyamdral'
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
+                  }
                 },
                 'tulsun': {
-                  '$sum': '$avlaga.guilgeenuud.tulsunDun'
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.tulsunDun', 0]
+                  }
                 }
               }
             }, {
@@ -558,13 +567,22 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                   '$max': '$talbai.niitAshiglaltiinZardal'
                 },
                 'tulukh': {
-                  '$sum': '$avlaga.guilgeenuud.tulukhDun'
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
+                  }
                 },
                 'khyamdral': {
-                  '$sum': '$avlaga.guilgeenuud.khyamdral'
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
+                  }
                 },
                 'tulsun': {
-                  '$sum': '$avlaga.guilgeenuud.tulsunDun'
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.tulsunDun', 0]
+                  }
                 }
               }
             }, {
@@ -595,10 +613,16 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               '$group': {
                 '_id': '$gereeniiDugaar',
                 'tulukh': {
-                  '$sum': '$avlaga.guilgeenuud.tulukhDun'
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
+                  }
                 },
                 'khyamdral': {
-                  '$sum': '$avlaga.guilgeenuud.khyamdral'
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
+                  }
                 }
               }
             }, {
