@@ -484,7 +484,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                 $or: [
                   {
                     'avlaga.guilgeenuud.ognoo': {
-                      '$lte': new Date(req.body.ekhlekhOgnoo)
+                      '$lt': new Date(req.body.ekhlekhOgnoo)
                     }
                   },
                   {
