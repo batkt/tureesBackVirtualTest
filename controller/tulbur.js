@@ -651,6 +651,8 @@ exports.tukhainOgnoogoorBukhAvlagaBodojOruulya = asyncHandler(
       var khariu = [];
       console.log("ajillakhGereenuud", ajillakhGereenuud);
       var object;
+      var duusakhOgnoo = new Date(req.body.duusakhOgnoo)
+      duusakhOgnoo.setHours(0, 0, 0, 0);
       if (gereenuud)
         for await (const element of ajillakhGereenuud) {
           object = {
