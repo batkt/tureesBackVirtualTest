@@ -22,6 +22,16 @@ async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
         if (turul) ebarimt.billType = turul;
         ebarimt.customerNo = register;
     }
+    var today = new Date();
+    var guilgeeniiSar = new Date(guilgee.createdAt).getMonth();
+    //ene xesegt getMonth 0-11 gsn too butsaadag uchir shuud xiilee
+    console.log("date", today.getDate())
+    console.log("guilgeeniiSar", guilgeeniiSar)
+    console.log("aaaa", today.getMonth())
+    if (today.getDate() < 9 && guilgeeniiSar < today.getMonth()) {
+        ebarimt.reportMonth = today.getFullYear().toString() + "-" + (("0" + (today.getMonth())).slice(-2)).toString();
+        console.log("orj irlee", ebarimt.reportMonth)
+    }
     ebarimt.guilgeeniiId = guilgee._id;
     ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
     ebarimt.barilgiinId = guilgee.barilgiinId;
