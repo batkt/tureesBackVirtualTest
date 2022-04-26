@@ -143,4 +143,45 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
     res.send("Amjilttai");
 });
 
+router.route("/tulultiinOgnooOlnooUurchluy").post(tokenShalgakh, async (req, res, next) => {
+    try {
+        if (!req.body.barilgiinId)
+            throw new aldaa("barilgiinId buglugduugui baina!");
+        var gereenuud = await Geree.find({ barilgiinId: req.body.barilgiinId }).select("+avlaga");
+        if (gereenuud)
+            for (const geree of gereenuud) {
+                var khuvaariud = geree.avlaga.guilgeenuud;
+                khuvaariud = khuvaariud.filter((x) => x.ognoo <= new Date());
+                var today = new Date();
+                var unuudur = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+                new Array(geree.khugatsaa || 0).fill('').map((mur, index) => {
+                    geree.tulukhUdur.forEach((udur) => {
+                        if (moment(unuudur).add(index, 'month').set('date', udur) <= moment(geree.duusakhOgnoo)
+                            && moment(unuudur).add(index, 'month').set('date', udur) > moment(new Date()))
+                            khuvaariud.push({
+                                ognoo: moment(unuudur).add(index, 'month').set('date', udur),
+                                khyamdral: 0,
+                                undsenDun: geree.talbainNiitUne,
+                                tulukhDun: geree.talbainNiitUne
+                            })
+                    })
+                })
+                await Geree.findOneAndUpdate({ "_id": geree._id },
+                    {
+                        "$set": {
+                            "avlaga.guilgeenuud": khuvaariud
+                        }
+                    }
+                );
+            }
+        if (gereenuud && gereenuud.length > 0)
+            res.send("Amjilttai" + gereenuud.length);
+        else
+            res.send("Amjilttai");
+    }
+    catch (err) {
+        next(err);
+    }
+});
+
 module.exports = router;

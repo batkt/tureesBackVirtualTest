@@ -143,21 +143,6 @@ cron.schedule(
 
 io.on("connection", (socket) => {
   console.log("connected");
-  // socket.on('joinRoom', ({ ajiltan }) => {
-  //   console.log("ug n irchixlee", ajiltan);
-  //   medegdel.uruunuudOlyo(ajiltan, (uruunuud) => {
-  //     console.log("uruunuud", uruunuud)
-  //     if (uruunuud) {
-  //       socket.join(uruunuud[0]._id);
-  //       // Broadcast when a user connects
-  //       socket.broadcast
-  //         .to(uruunuud[0]._id)
-  //         .emit(
-  //           'message', 'has joined the chat'
-  //         );
-  //     }
-  //   })
-  // });
   socket.on("disconnect", () => {
     console.log("disconnected");
   });
