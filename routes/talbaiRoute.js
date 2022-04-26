@@ -143,7 +143,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
     res.send("Amjilttai");
 });
 
-router.route("/tulultiinOgnooOlnooUurchluy").post(tokenShalgakh, async (req, res, next) => {
+router.route("/tulultiinOgnooOlnoorUurchluy").post(tokenShalgakh, async (req, res, next) => {
     try {
         if (!req.body.barilgiinId)
             throw new aldaa("barilgiinId buglugduugui baina!");
