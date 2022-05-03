@@ -519,6 +519,9 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
       var khungulult = new KhungulultiinTuukh(req.body);
       gereeniiDugaaruud = [];
       khungulult.khamaataiGereenuud.forEach((x) => gereeniiDugaaruud.push(x));
+      khungulult.guilgeeKhiisenOgnoo = new Date();
+      khungulult.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken?.ner;
+      khungulult.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken?.id;
       khariu = await khungulult.save();
       console.log("khariu", khariu);
       var gereenuud = await Geree.find({ _id: { $in: gereeniiDugaaruud } });
