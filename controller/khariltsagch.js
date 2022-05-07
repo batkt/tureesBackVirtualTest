@@ -5,12 +5,12 @@ const jwt = require("jsonwebtoken");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {
-    console.log("asdasd");
     const khariltsagch = await Khariltsagch.findOne({ utas: req.body.utas })
       .select("+nuutsUg")
       .catch((err) => {
         next(err);
       });
+    console.log("khariltsagch", khariltsagch);
     if (!khariltsagch)
       throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
     var ok = await khariltsagch.passwordShalgaya(req.body.nuutsUg);
