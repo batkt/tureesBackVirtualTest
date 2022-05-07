@@ -51,8 +51,7 @@ khariltsagchSchema.methods.tokenUusgeye = function () {
 
 khariltsagchSchema.pre("save", async function () {
   const salt = await bcrypt.genSalt(12);
-  if (this.nuutsUg != '123')
-    this.nuutsUg = await bcrypt.hash(this.nuutsUg, salt);
+  this.nuutsUg = await bcrypt.hash(this.nuutsUg, salt);
 });
 
 khariltsagchSchema.pre("updateOne", async function () {
