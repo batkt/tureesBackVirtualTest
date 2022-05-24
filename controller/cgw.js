@@ -302,55 +302,6 @@ exports.bankniiDansniiKhuulgaAvya = asyncHandler(async (req, res, next) => {
     res.send(khariu);
 });
 
-
-/*exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
-    var baiguullaga = await baiguullaga
-    var tokenObject = await Token.findOne({ "turul": "khaanCorporate", baiguullagiinId: req.body.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
-    var token;
-    if (!tokenObject) {
-        tokenObject = await tokenAvya("0CAhOZ85wlmRzrPAkBycQFeTBnewDX7O", "Rv1eLukuzQirNgD3", next, req.body.baiguullagiinId);
-        token = tokenObject.access_token;
-    }
-    else
-        token = tokenObject.token
-    var query = [
-        {
-            '$match': {
-                'dansniiDugaar': req.body.dansniiDugaar,
-                'baiguullagiinId': req.body.baiguullagiinId
-            }
-        }, {
-            '$group': {
-                '_id': '$dansniiDugaar',
-                'max': {
-                    '$max': {
-                        $toInt: "$record"
-                    }
-                }
-            }
-        }
-    ]
-    var max = await BankniiGuilgee.aggregate(query);
-    var maxDugaar = 1;
-    if (max && max.length !== 0)
-        maxDugaar = max[0].max;
-    if (maxDugaar != 1)
-        req.body.record = maxDugaar
-    var khariu = await dansniiKhuulgaAvya(token, next, req.body);
-    if (khariu && khariu.transactions) {
-        var guilgeenuud = []
-        khariu.transactions.forEach(mur => guilgeenuud.push(new BankniiGuilgee(mur)));
-        guilgeenuud.forEach(x => {
-            x.dansniiDugaar = req.body.dansniiDugaar;
-            x.baiguullagiinId = req.body.baiguullagiinId;
-            x.barilgiinId = req.body.barilgiinId;
-        });
-        BankniiGuilgee.insertMany(guilgeenuud).then((result) => { if (res) res.send("Amjilttai") }).catch((err) => { console.log(err); next(err) });
-    }
-    else if (res)
-        res.status(200).send("Tatah guilgee baihgui!");
-});
-*/
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
     var dansnuud;
     if (req && req.body && req.body.dans) {
