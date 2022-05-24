@@ -1,10 +1,26 @@
 const Sonorduulga = require("../components/sonorduulga");
-const { tokenShalgakh } = require("zevback");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 const Daalgavar = require("../model/daalgavar");
 const Ajiltan = require("../model/ajiltan");
 
+crud(router, "daalgavar", Daalgavar, UstsanBarimt);
+
 router.post("/daalgavarOruulya", tokenShalgakh, (req, res, next) => {
+  try {
+    var daalgavar = new Daalgavar(req.body);
+    daalgavar.tuluv = 0;
+    await daalgavar.save();
+    daalgavar.turul = "daalgavar";
+    Sonorduulga.ilgeeye(io = req.app.get('socketio'), daalgavar);
+    res.status(200).send("Amjilttai");
+  } catch (err) {
+    throw new Error(err);
+  }
+}
+);
+
+router.get("/daalgavar", tokenShalgakh, (req, res, next) => {
   try {
     var daalgavar = new Daalgavar(req.body);
     daalgavar.tuluv = 0;
