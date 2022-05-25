@@ -1,8 +1,10 @@
+const express = require("express");
+const router = express.Router();
 const Sonorduulga = require("../components/sonorduulga");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
-const Daalgavar = require("../model/daalgavar");
-const Ajiltan = require("../model/ajiltan");
+const Daalgavar = require("../models/daalgavar");
+const Ajiltan = require("../models/ajiltan");
 
 crud(router, "daalgavar", Daalgavar, UstsanBarimt);
 
