@@ -34,16 +34,18 @@ router.post("/daalgavarKhuleejAvlaa", tokenShalgakh, async (req, res, next) => {
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
       ajiltniiNer: req.body.nevtersenAjiltniiToken.ner
     }
-    var result = await Daalgavar.findOneAndUpdate(filter, update);
-    var zakhiral = await Ajiltan.findOne({ erkh: "Admin" });
-    if (zakhiral.firebaseToken) {
-      sonorduulgaIlgeeye(zakhiral.firebaseToken, {
-        title: "Ажлыг хүлээж авлаа!",
-        body: req.body.nevtersenAjiltniiToken.ner + " таны даалгасан ажлыг хүлээж авлаа!",
-        icon: "default",
-        sound: 'default',
-        badge: '1',
-      }, null, next)
+    var result = await Daalgavar.findOneAndUpdate(filter, update, { new: true });
+    if (result && result.baiguullagiinId) {
+      var zakhiral = await Ajiltan.findOne({ erkh: "Admin", baiguullagiinId: result.baiguullagiinId });
+      if (zakhiral.firebaseToken) {
+        sonorduulgaIlgeeye(zakhiral.firebaseToken, {
+          title: "Ажлыг хүлээж авлаа!",
+          body: req.body.nevtersenAjiltniiToken.ner + " таны даалгасан ажлыг хүлээж авлаа!",
+          icon: "default",
+          sound: 'default',
+          badge: '1',
+        }, null, next)
+      }
     }
     res.send("Amjilttai");
   } catch (err) {
@@ -60,16 +62,18 @@ router.post("/daalgavarDuusgalaa", tokenShalgakh, async (req, res, next) => {
       tuluv: 2,
       shiidsenOgnoo: new Date()
     }
-    var result = await Daalgavar.findOneAndUpdate(filter, update);
-    var zakhiral = await Ajiltan.findOne({ erkh: "Admin" });
-    if (zakhiral.firebaseToken) {
-      sonorduulgaIlgeeye(zakhiral.firebaseToken, {
-        title: "Ажлыг хийж дууслаа!",
-        body: req.body.nevtersenAjiltniiToken.ner + " таны даалгасан ажлыг хийж дууслаа !",
-        icon: "default",
-        sound: 'default',
-        badge: '1',
-      }, null, next)
+    var result = await Daalgavar.findOneAndUpdate(filter, update, { new: true });
+    if (result && result.baiguullagiinId) {
+      var zakhiral = await Ajiltan.findOne({ erkh: "Admin", baiguullagiinId: result.baiguullagiinId });
+      if (zakhiral.firebaseToken) {
+        sonorduulgaIlgeeye(zakhiral.firebaseToken, {
+          title: "Ажлыг хийж дууслаа!",
+          body: req.body.nevtersenAjiltniiToken.ner + " таны даалгасан ажлыг хийж дууслаа !",
+          icon: "default",
+          sound: 'default',
+          badge: '1',
+        }, null, next)
+      }
     }
     res.send("Amjilttai");
   } catch (err) {
