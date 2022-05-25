@@ -32,23 +32,18 @@ router.post("/daalgavarKhuleejAvlaa", tokenShalgakh, async (req, res, next) => {
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
       ajiltniiNer: req.body.nevtersenAjiltniiToken.ner
     }
-    Daalgavar.findOneAndUpdate(filter, update)
-      .then(async (result) => {
-        var zakhiral = await Ajiltan.findOne({ erkh: "Admin" });
-        if (zakhiral.firebaseToken) {
-          sonorduulgaIlgeeye(zakhiral.firebaseToken, {
-            title: "Ажлыг хүлээж авлаа!",
-            body: req.body.nevtersenAjiltniiToken.ner + " таны даалгасан ажлыг хүлээж авлаа!",
-            icon: "default",
-            sound: 'default',
-            badge: '1',
-          }, null, next)
-        }
-        res.send("Amjilttai");
-      })
-      .catch((err) => {
-        next(err);
-      });
+    var result = await Daalgavar.findOneAndUpdate(filter, update);
+    var zakhiral = await Ajiltan.findOne({ erkh: "Admin" });
+    if (zakhiral.firebaseToken) {
+      sonorduulgaIlgeeye(zakhiral.firebaseToken, {
+        title: "Ажлыг хүлээж авлаа!",
+        body: req.body.nevtersenAjiltniiToken.ner + " таны даалгасан ажлыг хүлээж авлаа!",
+        icon: "default",
+        sound: 'default',
+        badge: '1',
+      }, null, next)
+    }
+    res.send("Amjilttai");
   } catch (err) {
     throw new Error(err);
   }
