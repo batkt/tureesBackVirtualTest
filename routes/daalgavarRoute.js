@@ -10,6 +10,7 @@ router.post("/daalgavarOruulya", tokenShalgakh, (req, res, next) => {
   try {
     var daalgavar = new Daalgavar(req.body);
     daalgavar.tuluv = 0;
+    daalgavar.ognoo = new Date();
     await daalgavar.save();
     daalgavar.turul = "daalgavar";
     Sonorduulga.ilgeeye(io = req.app.get('socketio'), daalgavar);
