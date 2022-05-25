@@ -14,7 +14,7 @@ router.post("/daalgavarOruulya", tokenShalgakh, async (req, res, next) => {
     daalgavar.tuluv = 0;
     daalgavar.ognoo = new Date();
     await daalgavar.save();
-    Sonorduulga.ilgeeye(io = req.app.get('socketio'), { ...daalgavar, turul: "daalgavar" });
+    Sonorduulga.ilgeeye(io = req.app.get('socketio'), { ...daalgavar.toObject(), turul: "daalgavar" });
     res.status(200).send("Amjilttai");
   } catch (err) {
     throw new Error(err);
