@@ -6,7 +6,7 @@ const Ajiltan = require("../model/ajiltan");
 
 crud(router, "daalgavar", Daalgavar, UstsanBarimt);
 
-router.post("/daalgavarOruulya", tokenShalgakh, (req, res, next) => {
+router.post("/daalgavarOruulya", tokenShalgakh, async (req, res, next) => {
   try {
     var daalgavar = new Daalgavar(req.body);
     daalgavar.tuluv = 0;
@@ -21,21 +21,7 @@ router.post("/daalgavarOruulya", tokenShalgakh, (req, res, next) => {
 }
 );
 
-router.get("/daalgavar", tokenShalgakh, (req, res, next) => {
-  try {
-    var daalgavar = new Daalgavar(req.body);
-    daalgavar.tuluv = 0;
-    await daalgavar.save();
-    daalgavar.turul = "daalgavar";
-    Sonorduulga.ilgeeye(io = req.app.get('socketio'), daalgavar);
-    res.status(200).send("Amjilttai");
-  } catch (err) {
-    throw new Error(err);
-  }
-}
-);
-
-router.post("/daalgavarKhuleejAvlaa", tokenShalgakh, (req, res, next) => {
+router.post("/daalgavarKhuleejAvlaa", tokenShalgakh, async (req, res, next) => {
   try {
     let filter = {
       _id: req.body.id,
@@ -68,7 +54,7 @@ router.post("/daalgavarKhuleejAvlaa", tokenShalgakh, (req, res, next) => {
   }
 }
 );
-router.post("/daalgavarDuusgalaa", tokenShalgakh, (req, res, next) => {
+router.post("/daalgavarDuusgalaa", tokenShalgakh, async (req, res, next) => {
   try {
     let filter = {
       _id: req.body.id,
