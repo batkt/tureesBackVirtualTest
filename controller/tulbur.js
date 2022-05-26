@@ -226,6 +226,9 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
       if (shalguur)
         throw new Error("Тухайн гүйлгээ тухайн гэрээнд холбогдсон байна!");
     }
+    if (guilgee.turul == "barter" && !guilgee.tailbar) {
+      throw new Error("Тайлбар заавал оруулна уу?");
+    }
     var guilgeeniiDun = (guilgee?.tulsunDun || 0) - (guilgee?.tulukhDun || 0);
     guilgee.guilgeeKhiisenOgnoo = new Date();
     if (req.body.nevtersenAjiltniiToken) {
