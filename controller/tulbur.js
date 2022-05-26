@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Baiguullaga = require("../models/baiguullaga");
+const UstsanBarimt = require("../models/ustsanBarimt");
 const lodash = require("lodash");
 const moment = require("moment");
 const mongoose = require("mongoose");
@@ -330,9 +331,24 @@ module.exports.tulultTaniya = async function tulultTaniya() {
 };
 
 exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
+  if (!req.body.tailbar)
+    throw new Error("Тайлбар заавал оруулна уу?");
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
+    var ObjectId = require('mongodb').ObjectId;
+    var ustgaxObject = await Geree.aggregate([
+      {
+        $unwind: "$avlaga.guilgeenuud"
+      },
+      {
+        $match: {
+          "_id": new ObjectId(req.body.gereeniiId),
+          "avlaga.guilgeenuud._id": new ObjectId(req.body.objectiinId)
+        }
+      }
+    ]);
+    console.log("ustgax", ustgaxObject);
     await Geree.findByIdAndUpdate(
       { _id: req.body.gereeniiId },
       {
@@ -346,7 +362,18 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
       next(err);
     });
 
-    daraagiinTulukhOgnooZasya(req.body.gereeniiId);
+    if (ustgaxObject[0].avlaga.guilgeenuud) {
+      var ustsanBarimt = new UstsanBarimt();
+      ustsanBarimt.class = "gereeniiGuilgee";
+      ustsanBarimt.tailbar = req.body.tailbar;
+      ustsanBarimt.object = ustgaxObject[0].avlaga.guilgeenuud;
+      if (req.body.nevtersenAjiltniiToken) {
+        ustsanBarimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+        ustsanBarimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+      }
+      ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
+      await ustsanBarimt.save();
+    }
     if (req.body.guilgeeniiId) {
       await BankniiGuilgee.updateOne(
         { _id: req.body.guilgeeniiId },
@@ -374,6 +401,7 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
     }
     await session.commitTransaction();
     session.endSession();
+    daraagiinTulukhOgnooZasya(req.body.gereeniiId);
     res.send("Amjilttai");
   }
   catch (err) {

@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 mongoose.pluralize(null);
 const ustsanBarimtSchema = new Schema({
   class: String,
+  tailbar: String,
   object: Schema.Types.Mixed,
   baiguullagiinId: String,
   ajiltniiId: String,
