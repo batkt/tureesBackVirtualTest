@@ -10,6 +10,7 @@ const daalgavarSchema = new Schema(
     file: [String],
     ognoo: Date,
     khuleejAvsanOgnoo: Date,
+    zartsuulsanKhugatsaa: Number,//Tsagaar
     shiidsenOgnoo: Date,
     duusakhOgnoo: Date,
     tuluv: Number,

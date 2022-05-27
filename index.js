@@ -132,6 +132,17 @@ cron.schedule(
 );
 
 cron.schedule(
+  "02 09 * * * ",
+  function () {
+    daalgavarRoute.tuluvluguuniiSanuulgaIlgeeye();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
   "02 00 * * * ",
   function () {
     tulbur.gereeAutomataarSungaya();

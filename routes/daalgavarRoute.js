@@ -61,6 +61,8 @@ router.post("/daalgavarDuusgalaa", tokenShalgakh, async (req, res, next) => {
       tuluv: 2,
       shiidsenOgnoo: new Date()
     }
+    var daalgavar = await Daalgavar.findOne(filter);
+    update.zartsuulsanKhugatsaa = moment(new Date()).diff(moment(daalgavar.khuleejAvsanOgnoo()), 'hour');
     var result = await Daalgavar.findOneAndUpdate(filter, update, { new: true });
     if (result && result.baiguullagiinId) {
       var zakhiral = await Ajiltan.findOne({ erkh: "Admin", baiguullagiinId: result.baiguullagiinId });
@@ -79,5 +81,20 @@ router.post("/daalgavarDuusgalaa", tokenShalgakh, async (req, res, next) => {
     throw new Error(err);
   }
 });
+
+module.exports.tuluvluguuniiSanuulgaIlgeeye = async function tuluvluguuniiSanuulgaIlgeeye() {
+  var duusaaguiDaalgavruud = await Daalgavar.find({ tuluv: { $ne: 2 }, duusakhOgnoo: { $lte: new Date() } });
+  if (duusaaguiDaalgavruud && duusaaguiDaalgavruud.length > 0) {
+    for await (const daalgavar of duusaaguiDaalgavruud) {
+      sonorduulgaIlgeeye(zakhiral.firebaseToken, {
+        title: "Хугацаа хэтэрсэн ажлын мэдэгдэл",
+        body: daalgavar.ajiltniiNer + " ажилтанд даалгасан ажлын хугацаа хэтэрсэн байна!",
+        icon: "default",
+        sound: 'default',
+        badge: '1',
+      }, null, next)
+    }
+  }
+};
 
 module.exports = router;
