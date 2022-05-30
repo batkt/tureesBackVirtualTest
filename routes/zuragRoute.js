@@ -21,6 +21,10 @@ const upload = multer({
   fileFilter: filter,
 });
 
+const uploadFile = multer({
+  storage: storage
+});
+
 const router = express.Router();
 
 router.post(
@@ -71,7 +75,7 @@ router.post(
 
 router.post(
   "/fileKhadgalya",
-  upload.single("file"),
+  uploadFile.single("file"),
   tokenShalgakh,
   async (req, res, next) => {
     var turul = req.body.turul;
