@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Sonorduulga = require("../components/sonorduulga");
+const SonorduulgiinModel = require("../models/sonorduulga");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 const Daalgavar = require("../models/daalgavar");
@@ -46,6 +47,16 @@ router.post("/daalgavarKhuleejAvlaa", tokenShalgakh, async (req, res, next) => {
           badge: '1',
         }, null, next)
       }
+      var notif = new SonorduulgiinModel();
+      notif.baiguullagiinId = result.baiguullagiinId;
+      notif.barilgiinId = result.barilgiinId;
+      notif.turul = "medegdel";
+      notif.ognoo = new Date();
+      notif.ajiltniiId = zakhiral._id;
+      notif.kharsanEsekh = false;
+      notif.message = req.body.nevtersenAjiltniiToken.ner + " таны даалгасан ажлыг хүлээж авлаа!";
+      notif.object = result;
+      await notif.save();
     }
     res.send("Amjilttai");
   } catch (err) {
@@ -76,6 +87,16 @@ router.post("/daalgavarDuusgalaa", tokenShalgakh, async (req, res, next) => {
           badge: '1',
         }, null, next)
       }
+      var notif = new SonorduulgiinModel();
+      notif.baiguullagiinId = result.baiguullagiinId;
+      notif.barilgiinId = result.barilgiinId;
+      notif.turul = "medegdel";
+      notif.ognoo = new Date();
+      notif.ajiltniiId = zakhiral._id;
+      notif.kharsanEsekh = false;
+      notif.message = req.body.nevtersenAjiltniiToken.ner + " таны даалгасан ажлыг хүлээж авлаа!";
+      notif.object = result;
+      await notif.save();
     }
     res.send("Amjilttai");
   } catch (err) {
