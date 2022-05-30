@@ -62,14 +62,14 @@ router.post("/daalgavarDuusgalaa", tokenShalgakh, async (req, res, next) => {
       shiidsenOgnoo: new Date()
     }
     var daalgavar = await Daalgavar.findOne(filter);
-    update.zartsuulsanKhugatsaa = moment(new Date()).diff(moment(daalgavar.khuleejAvsanOgnoo()), 'hour');
+    update.zartsuulsanKhugatsaa = await moment(new Date()).diff(moment(daalgavar.khuleejAvsanOgnoo()), 'hour');
     var result = await Daalgavar.findOneAndUpdate(filter, update, { new: true });
     if (result && result.baiguullagiinId) {
       var zakhiral = await Ajiltan.findOne({ erkh: "Admin", baiguullagiinId: result.baiguullagiinId });
       if (zakhiral.firebaseToken) {
         sonorduulgaIlgeeye(zakhiral.firebaseToken, {
           title: "Ажлыг хийж дууслаа!",
-          body: req.body.nevtersenAjiltniiToken.ner + " таны даалгасан ажлыг хийж дууслаа !",
+          body: req.body.nevtersenAjiltniiToken.ner + " таны даалгасан ажлыг хийж дууслаа!",
           icon: "default",
           sound: 'default',
           badge: '1',
