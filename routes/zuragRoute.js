@@ -69,11 +69,75 @@ router.post(
   }
 );
 
+router.post(
+  "/fileKhadgalya",
+  upload.single("file"),
+  tokenShalgakh,
+  async (req, res, next) => {
+    var turul = req.body.turul;
+    var id = require("uuid").v1().toString();
+    console.log("id", id);
+    if (req.file)
+      try {
+        fs.access("./file/", (err) => {
+          if (err) {
+            fs.mkdirSync("./file/");
+          }
+        });
+        fs.access("./file/" + turul + "/", (err) => {
+          if (err) {
+            fs.mkdirSync("./file/" + turul + "/");
+          }
+        });
+        fs.access(
+          "./file/" + turul + "/" + req.body.baiguullagiinId + "/",
+          (err) => {
+            if (err) {
+              fs.mkdirSync(
+                "./file/" + turul + "/" + req.body.baiguullagiinId + "/"
+              );
+            }
+          }
+        );
+        sharp(req.file.buffer)
+          .resize({
+            fit: "contain",
+          })
+          .toFile(
+            "./file/" + turul + "/" + req.body.baiguullagiinId + "/" + id
+          )
+          .then(() => {
+            res.status(200).json({ id: id });
+          });
+      } catch (err) {
+        next(err);
+      }
+  }
+);
+
 router.get(
   "/zuragAvya/:turul/:baiguullagiinId/:zurgiinNer",
   (req, res, next) => {
     res.download(
       "./zurag/" +
+      req.params.turul +
+      "/" +
+      req.params.baiguullagiinId +
+      "/" +
+      req.params.zurgiinNer,
+      req.params.zurgiinNer,
+      (err) => {
+        if (err) next(err);
+      }
+    );
+  }
+);
+
+router.get(
+  "/fileAvya/:turul/:baiguullagiinId/:zurgiinNer",
+  (req, res, next) => {
+    res.download(
+      "./file/" +
       req.params.turul +
       "/" +
       req.params.baiguullagiinId +
