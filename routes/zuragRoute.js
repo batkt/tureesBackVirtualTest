@@ -88,31 +88,24 @@ router.post(
             fs.mkdirSync("./file/");
           }
         });
-        fs.access("./file/" + turul + "/", (err) => {
-          if (err) {
-            fs.mkdirSync("./file/" + turul + "/");
-          }
-        });
         fs.access(
-          "./file/" + turul + "/" + req.body.baiguullagiinId + "/",
+          "./file/" + req.body.baiguullagiinId + "/",
           (err) => {
             if (err) {
               fs.mkdirSync(
-                "./file/" + turul + "/" + req.body.baiguullagiinId + "/"
+                "./file/" + req.body.baiguullagiinId + "/"
               );
             }
           }
         );
-        sharp(req.file.buffer)
-          .resize({
-            fit: "contain",
-          })
-          .toFile(
-            "./file/" + turul + "/" + req.body.baiguullagiinId + "/" + id
-          )
-          .then(() => {
+        fs.writeFile("./file/" + req.body.baiguullagiinId + "/" + id, req.file.buffer, function (err, data) {
+          if (err) {
+            next(err);
+          }
+          else
             res.status(200).json({ id: id });
-          });
+          console.log(data);
+        });
       } catch (err) {
         next(err);
       }
@@ -138,16 +131,14 @@ router.get(
 );
 
 router.get(
-  "/fileAvya/:turul/:baiguullagiinId/:zurgiinNer",
+  "/fileAvya/:baiguullagiinId/:id",
   (req, res, next) => {
     res.download(
       "./file/" +
-      req.params.turul +
-      "/" +
       req.params.baiguullagiinId +
       "/" +
-      req.params.zurgiinNer,
-      req.params.zurgiinNer,
+      req.params.id,
+      req.params.id,
       (err) => {
         if (err) next(err);
       }
