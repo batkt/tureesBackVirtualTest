@@ -883,7 +883,7 @@ exports.testiinBankniiGuilgee = asyncHandler(
       if (!req.body.dans || !req.body.barilgiinId)
         throw new Error("dans, barilgiinId alga!");
       var guilgeenuud = await BankniiGuilgee.find({
-        tranDate: {
+        createdAt: {
           $gte: new Date(req.body.ekhlekhOgnoo),
           $lte: new Date(req.body.duusakhOgnoo),
         },
