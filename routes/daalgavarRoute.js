@@ -6,13 +6,40 @@ const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 const Daalgavar = require("../models/daalgavar");
 const Ajiltan = require("../models/ajiltan");
+const Dugaarlalt = require("../models/dugaarlalt");
 const moment = require("moment");
 
 crud(router, "daalgavar", Daalgavar, UstsanBarimt);
 
+async function pad(num, size) {
+  num = num.toString();
+  while (num.length < size) num = "0" + num;
+  return num;
+}
 router.post("/daalgavarOruulya", tokenShalgakh, async (req, res, next) => {
   try {
     var daalgavar = new Daalgavar(req.body);
+    var khuseltiinDugaar = await Dugaarlalt.aggregate([
+      {
+        '$match': {
+          'turul': "daalgavar",
+          'baiguullagiinId': daalgavar.baiguullagiinId,
+          'barilgiinId': daalgavar.barilgiinId
+        }
+      }, {
+        '$group': {
+          '_id': 'aaa',
+          'max': {
+            '$max': {
+              $toDouble: "$dugaar"
+            }
+          }
+        }
+      }]);
+    if (khuseltiinDugaar.length > 0)
+      daalgavar.dugaar = "D-" + await pad(khuseltiinDugaar[0].max, 5);
+    else
+      daalgavar.dugaar = "D-" + await pad(0, 5);
     daalgavar.tuluv = 0;
     daalgavar.ognoo = new Date();
     await daalgavar.save();
@@ -99,6 +126,49 @@ router.post("/daalgavarDuusgalaa", tokenShalgakh, async (req, res, next) => {
       await notif.save();
     }
     res.send("Amjilttai");
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+
+router.post("/daalgavarTsutsalya", tokenShalgakh, async (req, res, next) => {
+  try {
+    let filter = {
+      _id: req.body.id,
+    };
+    let update = {
+      tuluv: -1
+    }
+    var result = await Daalgavar.findOneAndUpdate(filter, update, { new: true });
+    Sonorduulga.ilgeeye(io = req.app.get('socketio'), { ...result.toObject(), turul: "daalgavar" });
+    res.send("Amjilttai");
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+
+router.post("/daalgavarTooAvya", tokenShalgakh, async (req, res, next) => {
+  try {
+    let match = {
+      'baiguullagiinId': req.body.baiguullagiinId,
+      'barilgiinId': req.body.barilgiinId
+    }
+    if (req.body.ajiltniiId)
+      match['ajiltniiId'] = req.body.ajiltniiId;
+    let query = [
+      {
+        '$match': match
+      }, {
+        '$group': {
+          '_id': '$tuluv',
+          'too': {
+            '$sum': 1
+          }
+        }
+      }
+    ]
+    var result = await Daalgavar.aggregate(query);
+    res.send(result);
   } catch (err) {
     throw new Error(err);
   }

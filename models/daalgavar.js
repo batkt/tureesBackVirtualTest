@@ -5,6 +5,7 @@ mongoose.pluralize(null);
 const daalgavarSchema = new Schema(
   {
     id: String,
+    dugaar: String,
     tailbar: String,
     zurguud: [String],
     file: [String],
