@@ -879,6 +879,9 @@ exports.tukhainOgnoogoorGuilgeegOruulya = asyncHandler(
 exports.testiinBankniiGuilgee = asyncHandler(
   async (req, res, next) => {
     try {
+      console.log("testiinBankniiGuilgee");
+      if (!req.body.dans || !req.body.barilgiinId)
+        throw new Error("dans, barilgiinId alga!");
       var guilgeenuud = await BankniiGuilgee.find({
         tranDate: {
           $gte: new Date(req.body.ekhlekhOgnoo),
@@ -886,6 +889,7 @@ exports.testiinBankniiGuilgee = asyncHandler(
         },
         dansniiDugaar: req.body.dans
       });
+      console.log("guilgeenuud ->", guilgeenuud.length);
       if (guilgeenuud) {
         for await (const guilgee of guilgeenuud) {
           guilgee._id = null;
