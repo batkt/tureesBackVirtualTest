@@ -876,6 +876,36 @@ exports.tukhainOgnoogoorGuilgeegOruulya = asyncHandler(
   }
 );
 
+exports.testiinBankniiGuilgee = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var guilgeenuud = await BankniiGuilgee.find({
+        tranDate: {
+          $gte: new Date(req.body.ekhlekhOgnoo),
+          $lte: new Date(req.body.duusakhOgnoo),
+        },
+        dansniiDugaar: req.body.dans
+      });
+      if (guilgeenuud) {
+        for await (const guilgee of guilgeenuud) {
+          guilgee._id = null;
+          guilgee.baiguullagiinId = req.body.baiguullagiinId;
+          guilgee.barilgiinId = req.body.barilgiinId;
+          guilgee.kholbosonGereeniiId = [];
+          guilgee.kholbosonDun = 0;
+          guilgee.zardliinBulgiinId = null;
+          guilgee.zardliinBulgiinNer = null;
+          guilgee.kholbosonTalbainId = [];
+        }
+      }
+      var khariu = await BankniiGuilgee.insertMany(guilgeenuud);
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 exports.gereeAutomataarSungaya = asyncHandler(
   async (req, res, next) => {
     try {
