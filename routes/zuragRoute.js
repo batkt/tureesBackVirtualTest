@@ -78,11 +78,11 @@ router.post(
   uploadFile.single("file"),
   tokenShalgakh,
   async (req, res, next) => {
-    var turul = req.body.turul;
-    var id = require("uuid").v1().toString();
-    console.log("id", id);
-    if (req.file)
-      try {
+    try {
+      var turul = req.body.turul;
+      var id = require("uuid").v1().toString();
+      console.log("id", id);
+      if (req.file) {
         fs.access("./file/", (err) => {
           if (err) {
             fs.mkdirSync("./file/");
@@ -106,13 +106,13 @@ router.post(
             res.status(200).json({ id: id });
           console.log(data);
         });
-      } catch (err) {
-        next(err);
       }
-    else
-      throw new Error("Хадгалах file алга байна!");
-  }
-);
+      else
+        throw new Error("Хадгалах file алга байна!");
+    } catch (err) {
+      next(err);
+    }
+  });
 
 router.get(
   "/zuragAvya/:turul/:baiguullagiinId/:zurgiinNer",
