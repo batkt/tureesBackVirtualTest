@@ -39,14 +39,21 @@ router.post("/daalgavarOruulya", tokenShalgakh, async (req, res, next) => {
           }
         }
       }]);
+    var maxDugaar = 1;
     if (khuseltiinDugaar.length > 0)
-      daalgavar.dugaar = "D-" + await pad(khuseltiinDugaar[0].max, 5);
-    else
-      daalgavar.dugaar = "D-" + await pad(0, 5);
+      maxDugaar = khuseltiinDugaar[0].max;
+    daalgavar.dugaar = "D-" + await pad(maxDugaar, 5);
     daalgavar.tuluv = 0;
     daalgavar.ognoo = new Date();
+    await Dugaarlalt.findOneAndUpdate({
+      'turul': "daalgavar",
+      'baiguullagiinId': daalgavar.baiguullagiinId,
+      'barilgiinId': daalgavar.barilgiinId
+    }, { $set: { dugaar: maxDugaar + 1 } }, {
+      upsert: true
+    });
     await daalgavar.save();
-    Sonorduulga.ilgeeye(io = req.app.get('socketio'), { ...daalgavar.toObject(), turul: "daalgavar" });
+    Sonorduulga.ilgeeye(req.app.get('socketio'), { ...daalgavar.toObject(), turul: "daalgavar" });
     res.status(200).send("Amjilttai");
   } catch (err) {
     throw new Error(err);
