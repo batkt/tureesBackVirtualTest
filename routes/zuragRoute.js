@@ -109,6 +109,8 @@ router.post(
       } catch (err) {
         next(err);
       }
+    else
+      throw new Error("Хадгалах file алга байна!");
   }
 );
 
