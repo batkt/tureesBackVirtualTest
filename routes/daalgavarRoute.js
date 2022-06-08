@@ -5,17 +5,20 @@ const SonorduulgiinModel = require("../models/sonorduulga");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 const Daalgavar = require("../models/daalgavar");
+const Setgegdel = require("../models/setgegdel");
 const Ajiltan = require("../models/ajiltan");
 const Dugaarlalt = require("../models/dugaarlalt");
 const moment = require("moment");
 
 crud(router, "daalgavar", Daalgavar, UstsanBarimt);
+crud(router, "setgegdel", Setgegdel, UstsanBarimt);
 
 async function pad(num, size) {
   num = num.toString();
   while (num.length < size) num = "0" + num;
   return num;
 }
+
 router.post("/daalgavarOruulya", tokenShalgakh, async (req, res, next) => {
   try {
     var daalgavar = new Daalgavar(req.body);
@@ -169,6 +172,20 @@ router.post("/daalgavarTooAvya", tokenShalgakh, async (req, res, next) => {
     ]
     var result = await Daalgavar.aggregate(query);
     res.send(result);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+
+router.post("/setgegdelBichie", tokenShalgakh, async (req, res, next) => {
+  try {
+    var setgegdel = new Setgegdel(req.body);
+    setgegdel.ognoo = new Date();
+    setgegdel.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+    setgegdel.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+    await setgegdel.save();
+    Sonorduulga.ilgeeye(io = req.app.get('socketio'), { ...setgegdel.toObject(), turul: "setgegdel" });
+    res.status(200).send("Amjilttai");
   } catch (err) {
     throw new Error(err);
   }
