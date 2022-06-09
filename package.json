@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "daalgavar": "^1.0.2",
+    "daalgavar": "^1.0.3",
     "zevback": "^1.0.42"
   },
   "devDependencies": {
