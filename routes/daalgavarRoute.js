@@ -3,16 +3,16 @@ const router = express.Router();
 const Sonorduulga = require("../components/sonorduulga");
 const SonorduulgiinModel = require("../models/sonorduulga");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
+const { Daalgavar } = require("daalgavar");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
-const Daalgavar = require("../models/daalgavar");
-const Setgegdel = require("../models/setgegdel");
+//const Daalgavar = require("../models/daalgavar");
 const Ajiltan = require("../models/ajiltan");
-const Dugaarlalt = require("../models/dugaarlalt");
-const moment = require("moment");
 
+
+Daalgavar(router, Sonorduulga.ilgeeye, sonorduulgaIlgeeye, SonorduulgiinModel, Ajiltan);
+/*
 crud(router, "daalgavar", Daalgavar, UstsanBarimt);
 crud(router, "setgegdel", Setgegdel, UstsanBarimt);
-
 async function pad(num, size) {
   num = num.toString();
   while (num.length < size) num = "0" + num;
@@ -212,5 +212,5 @@ module.exports.tuluvluguuniiSanuulgaIlgeeye = async function tuluvluguuniiSanuul
     }
   }
 };
-
+*/
 module.exports = router;

@@ -4,8 +4,8 @@ const SanalGomdol = require("../models/sanalGomdol");
 const Sonorduulga = require("../models/sonorduulga");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const { crud } = require("../components/crud");
-const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud } = require("zevback");
+//const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 const { sanalKhadgalya, sanalKharlaa } = require("../controller/medegdel");
 

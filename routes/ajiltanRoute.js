@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Ajiltan = require("../models/ajiltan");
-const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crudWithFile } = require("zevback");
+//const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crudWithFile, UstsanBarimt } = require("zevback");
 //const { crudWithFile } = require('../components/crud');
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 

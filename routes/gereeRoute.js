@@ -3,7 +3,7 @@ const router = express.Router();
 const Geree = require("../models/geree");
 const Talbai = require("../models/talbai");
 const Khariltsagch = require("../models/khariltsagch");
-const Dugaarlalt = require("../models/dugaarlalt");
+//const Dugaarlalt = require("../models/dugaarlalt");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const { gereeZasakhShalguur, guilgeeUstgakhShalguur } = require("../components/shalguur");
 const multer = require("multer");
@@ -12,8 +12,8 @@ const uploadFile = multer({ storage: storage });
 //const { crud } = require("../components/crud");
 //const khuudaslalt = require("../components/khuudaslalt");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
-const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, khuudaslalt } = require("zevback");
+//const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud, khuudaslalt, Dugaarlalt, UstsanBarimt } = require("zevback");
 
 const {
   gereeniiToololtAvya,

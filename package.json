@@ -14,7 +14,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "zevback": "^1.0.28"
+    "daalgavar": "^1.0.2",
+    "zevback": "^1.0.42"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"

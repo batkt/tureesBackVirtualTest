@@ -9,8 +9,8 @@ const MailIlgeeye = require("../components/mailIlgeeye");
 const request = require("request");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const { crud } = require('../components/crud');
-const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud } = require("zevback");
+//const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
 
 crud(router, 'mailiinZagvar', MailiinZagvar, UstsanBarimt);
 crud(router, 'msgTuukh', MsgTuukh, UstsanBarimt);

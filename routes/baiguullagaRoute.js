@@ -4,8 +4,8 @@ const Baiguullaga = require("../models/baiguullaga");
 const Ajiltan = require("../models/ajiltan");
 //const { crudWithFile, crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
-const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud } = require("zevback");
+//const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
 
 crud(router, "baiguullaga", Baiguullaga, UstsanBarimt);
 router.post("/baiguullagaBurtgekh", async (req, res, next) => {

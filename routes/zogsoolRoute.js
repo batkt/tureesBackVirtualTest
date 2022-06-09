@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { tokenShalgakh, crud } = require("zevback");
-const UstsanBarimt = require("../models/ustsanBarimt");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
+//const UstsanBarimt = require("../models/ustsanBarimt");
 const { Pool } = require('pg')
 const Zogsool = require("../models/zogsool");
 const Mashin = require("../models/mashin");

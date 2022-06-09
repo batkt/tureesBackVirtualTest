@@ -130,7 +130,7 @@ cron.schedule(
     timezone: "Asia/Ulaanbaatar",
   }
 );
-
+/*
 cron.schedule(
   "02 09 * * * ",
   function () {
@@ -140,7 +140,7 @@ cron.schedule(
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
   }
-);
+);*/
 
 cron.schedule(
   "02 00 * * * ",
