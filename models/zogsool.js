@@ -14,7 +14,9 @@ const zogsoolSchema = new Schema(
     khugatsaa: Number,
     turul: String,
     tulbur: Number,
-    mashin: Schema.Types.Mixed
+    mashin: Schema.Types.Mixed,
+    baiguullagiinId: String,
+    barilgiinId: String
   },
   {
     timestamps: true,

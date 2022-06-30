@@ -68,6 +68,8 @@ router.post("/zogsoolOlnoorKhadgalya",
   async (req, res, next) => {
     var bulkOps = [];
     req.body.jagsaalt.forEach(element => {
+      element.baiguullagiinId = "6115f350b35689cdbf1b9da3";
+      element.barilgiinId = "619e267fdd4835aa2c168b28";
       let upsertDoc = {
         'updateOne': {
           'filter': { 'id': element.id },
