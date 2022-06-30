@@ -797,12 +797,13 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
       }
     ]
     var eneSardTulsun = await Geree.aggregate(query);
-    var dutuu = eneSardTulukh - eneSardTulsun;
+    var tulukhDun = (eneSardTulukh && eneSardTulukh.length > 0 && eneSardTulukh[0].dun) ? eneSardTulukh[0].dun : 0;
+    var tulsunDun = (eneSardTulsun && eneSardTulsun.length > 0 && eneSardTulsun[0].dun) ? eneSardTulsun[0].dun : 0;
+    var dutuu = tulukhDun - tulsunDun;
     query = [
       {
         '$match': {
-          'baiguullagiinId': req.body.baiguullagiinId,
-          'barilgiinId': req.params.barilgiinId
+          'baiguullagiinId': req.body.baiguullagiinId
         }
       },
       {
@@ -819,7 +820,7 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
       }
     ]
     var khariu = await Khariltsagch.aggregate(query);
-    res.send({ dutuu, eneSardTulsun, khariu });
+    res.send({ dutuu, tulsunDun, khariu });
   }
   catch (err) {
     next(err);
