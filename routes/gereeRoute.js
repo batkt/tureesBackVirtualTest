@@ -302,7 +302,7 @@ router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (r
       umnukhDuusakhOgnoo: geree.duusakhOgnoo,
       sergeekhOgnoo: req.body.sergeekhOgnoo,
       shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
-      tailbar: tailbar,
+      tailbar: req.body.tailbar,
       khiisenOgnoo: new Date(),
       turul: "Sergeekh",
       ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
