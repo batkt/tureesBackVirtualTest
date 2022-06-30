@@ -98,7 +98,8 @@ router.post("/zogsooliinDunAvya", tokenShalgakh,
           'check_in_time': {
             $gte: new Date(req.body.ekhlekhOgnoo),
             $lte: new Date(req.body.duusakhOgnoo)
-          }
+          },
+          "baiguullagiinId": req.body.baiguullagiinId
         }
       },
       {
@@ -128,7 +129,8 @@ router.post("/zogsooliinTooAvya", tokenShalgakh,
           'check_in_time': {
             $gte: new Date(req.body.ekhlekhOgnoo),
             $lte: new Date(req.body.duusakhOgnoo)
-          }
+          },
+          "baiguullagiinId": req.body.baiguullagiinId
         }
       },
       {
@@ -150,6 +152,11 @@ router.post("/zogsooliinTooAvya", tokenShalgakh,
 router.post("/mashiniiTooAvya", tokenShalgakh,
   async (req, res, next) => {
     var query = [
+      {
+        '$match': {
+          "baiguullagiinId": req.body.baiguullagiinId
+        }
+      },
       {
         '$group': {
           '_id': '$turul',
