@@ -25,6 +25,7 @@ const baiguullagaSchema = new Schema(
         ner: String,
         khayag: String,
         register: String,
+        niitTalbai: Number,
         davkharuud: [
           {
             davkhar: String,
