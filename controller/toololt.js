@@ -689,6 +689,11 @@ exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
           'baiguullagiinId': req.body.baiguullagiinId,
           'barilgiinId': req.params.barilgiinId
         }
+      },
+      {
+        $project: {
+          idevkhiteiEsekh: { $ifNull: ["$idevkhiteiEsekh", false] }
+        }
       }, {
         '$group': {
           '_id': '$idevkhiteiEsekh',
