@@ -714,3 +714,114 @@ exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
+  try {
+    var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+    var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+    var query = [
+      {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': {
+          'avlaga.guilgeenuud.ognoo': {
+            '$gte': ekhlekhOgnoo,
+            '$lte': duusakhOgnoo
+          },
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+            '$ne': 'System'
+          },
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["baritsaa"]
+          },
+          'tuluv': {
+            '$ne': -1
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'tulukh',
+          'tulukh': {
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulukhDun', 0]
+            }
+          },
+          'khyamdral': {
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.khyamdral', 0]
+            }
+          }
+        }
+      }, {
+        '$project': {
+          'dun': {
+            '$subtract': [
+              '$tulukh', '$khyamdral'
+            ]
+          }
+        }
+      }
+    ]
+    var eneSardTulukh = await Geree.aggregate(query);
+    query = [
+      {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': {
+          'avlaga.guilgeenuud.ognoo': {
+            '$gte': ekhlekhOgnoo,
+            '$lte': duusakhOgnoo
+          },
+          'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+            '$ne': 'System'
+          },
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'avlaga.guilgeenuud.turul': {
+            '$nin': ["baritsaa"]
+          }
+        }
+      }, {
+        '$group': {
+          '_id': 'tulsun',
+          'dun': {
+            '$sum': {
+              '$ifNull': ['$avlaga.guilgeenuud.tulsunDun', 0]
+            }
+          }
+        }
+      }
+    ]
+    var eneSardTulsun = await Geree.aggregate(query);
+    var dutuu = eneSardTulukh - eneSardTulsun;
+    query = [
+      {
+        '$match': {
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.params.barilgiinId
+        }
+      },
+      {
+        $project: {
+          idevkhiteiEsekh: { $ifNull: ["$idevkhiteiEsekh", false] }
+        }
+      }, {
+        '$group': {
+          '_id': '$idevkhiteiEsekh',
+          'too': {
+            '$sum': 1
+          }
+        }
+      }
+    ]
+    var khariu = await Khariltsagch.aggregate(query);
+    res.send({ dutuu, eneSardTulsun, khariu });
+  }
+  catch (err) {
+    next(err);
+  }
+});

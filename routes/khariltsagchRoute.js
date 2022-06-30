@@ -28,7 +28,8 @@ const {
 } = require('../controller/khariltsagch')
 
 const {
-  khariltsagchiinTooAvya
+  khariltsagchiinTooAvya,
+  khyanakhSambariinUgugdul
 } = require("../controller/toololt");
 
 const { khariltsagchZagvarAvya, khariltsagchTatya } = require("../controller/excel");
@@ -39,6 +40,7 @@ router.route("/khariltsagchNevtrey").post(khariltsagchNevtrey);
 router.route("/tokenoorKhariltsagchAvya").post(tokenoorKhariltsagchAvya)
 router.route("/khariltsagchidTokenOnooyo").post(khariltsagchidTokenOnooyo);
 router.route("/khariltsagchiinTooAvya/:barilgiinId").get(tokenShalgakh, khariltsagchiinTooAvya);
+router.route("/khyanakhSambariinUgugdul").post(tokenShalgakh, khyanakhSambariinUgugdul);
 router.route("/bankniiDansniiJagsaaltAvya").get(tokenShalgakh, bankniiDansniiJagsaaltAvya);
 router.route("/dansniiUldegdelAvya").post(tokenShalgakh, dansniiUldegdelAvya);
 router.route("/bankniiDansniiKhuulgaAvya").post(tokenShalgakh, bankniiDansniiKhuulgaAvya);
