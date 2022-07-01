@@ -61,7 +61,7 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo) {
       baiguullagiinId: this.baiguullagiinId,
       duusakhOgnoo: duusakhOgnoo,
     },
-    "tokenUusgexTest0123",
+    process.env.APP_SECRET,
     {
       expiresIn: "12h",
     }

@@ -41,7 +41,7 @@ khariltsagchSchema.methods.tokenUusgeye = function () {
       ner: this.ner,
       baiguullagiinId: this.baiguullagiinId
     },
-    "tokenUusgexTest0123",
+    process.env.APP_SECRET,
     {
       expiresIn: "12h",
     }

@@ -53,7 +53,7 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
       throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
     }
     const token = req.headers.authorization.split(" ")[1];
-    const tokenObject = jwt.verify(token, "tokenUusgexTest0123", 401);
+    const tokenObject = jwt.verify(token, process.env.APP_SECRET, 401);
     console.log(tokenObject);
     if (tokenObject.id == "zochin")
       throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
