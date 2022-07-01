@@ -16,6 +16,7 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "daalgavar": "^1.0.4",
+    "sharp": "^0.30.7",
     "zevback": "^1.0.52"
   },
   "devDependencies": {
