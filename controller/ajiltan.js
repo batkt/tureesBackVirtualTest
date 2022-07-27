@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const request = require('request');
 const http = require("http");
 
-function duusakhOgnooAvya(ugugdul, onFinish, next) {
+async function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get("http://127.0.0.1:8282/baiguullagiinDuusakhKhugatsaaAvya", { json: true, body: ugugdul }, (err, res1, body) => {
     if (err) next(err);
     else {
@@ -16,35 +16,38 @@ function duusakhOgnooAvya(ugugdul, onFinish, next) {
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
-  const ajiltan = await Ajiltan.findOne()
-    .select("+nuutsUg")
-    .where("nevtrekhNer")
-    .equals(req.body.nevtrekhNer)
-    .catch((err) => {
-      next(err);
-    });
-  if (!ajiltan) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-  var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
-  if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-  var baiguullaga = await Baiguullaga.findById(ajiltan.baiguullagiinId);
-  let duusakhOgnoo = null;
-  var butsaakhObject = {
-    result: ajiltan,
-    success: true
-  };
   try {
-    duusakhOgnooAvya({ "register": baiguullaga.register }, async (khariu) => {
-      console.log(khariu);
-      if (khariu && khariu.duusakhOgnoo && khariu.duusakhOgnoo < new Date())
+    const ajiltan = await Ajiltan.findOne()
+      .select("+nuutsUg")
+      .where("nevtrekhNer")
+      .equals(req.body.nevtrekhNer)
+      .catch((err) => {
+        next(err);
+      });
+    if (!ajiltan) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+    var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
+    if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+    var baiguullaga = await Baiguullaga.findById(ajiltan.baiguullagiinId);
+    let duusakhOgnoo = null;
+    var butsaakhObject = {
+      result: ajiltan,
+      success: true
+    };
+    var khariu = await duusakhOgnooAvya({ "register": baiguullaga.register });
+    console.log(khariu);
+    if (khariu.success) {
+      if (khariu.duusakhOgnoo && khariu.duusakhOgnoo < new Date())
         throw new aldaa("Лицензийн хугацаа дууссан байна!")
       const jwt = await ajiltan.tokenUusgeye(khariu.duusakhOgnoo);
       butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
       butsaakhObject.token = jwt;
       res.status(200).json(butsaakhObject)
-    }, next);
+    }
+    else
+      next(new aldaa(khariu.msg));
   }
   catch (err) {
-    next(err)
+    next(err);
   }
 });
 
