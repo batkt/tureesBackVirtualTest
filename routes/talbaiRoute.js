@@ -92,6 +92,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
         var gereenuud = await Geree.find({ talbainDugaar: khuuchinTalbai.kod, barilgiinId: khuuchinTalbai.barilgiinId, baiguullagiinId: khuuchinTalbai.baiguullagiinId }).select("+avlaga +gereeniiTuukhuud");
         if (gereenuud)
             for (const geree of gereenuud) {
+                talbai.idevkhiteiEsekh = true;
                 var tuukh = {
                     talbainDugaar: khuuchinTalbai.kod,
                     talbainNegjUne: khuuchinTalbai.talbainNegjUne,
@@ -137,6 +138,9 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                     }
                 );
             }
+        else {
+            talbai.idevkhiteiEsekh = false;
+        }
     }
     talbai.isNew = false;
     talbai.save();
