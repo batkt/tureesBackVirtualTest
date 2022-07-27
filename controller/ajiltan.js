@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const request = require('request');
 const http = require("http");
 
-async function duusakhOgnooAvya(ugugdul, onFinish, next) {
+function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get("http://127.0.0.1:8282/baiguullagiinDuusakhKhugatsaaAvya", { json: true, body: ugugdul }, (err, res1, body) => {
     if (err) next(err);
     else {
@@ -16,24 +16,23 @@ async function duusakhOgnooAvya(ugugdul, onFinish, next) {
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
-  try {
-    const ajiltan = await Ajiltan.findOne()
-      .select("+nuutsUg")
-      .where("nevtrekhNer")
-      .equals(req.body.nevtrekhNer)
-      .catch((err) => {
-        next(err);
-      });
-    if (!ajiltan) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-    var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
-    if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-    var baiguullaga = await Baiguullaga.findById(ajiltan.baiguullagiinId);
-    let duusakhOgnoo = null;
-    var butsaakhObject = {
-      result: ajiltan,
-      success: true
-    };
-    var khariu = await duusakhOgnooAvya({ "register": baiguullaga.register });
+  const ajiltan = await Ajiltan.findOne()
+    .select("+nuutsUg")
+    .where("nevtrekhNer")
+    .equals(req.body.nevtrekhNer)
+    .catch((err) => {
+      next(err);
+    });
+  if (!ajiltan) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+  var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
+  if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+  var baiguullaga = await Baiguullaga.findById(ajiltan.baiguullagiinId);
+  let duusakhOgnoo = null;
+  var butsaakhObject = {
+    result: ajiltan,
+    success: true
+  };
+  duusakhOgnooAvya({ "register": baiguullaga.register }, async (khariu) => {
     console.log(khariu);
     if (khariu.success) {
       if (khariu.duusakhOgnoo && khariu.duusakhOgnoo < new Date())
@@ -45,10 +44,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     }
     else
       next(new aldaa(khariu.msg));
-  }
-  catch (err) {
-    next(err);
-  }
+  }, next);
 });
 
 exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
