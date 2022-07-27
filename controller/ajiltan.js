@@ -33,17 +33,22 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     success: true
   };
   duusakhOgnooAvya({ "register": baiguullaga.register }, async (khariu) => {
-    console.log(khariu);
-    if (khariu.success) {
-      if (khariu.duusakhOgnoo && khariu.duusakhOgnoo < new Date())
-        throw new aldaa("Лицензийн хугацаа дууссан байна!")
-      const jwt = await ajiltan.tokenUusgeye(khariu.duusakhOgnoo);
-      butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
-      butsaakhObject.token = jwt;
-      res.status(200).json(butsaakhObject)
+    try {
+      console.log(khariu);
+      if (khariu.success) {
+        if (khariu.duusakhOgnoo && khariu.duusakhOgnoo < new Date())
+          throw new aldaa("Лицензийн хугацаа дууссан байна!")
+        const jwt = await ajiltan.tokenUusgeye(khariu.duusakhOgnoo);
+        butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
+        butsaakhObject.token = jwt;
+        res.status(200).json(butsaakhObject)
+      }
+      else
+        throw new Error(khariu.msg);
     }
-    else
-      next(new aldaa(khariu.msg));
+    catch (err) {
+      next(err);
+    }
   }, next);
 });
 
