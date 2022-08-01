@@ -55,7 +55,7 @@ router.get("/zogsooloosTatya",
         await pool.end();
         if (res1.rows && res1.rows.length > 0) {
           const objectString = JSON.stringify({ jagsaalt: res1.rows });
-          var url = new URL("http://103.143.40.230:443/zogsoolOlnoorKhadgalya/")
+          var url = new URL("http://103.143.40.230:8081/zogsoolOlnoorKhadgalya/")
           const response = await instanceJson.post(url, { body: objectString });
           console.log("response.body", response.body);
         }

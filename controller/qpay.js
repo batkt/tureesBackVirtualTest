@@ -110,7 +110,7 @@ async function qpayObjectUusgeye(body, invoiceCode, next) {
             "allow_exceed": false,
             "maximum_amount": null,
             "amount": body.dun,
-            "callback_url": "http://103.143.40.230:443/qpayTulye/" + body.baiguullagiinId.toString() + "/" + body.barilgiinId.toString() + "/" + maxDugaar.toString()
+            "callback_url": "http://103.143.40.230:8081/qpayTulye/" + body.baiguullagiinId.toString() + "/" + body.barilgiinId.toString() + "/" + maxDugaar.toString()
         }
         return object;
     } catch (error) {
