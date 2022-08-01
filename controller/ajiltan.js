@@ -7,7 +7,7 @@ const request = require('request');
 const http = require("http");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
-  request.get("http://127.0.0.1:8282/baiguullagiinDuusakhKhugatsaaAvya", { json: true, body: ugugdul }, (err, res1, body) => {
+  request.get("http://103.50.205.33:8282/baiguullagiinDuusakhKhugatsaaAvya", { json: true, body: ugugdul }, (err, res1, body) => {
     if (err) next(err);
     else {
       onFinish(body);
