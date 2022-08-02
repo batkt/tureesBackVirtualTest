@@ -910,6 +910,53 @@ exports.testiinBankniiGuilgee = asyncHandler(
   }
 );
 
+exports.testiinBankniiGuilgeeOruulya = asyncHandler(
+  async (req, res, next) => {
+    try {
+      if (!req.body.dans || !req.body.barilgiinId)
+        throw new Error("dans, barilgiinId alga!");
+      var guilgeenuud = []
+      guilgee = new BankniiGuilgee();
+      for (let i = 1; i <= 10; i++) {
+        guilgee = new BankniiGuilgee();
+        if (req.body.bank == "tdb") {
+          guilgee.TxDt = req.body.ognoo;
+          guilgee.TxPostDate = req.body.ognoo;
+          guilgee.CtAcct = "5012345678";
+          guilgee.CtActnName = "TEST DANS";
+          guilgee.Amt = i * 10000;
+          guilgee.TxAddInf = "Test " + i.toString();
+          guilgee.CtAcntOrg = "TEST DANS";
+        }
+        else {
+          guilgee.tranDate = req.body.ognoo;
+          guilgee.postDate = req.body.ognoo;
+          guilgee.code = i;
+          guilgee.record = i;
+          guilgee.amount = i * 10000;
+          guilgee.balance = i * 10000;
+          guilgee.debit = 0;
+          guilgee.correction = 0;
+          guilgee.description = "Test " + i.toString();
+          guilgee.relatedAccount = "5012345678";
+        }
+        guilgee.baiguullagiinId = req.body.baiguullagiinId;
+        guilgee.barilgiinId = req.body.barilgiinId;
+        guilgee.kholbosonGereeniiId = [];
+        guilgee.kholbosonDun = 0;
+        guilgee.zardliinBulgiinId = null;
+        guilgee.zardliinBulgiinNer = null;
+        guilgee.kholbosonTalbainId = [];
+        guilgee.dansniiDugaar = req.body.dans
+      }
+      var khariu = await BankniiGuilgee.insertMany(guilgeenuud);
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 exports.gereeAutomataarSungaya = asyncHandler(
   async (req, res, next) => {
     try {
