@@ -916,7 +916,7 @@ exports.testiinBankniiGuilgeeOruulya = asyncHandler(
       if (!req.body.dans || !req.body.barilgiinId)
         throw new Error("dans, barilgiinId alga!");
       var guilgeenuud = []
-      guilgee = new BankniiGuilgee();
+      var guilgee = new BankniiGuilgee();
       for (let i = 1; i <= 10; i++) {
         guilgee = new BankniiGuilgee();
         if (req.body.bank == "tdb") {
@@ -948,6 +948,7 @@ exports.testiinBankniiGuilgeeOruulya = asyncHandler(
         guilgee.zardliinBulgiinNer = null;
         guilgee.kholbosonTalbainId = [];
         guilgee.dansniiDugaar = req.body.dans
+        guilgeenuud.push(guilgee);
       }
       var khariu = await BankniiGuilgee.insertMany(guilgeenuud);
       res.send(khariu);
