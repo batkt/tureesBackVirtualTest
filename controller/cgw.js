@@ -208,85 +208,90 @@ exports.bankniiDansniiJagsaaltAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
-    var dans = await Dans.findOne({ dugaar: req.body.dansniiDugaar });
-    var uldegdel = 0;
-    if (dans && dans.bank == "khanbank") {
-        var tokenObject = await Token.findOne({ "turul": "khaanCorporate", baiguullagiinId: dans.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
-        var token;
-        if (!tokenObject) {
-            tokenObject = await tokenAvya(dans.corporateNevtrekhNer, dans.corporateNuutsUg, next, dans.baiguullagiinId);
-            token = tokenObject.access_token;
-        }
-        else
-            token = tokenObject.token
-        var khariu = await dansniiJagsaaltAvya(token, next);
-        console.log("khariu", khariu);
-        khariu = khariu.accounts.filter(a => a.number == req.body.dansniiDugaar);
-        console.log("khariu", khariu);
-        if (khariu && khariu.length > 0)
-            uldegdel = khariu[0].avalaibleBalance
-        res.send({ uldegdel });
-    }
-    else if (dans && dans.bank == "tdb") {
-        var query = [
-            {
-                '$match': {
-                    'dansniiDugaar': dans.dugaar,
-                    'baiguullagiinId': dans.baiguullagiinId
-                }
-            }, {
-                '$group': {
-                    '_id': '$dansniiDugaar',
-                    'max': {
-                        '$max': {
-                            $toDouble: "$NtryRef"
-                        }
-                    }
-                }
-            }
-        ]
-        var max = await BankniiGuilgee.aggregate(query);
-        var maxDugaar = 100;
-        if (max && max.length !== 0)
-            maxDugaar = max[0].max;
-        var khuseltiinDugaar = await Dugaarlalt.aggregate([
-            {
-                '$match': {
-                    'turul': "tdbKhuselt"
-                }
-            }, {
-                '$group': {
-                    '_id': 'aaa',
-                    'max': {
-                        '$max': {
-                            $toDouble: "$dugaar"
-                        }
-                    }
-                }
-            }]);
-        var maxKhuseltiinDugaar = 107;
-        if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
-            maxKhuseltiinDugaar = khuseltiinDugaar[0].max;
-        Dugaarlalt.findOneAndUpdate({ turul: "tdbKhuselt" }, { $set: { dugaar: maxKhuseltiinDugaar + 1 } }, {
-            new: true,
-            upsert: true
-        }).then((resa) => console.log(resa)).catch((err) => console.log(err));
-        tdbDansniiUldegdelAvya({
-            msgId: "ZTR" + await pad(maxKhuseltiinDugaar, 12),
-            loginId: dans.corporateNevtrekhNer,
-            AnyBIC: dans.AnyBIC,
-            RoleID: dans.RoleID,
-            pwd: dans.corporateNuutsUg,
-            dansniiDugaar: dans.dugaar,
-            valyut: dans.valyut
-        }, next, async (khariu) => {
-            console.log("khariu", new Date(), khariu);
-            if (khariu && khariu.Document && khariu.Document.GrpHdr && khariu.Document.GrpHdr[0].RspCd && khariu.Document.GrpHdr[0].RspCd[0] == "10") {
-                res.send({ uldegdel: khariu.Document.EnqRsp[0].ABal[0] });
+    try {
+        var dans = await Dans.findOne({ dugaar: req.body.dansniiDugaar });
+        var uldegdel = 0;
+        if (dans && dans.bank == "khanbank") {
+            var tokenObject = await Token.findOne({ "turul": "khaanCorporate", baiguullagiinId: dans.baiguullagiinId, ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) } });
+            var token;
+            if (!tokenObject) {
+                tokenObject = await tokenAvya(dans.corporateNevtrekhNer, dans.corporateNuutsUg, next, dans.baiguullagiinId);
+                token = tokenObject.access_token;
             }
             else
-                res.send({ uldegdel: 0 });
-        });
+                token = tokenObject.token
+            var khariu = await dansniiJagsaaltAvya(token, next);
+            console.log("khariu", khariu);
+            khariu = khariu.accounts.filter(a => a.number == req.body.dansniiDugaar);
+            console.log("khariu", khariu);
+            if (khariu && khariu.length > 0)
+                uldegdel = khariu[0].avalaibleBalance
+            res.send({ uldegdel });
+        }
+        else if (dans && dans.bank == "tdb") {
+            var query = [
+                {
+                    '$match': {
+                        'dansniiDugaar': dans.dugaar,
+                        'baiguullagiinId': dans.baiguullagiinId
+                    }
+                }, {
+                    '$group': {
+                        '_id': '$dansniiDugaar',
+                        'max': {
+                            '$max': {
+                                $toDouble: "$NtryRef"
+                            }
+                        }
+                    }
+                }
+            ]
+            var max = await BankniiGuilgee.aggregate(query);
+            var maxDugaar = 100;
+            if (max && max.length !== 0)
+                maxDugaar = max[0].max;
+            var khuseltiinDugaar = await Dugaarlalt.aggregate([
+                {
+                    '$match': {
+                        'turul': "tdbKhuselt"
+                    }
+                }, {
+                    '$group': {
+                        '_id': 'aaa',
+                        'max': {
+                            '$max': {
+                                $toDouble: "$dugaar"
+                            }
+                        }
+                    }
+                }]);
+            var maxKhuseltiinDugaar = 107;
+            if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
+                maxKhuseltiinDugaar = khuseltiinDugaar[0].max;
+            Dugaarlalt.findOneAndUpdate({ turul: "tdbKhuselt" }, { $set: { dugaar: maxKhuseltiinDugaar + 1 } }, {
+                new: true,
+                upsert: true
+            }).then((resa) => console.log(resa)).catch((err) => console.log(err));
+            tdbDansniiUldegdelAvya({
+                msgId: "ZTR" + await pad(maxKhuseltiinDugaar, 12),
+                loginId: dans.corporateNevtrekhNer,
+                AnyBIC: dans.AnyBIC,
+                RoleID: dans.RoleID,
+                pwd: dans.corporateNuutsUg,
+                dansniiDugaar: dans.dugaar,
+                valyut: dans.valyut
+            }, next, async (khariu) => {
+                console.log("khariu", new Date(), khariu);
+                if (khariu && khariu.Document && khariu.Document.GrpHdr && khariu.Document.GrpHdr[0].RspCd && khariu.Document.GrpHdr[0].RspCd[0] == "10") {
+                    res.send({ uldegdel: khariu.Document.EnqRsp[0].ABal[0] });
+                }
+                else
+                    res.send({ uldegdel: 0 });
+            });
+        }
+    }
+    catch (err) {
+        next("Дансны үлдэгдэл авахад алдаа гарлаа!");
     }
 });
 
