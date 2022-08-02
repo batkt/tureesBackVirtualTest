@@ -924,7 +924,7 @@ exports.testiinBankniiGuilgeeOruulya = asyncHandler(
           guilgee.TxPostDate = req.body.ognoo;
           guilgee.CtAcct = "5012345678";
           guilgee.CtActnName = "TEST DANS";
-          guilgee.Amt = i * 10000;
+          guilgee.Amt = (i < 6) ? i * 10000 : i * -10000;
           guilgee.TxAddInf = "Test " + i.toString();
           guilgee.CtAcntOrg = "TEST DANS";
         }
@@ -933,7 +933,7 @@ exports.testiinBankniiGuilgeeOruulya = asyncHandler(
           guilgee.postDate = req.body.ognoo;
           guilgee.code = i;
           guilgee.record = i;
-          guilgee.amount = i * 10000;
+          guilgee.amount = (i < 6) ? i * 10000 : i * -10000;
           guilgee.balance = i * 10000;
           guilgee.debit = 0;
           guilgee.correction = 0;

@@ -187,10 +187,8 @@ async function tdbDansniiUldegdelAvya(khuselt, next, onFinish) {
             onFinish(result);
         });
     } catch (error) {
-        console.log("aldaatai!!");
-        console.log(error);
         if (next)
-            next(error);
+            next("Дансны үлдэгдэл авахад алдаа гарлаа!");
     }
 }
 
@@ -291,7 +289,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         }
     }
     catch (err) {
-        next("Дансны үлдэгдэл авахад алдаа гарлаа!");
+        next(err);
     }
 });
 
