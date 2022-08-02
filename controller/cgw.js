@@ -45,7 +45,7 @@ async function tokenAvya(username, password, next, baiguullagiinId) {
     } catch (error) {
         console.log("tokenAvya -> error ", error);
         if (next)
-            next("Банктай холбогдоход алдаа гарлаа!");
+            next(new Error("Банктай холбогдоход алдаа гарлаа!"));
     }
 }
 
