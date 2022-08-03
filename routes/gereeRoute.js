@@ -730,6 +730,251 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
   }
 });
 
+
+router.route("/tulburiinZadargaaAvya").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    var query = [
+      {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': {
+          _id: req.body.id
+        }
+      },
+      {
+        '$lookup': {
+          'from': 'talbai',
+          'let': {
+            "talbainDugaar": "$talbainDugaar",
+            "baiguullagiinId": "$baiguullagiinId",
+            "barilgiinId": "$barilgiinId"
+          },
+          'pipeline': [
+            {
+              '$match':
+              {
+                '$expr':
+                {
+                  '$and':
+                    [
+                      { '$eq': ["$kod", "$$talbainDugaar"] },
+                      { '$eq': ["$baiguullagiinId", "$$baiguullagiinId"] },
+                      { '$eq': ["$barilgiinId", "$$barilgiinId"] }
+                    ]
+                }
+              }
+            }
+          ],
+          'as': 'talbai'
+        }
+      }, {
+        '$facet': {
+          'umnukhSariinUrTulbur': [
+            {
+              '$match': {
+                $or: [
+                  {
+                    'avlaga.guilgeenuud.ognoo': {
+                      '$lt': new Date(req.body.ekhlekhOgnoo)
+                    }
+                  },
+                  {
+                    $and: [
+                      {
+                        'avlaga.guilgeenuud.ognoo': {
+                          '$lte': new Date(req.body.nekhemjlekhAvakhOgnoo),
+                          '$gte': new Date(req.body.ekhlekhOgnoo)
+                        }
+                      },
+                      {
+                        $or: [
+                          {
+                            "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": {
+                              $exists: false
+                            }
+                          },
+                          {
+                            "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": false
+                          }
+                        ]
+                      },
+                      {
+                        $or: [
+                          {
+                            'avlaga.guilgeenuud.undsenDun': {
+                              $exists: false
+                            }
+                          },
+                          {
+                            'avlaga.guilgeenuud.undsenDun': 0
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }, {
+              '$group': {
+                '_id': '$gereeniiDugaar',
+                'tulukh': {
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
+                  }
+                },
+                'khyamdral': {
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
+                  }
+                },
+                'tulsun': {
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.tulsunDun', 0]
+                  }
+                }
+              }
+            }, {
+              '$project': {
+                'gereeniiDugaar': '$gereeniiDugaar',
+                'uldegdel': {
+                  '$subtract': [
+                    '$tulukh', {
+                      '$sum': [
+                        '$tulsun', '$khyamdral'
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          'niitUldegdel': [
+            {
+              '$match': {
+                'avlaga.guilgeenuud.ognoo': {
+                  '$lte': new Date(req.body.duusakhOgnoo)
+                }
+              }
+            },
+            {
+              '$unwind': {
+                'path': "$talbai"
+              }
+            }, {
+              '$group': {
+                '_id': '$gereeniiDugaar',
+                'niitAshiglaltiinZardal': {
+                  '$max': '$talbai.niitAshiglaltiinZardal'
+                },
+                'tulukh': {
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
+                  }
+                },
+                'khyamdral': {
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
+                  }
+                },
+                'tulsun': {
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.tulsunDun', 0]
+                  }
+                }
+              }
+            }, {
+              '$project': {
+                'gereeniiDugaar': '$gereeniiDugaar',
+                'niitAshiglaltiinZardal': '$niitAshiglaltiinZardal',
+                'uldegdel': {
+                  '$subtract': [
+                    '$tulukh', {
+                      '$sum': [
+                        '$tulsun', '$khyamdral'
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          'eneSardTulukhDun': [
+            {
+              '$match': {
+                'avlaga.guilgeenuud.ognoo': {
+                  '$lte': new Date(req.body.duusakhOgnoo),
+                  '$gte': new Date(req.body.ekhlekhOgnoo)
+                }
+              }
+            }, {
+              '$group': {
+                '_id': '$gereeniiDugaar',
+                'tulukh': {
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
+                  }
+                },
+                'khyamdral': {
+                  '$sum':
+                  {
+                    "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
+                  }
+                }
+              }
+            }, {
+              '$project': {
+                'gereeniiDugaar': '$gereeniiDugaar',
+                'uldegdel': {
+                  '$subtract': [
+                    '$tulukh', '$khyamdral'
+                  ]
+                }
+              }
+            }
+          ],
+          'nekhemjlekhDeerGarakh': [
+            {
+              '$match': {
+                'avlaga.guilgeenuud.ognoo': {
+                  '$lte': new Date(req.body.duusakhOgnoo),
+                  '$gte': new Date(req.body.ekhlekhOgnoo)
+                },
+                "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": true
+              }
+            }, {
+              '$project': {
+                'gereeniiDugaar': '$gereeniiDugaar',
+                "avlaga": "$avlaga.guilgeenuud"
+              }
+            },
+            {
+              $group: {
+                "_id": "$gereeniiDugaar",
+                "guilgeenuud": {
+                  $push: "$avlaga"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+    var gereenuud = await Geree.aggregate(query);
+    res.send(gereenuud);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next) => {
   try {
     const body = req.body.query;
