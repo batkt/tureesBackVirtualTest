@@ -733,14 +733,17 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
 
 router.route("/tulburiinZadargaaAvya").post(tokenShalgakh, async (req, res, next) => {
   try {
+    var mongoose = require('mongoose');
+    var id = mongoose.Types.ObjectId(req.body.id);
     var query = [
+      {
+        '$match': {
+          _id: id
+        }
+      },
       {
         '$unwind': {
           'path': '$avlaga.guilgeenuud'
-        }
-      }, {
-        '$match': {
-          _id: req.body.id
         }
       },
       {
