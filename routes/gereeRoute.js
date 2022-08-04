@@ -968,6 +968,7 @@ router.route("/tulburiinZadargaaAvya").post(tokenShalgakh, async (req, res, next
         }
       }
     ]
+    console.log("zadargaa query", JSON.stringify(query, null, 4));
     var gereenuud = await Geree.aggregate(query);
     res.send(gereenuud);
   } catch (error) {
