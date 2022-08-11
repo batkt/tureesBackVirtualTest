@@ -1048,7 +1048,7 @@ async function daraagiinTulukhOgnooZasya(gereeniiId) {
   jagsaalt = lodash.orderBy(jagsaalt, ["ognoo"], ["asc"]);
   var tulukhOgnoo;
   jagsaalt.forEach(async (element) => {
-    if (niitTulsunDun > 0) {
+    if (niitTulsunDun >= 0) {
       tulukhOgnoo = element.ognoo;
       niitTulsunDun = await tooZasya(niitTulsunDun - element.tulukhDun);
     }
