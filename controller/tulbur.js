@@ -1026,31 +1026,22 @@ exports.gereeAutomataarSungaya = asyncHandler(
   }
 );
 
-async function tooZasya(too) {
-  var zassanToo = await Math.round((too + Number.EPSILON) * 100) / 100;
-  return +zassanToo.toFixed(2)
-}
-
 async function daraagiinTulukhOgnooZasya(gereeniiId) {
   var geree = await Geree.findById(gereeniiId).select("avlaga");
   var jagsaalt = [];
   if (lodash.isArray(lodash.get(geree, "avlaga.guilgeenuud"))) {
-    jagsaalt = await lodash.get(geree, "avlaga.guilgeenuud");
+    jagsaalt = lodash.get(geree, "avlaga.guilgeenuud");
   }
-  var niitTulsunDun = await lodash.sumBy(jagsaalt, function (object) {
-    return (object.tulsunDun) ? object.tulsunDun : 0;
+  var niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
+    return object.tulsunDun;
   });
-  var niitKhyamdral = await lodash.sumBy(jagsaalt, function (object) {
-    return (object.khyamdral) ? object.khyamdral : 0;
-  });
-  niitTulsunDun = await tooZasya(niitTulsunDun + niitKhyamdral);
-  jagsaalt = await lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
-  jagsaalt = await lodash.orderBy(jagsaalt, ["ognoo"], ["asc"]);
+  jagsaalt = lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
+  jagsaalt = lodash.orderBy(jagsaalt, ["ognoo"], ["asc"]);
   var tulukhOgnoo;
-  jagsaalt.forEach(async (element) => {
+  jagsaalt.forEach((element) => {
     if (niitTulsunDun > 0) {
       tulukhOgnoo = element.ognoo;
-      niitTulsunDun = await tooZasya(niitTulsunDun - element.tulukhDun);
+      niitTulsunDun = niitTulsunDun - element.tulukhDun;
     }
   });
   Geree.findByIdAndUpdate(gereeniiId, {
