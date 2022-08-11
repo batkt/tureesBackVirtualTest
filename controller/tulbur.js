@@ -1044,8 +1044,8 @@ async function daraagiinTulukhOgnooZasya(gereeniiId) {
     return (object.khyamdral) ? object.khyamdral : 0;
   });
   niitTulsunDun = await tooZasya(niitTulsunDun + niitKhyamdral);
-  jagsaalt = lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
-  jagsaalt = lodash.orderBy(jagsaalt, ["ognoo"], ["asc"]);
+  jagsaalt = await lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
+  jagsaalt = await lodash.orderBy(jagsaalt, ["ognoo"], ["asc"]);
   var tulukhOgnoo;
   jagsaalt.forEach(async (element) => {
     if (niitTulsunDun > 0) {
