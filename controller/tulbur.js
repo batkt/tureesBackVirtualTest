@@ -1035,11 +1035,15 @@ async function daraagiinTulukhOgnooZasya(gereeniiId) {
   var niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
     return object.tulsunDun;
   });
+  var niitKhyamdral = lodash.sumBy(jagsaalt, function (object) {
+    return object.khyamdral;
+  });
+  niitTulsunDun = niitTulsunDun + niitKhyamdral;
   jagsaalt = lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
   jagsaalt = lodash.orderBy(jagsaalt, ["ognoo"], ["asc"]);
   var tulukhOgnoo;
   jagsaalt.forEach((element) => {
-    if (niitTulsunDun > 0) {
+    if (niitTulsunDun >= 0) {
       tulukhOgnoo = element.ognoo;
       niitTulsunDun = niitTulsunDun - element.tulukhDun;
     }
