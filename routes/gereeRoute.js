@@ -310,12 +310,30 @@ router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (r
       ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
       ajiltniiId: req.body.nevtersenAjiltniiToken.id
     }
+
+    var khuvaariud = [];
+    var today = new Date();
+    var unuudur = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+    new Array(geree.khugatsaa || 0).fill('').map((mur, index) => {
+      geree.tulukhUdur.forEach((udur) => {
+        if (moment(unuudur).add(index, 'month').set('date', udur) <= moment(geree.duusakhOgnoo)
+          && moment(unuudur).add(index, 'month').set('date', udur) > moment(new Date()))
+          khuvaariud.push({
+            ognoo: moment(unuudur).add(index, 'month').set('date', udur),
+            khyamdral: 0,
+            undsenDun: talbai.talbainNiitUne,
+            tulukhDun: talbai.talbainNiitUne
+          })
+      })
+    })
     if (geree.gereeniiTuukhuud) {
       Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
         $push: {
-          [`gereeniiTuukhuud`]: tuukh
+          [`gereeniiTuukhuud`]: tuukh,
+          [`avlaga.guilgeenuud`]: khuvaariud,
         },
         $set: {
+          "tsutsalsanOgnoo": null,
           "tuluv": 1
         }
       }).then((result) => {
@@ -329,7 +347,11 @@ router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (r
     else {
       tuukh = [tuukh]
       Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
+        $push: {
+          [`avlaga.guilgeenuud`]: khuvaariud,
+        },
         $set: {
+          "tsutsalsanOgnoo": null,
           "tuluv": 1,
           "gereeniiTuukhuud": tuukh
         }
@@ -410,8 +432,10 @@ router.route("/gereeTsutslaya").post(tokenShalgakh, gereeZasakhShalguur, async (
         [`gereeniiTuukhuud`]: tuukh
       },
       $set: {
+        "tsutsalsanOgnoo": new Date(),
         "tuluv": -1
-      }
+      },
+      $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } }
     }).then((result) => {
       talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
       res.send("Amjilttai");
@@ -426,8 +450,10 @@ router.route("/gereeTsutslaya").post(tokenShalgakh, gereeZasakhShalguur, async (
     Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
       $set: {
         "gereeniiTuukhuud": tuukh,
+        "tsutsalsanOgnoo": new Date(),
         "tuluv": -1
-      }
+      },
+      $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } }
     }).then((result) => {
       talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
       res.send("Amjilttai");
