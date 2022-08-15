@@ -1487,19 +1487,30 @@ async function turluurDunBugluy(jagsaalt, ekhlekhOgnoo, duusakhOgnoo, turul) {
         '$gte': new Date(ekhlekhOgnoo)
       },
     }
-    if (turul) {
-      matchQuery["avlaga.guilgeenuud.turul"] = turul
-    }
-    if (turul == "khungulult")
-      matchQuery["avlaga.guilgeenuud.khyamdral"] = {
-        "$gte": 0
-      }
-    else {
-      matchQuery["avlaga.guilgeenuud.tulsunDun"] = {
-        "$gte": 0
-      }
+    var groupQuery = {
+      '_id': '$gereeniiDugaar'
     }
 
+    if (turul == "voucher") {
+      matchQuery["avlaga.guilgeenuud.turul"] = "voucher";
+    }
+
+    if (turul == "khungulult") {
+      matchQuery["avlaga.guilgeenuud.khyamdral"] = {
+        "$gt": 0
+      }
+      groupQuery["khyamdral"] = {
+        '$sum': '$avlaga.guilgeenuud.khyamdral'
+      }
+    }
+    else {
+      matchQuery["avlaga.guilgeenuud.tulsunDun"] = {
+        "$gt": 0
+      }
+      groupQuery["tulsun"] = {
+        '$sum': '$avlaga.guilgeenuud.tulsunDun'
+      }
+    }
     jagsaalt.forEach(a => idnuud.push(a._id));
     var query = [
       {
@@ -1512,31 +1523,27 @@ async function turluurDunBugluy(jagsaalt, ekhlekhOgnoo, duusakhOgnoo, turul) {
           'path': '$avlaga.guilgeenuud'
         }
       }, {
-        '$match': matchQuery
+        $match: matchQuery
       }, {
-        '$group': {
-          '_id': '$gereeniiDugaar',
-          'tulsun': {
-            '$sum': '$avlaga.guilgeenuud.tulsunDun'
-          }
-        }
+        $group: groupQuery
       }
     ]
+    console.log(JSON.stringify(query, null, 4))
     var gereenuud = await Geree.aggregate(query);
-    console.log("gereenuud", JSON.stringify(gereenuud, null, 4));
     jagsaalt.forEach(x => {
       if (turul == "voucher")
         x.voucherDun = (gereenuud.find(a => a._id == x.gereeniiDugaar)?.tulsun || 0)
+      else if (turul == "khungulult")
+        x.khungulult = (gereenuud.find(a => a._id == x.gereeniiDugaar)?.khyamdral || 0)
       else
         x.tulsunDun = (gereenuud.find(a => a._id == x.gereeniiDugaar)?.tulsun || 0)
     });
-    return jagsaalt;
   }
+  return jagsaalt;
 }
 
 
-
-router.route("/voucherteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(tokenShalgakh, async (req, res, next) => {
+router.route("/vouchertaiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(tokenShalgakh, async (req, res, next) => {
   try {
     console.log("orj irlee", req.params)
     const body = req.query;
@@ -1547,10 +1554,23 @@ router.route("/voucherteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(tokenSha
     if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
     if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
     if (!!body?.search) body.search = String(body.search);
+    if (!body.query)
+      body.query = {}
+    body.query["avlaga.guilgeenuud"] = {
+      "$elemMatch": {
+        "ognoo": {
+          "$gte": new Date(req.params.ekhlekhOgnoo),
+          "$lte": new Date(req.params.duusakhOgnoo)
+        },
+        "tulsunDun": {
+          "$gt": 0
+        },
+        "turul": "voucher"
+      }
+    }
     body.lean = true;
     khuudaslalt(Geree, body)
       .then(async (result) => {
-        console.log("khariu Irlee", result)
         butsaakhJagsaalt = await turluurDunBugluy(result.jagsaalt, req.params.ekhlekhOgnoo, req.params.duusakhOgnoo, "voucher")
         res.send(result);
       })
@@ -1573,10 +1593,22 @@ router.route("/guitsetgelteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(token
     if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
     if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
     if (!!body?.search) body.search = String(body.search);
+    if (!body.query)
+      body.query = {}
+    body.query["avlaga.guilgeenuud"] = {
+      "$elemMatch": {
+        "ognoo": {
+          "$gte": new Date(req.params.ekhlekhOgnoo),
+          "$lte": new Date(req.params.duusakhOgnoo)
+        },
+        "tulsunDun": {
+          "$gt": 0
+        }
+      }
+    }
     body.lean = true;
     khuudaslalt(Geree, body)
       .then(async (result) => {
-        console.log("khariu Irlee", result)
         butsaakhJagsaalt = await turluurDunBugluy(result.jagsaalt, req.params.ekhlekhOgnoo, req.params.duusakhOgnoo, null)
         res.send(result);
       })
@@ -1599,10 +1631,27 @@ router.route("/khungulultteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(token
     if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
     if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
     if (!!body?.search) body.search = String(body.search);
+    if (!body.query)
+      body.query = {}
+    body.query["avlaga.guilgeenuud"] = {
+      "$elemMatch": {
+        "ognoo": {
+          "$gte": new Date(req.params.ekhlekhOgnoo),
+          "$lte": new Date(req.params.duusakhOgnoo)
+        },
+        "khyamdral": {
+          "$gt": 0
+        }
+      }
+    }
+    body.query["tuluv"] = {
+      "$ne": -1
+    }
+    console.log("params", req.params);
+    console.log(JSON.stringify(body, null, 4))
     body.lean = true;
     khuudaslalt(Geree, body)
       .then(async (result) => {
-        console.log("khariu Irlee", result)
         butsaakhJagsaalt = await turluurDunBugluy(result.jagsaalt, req.params.ekhlekhOgnoo, req.params.duusakhOgnoo, "khungulult")
         res.send(result);
       })
