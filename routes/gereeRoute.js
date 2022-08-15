@@ -1477,6 +1477,143 @@ router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next
   }
 });
 
+
+async function turluurDunBugluy(jagsaalt, ekhlekhOgnoo, duusakhOgnoo, turul) {
+  if (jagsaalt && jagsaalt.length > 0) {
+    var idnuud = [];
+    var matchQuery = {
+      'avlaga.guilgeenuud.ognoo': {
+        '$lte': new Date(duusakhOgnoo),
+        '$gte': new Date(ekhlekhOgnoo)
+      },
+    }
+    if (turul) {
+      matchQuery["avlaga.guilgeenuud.turul"] = turul
+    }
+    if (turul == "khungulult")
+      matchQuery["avlaga.guilgeenuud.khyamdral"] = {
+        "$gte": 0
+      }
+    else {
+      matchQuery["avlaga.guilgeenuud.tulsunDun"] = {
+        "$gte": 0
+      }
+    }
+
+    jagsaalt.forEach(a => idnuud.push(a._id));
+    var query = [
+      {
+        '$match': {
+          '_id': { $in: idnuud }
+        }
+      },
+      {
+        '$unwind': {
+          'path': '$avlaga.guilgeenuud'
+        }
+      }, {
+        '$match': matchQuery
+      }, {
+        '$group': {
+          '_id': '$gereeniiDugaar',
+          'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+          }
+        }
+      }
+    ]
+    var gereenuud = await Geree.aggregate(query);
+    console.log("gereenuud", JSON.stringify(gereenuud, null, 4));
+    jagsaalt.forEach(x => {
+      if (turul == "voucher")
+        x.voucherDun = (gereenuud.find(a => a._id == x.gereeniiDugaar)?.tulsun || 0)
+      else
+        x.tulsunDun = (gereenuud.find(a => a._id == x.gereeniiDugaar)?.tulsun || 0)
+    });
+    return jagsaalt;
+  }
+}
+
+
+
+router.route("/voucherteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(tokenShalgakh, async (req, res, next) => {
+  try {
+    console.log("orj irlee", req.params)
+    const body = req.query;
+    if (!!body?.query) body.query = JSON.parse(body.query);
+    if (!!body?.order) body.order = JSON.parse(body.order);
+    if (!!body?.select) body.select = JSON.parse(body.select);
+    if (!!body?.collation) body.collation = JSON.parse(body.collation);
+    if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+    if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+    if (!!body?.search) body.search = String(body.search);
+    body.lean = true;
+    khuudaslalt(Geree, body)
+      .then(async (result) => {
+        console.log("khariu Irlee", result)
+        butsaakhJagsaalt = await turluurDunBugluy(result.jagsaalt, req.params.ekhlekhOgnoo, req.params.duusakhOgnoo, "voucher")
+        res.send(result);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.route("/guitsetgelteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(tokenShalgakh, async (req, res, next) => {
+  try {
+    console.log("orj irlee", req.params)
+    const body = req.query;
+    if (!!body?.query) body.query = JSON.parse(body.query);
+    if (!!body?.order) body.order = JSON.parse(body.order);
+    if (!!body?.select) body.select = JSON.parse(body.select);
+    if (!!body?.collation) body.collation = JSON.parse(body.collation);
+    if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+    if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+    if (!!body?.search) body.search = String(body.search);
+    body.lean = true;
+    khuudaslalt(Geree, body)
+      .then(async (result) => {
+        console.log("khariu Irlee", result)
+        butsaakhJagsaalt = await turluurDunBugluy(result.jagsaalt, req.params.ekhlekhOgnoo, req.params.duusakhOgnoo, null)
+        res.send(result);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.route("/khungulultteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(tokenShalgakh, async (req, res, next) => {
+  try {
+    console.log("orj irlee", req.params)
+    const body = req.query;
+    if (!!body?.query) body.query = JSON.parse(body.query);
+    if (!!body?.order) body.order = JSON.parse(body.order);
+    if (!!body?.select) body.select = JSON.parse(body.select);
+    if (!!body?.collation) body.collation = JSON.parse(body.collation);
+    if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+    if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+    if (!!body?.search) body.search = String(body.search);
+    body.lean = true;
+    khuudaslalt(Geree, body)
+      .then(async (result) => {
+        console.log("khariu Irlee", result)
+        butsaakhJagsaalt = await turluurDunBugluy(result.jagsaalt, req.params.ekhlekhOgnoo, req.params.duusakhOgnoo, "khungulult")
+        res.send(result);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.route("/utasniiDugaaraarGereeAvya").post(tokenShalgakh, async (req, res, next) => {
   try {
     var geree = await Geree.findOne({ "utas": { $in: [req.body.utas] }, "baiguullagiinId": req.body.baiguullagiinId });
