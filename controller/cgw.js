@@ -271,7 +271,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
                 upsert: true
             }).then((resa) => console.log(resa)).catch((err) => console.log(err));
             tdbDansniiUldegdelAvya({
-                msgId: "ZTR" + await pad(maxKhuseltiinDugaar, 12),
+                msgId: "ZTJ" + await pad(maxKhuseltiinDugaar, 12),
                 loginId: dans.corporateNevtrekhNer,
                 AnyBIC: dans.AnyBIC,
                 RoleID: dans.RoleID,
@@ -423,7 +423,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
                     }
                     khariu = await tdbDansniiKhuulgaAvya({
-                        msgId: "ZTR" + await pad(maxKhuseltiinDugaar, 12),
+                        msgId: "ZTJ" + await pad(maxKhuseltiinDugaar, 12),
                         loginId: dans.corporateNevtrekhNer,
                         AnyBIC: dans.AnyBIC,
                         RoleID: dans.RoleID,
