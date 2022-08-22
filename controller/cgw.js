@@ -432,7 +432,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         valyut: dans.valyut,
                         ekhlekhOgnoo: firstDay.getFullYear() + "-" + (firstDay.getMonth() + 1) + "-" + firstDay.getDate(),
                         duusakhOgnoo: lastDay.getFullYear() + "-" + (lastDay.getMonth() + 1) + "-" + lastDay.getDate(),
-                        jurnaliinDugaar: await pad((req && req.body && req.body.ognoo) ? 0 : maxDugaar, 7)
+                        jurnaliinDugaar: await pad((req && req.body && req.body.ognoo) ? 0 : maxDugaar, 18)
                     }, next, async (khariu) => {
                         console.log("khariu", new Date(), khariu);
                         if (khariu && khariu.Document && khariu.Document.GrpHdr && khariu.Document.GrpHdr[0].RspCd && khariu.Document.GrpHdr[0].RspCd[0] == "10") {
