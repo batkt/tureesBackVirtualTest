@@ -813,6 +813,59 @@ exports.gereenuudedZalruulgaOruulya = asyncHandler(
     }
   }
 );
+exports.tsutsalgdanGuilgeeZasya = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var query = [
+        {
+          '$unwind': {
+            'path': '$gereeniiTuukhuud'
+          }
+        }, {
+          '$match': {
+            'tuluv': -1,
+            'gereeniiTuukhuud.turul': 'Tsutslakh'
+          }
+        }, {
+          '$group': {
+            '_id': '$_id',
+            'ognoo': {
+              '$max': '$gereeniiTuukhuud.khiisenOgnoo'
+            }
+          }
+        }
+      ]
+      var jagsaalt = await Geree.aggregate(query);
+      if (jagsaalt && jagsaalt.length > 0) {
+        var bulkOps = [];
+        for await (const x of jagsaalt) {
+          let upsertDoc = {
+            'updateOne': {
+              'filter': { '_id': x._id },
+              update: { $pull: { "avlaga.guilgeenuud": { ognoo: { $gte: x.ognoo }, undsenDun: { $gte: 0 } } } },
+              multi: true
+            }
+          };
+          bulkOps.push(upsertDoc);
+        }
+        await Geree.bulkWrite(bulkOps)
+          .then(bulkWriteOpResult => {
+            console.log('BULK ==>', bulkOps);
+            console.log('BULK update OK', bulkWriteOpResult);
+          })
+          .catch(err => {
+            console.log('BULK ==>', bulkOps);
+            console.log('BULK update error', err);
+          });
+        res.send(jagsaalt.length.toString());
+      }
+      else
+        res.send("0");
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 exports.tukhainOgnoogoorGuilgeegOruulya = asyncHandler(
   async (req, res, next) => {
