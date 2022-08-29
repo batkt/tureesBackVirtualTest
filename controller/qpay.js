@@ -100,7 +100,7 @@ async function qpayObjectUusgeye(body, invoiceCode, next) {
             .then((result) => {
                 if (result != 0) maxDugaar = result[0].dugaar + 1;
             });
-        object = {
+        var object = {
             "invoice_code": invoiceCode,
             "sender_invoice_no": maxDugaar.toString(),
             "invoice_receiver_code": body.burtgeliinDugaar,
