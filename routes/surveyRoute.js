@@ -14,4 +14,10 @@ router.route("/surveyKhadgalya").post(async (req, res, next) => {
     const data = new Survey(req.body);
     data.save().then((result) => res.send("Amjilttai")).catch((err) => next(err));
 });
+
+router.route("/asuultAvya/:id").get(async (req, res, next) => {
+    const data = await Asuult.findOne({_id:req.params.id})
+    res.send(data)
+});
+
 module.exports = router;
