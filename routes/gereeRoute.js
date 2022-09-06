@@ -42,6 +42,7 @@ router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require('lodash')
 
 const { gereeniiExcelAvya, gereeniiExcelTatya } = require("../controller/excel");
+const Baiguullaga = require("../models/baiguullaga");
 
 router.route("/gereeniiToololtAvya").post(tokenShalgakh, gereeniiToololtAvya);
 router.route("/guilgeeniiToololtAvya").post(tokenShalgakh, guilgeeniiToololtAvya);
@@ -235,6 +236,42 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, gereeZasakhShalguur, async (
     talbaiKhariltsagchiinTuluvUurchluy([result._id]);
   });
   res.send("Amjilttai");
+})
+
+router.route("/khariltsagchGereeniiKhuulgaAvya/:id").get(tokenShalgakh, async (req, res, next) => {
+  try {
+    var geree = await Geree.findById(req.params.id).select('+avlaga');
+    if (lodash.isArray(lodash.get(geree, 'avlaga.guilgeenuud'))) {
+      var baiguullaga = await Baiguullaga.findById(geree.baiguullagiinId);
+      var ekhlekhOgnoo = null;
+      if (baiguullaga && baiguullaga.tokhirgoo && baiguullaga.tokhirgoo.khereglegchEkhlekhOgnoo)
+        ekhlekhOgnoo = baiguullaga.tokhirgoo.khereglegchEkhlekhOgnoo
+      var butsaakhJagsaalt = [];
+      var shuugdsenJagsaalt = lodash.get(geree, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date());
+      shuugdsenJagsaalt = lodash.orderBy(shuugdsenJagsaalt, ['ognoo'], ['asc']);
+      var uldegdel = 0;
+      for (const x of shuugdsenJagsaalt) {
+        /*if (a.turul != "baritsaa")
+          uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
+        a.uldegdel = uldegdel;*/
+        if (ekhlekhOgnoo && x.ognoo <= ekhlekhOgnoo) {
+          console.log("if orow ");
+          uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
+          butsaakhJagsaalt = [{ ognoo: ekhlekhOgnoo, tulukhDun: uldegdel }]
+        }
+        else {
+          console.log("else orow ");
+          butsaakhJagsaalt.push(x)
+        }
+      }
+      res.send(butsaakhJagsaalt)
+    }
+    else
+      res.send([]);
+  }
+  catch (err) {
+    next(err);
+  }
 })
 
 router.route("/gereeZasya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
