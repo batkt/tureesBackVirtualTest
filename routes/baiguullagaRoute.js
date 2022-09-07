@@ -68,9 +68,9 @@ router.post(
     try {
       if (!!req.body) {
         var update = {};
-        for (var field in req.body) {
+        for (var field in req.body.tokhirgoo) {
           if (field != "baiguullagiinId")
-            update["tokhirgoo." + field] = req.body[field];
+            update["tokhirgoo." + field] = req.body.tokhirgoo[field];
         }
         console.log("update", update);
         await Baiguullaga.findOneAndUpdate({ _id: req.body.baiguullagiinId }, update);
