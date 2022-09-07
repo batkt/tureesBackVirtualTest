@@ -68,7 +68,10 @@ router.post(
     try {
       if (!!req.body) {
         const { baiguullagiinId, tokhirgoo } = req.body;
-        Baiguullaga.findOneAndUpdate({ _id: baiguullagiinId }, { $set: tokhirgoo }).then(() => res.send("Amjilttai"))
+        Baiguullaga.findOneAndUpdate({ _id: baiguullagiinId }, { $set: tokhirgoo }).then((khariu) => {
+          console.log("baiguullagaTokhirgooZasya", khariu);
+          res.send("Amjilttai")
+        })
       }
       else
         next(new aldaa("Засах боломжгүй байна"))
