@@ -67,13 +67,14 @@ router.post(
   (req, res, next) => {
     try {
       if (!!req.body) {
-        const { baiguullagiinId, tokhirgoo } = req.body;
-        console.log("req.body", req.body);
-        console.log("tokhirgoo", tokhirgoo);
-        Baiguullaga.findOneAndUpdate({ _id: baiguullagiinId }, { $set: tokhirgoo }).then((khariu) => {
-          console.log("baiguullagaTokhirgooZasya", khariu);
-          res.send("Amjilttai")
-        })
+        var update = {};
+        for (var field in req.body) {
+          if (field != "baiguullagiinId")
+            update["tokhirgoo." + field] = req.body[field];
+        }
+        console.log("update", update);
+        await Baiguullaga.findOneAndUpdate({ _id: req.body.baiguullagiinId }, update);
+        res.send("Amjilttai");
       }
       else
         next(new aldaa("Засах боломжгүй байна"))
