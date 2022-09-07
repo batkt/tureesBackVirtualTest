@@ -68,6 +68,8 @@ router.post(
     try {
       if (!!req.body) {
         const { baiguullagiinId, tokhirgoo } = req.body;
+        console.log("req.body", req.body);
+        console.log("tokhirgoo", tokhirgoo);
         Baiguullaga.findOneAndUpdate({ _id: baiguullagiinId }, { $set: tokhirgoo }).then((khariu) => {
           console.log("baiguullagaTokhirgooZasya", khariu);
           res.send("Amjilttai")
