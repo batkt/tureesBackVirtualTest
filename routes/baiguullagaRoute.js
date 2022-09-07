@@ -64,7 +64,7 @@ router.post(
 router.post(
   "/baiguullagaTokhirgooZasya",
   tokenShalgakh,
-  (req, res, next) => {
+  async (req, res, next) => {
     try {
       if (!!req.body) {
         var update = {};
