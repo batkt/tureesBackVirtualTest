@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const dans = require("../models/dans");
+const { Dans } = require("zevback");
 //const { crud } = require("../components/crud");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { crud, UstsanBarimt } = require("zevback");
-crud(router, "dans", dans, UstsanBarimt);
+crud(router, "dans", Dans, UstsanBarimt);
 module.exports = router;

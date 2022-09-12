@@ -1,10 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
-const Token = require("../models/token");
 const Tulbur = require("./tulbur");
 //const Dugaarlalt = require("../models/dugaarlalt");
-const { Dugaarlalt } = require("zevback");
-const Dans = require("../models/dans");
+const { Dugaarlalt, Token, Dans } = require("zevback");
 const QpayObject = require("../models/qpayObject");
 const Geree = require("../models/geree");
 const got = require('got');

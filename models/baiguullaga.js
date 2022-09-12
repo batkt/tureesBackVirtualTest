@@ -64,6 +64,7 @@ const baiguullagaSchema = new Schema(
       mailPassword: String,
       mailHost: String,
       mailPort: String,
+      khereglegchEkhlekhOgnoo: Date,
       zogsooliinMinut: Number,
       zogsooliinKhungulukhMinut: Number,
       zogsooliinDun: Number

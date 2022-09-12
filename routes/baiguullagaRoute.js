@@ -64,11 +64,17 @@ router.post(
 router.post(
   "/baiguullagaTokhirgooZasya",
   tokenShalgakh,
-  (req, res, next) => {
+  async (req, res, next) => {
     try {
       if (!!req.body) {
-        const { baiguullagiinId, tokhirgoo } = req.body;
-        Baiguullaga.findOneAndUpdate({ _id: baiguullagiinId }, { $set: tokhirgoo }).then(() => res.send("Amjilttai"))
+        var update = {};
+        for (var field in req.body.tokhirgoo) {
+          if (field != "baiguullagiinId")
+            update["tokhirgoo." + field] = req.body.tokhirgoo[field];
+        }
+        console.log("update", update);
+        await Baiguullaga.findOneAndUpdate({ _id: req.body.baiguullagiinId }, update);
+        res.send("Amjilttai");
       }
       else
         next(new aldaa("Засах боломжгүй байна"))

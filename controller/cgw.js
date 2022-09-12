@@ -1,10 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
-const Token = require("../models/token");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
-const Dans = require("../models/dans");
 //const Dugaarlalt = require("../models/dugaarlalt");
-const { Dugaarlalt } = require("zevback");
+const { Dugaarlalt, Token, Dans } = require("zevback");
 const xml2js = require('xml2js')
 const got = require('got');
 const { URL } = require('url');
