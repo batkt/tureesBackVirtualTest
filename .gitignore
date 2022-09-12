@@ -3,4 +3,4 @@ yarn.lock
 package-lock.json
 /zurag
 /file
-*.log
+**/*.log
