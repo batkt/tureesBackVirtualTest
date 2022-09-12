@@ -35,6 +35,7 @@ const talbaiSchema = new Schema(
         zurgiinId: String,
       },
     ],
+    bairshil:[[]]
   },
   {
     timestamps: true,

@@ -30,6 +30,7 @@ const baiguullagaSchema = new Schema(
           {
             davkhar: String,
             tariff: Number,
+            planZurag:String
           },
         ],
       },
