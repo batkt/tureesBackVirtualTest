@@ -69,15 +69,15 @@ router.get("/ustsanBarimt", async (req, res, next) => {
         ? Math.floor(niitMur / khuudasniiKhemjee)
         : Math.floor(niitMur / khuudasniiKhemjee) + 1;
     if (jagsaalt != null) jagsaalt.forEach((mur) => (mur.key = mur._id));
-    return {
+    res.send({
       khuudasniiDugaar,
       khuudasniiKhemjee,
       jagsaalt,
       niitMur,
       niitKhuudas,
-    };
+    })
   } catch (error) {
-    throw new Error(error);
+    next(error);
   }
 
 });
