@@ -31,6 +31,57 @@ router.get("/ajiltniiZuragAvya/:baiguullaga/:ner", (req, res, next) => {
   });
 });
 
+router.get("/ustsanBarimt", async (req, res, next) => {
+  try {
+    var body = req.query;
+    const {
+      query = {},
+      order,
+      khuudasniiDugaar = 1,
+      khuudasniiKhemjee = 10,
+      search,
+      collation = {},
+      select = {},
+    } = body;
+    if (!!body?.query) body.query = JSON.parse(body.query);
+    if (req.body.baiguullagiinId) {
+      if (!body.query)
+        body.query = {}
+      body.query["baiguullagiinId"] = req.body.baiguullagiinId
+    }
+    if (!!body?.order) body.order = JSON.parse(body.order);
+    if (!!body?.select) body.select = JSON.parse(body.select);
+    if (!!body?.collation) body.collation = JSON.parse(body.collation);
+    if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+    if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+    if (!!body?.search) body.search = String(body.search);
+    if (!!body.search) query["$text"] = { $search: body.search };
+    let jagsaalt = await UstsanBarimt
+      .find(body.query)
+      .sort(body.order)
+      .select(body.select ? body.select : {})
+      .collation(body.collation ? body.collation : {})
+      .skip((body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee)
+      .limit(body.khuudasniiKhemjee);
+    let niitMur = await UstsanBarimt.countDocuments(query);
+    let niitKhuudas =
+      niitMur % khuudasniiKhemjee == 0
+        ? Math.floor(niitMur / khuudasniiKhemjee)
+        : Math.floor(niitMur / khuudasniiKhemjee) + 1;
+    if (jagsaalt != null) jagsaalt.forEach((mur) => (mur.key = mur._id));
+    return {
+      khuudasniiDugaar,
+      khuudasniiKhemjee,
+      jagsaalt,
+      niitMur,
+      niitKhuudas,
+    };
+  } catch (error) {
+    throw new Error(error);
+  }
+
+});
+
 router.post('/ajiltandTokenOnooyo', tokenShalgakh, (req, res, next) => {
   try {
     let filter = {
