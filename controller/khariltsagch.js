@@ -3,6 +3,7 @@ const aldaa = require("../components/aldaa");
 const Khariltsagch = require("../models/khariltsagch");
 const Baiguullaga = require("../models/baiguullaga");
 const jwt = require("jsonwebtoken");
+const request = require("request");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {
