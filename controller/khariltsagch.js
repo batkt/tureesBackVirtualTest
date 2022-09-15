@@ -2,8 +2,6 @@ const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
 const Khariltsagch = require("../models/khariltsagch");
 const Baiguullaga = require("../models/baiguullaga");
-const { msgIlgeeye
-} = require("../routes/mailRoute");
 const jwt = require("jsonwebtoken");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
@@ -32,6 +30,46 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
 
 async function kodUusgey() {
   return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
+  try {
+    url = process.env.MSG_SERVER + "/send"
+      + "?key=" + key + "&from=" + dugaar + "&to="
+      + jagsaalt[index].to.toString() + "&text=" + jagsaalt[index].text.toString();
+    url = encodeURI(url);
+    request(url,
+      { json: true },
+      (err1, res1, body) => {
+        if (err1) {
+          console.log("url", url);
+          next(err1);
+        }
+        else {
+          var msg = new MsgTuukh();
+          msg.baiguullagiinId = req.body.baiguullagiinId;
+          msg.barilgiinId = req.body.barilgiinId;
+          msg.dugaar = jagsaalt[index].to;
+          msg.gereeniiId = jagsaalt[index].gereeniiId;
+          msg.msg = jagsaalt[index].text;
+          msg.save();
+          if (jagsaalt.length > index + 1) {
+            console.log("url", url);
+            console.log("body", body)
+            khariu.push(body[0]);
+            msgIlgeeye(jagsaalt, key, dugaar, khariu, index + 1, next, req, res)
+          }
+          else {
+            console.log("url", url);
+            khariu.push(body[0]);
+          }
+        }
+      }
+    );
+  }
+  catch (err) {
+    next(err);
+  }
 }
 
 exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
