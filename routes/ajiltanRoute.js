@@ -33,7 +33,7 @@ router.get("/ajiltniiZuragAvya/:baiguullaga/:ner", (req, res, next) => {
 
 router.get("/ustsanBarimt", async (req, res, next) => {
   try {
-    var body = req.query;
+    const body = req.query;
     const {
       query = {},
       order,
@@ -54,15 +54,14 @@ router.get("/ustsanBarimt", async (req, res, next) => {
     if (!!body?.collation) body.collation = JSON.parse(body.collation);
     if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
     if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    if (!!body?.search) body.search = String(body.search);
-    if (!!body.search) query["$text"] = { $search: body.search };
+    console.log("body", body)
     let jagsaalt = await UstsanBarimt
       .find(body.query)
       .sort(body.order)
-      .select(body.select ? body.select : {})
       .collation(body.collation ? body.collation : {})
       .skip((body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee)
       .limit(body.khuudasniiKhemjee);
+    console.log("jagsaalt", jagsaalt)
     let niitMur = await UstsanBarimt.countDocuments(query);
     let niitKhuudas =
       niitMur % khuudasniiKhemjee == 0
