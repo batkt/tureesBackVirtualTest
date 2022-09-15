@@ -109,7 +109,7 @@ exports.nuutsUgSergeeye = asyncHandler(async (req, res, next) => {
     if (khariltsagch.sergeekhKod != req.body.sergeekhKod)
       throw new Error("Сэргээх код буруу байна!");
     var token = await khariltsagch.tokenUusgeye();
-    return token;
+    res.send({ token });
   } catch (err) {
     throw new Error(err);
   }
