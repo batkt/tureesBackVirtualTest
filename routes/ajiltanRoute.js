@@ -62,7 +62,7 @@ router.get("/ustsanBarimt", tokenShalgakh, async (req, res, next) => {
       .skip((body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee)
       .limit(body.khuudasniiKhemjee);
     console.log("jagsaalt", jagsaalt)
-    let niitMur = await UstsanBarimt.countDocuments(query);
+    let niitMur = await UstsanBarimt.countDocuments(body.query);
     let niitKhuudas =
       niitMur % khuudasniiKhemjee == 0
         ? Math.floor(niitMur / khuudasniiKhemjee)
