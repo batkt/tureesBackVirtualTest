@@ -55,9 +55,24 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
     if (!msgIlgeekhKey || !msgIlgeekhDugaar)
       throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
     await Khariltsagch.updateOne({ _id: khariltsagch._id }, { $set: { sergeekhKod: khariltsagch.sergeekhKod } });
-    await msgIlgeeye([{ text: khariltsagch.sergeekhKod, to: khariltsagch?.utas }], msgIlgeekhKey, msgIlgeekhDugaar, [], 0, next, res)
+    msgIlgeeye([{ text: khariltsagch.sergeekhKod, to: khariltsagch?.utas }], msgIlgeekhKey, msgIlgeekhDugaar, [], 0, next, res)
+    res.send(khariltsagch._id)
   } catch (err) {
     next(err);
+  }
+});
+
+exports.nuutsUgSergeeye = asyncHandler(async (req, res, next) => {
+  try {
+    var khariltsagch = await Khariltsagch.findById(req.body.id);
+    if (!khariltsagch)
+      throw new Error("Харилцагч олдсонгүй!");
+    if (khariltsagch.sergeekhKod != req.body.sergeekhKod)
+      throw new Error("Сэргээх код буруу байна!");
+    var token = await khariltsagch.tokenUusgeye();
+    return token;
+  } catch (err) {
+    throw new Error(err);
   }
 });
 
