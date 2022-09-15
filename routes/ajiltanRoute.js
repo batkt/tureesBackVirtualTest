@@ -31,7 +31,7 @@ router.get("/ajiltniiZuragAvya/:baiguullaga/:ner", (req, res, next) => {
   });
 });
 
-router.get("/ustsanBarimt", async (req, res, next) => {
+router.get("/ustsanBarimt", tokenShalgakh, async (req, res, next) => {
   try {
     const body = req.query;
     const {
