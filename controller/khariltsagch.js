@@ -1,6 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
 const Khariltsagch = require("../models/khariltsagch");
+const Baiguullaga = require("../models/baiguullaga");
+const { msgIlgeeye
+} = require("../routes/mailRoute");
 const jwt = require("jsonwebtoken");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
@@ -22,6 +25,37 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
     const token = await khariltsagch.tokenUusgeye();
     butsaakhObject.token = token;
     res.status(200).json(butsaakhObject);
+  } catch (err) {
+    next(err);
+  }
+});
+
+async function kodUusgey() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
+  try {
+    const khariltsagch = await Khariltsagch.findOne({
+      utas: req.body.utas
+    })
+    if (!khariltsagch)
+      throw new Error("Бүртгэлтэй харилцагч олдсонгүй!");
+    khariltsagch.sergeekhKod = await kodUusgey();
+    var baiguullaga = await Baiguullaga.findById(khariltsagch.baiguullagiinId);
+    var msgIlgeekhKey;
+    var msgIlgeekhDugaar;
+    try {
+      msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
+      msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
+    }
+    catch (error) {
+      throw new aldaa("Тохиргоо хийгдээгүй байна!");
+    }
+    if (!msgIlgeekhKey || !msgIlgeekhDugaar)
+      throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
+    await Khariltsagch.updateOne({ _id: khariltsagch._id }, { $set: { sergeekhKod: khariltsagch.sergeekhKod } });
+    await msgIlgeeye([{ text: khariltsagch.sergeekhKod, to: khariltsagch?.utas }], msgIlgeekhKey, msgIlgeekhDugaar, [], 0, next, res)
   } catch (err) {
     next(err);
   }
