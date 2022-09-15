@@ -69,7 +69,7 @@ router.post("/msgIlgeesenTooAvya", tokenShalgakh, async (req, res, next) => {
     }).catch((err) => next(err));
 });
 
-function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
+export function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
     try {
         url = process.env.MSG_SERVER + "/send"
             + "?key=" + key + "&from=" + dugaar + "&to="
