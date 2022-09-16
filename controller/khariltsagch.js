@@ -3,6 +3,7 @@ const aldaa = require("../components/aldaa");
 const Khariltsagch = require("../models/khariltsagch");
 const Baiguullaga = require("../models/baiguullaga");
 const jwt = require("jsonwebtoken");
+const MsgTuukh = require("../models/msgTuukh");
 const request = require("request");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
@@ -94,7 +95,7 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
     if (!msgIlgeekhKey || !msgIlgeekhDugaar)
       throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
     await Khariltsagch.updateOne({ _id: khariltsagch._id }, { $set: { sergeekhKod: khariltsagch.sergeekhKod } });
-    await msgIlgeeye([{ text: khariltsagch.sergeekhKod, to: khariltsagch?.utas }], msgIlgeekhKey, msgIlgeekhDugaar, [], 0, next, res)
+    await msgIlgeeye([{ text: "Нууц үг сэргээх код: " + khariltsagch.sergeekhKod, to: khariltsagch?.utas }], msgIlgeekhKey, msgIlgeekhDugaar, [], 0, next, res)
     res.send(khariltsagch._id)
   } catch (err) {
     next(err);
