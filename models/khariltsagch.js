@@ -62,6 +62,8 @@ khariltsagchSchema.pre("updateOne", async function () {
     this._update.nuutsUg = await bcrypt.hash(this._update.nuutsUg, salt);
   else
     delete this._update.nuutsUg
+  if (this._update.utas && this._update.utas.length == 0)
+    delete this._update.utas
 });
 
 khariltsagchSchema.methods.passwordShalgaya = async function (pass) {
