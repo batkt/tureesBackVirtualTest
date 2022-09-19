@@ -60,6 +60,8 @@ khariltsagchSchema.pre("updateOne", async function () {
   console.log("update xiigdej baina ==>", this._update);
   if (this._update.nuutsUg && this._update.nuutsUg !== "123")
     this._update.nuutsUg = await bcrypt.hash(this._update.nuutsUg, salt);
+  else
+    delete this._update.nuutsUg
 });
 
 khariltsagchSchema.methods.passwordShalgaya = async function (pass) {
