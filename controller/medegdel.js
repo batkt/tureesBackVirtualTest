@@ -32,7 +32,7 @@ exports.sanalKharlaa = asyncHandler((req, res, next) => {
         SanalGomdol.updateMany({ _id: req.body.id }, { $set: { kharsanEsekh: true } }).then((res) => console.log(res));
         if (req.body.sonorduulgaId)
             Sonorduulga.sonorduulgauzsenbolgoyo(req.body.sonorduulgaId);
-        res.send(200);
+        res.sendStatus(200);
     }
     catch (err) {
         next(err);
