@@ -67,12 +67,11 @@ router.route("/gereeniiGuilgeeKhadgalya").post(tokenShalgakh, gereeniiGuilgeeKha
 router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
   Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
     if (lodash.isArray(lodash.get(result, 'avlaga.guilgeenuud'))) {
-      var a = lodash.get(result, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date(req.query.duusakhOgnoo));
+      var a = lodash.get(result, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date(req.query.duusakhOgnoo) && a.turul != "baritsaa");
       a = lodash.orderBy(a, ['ognoo'], ['asc']);
       var uldegdel = 0;
       a.forEach(x => {
-        if (a.turul != "baritsaa")
-          uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
+        uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
         a.uldegdel = uldegdel;
       });
       res.send(a)
@@ -247,7 +246,7 @@ router.route("/khariltsagchGereeniiKhuulgaAvya/:id").get(tokenShalgakh, async (r
       if (baiguullaga && baiguullaga.tokhirgoo && baiguullaga.tokhirgoo.khereglegchEkhlekhOgnoo)
         ekhlekhOgnoo = baiguullaga.tokhirgoo.khereglegchEkhlekhOgnoo
       var butsaakhJagsaalt = [];
-      var shuugdsenJagsaalt = lodash.get(geree, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date());
+      var shuugdsenJagsaalt = lodash.get(geree, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date() && a.turul != "baritsaa");
       shuugdsenJagsaalt = lodash.orderBy(shuugdsenJagsaalt, ['ognoo'], ['asc']);
       var uldegdel = 0;
       for (const x of shuugdsenJagsaalt) {
