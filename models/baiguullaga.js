@@ -30,7 +30,7 @@ const baiguullagaSchema = new Schema(
           {
             davkhar: String,
             tariff: Number,
-            planZurag:String
+            planZurag: String
           },
         ],
       },
@@ -38,6 +38,15 @@ const baiguullagaSchema = new Schema(
     davkhar: Number,
     talbai: Number,
     tokhirgoo: {
+      /**Хоногт бодох алдангийн хувь дээд тал 0.5 байна */
+      aldangiinKhuvi: Number,
+
+      /**Алданги авалгүйгээр хүлээх хоног */
+      aldangiChuluulukhKhonog: Number,
+
+      /**Алданги бодож эхлэх огноо */
+      aldangiBodojEkhlekhOgnoo: Date,
+
       /**Жилийн эцэсээр гэрээ хаах бол 12 гэж байна ИХ Наяд дээр бүх гэрээ жилийн эцэст хаагддаг учир ийл тохиргоо авлаа */
       gereeDuusgakhSar: Number,
 

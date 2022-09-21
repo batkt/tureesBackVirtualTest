@@ -64,16 +64,24 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
     var aldaaniiMsg;
     for await (const tulbur of guilgeenuud) {
       tulbur.guilgeeKhiisenOgnoo = new Date();
+      var dun = await tooZasya((tulbur.tulsunDun ? tulbur.tulsunDun : 0) + (tulbur.tulsunAldangi ? tulbur.tulsunAldangi : 0))
       if (req.body.nevtersenAjiltniiToken) {
         tulbur.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
         tulbur.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id;
       }
+      var inc = {
+        uldegdel: -(tulbur?.tulsunDun || 0)
+      }
+      if (tulbur.tulsunAldangi && tulbur.tulsunAldangi > 0)
+        inc["aldangiinUldegdel"] = -tulbur.tulsunAldangi
+
       var updatedGeree = await Geree.findByIdAndUpdate(
         { _id: tulbur.gereeniiId },
         {
           $push: {
             [`avlaga.guilgeenuud`]: tulbur,
-          }
+          },
+          $inc: inc,
         }
       ).catch((err) => {
         next(err);
@@ -98,7 +106,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
             $set: {
               "kholbosonDun": {
                 "$add": [
-                  { $ifNull: ["$kholbosonDun", 0] }, tulbur.tulsunDun
+                  { $ifNull: ["$kholbosonDun", 0] }, dun
                 ]
               }
             }
@@ -227,26 +235,31 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
       if (shalguur)
         throw new Error("Тухайн гүйлгээ тухайн гэрээнд холбогдсон байна!");
     }
-    if ((guilgee.turul == "barter" || guilgee.turul == "avlaga") && !guilgee.tailbar) {
+    if ((guilgee.turul == "barter" || guilgee.turul == "avlaga" || guilgee.turul == "aldangi") && !guilgee.tailbar) {
       throw new Error("Тайлбар заавал оруулна уу?");
     }
-    var guilgeeniiDun = (guilgee?.tulsunDun || 0) - (guilgee?.tulukhDun || 0);
     guilgee.guilgeeKhiisenOgnoo = new Date();
     if (req.body.nevtersenAjiltniiToken) {
       guilgee.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
       guilgee.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id;
     }
+    var inc = {
+      uldegdel: -(guilgee?.tulsunDun || 0)
+    }
+    if (guilgee.turul == "aldangi")
+      inc["aldangiinUldegdel"] = -guilgee.tulsunAldangi
     Geree.findByIdAndUpdate(
       { _id: guilgee.gereeniiId },
       {
         $push: {
           [`avlaga.guilgeenuud`]: guilgee,
         },
-        $inc: { uldegdel: -guilgeeniiDun },
+        $inc: inc,
       }
     )
       .then((result) => {
-        daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
+        if (guilgee.tulsunDun && guilgee.tulsunDun > 0)
+          daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
         if (guilgee.guilgeeniiId) {
           console.log("guilgee.guilgeeniiId", guilgee.guilgeeniiId);
           BankniiGuilgee.updateOne(
@@ -330,6 +343,116 @@ module.exports.tulultTaniya = async function tulultTaniya() {
   }
 };
 
+module.exports.aldangiBodyo = async function aldangiBodyo() {
+  try {
+    var baiguullaguud = await Baiguullaga.find({ "tokhirgoo.aldangiinKhuvi": { $gt: 0 } }).lean();
+    if (baiguullaguud && baiguullaguud.length > 0)
+      for (const baiguullaga of baiguullaguud) {
+        console.log("aldangiBodyo -> baiguullaga ->", baiguullaga)
+        var ognoo = new Date();
+        var aldagiinKhuvi = (baiguullaga.tokhirgoo && baiguullaga.tokhirgoo.aldangiinKhuvi) ? baiguullaga.tokhirgoo.aldangiinKhuvi : 0.5
+        var aldangiChuluulukhKhonog = (baiguullaga.tokhirgoo && baiguullaga.tokhirgoo.aldangiChuluulukhKhonog) ? baiguullaga.tokhirgoo.aldangiChuluulukhKhonog : 0
+        var gereenuud = await Geree.aggregate([
+          {
+            '$match': {
+              'baiguullagiinId': baiguullaga._id.toString(),
+              'daraagiinTulukhOgnoo': {
+                '$lte': ognoo
+              }
+            }
+          }, {
+            '$unwind': {
+              'path': '$avlaga.guilgeenuud'
+            }
+          }, {
+            '$match': {
+              'avlaga.guilgeenuud.ognoo': {
+                '$lte': ognoo
+              },
+              'avlaga.guilgeenuud.turul': {
+                '$nin': [
+                  'baritsaa'
+                ]
+              }
+            }
+          }, {
+            '$group': {
+              '_id': {
+                '_id': '$_id',
+                'daraagiinTulukhOgnoo': '$daraagiinTulukhOgnoo'
+              },
+              'tulukh': {
+                '$sum': '$avlaga.guilgeenuud.tulukhDun'
+              },
+              'khyamdral': {
+                '$sum': '$avlaga.guilgeenuud.khyamdral'
+              },
+              'tulsun': {
+                '$sum': '$avlaga.guilgeenuud.tulsunDun'
+              }
+            }
+          }, {
+            '$project': {
+              'uldegdel': {
+                '$subtract': [
+                  '$tulukh', {
+                    '$sum': [
+                      '$tulsun', '$khyamdral'
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ])
+        console.log("gereenuud", gereenuud)
+        if (gereenuud && gereenuud.length > 0) {
+          var bulkOps = [];
+          for (const geree of gereenuud) {
+            if (geree.uldegdel > 0 && new Date() > new Date(moment(new Date(geree._id.daraagiinTulukhOgnoo)).add(aldangiChuluulukhKhonog, 'days'))) {
+              var bodogdsonKhuu = (geree.uldegdel * aldagiinKhuvi / 100);
+              let upsertDoc = {
+                'updateOne': {
+                  'filter': { '_id': geree._id._id },
+                  update: [{
+                    $set: {
+                      "aldangiinUldegdel": {
+                        "$add": [
+                          { $ifNull: ["$aldangiinUldegdel", 0] }, bodogdsonKhuu
+                        ]
+                      }
+                    }
+                  }]
+                }
+              };
+              bulkOps.push(upsertDoc);
+            }
+            else
+              continue;
+          }
+          console.log("bulkOps", bulkOps)
+          await Geree.bulkWrite(bulkOps)
+            .then(bulkWriteOpResult => {
+              console.log('BULK ==>', bulkOps);
+              console.log('BULK update OK', bulkWriteOpResult);
+            })
+            .catch(err => {
+              console.log('BULK ==>', bulkOps);
+              console.log('BULK update error', err);
+            });
+        }
+      }
+  }
+  catch (error) {
+    console.log("aldangiBodyo aldaa garlaa ==> ", error)
+  }
+};
+
+async function tooZasya(too) {
+  var zassanToo = await Math.round((too + Number.EPSILON) * 100) / 100;
+  return +zassanToo.toFixed(2)
+}
+
 exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
   if (!req.body.tailbar)
     throw new Error("Тайлбар заавал оруулна уу?");
@@ -348,7 +471,13 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
         }
       }
     ]);
-    console.log("ustgax", ustgaxObject);
+    var tuxainGuilgee = ustgaxObject[0].avlaga.guilgeenuud;
+    var inc = {
+      uldegdel: (tuxainGuilgee?.tulsunDun || 0)
+    }
+    if (tuxainGuilgee.tulsunAldangi && tuxainGuilgee.tulsunAldangi > 0)
+      inc["aldangiinUldegdel"] = tuxainGuilgee.tulsunAldangi
+
     await Geree.findByIdAndUpdate(
       { _id: req.body.gereeniiId },
       {
@@ -356,17 +485,18 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
           [`avlaga.guilgeenuud`]: {
             _id: req.body.objectiinId,
           },
-        }
+        },
+        $inc: inc,
       }
     ).catch((err) => {
       next(err);
     });
 
-    if (ustgaxObject[0].avlaga.guilgeenuud) {
+    if (tuxainGuilgee) {
       var ustsanBarimt = new UstsanBarimt();
       ustsanBarimt.class = "gereeniiGuilgee";
       ustsanBarimt.tailbar = req.body.tailbar;
-      ustsanBarimt.object = ustgaxObject[0].avlaga.guilgeenuud;
+      ustsanBarimt.object = tuxainGuilgee;
       if (req.body.nevtersenAjiltniiToken) {
         ustsanBarimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
         ustsanBarimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
@@ -375,14 +505,14 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
       await ustsanBarimt.save();
     }
     if (req.body.guilgeeniiId) {
+      var dun = await tooZasya((tuxainGuilgee.tulsunDun ? tuxainGuilgee.tulsunDun : 0) + (tuxainGuilgee.tulsunAldangi ? tuxainGuilgee.tulsunAldangi : 0))
       await BankniiGuilgee.updateOne(
         { _id: req.body.guilgeeniiId },
-
         [{
           $set: {
             "kholbosonDun": {
               "$add": [
-                { $ifNull: ["$kholbosonDun", 0] }, req.body.tulsunDun * (-1)
+                { $ifNull: ["$kholbosonDun", 0] }, dun * (-1)
               ]
             }
           }

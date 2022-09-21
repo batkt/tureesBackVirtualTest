@@ -9,7 +9,9 @@ var avlagiinTurul = new Schema({
       ognoo: Date,
       undsenDun: Number,
       tulukhDun: Number,
+      tulukhAldangi: Number,
       tulsunDun: Number,
+      tulsunAldangi: Number,
       khyamdral: Number,
       uldegdel: Number,
       tailbar: String,
@@ -86,8 +88,10 @@ const gereeSchema = new Schema(
     daraagiinSanuulakhOgnoo: Date,
     daraagiinKhuleekhOgnoo: Date,
     uldegdel: Number,
+    aldangiinUldegdel: Number,
     avlaga: { type: avlagiinTurul, select: false },
     dans: String,
+    turGereeEsekh: Boolean,
     gereeniiTuukhuud: {
       type: [Schema.Types.Mixed],
       select: false

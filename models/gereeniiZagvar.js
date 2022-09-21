@@ -16,6 +16,7 @@ const gereeniiZaaltSchema = new Schema(
     zuunTolgoi: String,
     khul: String,
     dedKhesguud: Array,
+    turGereeEsekh: Boolean,
   },
   {
     timestamps: true,

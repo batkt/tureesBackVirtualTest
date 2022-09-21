@@ -81,21 +81,6 @@ cron.schedule(
   "*/5 * * * * ",
   function () {
     console.log("xuulga tatlaa", new Date());
-    /*cgw.bankniiKhuulgaTatajKhadgalya(
-      {
-        body: {
-          baiguullagiinId: "6115f350b35689cdbf1b9da3",
-          barilgiinId: "619e267fdd4835aa2c168b28",
-          dansniiDugaar: "5129057717",
-          ekhlekhOgnoo: "20210101",
-          duusakhOgnoo: "20211231",
-          khuudasniiKhemjee: 100,
-          khuudasniiDugaar: 0,
-        },
-      },
-      null,
-      null
-    );*/
     cgw.bankniiKhuulgaTatajKhadgalya(
       null,
       null,
@@ -113,6 +98,17 @@ cron.schedule(
   function () {
     tulbur.tulultTaniya();
     zogsool.tulburZooyo();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
+  "30 0 0 * * * ",
+  async function () {
+    tulbur.aldangiBodyo();
   },
   {
     scheduled: true,
