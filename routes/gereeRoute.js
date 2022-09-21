@@ -253,7 +253,7 @@ router.route("/khariltsagchGereeniiKhuulgaAvya/:id").get(tokenShalgakh, async (r
         /*if (a.turul != "baritsaa")
           uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
         a.uldegdel = uldegdel;*/
-        if (ekhlekhOgnoo && x.ognoo <= ekhlekhOgnoo) {
+        if (ekhlekhOgnoo && x.ognoo < ekhlekhOgnoo) {
           console.log("if orow ");
           uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
           butsaakhJagsaalt = [{ ognoo: ekhlekhOgnoo, tulukhDun: uldegdel }]
