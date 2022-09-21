@@ -15,9 +15,9 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "daalgavar": "^1.0.19",
+    "daalgavar": "^1.0.21",
     "sharp": "^0.30.7",
-    "zevback": "^1.0.61"
+    "zevback": "^1.0.62"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"
