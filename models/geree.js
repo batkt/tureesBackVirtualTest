@@ -92,6 +92,17 @@ const gereeSchema = new Schema(
     avlaga: { type: avlagiinTurul, select: false },
     dans: String,
     turGereeEsekh: Boolean,
+    zardluud: [{
+      ner: String,
+      turul: String,
+      dun: String,//dung n zuwxun munguur tootsoj awax togtmol ued buglunu
+    }],
+    segmentuud: [
+      {
+        ner: String,
+        utga: String
+      }
+    ],
     gereeniiTuukhuud: {
       type: [Schema.Types.Mixed],
       select: false

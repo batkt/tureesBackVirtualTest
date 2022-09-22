@@ -285,6 +285,73 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
+  try {
+    var body = req.body;
+    var dun = body.dun;
+    var zardluud = body.zardluud;
+    var khugatsaa = body.khugatsaa + 1//just in case;
+    var tulukhUdruud = body.tulukhUdruud;
+    var ekhlekhOgnoo = new Date(body.ekhlekhOgnoo);
+    var duusakhOgnoo = new Date(body.duusakhOgnoo);
+    var butsaakhJagsaalt = []
+    var ognoo = new Date(ekhlekhOgnoo);
+    var turOgnoo;
+    var tukhainSar = new Date(moment(ognoo).set('date', 1));
+    var suuliinUdur;
+    var duussanEsekh = false;
+    if (tulukhUdruud && tulukhUdruud.length > 1)
+      tulukhUdruud.sort(function (a, b) {
+        return a - b;
+      });
+    await new Array(khugatsaa).fill('').map((mur, index) => {
+      tulukhUdruud.forEach((udur) => {
+        if (!duussanEsekh) {
+          console.log('tukhainSar', tukhainSar);
+          suuliinUdur = moment(tukhainSar).endOf('month').date();
+          console.log('suuliinUdur', suuliinUdur);
+          if (suuliinUdur < udur) {
+            turOgnoo = new Date(moment(tukhainSar).set('date', suuliinUdur))
+            console.log("if ruu orson => ", turOgnoo)
+          }
+          else {
+            turOgnoo = new Date(moment(tukhainSar).set('date', udur))
+            console.log("else ruu orson => ", turOgnoo)
+          }
+          if (turOgnoo > ekhlekhOgnoo) {
+            if (turOgnoo > moment(duusakhOgnoo)) {
+              turOgnoo = new Date(duusakhOgnoo)
+              duussanEsekh = true;
+            }
+            butsaakhJagsaalt.push({
+              turul: "khuvaari",
+              ognoo: turOgnoo,
+              tulukhDun: dun,
+              undsenDun: dun
+            })
+            if (zardluud && zardluud.length > 0) {
+              zardluud.forEach((zardal) => {
+                butsaakhJagsaalt.push({
+                  turul: "avlaga",
+                  tailbar: zardal.ner,
+                  ognoo: turOgnoo,
+                  tulukhDun: zardal.dun
+                })
+              })
+            }
+          }
+          ognoo = new Date(turOgnoo);
+        }
+      })
+      tukhainSar = new Date(moment(tukhainSar).add(1, 'month'));
+    })
+    res.send(butsaakhJagsaalt);
+  }
+  catch (aldaa) {
+    next(aldaa);
+  }
+});
+
 module.exports.tulultTaniya = async function tulultTaniya() {
   var guilgeenuud = await BankniiGuilgee.find({
     createdAt: { $gte: new Date(new Date().getTime() - 5 * 60000) },

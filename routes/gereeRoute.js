@@ -5,6 +5,7 @@ const Talbai = require("../models/talbai");
 const Khariltsagch = require("../models/khariltsagch");
 //const Dugaarlalt = require("../models/dugaarlalt");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
+const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const { gereeZasakhShalguur, guilgeeUstgakhShalguur } = require("../components/shalguur");
 const multer = require("multer");
 const storage = multer.memoryStorage();
@@ -27,6 +28,7 @@ const {
   baritsaaniiGuilgeeUstgaya,
   tulultTaniya,
   gereeniiGuilgeeKhadgalya,
+  khuvaariUusgey,
   uldegdelBodyo,
   tukhainOgnoogoorAvlagaBodojOruulya,
   tukhainOgnoogoorBukhAvlagaBodojOruulya,
@@ -64,6 +66,7 @@ router.route("/khungulultKhadgalya").post(tokenShalgakh, khungulultKhadgalya);
 router.route("/khungulultUstgaya").post(tokenShalgakh, khungulultUstgaya);
 router.route("/uldegdelBodyo").post(tokenShalgakh, uldegdelBodyo);
 router.route("/gereeniiGuilgeeKhadgalya").post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
+router.route("/khuvaariUusgey").post(tokenShalgakh, khuvaariUusgey);
 router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
   Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
     if (lodash.isArray(lodash.get(result, 'avlaga.guilgeenuud'))) {
@@ -146,6 +149,7 @@ router.route("/nekhemjlekhiinDugaarlaltKhadgalya").post(tokenShalgakh, async (re
 });
 
 crud(router, "khungulultiinTuukh", KhungulultiinTuukh, UstsanBarimt)
+crud(router, "ashiglaltiinZardluud", AshiglaltiinZardluud, UstsanBarimt)
 crud(router, "geree", Geree, UstsanBarimt, async (req, res, next) => {
   try {
     const khariltsagch = new Khariltsagch(req.body);

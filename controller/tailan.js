@@ -104,7 +104,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             '$sort': sort
         }
     ]
-    var zardaluud = await Zardal.find({ barilgiinId: req.body.barilgiinId, baiguullagiinId: req.body.baiguullagiinId }).lean();
+    var zardluud = await Zardal.find({ barilgiinId: req.body.barilgiinId, baiguullagiinId: req.body.baiguullagiinId }).lean();
     var zardliinDunguud = await BankniiGuilgee.aggregate([
         {
             '$match': {
@@ -176,10 +176,10 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
                     labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
                 zardluud.push((a.dun * -1).toFixed(2));
             });
-            if (zardliinDunguud && zardliinDunguud.length > 0 && zardaluud && zardaluud.length > 0) {
+            if (zardliinDunguud && zardliinDunguud.length > 0 && zardluud && zardluud.length > 0) {
                 var idnuud = [];
                 var unguniiId = 0;
-                zardaluud.forEach(zardal => {
+                zardluud.forEach(zardal => {
                     idnuud = [zardal._id]
                     if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0)
                         zardal.dedKhesguud.forEach((a) => {
