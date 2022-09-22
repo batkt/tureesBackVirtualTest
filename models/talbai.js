@@ -25,6 +25,12 @@ const talbaiSchema = new Schema(
       default: false
     },
     tureesiinTulbur: Number,
+    segmentuud: [
+      {
+        ner: String,
+        utga: String
+      }
+    ],
     khurunguud: [
       {
         id: String,
@@ -35,7 +41,7 @@ const talbaiSchema = new Schema(
         zurgiinId: String,
       },
     ],
-    bairshil:[[]]
+    bairshil: [[]]
   },
   {
     timestamps: true,

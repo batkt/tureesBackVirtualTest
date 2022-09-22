@@ -24,6 +24,12 @@ const khariltsagchSchema = new Schema(
     khayag: String,
     zurgiinId: String,
     idevkhiteiEsekh: Boolean,
+    segmentuud: [
+      {
+        ner: String,
+        utga: String
+      }
+    ],
     nuutsUg: {
       type: String,
       default: "123",
