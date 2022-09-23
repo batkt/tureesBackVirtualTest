@@ -60,8 +60,11 @@ router.route("/davkharaarToololtAvya").post(tokenShalgakh, async (req, res, next
         }, {
             '$group': {
                 '_id': '$idevkhiteiEsekh',
-                'too': {
-                    '$sum': '$talbainKhemjee'
+                "khemjee": {
+                    $sum: "$talbainKhemjee"
+                },
+                "too": {
+                    $sum: 1
                 }
             }
         }
