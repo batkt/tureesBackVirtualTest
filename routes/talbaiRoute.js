@@ -50,6 +50,30 @@ router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
         });;
 });
 
+router.route("/davkharaarToololtAvya").post(tokenShalgakh, async (req, res, next) => {
+    let query = [
+        {
+            '$match': {
+                'barilgiinId': req.body.barilgiinId,
+                'davkhar': req.body.davkhar
+            }
+        }, {
+            '$group': {
+                '_id': '$idevkhiteiEsekh',
+                'too': {
+                    '$sum': '$talbainKhemjee'
+                }
+            }
+        }
+    ]
+    Talbai.aggregate(query).then((result) => {
+        res.send(result);
+    })
+        .catch((err) => {
+            next(err);
+        });;
+});
+
 router.route("/talbaiUstgaya").post(tokenShalgakh, async (req, res, next) => {
     try {
         Talbai.findOne({

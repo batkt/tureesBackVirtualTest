@@ -78,15 +78,6 @@ const baiguullagaSchema = new Schema(
       zogsooliinKhungulukhMinut: Number,
       zogsooliinDun: Number
     },
-    SUKH: {
-      tseverUsKhaluun: Number,
-      tseverUsKhuiten: Number,
-      bokhirUs: Number,
-      khaluunUsKhalaasanDulaan: Number,
-      usniiSuuriKhuraamj: Number,
-      khalaalt: Number,
-      dulaaniiSuuriKhuraamj: Number,
-    },
     erkhuud: [
       {
         zam: String,
