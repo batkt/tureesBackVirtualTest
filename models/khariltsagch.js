@@ -24,6 +24,7 @@ const khariltsagchSchema = new Schema(
     khayag: String,
     zurgiinId: String,
     idevkhiteiEsekh: Boolean,
+    temdeglel: String,
     segmentuud: [
       {
         ner: String,
