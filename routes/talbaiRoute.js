@@ -51,30 +51,33 @@ router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
 });
 
 router.route("/davkharaarToololtAvya").post(tokenShalgakh, async (req, res, next) => {
-    let query = [
-        {
-            '$match': {
-                'barilgiinId': req.body.barilgiinId,
-                'davkhar': req.body.davkhar
-            }
-        }, {
-            '$group': {
-                '_id': '$idevkhiteiEsekh',
-                "khemjee": {
-                    $sum: "$talbainKhemjee"
-                },
-                "too": {
-                    $sum: 1
+    try {
+        var match = {
+            'barilgiinId': req.body.barilgiinId,
+        }
+        if (req.body.davkhar)
+            match['davkhar'] = req.body.davkhar
+        let query = [
+            {
+                '$match': match
+            }, {
+                '$group': {
+                    '_id': '$idevkhiteiEsekh',
+                    "khemjee": {
+                        $sum: "$talbainKhemjee"
+                    },
+                    "too": {
+                        $sum: 1
+                    }
                 }
             }
-        }
-    ]
-    Talbai.aggregate(query).then((result) => {
-        res.send(result);
-    })
-        .catch((err) => {
-            next(err);
-        });;
+        ]
+        var khariu = await Talbai.aggregate(query);
+        res.send(khariu);
+    }
+    catch (err) {
+        next(err);
+    }
 });
 
 router.route("/talbaiUstgaya").post(tokenShalgakh, async (req, res, next) => {
