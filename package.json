@@ -7,6 +7,7 @@
     "dev": "nodemon index.js",
     "pm2": "pm2 --name \"tureesapi\" start index.js",
     "pm2update": "pm2 restart tureesapi",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "update": "git pull && pm2 reload tureesapi",
     "addpack": "npm install --registry http://103.168.56.135:4873  zevback"
