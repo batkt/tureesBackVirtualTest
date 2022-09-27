@@ -35,7 +35,7 @@ const tulbur = require("./controller/tulbur");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
 const dbUrl =
-  "mongodb://localhost:27017/turees?readPreference=primary&ssl=false";
+  "mongodb:" + process.env.BAAZ;
 mongoose
   .connect(dbUrl, {
     useNewUrlParser: true,

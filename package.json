@@ -9,7 +9,7 @@
     "pm2update": "pm2 restart tureesapi",
     "test": "echo \"Error: no test specified\" && exit 1",
     "update": "git pull && pm2 reload tureesapi",
-    "addpack": "npm install --registry http://zevtabs.mn:4873  zevback"
+    "addpack": "npm install --registry http://103.168.56.135:4873  zevback"
   },
   "author": "",
   "license": "ISC",
