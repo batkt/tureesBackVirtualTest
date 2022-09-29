@@ -51,7 +51,7 @@ router.route("/bankniiDansniiKhuulgaAvya").post(tokenShalgakh, bankniiDansniiKhu
 router.route("/qpayGargaya").post(tokenShalgakh, qpayGargaya);
 router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").get(qpayTulye);
 router.route("/bankniiKhuulgaTatajKhadgalya").post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
-router.route("/khariltsagchZagvarAvya").get(khariltsagchZagvarAvya);
+router.route("/khariltsagchZagvarAvya").get(tokenShalgakh, khariltsagchZagvarAvya);
 router.route("/khariltsagchTatya").post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);
 
 router.route("/khariltsagchUstgaya").post(tokenShalgakh, async (req, res, next) => {

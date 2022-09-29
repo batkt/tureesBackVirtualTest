@@ -4,3 +4,4 @@ package-lock.json
 /zurag
 /file
 **/*.log
+db/*

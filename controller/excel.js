@@ -236,7 +236,6 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     const jagsaalt = [];
     var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "talbai" });
     var tolgoinObject = {};
-    var segmentiinNernuud = []
     var muriinDugaar = 1;
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
@@ -484,7 +483,9 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
 exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Иргэн");
-  worksheet.columns = [
+  var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "khariltsagch" });
+  console.log("segmentuud", segmentuud);
+  var baganuud = [
     {
       header: "Код",
       key: "Код",
@@ -521,8 +522,37 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
   ];
+  var baganiiToo = baganuud.length;
+  if (segmentuud && segmentuud.length > 0) {
+    segmentuud.forEach(x => {
+      baganuud.push({
+        header: x.ner,
+        key: x.ner,
+        width: 20,
+      })
+    })
+  }
+  worksheet.columns = baganuud
+  if (segmentuud && segmentuud.length > 0) {
+    segmentuud.forEach(x => {
+      var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
+      console.log("baganiiUseg", baganiiUseg)
+      var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
+      console.log("bagana", bagana.toString())
+      worksheet.dataValidations.add(bagana, {
+        type: 'list',
+        allowBlank: false,
+        formulae: [`"${x.utguud.join(',')}"`],
+        showErrorMessage: true,
+        errorStyle: 'error',
+        error: 'Тохирох утгыг сонгоно уу!',
+      });
+      baganiiToo = baganiiToo + 1;
+    })
+  }
+
   let worksheet1 = workbook.addWorksheet("ААН");
-  worksheet1.columns = [
+  var baganuud = [
     {
       header: "Код",
       key: "Код",
@@ -564,6 +594,34 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
   ];
+  baganiiToo = baganuud.length;
+  if (segmentuud && segmentuud.length > 0) {
+    segmentuud.forEach(x => {
+      baganuud.push({
+        header: x.ner,
+        key: x.ner,
+        width: 20,
+      })
+    })
+  }
+  worksheet1.columns = baganuud;
+  if (segmentuud && segmentuud.length > 0) {
+    segmentuud.forEach(x => {
+      var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
+      console.log("baganiiUseg", baganiiUseg)
+      var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
+      console.log("bagana", bagana.toString())
+      worksheet1.dataValidations.add(bagana, {
+        type: 'list',
+        allowBlank: false,
+        formulae: [`"${x.utguud.join(',')}"`],
+        showErrorMessage: true,
+        errorStyle: 'error',
+        error: 'Тохирох утгыг сонгоно уу!',
+      });
+      baganiiToo = baganiiToo + 1;
+    })
+  }
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -945,6 +1003,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const irgenSheet = workbook.Sheets[workbook.SheetNames[0]];
     const aanSheet = workbook.Sheets[workbook.SheetNames[1]];
+    var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "khariltsagch" });
     const jagsaalt = [];
     var tolgoinObject = {};
     var muriinDugaar = 1;
@@ -980,6 +1039,11 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject.mail = cellAsString[0];
         else if (irgenSheet[cellAsString].v.includes("Хаяг"))
           tolgoinObject.khayag = cellAsString[0];
+        else if (segmentuud && segmentuud.length > 0) {
+          var segment = segmentuud.find(element => element.ner === irgenSheet[cellAsString].v);
+          if (segment)
+            tolgoinObject[segment.ner] = cellAsString[0];
+        }
       }
     }
     var data = xlsx.utils.sheet_to_json(irgenSheet, {
@@ -1000,6 +1064,24 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.turul = "Иргэн";
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
+      if (segmentuud && segmentuud.length > 0) {
+        segmentuud.forEach((segment) => {
+          if (tolgoinObject.hasOwnProperty(segment.ner)) {
+            if (object.segmentuud && object.segmentuud.length > 0) {
+              object.segmentuud.push({
+                ner: segment.ner,
+                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
+              });
+            }
+            else {
+              object.segmentuud = [{
+                ner: segment.ner,
+                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
+              }];
+            }
+          }
+        })
+      }
       if (!object.id || !object.ner || !object.register || !object.utas) {
         aldaaniiMsg = aldaaniiMsg + "Иргэн sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
         if (!object.id)
@@ -1043,6 +1125,11 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject.mail = cellAsString[0];
         else if (aanSheet[cellAsString].v.includes("Хаяг"))
           tolgoinObject.khayag = cellAsString[0];
+        else if (segmentuud && segmentuud.length > 0) {
+          var segment = segmentuud.find(element => element.ner === aanSheet[cellAsString].v);
+          if (segment)
+            tolgoinObject[segment.ner] = cellAsString[0];
+        }
       }
     }
     data = xlsx.utils.sheet_to_json(aanSheet, {
@@ -1064,6 +1151,24 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.turul = "ААН";
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
+      if (segmentuud && segmentuud.length > 0) {
+        segmentuud.forEach((segment) => {
+          if (tolgoinObject.hasOwnProperty(segment.ner)) {
+            if (object.segmentuud && object.segmentuud.length > 0) {
+              object.segmentuud.push({
+                ner: segment.ner,
+                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
+              });
+            }
+            else {
+              object.segmentuud = [{
+                ner: segment.ner,
+                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
+              }];
+            }
+          }
+        })
+      }
       if (!object.id || !object.ner || !object.register || !object.utas) {
         aldaaniiMsg = aldaaniiMsg + "ААН sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
         if (!object.id)
