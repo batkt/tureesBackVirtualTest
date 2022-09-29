@@ -281,6 +281,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
       object.baiguullagiinId = req.body.baiguullagiinId;;
       object.barilgiinId = req.body.barilgiinId;
+      object.tureesiinTulbur = object.talbainNiitUne;
       if (segmentuud && segmentuud.length > 0) {
         segmentuud.forEach((segment) => {
           if (tolgoinObject.hasOwnProperty(segment.ner)) {
