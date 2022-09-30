@@ -331,12 +331,13 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
             })
             if (zardluud && zardluud.length > 0) {
               zardluud.forEach((zardal) => {
-                butsaakhJagsaalt.push({
-                  turul: "avlaga",
-                  tailbar: zardal.ner,
-                  ognoo: turOgnoo,
-                  tulukhDun: zardal.dun
-                })
+                if (zardal)
+                  butsaakhJagsaalt.push({
+                    turul: "avlaga",
+                    tailbar: zardal.ner,
+                    ognoo: turOgnoo,
+                    tulukhDun: zardal.dun
+                  })
               })
             }
           }
