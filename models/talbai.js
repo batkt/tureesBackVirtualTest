@@ -20,6 +20,7 @@ const talbaiSchema = new Schema(
     zurgiinId: String,
     ashiglaltiinZardal: Number,
     niitAshiglaltiinZardal: Number,
+    niitiinTalbaiEsekh: Boolean,
     idevkhiteiEsekh: {
       type: Boolean,
       default: false
