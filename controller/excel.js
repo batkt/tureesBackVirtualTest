@@ -6,6 +6,7 @@ const Baiguullaga = require("../models/baiguullaga");
 const Geree = require("../models/geree");
 const Talbai = require("../models/talbai");
 const Mashin = require("../models/mashin");
+const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const { Segment } = require("zevback");
 const aldaa = require("../components/aldaa");
 const xlsx = require("xlsx");
@@ -167,6 +168,7 @@ async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiin
           x.talbainNiitUne = (x.talbainNiitUne != null ? x.talbainNiitUne : 0) + mur.talbainNiitUne;
           x.talbainKhemjee = (x.talbainKhemjee != null ? x.talbainKhemjee : 0) + mur.talbainKhemjee;
           x.sariinTurees = x.talbainNiitUne;
+          x.talbainIdnuud.push(x._id);
           x.baritsaaAvakhDun = (x.baritsaaAwakhKhugatsaa * mur.talbainNiitUne) + (x.baritsaaAvakhDun != null ? x.baritsaaAvakhDun : 0);
         })
       }
@@ -179,6 +181,7 @@ async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiin
         x.talbainNiitUne = tukhainTalbai.talbainNiitUne;
         x.talbainKhemjee = tukhainTalbai.talbainKhemjee;
         x.sariinTurees = tukhainTalbai.talbainNiitUne;
+        x.talbainIdnuud = [x._id];
         x.baritsaaAvakhDun = x.baritsaaAwakhKhugatsaa * tukhainTalbai.talbainNiitUne;
       }
     })
@@ -640,11 +643,12 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Гэрээ");
   var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "geree" });
+  var zardluud = await AshiglaltiinZardluud.find({ baiguullagiinId: req.body.baiguullagiinId });
+  console.log("zardluud", zardluud);
   console.log("segmentuud", segmentuud);
   var baganuud = [
     {
@@ -704,6 +708,16 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       })
     })
   }
+  if (zardluud && zardluud.length > 0) {
+    zardluud.forEach(x => {
+      baganuud.push({
+        header: x.ner,
+        key: x.ner,
+        width: 20,
+      })
+    })
+  }
+  console.log("baganuud", baganuud);
   worksheet.columns = baganuud;
   if (segmentuud && segmentuud.length > 0) {
     segmentuud.forEach(x => {
@@ -719,6 +733,25 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
         errorStyle: 'error',
         error: 'Тохирох утгыг сонгоно уу!',
       });
+      baganiiToo = baganiiToo + 1;
+    })
+  }
+  if (zardluud && zardluud.length > 0) {
+    zardluud.forEach(x => {
+      if (x.turul != "төг") {
+        var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
+        console.log("baganiiUseg", baganiiUseg)
+        var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
+        console.log("bagana", bagana.toString())
+        worksheet.dataValidations.add(bagana, {
+          type: 'list',
+          allowBlank: false,
+          formulae: ['"Авна,Авахгүй"'],
+          showErrorMessage: true,
+          errorStyle: 'error',
+          error: 'Тохирох утгыг сонгоно уу!',
+        });
+      }
       baganiiToo = baganiiToo + 1;
     })
   }
@@ -746,6 +779,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
 
     var ognoo;
     var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "geree" });
+    var zardluud = await AshiglaltiinZardluud.find({ baiguullagiinId: req.body.baiguullagiinId });
+    console.log("zardluud", zardluud);
     if (req.body.ognoo)
       ognoo = req.body.ognoo;
     else
@@ -786,11 +821,19 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             tolgoinObject.baritsaaBairshuulakhKhugatsaa = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Авлага"))
             tolgoinObject.avlaga = cellAsString[0];
-          else if (segmentuud && segmentuud.length > 0) {
-            var segment = segmentuud.find(element => element.ner === worksheet[cellAsString].v);
-            if (segment)
-              tolgoinObject[segment.ner] = cellAsString[0];
+          else if ((segmentuud && segmentuud.length > 0) || (zardluud && zardluud.length > 0)) {
+            if (segmentuud && segmentuud.length > 0) {
+              var segment = segmentuud.find(element => element.ner === worksheet[cellAsString].v);
+              if (segment)
+                tolgoinObject[segment.ner] = cellAsString[0];
+            }
+            if (zardluud && zardluud.length > 0) {
+              var zardal = zardluud.find(element => element.ner === worksheet[cellAsString].v);
+              if (zardal)
+                tolgoinObject[zardal.ner] = cellAsString[0];
+            }
           }
+
         }
         catch (err) {
           throw new aldaa("Буруу файл байна! " + err);
@@ -803,6 +846,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     });
     var aldaaniiMsg = "";
     var muriinDugaar = 1;
+    console.log("tolgoinObject", tolgoinObject);
     try {
       data.forEach((mur) => {
         muriinDugaar++;
@@ -849,6 +893,27 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             }
           })
         }
+
+        if (zardluud && zardluud.length > 0) {
+          zardluud.forEach((zardal) => {
+            if (tolgoinObject.hasOwnProperty(zardal.ner)) {
+              if (mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] != "Авахгүй" || mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] > 0) {
+                if (object.zardluud && object.zardluud.length > 0) {
+                  object.zardluud.push({
+                    ner: zardal.ner,
+                    dun: isNumeric(mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]) ? mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] : 0
+                  });
+                }
+                else {
+                  object.zardluud = [{
+                    ner: zardal.ner,
+                    dun: isNumeric(mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]) ? mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] : 0
+                  }];
+                }
+              }
+            }
+          })
+        }
         console.log("tulukhUdur", object.tulukhUdur);
         if (!object.register || !object.gereeniiOgnoo || !object.khugatsaa || !object.talbainDugaar
           || object.gereeniiOgnoo < Date.parse("2010-01-01") || !object.tulukhUdur || !isNumeric(object.tulukhUdur[0])) {
@@ -884,13 +949,24 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       var data = []
       new Array(x.khugatsaa || 0).fill('').map((mur, index) => {
         x.tulukhUdur.forEach((udur) => {
-          if (moment(ognoo).add(index + 1, 'month').set('date', udur) <= moment(x.duusakhOgnoo))
+          if (moment(ognoo).add(index + 1, 'month').set('date', udur) <= moment(x.duusakhOgnoo)) {
             data.push({
               ognoo: moment(ognoo).add(index + 1, 'month').set('date', udur),
               khyamdral: 0,
               undsenDun: x.talbainNiitUne,
               tulukhDun: x.talbainNiitUne
             })
+            if (x.zardluud && x.zardluud.length > 0)
+              x.zardluud.forEach((zardal) => {
+                if (zardal.dun > 0)
+                  data.push({
+                    ognoo: moment(ognoo).add(index + 1, 'month').set('date', udur),
+                    turul: "avlaga",
+                    tailbar: zardal.ner,
+                    tulukhDun: zardal.dun
+                  })
+              });
+          }
         })
       })
       x.avlaga.guilgeenuud = [...x.avlaga.guilgeenuud, ...data];
