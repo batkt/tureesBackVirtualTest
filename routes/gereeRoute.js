@@ -49,7 +49,7 @@ const Baiguullaga = require("../models/baiguullaga");
 router.route("/gereeniiToololtAvya").post(tokenShalgakh, gereeniiToololtAvya);
 router.route("/guilgeeniiToololtAvya").post(tokenShalgakh, guilgeeniiToololtAvya);
 
-router.route("/gereeniiExcelAvya").get(gereeniiExcelAvya);
+router.route("/gereeniiExcelAvya").get(tokenShalgakh, gereeniiExcelAvya);
 router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
 router.route("/tulultOlnoorKhadgalya").post(tokenShalgakh, tulultOlnoorKhadgalya);
 router.route("/baritsaaniiGuilgeeKhiie").post(tokenShalgakh, baritsaaniiGuilgeeKhiie);

@@ -23,6 +23,10 @@ function toogUsegruuKhurvuulekh(too) {
   else return 0;
 }
 
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 async function gereeBaivalBugluy(mashiniiJagsaalt, baiguullagiinId) {
   var utasnuud = []
   mashiniiJagsaalt.forEach(a => {
@@ -66,6 +70,7 @@ async function gereeBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinI
 }
 
 async function khariltsagchBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId, barilgiinId) {
+  console.log("gereenuud", gereenuud);
   var jagsaalt = []
   var shineAldaaniiMsg = ""
   if (gereenuud)
@@ -639,7 +644,9 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
 exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Гэрээ");
-  worksheet.columns = [
+  var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "geree" });
+  console.log("segmentuud", segmentuud);
+  var baganuud = [
     {
       header: "Гэрээний дугаар",
       key: "Гэрээний дугаар",
@@ -684,13 +691,37 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       header: "Авлага",
       key: "Авлага",
       width: 20,
-    },
-    {
-      header: "Хөнгөлөх эсэх",
-      key: "Хөнгөлөх эсэх",
-      width: 20,
     }
   ];
+
+  var baganiiToo = baganuud.length;
+  if (segmentuud && segmentuud.length > 0) {
+    segmentuud.forEach(x => {
+      baganuud.push({
+        header: x.ner,
+        key: x.ner,
+        width: 20,
+      })
+    })
+  }
+  worksheet.columns = baganuud;
+  if (segmentuud && segmentuud.length > 0) {
+    segmentuud.forEach(x => {
+      var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
+      console.log("baganiiUseg", baganiiUseg)
+      var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
+      console.log("bagana", bagana.toString())
+      worksheet.dataValidations.add(bagana, {
+        type: 'list',
+        allowBlank: false,
+        formulae: [`"${x.utguud.join(',')}"`],
+        showErrorMessage: true,
+        errorStyle: 'error',
+        error: 'Тохирох утгыг сонгоно уу!',
+      });
+      baganiiToo = baganiiToo + 1;
+    })
+  }
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -704,7 +735,6 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
   try {
     const workbook = xlsx.read(req.file.buffer);
@@ -715,6 +745,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       throw new aldaa("Загвараа сонгоно уу!")
 
     var ognoo;
+    var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "geree" });
     if (req.body.ognoo)
       ognoo = req.body.ognoo;
     else
@@ -755,8 +786,11 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             tolgoinObject.baritsaaBairshuulakhKhugatsaa = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Авлага"))
             tolgoinObject.avlaga = cellAsString[0];
-          else if (worksheet[cellAsString].v.includes("Хөнгөлөх эсэх"))
-            tolgoinObject.khungulukhEsekh = cellAsString[0];
+          else if (segmentuud && segmentuud.length > 0) {
+            var segment = segmentuud.find(element => element.ner === worksheet[cellAsString].v);
+            if (segment)
+              tolgoinObject[segment.ner] = cellAsString[0];
+          }
         }
         catch (err) {
           throw new aldaa("Буруу файл байна! " + err);
@@ -779,7 +813,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.khugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.khugatsaa)];
         var ekhlekhOgnoo = new Date(object.gereeniiOgnoo);
         object.duusakhOgnoo = new Date(ekhlekhOgnoo.setMonth(ekhlekhOgnoo.getMonth() + object.khugatsaa));;
-        object.tulukhUdur = mur[usegTooruuKhurvuulekh(tolgoinObject.tulukhUdur)];
+        object.tulukhUdur = [mur[usegTooruuKhurvuulekh(tolgoinObject.tulukhUdur)]];
         object.talbainDugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.talbainDugaar)];
         object.baritsaaAwakhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaAwakhKhugatsaa)];
         object.baritsaaBairshuulakhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaBairshuulakhKhugatsaa)];
@@ -797,8 +831,27 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.gereeniiZagvariinId = zagvariinId;
         object.baiguullagiinId = req.body.baiguullagiinId;
         object.barilgiinId = req.body.barilgiinId;
+        if (segmentuud && segmentuud.length > 0) {
+          segmentuud.forEach((segment) => {
+            if (tolgoinObject.hasOwnProperty(segment.ner)) {
+              if (object.segmentuud && object.segmentuud.length > 0) {
+                object.segmentuud.push({
+                  ner: segment.ner,
+                  utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
+                });
+              }
+              else {
+                object.segmentuud = [{
+                  ner: segment.ner,
+                  utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
+                }];
+              }
+            }
+          })
+        }
+        console.log("tulukhUdur", object.tulukhUdur);
         if (!object.register || !object.gereeniiOgnoo || !object.khugatsaa || !object.talbainDugaar
-          || object.gereeniiOgnoo < Date.parse("2010-01-01") || !object.tulukhUdur || !Number.isInteger(object.tulukhUdur[0])) {
+          || object.gereeniiOgnoo < Date.parse("2010-01-01") || !object.tulukhUdur || !isNumeric(object.tulukhUdur[0])) {
           aldaaniiMsg = aldaaniiMsg + muriinDugaar + " дугаар мөрөнд ";
           if (!object.register)
             aldaaniiMsg = aldaaniiMsg + "Регистр "
@@ -812,7 +865,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             aldaaniiMsg = aldaaniiMsg + "талбар хоосон "
           if (object.gereeniiOgnoo < Date.parse("2010-01-01"))
             aldaaniiMsg = aldaaniiMsg + "Гэрээний огноо буруу "
-          if (!object.tulukhUdur || !Number.isInteger(object.tulukhUdur[0]))
+          if (!object.tulukhUdur || !isNumeric(object.tulukhUdur[0]))
             aldaaniiMsg = aldaaniiMsg + "Төлөх өдөр буруу "
           aldaaniiMsg = aldaaniiMsg + "байна! <br/>"
         }
