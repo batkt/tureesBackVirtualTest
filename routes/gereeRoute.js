@@ -514,7 +514,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
     if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
     if (!!body?.search) body.search = String(body.search);
     if (req.body.barilgiinId)
-      body['barilgiinId'] = req.body.barilgiinId;
+      body.query['barilgiinId'] = req.body.barilgiinId;
 
     body.lean = true;
     khuudaslalt(Geree, body)
