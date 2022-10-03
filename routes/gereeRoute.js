@@ -542,33 +542,6 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               '$unwind': {
                 'path': '$avlaga.guilgeenuud'
               }
-            },
-            {
-              '$lookup': {
-                'from': 'talbai',
-                'let': {
-                  "talbainDugaar": "$talbainDugaar",
-                  "baiguullagiinId": "$baiguullagiinId",
-                  "barilgiinId": "$barilgiinId"
-                },
-                'pipeline': [
-                  {
-                    '$match':
-                    {
-                      '$expr':
-                      {
-                        '$and':
-                          [
-                            { '$eq': ["$kod", "$$talbainDugaar"] },
-                            { '$eq': ["$baiguullagiinId", "$$baiguullagiinId"] },
-                            { '$eq': ["$barilgiinId", "$$barilgiinId"] }
-                          ]
-                      }
-                    }
-                  }
-                ],
-                'as': 'talbai'
-              }
             }, {
               '$facet': {
                 'umnukhSariinUrTulbur': [
@@ -659,11 +632,6 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                       'avlaga.guilgeenuud.ognoo': {
                         '$lte': new Date(req.body.duusakhOgnoo)
                       }
-                    }
-                  },
-                  {
-                    '$unwind': {
-                      'path': "$talbai"
                     }
                   }, {
                     '$group': {
