@@ -99,4 +99,19 @@ const baiguullagaSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("baiguullaga", baiguullagaSchema);
+const BaiguullagaModel = mongoose.model("baiguullaga", baiguullagaSchema);
+var newId = new mongoose.mongo.ObjectId('62bbb00140b7dd4f39c99e64');
+BaiguullagaModel.estimatedDocumentCount().then((count) => {
+  if (count == 0) {
+    BaiguullagaModel.create(
+      new BaiguullagaModel({
+        _id: newId,
+        ner: "E-Mart",
+        utas: "80994111",
+        register: "5811651"
+      })
+    );
+  }
+});
+
+module.exports = BaiguullagaModel;

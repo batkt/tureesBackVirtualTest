@@ -84,4 +84,25 @@ ajiltanSchema.methods.passwordShalgaya = async function (pass) {
   return await bcrypt.compare(pass, this.nuutsUg);
 };
 
-module.exports = mongoose.model("ajiltan", ajiltanSchema);
+const AjiltanModel = mongoose.model("ajiltan", ajiltanSchema);
+
+AjiltanModel.estimatedDocumentCount().then((count) => {
+  console.dir(count);
+
+  if (count == 0) {
+    AjiltanModel.create(
+      new AjiltanModel({
+        ner: "Admin",
+        nevtrekhNer: "Admin",
+        utas: "Admin",
+        mail: "Admin",
+        register: "Admin",
+        albanTushaal: "Admin",
+        baiguullagiinId: "62bbb00140b7dd4f39c99e64",
+        nuutsUg: "123"
+      })
+    );
+  }
+});
+
+module.exports = AjiltanModel;
