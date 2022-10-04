@@ -34,8 +34,7 @@ const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
-const dbUrl =
-  "mongodb:" + process.env.BAAZ;
+const dbUrl = process.env.BAAZ;
 mongoose
   .connect(dbUrl, {
     useNewUrlParser: true,
