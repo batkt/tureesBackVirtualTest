@@ -44,6 +44,11 @@ crud(router, "khariltsagch", Khariltsagch, UstsanBarimt, async (req, res, next) 
       var khariltsagch = await Khariltsagch.findOne({ register: req.body.register, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId });
       if (khariltsagch)
         throw new Error("Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!")
+      else if (Array.isArray(req.body.utas)) {
+        khariltsagch = await Khariltsagch.findOne({ utas: { $in: req.body.utas }, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId });
+        if (khariltsagch)
+          throw new Error("Тухайн утасны дугаараар харилцагч бүртгэлтэй байна!")
+      }
     }
     next();
   } catch (error) {
