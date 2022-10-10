@@ -36,7 +36,20 @@ const {
 
 const { khariltsagchZagvarAvya, khariltsagchTatya } = require("../controller/excel");
 
-crud(router, "khariltsagch", Khariltsagch, UstsanBarimt);
+crud(router, "khariltsagch", Khariltsagch, UstsanBarimt, async (req, res, next) => {
+  try {
+    if (!req.body.register)
+      throw new Error("Регистрийн дугаар бөглөнө үү!")
+    else {
+      var khariltsagch = await Khariltsagch.findOne({ register: req.body.register, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId });
+      if (khariltsagch)
+        throw new Error("Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!")
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.route("/khariltsagchNevtrey").post(khariltsagchNevtrey);
 router.route("/sergeekhKodAvya").post(sergeekhKodAvya);
