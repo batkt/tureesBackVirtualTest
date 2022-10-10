@@ -11,7 +11,20 @@ const { tokenShalgakh, crud, UstsanBarimt, Segment } = require("zevback");
 const moment = require("moment");
 const uploadFile = multer({ storage: storage });
 
-crud(router, "talbai", Talbai, UstsanBarimt);
+crud(router, "talbai", Talbai, UstsanBarimt, async (req, res, next) => {
+    try {
+        if (!req.body.register)
+            throw new Error("Регистрийн дугаар бөглөнө үү!")
+        else {
+            var talbai = await Talbai.findOne({ kod: req.body.kod, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId });
+            if (talbai)
+                throw new Error("Талбайн дугаар давхардаж байна!")
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 crud(router, "segment", Segment, UstsanBarimt);
 
 const { talbaiTatya, talbainZagvarAvya } = require("../controller/excel");
