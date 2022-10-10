@@ -27,8 +27,8 @@ const baiguullagaSchema = new Schema(
         khayag: String,
         register: String,
         niitTalbai: Number,
-        neekhTsag: String,
-        khaakhTsag: String,
+        neekhTsag: Date,
+        khaakhTsag: Date,
         davkharuud: [
           {
             davkhar: String,
