@@ -243,8 +243,34 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
     var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "talbai" });
+    var ObjectId = require('mongodb').ObjectId;
+    var barilga = await Baiguullaga.aggregate([
+      {
+        '$match': {
+          '_id': new ObjectId(req.body.baiguullagiinId)
+        }
+      }, {
+        '$unwind': {
+          'path': '$barilguud'
+        }
+      }, {
+        '$match': {
+          'barilguud._id': new ObjectId(req.body.barilgiinId)
+        }
+      }, {
+        '$project': {
+          'davkhar': '$barilguud.davkharuud.davkhar'
+        }
+      }
+    ]);
+    console.log("barilga", barilga);
     var tolgoinObject = {};
     var muriinDugaar = 1;
+    if (!worksheet["A1"].v.includes("Давхар") || !worksheet["B1"].v.includes("Код") ||
+      !worksheet["C1"].v.includes("Талбайн хэмжээ") || !worksheet["D1"].v.includes("Талбайн нэгж үнэ") ||
+      !worksheet["E1"].v.includes("Талбайн нийт үнэ") || !worksheet["F1"].v.includes("Тайлбар")) {
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    }
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
       if (
@@ -275,7 +301,9 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
-    data.forEach((mur) => {
+    var kodnuud = []
+    var aldaaniiMsg = "";
+    for await (const mur of data) {
       let object = new Talbai();
       object.davkhar = mur[usegTooruuKhurvuulekh(tolgoinObject.davkhar)];
       object.talbainKhemjee =
@@ -307,36 +335,55 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
           }
         })
       }
-      if (!object.davkhar || !object.talbainKhemjee || !object.kod || !object.talbainNegjUne
-        || !object.talbainNiitUne || /[а-яА-ЯЁё]/.test(object.davkhar)) {
-        aldaaniiMsg = aldaaniiMsg + muriinDugaar + " дугаар мөрөнд ";
-        if (!object.davkhar)
-          aldaaniiMsg = aldaaniiMsg + "Давхар "
-        if (!object.talbainKhemjee)
-          aldaaniiMsg = aldaaniiMsg + "Талбайн хэмжээ "
-        if (!object.kod)
-          aldaaniiMsg = aldaaniiMsg + "Код "
-        if (!object.talbainNegjUne)
-          aldaaniiMsg = aldaaniiMsg + "Талбайн нэгж үнэ "
-        if (!object.talbainNiitUne)
-          aldaaniiMsg = aldaaniiMsg + "Талбайн нийт үнэ "
-        if (!object.davkhar || !object.talbainKhemjee || !object.kod || !object.talbainNegjUne || !object.talbainNiitUne)
-          aldaaniiMsg = aldaaniiMsg + "талбар хоосон "
-        if (/[а-яА-ЯЁё]/.test(object.davkhar))
-          aldaaniiMsg = aldaaniiMsg + "давхар хэсэгт буруу тэмдэгт оруулсан ! <br/>"
-        aldaaniiMsg = aldaaniiMsg + "байна! <br/>"
+      console.log("object", object)
+      if (object.davkhar || object.talbainKhemjee || object.kod || object.talbainNegjUne || object.talbainNiitUne || object.tailbar) {
+        if (!object.davkhar || !barilga[0].davkhar.includes(object.davkhar) || !object.talbainKhemjee || !object.kod || !object.talbainNegjUne
+          || !object.talbainNiitUne) {
+          aldaaniiMsg = aldaaniiMsg + muriinDugaar + " дугаар мөрөнд ";
+          if (!object.davkhar)
+            aldaaniiMsg = aldaaniiMsg + "Давхар "
+          if (!object.talbainKhemjee)
+            aldaaniiMsg = aldaaniiMsg + "Талбайн хэмжээ "
+          if (!object.kod)
+            aldaaniiMsg = aldaaniiMsg + "Код "
+          if (!object.talbainNegjUne)
+            aldaaniiMsg = aldaaniiMsg + "Талбайн нэгж үнэ "
+          if (!object.talbainNiitUne)
+            aldaaniiMsg = aldaaniiMsg + "Талбайн нийт үнэ "
+          if (!object.davkhar || !object.talbainKhemjee || !object.kod || !object.talbainNegjUne || !object.talbainNiitUne)
+            aldaaniiMsg = aldaaniiMsg + "талбар хоосон ,<br/>"
+          if (!barilga[0].davkhar.includes(object.davkhar))
+            aldaaniiMsg = aldaaniiMsg + "давхарын утгыг буруу оруулсан ! <br/>"
+          aldaaniiMsg = aldaaniiMsg + "байна! <br/>"
+        }
+        else {
+          jagsaalt.push(object);
+          kodnuud.push(object.kod);
+        }
       }
-      else
-        jagsaalt.push(object);
-    });
-    var aldaaniiMsg = "";
+      muriinDugaar = muriinDugaar + 1;
+    }
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
-    Talbai.insertMany(jagsaalt, function (err) {
-      if (err) {
-        throw new aldaa(aldaaniiMsg + muriinDugaar + " дугаар мөрөнд алдаа гарлаа" + err);
+    const toFindDuplicates = arry => arry.filter((item, index) => arry.indexOf(item) !== index)
+    var davkhardsanKod = toFindDuplicates(kodnuud);
+    console.log("davkhardsanKod", davkhardsanKod)
+    if (davkhardsanKod && davkhardsanKod.length > 0)
+      throw new aldaa("Дараах дугаартай талбайнууд давхардаж байна! " + davkhardsanKod.toString());
+    var talbainuud = await Talbai.find({ kod: { $in: kodnuud }, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId })
+    if (talbainuud && talbainuud.length > 0) {
+      var talbainDugaaruud = [];
+      for await (const talbai of talbainuud) {
+        talbainDugaaruud.push(talbai.kod)
       }
-      res.status(200).send("Amjilttai");
-    });
+      throw new aldaa("Дараах дугаартай талбайнууд бүртгэлтэй байна! " + talbainDugaaruud.toString());
+    }
+    else
+      Talbai.insertMany(jagsaalt, function (err) {
+        if (err) {
+          throw new Error(err);
+        }
+        res.status(200).send("Amjilttai");
+      });
   } catch (error) {
     next(error);
   }
@@ -415,7 +462,7 @@ exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
 
 exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
-  let worksheet = workbook.addWorksheet("Гэрээ");
+  let worksheet = workbook.addWorksheet("Талбай");
   console.log("req.body.baiguullagiinId", req.body.baiguullagiinId)
   var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "talbai" });
   var baganuud = [
