@@ -111,10 +111,13 @@ async function khariltsagchBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguul
 
 async function khariltsagchBaikhguigShalgaya(khariltsagchid, aldaaniiMsg, baiguullagiinId, barilgiinId) {
   var jagsaalt = []
+  var utasniiJagsaalt = []
   var shineAldaaniiMsg = ""
   if (khariltsagchid)
     khariltsagchid.forEach(a => {
       jagsaalt.push(a.register);
+      if (a.utas && a.utas.length > 0)
+        utasniiJagsaalt.push(a.utas[0]);
     });
   var khariltsagchiinJagsaalt = await Khariltsagch.find({ "register": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId, "barilgiinId": barilgiinId });
   if (khariltsagchiinJagsaalt.length > 0) {
@@ -123,6 +126,15 @@ async function khariltsagchBaikhguigShalgaya(khariltsagchid, aldaaniiMsg, baiguu
       davkhardsanRegisteruud.push(a.register);
     });
     shineAldaaniiMsg = aldaaniiMsg + "Дараах бүртгэлийн дугаартай харилцагчид бүртгэлтэй байна! : " + davkhardsanRegisteruud + '<br/>';
+  }
+  var khariltsagchiinUtasniiJagsaalt = await Khariltsagch.find({ "utas": { $in: utasniiJagsaalt }, "baiguullagiinId": baiguullagiinId, "barilgiinId": barilgiinId });
+  if (khariltsagchiinUtasniiJagsaalt.length > 0) {
+    var davkhardsanUtasnuud = []
+    khariltsagchiinUtasniiJagsaalt.forEach(a => {
+      davkhardsanUtasnuud.push(a.utas);
+    });
+    davkhardsanUtasnuud = davkhardsanUtasnuud.filter((x) => utasniiJagsaalt.contains(x))
+    shineAldaaniiMsg = aldaaniiMsg + "Дараах утасны дугаартай харилцагчид бүртгэлтэй байна! : " + davkhardsanRegisteruud + '<br/>';
   }
   if (shineAldaaniiMsg)
     aldaaniiMsg = shineAldaaniiMsg;
@@ -1258,22 +1270,24 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
           }
         })
       }
-      if (!object.id || !object.ner || !object.register || !object.utas) {
-        aldaaniiMsg = aldaaniiMsg + "Иргэн sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
-        if (!object.id)
-          aldaaniiMsg = aldaaniiMsg + "'Код', "
-        if (!object.ner)
-          aldaaniiMsg = aldaaniiMsg + "'Нэр', "
-        if (!object.register)
-          aldaaniiMsg = aldaaniiMsg + "'Регистр', "
-        if (!object.utas || !object.utas[0])
-          aldaaniiMsg = aldaaniiMsg + "'Утас', "
-        aldaaniiMsg = aldaaniiMsg.slice(0, -2)
-        aldaaniiMsg = aldaaniiMsg + " "
-        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+      if (object.id || object.ner || object.register || object.ovog || object.utas || object.mail || object.khayag || object.mail) {
+        if (!object.id || !object.ner || !object.register || !object.utas) {
+          aldaaniiMsg = aldaaniiMsg + "Иргэн sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
+          if (!object.id)
+            aldaaniiMsg = aldaaniiMsg + "'Код', "
+          if (!object.ner)
+            aldaaniiMsg = aldaaniiMsg + "'Нэр', "
+          if (!object.register)
+            aldaaniiMsg = aldaaniiMsg + "'Регистр', "
+          if (!object.utas || !object.utas[0])
+            aldaaniiMsg = aldaaniiMsg + "'Утас', "
+          aldaaniiMsg = aldaaniiMsg.slice(0, -2)
+          aldaaniiMsg = aldaaniiMsg + " "
+          aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+        }
+        else
+          jagsaalt.push(object);
       }
-      else
-        jagsaalt.push(object);
     });
 
     muriinDugaar = 1;
@@ -1345,23 +1359,25 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
           }
         })
       }
-      if (!object.id || !object.ner || !object.register || !object.utas) {
-        aldaaniiMsg = aldaaniiMsg + "ААН sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
-        if (!object.id)
-          aldaaniiMsg = aldaaniiMsg + "'Код', "
-        if (!object.ner)
-          aldaaniiMsg = aldaaniiMsg + "'Нэр', "
-        if (!object.register)
-          aldaaniiMsg = aldaaniiMsg + "'Улсын бүртгэлийн дугаар', "
-        if (!object.utas || !object.utas[0])
-          aldaaniiMsg = aldaaniiMsg + "'Утас', "
-        console.log("object", object);
-        aldaaniiMsg = aldaaniiMsg.slice(0, -2)
-        aldaaniiMsg = aldaaniiMsg + " "
-        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+      if (object.id || object.ner || object.register || object.zakhirliinOvog || object.utas || object.zakhirliinNer || object.khayag || object.mail) {
+        if (!object.id || !object.ner || !object.register || !object.utas) {
+          aldaaniiMsg = aldaaniiMsg + "ААН sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
+          if (!object.id)
+            aldaaniiMsg = aldaaniiMsg + "'Код', "
+          if (!object.ner)
+            aldaaniiMsg = aldaaniiMsg + "'Нэр', "
+          if (!object.register)
+            aldaaniiMsg = aldaaniiMsg + "'Улсын бүртгэлийн дугаар', "
+          if (!object.utas || !object.utas[0])
+            aldaaniiMsg = aldaaniiMsg + "'Утас', "
+          console.log("object", object);
+          aldaaniiMsg = aldaaniiMsg.slice(0, -2)
+          aldaaniiMsg = aldaaniiMsg + " "
+          aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
+        }
+        else
+          jagsaalt.push(object);
       }
-      else
-        jagsaalt.push(object);
     });
     aldaaniiMsg = await khariltsagchBaikhguigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId, req.body.barilgiinId);
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
