@@ -3,9 +3,6 @@ const router = express.Router();
 const Ajiltan = require("../models/ajiltan");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crudWithFile, UstsanBarimt } = require("zevback");
-//const { crudWithFile } = require('../components/crud');
-//const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
-
 const {
   ajiltanNevtrey,
   tokenoorAjiltanAvya
@@ -15,7 +12,28 @@ const aldaa = require("../components/aldaa");
 crudWithFile(router, 'ajiltan', Ajiltan, {
   fileZam: './zurag/ajiltan',
   fileName: 'zurag'
-}, UstsanBarimt)
+}, UstsanBarimt, async (req, res, next) => {
+  try {
+    if (req.params.id) {
+      var ObjectId = require('mongodb').ObjectId;
+      var ajiltan = await Ajiltan.findOne({ nevtrekhNer: req.body.nevtrekhNer, _id: { $ne: ObjectId(req.params.id) } });
+      if (ajiltan)
+        throw new Error("Нэвтрэх нэр давхардаж байна!");
+    }
+    else {
+      if (req.body.nevtrekhNer) {
+        var ajiltan = await Ajiltan.findOne({ nevtrekhNer: req.body.nevtrekhNer });
+        if (ajiltan)
+          throw new Error("Нэвтрэх нэр давхардаж байна!");
+      }
+    }
+    next();
+  } catch (error) {
+    next(error);
+  }
+})
+
+
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 
