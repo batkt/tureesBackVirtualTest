@@ -23,6 +23,8 @@ const baiguullagaSchema = new Schema(
           },
         },
         logo: String,
+        gariinUseg: String,
+        tamga: String,
         ner: String,
         khayag: String,
         register: String,
