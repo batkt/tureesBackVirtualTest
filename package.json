@@ -18,7 +18,8 @@
     "bcrypt": "^5.0.1",
     "daalgavar": "^1.0.22",
     "sharp": "^0.30.7",
-    "zevback": "^1.0.65"
+    "zevback": "^1.0.65",
+    "zuragpack": "^1.0.11"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"

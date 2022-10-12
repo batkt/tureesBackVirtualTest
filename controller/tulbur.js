@@ -290,7 +290,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     var body = req.body;
     var dun = body.dun;
     var zardluud = body.zardluud;
-    var khugatsaa = body.khugatsaa + 1//just in case;
+    var khugatsaa = body.khugatsaa
     var tulukhUdruud = body.tulukhUdruud;
     var ekhlekhOgnoo = new Date(body.ekhlekhOgnoo);
     var duusakhOgnoo = new Date(body.duusakhOgnoo);

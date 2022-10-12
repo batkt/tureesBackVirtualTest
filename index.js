@@ -7,6 +7,7 @@ const server = http.Server(app);
 const io = require("socket.io")(server);
 const cron = require("node-cron");
 const dotenv = require("dotenv");
+const { zuragPack } = require("zuragpack");
 
 dotenv.config({ path: "./tokhirgoo/tokhirgoo.env" });
 
@@ -73,6 +74,7 @@ app.use(dansRoute);
 app.use(zardalRoute);
 app.use(surveyRoute);
 app.use(daalgavarRoute);
+zuragPack(app);
 
 app.use(aldaaBarigch);
 
