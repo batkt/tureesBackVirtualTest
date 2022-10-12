@@ -17,6 +17,8 @@ const gereeniiZaaltSchema = new Schema(
     khul: String,
     dedKhesguud: Array,
     turGereeEsekh: Boolean,
+    khuudasniiKhemjee: String,
+    chiglel: String,
   },
   {
     timestamps: true,
