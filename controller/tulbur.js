@@ -905,6 +905,7 @@ exports.aldaataiBankniiGuilgeeZasya = asyncHandler(
         if (!geree) {
           var oruulakhObject = {
             turul: "bank",
+            ognoo: guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate,
             tulsunDun: guilgee.Amt ? guilgee.Amt : guilgee.amount,
             guilgeeniiId: guilgee._id,
             dansniiDugaar: guilgee.dansniiDugaar,
