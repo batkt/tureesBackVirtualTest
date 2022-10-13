@@ -892,6 +892,7 @@ exports.aldaataiBankniiGuilgeeZasya = asyncHandler(
     try {
       var idnuud = req.body.idnuud;
       console.log("idnuud", idnuud);
+      var ObjectId = require('mongodb').ObjectId;
       var guilgeenuud = await BankniiGuilgee.find({ "_id": { $in: idnuud } });
       for await (const guilgee of guilgeenuud) {
         var geree = await Geree.findOne({
@@ -910,7 +911,7 @@ exports.aldaataiBankniiGuilgeeZasya = asyncHandler(
             tulsunDans: guilgee.CtAcntOrg ? guilgee.CtAcntOrg : guilgee.relatedAccount
           }
           await Geree.updateOne(
-            { _id: guilgee.kholbosonGereeniiId[0] },
+            { _id: new ObjectId(guilgee.kholbosonGereeniiId[0]) },
             {
               $push: {
                 ["avlaga.guilgeenuud"]: oruulakhObject,
@@ -918,7 +919,7 @@ exports.aldaataiBankniiGuilgeeZasya = asyncHandler(
             })
         }
       }
-      res.send(oldooguiGuilgeenuud);
+      res.send("Amjilttai");
     } catch (err) {
       next(err);
     }
