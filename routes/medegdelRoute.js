@@ -17,16 +17,14 @@ router.route("/sanalKharlaa").post(tokenShalgakh, sanalKharlaa);
 router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, async (req, res, next) => {
     const { firebaseToken, medeelel } = req.body
     sonorduulgaIlgeeye(firebaseToken, medeelel, (r) => {
-        var sanal = new SanalGomdol();
-        sanal.khariltsagchiinId = req.body.khariltsagchiinId;
-        sanal.khariltsagchiinNer = req.body.khariltsagchiinNer;
-        sanal.baiguullagiinId = req.body.baiguullagiinId;
-        sanal.barilgiinId = req.body.barilgiinId;
-        sanal.turul = "medegdel";
-        sanal.title = medeelel.title;
-        sanal.message = medeelel.body;
-        sanal.kharsanEsekh = false;
-        sanal.save();
+        var sonorduulga = new Sonorduulga();
+        sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
+        sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+        sonorduulga.barilgiinId = req.body.barilgiinId;
+        sonorduulga.title = medeelel.title;
+        sonorduulga.message = medeelel.body;
+        sonorduulga.kharsanEsekh = false;
+        sonorduulga.save();
         res.send(r)
     }, next)
 })
