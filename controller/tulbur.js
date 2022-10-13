@@ -892,7 +892,12 @@ exports.aldaataiBankniiGuilgeeZasya = asyncHandler(
     try {
       var idnuud = req.body.idnuud;
       console.log("idnuud", idnuud);
-      var guilgeenuud = await BankniiGuilgee.find({ "_id": { $in: idnuud } });
+      var ObjectId = require('mongodb').ObjectId;
+      var oids = [];
+      idnuud.forEach(function (item) {
+        oids.push(new ObjectId(item));
+      });
+      var guilgeenuud = await BankniiGuilgee.find({ "_id": { $in: oids } });
       for await (const guilgee of guilgeenuud) {
         var geree = await Geree.findOne({
           $or:
