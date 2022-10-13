@@ -32,6 +32,7 @@ const {
   uldegdelBodyo,
   tukhainOgnoogoorAvlagaBodojOruulya,
   bankniiGuilgeegeerOruulya,
+  aldaataiBankniiGuilgeeZasya,
   tukhainOgnoogoorBukhAvlagaBodojOruulya,
   gereenuudedZalruulgaOruulya,
   tsutsalgdanGuilgeeZasya,
@@ -58,6 +59,7 @@ router.route("/tulultUstgaya").post(tokenShalgakh, guilgeeUstgakhShalguur, tulul
 router.route("/baritsaaniiGuilgeeUstgaya").post(tokenShalgakh, guilgeeUstgakhShalguur, baritsaaniiGuilgeeUstgaya);
 router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
 router.route("/bankniiGuilgeegeerOruulya").post(tokenShalgakh, bankniiGuilgeegeerOruulya);
+router.route("/aldaataiBankniiGuilgeeZasya").post(tokenShalgakh, aldaataiBankniiGuilgeeZasya);
 router.route("/tukhainOgnoogoorBukhAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorBukhAvlagaBodojOruulya);
 router.route("/gereenuudedZalruulgaOruulya").post(tokenShalgakh, gereenuudedZalruulgaOruulya);
 router.route("/tsutsalgdanGuilgeeZasya").post(tokenShalgakh, tsutsalgdanGuilgeeZasya);
