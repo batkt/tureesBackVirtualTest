@@ -861,6 +861,32 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
   }
 );
 
+exports.bankniiGuilgeegeerOruulya = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+      var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+      var guilgeenuud = await BankniiGuilgee.find({ "kholbosonGereeniiId.0": { $exists: true }, "TxPostDate": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo } });
+      console.log("guilgeenuud", guilgeenuud);
+      var oldooguiGuilgeenuud = []
+      for await (const guilgee of guilgeenuud) {
+        var geree = await Geree.findOne({
+          $or:
+            [
+              { "avlaga.guilgeenuud.guilgeeniiId": guilgee._id },
+              { "avlaga.baritsaa.guilgeeniiId": guilgee._id }
+            ]
+        });
+        if (!geree)
+          oldooguiGuilgeenuud.push(guilgee._id);
+      }
+      res.send(oldooguiGuilgeenuud);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 exports.tukhainOgnoogoorBukhAvlagaBodojOruulya = asyncHandler(
   async (req, res, next) => {
     try {
@@ -1011,6 +1037,7 @@ exports.gereenuudedZalruulgaOruulya = asyncHandler(
     }
   }
 );
+
 exports.tsutsalgdanGuilgeeZasya = asyncHandler(
   async (req, res, next) => {
     try {
