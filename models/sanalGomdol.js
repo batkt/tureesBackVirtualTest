@@ -10,6 +10,10 @@ const sanalGomdolSchema = new Schema(
     barilgiinId: String,
     zurguud: [String],
     turul: String,
+    tuluv: {
+      type: Number,
+      default: 0
+    },
     ognoo: Date,
     title: String,
     message: String,
