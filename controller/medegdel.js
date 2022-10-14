@@ -40,6 +40,16 @@ exports.sanalKharlaa = asyncHandler((req, res, next) => {
     }
 });
 
+exports.sonorduulgaKharlaa = asyncHandler((req, res, next) => {
+    try {
+        Sonorduulga.sonorduulgauzsenbolgoyo(req.body.id);
+        res.send("Amjilttai");
+    }
+    catch (err) {
+        next(err);
+    }
+});
+
 exports.sanalKhuleenAvlaa = asyncHandler((req, res, next) => {
     try {
         SonorduulgaObject.updateMany({ _id: req.body.id }, { $set: { tuluv: 1 } }).then((res) => console.log(res));

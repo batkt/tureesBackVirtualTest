@@ -7,13 +7,14 @@ const Sonorduulga = require("../models/sonorduulga");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
-const { sanalKhadgalya, sanalKharlaa, sanalKhuleenAvlaa } = require("../controller/medegdel");
+const { sanalKhadgalya, sanalKharlaa, sonorduulgaKharlaa, sanalKhuleenAvlaa } = require("../controller/medegdel");
 
 crud(router, "sanalGomdol", SanalGomdol, UstsanBarimt);
 crud(router, "sonorduulga", Sonorduulga, UstsanBarimt);
 
 router.route("/sanalKhadgalya").post(tokenShalgakh, sanalKhadgalya);
 router.route("/sanalKharlaa").post(tokenShalgakh, sanalKharlaa);
+router.route("/sonorduulgaKharlaa").post(tokenShalgakh, sonorduulgaKharlaa);
 router.route("/sanalKhuleenAvlaa").post(tokenShalgakh, sanalKhuleenAvlaa);
 router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, async (req, res, next) => {
     const { firebaseToken, medeelel } = req.body
