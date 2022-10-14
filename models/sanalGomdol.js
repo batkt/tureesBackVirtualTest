@@ -8,7 +8,12 @@ const sanalGomdolSchema = new Schema(
     khariltsagchiinNer: String,
     baiguullagiinId: String,
     barilgiinId: String,
+    zurguud: [String],
     turul: String,
+    tuluv: {
+      type: Number,
+      default: 0
+    },
     ognoo: Date,
     title: String,
     message: String,

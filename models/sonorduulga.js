@@ -6,9 +6,11 @@ const sonorduulgaSchema = new Schema({
     id: String,
     ognoo: Date,
     ajiltniiId: String,
+    khariltsagchiinId: String,
     baiguullagiinId: String,
     barilgiinId: String,
     turul: String,
+    title: String,
     message: String,
     kharsanEsekh: Boolean,
     object: Schema.Types.Mixed
