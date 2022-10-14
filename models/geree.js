@@ -95,6 +95,7 @@ const gereeSchema = new Schema(
     zardluud: [{
       ner: String,
       turul: String,
+      tariff: Number,
       dun: Number,//dung n zuwxun munguur tootsoj awax togtmol ued buglunu
     }],
     segmentuud: [
