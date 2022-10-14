@@ -11,7 +11,7 @@ crud(router, "asuult", Asuult, UstsanBarimt);
 crud(router, "khariult", Khariult, UstsanBarimt);
 
 router.route("/surveyKhadgalya").post(async (req, res, next) => {
-    const data = new Survey(req.body);
+    const data = new Khariult(req.body);
     data.save().then((result) => res.send("Amjilttai")).catch((err) => next(err));
 });
 
