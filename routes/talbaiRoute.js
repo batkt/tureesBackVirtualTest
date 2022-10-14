@@ -13,8 +13,8 @@ const uploadFile = multer({ storage: storage });
 
 crud(router, "talbai", Talbai, UstsanBarimt, async (req, res, next) => {
     try {
-        if (!req.body.register)
-            throw new Error("Регистрийн дугаар бөглөнө үү!")
+        if (!req.body.kod)
+            throw new Error("Талбайн дугаар бөглөнө үү!")
         else {
             var talbai = await Talbai.findOne({ kod: req.body.kod, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId });
             if (talbai)
