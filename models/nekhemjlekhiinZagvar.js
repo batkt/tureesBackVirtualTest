@@ -7,9 +7,11 @@ const nekhemjlekhiinZagvarSchema = new Schema(
     ner: String,
     tailbar: String,
     nekhemjlekh: String,
-    burtgesenAjiltan:String,
+    burtgesenAjiltan: String,
     baiguullagiinId: String,
     barilgiinId: String,
+    khuudasniiKhemjee: String,
+    chiglel: String,
   },
   { timestamps: true }
 );
