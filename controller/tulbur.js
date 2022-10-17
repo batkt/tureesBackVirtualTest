@@ -305,7 +305,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
         return a - b;
       });
     await new Array(khugatsaa).fill('').map((mur, index) => {
-      for await (const udur of tulukhUdruud) {
+      tulukhUdruud.forEach((udur) => {
         if (!duussanEsekh) {
           console.log('tukhainSar', tukhainSar);
           suuliinUdur = moment(tukhainSar).endOf('month').date();
@@ -330,7 +330,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               undsenDun: dun
             })
             if (zardluud && zardluud.length > 0) {
-              for await (const zardal of zardluud) {
+              zardluud.forEach((zardal) => {
                 if (zardal) {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasya(zardal.tariff * body.mk);
@@ -343,12 +343,12 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                     tulukhDun: zardal.dun
                   })
                 }
-              }
+              })
             }
           }
           ognoo = new Date(turOgnoo);
         }
-      }
+      })
       tukhainSar = new Date(moment(tukhainSar).add(1, 'month'));
     })
     res.send(butsaakhJagsaalt);
