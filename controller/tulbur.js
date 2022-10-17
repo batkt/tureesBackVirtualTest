@@ -305,7 +305,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
         return a - b;
       });
     await new Array(khugatsaa).fill('').map((mur, index) => {
-      tulukhUdruud.forEach((udur) => {
+      for await (const udur of tulukhUdruud) {
         if (!duussanEsekh) {
           console.log('tukhainSar', tukhainSar);
           suuliinUdur = moment(tukhainSar).endOf('month').date();
@@ -348,7 +348,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
           }
           ognoo = new Date(turOgnoo);
         }
-      })
+      }
       tukhainSar = new Date(moment(tukhainSar).add(1, 'month'));
     })
     res.send(butsaakhJagsaalt);
