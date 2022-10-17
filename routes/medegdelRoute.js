@@ -27,6 +27,9 @@ router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, async (req, res, next) =
         sonorduulga.message = medeelel.body;
         sonorduulga.kharsanEsekh = false;
         sonorduulga.save();
+        var io = req.app.get('socketio');
+        if (io)
+            io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
         res.send(r)
     }, next)
 })
