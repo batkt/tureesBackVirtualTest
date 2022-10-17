@@ -331,13 +331,18 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
             })
             if (zardluud && zardluud.length > 0) {
               zardluud.forEach((zardal) => {
-                if (zardal)
+                if (zardal) {
+                  if (zardal.turul == "1м2")
+                    zardal.dun = tooZasya(zardal.tariff * body.mk);
+                  if (zardal.turul == "Тогтмол")
+                    zardal.dun = zardal.tariff;
                   butsaakhJagsaalt.push({
                     turul: "avlaga",
                     tailbar: zardal.ner,
                     ognoo: turOgnoo,
                     tulukhDun: zardal.dun
                   })
+                }
               })
             }
           }
