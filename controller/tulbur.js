@@ -330,10 +330,10 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               undsenDun: dun
             })
             if (zardluud && zardluud.length > 0) {
-              zardluud.forEach(async (zardal) => {
+              for await (const zardal of zardluud) {
                 if (zardal) {
                   if (zardal.turul == "1м2")
-                    zardal.dun = await tooZasya(zardal.tariff * body.mk);
+                    zardal.dun = tooZasya(zardal.tariff * body.mk);
                   if (zardal.turul == "Тогтмол")
                     zardal.dun = zardal.tariff;
                   butsaakhJagsaalt.push({
@@ -343,7 +343,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                     tulukhDun: zardal.dun
                   })
                 }
-              })
+              }
             }
           }
           ognoo = new Date(turOgnoo);
