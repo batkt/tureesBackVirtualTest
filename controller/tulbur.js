@@ -318,7 +318,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
             turOgnoo = new Date(moment(tukhainSar).set('date', udur))
             console.log("else ruu orson => ", turOgnoo)
           }
-          if (turOgnoo > ekhlekhOgnoo) {
+          if (turOgnoo >= ekhlekhOgnoo) {
             if (turOgnoo > moment(duusakhOgnoo)) {
               turOgnoo = new Date(duusakhOgnoo)
               duussanEsekh = true;
