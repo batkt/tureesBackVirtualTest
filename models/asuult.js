@@ -8,6 +8,10 @@ const asuultSchema = new Schema(
       type: String,
       required: true
     },
+    barilgiinId: {
+      type: String,
+      required: true
+    },
     ner: String,
     turul: String,
     asuultuud: [
