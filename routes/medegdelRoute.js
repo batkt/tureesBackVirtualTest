@@ -23,6 +23,8 @@ router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, async (req, res, next) =
         sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
         sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
         sonorduulga.barilgiinId = req.body.barilgiinId;
+        if (req.body.khariltsagchiinId)
+            sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
         sonorduulga.title = medeelel.title;
         sonorduulga.message = medeelel.body;
         sonorduulga.kharsanEsekh = false;
