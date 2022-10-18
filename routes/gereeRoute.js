@@ -422,14 +422,35 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
     for (const id of gereeniiIdnuud) {
       let geree = await Geree.findById(id);
       let busadGereenuud = await Geree.findOne({ "register": geree.register, barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 } });
-      let upsertTalbai = {
-        'updateOne': {
-          'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
-          'update': {
-            "idevkhiteiEsekh": (geree.tuluv == 1)
+      var talbai = await Talbai.findOne({ 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId });
+      if (talbai.niitiinTalbaiEsekh) {
+        let tukhainTalbainGereenuud = await Geree.find({ barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 }, talbainDugaar: geree.talbainDugaar });
+        var niitIdevkhiteiTalbai = lodash.sumBy(tukhainTalbainGereenuud, function (object) {
+          return object.talbainKhemjee;
+        });
+        let upsertTalbai = {
+          'updateOne': {
+            'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
+            'update': [{
+              "idevkhiteiEsekh": (geree.tuluv == 1),
+              "sulKhemjee": (talbai.talbainKhemjee - niitIdevkhiteiTalbai)
+            }]
           }
-        }
-      };
+        };
+        talbainBulk.push(upsertTalbai);
+      }
+      else {
+        let upsertTalbai = {
+          'updateOne': {
+            'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
+            'update': {
+              "idevkhiteiEsekh": (geree.tuluv == 1)
+            }
+          }
+        };
+        talbainBulk.push(upsertTalbai);
+      }
+
       let upsertKhariltsagch = {
         'updateOne': {
           'filter': { 'register': geree.register, 'barilgiinId': geree.barilgiinId },
@@ -438,7 +459,6 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
           }
         }
       };
-      talbainBulk.push(upsertTalbai);
       khariltsagchiinBulk.push(upsertKhariltsagch);
     }
     if (talbainBulk)
