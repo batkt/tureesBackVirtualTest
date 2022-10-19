@@ -883,7 +883,7 @@ exports.talbainIdnuudOruulya = asyncHandler(
             var idnuud = talbainuud.map(a => a._id);
             let upsertDoc = {
               'updateOne': {
-                'filter': { '_id': x._id },
+                'filter': { '_id': element._id },
                 update: { $set: { "talbainIdnuud": idnuud } }
               }
             };
