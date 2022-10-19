@@ -878,7 +878,8 @@ exports.talbainIdnuudOruulya = asyncHandler(
       if (gereenuud)
         for await (const element of gereenuud) {
           var dugaaruud = element.talbainDugaar.split(",");
-          var talbainuud = Talbai.find({ kod: { $in: dugaaruud }, barilgiinId: element.barilgiinId }).lean();
+          var talbainuud = await Talbai.find({ kod: { $in: dugaaruud }, barilgiinId: element.barilgiinId }).lean();
+          console.log("talbainuud", talbainuud);
           if (talbainuud && talbainuud.length > 0) {
             var idnuud = talbainuud.map(a => a._id);
             let upsertDoc = {
@@ -887,6 +888,7 @@ exports.talbainIdnuudOruulya = asyncHandler(
                 update: { "talbainIdnuud": idnuud }
               }
             };
+            console.log("upsertDoc", upsertDoc);
             bulkOps.push(upsertDoc);
           }
         }
