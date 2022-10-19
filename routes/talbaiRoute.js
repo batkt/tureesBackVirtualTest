@@ -32,7 +32,7 @@ const { talbaiTatya, talbainZagvarAvya } = require("../controller/excel");
 router.route("/talbaiTatya").post(uploadFile.single("file"), tokenShalgakh, talbaiTatya);
 router.route("/talbainZagvarAvya").get(tokenShalgakh, talbainZagvarAvya);
 router.route("/talbainSulEskhiigShalgay").get(tokenShalgakh, async (req, res, next) => {
-    var talbai = await Talbai.find({ talbainDugaar: req.query.talbainDugaar, barilgiinId: req.query.barilgiinId }).lean();
+    var talbai = await Talbai.findOne({ talbainDugaar: req.query.talbainDugaar, barilgiinId: req.query.barilgiinId }).lean();
     var geree = await Geree.findOne({ talbainIdnuud: talbai._id, barilgiinId: req.query.barilgiinId, tuluv: 1, duusakhOgnoo: { $gte: new Date() } });
     if (geree)
         res.send(geree.gereeniiDugaar);
