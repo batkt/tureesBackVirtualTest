@@ -98,7 +98,7 @@ router.route("/talbaiUstgaya").post(tokenShalgakh, async (req, res, next) => {
         Talbai.findOne({
             _id: req.body.id,
         }).then(async (result) => {
-            var geree = await Geree.findOne({ "tuluv": { $ne: -1 }, talbainDugaar: result.kod, barilgiinId: result.barilgiinId, baiguullagiinId: result.baiguullagiinId });
+            var geree = await Geree.findOne({ "tuluv": { $ne: -1 }, talbainIdnuud: result._id, barilgiinId: result.barilgiinId, baiguullagiinId: result.baiguullagiinId });
             if (geree)
                 throw new Error("Тухайн талбай дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!");
             var barimt = new UstsanBarimt();
