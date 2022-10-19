@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Baiguullaga = require("../models/baiguullaga");
+const Talbai = require("../models/talbai");
 const { UstsanBarimt } = require("zevback");
 const lodash = require("lodash");
 const moment = require("moment");
@@ -860,6 +861,45 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
           });
         }
       res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+exports.talbainIdnuudOruulya = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var gereenuud = await Geree.find({
+        talbainDugaar: { $exists: true },
+        "talbainIdnuud.0": { $exists: false }
+      });
+      var bulkOps = [];
+      if (gereenuud)
+        for await (const element of gereenuud) {
+          var dugaaruud = element.talbainDugaar.split(",");
+          var talbainuud = Talbai.find({ kod: { $in: dugaaruud }, barilgiinId: element.barilgiinId }).lean();
+          if (talbainuud && talbainuud.length > 0) {
+            var idnuud = talbainuud.map(a => a._id);
+            let upsertDoc = {
+              'updateOne': {
+                'filter': { '_id': x._id },
+                update: { $set: { "talbainIdnuud": idnuud } }
+              }
+            };
+            bulkOps.push(upsertDoc);
+          }
+        }
+      await Geree.bulkWrite(bulkOps)
+        .then(bulkWriteOpResult => {
+          console.log('BULK ==>', bulkOps);
+          console.log('BULK update OK', bulkWriteOpResult);
+        })
+        .catch(err => {
+          console.log('BULK ==>', bulkOps);
+          console.log('BULK update error', err);
+        });
+      res.send("zasagdsanToo : " + gereenuud.length);
     } catch (err) {
       next(err);
     }

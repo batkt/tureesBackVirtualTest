@@ -31,6 +31,7 @@ const {
   khuvaariUusgey,
   uldegdelBodyo,
   tukhainOgnoogoorAvlagaBodojOruulya,
+  talbainIdnuudOruulya,
   bankniiGuilgeegeerOruulya,
   aldaataiBankniiGuilgeeZasya,
   tukhainOgnoogoorBukhAvlagaBodojOruulya,
@@ -58,6 +59,7 @@ router.route("/baritsaaniiGuilgeeKhiie").post(tokenShalgakh, baritsaaniiGuilgeeK
 router.route("/tulultUstgaya").post(tokenShalgakh, guilgeeUstgakhShalguur, tulultUstgaya);
 router.route("/baritsaaniiGuilgeeUstgaya").post(tokenShalgakh, guilgeeUstgakhShalguur, baritsaaniiGuilgeeUstgaya);
 router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
+router.route("/talbainIdnuudOruulya").post(tokenShalgakh, talbainIdnuudOruulya);
 router.route("/bankniiGuilgeegeerOruulya").post(tokenShalgakh, bankniiGuilgeegeerOruulya);
 router.route("/aldaataiBankniiGuilgeeZasya").post(tokenShalgakh, aldaataiBankniiGuilgeeZasya);
 router.route("/tukhainOgnoogoorBukhAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorBukhAvlagaBodojOruulya);
@@ -419,47 +421,49 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
   if (gereeniiIdnuud && gereeniiIdnuud.length > 0) {
     var talbainBulk = [];
     var khariltsagchiinBulk = [];
-    for (const id of gereeniiIdnuud) {
+    for await (const id of gereeniiIdnuud) {
       let geree = await Geree.findById(id);
       let busadGereenuud = await Geree.findOne({ "register": geree.register, barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 } });
-      var talbai = await Talbai.findOne({ 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId });
-      if (talbai.niitiinTalbaiEsekh) {
-        let tukhainTalbainGereenuud = await Geree.find({ barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 }, talbainDugaar: geree.talbainDugaar });
-        var niitIdevkhiteiTalbai = lodash.sumBy(tukhainTalbainGereenuud, function (object) {
-          return object.talbainKhemjee;
-        });
-        let upsertTalbai = {
+      var talbainuud = await Talbai.find({ '_id': { $in: geree.talbainIdnuud } });
+      for await (const talbai of talbainuud) {
+        if (talbai.niitiinTalbaiEsekh) {
+          let tukhainTalbainGereenuud = await Geree.find({ barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 }, talbainDugaar: geree.talbainDugaar });
+          var niitIdevkhiteiTalbai = lodash.sumBy(tukhainTalbainGereenuud, function (object) {
+            return object.talbainKhemjee;
+          });
+          let upsertTalbai = {
+            'updateOne': {
+              'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
+              'update': [{
+                "idevkhiteiEsekh": (geree.tuluv == 1),
+                "sulKhemjee": (talbai.talbainKhemjee - niitIdevkhiteiTalbai)
+              }]
+            }
+          };
+          talbainBulk.push(upsertTalbai);
+        }
+        else {
+          let upsertTalbai = {
+            'updateOne': {
+              'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
+              'update': {
+                "idevkhiteiEsekh": (geree.tuluv == 1)
+              }
+            }
+          };
+          talbainBulk.push(upsertTalbai);
+        }
+
+        let upsertKhariltsagch = {
           'updateOne': {
-            'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
-            'update': [{
-              "idevkhiteiEsekh": (geree.tuluv == 1),
-              "sulKhemjee": (talbai.talbainKhemjee - niitIdevkhiteiTalbai)
-            }]
-          }
-        };
-        talbainBulk.push(upsertTalbai);
-      }
-      else {
-        let upsertTalbai = {
-          'updateOne': {
-            'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
+            'filter': { 'register': geree.register, 'barilgiinId': geree.barilgiinId },
             'update': {
-              "idevkhiteiEsekh": (geree.tuluv == 1)
+              "idevkhiteiEsekh": busadGereenuud ? true : false
             }
           }
         };
-        talbainBulk.push(upsertTalbai);
+        khariltsagchiinBulk.push(upsertKhariltsagch);
       }
-
-      let upsertKhariltsagch = {
-        'updateOne': {
-          'filter': { 'register': geree.register, 'barilgiinId': geree.barilgiinId },
-          'update': {
-            "idevkhiteiEsekh": busadGereenuud ? true : false
-          }
-        }
-      };
-      khariltsagchiinBulk.push(upsertKhariltsagch);
     }
     if (talbainBulk)
       Talbai.bulkWrite(talbainBulk)
