@@ -119,6 +119,12 @@ async function khariltsagchBaikhguigShalgaya(khariltsagchid, aldaaniiMsg, baiguu
       if (a.utas && a.utas.length > 0)
         utasniiJagsaalt.push(a.utas[0]);
     });
+
+  const toFindDuplicates = arry => arry.filter((item, index) => arry.indexOf(item) !== index)
+  var davkhardsanKod = toFindDuplicates(utasniiJagsaalt);
+  if (davkhardsanKod)
+    shineAldaaniiMsg = aldaaniiMsg + "Дараах утасны дугаартай харилцагчид давхардаж байна! : " + davkhardsanKod + '<br/>';
+
   var khariltsagchiinJagsaalt = await Khariltsagch.find({ "register": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId, "barilgiinId": barilgiinId });
   if (khariltsagchiinJagsaalt.length > 0) {
     var davkhardsanRegisteruud = []
