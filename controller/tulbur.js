@@ -884,7 +884,7 @@ exports.talbainIdnuudOruulya = asyncHandler(
             let upsertDoc = {
               'updateOne': {
                 'filter': { '_id': element._id },
-                update: { $set: { "talbainIdnuud": idnuud } }
+                update: { "talbainIdnuud": idnuud }
               }
             };
             bulkOps.push(upsertDoc);
