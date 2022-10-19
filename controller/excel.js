@@ -133,8 +133,8 @@ async function khariltsagchBaikhguigShalgaya(khariltsagchid, aldaaniiMsg, baiguu
     khariltsagchiinUtasniiJagsaalt.forEach(a => {
       davkhardsanUtasnuud.push(a.utas);
     });
-    davkhardsanUtasnuud = davkhardsanUtasnuud.filter((x) => utasniiJagsaalt.contains(x))
-    shineAldaaniiMsg = aldaaniiMsg + "Дараах утасны дугаартай харилцагчид бүртгэлтэй байна! : " + davkhardsanRegisteruud + '<br/>';
+    davkhardsanUtasnuud = davkhardsanUtasnuud.filter((x) => utasniiJagsaalt.includes(x))
+    shineAldaaniiMsg = aldaaniiMsg + "Дараах утасны дугаартай харилцагчид бүртгэлтэй байна! : " + davkhardsanUtasnuud + '<br/>';
   }
   if (shineAldaaniiMsg)
     aldaaniiMsg = shineAldaaniiMsg;
