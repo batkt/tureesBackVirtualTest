@@ -25,16 +25,10 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
                 res.send("Amjilttai");
             }
             else {
-                sonorduulgaIlgeeye(req.body.firebaseToken, req.body, (r) => {
+                sonorduulgaIlgeeye(req.body.firebaseToken, { title: req.body.title, message: req.body.message }, (r) => {
                     var sonorduulga = new Sonorduulga(req.body);
-                    sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
-                    sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
-                    sonorduulga.barilgiinId = req.body.barilgiinId;
-                    sonorduulga.zurgiinId = req.body.zurgiinId;
                     if (req.body.khariltsagchiinId)
                         sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
-                    sonorduulga.title = medeelel.title;
-                    sonorduulga.message = medeelel.body;
                     sonorduulga.kharsanEsekh = false;
                     sonorduulga.save();
                     var io = req.app.get('socketio');
