@@ -26,7 +26,7 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
             }
             else {
                 sonorduulgaIlgeeye(req.body.firebaseToken, { title: req.body.title, message: req.body.message }, (r) => {
-                    var sonorduulga = new Sonorduulga(req.body);
+                    var sonorduulga = new SonorduulgaObject(req.body);
                     if (req.body.khariltsagchiinId)
                         sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
                     sonorduulga.kharsanEsekh = false;
