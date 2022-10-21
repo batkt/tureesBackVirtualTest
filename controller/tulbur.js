@@ -292,9 +292,13 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     var dun = body.dun;
     var zardluud = body.zardluud;
     var khugatsaa = body.khugatsaa
+    if (body.turGereeEsekh)
+      khugatsaa = 1;
     var tulukhUdruud = body.tulukhUdruud;
     var ekhlekhOgnoo = new Date(body.ekhlekhOgnoo);
     var duusakhOgnoo = new Date(body.duusakhOgnoo);
+    if (body.turGereeEsekh)
+      tulukhUdruud = [ekhlekhOgnoo.getDate()];
     var butsaakhJagsaalt = []
     var ognoo = new Date(ekhlekhOgnoo);
     var turOgnoo;

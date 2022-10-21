@@ -19,8 +19,29 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
         var medegdel = new SanalGomdol(req.body);
         medegdel.ognoo = new Date();
         medegdel.save(req.body).then((khariu) => {
-            Sonorduulga.ilgeeye(io = req.app.get('socketio'), medegdel);
-            res.send("Amjilttai");
+            if (medegdel.turul != "shaardlaga") {
+                Sonorduulga.ilgeeye(io = req.app.get('socketio'), medegdel);
+                res.send("Amjilttai");
+            }
+            else {
+                sonorduulgaIlgeeye(req.body.firebaseToken, req.body, (r) => {
+                    var sonorduulga = new Sonorduulga(req.body);
+                    sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
+                    sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+                    sonorduulga.barilgiinId = req.body.barilgiinId;
+                    sonorduulga.zurgiinId = req.body.zurgiinId;
+                    if (req.body.khariltsagchiinId)
+                        sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
+                    sonorduulga.title = medeelel.title;
+                    sonorduulga.message = medeelel.body;
+                    sonorduulga.kharsanEsekh = false;
+                    sonorduulga.save();
+                    var io = req.app.get('socketio');
+                    if (io)
+                        io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
+                    res.send(r)
+                }, next)
+            }
         });
     }
     catch (err) {
