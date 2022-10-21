@@ -74,7 +74,7 @@ exports.sonorduulgaKharlaa = asyncHandler((req, res, next) => {
 
 exports.sanalKhuleenAvlaa = asyncHandler((req, res, next) => {
     try {
-        SonorduulgaObject.updateMany({ _id: req.body.id }, { $set: { tuluv: 1 } }).then((res) => console.log(res));
+        SanalGomdol.updateMany({ _id: req.body.id }, { $set: { tuluv: 1 } }).then((res) => console.log(res));
         res.sendStatus(200);
     }
     catch (err) {
