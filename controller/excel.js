@@ -20,7 +20,15 @@ function usegTooruuKhurvuulekh(useg) {
 }
 
 function toogUsegruuKhurvuulekh(too) {
-  if (!!too) return String.fromCharCode(too + 65);
+  if (!!too) {
+    if (too < 26)
+      return String.fromCharCode(too + 65);
+    else {
+      var orongiinToo = Math.floor(too / 26);
+      var uldegdel = too % 26;
+      return String.fromCharCode(orongiinToo + 64) + String.fromCharCode(uldegdel + 65);
+    }
+  }
   else return 0;
 }
 
@@ -786,18 +794,20 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
   worksheet.columns = baganuud;
   if (segmentuud && segmentuud.length > 0) {
     segmentuud.forEach(x => {
-      var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-      console.log("baganiiUseg", baganiiUseg)
-      var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
-      console.log("bagana", bagana.toString())
-      worksheet.dataValidations.add(bagana, {
-        type: 'list',
-        allowBlank: false,
-        formulae: [`"${x.utguud.join(',')}"`],
-        showErrorMessage: true,
-        errorStyle: 'error',
-        error: 'Тохирох утгыг сонгоно уу!',
-      });
+      if (x.utguud) {
+        var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
+        console.log("baganiiUseg", baganiiUseg)
+        var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
+        console.log("bagana", bagana.toString())
+        worksheet.dataValidations.add(bagana, {
+          type: 'list',
+          allowBlank: false,
+          formulae: [`"${x.utguud.join(',')}"`],
+          showErrorMessage: true,
+          errorStyle: 'error',
+          error: 'Тохирох утгыг сонгоно уу!',
+        });
+      }
       baganiiToo = baganiiToo + 1;
     })
   }
