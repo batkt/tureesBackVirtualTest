@@ -7,6 +7,7 @@ const nekhemjlekhiinZagvarSchema = new Schema(
     ner: String,
     tailbar: String,
     nekhemjlekh: String,
+    turul: String,
     burtgesenAjiltan: String,
     baiguullagiinId: String,
     barilgiinId: String,
