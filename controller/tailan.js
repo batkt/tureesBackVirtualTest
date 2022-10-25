@@ -15,6 +15,16 @@ const unguud = [
     "rgba(0, 192, 192, 0.5)"
 ]
 
+exports.analitikTailanAvya = asyncHandler(async (req, res, next) => {
+    try {
+        var gereenuud = await Geree.find({ baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId })
+        res.send(gereenuud);
+    }
+    catch (err) {
+        next(err);
+    }
+});
+
 exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
     var group = {
         '_id': {
