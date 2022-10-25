@@ -572,6 +572,57 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               }
             }, {
               '$facet': {
+                'khariltsagch': [
+                  {
+                    "$lookup":
+                    {
+                      'from': 'khariltsagch',
+                      'let': {
+                        "register": "$register",
+                        "baiguullagiinId": "$baiguullagiinId",
+                        "barilgiinId": "$barilgiinId"
+                      },
+                      'pipeline': [
+                        {
+                          '$match':
+                          {
+                            '$expr':
+                            {
+                              '$and':
+                                [
+                                  { '$eq': ["$register", "$$register"] },
+                                  { '$eq': ["$baiguullagiinId", "$$baiguullagiinId"] },
+                                  { '$eq': ["$barilgiinId", "$$barilgiinId"] }
+                                ]
+                            }
+                          }
+                        }
+                      ],
+                      'as': 'khariltsagch'
+                    }
+                  },
+                  {
+                    "$set":
+                    {
+                      "token": {
+                        $arrayElemAt: ["$khariltsagch.firebaseToken", 0]
+                      },
+                      "khariltsagchiinId": {
+                        $arrayElemAt: ["$khariltsagch._id", 0]
+                      },
+                      "register": {
+                        $arrayElemAt: ["$khariltsagch.register", 0]
+                      }
+                    }
+                  },
+                  {
+                    "$project": {
+                      "khariltsagchiinId": 1,
+                      "token": 1,
+                      "register": 1,
+                    }
+                  }
+                ],
                 'umnukhSariinUrTulbur': [
                   {
                     '$match': {
@@ -778,6 +829,8 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.nemeltNekhemjlekh = (gereenuud[0].nekhemjlekhDeerGarakh.find(a => a._id == x.gereeniiDugaar)?.guilgeenuud || [])
+              x.khariltsagchiinId = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.khariltsagchiinId;
+              x.firebaseToken = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.token;
 
               if (x.umnukhSariinUrTulbur < 0)
                 x.umnukhSariinUrTulbur = 0
