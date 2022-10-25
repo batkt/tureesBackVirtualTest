@@ -17,7 +17,7 @@ const unguud = [
 
 exports.analitikTailanAvya = asyncHandler(async (req, res, next) => {
     try {
-        var gereenuud = await Geree.find({ baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId })
+        var gereenuud = await Geree.find({ baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId }).select("+avlaga")
         res.send(gereenuud);
     }
     catch (err) {
