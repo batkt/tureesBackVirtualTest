@@ -829,8 +829,8 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.nemeltNekhemjlekh = (gereenuud[0].nekhemjlekhDeerGarakh.find(a => a._id == x.gereeniiDugaar)?.guilgeenuud || [])
-              x.khariltsagchiinId = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.khariltsagchiinId;
-              x.firebaseToken = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.token;
+              x.khariltsagchiinId = gereenuud[0].khariltsagch.findOne(a => a.register == x.register)?.khariltsagchiinId;
+              x.firebaseToken = gereenuud[0].khariltsagch.findOne(a => a.register == x.register)?.token;
 
               if (x.umnukhSariinUrTulbur < 0)
                 x.umnukhSariinUrTulbur = 0
