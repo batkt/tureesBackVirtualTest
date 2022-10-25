@@ -42,27 +42,58 @@ router.route("/talbainSulEskhiigShalgay").get(tokenShalgakh, async (req, res, ne
 });
 
 router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
-    let query = [
-        {
-            '$match': {
-                'baiguullagiinId': req.body.baiguullagiinId,
-                'barilgiinId': req.query.barilgiinId
-            }
-        }, {
-            '$group': {
-                '_id': '$idevkhiteiEsekh',
-                'too': {
-                    '$sum': 1
+    try {
+        let query = [
+            {
+                '$match': {
+                    'baiguullagiinId': req.body.baiguullagiinId,
+                    'barilgiinId': req.query.barilgiinId
+                }
+            }, {
+                '$group': {
+                    '_id': '$idevkhiteiEsekh',
+                    'khemjee': {
+                        '$sum': "$talbainKhemjee"
+                    },
+                    'too': {
+                        '$sum': 1
+                    }
                 }
             }
+        ]
+        var result = await Talbai.aggregate(query);
+        query = [
+            {
+                '$match': {
+                    'baiguullagiinId': req.body.baiguullagiinId,
+                    'barilgiinId': req.query.barilgiinId,
+                    "niitiinTalbaiEsekh": true
+                }
+            }, {
+                '$group': {
+                    '_id': 'niitiinTalbai',
+                    'khemjee': {
+                        '$sum': "$talbainKhemjee"
+                    },
+                    'too': {
+                        '$sum': 1
+                    }
+                }
+            }
+        ]
+        var result1 = await Talbai.aggregate(query);
+        if (result1 && result1.length > 0) {
+            if (result && result.length > 0) {
+                result.push(result[0]);
+            }
+            else
+                result = result1;
         }
-    ]
-    Talbai.aggregate(query).then((result) => {
         res.send(result);
-    })
-        .catch((err) => {
-            next(err);
-        });;
+    }
+    catch (err) {
+        next(err);
+    }
 });
 
 router.route("/davkharaarToololtAvya").post(tokenShalgakh, async (req, res, next) => {
