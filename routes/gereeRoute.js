@@ -565,11 +565,6 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                   $ne: -1
                 }
               }
-            },
-            {
-              '$unwind': {
-                'path': '$avlaga.guilgeenuud'
-              }
             }, {
               '$facet': {
                 'khariltsagch': [
@@ -624,6 +619,11 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                   }
                 ],
                 'umnukhSariinUrTulbur': [
+                  {
+                    '$unwind': {
+                      'path': '$avlaga.guilgeenuud'
+                    }
+                  },
                   {
                     '$match': {
                       "avlaga.guilgeenuud.turul": {
@@ -710,6 +710,11 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                 ],
                 'niitUldegdel': [
                   {
+                    '$unwind': {
+                      'path': '$avlaga.guilgeenuud'
+                    }
+                  },
+                  {
                     '$match': {
                       "avlaga.guilgeenuud.turul": {
                         $nin: ["baritsaa"]
@@ -757,6 +762,11 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                 ],
                 'eneSardTulukhDun': [
                   {
+                    '$unwind': {
+                      'path': '$avlaga.guilgeenuud'
+                    }
+                  },
+                  {
                     '$match': {
                       "avlaga.guilgeenuud.turul": {
                         $nin: ["baritsaa"]
@@ -795,6 +805,11 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                 ],
                 'nekhemjlekhDeerGarakh': [
                   {
+                    '$unwind': {
+                      'path': '$avlaga.guilgeenuud'
+                    }
+                  },
+                  {
                     '$match': {
                       'avlaga.guilgeenuud.ognoo': {
                         '$lte': new Date(req.body.duusakhOgnoo),
@@ -829,9 +844,8 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.nemeltNekhemjlekh = (gereenuud[0].nekhemjlekhDeerGarakh.find(a => a._id == x.gereeniiDugaar)?.guilgeenuud || [])
-              x.khariltsagchiinId = gereenuud[0].khariltsagch.findOne(a => a.register == x.register)?.khariltsagchiinId;
-              x.firebaseToken = gereenuud[0].khariltsagch.findOne(a => a.register == x.register)?.token;
-
+              x.khariltsagchiinId = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.khariltsagchiinId;
+              x.firebaseToken = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.token;
               if (x.umnukhSariinUrTulbur < 0)
                 x.umnukhSariinUrTulbur = 0
               if (x.eneSardTulukhDun < 0)
