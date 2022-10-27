@@ -26,6 +26,8 @@ router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, async (req, res, next) =
         sonorduulga.zurgiinId = req.body.zurgiinId;
         if (req.body.khariltsagchiinId)
             sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
+        if (!req.body.turul)
+            sonorduulga.turul = "medegdel"
         sonorduulga.title = medeelel.title;
         sonorduulga.message = medeelel.body;
         sonorduulga.kharsanEsekh = false;
