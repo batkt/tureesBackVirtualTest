@@ -36,11 +36,12 @@ module.exports.tulburZooyo = async function tulburZooyo() {
           'filter': {
             'tulbur': { $exists: false },
             'turul': {
-              $nin: ["Гэрээт", "Дотоод"]
+              $nin: ["Гэрээт", "Түрээслэгч", "Дотоод"]
             },
             'khugatsaa': {
               $gt: baiguullaga.tokhirgoo.zogsooliinKhungulukhMinut
-            }
+            },
+            "baiguullagiinId": baiguullaga._id
           },
           'update': [{
             $set: {
