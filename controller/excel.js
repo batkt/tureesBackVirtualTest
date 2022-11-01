@@ -935,6 +935,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.tulukhUdur = [mur[usegTooruuKhurvuulekh(tolgoinObject.tulukhUdur)]];
         object.talbainDugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.talbainDugaar)];
         object.baritsaaAwakhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaAwakhKhugatsaa)];
+        if (!object.baritsaaAwakhKhugatsaa) object.baritsaaAwakhKhugatsaa = 0;
         object.baritsaaBairshuulakhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaBairshuulakhKhugatsaa)];
         object.uldegdel = mur[usegTooruuKhurvuulekh(tolgoinObject.avlaga)];
         object.daraagiinTulukhOgnoo = moment(ognoo).add(1, 'month').set('date', object.tulukhUdur);
