@@ -130,7 +130,7 @@ async function khariltsagchBaikhguigShalgaya(khariltsagchid, aldaaniiMsg, baiguu
 
   const toFindDuplicates = arry => arry.filter((item, index) => arry.indexOf(item) !== index)
   var davkhardsanKod = toFindDuplicates(utasniiJagsaalt);
-  if (davkhardsanKod)
+  if (davkhardsanKod && davkhardsanKod.length > 0)
     shineAldaaniiMsg = aldaaniiMsg + "Дараах утасны дугаартай харилцагчид давхардаж байна! : " + davkhardsanKod + '<br/>';
 
   var khariltsagchiinJagsaalt = await Khariltsagch.find({ "register": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId, "barilgiinId": barilgiinId });
