@@ -84,7 +84,7 @@ router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
         var result1 = await Talbai.aggregate(query);
         if (result1 && result1.length > 0) {
             if (result && result.length > 0) {
-                result.push(result[0]);
+                result.push(result1[0]);
             }
             else
                 result = result1;
