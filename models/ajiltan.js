@@ -77,7 +77,8 @@ ajiltanSchema.pre("save", async function () {
 ajiltanSchema.pre("updateOne", async function () {
   this.indexTalbar = this._update.register + this._update.nevtrekhNer;
   const salt = await bcrypt.genSalt(12);
-  this._update.nuutsUg = await bcrypt.hash(this._update.nuutsUg, salt);
+  if (this._update.nuutsUg)
+    this._update.nuutsUg = await bcrypt.hash(this._update.nuutsUg, salt);
 });
 
 ajiltanSchema.methods.passwordShalgaya = async function (pass) {
