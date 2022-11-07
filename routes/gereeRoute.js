@@ -303,43 +303,51 @@ router.route("/gereeZasya").post(tokenShalgakh, gereeZasakhShalguur, async (req,
 })
 
 router.route("/gereeSungaya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
-  var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
-  var tuukh = {
-    umnukhDuusakhOgnoo: geree.duusakhOgnoo,
-    shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
-    khiisenOgnoo: new Date(),
-    turul: "Sungakh",
-    ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
-    ajiltniiId: req.body.nevtersenAjiltniiToken.id
+  try {
+    var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
+    var shineDuusakhOgnoo = new Date(req.body.duusakhOgnoo);
+    if (shineDuusakhOgnoo < new Date())
+      throw new Error("Сунгах огноо өнөөдрөөс хойш байх шаардлагатай!")
+    var tuukh = {
+      umnukhDuusakhOgnoo: geree.duusakhOgnoo,
+      shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
+      khiisenOgnoo: new Date(),
+      turul: "Sungakh",
+      ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+      ajiltniiId: req.body.nevtersenAjiltniiToken.id
+    }
+    if (geree.gereeniiTuukhuud) {
+      Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
+        $push: {
+          [`gereeniiTuukhuud`]: tuukh
+        },
+        $set: {
+          "duusakhOgnoo": req.body.duusakhOgnoo
+        }
+      }).then((result) => {
+        res.send("Amjilttai");
+      })
+        .catch((err) => {
+          next(err);
+        });
+    }
+    else {
+      tuukh = [tuukh]
+      Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
+        $set: {
+          "duusakhOgnoo": req.body.duusakhOgnoo,
+          "gereeniiTuukhuud": tuukh
+        }
+      }).then((result) => {
+        res.send("Amjilttai");
+      })
+        .catch((err) => {
+          next(err);
+        });
+    }
   }
-  if (geree.gereeniiTuukhuud) {
-    Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
-      $push: {
-        [`gereeniiTuukhuud`]: tuukh
-      },
-      $set: {
-        "duusakhOgnoo": req.body.duusakhOgnoo
-      }
-    }).then((result) => {
-      res.send("Amjilttai");
-    })
-      .catch((err) => {
-        next(err);
-      });
-  }
-  else {
-    tuukh = [tuukh]
-    Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
-      $set: {
-        "duusakhOgnoo": req.body.duusakhOgnoo,
-        "gereeniiTuukhuud": tuukh
-      }
-    }).then((result) => {
-      res.send("Amjilttai");
-    })
-      .catch((err) => {
-        next(err);
-      });
+  catch (err) {
+
   }
 });
 
