@@ -63,19 +63,24 @@ async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
 }
 
 async function ebarimtDuudya(ugugdul, onFinish, next) {
-    const data = new TextEncoder().encode(JSON.stringify(ugugdul));
-    var url = process.env.EBARIMT_IP + "/put";
-    if (ugugdul.barilgiinId) url = url + "?lib=" + ugugdul.barilgiinId.toString();
-    request.post(url,
-        { json: true, body: { data: ugugdul } },
-        (err, res1, body) => {
-            if (err) next(err);
-            else {
-                console.log("ebarimt body", body);
-                onFinish(body);
+    try {
+        const data = new TextEncoder().encode(JSON.stringify(ugugdul));
+        var url = process.env.EBARIMT_IP + "/put";
+        if (ugugdul.barilgiinId) url = url + "?lib=" + ugugdul.barilgiinId.toString();
+        request.post(url,
+            { json: true, body: { data: ugugdul } },
+            (err, res1, body) => {
+                if (err) next(err);
+                else {
+                    console.log("ebarimt body", body);
+                    onFinish(body);
+                }
             }
-        }
-    );
+        );
+    }
+    catch (aldaa) {
+        next(aldaa)
+    }
 }
 
 async function ebarimtMedeelelAvya(ugugdul, onFinish, next) {
