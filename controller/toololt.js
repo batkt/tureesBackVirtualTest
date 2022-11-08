@@ -93,11 +93,31 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
       }
     }
   ]
+  var turQuery = [
+    {
+      '$match': {
+        'baiguullagiinId': req.body.baiguullagiinId,
+        'barilgiinId': req.body.barilgiinId
+      }
+    },
+    {
+      '$group': {
+        '_id': '$turGereeEsekh',
+        'turGeree': {
+          '$sum': 1
+        }
+      }
+    },
+  ]
+  var turGeree = await Geree.aggregate(turQuery);
   Geree.aggregate(query).then((result) => {
     if (result && result.length > 0) {
       if (result[0].tsutsalsan && result[0].tsutsalsan.length > 0 && result[0].busad && result[0].busad.length > 0)
         result[0].busad[0].tsutsalsan = result[0].tsutsalsan[0].tsutsalsan;
       result = result[0].busad;
+      if (turGeree && turGeree.length > 0) {
+        result[0].turGeree = turGeree;
+      }
     }
     res.send(result);
   })
