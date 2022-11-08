@@ -3,6 +3,7 @@ const router = express.Router();
 const Ajiltan = require("../models/ajiltan");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crudWithFile, UstsanBarimt } = require("zevback");
+const fs = require('fs');
 const {
   ajiltanNevtrey,
   tokenoorAjiltanAvya
@@ -32,8 +33,6 @@ crudWithFile(router, 'ajiltan', Ajiltan, {
     next(error);
   }
 })
-
-
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 
@@ -170,6 +169,92 @@ router.post('/erkhteiEsekh', tokenShalgakh, async (req, res, next) => {
   }
 })
 
+router.post('/backAvya', async (req, res, next) => {
+  try {
+    const { spawn } = require('child_process')
+
+    try {
+      fs.unlinkSync("file/tmp/dump.tar")
+      console.log("removed")
+      //file removed
+    } catch (err) {
+      console.error(err)
+    }
+    let backupProcess = spawn('mongodump', [
+      '--host', 'localhost',
+      '--port', '27017',
+      '--db', 'turees',
+      '--archive', './file/tmp/dump.tar',
+      '--gzip'
+    ], { shell: true });
+
+    backupProcess.on('exit', (code, signal) => {
+      if (code)
+        console.log('Backup process exited with code ', code);
+      else if (signal)
+        console.error('Backup process was killed with singal ', signal);
+      else {
+        var options = {
+          root: "file/tmp"
+        };
+        res.sendFile("dump.tar", options, function (err) {
+          if (err) {
+            next(err);
+          } else {
+            next();
+          }
+        });
+      }
+    });
+
+    /*var backupDB = exec('mongodump --host=' + "localhost" + ' --port=' + "27017" + ' --db=' + "itgel" + ' --archive=' + "file/tmp" + '/' + "dump.tar" + '.gz  --gzip',
+      (err, stdout, stderr) => {
+        if (err) {
+          console.error(`exec error: ${err}`);
+          res.send(err);
+        }
+        if (stdout) {
+          console.error(`exec stdout: ${stdout}`);
+          res.send(stdout);
+        }
+        if (stderr) {
+          console.error(`exec stderr: ${stderr}`);
+          res.send(stderr);
+        }
+      })*/
+
+    /*        console.log(`Number of files ${stdout}`););
+        backupDB.stdout.on('data', function (data) {
+          console.log('stdout: ' + data);// process output will be displayed here
+          res.send(data);
+        });
+        backupDB.stderr.on('err', function (data) {
+          console.error('err: ' + data);// process output will be displayed here
+          res.send(data);
+        })*/
+    /*var backup = require('mongodb-backup');
+    backup({
+      uri: 'mongodb://localhost:27017/itgel', // mongodb://<dbuser>:<dbpassword>@<dbdomain>.mongolab.com:<dbport>/<dbdatabase>
+      root: "file/tmp/",
+      tar: 'dump.tar.gz',
+      stream: res,
+      /*callback: async () => {
+        var options = {
+          root: "file/tmp"
+        };
+        res.sendFile("dump.tar", options, function (err) {
+          if (err) {
+            next(err);
+          } else {
+            next();
+          }
+        });
+    }
+    });*/
+  } catch (error) {
+    next(error);
+  }
+})
 
 
 module.exports = router;
