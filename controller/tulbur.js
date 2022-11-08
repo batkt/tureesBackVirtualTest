@@ -534,6 +534,11 @@ async function tooZasya(too) {
 exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
   if (!req.body.tailbar)
     throw new Error("Тайлбар заавал оруулна уу?");
+  if (req.body.guilgeeniiId) {
+    var bankGuilgee = await BankniiGuilgee.findOne({ _id: req.body.guilgeeniiId });
+    if (bankGuilgee && bankGuilgee.ebarimtAvsanEsekh)
+      throw new Error("ИБаримт авсан гүйлгээг устгах боломжгүй! ИБаримтын гүйлгээг устгасны дараа устгах боломжтой!");
+  }
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
