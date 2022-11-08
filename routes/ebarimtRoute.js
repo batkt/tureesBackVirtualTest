@@ -150,6 +150,9 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         ebarimtDuudya(
             ebarimt,
             (d) => {
+                if (!d.success) {
+                    throw new Error(d.message);
+                }
                 var ebarimt = new Ebarimt(d)
                 ebarimt.save().catch((err) => {
                     next(err);
