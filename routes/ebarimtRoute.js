@@ -150,16 +150,19 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         ebarimtDuudya(
             ebarimt,
             (d) => {
-                if (!d.success) {
-                    throw new Error(d.message);
-                }
-                var ebarimt = new Ebarimt(d)
-                ebarimt.save().catch((err) => {
+                try {
+                    if (!d.success)
+                        throw new Error(d.message);
+                    var ebarimt = new Ebarimt(d)
+                    ebarimt.save().catch((err) => {
+                        next(err);
+                    });
+                    BankniiGuilgee.findByIdAndUpdate({ "_id": req.body.id }, { ebarimtAvsanEsekh: true }).then((xariu) => { console.log(xariu) }).catch((err) => { console.log(err) });
+                    console.log("duuslaa", d);
+                    res.send(d);
+                } catch (err) {
                     next(err);
-                });
-                BankniiGuilgee.findByIdAndUpdate({ "_id": req.body.id }, { ebarimtAvsanEsekh: true }).then((xariu) => { console.log(xariu) }).catch((err) => { console.log(err) });
-                console.log("duuslaa", d);
-                res.send(d);
+                }
             },
             next
         );
