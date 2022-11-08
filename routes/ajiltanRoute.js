@@ -207,7 +207,7 @@ router.post('/backAvya', async (req, res, next) => {
       }
     });*/
 
-    var backupDB = exec('mongodump --host=' + "localhost" + ' --port=' + "27017" + ' --db=' + "itgel" + ' --archive=' + "file/tmp" + '/' + "dump.tar" + '.gz  --gzip',
+    var backupDB = exec('mongodump --host=' + "localhost" + ' --port=' + "27017" + ' --db=' + "turees" + ' --archive=' + "file/tmp" + '/' + "dump.tar" + '.gz  --gzip',
       (err, stdout, stderr) => {
         if (err) {
           console.error(`exec error: ${err}`);
