@@ -171,7 +171,7 @@ router.post('/erkhteiEsekh', tokenShalgakh, async (req, res, next) => {
 
 router.post('/backAvya', async (req, res, next) => {
   try {
-    const { spawn } = require('child_process')
+    const { spawn, exec } = require('child_process')
 
     try {
       fs.unlinkSync("file/tmp/dump.tar")
@@ -180,7 +180,7 @@ router.post('/backAvya', async (req, res, next) => {
     } catch (err) {
       console.error(err)
     }
-    let backupProcess = spawn('mongodump', [
+    /*let backupProcess = spawn('mongodump', [
       '--host', 'localhost',
       '--port', '27017',
       '--db', 'turees',
@@ -205,9 +205,9 @@ router.post('/backAvya', async (req, res, next) => {
           }
         });
       }
-    });
+    });*/
 
-    /*var backupDB = exec('mongodump --host=' + "localhost" + ' --port=' + "27017" + ' --db=' + "itgel" + ' --archive=' + "file/tmp" + '/' + "dump.tar" + '.gz  --gzip',
+    var backupDB = exec('mongodump --host=' + "localhost" + ' --port=' + "27017" + ' --db=' + "itgel" + ' --archive=' + "file/tmp" + '/' + "dump.tar" + '.gz  --gzip',
       (err, stdout, stderr) => {
         if (err) {
           console.error(`exec error: ${err}`);
@@ -215,13 +215,22 @@ router.post('/backAvya', async (req, res, next) => {
         }
         if (stdout) {
           console.error(`exec stdout: ${stdout}`);
-          res.send(stdout);
+          var options = {
+            root: "file/tmp"
+          };
+          res.sendFile("dump.tar", options, function (err) {
+            if (err) {
+              next(err);
+            } else {
+              next();
+            }
+          });
         }
         if (stderr) {
           console.error(`exec stderr: ${stderr}`);
           res.send(stderr);
         }
-      })*/
+      })
 
     /*        console.log(`Number of files ${stdout}`););
         backupDB.stdout.on('data', function (data) {
