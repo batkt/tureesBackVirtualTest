@@ -219,13 +219,14 @@ router.post('/backAvya', tokenShalgakh, async (req, res, next) => {
         if (stdout) {
           console.error(`exec stdout: ${stdout}`);
           if (stdout.includes("error"))
-            res.send(new Error("back авах боломжгүй байна!"));
+            res.send(new Error("Back авах боломжгүй байна!"));
           else {
-            var options = {
-              root: "file/tmp"
-            };
-            res.sendFile("dump.tar", options, function (err) {
+            if (!fs.existsSync("file/tmp/dump.tar"))
+              res.send(new Error("Back авах боломжгүй байна!"));
+            var path = require('path');
+            res.sendFile(path.resolve("file/tmp/dump.tar"), function (err) {
               if (err) {
+                console.log("err", err);
                 next(err);
               } else {
                 next();
@@ -236,13 +237,14 @@ router.post('/backAvya', tokenShalgakh, async (req, res, next) => {
         if (stderr) {
           console.error(`exec stderr: ${stderr}`);
           if (stderr.includes("error"))
-            res.send(new Error("back авах боломжгүй байна!"));
+            res.send(new Error("Back авах боломжгүй байна!"));
           else {
-            var options = {
-              root: "file/tmp"
-            };
-            res.sendFile("dump.tar", options, function (err) {
+            if (!fs.existsSync("file/tmp/dump.tar"))
+              res.send(new Error("Back авах боломжгүй байна!"));
+            var path = require('path');
+            res.sendFile(path.resolve("file/tmp/dump.tar"), function (err) {
               if (err) {
+                console.log("err", err);
                 next(err);
               } else {
                 next();
