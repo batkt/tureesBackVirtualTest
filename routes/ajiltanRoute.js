@@ -208,9 +208,10 @@ router.post('/backAvya', tokenShalgakh, async (req, res, next) => {
     });*/
 
     var backupDB = exec('mongodump --host=' + "localhost" + ' --port=' + "27017" + ' --db=' + "turees" + ' --archive=' + "file/tmp" + '/' + "dump.tar" + '.gz  --gzip',
-      (err, stdout) => {
+      (err, stdout, stderr) => {
         console.log("err -->", err)
         console.log("stdout -->", stdout)
+        console.log("stderr -->", stderr)
         if (err) {
           console.error(`exec error: ${err}`);
           res.send(err);
@@ -218,7 +219,24 @@ router.post('/backAvya', tokenShalgakh, async (req, res, next) => {
         if (stdout) {
           console.error(`exec stdout: ${stdout}`);
           if (stdout.includes("error"))
-            res.send(new Error(stdout));
+            res.send(new Error("back авах боломжгүй байна!"));
+          else {
+            var options = {
+              root: "file/tmp"
+            };
+            res.sendFile("dump.tar", options, function (err) {
+              if (err) {
+                next(err);
+              } else {
+                next();
+              }
+            });
+          }
+        }
+        if (stderr) {
+          console.error(`exec stderr: ${stderr}`);
+          if (stderr.includes("error"))
+            res.send(new Error("back авах боломжгүй байна!"));
           else {
             var options = {
               root: "file/tmp"
