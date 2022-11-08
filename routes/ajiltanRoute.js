@@ -208,33 +208,32 @@ router.post('/backAvya', tokenShalgakh, async (req, res, next) => {
     });*/
 
     var backupDB = exec('mongodump --host=' + "localhost" + ' --port=' + "27017" + ' --db=' + "turees" + ' --archive=' + "file/tmp" + '/' + "dump.tar" + '.gz  --gzip',
-      (err, stdout, stderr) => {
+      (err, stdout) => {
         console.log("err -->", err)
         console.log("stdout -->", stdout)
-        console.log("stderr -->", stderr)
         if (err) {
           console.error(`exec error: ${err}`);
           res.send(err);
         }
         if (stdout) {
           console.error(`exec stdout: ${stdout}`);
-          var options = {
-            root: "file/tmp"
-          };
-          res.sendFile("dump.tar", options, function (err) {
-            if (err) {
-              next(err);
-            } else {
-              next();
-            }
-          });
-        }
-        if (stderr) {
-          console.error(`exec stderr: ${stderr}`);
-          res.send(stderr);
+          if (stdout.includes("error"))
+            res.send(new Error(stdout));
+          else {
+            var options = {
+              root: "file/tmp"
+            };
+            res.sendFile("dump.tar", options, function (err) {
+              if (err) {
+                next(err);
+              } else {
+                next();
+              }
+            });
+          }
         }
       })
-    /*        console.log(`Number of files ${stdout}`););
+    /*console.log(`Number of files ${stdout}`););
         backupDB.stdout.on('data', function (data) {
           console.log('stdout: ' + data);// process output will be displayed here
           res.send(data);
