@@ -293,7 +293,7 @@ router.route("/gereeZasya").post(tokenShalgakh, gereeZasakhShalguur, async (req,
       },
       geree
     ).then((result) => {
-      talbaiKhariltsagchiinTuluvUurchluy([result._id]);
+      talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
     });
     res.send("Amjilttai");
   }
@@ -435,17 +435,19 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
       var talbainuud = await Talbai.find({ '_id': { $in: geree.talbainIdnuud } });
       for await (const talbai of talbainuud) {
         if (talbai.niitiinTalbaiEsekh) {
-          let tukhainTalbainGereenuud = await Geree.find({ barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 }, talbainDugaar: geree.talbainDugaar });
+          let tukhainTalbainGereenuud = await Geree.find({ barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 }, talbainIdnuud: talbai._id });
           var niitIdevkhiteiTalbai = lodash.sumBy(tukhainTalbainGereenuud, function (object) {
             return object.talbainKhemjee;
           });
+          var sulKhemjee = (talbai.talbainKhemjee - niitIdevkhiteiTalbai);
+          if (sulKhemjee < 0) sulKhemjee = 0;
           let upsertTalbai = {
             'updateOne': {
-              'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
-              'update': [{
+              'filter': { '_id': talbai._id },
+              'update': {
                 "idevkhiteiEsekh": (geree.tuluv == 1),
-                "sulKhemjee": (talbai.talbainKhemjee - niitIdevkhiteiTalbai)
-              }]
+                "sulKhemjee": sulKhemjee
+              }
             }
           };
           talbainBulk.push(upsertTalbai);
@@ -453,7 +455,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
         else {
           let upsertTalbai = {
             'updateOne': {
-              'filter': { 'kod': geree.talbainDugaar, 'barilgiinId': geree.barilgiinId },
+              'filter': { '_id': talbai._id },
               'update': {
                 "idevkhiteiEsekh": (geree.tuluv == 1)
               }
