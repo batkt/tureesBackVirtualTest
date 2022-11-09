@@ -1017,6 +1017,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     catch (err) {
       throw new aldaa(aldaaniiMsg + muriinDugaar + " дугаар мөрөнд алдаа гарлаа" + err);
     }
+    if (jagsaalt.length == 0)
+      throw new Error("Хоосон файл байна!")
     aldaaniiMsg = await gereeBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
     aldaaniiMsg = await khariltsagchBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId, req.body.barilgiinId);
     aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId, req.body.barilgiinId);
