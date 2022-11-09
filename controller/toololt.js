@@ -118,7 +118,7 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
       if (result[0].tsutsalsan && result[0].tsutsalsan.length > 0 && result[0].busad && result[0].busad.length > 0)
         result[0].busad[0].tsutsalsan = result[0].tsutsalsan[0].tsutsalsan;
       result = result[0].busad;
-      if (turGeree && turGeree.length > 0) {
+      if (turGeree && turGeree.length > 0 && result && result.length > 0) {
         result[0].turGeree = turGeree.find((a) => a._id)?.too;
         result[0].undsenGeree = turGeree.find((a) => !a._id)?.too;
       }
