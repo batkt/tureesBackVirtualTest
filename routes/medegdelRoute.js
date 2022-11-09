@@ -17,7 +17,11 @@ router.route("/sanalKharlaa").post(tokenShalgakh, sanalKharlaa);
 router.route("/sonorduulgaKharlaa").post(tokenShalgakh, sonorduulgaKharlaa);
 router.route("/sanalKhuleenAvlaa").post(tokenShalgakh, sanalKhuleenAvlaa);
 router.route("/sonorduulgaIlgeeye").post(tokenShalgakh, async (req, res, next) => {
-    const { firebaseToken, medeelel } = req.body
+    const { medeelel } = req.body
+    var firebaseToken = req.body.firebaseToken;
+    var kharilltsagch = await Khariltsagch.findOne({ _id: req.body.khariltsagchiinId })
+    if (kharilltsagch)
+        firebaseToken = kharilltsagch.firebaseToken
     sonorduulgaIlgeeye(firebaseToken, medeelel, (r) => {
         var sonorduulga = new Sonorduulga();
         sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;

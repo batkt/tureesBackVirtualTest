@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
 const SanalGomdol = require("../models/sanalGomdol");
+const Khariltsagch = require("../models/khariltsagch");
 const SonorduulgaObject = require("../models/sonorduulga");
 const Sonorduulga = require("../components/sonorduulga");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
@@ -19,13 +20,17 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
     try {
         var medegdel = new SanalGomdol(req.body);
         medegdel.ognoo = new Date();
-        medegdel.save(req.body).then((khariu) => {
+        medegdel.save(req.body).then(async (khariu) => {
             if (medegdel.turul != "shaardlaga") {
                 Sonorduulga.ilgeeye(io = req.app.get('socketio'), medegdel);
                 res.send("Amjilttai");
             }
             else {
-                sonorduulgaIlgeeye(req.body.firebaseToken, { title: req.body.title, body: req.body.message }, (r) => {
+                var firebaseToken = req.body.firebaseToken;
+                var kharilltsagch = await Khariltsagch.findOne({ _id: req.body.khariltsagchiinId })
+                if (kharilltsagch)
+                    firebaseToken = kharilltsagch.firebaseToken
+                sonorduulgaIlgeeye(firebaseToken, { title: req.body.title, body: req.body.message }, (r) => {
                     var sonorduulga = new SonorduulgaObject(req.body);
                     if (req.body.khariltsagchiinId)
                         sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
