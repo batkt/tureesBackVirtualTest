@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const SanalGomdol = require("../models/sanalGomdol");
 const Sonorduulga = require("../models/sonorduulga");
+const Khariltsagch = require("../models/khariltsagch");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const { crud } = require("../components/crud");
 //const UstsanBarimt = require("../models/ustsanBarimt");
