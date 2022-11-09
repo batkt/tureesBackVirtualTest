@@ -203,7 +203,7 @@ crud(router, "geree", Geree, UstsanBarimt, async (req, res, next) => {
   }
 }, gereeZasakhShalguur);
 
-router.route("/gereeKhadgalya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   const khariltsagch = new Khariltsagch(req.body);
   khariltsagch.id = khariltsagch.register;
   var unuudur = new Date();
