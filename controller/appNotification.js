@@ -22,7 +22,7 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
             .then(response => {
                 if (callback)
                     callback(response);
-                console.log("Notification sent successfully", response)
+                console.log("Notification sent successfully", JSON.stringify(response))
             })
             .catch(error => {
                 next(error);
