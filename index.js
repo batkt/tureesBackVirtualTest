@@ -52,7 +52,7 @@ app.set("socketio", io);
 app.use(cors());
 app.use(
   express.json({
-    limit: "50mb",
+    limit: "100mb",
   })
 );
 app.use(baiguullagaRoute);
