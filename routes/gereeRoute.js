@@ -1803,75 +1803,75 @@ router.route("/utasniiDugaaraarGereeAvya").post(tokenShalgakh, async (req, res, 
 router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, res, next) => {
   try {
     console.log("ene sard", req.body);
-    var query = [
-      {
-        '$unwind': {
-          'path': '$avlaga.guilgeenuud'
-        }
-      }, {
-        '$match': {
-          'baiguullagiinId': req.body.baiguullagiinId,
-          'barilgiinId': req.body.barilgiinId,
-          'tuluv': {
-            $ne: -1
-          }
-        }
-      }, {
-        '$facet': {
-          'niitUldegdel': [
-            {
-              '$match': {
-                'avlaga.guilgeenuud.ognoo': {
-                  '$lte': new Date(req.body.duusakhOgnoo)
-                }
-              }
-            }, {
-              '$group': {
-                '_id': '$gereeniiDugaar',
-                'tulukh': {
-                  '$sum': '$avlaga.guilgeenuud.tulukhDun'
-                },
-                'khyamdral': {
-                  '$sum': '$avlaga.guilgeenuud.khyamdral'
-                },
-                'tulsun': {
-                  '$sum': '$avlaga.guilgeenuud.tulsunDun'
-                }
-              }
-            }, {
-              '$project': {
-                'gereeniiDugaar': '$gereeniiDugaar',
-                'uldegdel': {
-                  '$subtract': [
-                    '$tulukh', {
-                      '$sum': [
-                        '$tulsun', '$khyamdral'
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-          ],
-          'eneSardTuluugui': [
-            {
-              '$match': {
-                'avlaga.guilgeenuud.ognoo': {
-                  '$lte': new Date(req.body.duusakhOgnoo),
-                  '$gte': new Date(req.body.ekhlekhOgnoo)
-                }
-              }
-            }, {
-              '$group': {
-                '_id': '$gereeniiDugaar',
-                'tulsun': {
-                  '$sum': '$avlaga.guilgeenuud.tulsunDun'
-                }
-              }
-            }
-          ]
+    var query = [{
+      '$match': {
+        'baiguullagiinId': req.body.baiguullagiinId,
+        'barilgiinId': req.body.barilgiinId,
+        'tuluv': {
+          $ne: -1
         }
       }
+    },
+    {
+      '$unwind': {
+        'path': '$avlaga.guilgeenuud'
+      }
+    }, {
+      '$facet': {
+        'niitUldegdel': [
+          {
+            '$match': {
+              'avlaga.guilgeenuud.ognoo': {
+                '$lte': new Date(req.body.duusakhOgnoo)
+              }
+            }
+          }, {
+            '$group': {
+              '_id': '$gereeniiDugaar',
+              'tulukh': {
+                '$sum': '$avlaga.guilgeenuud.tulukhDun'
+              },
+              'khyamdral': {
+                '$sum': '$avlaga.guilgeenuud.khyamdral'
+              },
+              'tulsun': {
+                '$sum': '$avlaga.guilgeenuud.tulsunDun'
+              }
+            }
+          }, {
+            '$project': {
+              'gereeniiDugaar': '$gereeniiDugaar',
+              'uldegdel': {
+                '$subtract': [
+                  '$tulukh', {
+                    '$sum': [
+                      '$tulsun', '$khyamdral'
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        'eneSardTulukh': [
+          {
+            '$match': {
+              'avlaga.guilgeenuud.ognoo': {
+                '$lte': new Date(req.body.duusakhOgnoo),
+                '$gte': new Date(req.body.ekhlekhOgnoo)
+              }
+            }
+          }, {
+            '$group': {
+              '_id': '$gereeniiDugaar',
+              'tulukh': {
+                '$sum': '$avlaga.guilgeenuud.tulukhDun'
+              }
+            }
+          }
+        ]
+      }
+    }
     ]
     var gereenuud = await Geree.aggregate(query);
     console.log(gereenuud);
@@ -1897,10 +1897,10 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
           console.log("result", result);
           if (result && result.jagsaalt && result.jagsaalt.length > 0)
             result.jagsaalt.forEach(x => {
-              x.eneSardTuluugui = (gereenuud[0].eneSardTuluugui.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
+              x.eneSardTulukh = (gereenuud[0].eneSardTulukh.find(a => a._id == x.gereeniiDugaar)?.tulukh || 0)
               x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-              if (x.eneSardTuluugui < 0)
-                x.eneSardTuluugui = 0
+              if (x.eneSardTulukh < 0)
+                x.eneSardTulukh = 0
               if (x.niitUldegdel < 0)
                 x.niitUldegdel = 0
             });
