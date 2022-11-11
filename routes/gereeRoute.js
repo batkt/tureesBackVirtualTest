@@ -841,6 +841,30 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                       }
                     }
                   }
+                ],
+                'zardluud': [
+                  {
+                    '$unwind': {
+                      'path': '$avlaga.guilgeenuud'
+                    }
+                  },
+                  {
+                    '$match': {
+                      'avlaga.guilgeenuud.ognoo': {
+                        '$lte': new Date(req.body.duusakhOgnoo),
+                        '$gte': new Date(req.body.ekhlekhOgnoo)
+                      },
+                      "avlaga.guilgeenuud.turul": "avlaga"
+                    }
+                  },
+                  {
+                    $group: {
+                      "_id": "$gereeniiDugaar",
+                      "guilgeenuud": {
+                        $push: "$avlaga"
+                      }
+                    }
+                  }
                 ]
               }
             }
@@ -854,6 +878,7 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
               x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
               x.nemeltNekhemjlekh = (gereenuud[0].nekhemjlekhDeerGarakh.find(a => a._id == x.gereeniiDugaar)?.guilgeenuud || [])
+              x.zardluud = (gereenuud[0].zardluud.find(a => a._id == x.gereeniiDugaar)?.guilgeenuud || [])
               x.khariltsagchiinId = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.khariltsagchiinId;
               x.firebaseToken = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.token;
               if (x.umnukhSariinUrTulbur < 0)
