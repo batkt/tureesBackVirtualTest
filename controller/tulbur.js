@@ -291,7 +291,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     var body = req.body;
     var dun = body.dun;
     var zardluud = body.zardluud;
-    var khugatsaa = body.khugatsaa
+    var khugatsaa = Number(body.khugatsaa)
     if (body.turGereeEsekh)
       khugatsaa = 1;
     var tulukhUdruud = body.tulukhUdruud;
