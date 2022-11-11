@@ -62,6 +62,7 @@ const gereeSchema = new Schema(
     gerchilgeeniiZurag: String,
     unemlekhniiZurag: String,
     zuvshuurliinZurag: String,
+    zoriulalt: String,
     talbainDugaar: String,
     talbainIdnuud: [String],
     talbainNegjUne: Number,
