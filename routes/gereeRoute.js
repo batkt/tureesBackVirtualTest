@@ -1875,11 +1875,11 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
     ]
     var gereenuud = await Geree.aggregate(query);
     console.log(gereenuud);
-    if (gereenuud.length < 0 || gereenuud[0].eneSardTuluugui.length < 1)
+    if (gereenuud.length < 0 || gereenuud[0].tuluvluguut.length < 1)
       res.send(null);
     else {
       var turJagsaalt = [];
-      gereenuud[0].eneSardTuluugui.forEach(x => {
+      gereenuud[0].tuluvluguut.forEach(x => {
         if (!x.tulsun || x.tulsun == 0)
           turJagsaalt.push(x._id)
       });
