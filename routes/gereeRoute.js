@@ -1853,7 +1853,7 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
             }
           }
         ],
-        'eneSardTulukh': [
+        'tuluvluguut': [
           {
             '$match': {
               'avlaga.guilgeenuud.ognoo': {
@@ -1897,10 +1897,10 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
           console.log("result", result);
           if (result && result.jagsaalt && result.jagsaalt.length > 0)
             result.jagsaalt.forEach(x => {
-              x.eneSardTulukh = (gereenuud[0].eneSardTulukh.find(a => a._id == x.gereeniiDugaar)?.tulukh || 0)
+              x.tuluvluguut = (gereenuud[0].tuluvluguut.find(a => a._id == x.gereeniiDugaar)?.tulukh || 0)
               x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-              if (x.eneSardTulukh < 0)
-                x.eneSardTulukh = 0
+              if (x.tuluvluguut < 0)
+                x.tuluvluguut = 0
               if (x.niitUldegdel < 0)
                 x.niitUldegdel = 0
             });
