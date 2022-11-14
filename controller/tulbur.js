@@ -335,10 +335,10 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               undsenDun: dun
             })
             if (zardluud && zardluud.length > 0) {
-              zardluud.forEach(async (zardal) => {
+              zardluud.forEach((zardal) => {
                 if (zardal) {
                   if (zardal.turul == "1м2")
-                    zardal.dun = await tooZasya(zardal.tariff * body.mk);
+                    zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
                   if (zardal.turul == "Тогтмол")
                     zardal.dun = zardal.tariff;
                   butsaakhJagsaalt.push({
@@ -528,6 +528,12 @@ module.exports.aldangiBodyo = async function aldangiBodyo() {
 
 async function tooZasya(too) {
   var zassanToo = await Math.round((too + Number.EPSILON) * 100) / 100;
+  return +zassanToo.toFixed(2)
+}
+
+
+function tooZasyaSync(too) {
+  var zassanToo = Math.round((too + Number.EPSILON) * 100) / 100;
   return +zassanToo.toFixed(2)
 }
 
