@@ -1884,13 +1884,35 @@ router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, re
               'avlaga.guilgeenuud.ognoo': {
                 '$lte': new Date(req.body.duusakhOgnoo),
                 '$gte': new Date(req.body.ekhlekhOgnoo)
+              },
+              'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+                '$ne': 'System'
+              },
+              'avlaga.guilgeenuud.turul': "khuvaari",
+              'avlaga.guilgeenuud.turul': {
+                '$nin': ["baritsaa"]
               }
             }
           }, {
             '$group': {
               '_id': '$gereeniiDugaar',
               'tulukh': {
-                '$sum': '$avlaga.guilgeenuud.tulukhDun'
+                '$sum': {
+                  '$ifNull': ['$avlaga.guilgeenuud.tulukhDun', 0]
+                }
+              },
+              'khyamdral': {
+                '$sum': {
+                  '$ifNull': ['$avlaga.guilgeenuud.khyamdral', 0]
+                }
+              }
+            }
+          }, {
+            '$project': {
+              'tulukh': {
+                '$subtract': [
+                  '$tulukh', '$khyamdral'
+                ]
               }
             }
           }
