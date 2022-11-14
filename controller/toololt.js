@@ -68,8 +68,13 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
               'sungakh': {
                 '$cond': [
                   {
-                    '$lte': [
-                      '$duusakhOgnoo', new Date(moment(new Date).add(1, 'month'))
+                    $and: [
+                      { $ne: ["$turGereeEsekh", true] },
+                      {
+                        '$lte': [
+                          '$duusakhOgnoo', new Date(moment(new Date).add(1, 'month'))
+                        ]
+                      }
                     ]
                   }, 1, 0
                 ]
