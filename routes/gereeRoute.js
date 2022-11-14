@@ -856,6 +856,11 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
                       },
                       "avlaga.guilgeenuud.turul": "avlaga"
                     }
+                  }, {
+                    '$project': {
+                      'gereeniiDugaar': '$gereeniiDugaar',
+                      "avlaga": "$avlaga.guilgeenuud"
+                    }
                   },
                   {
                     $group: {
