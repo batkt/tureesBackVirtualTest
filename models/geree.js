@@ -14,6 +14,9 @@ var avlagiinTurul = new Schema({
       tulsunAldangi: Number,
       khyamdral: Number,
       uldegdel: Number,
+      negj: Number,
+      khemjikhNegj: String,
+      tariff: Number,
       tailbar: String,
       turul: String,
       nekhemjlekhDeerKharagdakh: Boolean,
@@ -36,8 +39,8 @@ var avlagiinTurul = new Schema({
       guilgeeKhiisenOgnoo: Date,
       guilgeeKhiisenAjiltniiNer: String,
       guilgeeKhiisenAjiltniiId: String,
-    }
-  ]
+    },
+  ],
 });
 const gereeSchema = new Schema(
   {
@@ -72,7 +75,7 @@ const gereeSchema = new Schema(
     baritsaaAvakhDun: Number,
     baritsaaniiUldegdel: {
       type: Number,
-      default: 0
+      default: 0,
     },
     baritsaaBairshuulakhKhugatsaa: Number,
     baritsaaAvakhKhugatsaa: Number,
@@ -93,22 +96,24 @@ const gereeSchema = new Schema(
     avlaga: { type: avlagiinTurul, select: false },
     dans: String,
     turGereeEsekh: Boolean,
-    zardluud: [{
-      ner: String,
-      turul: String,
-      tariff: Number,
-      dun: Number,//dung n zuwxun munguur tootsoj awax togtmol ued buglunu
-    }],
+    zardluud: [
+      {
+        ner: String,
+        turul: String,
+        tariff: Number,
+        dun: Number, //dung n zuwxun munguur tootsoj awax togtmol ued buglunu
+      },
+    ],
     segmentuud: [
       {
         ner: String,
-        utga: String
-      }
+        utga: String,
+      },
     ],
     gereeniiTuukhuud: {
       type: [Schema.Types.Mixed],
-      select: false
-    }
+      select: false,
+    },
   },
   {
     timestamps: true,
