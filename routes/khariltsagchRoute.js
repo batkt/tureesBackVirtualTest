@@ -109,4 +109,56 @@ router.route("/khariltsagchUstgaya").post(tokenShalgakh, async (req, res, next) 
 });
 
 
+router.route("/khariltsagchDavkhraarAvya").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    var davkhar = req.body.davkhar;
+    var query = [
+      {
+        '$match': {
+          'baiguullagiinId': req.body.baiguullagiinId,
+          'barilgiinId': req.body.barilgiinId
+        }
+      },
+      {
+        "$lookup":
+        {
+          'from': 'geree',
+          'let': {
+            "register": "$register",
+            "baiguullagiinId": "$baiguullagiinId",
+            "barilgiinId": "$barilgiinId"
+          },
+          'pipeline': [
+            {
+              '$match':
+              {
+                '$expr':
+                {
+                  '$and':
+                    [
+                      { '$eq': ["$register", "$$register"] },
+                      { '$eq': ["$baiguullagiinId", "$$baiguullagiinId"] },
+                      { '$eq': ["$barilgiinId", "$$barilgiinId"] }
+                    ]
+                }
+              }
+            }
+          ],
+          'as': '123'
+        }
+      }
+    ]
+    console.log("query", JSON.stringify(query, null, 4));
+    var result = await Khariltsagch.aggregate(query);
+    console.log("result", result);
+    res.send(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
+
+
 module.exports = router;
