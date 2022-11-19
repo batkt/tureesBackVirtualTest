@@ -144,13 +144,26 @@ router.route("/khariltsagchDavkhraarAvya").post(tokenShalgakh, async (req, res, 
               }
             }
           ],
-          'as': '123'
+          'as': 'geree'
         }
-      }
+      },
     ]
-    console.log("query", JSON.stringify(query, null, 4));
+    if (davkhar)
+      query.push(
+        {
+          "$match":
+          {
+            "geree.davkhar": davkhar
+          }
+        })
+    query.push(
+      {
+        "$project":
+        {
+          "geree": 0
+        }
+      })
     var result = await Khariltsagch.aggregate(query);
-    console.log("result", result);
     res.send(result);
   } catch (error) {
     next(error);
