@@ -251,29 +251,29 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
     var sort = {}
     if (req.body.nariivchlal == "year") {
         group['_id']['year'] = {
-            $year: { date: "$avlaga.guilgeenuud.ognoo" }
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
         }
         sort['_id.year'] = 1
     }
     else if (req.body.nariivchlal == "month") {
         group['_id']['year'] = {
-            $year: { date: "$avlaga.guilgeenuud.ognoo" }
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
         }
         group['_id']['month'] = {
-            $month: { date: "$avlaga.guilgeenuud.ognoo" }
+            $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
         }
         sort['_id.year'] = 1
         sort['_id.month'] = 1
     }
     else if (req.body.nariivchlal == "day") {
         group['_id']['year'] = {
-            $year: { date: "$avlaga.guilgeenuud.ognoo" }
+            $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
         }
         group['_id']['month'] = {
-            $month: { date: "$avlaga.guilgeenuud.ognoo" }
+            $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
         }
         group['_id']['day'] = {
-            $dayOfMonth: { date: "$avlaga.guilgeenuud.ognoo" }
+            $dayOfMonth: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
         }
         sort['_id.year'] = 1
         sort['_id.month'] = 1
