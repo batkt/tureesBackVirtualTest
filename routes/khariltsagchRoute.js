@@ -112,6 +112,7 @@ router.route("/khariltsagchUstgaya").post(tokenShalgakh, async (req, res, next) 
 router.route("/khariltsagchDavkhraarAvya").post(tokenShalgakh, async (req, res, next) => {
   try {
     var davkhar = req.body.davkhar;
+    var matchQuery = {}
     var query = [
       {
         '$match': {
@@ -148,14 +149,15 @@ router.route("/khariltsagchDavkhraarAvya").post(tokenShalgakh, async (req, res, 
         }
       },
     ]
-    if (davkhar)
-      query.push(
-        {
-          "$match":
-          {
-            "geree.davkhar": davkhar
-          }
-        })
+    if (req.body.query)
+      matchQuery = req.body.query
+    if (davkhar) {
+      matchQuery["geree.davkhar"] = davkhar
+    }
+    if (matchQuery)
+      query.push({
+        "$match": matchQuery
+      })
     query.push(
       {
         "$project":
