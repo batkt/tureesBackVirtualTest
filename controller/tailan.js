@@ -365,7 +365,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
                     labels.push(a["_id"].year + "/" + a["_id"].month);
                 else if (req.body.nariivchlal == "day")
                     labels.push(a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day);
-                tuluvluguu = tuluvluguu + a.tulukh - a.tulsun - a.khyamdral;
+                tuluvluguu = a.tulukh - a.tulsun - a.khyamdral;
                 tuluvluguunuud.push(tuluvluguu.toFixed(2));
                 guitsetgeluud.push(a.tulsun.toFixed(2));
             });
