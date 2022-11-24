@@ -356,9 +356,9 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
             var labels = []
             var tuluvluguunuud = []
             var guitsetgeluud = []
+            var tuluvluguu = 0;
             console.log("result", result);
             result.forEach((a) => {
-                var tuluvluguu = 0;
                 if (req.body.nariivchlal == "year")
                     labels.push(a["_id"].year);
                 else if (req.body.nariivchlal == "month")
