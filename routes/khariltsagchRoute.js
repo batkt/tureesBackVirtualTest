@@ -153,6 +153,7 @@ router.route("/khariltsagchDavkhraarAvya").post(tokenShalgakh, async (req, res, 
       matchQuery = req.body.query
     if (davkhar) {
       matchQuery["geree.davkhar"] = davkhar
+      matchQuery["geree.tuluv"] = { $nin: [-1] }
     }
     if (matchQuery)
       query.push({
