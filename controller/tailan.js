@@ -1075,3 +1075,160 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
         next(err);
     });;
 });
+
+exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
+    var group = {
+        '_id': "$barilgiinId",
+        'tulukh': {
+            '$sum': '$avlaga.guilgeenuud.tulukhDun'
+        },
+        'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+        },
+        'khyamdral': {
+            '$sum': '$avlaga.guilgeenuud.khyamdral'
+        }
+    }
+    let query = [
+        {
+            '$match': {
+                'baiguullagiinId': req.body.baiguullagiinId
+            }
+        }, {
+            '$unwind': {
+                'path': '$avlaga.guilgeenuud'
+            }
+        }, {
+            '$unwind': {
+                'path': '$avlaga.guilgeenuud.ognoo'
+            }
+        },
+        {
+            '$match': {
+                "tuluv": {
+                    $ne: -1
+                },
+                'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+                    '$ne': 'System'
+                },
+                "avlaga.guilgeenuud.ognoo": {
+                    $gte: new Date("2022-01-01 00:00:00"),
+                    $lte: new Date("2022-12-31 23:59:59")
+                },
+                "avlaga.guilgeenuud.turul": {
+                    $nin: ["baritsaa"]
+                }
+            }
+        }, {
+            '$group': group
+        }
+    ]
+    var khariu = await Geree.aggregate(query);
+
+    var niitAvlaga = 0;
+    var labels = []
+    var series = []
+    khariu.forEach((a) => {
+        niitAvlaga = niitAvlaga + a.tulukh;
+        niitAvlaga = niitAvlaga - a.tulsun;
+        niitAvlaga = niitAvlaga - a.khyamdral;
+        series.push(niitAvlaga.toFixed(2))
+        labels.push(a._id)
+    });
+    var data = {
+        series,
+        options: {
+            dataLabels: {
+                enabled: false,
+            },
+            theme: {
+                palette: "palette1",
+            },
+            labels,
+            legend: {
+                horizontalAlign: "left",
+                show: true,
+                position: "bottom",
+                fontSize: "13px",
+                itemMargin: {
+                    horizontal: 20,
+                    vertical: 3,
+                },
+            },
+        }
+    }
+    res.send(data);
+});
+
+exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
+    var group = {
+        '_id': "$barilgiinId",
+        'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+        }
+    }
+    let query = [
+        {
+            '$match': {
+                'baiguullagiinId': req.body.baiguullagiinId
+            }
+        }, {
+            '$unwind': {
+                'path': '$avlaga.guilgeenuud'
+            }
+        }, {
+            '$unwind': {
+                'path': '$avlaga.guilgeenuud.ognoo'
+            }
+        },
+        {
+            '$match': {
+                "tuluv": {
+                    $ne: -1
+                },
+                'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+                    '$ne': 'System'
+                },
+                "avlaga.guilgeenuud.ognoo": {
+                    $gte: new Date("2022-01-01 00:00:00"),
+                    $lte: new Date("2022-12-31 23:59:59")
+                },
+                "avlaga.guilgeenuud.turul": {
+                    $nin: ["baritsaa"]
+                }
+            }
+        }, {
+            '$group': group
+        }
+    ]
+    var khariu = await Geree.aggregate(query);
+    var labels = []
+    var series = []
+    khariu.forEach((a) => {
+        series.push(a.tulsun.toFixed(2))
+        labels.push(a._id)
+    });
+    var data = {
+        series,
+        options: {
+            dataLabels: {
+                enabled: false,
+            },
+            theme: {
+                palette: "palette1",
+            },
+            labels,
+            legend: {
+                horizontalAlign: "left",
+                show: true,
+                position: "bottom",
+                fontSize: "13px",
+                itemMargin: {
+                    horizontal: 20,
+                    vertical: 3,
+                },
+            },
+        }
+    }
+    res.send(data);
+});
