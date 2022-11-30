@@ -294,7 +294,9 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     var muriinDugaar = 1;
     if (!worksheet["A1"].v.includes("Давхар") || !worksheet["B1"].v.includes("Код") ||
       !worksheet["C1"].v.includes("Талбайн хэмжээ") || !worksheet["D1"].v.includes("Талбайн нэгж үнэ") ||
-      !worksheet["E1"].v.includes("Талбайн нийт үнэ") || !worksheet["F1"].v.includes("Тайлбар")) {
+      !worksheet["E1"].v.includes("Талбайн нийт үнэ") || !worksheet["F1"].v.includes("Тайлбар")
+      || !worksheet["G1"].v.includes("Нийтийн талбай эсэх")
+    ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
     for (let cell in worksheet) {
@@ -316,6 +318,8 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject.talbainNiitUne = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Тайлбар"))
           tolgoinObject.tailbar = cellAsString[0];
+        else if (worksheet[cellAsString].v.includes("Нийтийн талбай эсэх"))
+          tolgoinObject.niitiinTalbai = cellAsString[0];
         else if (segmentuud && segmentuud.length > 0) {
           var segment = segmentuud.find(element => element.ner === worksheet[cellAsString].v);
           if (segment)
@@ -340,6 +344,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       object.talbainNiitUne =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainNiitUne)];
       object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
+      object.niitiinTalbaiEsekh = (mur[usegTooruuKhurvuulekh(tolgoinObject.niitiinTalbai)] == "Тийм");
       object.baiguullagiinId = req.body.baiguullagiinId;;
       object.barilgiinId = req.body.barilgiinId;
       object.tureesiinTulbur = object.talbainNiitUne;
@@ -522,6 +527,11 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
       key: "Тайлбар",
       width: 20,
     },
+    {
+      header: "Нийтийн талбай эсэх",
+      key: "Нийтийн талбай эсэх",
+      width: 20,
+    },
   ];
   if (segmentuud && segmentuud.length > 0) {
     segmentuud.forEach(x => {
@@ -534,7 +544,7 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
   }
   worksheet.columns = baganuud
   if (segmentuud && segmentuud.length > 0) {
-    var baganiiToo = 6;
+    var baganiiToo = 7;
     segmentuud.forEach(x => {
       var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
       console.log("baganiiUseg", baganiiUseg)
@@ -551,6 +561,14 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
       baganiiToo = baganiiToo + 1;
     })
   }
+  worksheet.dataValidations.add("G2:G9999", {
+    type: 'list',
+    allowBlank: false,
+    formulae: ['"Тийм,Үгүй"'],
+    showErrorMessage: true,
+    errorStyle: 'error',
+    error: 'Тохирох утгыг сонгоно уу!',
+  });
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -1063,6 +1081,18 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       if (err) {
         next(err);
       }
+      var registeruud = []
+      var talbainKoduud = []
+      jagsaalt.forEach((a) => {
+        registeruud.push(a.register)
+        if (a.talbainDugaar.includes(",")) {
+          talbainKoduud = [...talbainKoduud, ...a.talbainDugaar.split(",")];
+        }
+        else
+          talbainKoduud.push(a.talbainDugaar);
+      });
+      Geree.updateMany({ register: { $in: registeruud }, barilgiinId: req.body.barilgiinId }, { $set: { idevkhiteiEsekh: true } })
+      Talbai.updateMany({ kod: { $in: talbainKoduud }, barilgiinId: req.body.barilgiinId }, { $set: { idevkhiteiEsekh: true } })
       res.status(200).send("Amjilttai");
     });
   } catch (error) {

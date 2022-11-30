@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const Baiguullaga = require("../models/baiguullaga");
 const Zardal = require("../models/zardal");
 const lodash = require("lodash");
 const moment = require("moment");
@@ -1077,6 +1078,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
+    var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
     var group = {
         '_id': "$barilgiinId",
         'tulukh': {
@@ -1124,7 +1126,6 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
         }
     ]
     var khariu = await Geree.aggregate(query);
-
     var niitAvlaga = 0;
     var labels = []
     var series = []
@@ -1133,7 +1134,13 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
         niitAvlaga = niitAvlaga - a.tulsun;
         niitAvlaga = niitAvlaga - a.khyamdral;
         series.push(niitAvlaga.toFixed(2))
-        labels.push(a._id)
+        var barilgiinNer = "";
+        try {
+            barilgiinNer = baiguullaga.barilguud.find((x) => x._id == a._id).ner;
+        }
+        catch (aldaa) {
+        }
+        labels.push(barilgiinNer)
     });
     var data = {
         series,
@@ -1161,6 +1168,7 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
+    var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
     var group = {
         '_id': "$barilgiinId",
         'tulsun': {
@@ -1206,7 +1214,13 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
     var series = []
     khariu.forEach((a) => {
         series.push(a.tulsun.toFixed(2))
-        labels.push(a._id)
+        var barilgiinNer = "";
+        try {
+            barilgiinNer = baiguullaga.barilguud.find((x) => x._id == a._id).ner;
+        }
+        catch (aldaa) {
+        }
+        labels.push(barilgiinNer)
     });
     var data = {
         series,
