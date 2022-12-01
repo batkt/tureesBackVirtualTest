@@ -240,6 +240,15 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     await khariltsagch.save();
   dugaarlalt.save();
   var geree = new Geree(req.body);
+  var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
+  try {
+    if (geree.avlaga.guilgeenuud && geree.avlaga.guilgeenuud.length > 0)
+      daraagiinTulukhOgnoo = geree.avlaga.guilgeenuud[0].ognoo;
+  }
+  catch (err) {
+    console.log("daraagiin tulukh ognoonii aldaa ==>", err)
+  }
+  geree.daraagiinTulukhOgnoo = daraagiinTulukhOgnoo;
   geree.tuluv = 1;
   await geree.save().then((result) => {
     talbaiKhariltsagchiinTuluvUurchluy([result._id]);
