@@ -328,12 +328,13 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               turOgnoo = new Date(duusakhOgnoo)
               duussanEsekh = true;
             }
-            butsaakhJagsaalt.push({
-              turul: "khuvaari",
-              ognoo: turOgnoo,
-              tulukhDun: dun,
-              undsenDun: dun
-            })
+            if (dun > 0)
+              butsaakhJagsaalt.push({
+                turul: "khuvaari",
+                ognoo: turOgnoo,
+                tulukhDun: dun,
+                undsenDun: dun
+              })
             if (zardluud && zardluud.length > 0) {
               zardluud.forEach((zardal) => {
                 if (zardal) {
