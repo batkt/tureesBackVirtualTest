@@ -16,6 +16,24 @@ const unguud = [
     "rgba(0, 192, 192, 0.5)"
 ]
 
+const chartUnguud = [
+    "30A76C",
+    "F0A542",
+    "F6C854",
+    "54B6F6",
+    "C054F6",
+    "F654DB",
+    "F65491",
+    "F65454",
+    "F6E554",
+    "9BF654",
+    "54F6CA",
+    "54C0F6",
+    "548FF6",
+    "5456F6",
+    "BE54F6"
+]
+
 exports.analitikTailanAvya = asyncHandler(async (req, res, next) => {
     try {
         var gereenuud = await Geree.find({ baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId }).select("+avlaga")
@@ -1144,6 +1162,7 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
     });
     var data = {
         series,
+        backgroundColor: chartUnguud,
         options: {
             dataLabels: {
                 enabled: false,
@@ -1224,6 +1243,7 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
     });
     var data = {
         series,
+        backgroundColor: chartUnguud,
         options: {
             dataLabels: {
                 enabled: false,
@@ -1243,6 +1263,107 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
                 },
             },
         }
+    }
+    res.send(data);
+});
+
+exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(async (req, res, next) => {
+    var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+    var group = {
+        '_id': {
+            barilgiinId: "$barilgiinId",
+            'year': {
+                $year: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+            },
+            'month': {
+                $month: { date: "$avlaga.guilgeenuud.ognoo", timezone: "Asia/Ulaanbaatar" }
+            }
+        },
+        'tulsun': {
+            '$sum': '$avlaga.guilgeenuud.tulsunDun'
+        }
+    }
+    let query = [
+        {
+            '$match': {
+                'baiguullagiinId': req.body.baiguullagiinId
+            }
+        }, {
+            '$unwind': {
+                'path': '$avlaga.guilgeenuud'
+            }
+        },
+        {
+            '$match': {
+                "tuluv": {
+                    $ne: -1
+                },
+                'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
+                    '$ne': 'System'
+                },
+                "avlaga.guilgeenuud.ognoo": {
+                    $gte: new Date("2022-01-01 00:00:00"),
+                    $lte: new Date("2022-12-31 23:59:59")
+                },
+                "avlaga.guilgeenuud.turul": {
+                    $nin: ["baritsaa"]
+                }
+            }
+        }, {
+            '$group': group
+        }
+    ]
+    var khariu = await Geree.aggregate(query);
+    var categories = []
+    var series = []
+    khariu.forEach((a) => {
+        var barilgiinNer = "";
+        try {
+            barilgiinNer = baiguullaga.barilguud.find((x) => x._id == a._id.barilgiinId).ner;
+        }
+        catch (aldaa) {
+        }
+        if(series.length > 0 && series.find((x) => x.name == barilgiinNer))
+        {
+            var b = series.find((x) => x.name == barilgiinNer);
+            console.log("if",b);
+            b['data'].push(a.tulsun.toFixed(2))
+        }
+        else
+        {
+            console.log("else",series);
+            categories.push(a["_id"].year + "/" + a["_id"].month);
+            series.push({
+                name : barilgiinNer,
+                data : [a.tulsun.toFixed(2)]
+            })
+        }
+        console.log("categories",categories);
+        console.log("series",series);
+    });
+    var data = {
+        series,
+        options: {
+            chart: {
+                height: 250,
+                type: "area",
+            },
+            dataLabels: {
+                enabled: false,
+            },
+            stroke: {
+                curve: "smooth",
+            },
+            xaxis: {
+                type: "datetime",
+                categories
+            },
+            tooltip: {
+                x: {
+                    format: "dd/MM/yy HH:mm",
+                },
+            },
+        },
     }
     res.send(data);
 });
