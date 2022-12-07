@@ -1446,6 +1446,7 @@ exports.tulukhOgnooZasya = asyncHandler(
   async (req, res, next) => {
     try {
       var idnuud = req.body.idnuud;
+      console.log("idnuud");
       for await (const id of idnuud) {
         await daraagiinTulukhOgnooZasya(id);
       }
