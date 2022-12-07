@@ -489,7 +489,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo() {
           var bulkOps = [];
           for (const geree of gereenuud) {
             if (geree.uldegdel > 0 && new Date() > new Date(moment(new Date(geree._id.daraagiinTulukhOgnoo)).add(aldangiChuluulukhKhonog, 'days'))) {
-              var bodogdsonKhuu = (geree.uldegdel * aldagiinKhuvi / 100);
+              var bodogdsonKhuu = tooZasyaSync(geree.uldegdel * aldagiinKhuvi / 100);
               let upsertDoc = {
                 'updateOne': {
                   'filter': { '_id': geree._id._id },
@@ -1441,3 +1441,19 @@ async function daraagiinTulukhOgnooZasya(gereeniiId) {
       console.log("aldaatai", err);
     });
 }
+
+exports.tulukhOgnooZasya = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var idnuud = req.body.idnuud;
+      for await (const id of idnuud) {
+        await daraagiinTulukhOgnooZasya(id);
+      }
+      res.send("Amjilttai");
+    } catch (err) {
+      console.log(err)
+      if (next)
+        next(err);
+    }
+  }
+);

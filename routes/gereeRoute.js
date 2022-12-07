@@ -41,7 +41,8 @@ const {
   khungulultUstgaya,
   tukhainOgnoogoorGuilgeegOruulya,
   testiinBankniiGuilgee,
-  testiinBankniiGuilgeeOruulya
+  testiinBankniiGuilgeeOruulya,
+  tulukhOgnooZasya
 } = require('../controller/tulbur')
 router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require('lodash')
@@ -68,6 +69,7 @@ router.route("/tsutsalgdanGuilgeeZasya").post(tokenShalgakh, tsutsalgdanGuilgeeZ
 router.route("/tukhainOgnoogoorGuilgeegOruulya").post(tokenShalgakh, tukhainOgnoogoorGuilgeegOruulya);
 router.route("/testiinBankniiGuilgee").post(tokenShalgakh, testiinBankniiGuilgee);
 router.route("/testiinBankniiGuilgeeOruulya").post(tokenShalgakh, testiinBankniiGuilgeeOruulya);
+router.route("/tulukhOgnooZasya").post(tokenShalgakh, tulukhOgnooZasya);
 router.route("/khungulultKhadgalya").post(tokenShalgakh, khungulultKhadgalya);
 router.route("/khungulultUstgaya").post(tokenShalgakh, khungulultUstgaya);
 router.route("/uldegdelBodyo").post(tokenShalgakh, uldegdelBodyo);
