@@ -4,8 +4,10 @@ async function ilgeeye(io, medegdel) {
     let sonorduulga = new Sonorduulga();
     sonorduulga.baiguullagiinId = medegdel.baiguullagiinId;
     sonorduulga.barilgiinId = medegdel.barilgiinId;
-    if (medegdel.barilgiinId)
+    if (medegdel.barilgiinId && medegdel.turul != "daalgavar")
         sonorduulga.khuleenAvagchiinId = medegdel.barilgiinId;
+    else if (medegdel.turul == "daalgavar")
+        sonorduulga.khuleenAvagchiinId = medegdel.khuleenAvagchiinId;
     sonorduulga.turul = medegdel.turul;
     sonorduulga.ognoo = new Date();
     sonorduulga.object = medegdel;
