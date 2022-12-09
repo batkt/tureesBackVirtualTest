@@ -18,7 +18,7 @@
     "bcrypt": "^5.0.1",
     "daalgavar": "^1.0.24",
     "sharp": "^0.30.7",
-    "zevback": "^1.0.72",
+    "zevback": "^1.0.74",
     "zuragpack": "^1.0.11"
   },
   "devDependencies": {
