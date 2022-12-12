@@ -1412,7 +1412,9 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
     var series = [];
 
     const chartData = {
-      series: baiguullaga.barilguud.map((mur) => ({
+      series: baiguullaga.barilguud.map((mur, index) => ({
+        backgroundColor: chartUnguud[index],
+        borderColor: chartUnguud[index],
         _id: mur._id,
         label: mur.ner,
         data: [],
@@ -1450,7 +1452,6 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
     var data = {
       labels: chartData.categories,
       datasets: chartData.series,
-      backgroundColor: chartUnguud,
     };
     res.send(data);
   }
