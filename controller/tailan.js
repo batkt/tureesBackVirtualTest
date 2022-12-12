@@ -1460,15 +1460,6 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         stroke: {
           curve: "smooth",
         },
-        xaxis: {
-          type: "datetime",
-          categories: chartData.categories,
-        },
-        tooltip: {
-          x: {
-            format: "dd/MM/yy HH:mm",
-          },
-        },
       },
     };
     res.send(data);
