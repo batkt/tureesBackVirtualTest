@@ -1415,6 +1415,7 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
       series: baiguullaga.barilguud.map((mur, index) => ({
         backgroundColor: chartUnguud[index],
         borderColor: chartUnguud[index],
+        fill: false,
         _id: mur._id,
         label: mur.ner,
         data: [],
