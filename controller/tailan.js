@@ -1414,8 +1414,8 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
     const chartData = {
       series: baiguullaga.barilguud.map((mur) => ({
         _id: mur._id,
-        barilga: mur.ner,
-        dun: [],
+        label: mur.ner,
+        data: [],
       })),
       categories: [],
     };
@@ -1436,13 +1436,13 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         (a) =>
           a["_id"].year == category.year && a["_id"].month == category.month
       );
-      chartData.series.forEach(({ dun, _id }) => {
+      chartData.series.forEach(({ data, _id }) => {
         const barilgaData = catList.find(
           (mur) => mur["_id"].barilgiinId == _id
         );
         console.log("barilgaData", barilgaData);
-        if (barilgaData?.tulsun > 0) dun.push(barilgaData.tulsun.toFixed(2));
-        else dun.push(0);
+        if (barilgaData?.tulsun > 0) data.push(barilgaData.tulsun.toFixed(2));
+        else data.push(0);
       });
       chartData.categories.push(`${category.year}-${category.month}`);
     });
