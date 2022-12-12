@@ -17,21 +17,21 @@ const unguud = [
 ];
 
 const chartUnguud = [
-  "30A76C",
-  "F0A542",
-  "F6C854",
-  "54B6F6",
-  "C054F6",
-  "F654DB",
-  "F65491",
-  "F65454",
-  "F6E554",
-  "9BF654",
-  "54F6CA",
-  "54C0F6",
-  "548FF6",
-  "5456F6",
-  "BE54F6",
+  "#30A76C",
+  "#F0A542",
+  "#F6C854",
+  "#54B6F6",
+  "#C054F6",
+  "#F654DB",
+  "#F65491",
+  "#F65454",
+  "#F6E554",
+  "#9BF654",
+  "#54F6CA",
+  "#54C0F6",
+  "#548FF6",
+  "#5456F6",
+  "#BE54F6",
 ];
 
 exports.analitikTailanAvya = asyncHandler(async (req, res, next) => {
@@ -1448,29 +1448,9 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
     });
 
     var data = {
-      series: chartData.series,
+      labels: chartData.categories,
+      datasets: chartData.series,
       backgroundColor: chartUnguud,
-      options: {
-        chart: {
-          height: 250,
-          type: "area",
-        },
-        dataLabels: {
-          enabled: false,
-        },
-        stroke: {
-          curve: "smooth",
-        },
-        xaxis: {
-          type: "datetime",
-          categories: chartData.categories,
-        },
-        tooltip: {
-          x: {
-            format: "dd/MM/yy HH:mm",
-          },
-        },
-      },
     };
     res.send(data);
   }
