@@ -1449,6 +1449,7 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
 
     var data = {
       series: chartData.series,
+      backgroundColor: chartUnguud,
       options: {
         chart: {
           height: 250,
@@ -1459,6 +1460,15 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         },
         stroke: {
           curve: "smooth",
+        },
+        xaxis: {
+          type: "datetime",
+          categories: chartData.categories,
+        },
+        tooltip: {
+          x: {
+            format: "dd/MM/yy HH:mm",
+          },
         },
       },
     };
