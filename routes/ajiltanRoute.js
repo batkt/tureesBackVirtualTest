@@ -3,40 +3,49 @@ const router = express.Router();
 const Ajiltan = require("../models/ajiltan");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crudWithFile, UstsanBarimt } = require("zevback");
-const fs = require('fs');
+const fs = require("fs");
 const {
   ajiltanNevtrey,
-  tokenoorAjiltanAvya
-} = require('../controller/ajiltan');
+  tokenoorAjiltanAvya,
+} = require("../controller/ajiltan");
 const aldaa = require("../components/aldaa");
 
-crudWithFile(router, 'ajiltan', Ajiltan, {
-  fileZam: './zurag/ajiltan',
-  fileName: 'zurag'
-}, UstsanBarimt, async (req, res, next) => {
-  try {
-    if (req.params.id) {
-      var ObjectId = require('mongodb').ObjectId;
-      var ajiltan = await Ajiltan.findOne({ nevtrekhNer: req.body.nevtrekhNer, _id: { $ne: ObjectId(req.params.id) } });
-      if (ajiltan)
-        throw new Error("Нэвтрэх нэр давхардаж байна!");
-    }
-    else {
-      if (req.body.nevtrekhNer) {
-        var ajiltan = await Ajiltan.findOne({ nevtrekhNer: req.body.nevtrekhNer });
-        if (ajiltan)
-          throw new Error("Нэвтрэх нэр давхардаж байна!");
+crudWithFile(
+  router,
+  "ajiltan",
+  Ajiltan,
+  {
+    fileZam: "./zurag/ajiltan",
+    fileName: "zurag",
+  },
+  UstsanBarimt,
+  async (req, res, next) => {
+    try {
+      if (req.params.id) {
+        var ObjectId = require("mongodb").ObjectId;
+        var ajiltan = await Ajiltan.findOne({
+          nevtrekhNer: req.body.nevtrekhNer,
+          _id: { $ne: ObjectId(req.params.id) },
+        });
+        if (ajiltan) throw new Error("Нэвтрэх нэр давхардаж байна!");
+      } else {
+        if (req.body.nevtrekhNer) {
+          var ajiltan = await Ajiltan.findOne({
+            nevtrekhNer: req.body.nevtrekhNer,
+          });
+          if (ajiltan) throw new Error("Нэвтрэх нэр давхардаж байна!");
+        }
       }
+      next();
+    } catch (error) {
+      next(error);
     }
-    next();
-  } catch (error) {
-    next(error);
   }
-})
+);
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 
-router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya)
+router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);
 
 router.get("/ajiltniiZuragAvya/:baiguullaga/:ner", (req, res, next) => {
   const fileName = req.params.ner;
@@ -62,23 +71,23 @@ router.get("/ustsanBarimt", tokenShalgakh, async (req, res, next) => {
     } = body;
     if (!!body?.query) body.query = JSON.parse(body.query);
     if (req.body.baiguullagiinId) {
-      if (!body.query)
-        body.query = {}
-      body.query["baiguullagiinId"] = req.body.baiguullagiinId
+      if (!body.query) body.query = {};
+      body.query["baiguullagiinId"] = req.body.baiguullagiinId;
     }
     if (!!body?.order) body.order = JSON.parse(body.order);
     if (!!body?.select) body.select = JSON.parse(body.select);
     if (!!body?.collation) body.collation = JSON.parse(body.collation);
-    if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-    if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    console.log("body", body)
-    let jagsaalt = await UstsanBarimt
-      .find(body.query)
+    if (!!body?.khuudasniiDugaar)
+      body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+    if (!!body?.khuudasniiKhemjee)
+      body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+    console.log("body", body);
+    let jagsaalt = await UstsanBarimt.find(body.query)
       .sort(body.order)
       .collation(body.collation ? body.collation : {})
       .skip((body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee)
       .limit(body.khuudasniiKhemjee);
-    console.log("jagsaalt", jagsaalt)
+    console.log("jagsaalt", jagsaalt);
     let niitMur = await UstsanBarimt.countDocuments(body.query);
     let niitKhuudas =
       niitMur % khuudasniiKhemjee == 0
@@ -91,24 +100,23 @@ router.get("/ustsanBarimt", tokenShalgakh, async (req, res, next) => {
       jagsaalt,
       niitMur,
       niitKhuudas,
-    })
+    });
   } catch (error) {
     next(error);
   }
-
 });
 
-router.post('/ajiltandTokenOnooyo', tokenShalgakh, (req, res, next) => {
+router.post("/ajiltandTokenOnooyo", tokenShalgakh, (req, res, next) => {
   try {
     let filter = {
-      "_id": req.body.id
-    }
+      _id: req.body.id,
+    };
     let update = {
-      "firebaseToken": req.body.token
-    }
+      firebaseToken: req.body.token,
+    };
     Ajiltan.findOneAndUpdate(filter, update)
       .then((result) => {
-        res.send("Amjilttai")
+        res.send("Amjilttai");
       })
       .catch((err) => {
         next(err);
@@ -118,100 +126,83 @@ router.post('/ajiltandTokenOnooyo', tokenShalgakh, (req, res, next) => {
   }
 });
 
-router.post('/ajiltniiTokhirgooZasya', tokenShalgakh, async (req, res, next) => {
-  try {
-    if (!!req.body) {
-      const { turul, ajiltnuud } = req.body
-      for await (const ajiltan of ajiltnuud) {
-        await Ajiltan.findOneAndUpdate({ _id: ajiltan._id }, { $set: { [turul]: ajiltan.utga } })
-          .catch((err) => {
+router.post(
+  "/ajiltniiTokhirgooZasya",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      if (!!req.body) {
+        const { turul, ajiltnuud } = req.body;
+        for await (const ajiltan of ajiltnuud) {
+          await Ajiltan.findOneAndUpdate(
+            { _id: ajiltan._id },
+            { $set: { [turul]: ajiltan.utga } }
+          ).catch((err) => {
             next(err);
           });
-      }
-      res.send("Amjilttai")
+        }
+        res.send("Amjilttai");
+      } else next(new aldaa("Засах боломжгүй байна"));
+    } catch (error) {
+      next(error);
     }
-    else
-      next(new aldaa("Засах боломжгүй байна"))
+  }
+);
+
+router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
+  try {
+    if (!!req.body) {
+      await Ajiltan.findOneAndUpdate(
+        { _id: req.params.id },
+        { $set: req.body }
+      ).catch((err) => {
+        next(err);
+      });
+      res.send("Amjilttai");
+    } else next(new aldaa("Засах боломжгүй байна"));
   } catch (error) {
     next(error);
   }
 });
 
-router.post('/ajiltandErkhUgyu/:id', tokenShalgakh, async (req, res, next) => {
-  try {
-    if (!!req.body) {
-      await Ajiltan.findOneAndUpdate({ _id: req.params.id }, { $set: req.body })
-        .catch((err) => {
-          next(err);
-        });
-      res.send("Amjilttai")
-    }
-    else
-      next(new aldaa("Засах боломжгүй байна"))
-  } catch (error) {
-    next(error);
-  }
-})
-
-router.post('/erkhteiEsekh', tokenShalgakh, async (req, res, next) => {
+router.post("/erkhteiEsekh", tokenShalgakh, async (req, res, next) => {
   try {
     if (!!req.body.zam) {
-      const khariu = await Ajiltan.countDocuments({ _id: req.body.nevtersenAjiltniiToken?.id, $or: [{ tsonkhniiErkhuud: req.body.zam }, { erkh: 'Admin' }] })
-        .catch((err) => {
-          next(err);
-        });
-      res.send(!!khariu)
-    }
-    else
-      next(new aldaa("Засах боломжгүй байна"))
+      const khariu = await Ajiltan.countDocuments({
+        _id: req.body.nevtersenAjiltniiToken?.id,
+        $or: [{ tsonkhniiErkhuud: req.body.zam }, { erkh: "Admin" }],
+      }).catch((err) => {
+        next(err);
+      });
+      res.send(!!khariu);
+    } else next(new aldaa("Засах боломжгүй байна"));
   } catch (error) {
     next(error);
   }
-})
+});
 
-router.post('/backAvya', tokenShalgakh, async (req, res, next) => {
+router.post("/backAvya", tokenShalgakh, (req, res, next) => {
   try {
-    const { spawn, exec } = require('child_process')
-
+    const { exec } = require("child_process");
     try {
-      fs.unlinkSync("file/tmp/dump.tar")
-      console.log("removed")
-      //file removed
+      fs.unlinkSync("dump.tar");
+      console.log("removed");
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-    /*let backupProcess = spawn('mongodump', [
-      '--host', 'localhost',
-      '--port', '27017',
-      '--db', 'turees',
-      '--archive', './file/tmp/dump.tar',
-      '--gzip'
-    ], { shell: true });
-
-    backupProcess.on('exit', (code, signal) => {
-      if (code)
-        console.log('Backup process exited with code ', code);
-      else if (signal)
-        console.error('Backup process was killed with singal ', signal);
-      else {
-        var options = {
-          root: "file/tmp"
-        };
-        res.sendFile("dump.tar", options, function (err) {
-          if (err) {
-            next(err);
-          } else {
-            next();
-          }
-        });
-      }
-    });*/
-
-    var backupDB = exec('mongodump --host=' + "localhost" + ' --port=' + "27017" + ' --db=' + "turees" + ' --archive=' + "file/tmp" + '/' + "dump.tar" + '  --gzip',
+    var backupDB = exec(
+      "mongodump --host=" +
+        "localhost" +
+        " --port=" +
+        "27017" +
+        " --db=" +
+        "turees" +
+        " --archive=dump.tar" +
+        "  --gzip",
       (err, stdout, stderr) => {
-        console.log("err -->", err)
-        console.log("stdout -->", stdout)
-        console.log("stderr -->", stderr)
+        console.log("err -->", err);
+        console.log("stdout -->", stdout);
+        console.log("stderr -->", stderr);
         if (err) {
           console.error(`exec error: ${err}`);
           res.send(err);
@@ -223,7 +214,7 @@ router.post('/backAvya', tokenShalgakh, async (req, res, next) => {
           else {
             if (!fs.existsSync("file/tmp/dump.tar"))
               res.send(new Error("Back авах боломжгүй байна!"));
-            var path = require('path');
+            var path = require("path");
             res.sendFile(path.resolve("file/tmp/dump.tar"), function (err) {
               if (err) {
                 console.log("err", err);
@@ -239,10 +230,10 @@ router.post('/backAvya', tokenShalgakh, async (req, res, next) => {
           if (stderr.includes("error"))
             res.send(new Error("Back авах боломжгүй байна!"));
           else {
-            if (!fs.existsSync("file/tmp/dump.tar"))
+            if (!fs.existsSync("dump.tar"))
               res.send(new Error("Back авах боломжгүй байна!"));
-            var path = require('path');
-            res.sendFile(path.resolve("file/tmp/dump.tar"), function (err) {
+            var path = require("path");
+            res.sendFile(path.resolve("dump.tar"), function (err) {
               if (err) {
                 console.log("err", err);
                 next(err);
@@ -252,39 +243,11 @@ router.post('/backAvya', tokenShalgakh, async (req, res, next) => {
             });
           }
         }
-      })
-    /*console.log(`Number of files ${stdout}`););
-        backupDB.stdout.on('data', function (data) {
-          console.log('stdout: ' + data);// process output will be displayed here
-          res.send(data);
-        });
-        backupDB.stderr.on('err', function (data) {
-          console.error('err: ' + data);// process output will be displayed here
-          res.send(data);
-        })*/
-    /*var backup = require('mongodb-backup');
-    backup({
-      uri: 'mongodb://localhost:27017/itgel', // mongodb://<dbuser>:<dbpassword>@<dbdomain>.mongolab.com:<dbport>/<dbdatabase>
-      root: "file/tmp/",
-      tar: 'dump.tar.gz',
-      stream: res,
-      /*callback: async () => {
-        var options = {
-          root: "file/tmp"
-        };
-        res.sendFile("dump.tar", options, function (err) {
-          if (err) {
-            next(err);
-          } else {
-            next();
-          }
-        });
-    }
-    });*/
+      }
+    );
   } catch (error) {
     next(error);
   }
-})
-
+});
 
 module.exports = router;
