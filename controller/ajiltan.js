@@ -1,18 +1,23 @@
 const asyncHandler = require("express-async-handler");
 const Ajiltan = require("../models/ajiltan");
 const Baiguullaga = require("../models/baiguullaga");
+const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 const aldaa = require("../components/aldaa");
 const jwt = require("jsonwebtoken");
-const request = require('request');
+const request = require("request");
 const http = require("http");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
-  request.get("http://103.50.205.33:8282/baiguullagiinDuusakhKhugatsaaAvya", { json: true, body: ugugdul }, (err, res1, body) => {
-    if (err) next(err);
-    else {
-      onFinish(body);
+  request.get(
+    "http://103.50.205.33:8282/baiguullagiinDuusakhKhugatsaaAvya",
+    { json: true, body: ugugdul },
+    (err, res1, body) => {
+      if (err) next(err);
+      else {
+        onFinish(body);
+      }
     }
-  });
+  );
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
@@ -30,26 +35,39 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   let duusakhOgnoo = null;
   var butsaakhObject = {
     result: ajiltan,
-    success: true
+    success: true,
   };
-  duusakhOgnooAvya({ "register": baiguullaga.register }, async (khariu) => {
-    try {
-      console.log("nevtrekhXariu Irlee");
-      if (khariu.success) {
-        if (khariu.duusakhOgnoo && (new Date(khariu.duusakhOgnoo) < new Date()))
-          throw new aldaa("Лицензийн хугацаа дууссан байна!")
-        const jwt = await ajiltan.tokenUusgeye(khariu.duusakhOgnoo);
-        butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
-        butsaakhObject.token = jwt;
-        res.status(200).json(butsaakhObject)
+  duusakhOgnooAvya(
+    { register: baiguullaga.register },
+    async (khariu) => {
+      try {
+        console.log("nevtrekhXariu Irlee");
+        if (khariu.success) {
+          if (khariu.duusakhOgnoo && new Date(khariu.duusakhOgnoo) < new Date())
+            throw new aldaa("Лицензийн хугацаа дууссан байна!");
+          const jwt = await ajiltan.tokenUusgeye(khariu.duusakhOgnoo);
+          butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
+          butsaakhObject.token = jwt;
+          const useragent = require("express-useragent");
+          var source = req.headers["user-agent"];
+          var ua = useragent.parse(source);
+          var tuukh = new NevtreltiinTuukh();
+          tuukh.ajiltniiId = ajiltan._id;
+          tuukh.ajiltniiNer = ajiltan.ner;
+          tuukh.ognoo = new Date();
+          tuukh.uildliinSystem = ua.os;
+          tuukh.ip = req.ip;
+          tuukh.browser = ua.browser;
+          tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
+          tuukh.save();
+          res.status(200).json(butsaakhObject);
+        } else throw new Error(khariu.msg);
+      } catch (err) {
+        next(err);
       }
-      else
-        throw new Error(khariu.msg);
-    }
-    catch (err) {
-      next(err);
-    }
-  }, next);
+    },
+    next
+  );
 });
 
 exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
