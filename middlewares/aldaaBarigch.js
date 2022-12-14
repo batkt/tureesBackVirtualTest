@@ -1,15 +1,17 @@
 const http = require("http");
 
 function aldaagIlgeeye(aldaa, req) {
-  const data = new TextEncoder().encode(JSON.stringify({
-    system: "Turees",
-    aldaa: aldaa,
-    aldaaniiMsg: aldaa.message,
-    ognoo: new Date(),
-    baiguullagiinId: req.body.baiguullagiinId,
-    burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
-    burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
-  }));
+  const data = new TextEncoder().encode(
+    JSON.stringify({
+      system: "Turees",
+      aldaa: aldaa,
+      aldaaniiMsg: aldaa.message,
+      ognoo: new Date(),
+      baiguullagiinId: req.body.baiguullagiinId,
+      burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
+      burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
+    })
+  );
   const options = {
     hostname: "127.0.0.1",
     port: 8282,
@@ -33,11 +35,10 @@ function aldaagIlgeeye(aldaa, req) {
 
   request.write(data);
   request.end();
-};
+}
 const aldaaBarigch = (err, req, res, next) => {
-  console.log("end irsen", req.body)
-  if (req.body.nevtersenAjiltniiToken)
-    aldaagIlgeeye(err, req);
+  console.log("end irsen", req.body);
+  if (req.body && req.body.nevtersenAjiltniiToken) aldaagIlgeeye(err, req);
   if (err.message.includes("indexTalbar_1 dup key"))
     err.message = "Нэвтрэх нэр давхардаж байна!";
   else if (err.message.includes("connect ECONNREFUSED 127.0.0.1:8282")) {
