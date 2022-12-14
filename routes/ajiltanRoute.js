@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const Ajiltan = require("../models/ajiltan");
+const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crudWithFile, UstsanBarimt } = require("zevback");
+const { tokenShalgakh, crudWithFile, crud, UstsanBarimt } = require("zevback");
 const fs = require("fs");
 const {
   ajiltanNevtrey,
@@ -42,11 +43,10 @@ crudWithFile(
     }
   }
 );
+crud(router, "nevtreltiinTuukh", NevtreltiinTuukh, UstsanBarimt);
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
-
 router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);
-
 router.get("/ajiltniiZuragAvya/:baiguullaga/:ner", (req, res, next) => {
   const fileName = req.params.ner;
   const directoryPath = "zurag/ajiltan/" + req.params.baiguullaga + "/";
