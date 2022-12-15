@@ -147,7 +147,7 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
               return r;
             }, {});
             tuukh.useragent = ua;
-            tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
+            tuukh.baiguullagiinId = req.body.baiguullagiinId;
             tuukh.save();
             res.sendFile(path.resolve("dump.tar"), function (err) {
               if (err) {
