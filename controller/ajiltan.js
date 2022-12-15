@@ -2,9 +2,12 @@ const asyncHandler = require("express-async-handler");
 const Ajiltan = require("../models/ajiltan");
 const Baiguullaga = require("../models/baiguullaga");
 const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
+const BackTuukh = require("../models/backTuukh");
 const aldaa = require("../components/aldaa");
 const jwt = require("jsonwebtoken");
 const request = require("request");
+const fs = require("fs");
+const useragent = require("express-useragent");
 const http = require("http");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
@@ -48,7 +51,6 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           const jwt = await ajiltan.tokenUusgeye(khariu.duusakhOgnoo);
           butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
           butsaakhObject.token = jwt;
-          const useragent = require("express-useragent");
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
           var tuukh = new NevtreltiinTuukh();
@@ -76,6 +78,92 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     },
     next
   );
+});
+
+exports.backAvya = asyncHandler(async (req, res, next) => {
+  try {
+    const { exec } = require("child_process");
+    try {
+      fs.unlinkSync("dump.tar");
+      console.log("removed");
+    } catch (err) {
+      console.error(err);
+    }
+    var backupDB = exec(
+      "mongodump --host=" +
+        "localhost" +
+        " --port=" +
+        "27017" +
+        " --db=" +
+        "turees" +
+        " --archive=dump.tar" +
+        "  --gzip",
+      (err, stdout, stderr) => {
+        console.log("err -->", err);
+        console.log("stdout -->", stdout);
+        console.log("stderr -->", stderr);
+        if (err) {
+          console.error(`exec error: ${err}`);
+          res.send(err);
+        }
+        if (stdout) {
+          console.error(`exec stdout: ${stdout}`);
+          if (stdout.includes("error"))
+            res.send(new Error("Back авах боломжгүй байна!"));
+          else {
+            if (!fs.existsSync("file/tmp/dump.tar"))
+              res.send(new Error("Back авах боломжгүй байна!"));
+            var path = require("path");
+            res.sendFile(path.resolve("file/tmp/dump.tar"), function (err) {
+              if (err) {
+                console.log("err", err);
+                next(err);
+              } else {
+                next();
+              }
+            });
+          }
+        }
+        if (stderr) {
+          console.error(`exec stderr: ${stderr}`);
+          if (stderr.includes("error"))
+            res.send(new Error("Back авах боломжгүй байна!"));
+          else {
+            if (!fs.existsSync("dump.tar"))
+              res.send(new Error("Back авах боломжгүй байна!"));
+            var path = require("path");
+            var source = req.headers["user-agent"];
+            var ua = useragent.parse(source);
+            var tuukh = new BackTuukh();
+            tuukh.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+            tuukh.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+            tuukh.ognoo = new Date();
+            tuukh.ip = req.ip;
+            if (tuukh.ip.substr(0, 7) == "::ffff:") {
+              tuukh.ip = tuukh.ip.substr(7);
+            }
+            ua = Object.keys(ua).reduce(function (r, e) {
+              if (ua[e]) r[e] = ua[e];
+              return r;
+            }, {});
+            tuukh.useragent = ua;
+            tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
+            tuukh.save();
+            res.sendFile(path.resolve("dump.tar"), function (err) {
+              if (err) {
+                console.log("err", err);
+                next(err);
+              } else {
+                next();
+              }
+            });
+          }
+        }
+      }
+    );
+  } catch (error) {
+    next(error);
+  }
 });
 
 exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {

@@ -2,11 +2,12 @@ const express = require("express");
 const router = express.Router();
 const Ajiltan = require("../models/ajiltan");
 const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
+const BackTuukh = require("../models/backTuukh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crudWithFile, crud, UstsanBarimt } = require("zevback");
-const fs = require("fs");
 const {
   ajiltanNevtrey,
+  backAvya,
   tokenoorAjiltanAvya,
 } = require("../controller/ajiltan");
 const aldaa = require("../components/aldaa");
@@ -44,6 +45,7 @@ crudWithFile(
   }
 );
 crud(router, "nevtreltiinTuukh", NevtreltiinTuukh, UstsanBarimt);
+crud(router, "backTuukh", BackTuukh, UstsanBarimt);
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);
@@ -181,73 +183,6 @@ router.post("/erkhteiEsekh", tokenShalgakh, async (req, res, next) => {
   }
 });
 
-router.post("/backAvya", tokenShalgakh, (req, res, next) => {
-  try {
-    const { exec } = require("child_process");
-    try {
-      fs.unlinkSync("dump.tar");
-      console.log("removed");
-    } catch (err) {
-      console.error(err);
-    }
-    var backupDB = exec(
-      "mongodump --host=" +
-        "localhost" +
-        " --port=" +
-        "27017" +
-        " --db=" +
-        "turees" +
-        " --archive=dump.tar" +
-        "  --gzip",
-      (err, stdout, stderr) => {
-        console.log("err -->", err);
-        console.log("stdout -->", stdout);
-        console.log("stderr -->", stderr);
-        if (err) {
-          console.error(`exec error: ${err}`);
-          res.send(err);
-        }
-        if (stdout) {
-          console.error(`exec stdout: ${stdout}`);
-          if (stdout.includes("error"))
-            res.send(new Error("Back авах боломжгүй байна!"));
-          else {
-            if (!fs.existsSync("file/tmp/dump.tar"))
-              res.send(new Error("Back авах боломжгүй байна!"));
-            var path = require("path");
-            res.sendFile(path.resolve("file/tmp/dump.tar"), function (err) {
-              if (err) {
-                console.log("err", err);
-                next(err);
-              } else {
-                next();
-              }
-            });
-          }
-        }
-        if (stderr) {
-          console.error(`exec stderr: ${stderr}`);
-          if (stderr.includes("error"))
-            res.send(new Error("Back авах боломжгүй байна!"));
-          else {
-            if (!fs.existsSync("dump.tar"))
-              res.send(new Error("Back авах боломжгүй байна!"));
-            var path = require("path");
-            res.sendFile(path.resolve("dump.tar"), function (err) {
-              if (err) {
-                console.log("err", err);
-                next(err);
-              } else {
-                next();
-              }
-            });
-          }
-        }
-      }
-    );
-  } catch (error) {
-    next(error);
-  }
-});
+router.post("/backAvya", tokenShalgakh, backAvya);
 
 module.exports = router;
