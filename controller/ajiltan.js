@@ -60,6 +60,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           if (tuukh.ip.substr(0, 7) == "::ffff:") {
             tuukh.ip = tuukh.ip.substr(7);
           }
+          ua = Object.values(ua).filter((value) => value != false);
           tuukh.browser = ua.browser;
           tuukh.useragent = ua;
           tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
