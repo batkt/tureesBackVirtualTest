@@ -57,7 +57,11 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           tuukh.ognoo = new Date();
           tuukh.uildliinSystem = ua.os;
           tuukh.ip = req.ip;
+          if (ip.substr(0, 7) == "::ffff:") {
+            ip = ip.substr(7);
+          }
           tuukh.browser = ua.browser;
+          tuukh.useragent = ua;
           tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
           tuukh.save();
           res.status(200).json(butsaakhObject);
