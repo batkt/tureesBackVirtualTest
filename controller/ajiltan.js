@@ -132,6 +132,9 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
             if (!fs.existsSync("dump.tar"))
               res.send(new Error("Back авах боломжгүй байна!"));
             var path = require("path");
+            var stats = fs.statSync("dump.tar");
+            var fileSizeInBytes = stats.size;
+            var fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
             var source = req.headers["user-agent"];
             var ua = useragent.parse(source);
             var tuukh = new BackTuukh();
@@ -147,6 +150,7 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
               return r;
             }, {});
             tuukh.useragent = ua;
+            tuukh.khemjee = fileSizeInMegabytes;
             tuukh.baiguullagiinId = req.body.baiguullagiinId;
             tuukh.save();
             res.sendFile(path.resolve("dump.tar"), function (err) {

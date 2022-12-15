@@ -7,6 +7,7 @@ const backTuukhSchema = new Schema(
     ajiltniiId: String,
     ajiltniiNer: String,
     ognoo: Date,
+    khemjee: Number,
     baiguullagiinId: String,
     useragent: Schema.Types.Mixed,
   },
