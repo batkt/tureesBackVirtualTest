@@ -264,8 +264,7 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
         $inc: inc,
       }
     ).then((result) => {
-      if (guilgee.tulsunDun && guilgee.tulsunDun > 0)
-        daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
+      daraagiinTulukhOgnooZasya(guilgee.gereeniiId);
       if (guilgee.guilgeeniiId) {
         console.log("guilgee.guilgeeniiId", guilgee.guilgeeniiId);
         BankniiGuilgee.updateOne(
@@ -1464,6 +1463,7 @@ async function daraagiinTulukhOgnooZasya(gereeniiId) {
   if (lodash.isArray(lodash.get(geree, "avlaga.guilgeenuud"))) {
     jagsaalt = lodash.get(geree, "avlaga.guilgeenuud");
   }
+  jagsaalt = lodash.filter(jagsaalt, (a) => a.turul != "baritsaa");
   var niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
     return object.tulsunDun;
   });
