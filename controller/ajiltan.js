@@ -53,6 +53,8 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           butsaakhObject.token = jwt;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
+          var ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+          console.log("forwarded ip", ip);
           var tuukh = new NevtreltiinTuukh();
           tuukh.ajiltniiId = ajiltan._id;
           tuukh.ajiltniiNer = ajiltan.ner;
@@ -80,9 +82,22 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   );
 });
 
+async function khuuBodyo(dun, khuu) {
+  var khuugiinNiitDun =
+    (await Math.round((dun * khuu + Number.EPSILON) * 100)) / 100;
+  return (
+    (await Math.round((khuugiinNiitDun / 365 + Number.EPSILON) * 100)) / 100
+  );
+}
+
 exports.backAvya = asyncHandler(async (req, res, next) => {
   try {
-    const { exec } = require("child_process");
+    var geree = {};
+    geree.dun = 10000;
+    geree.khuu = 1;
+    geree.udriinKhuu = await khuuBodyo(geree.dun, (geree.khuu * 12) / 100);
+    res.send(geree);
+    /*const { exec } = require("child_process");
     try {
       fs.unlinkSync("dump.tar");
       console.log("removed");
@@ -164,7 +179,7 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
           }
         }
       }
-    );
+    );*/
   } catch (error) {
     next(error);
   }
