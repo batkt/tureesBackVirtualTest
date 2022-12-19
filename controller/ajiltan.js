@@ -53,8 +53,9 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           butsaakhObject.token = jwt;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
-          var ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-          console.log("forwarded ip", ip);
+          console.log("forwarded ip", req.headers["x-forwarded-for"]);
+          console.log("remoteAddress", req.socket.remoteAddress);
+          console.log("req.ips", req.ips);
           var tuukh = new NevtreltiinTuukh();
           tuukh.ajiltniiId = ajiltan._id;
           tuukh.ajiltniiNer = ajiltan.ner;
