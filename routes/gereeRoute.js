@@ -6,7 +6,10 @@ const Khariltsagch = require("../models/khariltsagch");
 //const Dugaarlalt = require("../models/dugaarlalt");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
-const { gereeZasakhShalguur, guilgeeUstgakhShalguur } = require("../components/shalguur");
+const {
+  gereeZasakhShalguur,
+  guilgeeUstgakhShalguur,
+} = require("../components/shalguur");
 const multer = require("multer");
 const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
@@ -14,12 +17,18 @@ const uploadFile = multer({ storage: storage });
 //const khuudaslalt = require("../components/khuudaslalt");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, khuudaslalt, Dugaarlalt, UstsanBarimt } = require("zevback");
+const {
+  tokenShalgakh,
+  crud,
+  khuudaslalt,
+  Dugaarlalt,
+  UstsanBarimt,
+} = require("zevback");
 
 const {
   gereeniiToololtAvya,
-  guilgeeniiToololtAvya
-} = require('../controller/toololt')
+  guilgeeniiToololtAvya,
+} = require("../controller/toololt");
 
 const {
   tulultOlnoorKhadgalya,
@@ -42,168 +51,226 @@ const {
   tukhainOgnoogoorGuilgeegOruulya,
   testiinBankniiGuilgee,
   testiinBankniiGuilgeeOruulya,
-  tulukhOgnooZasya
-} = require('../controller/tulbur')
+  tulukhOgnooZasya,
+} = require("../controller/tulbur");
 router.route("/tulultTaniya").get(tulultTaniya);
-const lodash = require('lodash')
+const lodash = require("lodash");
 
-const { gereeniiExcelAvya, gereeniiExcelTatya } = require("../controller/excel");
+const {
+  gereeniiExcelAvya,
+  gereeniiExcelTatya,
+} = require("../controller/excel");
 const Baiguullaga = require("../models/baiguullaga");
 
 router.route("/gereeniiToololtAvya").post(tokenShalgakh, gereeniiToololtAvya);
-router.route("/guilgeeniiToololtAvya").post(tokenShalgakh, guilgeeniiToololtAvya);
+router
+  .route("/guilgeeniiToololtAvya")
+  .post(tokenShalgakh, guilgeeniiToololtAvya);
 
 router.route("/gereeniiExcelAvya").get(tokenShalgakh, gereeniiExcelAvya);
-router.route("/gereeniiExcelTatya").post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
-router.route("/tulultOlnoorKhadgalya").post(tokenShalgakh, tulultOlnoorKhadgalya);
-router.route("/baritsaaniiGuilgeeKhiie").post(tokenShalgakh, baritsaaniiGuilgeeKhiie);
-router.route("/tulultUstgaya").post(tokenShalgakh, guilgeeUstgakhShalguur, tulultUstgaya);
-router.route("/baritsaaniiGuilgeeUstgaya").post(tokenShalgakh, guilgeeUstgakhShalguur, baritsaaniiGuilgeeUstgaya);
-router.route("/tukhainOgnoogoorAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
+router
+  .route("/gereeniiExcelTatya")
+  .post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
+router
+  .route("/tulultOlnoorKhadgalya")
+  .post(tokenShalgakh, tulultOlnoorKhadgalya);
+router
+  .route("/baritsaaniiGuilgeeKhiie")
+  .post(tokenShalgakh, baritsaaniiGuilgeeKhiie);
+router
+  .route("/tulultUstgaya")
+  .post(tokenShalgakh, guilgeeUstgakhShalguur, tulultUstgaya);
+router
+  .route("/baritsaaniiGuilgeeUstgaya")
+  .post(tokenShalgakh, guilgeeUstgakhShalguur, baritsaaniiGuilgeeUstgaya);
+router
+  .route("/tukhainOgnoogoorAvlagaBodojOruulya")
+  .post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
 router.route("/talbainIdnuudOruulya").post(tokenShalgakh, talbainIdnuudOruulya);
-router.route("/bankniiGuilgeegeerOruulya").post(tokenShalgakh, bankniiGuilgeegeerOruulya);
-router.route("/aldaataiBankniiGuilgeeZasya").post(tokenShalgakh, aldaataiBankniiGuilgeeZasya);
-router.route("/tukhainOgnoogoorBukhAvlagaBodojOruulya").post(tokenShalgakh, tukhainOgnoogoorBukhAvlagaBodojOruulya);
-router.route("/gereenuudedZalruulgaOruulya").post(tokenShalgakh, gereenuudedZalruulgaOruulya);
-router.route("/tsutsalgdanGuilgeeZasya").post(tokenShalgakh, tsutsalgdanGuilgeeZasya);
-router.route("/tukhainOgnoogoorGuilgeegOruulya").post(tokenShalgakh, tukhainOgnoogoorGuilgeegOruulya);
-router.route("/testiinBankniiGuilgee").post(tokenShalgakh, testiinBankniiGuilgee);
-router.route("/testiinBankniiGuilgeeOruulya").post(tokenShalgakh, testiinBankniiGuilgeeOruulya);
+router
+  .route("/bankniiGuilgeegeerOruulya")
+  .post(tokenShalgakh, bankniiGuilgeegeerOruulya);
+router
+  .route("/aldaataiBankniiGuilgeeZasya")
+  .post(tokenShalgakh, aldaataiBankniiGuilgeeZasya);
+router
+  .route("/tukhainOgnoogoorBukhAvlagaBodojOruulya")
+  .post(tokenShalgakh, tukhainOgnoogoorBukhAvlagaBodojOruulya);
+router
+  .route("/gereenuudedZalruulgaOruulya")
+  .post(tokenShalgakh, gereenuudedZalruulgaOruulya);
+router
+  .route("/tsutsalgdanGuilgeeZasya")
+  .post(tokenShalgakh, tsutsalgdanGuilgeeZasya);
+router
+  .route("/tukhainOgnoogoorGuilgeegOruulya")
+  .post(tokenShalgakh, tukhainOgnoogoorGuilgeegOruulya);
+router
+  .route("/testiinBankniiGuilgee")
+  .post(tokenShalgakh, testiinBankniiGuilgee);
+router
+  .route("/testiinBankniiGuilgeeOruulya")
+  .post(tokenShalgakh, testiinBankniiGuilgeeOruulya);
 router.route("/tulukhOgnooZasya").post(tokenShalgakh, tulukhOgnooZasya);
 router.route("/khungulultKhadgalya").post(tokenShalgakh, khungulultKhadgalya);
 router.route("/khungulultUstgaya").post(tokenShalgakh, khungulultUstgaya);
 router.route("/uldegdelBodyo").post(tokenShalgakh, uldegdelBodyo);
-router.route("/gereeniiGuilgeeKhadgalya").post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
+router
+  .route("/gereeniiGuilgeeKhadgalya")
+  .post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
 router.route("/khuvaariUusgey").post(tokenShalgakh, khuvaariUusgey);
-router.route("/gereeniiTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
-  Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
-    if (lodash.isArray(lodash.get(result, 'avlaga.guilgeenuud'))) {
-      var a = lodash.get(result, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date(req.query.duusakhOgnoo) && a.turul != "baritsaa");
-      a = lodash.orderBy(a, ['ognoo'], ['asc']);
-      var uldegdel = 0;
-      a.forEach(x => {
-        uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
-        a.uldegdel = uldegdel;
-      });
-      res.send(a)
-    }
-  }).catch((err) => {
-    next(err);
-  });
-});
-router.route("/baritsaaTulultAvya/:gereeniiId").get(tokenShalgakh, (req, res, next) => {
-  Geree.findById(req.params.gereeniiId).select('avlaga').then((result) => {
-    console.log("baritsaaTulultAvya", result)
-    if (lodash.isArray(lodash.get(result, 'avlaga.baritsaa'))) {
-      var a = lodash.get(result, 'avlaga.baritsaa');
-      a = lodash.orderBy(a, ['ognoo'], ['asc']);
-      res.send(a)
-    }
-  }).catch((err) => {
-    next(err);
-  });
-});
-
-router.route("/nekhemjlekhiinDugaarlaltAvya").get(tokenShalgakh, async (req, res, next) => {
-  try {
-    var maxDugaar = 1;
-    var ognoo = {
-      $gte: new Date(
-        (new Date).getFullYear(),
-        0,
-        1),
-      $lte: new Date(
-        (new Date).getFullYear(),
-        11,
-        31)
-    }
-    console.log(ognoo);
-    await Dugaarlalt.find({
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      turul: "nekhemjlekh",
-      ognoo: ognoo
-    })
-      .sort({
-        dugaar: -1,
-      })
-      .limit(1)
+router
+  .route("/gereeniiTulultAvya/:gereeniiId")
+  .get(tokenShalgakh, (req, res, next) => {
+    Geree.findById(req.params.gereeniiId)
+      .select("avlaga")
       .then((result) => {
-        if (result != 0) maxDugaar = result[0].dugaar + 1;
-      });
-    res.send(maxDugaar.toString());
-  }
-  catch (err) {
-    next(err);
-  }
-});
-
-router.route("/nekhemjlekhiinDugaarlaltKhadgalya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    var dugaarlalt = new Dugaarlalt({
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      dugaar: req.body.dugaar,
-      turul: "nekhemjlekh",
-      ognoo: new Date(),
-      isNew: true,
-    });
-    dugaarlalt.save();
-    res.send("Amjilttai");
-  }
-  catch (err) {
-    next(err);
-  }
-});
-
-crud(router, "khungulultiinTuukh", KhungulultiinTuukh, UstsanBarimt)
-crud(router, "ashiglaltiinZardluud", AshiglaltiinZardluud, UstsanBarimt)
-crud(router, "geree", Geree, UstsanBarimt, async (req, res, next) => {
-  try {
-    const khariltsagch = new Khariltsagch(req.body);
-    khariltsagch.id = khariltsagch.register;
-    var unuudur = new Date();
-    unuudur = new Date(
-      unuudur.getFullYear(),
-      unuudur.getMonth(),
-      unuudur.getDate()
-    );
-    var maxDugaar = 1;
-    await Dugaarlalt.find({
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      turul: "geree",
-      ognoo: unuudur,
-    })
-      .sort({
-        dugaar: -1,
-      })
-      .limit(1)
-      .then((result) => {
-        if (result != 0) maxDugaar = result[0].dugaar + 1;
-      });
-    var dugaarlalt = new Dugaarlalt({
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      dugaar: maxDugaar,
-      turul: "geree",
-      ognoo: unuudur,
-      isNew: true,
-    });
-    req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
-    khariltsagch
-      .save()
-      .then((result) => {
-        dugaarlalt.save();
-        next();
+        if (lodash.isArray(lodash.get(result, "avlaga.guilgeenuud"))) {
+          var a = lodash
+            .get(result, "avlaga.guilgeenuud")
+            .filter(
+              (a) =>
+                a.ognoo < new Date(req.query.duusakhOgnoo) &&
+                a.turul != "baritsaa"
+            );
+          a = lodash.orderBy(a, ["ognoo"], ["asc"]);
+          var uldegdel = 0;
+          a.forEach((x) => {
+            uldegdel =
+              uldegdel +
+              (x.tulukhDun ? x.tulukhDun : 0) -
+              (x.tulsunDun ? x.tulsunDun : 0) -
+              (x.khyamdral ? x.khyamdral : 0);
+            a.uldegdel = uldegdel;
+          });
+          res.send(a);
+        }
       })
       .catch((err) => {
         next(err);
       });
-  } catch (error) {
-    next(error);
-  }
-}, gereeZasakhShalguur);
+  });
+router
+  .route("/baritsaaTulultAvya/:gereeniiId")
+  .get(tokenShalgakh, (req, res, next) => {
+    Geree.findById(req.params.gereeniiId)
+      .select("avlaga")
+      .then((result) => {
+        console.log("baritsaaTulultAvya", result);
+        if (lodash.isArray(lodash.get(result, "avlaga.baritsaa"))) {
+          var a = lodash.get(result, "avlaga.baritsaa");
+          a = lodash.orderBy(a, ["ognoo"], ["asc"]);
+          res.send(a);
+        }
+      })
+      .catch((err) => {
+        next(err);
+      });
+  });
+
+router
+  .route("/nekhemjlekhiinDugaarlaltAvya")
+  .get(tokenShalgakh, async (req, res, next) => {
+    try {
+      var maxDugaar = 1;
+      var ognoo = {
+        $gte: new Date(new Date().getFullYear(), 0, 1),
+        $lte: new Date(new Date().getFullYear(), 11, 31),
+      };
+      console.log(ognoo);
+      await Dugaarlalt.find({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        turul: "nekhemjlekh",
+        ognoo: ognoo,
+      })
+        .sort({
+          dugaar: -1,
+        })
+        .limit(1)
+        .then((result) => {
+          if (result != 0) maxDugaar = result[0].dugaar + 1;
+        });
+      res.send(maxDugaar.toString());
+    } catch (err) {
+      next(err);
+    }
+  });
+
+router
+  .route("/nekhemjlekhiinDugaarlaltKhadgalya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var dugaarlalt = new Dugaarlalt({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        dugaar: req.body.dugaar,
+        turul: "nekhemjlekh",
+        ognoo: new Date(),
+        isNew: true,
+      });
+      dugaarlalt.save();
+      res.send("Amjilttai");
+    } catch (err) {
+      next(err);
+    }
+  });
+
+crud(router, "khungulultiinTuukh", KhungulultiinTuukh, UstsanBarimt);
+crud(router, "ashiglaltiinZardluud", AshiglaltiinZardluud, UstsanBarimt);
+crud(
+  router,
+  "geree",
+  Geree,
+  UstsanBarimt,
+  async (req, res, next) => {
+    try {
+      const khariltsagch = new Khariltsagch(req.body);
+      khariltsagch.id = khariltsagch.register;
+      var unuudur = new Date();
+      unuudur = new Date(
+        unuudur.getFullYear(),
+        unuudur.getMonth(),
+        unuudur.getDate()
+      );
+      var maxDugaar = 1;
+      await Dugaarlalt.find({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        turul: "geree",
+        ognoo: unuudur,
+      })
+        .sort({
+          dugaar: -1,
+        })
+        .limit(1)
+        .then((result) => {
+          if (result != 0) maxDugaar = result[0].dugaar + 1;
+        });
+      var dugaarlalt = new Dugaarlalt({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        dugaar: maxDugaar,
+        turul: "geree",
+        ognoo: unuudur,
+        isNew: true,
+      });
+      req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
+      khariltsagch
+        .save()
+        .then((result) => {
+          dugaarlalt.save();
+          next();
+        })
+        .catch((err) => {
+          next(err);
+        });
+    } catch (error) {
+      next(error);
+    }
+  },
+  gereeZasakhShalguur
+);
 
 router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   const khariltsagch = new Khariltsagch(req.body);
@@ -237,18 +304,19 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     isNew: true,
   });
   req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
-  var khariltsagchShalguur = await Khariltsagch.findOne({ register: khariltsagch.register, barilgiinId: req.body.barilgiinId });
-  if (!khariltsagchShalguur)
-    await khariltsagch.save();
+  var khariltsagchShalguur = await Khariltsagch.findOne({
+    register: khariltsagch.register,
+    barilgiinId: req.body.barilgiinId,
+  });
+  if (!khariltsagchShalguur) await khariltsagch.save();
   dugaarlalt.save();
   var geree = new Geree(req.body);
   var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
   try {
     if (geree.avlaga.guilgeenuud && geree.avlaga.guilgeenuud.length > 0)
       daraagiinTulukhOgnoo = geree.avlaga.guilgeenuud[0].ognoo;
-  }
-  catch (err) {
-    console.log("daraagiin tulukh ognoonii aldaa ==>", err)
+  } catch (err) {
+    console.log("daraagiin tulukh ognoonii aldaa ==>", err);
   }
   geree.daraagiinTulukhOgnoo = daraagiinTulukhOgnoo;
   geree.tuluv = 1;
@@ -256,185 +324,230 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     talbaiKhariltsagchiinTuluvUurchluy([result._id]);
   });
   res.send("Amjilttai");
-})
+});
 
-router.route("/khariltsagchGereeniiKhuulgaAvya/:id").get(tokenShalgakh, async (req, res, next) => {
-  try {
-    var geree = await Geree.findById(req.params.id).select('+avlaga');
-    if (lodash.isArray(lodash.get(geree, 'avlaga.guilgeenuud'))) {
-      var baiguullaga = await Baiguullaga.findById(geree.baiguullagiinId);
-      var ekhlekhOgnoo = null;
-      if (baiguullaga && baiguullaga.tokhirgoo && baiguullaga.tokhirgoo.khereglegchEkhlekhOgnoo)
-        ekhlekhOgnoo = baiguullaga.tokhirgoo.khereglegchEkhlekhOgnoo
-      var butsaakhJagsaalt = [];
-      var shuugdsenJagsaalt = lodash.get(geree, 'avlaga.guilgeenuud').filter(a => a.ognoo < new Date() && a.turul != "baritsaa");
-      shuugdsenJagsaalt = lodash.orderBy(shuugdsenJagsaalt, ['ognoo'], ['asc']);
-      var uldegdel = 0;
-      for (const x of shuugdsenJagsaalt) {
-        /*if (a.turul != "baritsaa")
+router
+  .route("/khariltsagchGereeniiKhuulgaAvya/:id")
+  .get(tokenShalgakh, async (req, res, next) => {
+    try {
+      var geree = await Geree.findById(req.params.id).select("+avlaga");
+      if (lodash.isArray(lodash.get(geree, "avlaga.guilgeenuud"))) {
+        var baiguullaga = await Baiguullaga.findById(geree.baiguullagiinId);
+        var ekhlekhOgnoo = null;
+        if (
+          baiguullaga &&
+          baiguullaga.tokhirgoo &&
+          baiguullaga.tokhirgoo.khereglegchEkhlekhOgnoo
+        )
+          ekhlekhOgnoo = baiguullaga.tokhirgoo.khereglegchEkhlekhOgnoo;
+        var butsaakhJagsaalt = [];
+        var shuugdsenJagsaalt = lodash
+          .get(geree, "avlaga.guilgeenuud")
+          .filter((a) => a.ognoo < new Date() && a.turul != "baritsaa");
+        shuugdsenJagsaalt = lodash.orderBy(
+          shuugdsenJagsaalt,
+          ["ognoo"],
+          ["asc"]
+        );
+        var uldegdel = 0;
+        for (const x of shuugdsenJagsaalt) {
+          /*if (a.turul != "baritsaa")
           uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
         a.uldegdel = uldegdel;*/
-        if (ekhlekhOgnoo && x.ognoo < ekhlekhOgnoo) {
-          console.log("if orow ");
-          uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
-          butsaakhJagsaalt = [{ ognoo: ekhlekhOgnoo, tulukhDun: uldegdel }]
+          if (ekhlekhOgnoo && x.ognoo < ekhlekhOgnoo) {
+            console.log("if orow ");
+            uldegdel =
+              uldegdel +
+              (x.tulukhDun ? x.tulukhDun : 0) -
+              (x.tulsunDun ? x.tulsunDun : 0) -
+              (x.khyamdral ? x.khyamdral : 0);
+            butsaakhJagsaalt = [{ ognoo: ekhlekhOgnoo, tulukhDun: uldegdel }];
+          } else {
+            console.log("else orow ");
+            butsaakhJagsaalt.push(x);
+          }
         }
-        else {
-          console.log("else orow ");
-          butsaakhJagsaalt.push(x)
-        }
-      }
-      res.send(butsaakhJagsaalt)
+        res.send(butsaakhJagsaalt);
+      } else res.send([]);
+    } catch (err) {
+      next(err);
     }
-    else
-      res.send([]);
-  }
-  catch (err) {
-    next(err);
-  }
-})
+  });
 
-router.route("/gereeZasya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
-  try {
-    var geree = new Geree(req.body);
-    geree.tuluv = 1;
-    await Geree.updateOne(
-      {
-        _id: geree._id,
-      },
-      geree
-    ).then((result) => {
-      talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
-    });
-    res.send("Amjilttai");
-  }
-  catch (err) {
-    next(err);
-  }
-})
-
-router.route("/gereeSungaya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
-  try {
-    var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
-    var shineDuusakhOgnoo = new Date(req.body.duusakhOgnoo);
-    if (shineDuusakhOgnoo < new Date())
-      throw new Error("Сунгах огноо өнөөдрөөс хойш байх шаардлагатай!")
-    var tuukh = {
-      umnukhDuusakhOgnoo: geree.duusakhOgnoo,
-      shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
-      khiisenOgnoo: new Date(),
-      turul: "Sungakh",
-      ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
-      ajiltniiId: req.body.nevtersenAjiltniiToken.id
-    }
-    if (geree.gereeniiTuukhuud) {
-      Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
-        $push: {
-          [`gereeniiTuukhuud`]: tuukh
+router
+  .route("/gereeZasya")
+  .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+    try {
+      var geree = new Geree(req.body);
+      geree.tuluv = 1;
+      await Geree.updateOne(
+        {
+          _id: geree._id,
         },
-        $set: {
-          "duusakhOgnoo": req.body.duusakhOgnoo
-        }
-      }).then((result) => {
-        res.send("Amjilttai");
-      })
-        .catch((err) => {
-          next(err);
-        });
+        geree
+      ).then((result) => {
+        talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
+      });
+      res.send("Amjilttai");
+    } catch (err) {
+      next(err);
     }
-    else {
-      tuukh = [tuukh]
-      Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
-        $set: {
-          "duusakhOgnoo": req.body.duusakhOgnoo,
-          "gereeniiTuukhuud": tuukh
-        }
-      }).then((result) => {
-        res.send("Amjilttai");
-      })
-        .catch((err) => {
-          next(err);
-        });
-    }
-  }
-  catch (err) {
+  });
 
-  }
-});
-
-router.route("/gereeSergeeye").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
-  try {
-    var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1, "tuluv": 1 });
-    if (geree.tuluv !== -1)
-      throw new Error("Зөвхөн цуцалсан төлөвтэй гэрээг сэргээх боломжтой!");
-    var tuukh = {
-      umnukhDuusakhOgnoo: geree.duusakhOgnoo,
-      sergeekhOgnoo: req.body.sergeekhOgnoo,
-      shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
-      tailbar: req.body.tailbar,
-      khiisenOgnoo: new Date(),
-      turul: "Sergeekh",
-      ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
-      ajiltniiId: req.body.nevtersenAjiltniiToken.id
-    }
-
-    var khuvaariud = [];
-    var today = new Date();
-    var unuudur = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
-    new Array(geree.khugatsaa || 0).fill('').map((mur, index) => {
-      geree.tulukhUdur.forEach((udur) => {
-        if (moment(unuudur).add(index, 'month').set('date', udur) <= moment(geree.duusakhOgnoo)
-          && moment(unuudur).add(index, 'month').set('date', udur) > moment(new Date()))
-          khuvaariud.push({
-            ognoo: moment(unuudur).add(index, 'month').set('date', udur),
-            khyamdral: 0,
-            undsenDun: talbai.talbainNiitUne,
-            tulukhDun: talbai.talbainNiitUne
+router
+  .route("/gereeSungaya")
+  .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+    try {
+      var geree = await Geree.findById(req.body.gereeniiId).select({
+        gereeniiTuukhuud: 1,
+        duusakhOgnoo: 1,
+      });
+      var shineDuusakhOgnoo = new Date(req.body.duusakhOgnoo);
+      if (shineDuusakhOgnoo < new Date())
+        throw new Error("Сунгах огноо өнөөдрөөс хойш байх шаардлагатай!");
+      var tuukh = {
+        umnukhDuusakhOgnoo: geree.duusakhOgnoo,
+        shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
+        khiisenOgnoo: new Date(),
+        turul: "Sungakh",
+        ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+        ajiltniiId: req.body.nevtersenAjiltniiToken.id,
+      };
+      if (geree.gereeniiTuukhuud) {
+        Geree.findOneAndUpdate(
+          { _id: req.body.gereeniiId },
+          {
+            $push: {
+              [`gereeniiTuukhuud`]: tuukh,
+            },
+            $set: {
+              duusakhOgnoo: req.body.duusakhOgnoo,
+            },
+          }
+        )
+          .then((result) => {
+            res.send("Amjilttai");
           })
-      })
-    })
-    if (geree.gereeniiTuukhuud) {
-      Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
-        $push: {
-          [`gereeniiTuukhuud`]: tuukh,
-          [`avlaga.guilgeenuud`]: khuvaariud,
-        },
-        $set: {
-          "tsutsalsanOgnoo": null,
-          "tuluv": 1
-        }
-      }).then((result) => {
-        talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
-        res.send("Amjilttai");
-      })
-        .catch((err) => {
-          next(err);
+          .catch((err) => {
+            next(err);
+          });
+      } else {
+        tuukh = [tuukh];
+        Geree.findOneAndUpdate(
+          { _id: req.body.gereeniiId },
+          {
+            $set: {
+              duusakhOgnoo: req.body.duusakhOgnoo,
+              gereeniiTuukhuud: tuukh,
+            },
+          }
+        )
+          .then((result) => {
+            res.send("Amjilttai");
+          })
+          .catch((err) => {
+            next(err);
+          });
+      }
+    } catch (err) {}
+  });
+
+router
+  .route("/gereeSergeeye")
+  .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+    try {
+      var geree = await Geree.findById(req.body.gereeniiId).select({
+        gereeniiTuukhuud: 1,
+        duusakhOgnoo: 1,
+        tuluv: 1,
+      });
+      if (geree.tuluv !== -1)
+        throw new Error("Зөвхөн цуцалсан төлөвтэй гэрээг сэргээх боломжтой!");
+      var tuukh = {
+        umnukhDuusakhOgnoo: geree.duusakhOgnoo,
+        sergeekhOgnoo: req.body.sergeekhOgnoo,
+        shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
+        tailbar: req.body.tailbar,
+        khiisenOgnoo: new Date(),
+        turul: "Sergeekh",
+        ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+        ajiltniiId: req.body.nevtersenAjiltniiToken.id,
+      };
+
+      var khuvaariud = [];
+      var today = new Date();
+      var unuudur = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+        0,
+        0,
+        0
+      );
+      new Array(geree.khugatsaa || 0).fill("").map((mur, index) => {
+        geree.tulukhUdur.forEach((udur) => {
+          if (
+            moment(unuudur).add(index, "month").set("date", udur) <=
+              moment(geree.duusakhOgnoo) &&
+            moment(unuudur).add(index, "month").set("date", udur) >
+              moment(new Date())
+          )
+            khuvaariud.push({
+              ognoo: moment(unuudur).add(index, "month").set("date", udur),
+              khyamdral: 0,
+              undsenDun: talbai.talbainNiitUne,
+              tulukhDun: talbai.talbainNiitUne,
+            });
         });
+      });
+      if (geree.gereeniiTuukhuud) {
+        Geree.findOneAndUpdate(
+          { _id: req.body.gereeniiId },
+          {
+            $push: {
+              [`gereeniiTuukhuud`]: tuukh,
+              [`avlaga.guilgeenuud`]: khuvaariud,
+            },
+            $set: {
+              tsutsalsanOgnoo: null,
+              tuluv: 1,
+            },
+          }
+        )
+          .then((result) => {
+            talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
+            res.send("Amjilttai");
+          })
+          .catch((err) => {
+            next(err);
+          });
+      } else {
+        tuukh = [tuukh];
+        Geree.findOneAndUpdate(
+          { _id: req.body.gereeniiId },
+          {
+            $push: {
+              [`avlaga.guilgeenuud`]: khuvaariud,
+            },
+            $set: {
+              tsutsalsanOgnoo: null,
+              tuluv: 1,
+              gereeniiTuukhuud: tuukh,
+            },
+          }
+        )
+          .then((result) => {
+            talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
+            res.send("Amjilttai");
+          })
+          .catch((err) => {
+            next(err);
+          });
+      }
+    } catch (err) {
+      next(err);
     }
-    else {
-      tuukh = [tuukh]
-      Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
-        $push: {
-          [`avlaga.guilgeenuud`]: khuvaariud,
-        },
-        $set: {
-          "tsutsalsanOgnoo": null,
-          "tuluv": 1,
-          "gereeniiTuukhuud": tuukh
-        }
-      }).then((result) => {
-        talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
-        res.send("Amjilttai");
-      })
-        .catch((err) => {
-          next(err);
-        });
-    }
-  }
-  catch (err) {
-    next(err);
-  }
-});
+  });
 
 async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
   if (gereeniiIdnuud && gereeniiIdnuud.length > 0) {
@@ -442,475 +555,519 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
     var khariltsagchiinBulk = [];
     for await (const id of gereeniiIdnuud) {
       let geree = await Geree.findById(id);
-      let busadGereenuud = await Geree.findOne({ "register": geree.register, barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 } });
-      var talbainuud = await Talbai.find({ '_id': { $in: geree.talbainIdnuud } });
+      let busadGereenuud = await Geree.findOne({
+        register: geree.register,
+        barilgiinId: geree.barilgiinId,
+        tuluv: { $ne: -1 },
+      });
+      var talbainuud = await Talbai.find({ _id: { $in: geree.talbainIdnuud } });
       for await (const talbai of talbainuud) {
         if (talbai.niitiinTalbaiEsekh) {
-          let tukhainTalbainGereenuud = await Geree.find({ barilgiinId: geree.barilgiinId, tuluv: { $ne: -1 }, talbainIdnuud: talbai._id });
-          var niitIdevkhiteiTalbai = lodash.sumBy(tukhainTalbainGereenuud, function (object) {
-            return object.talbainKhemjee;
+          let tukhainTalbainGereenuud = await Geree.find({
+            barilgiinId: geree.barilgiinId,
+            tuluv: { $ne: -1 },
+            talbainIdnuud: talbai._id,
           });
-          var sulKhemjee = (talbai.talbainKhemjee - niitIdevkhiteiTalbai);
+          var niitIdevkhiteiTalbai = lodash.sumBy(
+            tukhainTalbainGereenuud,
+            function (object) {
+              return object.talbainKhemjee;
+            }
+          );
+          var sulKhemjee = talbai.talbainKhemjee - niitIdevkhiteiTalbai;
           if (sulKhemjee < 0) sulKhemjee = 0;
           let upsertTalbai = {
-            'updateOne': {
-              'filter': { '_id': talbai._id },
-              'update': {
-                "idevkhiteiEsekh": (geree.tuluv == 1),
-                "sulKhemjee": sulKhemjee
-              }
-            }
+            updateOne: {
+              filter: { _id: talbai._id },
+              update: {
+                idevkhiteiEsekh: geree.tuluv == 1,
+                sulKhemjee: sulKhemjee,
+              },
+            },
           };
           talbainBulk.push(upsertTalbai);
-        }
-        else {
+        } else {
           let upsertTalbai = {
-            'updateOne': {
-              'filter': { '_id': talbai._id },
-              'update': {
-                "idevkhiteiEsekh": (geree.tuluv == 1)
-              }
-            }
+            updateOne: {
+              filter: { _id: talbai._id },
+              update: {
+                idevkhiteiEsekh: geree.tuluv == 1,
+              },
+            },
           };
           talbainBulk.push(upsertTalbai);
         }
 
         let upsertKhariltsagch = {
-          'updateOne': {
-            'filter': { 'register': geree.register, 'barilgiinId': geree.barilgiinId },
-            'update': {
-              "idevkhiteiEsekh": busadGereenuud ? true : false
-            }
-          }
+          updateOne: {
+            filter: {
+              register: geree.register,
+              barilgiinId: geree.barilgiinId,
+            },
+            update: {
+              idevkhiteiEsekh: busadGereenuud ? true : false,
+            },
+          },
         };
         khariltsagchiinBulk.push(upsertKhariltsagch);
       }
     }
     if (talbainBulk)
       Talbai.bulkWrite(talbainBulk)
-        .then(bulkWriteOpResult => {
-          console.log('BULK update OK', bulkWriteOpResult);
+        .then((bulkWriteOpResult) => {
+          console.log("BULK update OK", bulkWriteOpResult);
         })
-        .catch(err => {
-          console.log('BULK update error', err);
+        .catch((err) => {
+          console.log("BULK update error", err);
         });
 
     if (khariltsagchiinBulk)
       Khariltsagch.bulkWrite(khariltsagchiinBulk)
-        .then(bulkWriteOpResult => {
-          console.log('BULK update OK', bulkWriteOpResult);
+        .then((bulkWriteOpResult) => {
+          console.log("BULK update OK", bulkWriteOpResult);
         })
-        .catch(err => {
-          console.log('BULK update error', err);
+        .catch((err) => {
+          console.log("BULK update error", err);
         });
   }
 }
 
-router.route("/gereeTsutslaya").post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
-  var geree = await Geree.findById(req.body.gereeniiId).select({ "gereeniiTuukhuud": 1, "duusakhOgnoo": 1 });
-  var tuukh = {
-    umnukhDuusakhOgnoo: geree.duusakhOgnoo,
-    tsutslasanShaltgaan: req.body.shaltgaan,
-    khiisenOgnoo: new Date(),
-    turul: "Tsutslakh",
-    ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
-    ajiltniiId: req.body.nevtersenAjiltniiToken.id
-  }
-  console.log(tuukh);
-  if (geree.gereeniiTuukhuud) {
-    Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
-      $push: {
-        [`gereeniiTuukhuud`]: tuukh
-      },
-      $set: {
-        "tsutsalsanOgnoo": new Date(),
-        "tuluv": -1
-      },
-      $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } }
-    }).then((result) => {
-      talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
-      res.send("Amjilttai");
-    })
-      .catch((err) => {
-        next(err);
-      });
-  }
-  else {
-    tuukh = [tuukh]
+router
+  .route("/gereeTsutslaya")
+  .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+    var geree = await Geree.findById(req.body.gereeniiId).select({
+      gereeniiTuukhuud: 1,
+      duusakhOgnoo: 1,
+    });
+    var tuukh = {
+      umnukhDuusakhOgnoo: geree.duusakhOgnoo,
+      tsutslasanShaltgaan: req.body.shaltgaan,
+      khiisenOgnoo: new Date(),
+      turul: "Tsutslakh",
+      ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+      ajiltniiId: req.body.nevtersenAjiltniiToken.id,
+    };
     console.log(tuukh);
-    Geree.findOneAndUpdate({ "_id": req.body.gereeniiId }, {
-      $set: {
-        "gereeniiTuukhuud": tuukh,
-        "tsutsalsanOgnoo": new Date(),
-        "tuluv": -1
-      },
-      $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } }
-    }).then((result) => {
-      talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
-      res.send("Amjilttai");
-    })
-      .catch((err) => {
-        next(err);
-      });
-  }
-});
-
-router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-
-    const body = req.body.query;
-    if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-    if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    if (!!body?.search) body.search = String(body.search);
-    if (req.body.barilgiinId) {
-      if (!body.query)
-        body.query = { barilgiinId: req.body.barilgiinId };
-      else
-        body.query['barilgiinId'] = req.body.barilgiinId;
-    }
-
-    body.lean = true;
-    khuudaslalt(Geree, body)
-      .then(async (result) => {
-        console.log('result', result);
-        if (result && result.jagsaalt && result.jagsaalt.length > 0) {
-          var idnuud = [];
-          result.jagsaalt.forEach(a => idnuud.push(a._id));
-          var query = [
-            {
-              '$match': {
-                'baiguullagiinId': req.body.baiguullagiinId,
-                'barilgiinId': req.body.barilgiinId,
-                '_id': { $in: idnuud },
-                'tuluv': {
-                  $ne: -1
-                }
-              }
-            }, {
-              '$facet': {
-                'khariltsagch': [
-                  {
-                    "$lookup":
-                    {
-                      'from': 'khariltsagch',
-                      'let': {
-                        "register": "$register",
-                        "baiguullagiinId": "$baiguullagiinId",
-                        "barilgiinId": "$barilgiinId"
-                      },
-                      'pipeline': [
-                        {
-                          '$match':
-                          {
-                            '$expr':
-                            {
-                              '$and':
-                                [
-                                  { '$eq': ["$register", "$$register"] },
-                                  { '$eq': ["$baiguullagiinId", "$$baiguullagiinId"] },
-                                  { '$eq': ["$barilgiinId", "$$barilgiinId"] }
-                                ]
-                            }
-                          }
-                        }
-                      ],
-                      'as': 'khariltsagch'
-                    }
-                  },
-                  {
-                    "$set":
-                    {
-                      "token": {
-                        $arrayElemAt: ["$khariltsagch.firebaseToken", 0]
-                      },
-                      "khariltsagchiinId": {
-                        $arrayElemAt: ["$khariltsagch._id", 0]
-                      },
-                      "register": {
-                        $arrayElemAt: ["$khariltsagch.register", 0]
-                      }
-                    }
-                  },
-                  {
-                    "$project": {
-                      "khariltsagchiinId": 1,
-                      "token": 1,
-                      "register": 1,
-                    }
-                  }
-                ],
-                'umnukhSariinUrTulbur': [
-                  {
-                    '$unwind': {
-                      'path': '$avlaga.guilgeenuud'
-                    }
-                  },
-                  {
-                    '$match': {
-                      "avlaga.guilgeenuud.turul": {
-                        $nin: ["baritsaa"]
-                      },
-                      $or: [
-                        {
-                          'avlaga.guilgeenuud.ognoo': {
-                            '$lt': new Date(req.body.ekhlekhOgnoo)
-                          }
-                        },
-                        {
-                          $and: [
-                            {
-                              'avlaga.guilgeenuud.ognoo': {
-                                '$lte': new Date(req.body.nekhemjlekhAvakhOgnoo),
-                                '$gte': new Date(req.body.ekhlekhOgnoo)
-                              }
-                            },
-                            {
-                              $or: [
-                                {
-                                  "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": {
-                                    $exists: false
-                                  }
-                                },
-                                {
-                                  "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": false
-                                }
-                              ]
-                            },
-                            {
-                              $or: [
-                                {
-                                  'avlaga.guilgeenuud.undsenDun': {
-                                    $exists: false
-                                  }
-                                },
-                                {
-                                  'avlaga.guilgeenuud.undsenDun': 0
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  }, {
-                    '$group': {
-                      '_id': '$gereeniiDugaar',
-                      'tulukh': {
-                        '$sum':
-                        {
-                          "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
-                        }
-                      },
-                      'khyamdral': {
-                        '$sum':
-                        {
-                          "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
-                        }
-                      },
-                      'tulsun': {
-                        '$sum':
-                        {
-                          "$ifNull": ['$avlaga.guilgeenuud.tulsunDun', 0]
-                        }
-                      }
-                    }
-                  }, {
-                    '$project': {
-                      'gereeniiDugaar': '$gereeniiDugaar',
-                      'uldegdel': {
-                        '$subtract': [
-                          '$tulukh', {
-                            '$sum': [
-                              '$tulsun', '$khyamdral'
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ],
-                'niitUldegdel': [
-                  {
-                    '$unwind': {
-                      'path': '$avlaga.guilgeenuud'
-                    }
-                  },
-                  {
-                    '$match': {
-                      "avlaga.guilgeenuud.turul": {
-                        $nin: ["baritsaa"]
-                      },
-                      'avlaga.guilgeenuud.ognoo': {
-                        '$lte': new Date(req.body.duusakhOgnoo)
-                      }
-                    }
-                  }, {
-                    '$group': {
-                      '_id': '$gereeniiDugaar',
-                      'tulukh': {
-                        '$sum':
-                        {
-                          "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
-                        }
-                      },
-                      'khyamdral': {
-                        '$sum':
-                        {
-                          "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
-                        }
-                      },
-                      'tulsun': {
-                        '$sum':
-                        {
-                          "$ifNull": ['$avlaga.guilgeenuud.tulsunDun', 0]
-                        }
-                      }
-                    }
-                  }, {
-                    '$project': {
-                      'gereeniiDugaar': '$gereeniiDugaar',
-                      'uldegdel': {
-                        '$subtract': [
-                          '$tulukh', {
-                            '$sum': [
-                              '$tulsun', '$khyamdral'
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ],
-                'eneSardTulukhDun': [
-                  {
-                    '$unwind': {
-                      'path': '$avlaga.guilgeenuud'
-                    }
-                  },
-                  {
-                    '$match': {
-                      "avlaga.guilgeenuud.turul": {
-                        $nin: ["baritsaa"]
-                      },
-                      'avlaga.guilgeenuud.ognoo': {
-                        '$lte': new Date(req.body.duusakhOgnoo),
-                        '$gte': new Date(req.body.ekhlekhOgnoo)
-                      }
-                    }
-                  }, {
-                    '$group': {
-                      '_id': '$gereeniiDugaar',
-                      'tulukh': {
-                        '$sum':
-                        {
-                          "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
-                        }
-                      },
-                      'khyamdral': {
-                        '$sum':
-                        {
-                          "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
-                        }
-                      }
-                    }
-                  }, {
-                    '$project': {
-                      'gereeniiDugaar': '$gereeniiDugaar',
-                      'uldegdel': {
-                        '$subtract': [
-                          '$tulukh', '$khyamdral'
-                        ]
-                      }
-                    }
-                  }
-                ],
-                'nekhemjlekhDeerGarakh': [
-                  {
-                    '$unwind': {
-                      'path': '$avlaga.guilgeenuud'
-                    }
-                  },
-                  {
-                    '$match': {
-                      'avlaga.guilgeenuud.ognoo': {
-                        '$lte': new Date(req.body.duusakhOgnoo),
-                        '$gte': new Date(req.body.ekhlekhOgnoo)
-                      },
-                      "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": true
-                    }
-                  }, {
-                    '$project': {
-                      'gereeniiDugaar': '$gereeniiDugaar',
-                      "avlaga": "$avlaga.guilgeenuud"
-                    }
-                  },
-                  {
-                    $group: {
-                      "_id": "$gereeniiDugaar",
-                      "guilgeenuud": {
-                        $push: "$avlaga"
-                      }
-                    }
-                  }
-                ],
-                'zardluud': [
-                  {
-                    '$unwind': {
-                      'path': '$avlaga.guilgeenuud'
-                    }
-                  },
-                  {
-                    '$match': {
-                      'avlaga.guilgeenuud.ognoo': {
-                        '$lte': new Date(req.body.duusakhOgnoo),
-                        '$gte': new Date(req.body.ekhlekhOgnoo)
-                      },
-                      "avlaga.guilgeenuud.turul": "avlaga"
-                    }
-                  }, {
-                    '$project': {
-                      'gereeniiDugaar': '$gereeniiDugaar',
-                      "avlaga": "$avlaga.guilgeenuud"
-                    }
-                  },
-                  {
-                    $group: {
-                      "_id": "$gereeniiDugaar",
-                      "guilgeenuud": {
-                        $push: "$avlaga"
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-          var gereenuud = await Geree.aggregate(query);
-          if (result && result.jagsaalt && result.jagsaalt.length > 0) {
-            result.jagsaalt = result.jagsaalt.filter(a => gereenuud[0].niitUldegdel.find(b => b._id == a.gereeniiDugaar));
-            console.log('jagsaalt', result.jagsaalt);
-            result.jagsaalt.forEach(x => {
-              x.eneSardTulukhDun = (gereenuud[0].eneSardTulukhDun.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-              x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-              x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-              x.nemeltNekhemjlekh = (gereenuud[0].nekhemjlekhDeerGarakh.find(a => a._id == x.gereeniiDugaar)?.guilgeenuud || [])
-              x.zardluud = (gereenuud[0].zardluud.find(a => a._id == x.gereeniiDugaar)?.guilgeenuud || [])
-              x.khariltsagchiinId = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.khariltsagchiinId;
-              x.firebaseToken = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.token;
-              if (x.umnukhSariinUrTulbur < 0)
-                x.umnukhSariinUrTulbur = 0
-              if (x.eneSardTulukhDun < 0)
-                x.eneSardTulukhDun = 0
-              if (x.niitUldegdel < 0)
-                x.niitUldegdel = 0
-            });
-          }
+    if (geree.gereeniiTuukhuud) {
+      Geree.findOneAndUpdate(
+        { _id: req.body.gereeniiId },
+        {
+          $push: {
+            [`gereeniiTuukhuud`]: tuukh,
+          },
+          $set: {
+            tsutsalsanOgnoo: new Date(),
+            tuluv: -1,
+          },
+          $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } },
         }
-        res.send(result);
-      }).catch((err1) => {
-        next(err1);
-      });;
-    /*
+      )
+        .then((result) => {
+          talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
+          res.send("Amjilttai");
+        })
+        .catch((err) => {
+          next(err);
+        });
+    } else {
+      tuukh = [tuukh];
+      console.log(tuukh);
+      Geree.findOneAndUpdate(
+        { _id: req.body.gereeniiId },
+        {
+          $set: {
+            gereeniiTuukhuud: tuukh,
+            tsutsalsanOgnoo: new Date(),
+            tuluv: -1,
+          },
+          $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } },
+        }
+      )
+        .then((result) => {
+          talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
+          res.send("Amjilttai");
+        })
+        .catch((err) => {
+          next(err);
+        });
+    }
+  });
+
+router
+  .route("/eneSardTulukhJagsaaltAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      const body = req.body.query;
+      if (!!body?.khuudasniiDugaar)
+        body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      if (!!body?.khuudasniiKhemjee)
+        body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+      if (!!body?.search) body.search = String(body.search);
+      if (req.body.barilgiinId) {
+        if (!body.query) body.query = { barilgiinId: req.body.barilgiinId };
+        else body.query["barilgiinId"] = req.body.barilgiinId;
+      }
+
+      body.lean = true;
+      khuudaslalt(Geree, body)
+        .then(async (result) => {
+          console.log("result", result);
+          if (result && result.jagsaalt && result.jagsaalt.length > 0) {
+            var idnuud = [];
+            result.jagsaalt.forEach((a) => idnuud.push(a._id));
+            var query = [
+              {
+                $match: {
+                  baiguullagiinId: req.body.baiguullagiinId,
+                  barilgiinId: req.body.barilgiinId,
+                  _id: { $in: idnuud },
+                  tuluv: {
+                    $ne: -1,
+                  },
+                },
+              },
+              {
+                $facet: {
+                  khariltsagch: [
+                    {
+                      $lookup: {
+                        from: "khariltsagch",
+                        let: {
+                          register: "$register",
+                          baiguullagiinId: "$baiguullagiinId",
+                          barilgiinId: "$barilgiinId",
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $and: [
+                                  { $eq: ["$register", "$$register"] },
+                                  {
+                                    $eq: [
+                                      "$baiguullagiinId",
+                                      "$$baiguullagiinId",
+                                    ],
+                                  },
+                                  { $eq: ["$barilgiinId", "$$barilgiinId"] },
+                                ],
+                              },
+                            },
+                          },
+                        ],
+                        as: "khariltsagch",
+                      },
+                    },
+                    {
+                      $set: {
+                        token: {
+                          $arrayElemAt: ["$khariltsagch.firebaseToken", 0],
+                        },
+                        khariltsagchiinId: {
+                          $arrayElemAt: ["$khariltsagch._id", 0],
+                        },
+                        register: {
+                          $arrayElemAt: ["$khariltsagch.register", 0],
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        khariltsagchiinId: 1,
+                        token: 1,
+                        register: 1,
+                      },
+                    },
+                  ],
+                  umnukhSariinUrTulbur: [
+                    {
+                      $unwind: {
+                        path: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.turul": {
+                          $nin: ["baritsaa"],
+                        },
+                        $or: [
+                          {
+                            "avlaga.guilgeenuud.ognoo": {
+                              $lt: new Date(req.body.ekhlekhOgnoo),
+                            },
+                          },
+                          {
+                            $and: [
+                              {
+                                "avlaga.guilgeenuud.ognoo": {
+                                  $lte: new Date(
+                                    req.body.nekhemjlekhAvakhOgnoo
+                                  ),
+                                  $gte: new Date(req.body.ekhlekhOgnoo),
+                                },
+                              },
+                              {
+                                $or: [
+                                  {
+                                    "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh":
+                                      {
+                                        $exists: false,
+                                      },
+                                  },
+                                  {
+                                    "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": false,
+                                  },
+                                ],
+                              },
+                              {
+                                $or: [
+                                  {
+                                    "avlaga.guilgeenuud.undsenDun": {
+                                      $exists: false,
+                                    },
+                                  },
+                                  {
+                                    "avlaga.guilgeenuud.undsenDun": 0,
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        tulukh: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                          },
+                        },
+                        khyamdral: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                          },
+                        },
+                        tulsun: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                          },
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        uldegdel: {
+                          $subtract: [
+                            "$tulukh",
+                            {
+                              $sum: ["$tulsun", "$khyamdral"],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  ],
+                  niitUldegdel: [
+                    {
+                      $unwind: {
+                        path: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.turul": {
+                          $nin: ["baritsaa"],
+                        },
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lte: new Date(req.body.duusakhOgnoo),
+                        },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        tulukh: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                          },
+                        },
+                        khyamdral: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                          },
+                        },
+                        tulsun: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                          },
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        uldegdel: {
+                          $subtract: [
+                            "$tulukh",
+                            {
+                              $sum: ["$tulsun", "$khyamdral"],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  ],
+                  eneSardTulukhDun: [
+                    {
+                      $unwind: {
+                        path: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.turul": {
+                          $nin: ["baritsaa"],
+                        },
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lte: new Date(req.body.duusakhOgnoo),
+                          $gte: new Date(req.body.ekhlekhOgnoo),
+                        },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        tulukh: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                          },
+                        },
+                        khyamdral: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                          },
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        uldegdel: {
+                          $subtract: ["$tulukh", "$khyamdral"],
+                        },
+                      },
+                    },
+                  ],
+                  nekhemjlekhDeerGarakh: [
+                    {
+                      $unwind: {
+                        path: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lte: new Date(req.body.duusakhOgnoo),
+                          $gte: new Date(req.body.ekhlekhOgnoo),
+                        },
+                        "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": true,
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        avlaga: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        guilgeenuud: {
+                          $push: "$avlaga",
+                        },
+                      },
+                    },
+                  ],
+                  zardluud: [
+                    {
+                      $unwind: {
+                        path: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lte: new Date(req.body.duusakhOgnoo),
+                          $gte: new Date(req.body.ekhlekhOgnoo),
+                        },
+                        "avlaga.guilgeenuud.turul": "avlaga",
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        avlaga: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        guilgeenuud: {
+                          $push: "$avlaga",
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            ];
+            var gereenuud = await Geree.aggregate(query);
+            if (result && result.jagsaalt && result.jagsaalt.length > 0) {
+              result.jagsaalt = result.jagsaalt.filter((a) =>
+                gereenuud[0].niitUldegdel.find((b) => b._id == a.gereeniiDugaar)
+              );
+              console.log("jagsaalt", result.jagsaalt);
+              result.jagsaalt.forEach((x) => {
+                x.eneSardTulukhDun =
+                  gereenuud[0].eneSardTulukhDun.find(
+                    (a) => a._id == x.gereeniiDugaar
+                  )?.uldegdel || 0;
+                x.umnukhSariinUrTulbur =
+                  gereenuud[0].umnukhSariinUrTulbur.find(
+                    (a) => a._id == x.gereeniiDugaar
+                  )?.uldegdel || 0;
+                x.niitUldegdel =
+                  gereenuud[0].niitUldegdel.find(
+                    (a) => a._id == x.gereeniiDugaar
+                  )?.uldegdel || 0;
+                x.nemeltNekhemjlekh =
+                  gereenuud[0].nekhemjlekhDeerGarakh.find(
+                    (a) => a._id == x.gereeniiDugaar
+                  )?.guilgeenuud || [];
+                x.zardluud =
+                  gereenuud[0].zardluud.find((a) => a._id == x.gereeniiDugaar)
+                    ?.guilgeenuud || [];
+                x.khariltsagchiinId = gereenuud[0].khariltsagch.find(
+                  (a) => a.register == x.register
+                )?.khariltsagchiinId;
+                x.firebaseToken = gereenuud[0].khariltsagch.find(
+                  (a) => a.register == x.register
+                )?.token;
+                if (x.umnukhSariinUrTulbur < 0) x.umnukhSariinUrTulbur = 0;
+                if (x.eneSardTulukhDun < 0) x.eneSardTulukhDun = 0;
+                if (x.niitUldegdel < 0) x.niitUldegdel = 0;
+              });
+            }
+          }
+          res.send(result);
+        })
+        .catch((err1) => {
+          next(err1);
+        });
+      /*
   var query = [
     {
       '$unwind': {
@@ -1183,479 +1340,488 @@ router.route("/eneSardTulukhJagsaaltAvya").post(tokenShalgakh, async (req, res, 
             next(err);
           });
       }*/
-  } catch (error) {
-    next(error);
-  }
-});
+    } catch (error) {
+      next(error);
+    }
+  });
 
-
-router.route("/tulburiinZadargaaAvya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    var mongoose = require('mongoose');
-    var id = mongoose.Types.ObjectId(req.body.id);
-    var query = [
-      {
-        '$match': {
-          _id: id
-        }
-      },
-      {
-        '$unwind': {
-          'path': '$avlaga.guilgeenuud'
-        }
-      },
-      {
-        '$lookup': {
-          'from': 'talbai',
-          'let': {
-            "talbainDugaar": "$talbainDugaar",
-            "baiguullagiinId": "$baiguullagiinId",
-            "barilgiinId": "$barilgiinId"
+router
+  .route("/tulburiinZadargaaAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var mongoose = require("mongoose");
+      var id = mongoose.Types.ObjectId(req.body.id);
+      var query = [
+        {
+          $match: {
+            _id: id,
           },
-          'pipeline': [
-            {
-              '$match':
+        },
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $lookup: {
+            from: "talbai",
+            let: {
+              talbainDugaar: "$talbainDugaar",
+              baiguullagiinId: "$baiguullagiinId",
+              barilgiinId: "$barilgiinId",
+            },
+            pipeline: [
               {
-                '$expr':
-                {
-                  '$and':
-                    [
-                      { '$eq': ["$kod", "$$talbainDugaar"] },
-                      { '$eq': ["$baiguullagiinId", "$$baiguullagiinId"] },
-                      { '$eq': ["$barilgiinId", "$$barilgiinId"] }
-                    ]
-                }
-              }
-            }
-          ],
-          'as': 'talbai'
-        }
-      }, {
-        '$facet': {
-          'umnukhSariinUrTulbur': [
-            {
-              '$match': {
-                $or: [
-                  {
-                    'avlaga.guilgeenuud.ognoo': {
-                      '$lt': new Date(req.body.ekhlekhOgnoo)
-                    }
-                  },
-                  {
+                $match: {
+                  $expr: {
                     $and: [
-                      {
-                        'avlaga.guilgeenuud.ognoo': {
-                          '$lte': new Date(req.body.nekhemjlekhAvakhOgnoo),
-                          '$gte': new Date(req.body.ekhlekhOgnoo)
-                        }
-                      },
-                      {
-                        $or: [
-                          {
-                            "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": {
-                              $exists: false
-                            }
-                          },
-                          {
-                            "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": false
-                          }
-                        ]
-                      },
-                      {
-                        $or: [
-                          {
-                            'avlaga.guilgeenuud.undsenDun': {
-                              $exists: false
-                            }
-                          },
-                          {
-                            'avlaga.guilgeenuud.undsenDun': 0
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            }, {
-              '$group': {
-                '_id': '$gereeniiDugaar',
-                'tulukh': {
-                  '$sum':
-                  {
-                    "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
-                  }
+                      { $eq: ["$kod", "$$talbainDugaar"] },
+                      { $eq: ["$baiguullagiinId", "$$baiguullagiinId"] },
+                      { $eq: ["$barilgiinId", "$$barilgiinId"] },
+                    ],
+                  },
                 },
-                'khyamdral': {
-                  '$sum':
-                  {
-                    "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
-                  }
-                },
-                'tulsun': {
-                  '$sum':
-                  {
-                    "$ifNull": ['$avlaga.guilgeenuud.tulsunDun', 0]
-                  }
-                }
-              }
-            }, {
-              '$project': {
-                'gereeniiDugaar': '$gereeniiDugaar',
-                'uldegdel': {
-                  '$subtract': [
-                    '$tulukh', {
-                      '$sum': [
-                        '$tulsun', '$khyamdral'
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-          ],
-          'niitUldegdel': [
-            {
-              '$match': {
-                'avlaga.guilgeenuud.ognoo': {
-                  '$lte': new Date(req.body.duusakhOgnoo)
-                }
-              }
-            },
-            {
-              '$unwind': {
-                'path': "$talbai"
-              }
-            }, {
-              '$group': {
-                '_id': '$gereeniiDugaar',
-                'niitAshiglaltiinZardal': {
-                  '$max': '$talbai.niitAshiglaltiinZardal'
-                },
-                'tulukh': {
-                  '$sum':
-                  {
-                    "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
-                  }
-                },
-                'khyamdral': {
-                  '$sum':
-                  {
-                    "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
-                  }
-                },
-                'tulsun': {
-                  '$sum':
-                  {
-                    "$ifNull": ['$avlaga.guilgeenuud.tulsunDun', 0]
-                  }
-                }
-              }
-            }, {
-              '$project': {
-                'gereeniiDugaar': '$gereeniiDugaar',
-                'niitAshiglaltiinZardal': '$niitAshiglaltiinZardal',
-                'uldegdel': {
-                  '$subtract': [
-                    '$tulukh', {
-                      '$sum': [
-                        '$tulsun', '$khyamdral'
-                      ]
-                    }
-                  ]
-                }
-              }
-            }
-          ],
-          'eneSardTulukhDun': [
-            {
-              '$match': {
-                'avlaga.guilgeenuud.ognoo': {
-                  '$lte': new Date(req.body.duusakhOgnoo),
-                  '$gte': new Date(req.body.ekhlekhOgnoo)
-                }
-              }
-            }, {
-              '$group': {
-                '_id': '$gereeniiDugaar',
-                'tulukh': {
-                  '$sum':
-                  {
-                    "$ifNull": ['$avlaga.guilgeenuud.tulukhDun', 0]
-                  }
-                },
-                'khyamdral': {
-                  '$sum':
-                  {
-                    "$ifNull": ['$avlaga.guilgeenuud.khyamdral', 0]
-                  }
-                }
-              }
-            }, {
-              '$project': {
-                'gereeniiDugaar': '$gereeniiDugaar',
-                'uldegdel': {
-                  '$subtract': [
-                    '$tulukh', '$khyamdral'
-                  ]
-                }
-              }
-            }
-          ],
-          'nekhemjlekhDeerGarakh': [
-            {
-              '$match': {
-                'avlaga.guilgeenuud.ognoo': {
-                  '$lte': new Date(req.body.duusakhOgnoo),
-                  '$gte': new Date(req.body.ekhlekhOgnoo)
-                },
-                "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": true
-              }
-            }, {
-              '$project': {
-                'gereeniiDugaar': '$gereeniiDugaar',
-                "avlaga": "$avlaga.guilgeenuud"
-              }
-            },
-            {
-              $group: {
-                "_id": "$gereeniiDugaar",
-                "guilgeenuud": {
-                  $push: "$avlaga"
-                }
-              }
-            }
-          ]
-        }
-      }
-    ]
-    console.log("zadargaa query", JSON.stringify(query, null, 4));
-    var gereenuud = await Geree.aggregate(query);
-    res.send(gereenuud);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.route("/gereeTulukhDunteiAvya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    const body = req.body.query;
-    if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-    if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    if (!!body?.search) body.search = String(body.search);
-
-    body.lean = true;
-    khuudaslalt(Geree, body)
-      .then(async (result) => {
-        if (result && result.jagsaalt && result.jagsaalt.length > 0) {
-          var idnuud = [];
-          result.jagsaalt.forEach(a => idnuud.push(a._id));
-          var query = [
-            {
-              '$match': {
-                'baiguullagiinId': req.body.baiguullagiinId,
-                'barilgiinId': req.body.barilgiinId,
-                '_id': { $in: idnuud }
-              }
-            },
-            {
-              '$unwind': {
-                'path': '$avlaga.guilgeenuud'
-              }
-            }, {
-              '$facet': {
-                'khariltsagch': [
-                  {
-                    "$lookup":
+              },
+            ],
+            as: "talbai",
+          },
+        },
+        {
+          $facet: {
+            umnukhSariinUrTulbur: [
+              {
+                $match: {
+                  $or: [
                     {
-                      'from': 'khariltsagch',
-                      'let': {
-                        "register": "$register",
-                        "baiguullagiinId": "$baiguullagiinId",
-                        "barilgiinId": "$barilgiinId"
+                      "avlaga.guilgeenuud.ognoo": {
+                        $lt: new Date(req.body.ekhlekhOgnoo),
                       },
-                      'pipeline': [
+                    },
+                    {
+                      $and: [
                         {
-                          '$match':
-                          {
-                            '$expr':
+                          "avlaga.guilgeenuud.ognoo": {
+                            $lte: new Date(req.body.nekhemjlekhAvakhOgnoo),
+                            $gte: new Date(req.body.ekhlekhOgnoo),
+                          },
+                        },
+                        {
+                          $or: [
                             {
-                              '$and':
-                                [
-                                  { '$eq': ["$register", "$$register"] },
-                                  { '$eq': ["$baiguullagiinId", "$$baiguullagiinId"] },
-                                  { '$eq': ["$barilgiinId", "$$barilgiinId"] }
-                                ]
-                            }
-                          }
-                        }
+                              "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": {
+                                $exists: false,
+                              },
+                            },
+                            {
+                              "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": false,
+                            },
+                          ],
+                        },
+                        {
+                          $or: [
+                            {
+                              "avlaga.guilgeenuud.undsenDun": {
+                                $exists: false,
+                              },
+                            },
+                            {
+                              "avlaga.guilgeenuud.undsenDun": 0,
+                            },
+                          ],
+                        },
                       ],
-                      'as': 'khariltsagch'
-                    }
+                    },
+                  ],
+                },
+              },
+              {
+                $group: {
+                  _id: "$gereeniiDugaar",
+                  tulukh: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
                   },
-                  {
-                    "$set":
-                    {
-                      "token": {
-                        $arrayElemAt: ["$khariltsagch.firebaseToken", 0]
-                      },
-                      "khariltsagchiinId": {
-                        $arrayElemAt: ["$khariltsagch._id", 0]
-                      },
-                      "register": {
-                        $arrayElemAt: ["$khariltsagch.register", 0]
-                      }
-                    }
+                  khyamdral: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                    },
                   },
-                  {
-                    "$project": {
-                      "khariltsagchiinId": 1,
-                      "token": 1,
-                      "register": 1,
-                    }
-                  }
-                ],
-                'umnukhSariinUrTulbur': [
-                  {
-                    '$match': {
-                      'avlaga.guilgeenuud.ognoo': {
-                        '$lt': new Date(req.body.ekhlekhOgnoo)
-                      }
-                    }
-                  }, {
-                    '$group': {
-                      '_id': '$gereeniiDugaar',
-                      'tulukh': {
-                        '$sum': '$avlaga.guilgeenuud.tulukhDun'
+                  tulsun: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                    },
+                  },
+                },
+              },
+              {
+                $project: {
+                  gereeniiDugaar: "$gereeniiDugaar",
+                  uldegdel: {
+                    $subtract: [
+                      "$tulukh",
+                      {
+                        $sum: ["$tulsun", "$khyamdral"],
                       },
-                      'khyamdral': {
-                        '$sum': '$avlaga.guilgeenuud.khyamdral'
+                    ],
+                  },
+                },
+              },
+            ],
+            niitUldegdel: [
+              {
+                $match: {
+                  "avlaga.guilgeenuud.ognoo": {
+                    $lte: new Date(req.body.duusakhOgnoo),
+                  },
+                },
+              },
+              {
+                $unwind: {
+                  path: "$talbai",
+                },
+              },
+              {
+                $group: {
+                  _id: "$gereeniiDugaar",
+                  niitAshiglaltiinZardal: {
+                    $max: "$talbai.niitAshiglaltiinZardal",
+                  },
+                  tulukh: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                  },
+                  khyamdral: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                    },
+                  },
+                  tulsun: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                    },
+                  },
+                },
+              },
+              {
+                $project: {
+                  gereeniiDugaar: "$gereeniiDugaar",
+                  niitAshiglaltiinZardal: "$niitAshiglaltiinZardal",
+                  uldegdel: {
+                    $subtract: [
+                      "$tulukh",
+                      {
+                        $sum: ["$tulsun", "$khyamdral"],
                       },
-                      'tulsun': {
-                        '$sum': '$avlaga.guilgeenuud.tulsunDun'
-                      }
-                    }
-                  }, {
-                    '$project': {
-                      'gereeniiDugaar': '$gereeniiDugaar',
-                      'uldegdel': {
-                        '$subtract': [
-                          '$tulukh', {
-                            '$sum': [
-                              '$tulsun', '$khyamdral'
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ],
-                'niitUldegdel': [
-                  {
-                    '$match': {
-                      'avlaga.guilgeenuud.ognoo': {
-                        '$lte': new Date(req.body.duusakhOgnoo)
-                      }
-                    }
-                  }, {
-                    '$group': {
-                      '_id': '$gereeniiDugaar',
-                      'tulukh': {
-                        '$sum': '$avlaga.guilgeenuud.tulukhDun'
-                      },
-                      'khyamdral': {
-                        '$sum': '$avlaga.guilgeenuud.khyamdral'
-                      },
-                      'tulsun': {
-                        '$sum': '$avlaga.guilgeenuud.tulsunDun'
-                      }
-                    }
-                  }, {
-                    '$project': {
-                      'gereeniiDugaar': '$gereeniiDugaar',
-                      'uldegdel': {
-                        '$subtract': [
-                          '$tulukh', {
-                            '$sum': [
-                              '$tulsun', '$khyamdral'
-                            ]
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ],
-                'eneSardTulukhDun': [
-                  {
-                    '$match': {
-                      'avlaga.guilgeenuud.ognoo': {
-                        '$lte': new Date(req.body.duusakhOgnoo),
-                        '$gte': new Date(req.body.ekhlekhOgnoo)
-                      }
-                    }
-                  }, {
-                    '$group': {
-                      '_id': '$gereeniiDugaar',
-                      'tulukh': {
-                        '$sum': '$avlaga.guilgeenuud.tulukhDun'
-                      },
-                      'khyamdral': {
-                        '$sum': '$avlaga.guilgeenuud.khyamdral'
-                      }
-                    }
-                  }, {
-                    '$project': {
-                      'gereeniiDugaar': '$gereeniiDugaar',
-                      'uldegdel': {
-                        '$subtract': [
-                          '$tulukh', '$khyamdral'
-                        ]
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-          var gereenuud = await Geree.aggregate(query);
-          console.log("gereenuud", JSON.stringify(gereenuud, null, 4));
-          result.jagsaalt.forEach(x => {
-            x.eneSardTulukhDun = (gereenuud[0].eneSardTulukhDun.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-            x.umnukhSariinUrTulbur = (gereenuud[0].umnukhSariinUrTulbur.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-            x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-            x.khariltsagchiinId = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.khariltsagchiinId;
-            x.firebaseToken = gereenuud[0].khariltsagch.find(a => a.register == x.register)?.token;
-            if (x.umnukhSariinUrTulbur < 0)
-              x.umnukhSariinUrTulbur = 0
-            if (x.eneSardTulukhDun < 0)
-              x.eneSardTulukhDun = 0
-            if (x.niitUldegdel < 0)
-              x.niitUldegdel = 0
-          });
-        }
-        res.send(result);
-      })
-      .catch((err) => {
-        next(err);
-      });
-  } catch (error) {
-    next(error);
-  }
-});
+                    ],
+                  },
+                },
+              },
+            ],
+            eneSardTulukhDun: [
+              {
+                $match: {
+                  "avlaga.guilgeenuud.ognoo": {
+                    $lte: new Date(req.body.duusakhOgnoo),
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: "$gereeniiDugaar",
+                  tulukh: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                  },
+                  khyamdral: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                    },
+                  },
+                },
+              },
+              {
+                $project: {
+                  gereeniiDugaar: "$gereeniiDugaar",
+                  uldegdel: {
+                    $subtract: ["$tulukh", "$khyamdral"],
+                  },
+                },
+              },
+            ],
+            nekhemjlekhDeerGarakh: [
+              {
+                $match: {
+                  "avlaga.guilgeenuud.ognoo": {
+                    $lte: new Date(req.body.duusakhOgnoo),
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                  },
+                  "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": true,
+                },
+              },
+              {
+                $project: {
+                  gereeniiDugaar: "$gereeniiDugaar",
+                  avlaga: "$avlaga.guilgeenuud",
+                },
+              },
+              {
+                $group: {
+                  _id: "$gereeniiDugaar",
+                  guilgeenuud: {
+                    $push: "$avlaga",
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ];
+      console.log("zadargaa query", JSON.stringify(query, null, 4));
+      var gereenuud = await Geree.aggregate(query);
+      res.send(gereenuud);
+    } catch (error) {
+      next(error);
+    }
+  });
 
+router
+  .route("/gereeTulukhDunteiAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      const body = req.body.query;
+      if (!!body?.khuudasniiDugaar)
+        body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      if (!!body?.khuudasniiKhemjee)
+        body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+      if (!!body?.search) body.search = String(body.search);
+
+      body.lean = true;
+      khuudaslalt(Geree, body)
+        .then(async (result) => {
+          if (result && result.jagsaalt && result.jagsaalt.length > 0) {
+            var idnuud = [];
+            result.jagsaalt.forEach((a) => idnuud.push(a._id));
+            var query = [
+              {
+                $match: {
+                  baiguullagiinId: req.body.baiguullagiinId,
+                  barilgiinId: req.body.barilgiinId,
+                  _id: { $in: idnuud },
+                },
+              },
+              {
+                $unwind: {
+                  path: "$avlaga.guilgeenuud",
+                },
+              },
+              {
+                $facet: {
+                  khariltsagch: [
+                    {
+                      $lookup: {
+                        from: "khariltsagch",
+                        let: {
+                          register: "$register",
+                          baiguullagiinId: "$baiguullagiinId",
+                          barilgiinId: "$barilgiinId",
+                        },
+                        pipeline: [
+                          {
+                            $match: {
+                              $expr: {
+                                $and: [
+                                  { $eq: ["$register", "$$register"] },
+                                  {
+                                    $eq: [
+                                      "$baiguullagiinId",
+                                      "$$baiguullagiinId",
+                                    ],
+                                  },
+                                  { $eq: ["$barilgiinId", "$$barilgiinId"] },
+                                ],
+                              },
+                            },
+                          },
+                        ],
+                        as: "khariltsagch",
+                      },
+                    },
+                    {
+                      $set: {
+                        token: {
+                          $arrayElemAt: ["$khariltsagch.firebaseToken", 0],
+                        },
+                        khariltsagchiinId: {
+                          $arrayElemAt: ["$khariltsagch._id", 0],
+                        },
+                        register: {
+                          $arrayElemAt: ["$khariltsagch.register", 0],
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        khariltsagchiinId: 1,
+                        token: 1,
+                        register: 1,
+                      },
+                    },
+                  ],
+                  umnukhSariinUrTulbur: [
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lt: new Date(req.body.ekhlekhOgnoo),
+                        },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        tulukh: {
+                          $sum: "$avlaga.guilgeenuud.tulukhDun",
+                        },
+                        khyamdral: {
+                          $sum: "$avlaga.guilgeenuud.khyamdral",
+                        },
+                        tulsun: {
+                          $sum: "$avlaga.guilgeenuud.tulsunDun",
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        uldegdel: {
+                          $subtract: [
+                            "$tulukh",
+                            {
+                              $sum: ["$tulsun", "$khyamdral"],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  ],
+                  niitUldegdel: [
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lte: new Date(req.body.duusakhOgnoo),
+                        },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        tulukh: {
+                          $sum: "$avlaga.guilgeenuud.tulukhDun",
+                        },
+                        khyamdral: {
+                          $sum: "$avlaga.guilgeenuud.khyamdral",
+                        },
+                        tulsun: {
+                          $sum: "$avlaga.guilgeenuud.tulsunDun",
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        uldegdel: {
+                          $subtract: [
+                            "$tulukh",
+                            {
+                              $sum: ["$tulsun", "$khyamdral"],
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  ],
+                  eneSardTulukhDun: [
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lte: new Date(req.body.duusakhOgnoo),
+                          $gte: new Date(req.body.ekhlekhOgnoo),
+                        },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        tulukh: {
+                          $sum: "$avlaga.guilgeenuud.tulukhDun",
+                        },
+                        khyamdral: {
+                          $sum: "$avlaga.guilgeenuud.khyamdral",
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        uldegdel: {
+                          $subtract: ["$tulukh", "$khyamdral"],
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            ];
+            var gereenuud = await Geree.aggregate(query);
+            console.log("gereenuud", JSON.stringify(gereenuud, null, 4));
+            result.jagsaalt.forEach((x) => {
+              x.eneSardTulukhDun =
+                gereenuud[0].eneSardTulukhDun.find(
+                  (a) => a._id == x.gereeniiDugaar
+                )?.uldegdel || 0;
+              x.umnukhSariinUrTulbur =
+                gereenuud[0].umnukhSariinUrTulbur.find(
+                  (a) => a._id == x.gereeniiDugaar
+                )?.uldegdel || 0;
+              x.niitUldegdel =
+                gereenuud[0].niitUldegdel.find((a) => a._id == x.gereeniiDugaar)
+                  ?.uldegdel || 0;
+              x.khariltsagchiinId = gereenuud[0].khariltsagch.find(
+                (a) => a.register == x.register
+              )?.khariltsagchiinId;
+              x.firebaseToken = gereenuud[0].khariltsagch.find(
+                (a) => a.register == x.register
+              )?.token;
+              if (x.umnukhSariinUrTulbur < 0) x.umnukhSariinUrTulbur = 0;
+              if (x.eneSardTulukhDun < 0) x.eneSardTulukhDun = 0;
+              if (x.niitUldegdel < 0) x.niitUldegdel = 0;
+            });
+          }
+          res.send(result);
+        })
+        .catch((err) => {
+          next(err);
+        });
+    } catch (error) {
+      next(error);
+    }
+  });
 
 async function turluurDunBugluy(jagsaalt, ekhlekhOgnoo, duusakhOgnoo, turul) {
   if (jagsaalt && jagsaalt.length > 0) {
     var idnuud = [];
     var matchQuery = {
-      'avlaga.guilgeenuud.ognoo': {
-        '$lte': new Date(duusakhOgnoo),
-        '$gte': new Date(ekhlekhOgnoo)
+      "avlaga.guilgeenuud.ognoo": {
+        $lte: new Date(duusakhOgnoo),
+        $gte: new Date(ekhlekhOgnoo),
       },
-    }
+    };
     var groupQuery = {
-      '_id': '$gereeniiDugaar'
-    }
+      _id: "$gereeniiDugaar",
+    };
 
     if (turul == "voucher") {
       matchQuery["avlaga.guilgeenuud.turul"] = "voucher";
@@ -1663,369 +1829,413 @@ async function turluurDunBugluy(jagsaalt, ekhlekhOgnoo, duusakhOgnoo, turul) {
 
     if (turul == "khungulult") {
       matchQuery["avlaga.guilgeenuud.khyamdral"] = {
-        "$gt": 0
-      }
+        $gt: 0,
+      };
       groupQuery["khyamdral"] = {
-        '$sum': '$avlaga.guilgeenuud.khyamdral'
-      }
-    }
-    else {
+        $sum: "$avlaga.guilgeenuud.khyamdral",
+      };
+    } else {
       matchQuery["avlaga.guilgeenuud.tulsunDun"] = {
-        "$gt": 0
-      }
+        $gt: 0,
+      };
       groupQuery["tulsun"] = {
-        '$sum': '$avlaga.guilgeenuud.tulsunDun'
-      }
+        $sum: "$avlaga.guilgeenuud.tulsunDun",
+      };
     }
-    jagsaalt.forEach(a => idnuud.push(a._id));
+    jagsaalt.forEach((a) => idnuud.push(a._id));
     var query = [
       {
-        '$match': {
-          '_id': { $in: idnuud }
-        }
+        $match: {
+          _id: { $in: idnuud },
+        },
       },
       {
-        '$unwind': {
-          'path': '$avlaga.guilgeenuud'
-        }
-      }, {
-        $match: matchQuery
-      }, {
-        $group: groupQuery
-      }
-    ]
-    console.log(JSON.stringify(query, null, 4))
+        $unwind: {
+          path: "$avlaga.guilgeenuud",
+        },
+      },
+      {
+        $match: matchQuery,
+      },
+      {
+        $group: groupQuery,
+      },
+    ];
+    console.log(JSON.stringify(query, null, 4));
     var gereenuud = await Geree.aggregate(query);
-    jagsaalt.forEach(x => {
+    jagsaalt.forEach((x) => {
       if (turul == "voucher")
-        x.voucherDun = (gereenuud.find(a => a._id == x.gereeniiDugaar)?.tulsun || 0)
+        x.voucherDun =
+          gereenuud.find((a) => a._id == x.gereeniiDugaar)?.tulsun || 0;
       else if (turul == "khungulult")
-        x.khungulult = (gereenuud.find(a => a._id == x.gereeniiDugaar)?.khyamdral || 0)
+        x.khungulult =
+          gereenuud.find((a) => a._id == x.gereeniiDugaar)?.khyamdral || 0;
       else
-        x.tulsunDun = (gereenuud.find(a => a._id == x.gereeniiDugaar)?.tulsun || 0)
+        x.tulsunDun =
+          gereenuud.find((a) => a._id == x.gereeniiDugaar)?.tulsun || 0;
     });
   }
   return jagsaalt;
 }
 
-
-router.route("/vouchertaiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(tokenShalgakh, async (req, res, next) => {
-  try {
-    console.log("orj irlee", req.params)
-    const body = req.query;
-    if (!!body?.query) body.query = JSON.parse(body.query);
-    if (!!body?.order) body.order = JSON.parse(body.order);
-    if (!!body?.select) body.select = JSON.parse(body.select);
-    if (!!body?.collation) body.collation = JSON.parse(body.collation);
-    if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-    if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    if (!!body?.search) body.search = String(body.search);
-    if (!body.query)
-      body.query = {}
-    body.query["avlaga.guilgeenuud"] = {
-      "$elemMatch": {
-        "ognoo": {
-          "$gte": new Date(req.params.ekhlekhOgnoo),
-          "$lte": new Date(req.params.duusakhOgnoo)
-        },
-        "tulsunDun": {
-          "$gt": 0
-        },
-        "turul": "voucher"
-      }
-    }
-    body.lean = true;
-    khuudaslalt(Geree, body)
-      .then(async (result) => {
-        butsaakhJagsaalt = await turluurDunBugluy(result.jagsaalt, req.params.ekhlekhOgnoo, req.params.duusakhOgnoo, "voucher")
-        res.send(result);
-      })
-      .catch((err) => {
-        next(err);
-      });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.route("/guitsetgelteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(tokenShalgakh, async (req, res, next) => {
-  try {
-    console.log("orj irlee", req.params)
-    const body = req.query;
-    if (!!body?.query) body.query = JSON.parse(body.query);
-    if (!!body?.order) body.order = JSON.parse(body.order);
-    if (!!body?.select) body.select = JSON.parse(body.select);
-    if (!!body?.collation) body.collation = JSON.parse(body.collation);
-    if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-    if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    if (!!body?.search) body.search = String(body.search);
-    if (!body.query)
-      body.query = {}
-    body.query["avlaga.guilgeenuud"] = {
-      "$elemMatch": {
-        "ognoo": {
-          "$gte": new Date(req.params.ekhlekhOgnoo),
-          "$lte": new Date(req.params.duusakhOgnoo)
-        },
-        "tulsunDun": {
-          "$gt": 0
-        }
-      }
-    }
-    body.lean = true;
-    khuudaslalt(Geree, body)
-      .then(async (result) => {
-        butsaakhJagsaalt = await turluurDunBugluy(result.jagsaalt, req.params.ekhlekhOgnoo, req.params.duusakhOgnoo, null)
-        res.send(result);
-      })
-      .catch((err) => {
-        next(err);
-      });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.route("/khungulultteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo").get(tokenShalgakh, async (req, res, next) => {
-  try {
-    console.log("orj irlee", req.params)
-    const body = req.query;
-    if (!!body?.query) body.query = JSON.parse(body.query);
-    if (!!body?.order) body.order = JSON.parse(body.order);
-    if (!!body?.select) body.select = JSON.parse(body.select);
-    if (!!body?.collation) body.collation = JSON.parse(body.collation);
-    if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-    if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    if (!!body?.search) body.search = String(body.search);
-    if (!body.query)
-      body.query = {}
-    body.query["avlaga.guilgeenuud"] = {
-      "$elemMatch": {
-        "ognoo": {
-          "$gte": new Date(req.params.ekhlekhOgnoo),
-          "$lte": new Date(req.params.duusakhOgnoo)
-        },
-        "khyamdral": {
-          "$gt": 0
-        }
-      }
-    }
-    body.query["tuluv"] = {
-      "$ne": -1
-    }
-    console.log("params", req.params);
-    console.log(JSON.stringify(body, null, 4))
-    body.lean = true;
-    khuudaslalt(Geree, body)
-      .then(async (result) => {
-        butsaakhJagsaalt = await turluurDunBugluy(result.jagsaalt, req.params.ekhlekhOgnoo, req.params.duusakhOgnoo, "khungulult")
-        res.send(result);
-      })
-      .catch((err) => {
-        next(err);
-      });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.route("/utasniiDugaaraarGereeAvya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    var geree = await Geree.findOne({ "utas": { $in: [req.body.utas] }, "baiguullagiinId": req.body.baiguullagiinId });
-    if (geree)
-      res.send(geree);
-    else
-      res.sendStatus(200);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.route("/eneSardTuluuguiGereenuudAvya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    console.log("ene sard", req.body);
-    var query = [{
-      '$match': {
-        'baiguullagiinId': req.body.baiguullagiinId,
-        'barilgiinId': req.body.barilgiinId,
-        'tuluv': {
-          $ne: -1
-        }
-      }
-    },
-    {
-      '$unwind': {
-        'path': '$avlaga.guilgeenuud'
-      }
-    }, {
-      '$facet': {
-        'niitUldegdel': [
-          {
-            '$match': {
-              'avlaga.guilgeenuud.ognoo': {
-                '$lte': new Date(req.body.duusakhOgnoo)
-              }
-            }
-          }, {
-            '$group': {
-              '_id': '$gereeniiDugaar',
-              'tulukh': {
-                '$sum': '$avlaga.guilgeenuud.tulukhDun'
-              },
-              'khyamdral': {
-                '$sum': '$avlaga.guilgeenuud.khyamdral'
-              },
-              'tulsun': {
-                '$sum': '$avlaga.guilgeenuud.tulsunDun'
-              }
-            }
-          }, {
-            '$project': {
-              'gereeniiDugaar': '$gereeniiDugaar',
-              'uldegdel': {
-                '$subtract': [
-                  '$tulukh', {
-                    '$sum': [
-                      '$tulsun', '$khyamdral'
-                    ]
-                  }
-                ]
-              }
-            }
-          }
-        ],
-        'tuluvluguut': [
-          {
-            '$match': {
-              'avlaga.guilgeenuud.ognoo': {
-                '$lte': new Date(req.body.duusakhOgnoo),
-                '$gte': new Date(req.body.ekhlekhOgnoo)
-              },
-              'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
-                '$ne': 'System'
-              },
-              'avlaga.guilgeenuud.turul': "khuvaari",
-              'avlaga.guilgeenuud.turul': {
-                '$nin': ["baritsaa"]
-              }
-            }
-          }, {
-            '$group': {
-              '_id': '$gereeniiDugaar',
-              'tulukh': {
-                '$sum': {
-                  '$ifNull': ['$avlaga.guilgeenuud.tulukhDun', 0]
-                }
-              },
-              'khyamdral': {
-                '$sum': {
-                  '$ifNull': ['$avlaga.guilgeenuud.khyamdral', 0]
-                }
-              }
-            }
-          }, {
-            '$project': {
-              'tulukh': {
-                '$subtract': [
-                  '$tulukh', '$khyamdral'
-                ]
-              }
-            }
-          }
-        ]
-      }
-    }
-    ]
-    var gereenuud = await Geree.aggregate(query);
-    console.log(gereenuud);
-    if (gereenuud.length < 0 || gereenuud[0].tuluvluguut.length < 1)
-      res.send(null);
-    else {
-      var turJagsaalt = [];
-      gereenuud[0].tuluvluguut.forEach(x => {
-        if (!x.tulsun || x.tulsun == 0)
-          turJagsaalt.push(x._id)
-      });
-      const body = req.body.query;
-      if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-      if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+router
+  .route("/vouchertaiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo")
+  .get(tokenShalgakh, async (req, res, next) => {
+    try {
+      console.log("orj irlee", req.params);
+      const body = req.query;
+      if (!!body?.query) body.query = JSON.parse(body.query);
+      if (!!body?.order) body.order = JSON.parse(body.order);
+      if (!!body?.select) body.select = JSON.parse(body.select);
+      if (!!body?.collation) body.collation = JSON.parse(body.collation);
+      if (!!body?.khuudasniiDugaar)
+        body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      if (!!body?.khuudasniiKhemjee)
+        body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) body.search = String(body.search);
-      console.log("turJagsaalt", turJagsaalt);
-      body.query["gereeniiDugaar"] = { $in: turJagsaalt };
+      if (!body.query) body.query = {};
+      body.query["avlaga.guilgeenuud"] = {
+        $elemMatch: {
+          ognoo: {
+            $gte: new Date(req.params.ekhlekhOgnoo),
+            $lte: new Date(req.params.duusakhOgnoo),
+          },
+          tulsunDun: {
+            $gt: 0,
+          },
+          turul: "voucher",
+        },
+      };
       body.lean = true;
-
-      console.log("body", body);
       khuudaslalt(Geree, body)
-        .then((result) => {
-          console.log("result", result);
-          if (result && result.jagsaalt && result.jagsaalt.length > 0)
-            result.jagsaalt.forEach(x => {
-              x.tuluvluguut = (gereenuud[0].tuluvluguut.find(a => a._id == x.gereeniiDugaar)?.tulukh || 0)
-              x.niitUldegdel = (gereenuud[0].niitUldegdel.find(a => a._id == x.gereeniiDugaar)?.uldegdel || 0)
-              if (x.tuluvluguut < 0)
-                x.tuluvluguut = 0
-              if (x.niitUldegdel < 0)
-                x.niitUldegdel = 0
-            });
+        .then(async (result) => {
+          butsaakhJagsaalt = await turluurDunBugluy(
+            result.jagsaalt,
+            req.params.ekhlekhOgnoo,
+            req.params.duusakhOgnoo,
+            "voucher"
+          );
           res.send(result);
         })
         .catch((err) => {
           next(err);
         });
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
-  }
-});
+  });
 
-router.route("/eneSardTuluuguiGereeniiTooAvya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    var query = [
-      {
-        '$unwind': {
-          'path': '$avlaga.guilgeenuud'
-        }
-      }, {
-        '$match': {
-          'baiguullagiinId': req.body.baiguullagiinId,
-          'barilgiinId': req.body.barilgiinId,
-          'tuluv': {
-            $ne: -1
+router
+  .route("/guitsetgelteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo")
+  .get(tokenShalgakh, async (req, res, next) => {
+    try {
+      console.log("orj irlee", req.params);
+      const body = req.query;
+      if (!!body?.query) body.query = JSON.parse(body.query);
+      if (!!body?.order) body.order = JSON.parse(body.order);
+      if (!!body?.select) body.select = JSON.parse(body.select);
+      if (!!body?.collation) body.collation = JSON.parse(body.collation);
+      if (!!body?.khuudasniiDugaar)
+        body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      if (!!body?.khuudasniiKhemjee)
+        body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+      if (!!body?.search) body.search = String(body.search);
+      if (!body.query) body.query = {};
+      body.query["avlaga.guilgeenuud"] = {
+        $elemMatch: {
+          ognoo: {
+            $gte: new Date(req.params.ekhlekhOgnoo),
+            $lte: new Date(req.params.duusakhOgnoo),
           },
-          'avlaga.guilgeenuud.ognoo': {
-            '$lte': new Date(req.body.duusakhOgnoo),
-            '$gte': new Date(req.body.ekhlekhOgnoo)
-          }
-        }
-      }, {
-        '$group': {
-          '_id': '$gereeniiDugaar',
-          'tulsun': {
-            '$sum': '$avlaga.guilgeenuud.tulsunDun'
-          }
-        }
-      }, {
-        '$match': {
-          'tulsun': 0
-        }
-      }, {
-        '$group': {
-          '_id': 'aa',
-          'niit': {
-            '$sum': 1
-          }
-        }
+          tulsunDun: {
+            $gt: 0,
+          },
+        },
+      };
+      body.lean = true;
+      khuudaslalt(Geree, body)
+        .then(async (result) => {
+          butsaakhJagsaalt = await turluurDunBugluy(
+            result.jagsaalt,
+            req.params.ekhlekhOgnoo,
+            req.params.duusakhOgnoo,
+            null
+          );
+          res.send(result);
+        })
+        .catch((err) => {
+          next(err);
+        });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+router
+  .route("/khungulultteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo")
+  .get(tokenShalgakh, async (req, res, next) => {
+    try {
+      console.log("orj irlee", req.params);
+      const body = req.query;
+      if (!!body?.query) body.query = JSON.parse(body.query);
+      if (!!body?.order) body.order = JSON.parse(body.order);
+      if (!!body?.select) body.select = JSON.parse(body.select);
+      if (!!body?.collation) body.collation = JSON.parse(body.collation);
+      if (!!body?.khuudasniiDugaar)
+        body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      if (!!body?.khuudasniiKhemjee)
+        body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+      if (!!body?.search) body.search = String(body.search);
+      if (!body.query) body.query = {};
+      body.query["avlaga.guilgeenuud"] = {
+        $elemMatch: {
+          ognoo: {
+            $gte: new Date(req.params.ekhlekhOgnoo),
+            $lte: new Date(req.params.duusakhOgnoo),
+          },
+          khyamdral: {
+            $gt: 0,
+          },
+        },
+      };
+      body.query["tuluv"] = {
+        $ne: -1,
+      };
+      console.log("params", req.params);
+      console.log(JSON.stringify(body, null, 4));
+      body.lean = true;
+      khuudaslalt(Geree, body)
+        .then(async (result) => {
+          butsaakhJagsaalt = await turluurDunBugluy(
+            result.jagsaalt,
+            req.params.ekhlekhOgnoo,
+            req.params.duusakhOgnoo,
+            "khungulult"
+          );
+          res.send(result);
+        })
+        .catch((err) => {
+          next(err);
+        });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+router
+  .route("/utasniiDugaaraarGereeAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var geree = await Geree.findOne({
+        utas: { $in: [req.body.utas] },
+        baiguullagiinId: req.body.baiguullagiinId,
+      });
+      if (geree) res.send(geree);
+      else res.sendStatus(200);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+router
+  .route("/eneSardTuluuguiGereenuudAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      console.log("ene sard", req.body);
+      var query = [
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+            tuluv: {
+              $ne: -1,
+            },
+          },
+        },
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $facet: {
+            niitUldegdel: [
+              {
+                $match: {
+                  "avlaga.guilgeenuud.ognoo": {
+                    $lte: new Date(req.body.duusakhOgnoo),
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: "$gereeniiDugaar",
+                  tulukh: {
+                    $sum: "$avlaga.guilgeenuud.tulukhDun",
+                  },
+                  khyamdral: {
+                    $sum: "$avlaga.guilgeenuud.khyamdral",
+                  },
+                  tulsun: {
+                    $sum: "$avlaga.guilgeenuud.tulsunDun",
+                  },
+                },
+              },
+              {
+                $project: {
+                  gereeniiDugaar: "$gereeniiDugaar",
+                  uldegdel: {
+                    $subtract: [
+                      "$tulukh",
+                      {
+                        $sum: ["$tulsun", "$khyamdral"],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+            tuluvluguut: [
+              {
+                $match: {
+                  "avlaga.guilgeenuud.ognoo": {
+                    $lte: new Date(req.body.duusakhOgnoo),
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                  },
+                  "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
+                    $ne: "System",
+                  },
+                  "avlaga.guilgeenuud.turul": "khuvaari",
+                  "avlaga.guilgeenuud.turul": {
+                    $nin: ["baritsaa"],
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: "$gereeniiDugaar",
+                  tulukh: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                  },
+                  khyamdral: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                    },
+                  },
+                },
+              },
+              {
+                $project: {
+                  tulukh: {
+                    $subtract: ["$tulukh", "$khyamdral"],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ];
+      var gereenuud = await Geree.aggregate(query);
+      console.log(gereenuud);
+      if (gereenuud.length < 0 || gereenuud[0].tuluvluguut.length < 1)
+        res.send(null);
+      else {
+        var turJagsaalt = [];
+        gereenuud[0].tuluvluguut.forEach((x) => {
+          if (!x.tulsun || x.tulsun == 0) turJagsaalt.push(x._id);
+        });
+        const body = req.body.query;
+        if (!!body?.khuudasniiDugaar)
+          body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+        if (!!body?.khuudasniiKhemjee)
+          body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+        if (!!body?.search) body.search = String(body.search);
+        console.log("turJagsaalt", turJagsaalt);
+        body.query["gereeniiDugaar"] = { $in: turJagsaalt };
+        body.lean = true;
+
+        console.log("body", body);
+        khuudaslalt(Geree, body)
+          .then((result) => {
+            console.log("result", result);
+            if (result && result.jagsaalt && result.jagsaalt.length > 0)
+              result.jagsaalt.forEach((x) => {
+                x.tuluvluguut =
+                  gereenuud[0].tuluvluguut.find(
+                    (a) => a._id == x.gereeniiDugaar
+                  )?.tulukh || 0;
+                x.niitUldegdel =
+                  gereenuud[0].niitUldegdel.find(
+                    (a) => a._id == x.gereeniiDugaar
+                  )?.uldegdel || 0;
+                if (x.tuluvluguut < 0) x.tuluvluguut = 0;
+                if (x.niitUldegdel < 0) x.niitUldegdel = 0;
+              });
+            res.send(result);
+          })
+          .catch((err) => {
+            next(err);
+          });
       }
-    ]
-    var gereenuud = await Geree.aggregate(query);
-    tuluuguiToo = 0;
-    if (gereenuud && gereenuud.length > 0)
-      tuluuguiToo = gereenuud[0].niit
-    res.send({ too: tuluuguiToo });
-  } catch (error) {
-    next(error);
-  }
-});
+    } catch (error) {
+      next(error);
+    }
+  });
+
+router
+  .route("/eneSardTuluuguiGereeniiTooAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var query = [
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+            tuluv: {
+              $ne: -1,
+            },
+            "avlaga.guilgeenuud.ognoo": {
+              $lte: new Date(req.body.duusakhOgnoo),
+              $gte: new Date(req.body.ekhlekhOgnoo),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$gereeniiDugaar",
+            tulsun: {
+              $sum: "$avlaga.guilgeenuud.tulsunDun",
+            },
+          },
+        },
+        {
+          $match: {
+            tulsun: 0,
+          },
+        },
+        {
+          $group: {
+            _id: "aa",
+            niit: {
+              $sum: 1,
+            },
+          },
+        },
+      ];
+      var gereenuud = await Geree.aggregate(query);
+      tuluuguiToo = 0;
+      if (gereenuud && gereenuud.length > 0) tuluuguiToo = gereenuud[0].niit;
+      res.send({ too: tuluuguiToo });
+    } catch (error) {
+      next(error);
+    }
+  });
 
 module.exports = router;
-
