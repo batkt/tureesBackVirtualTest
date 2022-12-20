@@ -26,7 +26,7 @@ function duusakhOgnooAvya(ugugdul, onFinish, next) {
 }
 
 async function nevtreltiinTuukhKhadgalya(tuukh) {
-  var ipTuukh = await IpTuukh.findOne({ ip: tuukh.ip.toString });
+  var ipTuukh = await IpTuukh.findOne({ ip: tuukh.ip });
   if (ipTuukh) {
     tuukh.bairshilUls = ipTuukh.bairshilUls;
     tuukh.bairshilKhot = ipTuukh.bairshilKhot;
@@ -40,7 +40,7 @@ async function nevtreltiinTuukhKhadgalya(tuukh) {
     ipTuukh.medeelel = axiosKhariu.data;
     ipTuukh.bairshilUls = axiosKhariu.data.country_name;
     ipTuukh.bairshilKhot = axiosKhariu.data.city;
-    ipTuukh.ip = tuukh.ip.toString;
+    ipTuukh.ip = tuukh.ip;
     tuukh.bairshilUls = ipTuukh.bairshilUls;
     tuukh.bairshilKhot = ipTuukh.bairshilKhot;
     await ipTuukh.save();
