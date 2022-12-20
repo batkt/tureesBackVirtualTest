@@ -42,9 +42,9 @@ async function nevtreltiinTuukhKhadgalya(tuukh) {
     ipTuukh.bairshilKhot = axiosKhariu.data.city;
     tuukh.bairshilUls = ipTuukh.bairshilUls;
     tuukh.bairshilKhot = ipTuukh.bairshilKhot;
-    ipTuukh.save();
+    await ipTuukh.save();
   }
-  ipTuukh.save();
+  await ipTuukh.save();
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
