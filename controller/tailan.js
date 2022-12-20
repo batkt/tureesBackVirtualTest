@@ -1356,6 +1356,7 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
   async (req, res, next) => {
     var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
     //aldax nukhtsul
+    if (!req.body) req.body = {};
     if (!req.body.nariivchlal) req.body.nariivchlal == "month";
     if (!req.body.ekhlekhOgnoo) req.body.ekhlekhOgnoo == "2022-01-01 00:00:00";
     if (!req.body.duusakhOgnoo) req.body.duusakhOgnoo == "2022-12-31 23:59:59";
@@ -1523,9 +1524,14 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         if (barilgaData?.tulsun > 0) data.push(barilgaData.tulsun.toFixed(2));
         else data.push(0);
       });
-      chartData.categories.push(
-        `${category.year}-${category.month}-${category.day}`
-      );
+      if (req.body.nariivchlal == "year")
+        chartData.categories.push(`${category.year}`);
+      else if (req.body.nariivchlal == "month")
+        chartData.categories.push(`${category.year}-${category.month}`);
+      else if (req.body.nariivchlal == "day")
+        chartData.categories.push(
+          `${category.year}-${category.month}-${category.day}`
+        );
     });
 
     var data = {
