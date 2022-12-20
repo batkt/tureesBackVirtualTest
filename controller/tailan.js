@@ -1355,26 +1355,60 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
 exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
   async (req, res, next) => {
     var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+    //aldax nukhtsul
+    if (!req.body.nariivchlal) req.body.nariivchlal == "month";
+    if (!req.body.ekhlekhOgnoo) req.body.ekhlekhOgnoo == "2022-01-01 00:00:00";
+    if (!req.body.duusakhOgnoo) req.body.duusakhOgnoo == "2022-12-31 23:59:59";
+    var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+    var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
     var group = {
       _id: {
         barilgiinId: "$barilgiinId",
-        year: {
-          $year: {
-            date: "$avlaga.guilgeenuud.ognoo",
-            timezone: "Asia/Ulaanbaatar",
-          },
-        },
-        month: {
-          $month: {
-            date: "$avlaga.guilgeenuud.ognoo",
-            timezone: "Asia/Ulaanbaatar",
-          },
-        },
       },
       tulsun: {
         $sum: "$avlaga.guilgeenuud.tulsunDun",
       },
     };
+    if (req.body.nariivchlal == "year") {
+      group["_id"]["year"] = {
+        $year: {
+          date: "$avlaga.guilgeenuud.ognoo",
+          timezone: "Asia/Ulaanbaatar",
+        },
+      };
+    } else if (req.body.nariivchlal == "month") {
+      group["_id"]["year"] = {
+        $year: {
+          date: "$avlaga.guilgeenuud.ognoo",
+          timezone: "Asia/Ulaanbaatar",
+        },
+      };
+      group["_id"]["month"] = {
+        $month: {
+          date: "$avlaga.guilgeenuud.ognoo",
+          timezone: "Asia/Ulaanbaatar",
+        },
+      };
+    } else if (req.body.nariivchlal == "day") {
+      group["_id"]["year"] = {
+        $year: {
+          date: "$avlaga.guilgeenuud.ognoo",
+          timezone: "Asia/Ulaanbaatar",
+        },
+      };
+      group["_id"]["month"] = {
+        $month: {
+          date: "$avlaga.guilgeenuud.ognoo",
+          timezone: "Asia/Ulaanbaatar",
+        },
+      };
+      group["_id"]["day"] = {
+        $dayOfMonth: {
+          date: "$avlaga.guilgeenuud.ognoo",
+          timezone: "Asia/Ulaanbaatar",
+        },
+      };
+    }
     let query = [
       {
         $match: {
@@ -1395,8 +1429,8 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
             $ne: "System",
           },
           "avlaga.guilgeenuud.ognoo": {
-            $gte: new Date("2022-01-01 00:00:00"),
-            $lte: new Date("2022-12-31 23:59:59"),
+            $gte: ekhlekhOgnoo,
+            $lte: duusakhOgnoo,
           },
           "avlaga.guilgeenuud.turul": {
             $nin: ["baritsaa"],
@@ -1409,8 +1443,6 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
     ];
     var khariu = await Geree.aggregate(query);
     var categories = [];
-    var series = [];
-
     const chartData = {
       series: baiguullaga.barilguud.map((mur, index) => ({
         backgroundColor: chartUnguud[index],
@@ -1424,21 +1456,65 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
     };
 
     khariu.forEach((a) => {
-      if (
-        !categories.find(
-          (b) => b.year === a["_id"].year && b.month === a["_id"].month
+      if (req.body.nariivchlal == "year") {
+        if (!categories.find((b) => b.year === a["_id"].year))
+          categories.push({
+            year: a["_id"].year,
+          });
+      } else if (req.body.nariivchlal == "month") {
+        if (
+          !categories.find(
+            (b) => b.year === a["_id"].year && b.month === a["_id"].month
+          )
         )
-      )
-        categories.push({ year: a["_id"].year, month: a["_id"].month });
+          categories.push({
+            year: a["_id"].year,
+            month: a["_id"].month,
+          });
+      } else if (req.body.nariivchlal == "day") {
+        if (
+          !categories.find(
+            (b) =>
+              b.year === a["_id"].year &&
+              b.month === a["_id"].month &&
+              b.day === a["_id"].day
+          )
+        )
+          categories.push({
+            year: a["_id"].year,
+            month: a["_id"].month,
+            day: a["_id"].day,
+          });
+      }
     });
-    categories.sort(function (a, b) {
-      return a.year - b.year || a.month - b.month;
-    });
+    if (req.body.nariivchlal == "year")
+      categories.sort(function (a, b) {
+        return a.year - b.year;
+      });
+    else if (req.body.nariivchlal == "month")
+      categories.sort(function (a, b) {
+        return a.year - b.year || a.month - b.month;
+      });
+    else if (req.body.nariivchlal == "day")
+      categories.sort(function (a, b) {
+        return a.year - b.year || a.month - b.month || a.day - b.day;
+      });
     categories.forEach((category) => {
-      var catList = khariu.filter(
-        (a) =>
-          a["_id"].year == category.year && a["_id"].month == category.month
-      );
+      var catList;
+      if (req.body.nariivchlal == "year")
+        catList = khariu.filter((a) => a["_id"].year == category.year);
+      else if (req.body.nariivchlal == "month")
+        catList = khariu.filter(
+          (a) =>
+            a["_id"].year == category.year && a["_id"].month == category.month
+        );
+      else if (req.body.nariivchlal == "day")
+        catList = khariu.filter(
+          (a) =>
+            a["_id"].year == category.year &&
+            a["_id"].month == category.month &&
+            a["_id"].day == category.day
+        );
       chartData.series.forEach(({ data, _id }) => {
         const barilgaData = catList.find(
           (mur) => mur["_id"].barilgiinId == _id
@@ -1447,7 +1523,9 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         if (barilgaData?.tulsun > 0) data.push(barilgaData.tulsun.toFixed(2));
         else data.push(0);
       });
-      chartData.categories.push(`${category.year}-${category.month}`);
+      chartData.categories.push(
+        `${category.year}-${category.month}-${category.day}`
+      );
     });
 
     var data = {
