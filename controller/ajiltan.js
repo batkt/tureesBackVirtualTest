@@ -44,7 +44,7 @@ async function nevtreltiinTuukhKhadgalya(tuukh) {
     tuukh.bairshilKhot = ipTuukh.bairshilKhot;
     await ipTuukh.save();
   }
-  await ipTuukh.save();
+  await tuukh.save();
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
