@@ -1356,12 +1356,15 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
   async (req, res, next) => {
     var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
     //aldax nukhtsul
-    if (!req.body) req.body = {};
-    if (!req.body.nariivchlal) req.body.nariivchlal == "month";
-    if (!req.body.ekhlekhOgnoo) req.body.ekhlekhOgnoo == "2022-01-01 00:00:00";
-    if (!req.body.duusakhOgnoo) req.body.duusakhOgnoo == "2022-12-31 23:59:59";
-    var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
-    var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+    var nariivchlal = req.body.nariivchlal ? req.body.nariivchlal : "month";
+    var ekhlekhOgnoo = req.body.ekhlekhOgnoo
+      ? req.body.ekhlekhOgnoo
+      : "2022-01-01 00:00:00";
+    var duusakhOgnoo = req.body.duusakhOgnoo
+      ? req.body.duusakhOgnoo
+      : "2022-12-31 23:59:59";
+    ekhlekhOgnoo = new Date(ekhlekhOgnoo);
+    duusakhOgnoo = new Date(duusakhOgnoo);
     var group = {
       _id: {
         barilgiinId: "$barilgiinId",
@@ -1370,14 +1373,14 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         $sum: "$avlaga.guilgeenuud.tulsunDun",
       },
     };
-    if (req.body.nariivchlal == "year") {
+    if (nariivchlal == "year") {
       group["_id"]["year"] = {
         $year: {
           date: "$avlaga.guilgeenuud.ognoo",
           timezone: "Asia/Ulaanbaatar",
         },
       };
-    } else if (req.body.nariivchlal == "month") {
+    } else if (nariivchlal == "month") {
       group["_id"]["year"] = {
         $year: {
           date: "$avlaga.guilgeenuud.ognoo",
@@ -1390,7 +1393,7 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
           timezone: "Asia/Ulaanbaatar",
         },
       };
-    } else if (req.body.nariivchlal == "day") {
+    } else if (nariivchlal == "day") {
       group["_id"]["year"] = {
         $year: {
           date: "$avlaga.guilgeenuud.ognoo",
@@ -1455,14 +1458,13 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
       })),
       categories: [],
     };
-
     khariu.forEach((a) => {
-      if (req.body.nariivchlal == "year") {
+      if (nariivchlal == "year") {
         if (!categories.find((b) => b.year === a["_id"].year))
           categories.push({
             year: a["_id"].year,
           });
-      } else if (req.body.nariivchlal == "month") {
+      } else if (nariivchlal == "month") {
         if (
           !categories.find(
             (b) => b.year === a["_id"].year && b.month === a["_id"].month
@@ -1472,7 +1474,7 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
             year: a["_id"].year,
             month: a["_id"].month,
           });
-      } else if (req.body.nariivchlal == "day") {
+      } else if (nariivchlal == "day") {
         if (
           !categories.find(
             (b) =>
@@ -1488,28 +1490,28 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
           });
       }
     });
-    if (req.body.nariivchlal == "year")
+    if (nariivchlal == "year")
       categories.sort(function (a, b) {
         return a.year - b.year;
       });
-    else if (req.body.nariivchlal == "month")
+    else if (nariivchlal == "month")
       categories.sort(function (a, b) {
         return a.year - b.year || a.month - b.month;
       });
-    else if (req.body.nariivchlal == "day")
+    else if (nariivchlal == "day")
       categories.sort(function (a, b) {
         return a.year - b.year || a.month - b.month || a.day - b.day;
       });
     categories.forEach((category) => {
       var catList;
-      if (req.body.nariivchlal == "year")
+      if (nariivchlal == "year")
         catList = khariu.filter((a) => a["_id"].year == category.year);
-      else if (req.body.nariivchlal == "month")
+      else if (nariivchlal == "month")
         catList = khariu.filter(
           (a) =>
             a["_id"].year == category.year && a["_id"].month == category.month
         );
-      else if (req.body.nariivchlal == "day")
+      else if (nariivchlal == "day")
         catList = khariu.filter(
           (a) =>
             a["_id"].year == category.year &&
@@ -1524,11 +1526,10 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         if (barilgaData?.tulsun > 0) data.push(barilgaData.tulsun.toFixed(2));
         else data.push(0);
       });
-      if (req.body.nariivchlal == "year")
-        chartData.categories.push(`${category.year}`);
-      else if (req.body.nariivchlal == "month")
+      if (nariivchlal == "year") chartData.categories.push(`${category.year}`);
+      else if (nariivchlal == "month")
         chartData.categories.push(`${category.year}-${category.month}`);
-      else if (req.body.nariivchlal == "day")
+      else if (nariivchlal == "day")
         chartData.categories.push(
           `${category.year}-${category.month}-${category.day}`
         );
