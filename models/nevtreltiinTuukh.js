@@ -7,6 +7,8 @@ const nevtreltiinTuukhSchema = new Schema(
     ajiltniiId: String,
     ajiltniiNer: String,
     ognoo: Date,
+    bairshilUls: String,
+    bairshilKhot: String,
     uildliinSystem: String,
     ip: String,
     browser: String,

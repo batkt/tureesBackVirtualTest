@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Ajiltan = require("../models/ajiltan");
 const Baiguullaga = require("../models/baiguullaga");
 const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
+const IpTuukh = require("../models/ipTuukh");
 const BackTuukh = require("../models/backTuukh");
 const aldaa = require("../components/aldaa");
 const jwt = require("jsonwebtoken");
@@ -22,6 +23,28 @@ function duusakhOgnooAvya(ugugdul, onFinish, next) {
       }
     }
   );
+}
+
+async function nevtreltiinTuukhKhadgalya(tuukh) {
+  var ipTuukh = await IpTuukh.findOne({ ip: tuukh.ip.toString });
+  if (ipTuukh) {
+    tuukh.bairshilUls = ipTuukh.bairshilUls;
+    tuukh.bairshilKhot = ipTuukh.bairshilKhot;
+  } else {
+    var axiosKhariu = await axios.get(
+      "https://api.ipgeolocation.io/ipgeo?apiKey=8ee349f1c7304c379fdb6b855d1e9df4&ip=" +
+        tuukh.ip.toString()
+    );
+    ipTuukh = new IpTuukh();
+    ipTuukh.ognoo = new Date();
+    ipTuukh.medeelel = axiosKhariu.data;
+    ipTuukh.bairshilUls = axiosKhariu.data.country_name;
+    ipTuukh.bairshilKhot = axiosKhariu.data.city;
+    tuukh.bairshilUls = ipTuukh.bairshilUls;
+    tuukh.bairshilKhot = ipTuukh.bairshilKhot;
+    ipTuukh.save();
+  }
+  ipTuukh.save();
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
@@ -54,16 +77,12 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           butsaakhObject.token = jwt;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
-          console.log("forwarded ip", req.headers["x-forwarded-for"]);
-          console.log("real ip", req.headers["x-real-ip"]);
-          console.log("remoteAddress", req.socket.remoteAddress);
-          console.log("req.ips", req.ips);
           var tuukh = new NevtreltiinTuukh();
           tuukh.ajiltniiId = ajiltan._id;
           tuukh.ajiltniiNer = ajiltan.ner;
           tuukh.ognoo = new Date();
           tuukh.uildliinSystem = ua.os;
-          tuukh.ip = req.ip;
+          tuukh.ip = req.headers["x-real-ip"];
           if (tuukh.ip.substr(0, 7) == "::ffff:") {
             tuukh.ip = tuukh.ip.substr(7);
           }
@@ -71,15 +90,10 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
             if (ua[e]) r[e] = ua[e];
             return r;
           }, {});
-          var axiosKhariu = await axios.get(
-            "https://api.ipgeolocation.io/ipgeo?apiKey=8ee349f1c7304c379fdb6b855d1e9df4&ip=" +
-              tuukh.ip.toString()
-          );
-          console.log("axiosKhariu", axiosKhariu);
           tuukh.browser = ua.browser;
           tuukh.useragent = ua;
           tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
-          tuukh.save();
+          nevtreltiinTuukhKhadgalya(tuukh);
           res.status(200).json(butsaakhObject);
         } else throw new Error(khariu.msg);
       } catch (err) {
