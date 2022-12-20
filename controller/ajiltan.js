@@ -6,6 +6,7 @@ const BackTuukh = require("../models/backTuukh");
 const aldaa = require("../components/aldaa");
 const jwt = require("jsonwebtoken");
 const request = require("request");
+const axios = require("axios");
 const fs = require("fs");
 const useragent = require("express-useragent");
 const http = require("http");
@@ -69,6 +70,11 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
             if (ua[e]) r[e] = ua[e];
             return r;
           }, {});
+          var axiosKhariu = await axios.get(
+            "https://api.ipgeolocation.io/ipgeo?apiKey=8ee349f1c7304c379fdb6b855d1e9df4&ip=" +
+              tuukh.ip.toString()
+          );
+          console.log("axiosKhariu", axiosKhariu);
           tuukh.browser = ua.browser;
           tuukh.useragent = ua;
           tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
