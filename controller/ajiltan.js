@@ -84,7 +84,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           tuukh.ognoo = new Date();
           tuukh.uildliinSystem = ua.os;
           tuukh.ip = req.headers["x-real-ip"];
-          if (tuukh.ip.substr(0, 7) == "::ffff:") {
+          if (tuukh.ip && tuukh.ip.substr(0, 7) == "::ffff:") {
             tuukh.ip = tuukh.ip.substr(7);
           }
           ua = Object.keys(ua).reduce(function (r, e) {
