@@ -55,6 +55,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
           console.log("forwarded ip", req.headers["x-forwarded-for"]);
+          console.log("real ip", req.headers["x-real-ip"]);
           console.log("remoteAddress", req.socket.remoteAddress);
           console.log("req.ips", req.ips);
           var tuukh = new NevtreltiinTuukh();
