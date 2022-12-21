@@ -16,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "daalgavar": "^1.0.26",
+    "daalgavar": "^1.0.27",
     "express-useragent": "^1.0.15",
     "sharp": "^0.30.7",
     "zevback": "^1.0.74",
