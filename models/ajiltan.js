@@ -18,11 +18,13 @@ const ajiltanSchema = new Schema(
     register: String,
     tsonkhniiErkhuud: [String],
     barilguud: [String],
-    tuukh: [{
-      barilgiinId: String,
-      ekhelsenOgnoo: Date,
-      duussanOgnoo: Date
-    }],
+    tuukh: [
+      {
+        barilgiinId: String,
+        ekhelsenOgnoo: Date,
+        duussanOgnoo: Date,
+      },
+    ],
     khayag: String,
     ajildOrsonOgnoo: Date,
     baiguullagiinId: String,
@@ -37,12 +39,12 @@ const ajiltanSchema = new Schema(
       unique: true,
     },
     tokhirgoo: {
-      gereeKharakhErkh: [String],//barilgiin id-nuud
+      gereeKharakhErkh: [String], //barilgiin id-nuud
       gereeZasakhErkh: [String],
       guilgeeUstgakhErkh: [String],
       khungulultUzuulekhEsekh: [String],
-      m2UneTokhiruulakhEsekh: [String]
-    }
+      m2UneTokhiruulakhEsekh: [String],
+    },
   },
   {
     timestamps: true,
@@ -68,6 +70,7 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo) {
   );
   return token;
 };
+
 ajiltanSchema.pre("save", async function () {
   this.indexTalbar = this.register + this.nevtrekhNer;
   const salt = await bcrypt.genSalt(12);
@@ -101,7 +104,7 @@ AjiltanModel.estimatedDocumentCount().then((count) => {
         register: "Admin",
         albanTushaal: "Admin",
         baiguullagiinId: "62bbb00140b7dd4f39c99e64",
-        nuutsUg: "123"
+        nuutsUg: "123",
       })
     );
   }
