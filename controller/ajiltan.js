@@ -30,7 +30,7 @@ async function nevtreltiinTuukhKhadgalya(tuukh) {
   if (ipTuukh) {
     tuukh.bairshilUls = ipTuukh.bairshilUls;
     tuukh.bairshilKhot = ipTuukh.bairshilKhot;
-  } else {
+  } else if (tuukh.ip) {
     var axiosKhariu = await axios.get(
       "https://api.ipgeolocation.io/ipgeo?apiKey=8ee349f1c7304c379fdb6b855d1e9df4&ip=" +
         tuukh.ip.toString()
