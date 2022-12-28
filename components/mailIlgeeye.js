@@ -51,7 +51,6 @@ async function duriinMailIlgeeye(
     port: port ? 587 : port,
     secureConnection: false,
     tls: {
-      rejectUnauthorized: false,
       ciphers: "SSLv3",
     },
     pool: true,
