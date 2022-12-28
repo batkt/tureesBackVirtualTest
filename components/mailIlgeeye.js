@@ -52,7 +52,6 @@ async function duriinMailIlgeeye(
     secureConnection: false,
     tls: {
       rejectUnauthorized: false,
-      secureProtocol: "TLSv1_method",
       ciphers: "SSLv3",
     },
     pool: true,
