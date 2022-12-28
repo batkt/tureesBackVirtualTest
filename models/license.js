@@ -18,4 +18,10 @@ const licenseSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("license", licenseSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("license", licenseSchema);
+};
+//module.exports = mongoose.model("license", licenseSchema);

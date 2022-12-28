@@ -23,4 +23,10 @@ const gereeniiZaaltSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("gereeniiZagvar", gereeniiZaaltSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("gereeniiZaalt", gereeniiZaaltSchema);
+};
+//module.exports = mongoose.model("gereeniiZaalt", gereeniiZaaltSchema);

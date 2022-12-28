@@ -11,6 +11,7 @@ const axios = require("axios");
 const fs = require("fs");
 const useragent = require("express-useragent");
 const http = require("http");
+const { kholbolt } = require("zevback");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get(
@@ -25,8 +26,8 @@ function duusakhOgnooAvya(ugugdul, onFinish, next) {
   );
 }
 
-async function nevtreltiinTuukhKhadgalya(tuukh) {
-  var ipTuukh = await IpTuukh.findOne({ ip: tuukh.ip });
+async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
+  var ipTuukh = await IpTuukh(tukhainBaaziinKholbolt).findOne({ ip: tuukh.ip });
   if (ipTuukh) {
     tuukh.bairshilUls = ipTuukh.bairshilUls;
     tuukh.bairshilKhot = ipTuukh.bairshilKhot;
@@ -49,7 +50,11 @@ async function nevtreltiinTuukhKhadgalya(tuukh) {
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
-  const ajiltan = await Ajiltan.findOne()
+  const kholboltuud = kholbolt.getKholboltuud();
+  console.log("kholboltuud1", kholboltuud);
+  kholboltuud.find((a) => a.baiguullagiinId == tokenObject.baiguullagiinId);
+  const ajiltan = await Ajiltan(req.body.tukhainBaaziinKholbolt)
+    .findOne()
     .select("+nuutsUg")
     .where("nevtrekhNer")
     .equals(req.body.nevtrekhNer)
@@ -78,7 +83,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           butsaakhObject.token = jwt;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
-          var tuukh = new NevtreltiinTuukh();
+          var tuukh = new NevtreltiinTuukh(req.body.tukhainBaaziinKholbolt);
           tuukh.ajiltniiId = ajiltan._id;
           tuukh.ajiltniiNer = ajiltan.ner;
           tuukh.ognoo = new Date();
@@ -94,7 +99,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           tuukh.browser = ua.browser;
           tuukh.useragent = ua;
           tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
-          nevtreltiinTuukhKhadgalya(tuukh);
+          nevtreltiinTuukhKhadgalya(tuukh, req.body.tukhainBaaziinKholbolt);
           res.status(200).json(butsaakhObject);
         } else throw new Error(khariu.msg);
       } catch (err) {

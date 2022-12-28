@@ -8,9 +8,15 @@ const msgTuukhSchema = new Schema(
     barilgiinId: String,
     gereeniiId: String,
     dugaar: [String],
-    msg: String
+    msg: String,
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("msgTuukh", msgTuukhSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("msgTuukh", msgTuukh);
+};
+//module.exports = mongoose.model("msgTuukh", msgTuukh);

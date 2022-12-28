@@ -6,11 +6,11 @@ const asuultSchema = new Schema(
   {
     baiguullagiinId: {
       type: String,
-      required: true
+      required: true,
     },
     barilgiinId: {
       type: String,
-      required: true
+      required: true,
     },
     ner: String,
     turul: String,
@@ -18,8 +18,8 @@ const asuultSchema = new Schema(
       {
         asuult: String,
         turul: String,
-        khariultuud: [String]
-      }
+        khariultuud: [String],
+      },
     ],
     guilgeeKhiisenOgnoo: Date,
     guilgeeKhiisenAjiltniiNer: String,
@@ -28,4 +28,10 @@ const asuultSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("asuult", asuultSchema);
+//module.exports = mongoose.model("asuult", asuultSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("asuult", asuultSchema);
+};

@@ -1,9 +1,9 @@
-const mongoose = require("mongoose")
-const jwt = require("jsonwebtoken")
-const bcrypt = require("bcrypt")
-const Schema = mongoose.Schema
+const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const Schema = mongoose.Schema;
 
-mongoose.pluralize(null)
+mongoose.pluralize(null);
 
 const talbaiSchema = new Schema(
   {
@@ -24,14 +24,14 @@ const talbaiSchema = new Schema(
     niitiinTalbaiEsekh: Boolean,
     idevkhiteiEsekh: {
       type: Boolean,
-      default: false
+      default: false,
     },
     tureesiinTulbur: Number,
     segmentuud: [
       {
         ner: String,
-        utga: String
-      }
+        utga: String,
+      },
     ],
     khurunguud: [
       {
@@ -43,11 +43,17 @@ const talbaiSchema = new Schema(
         zurgiinId: String,
       },
     ],
-    bairshil: [[]]
+    bairshil: [[]],
   },
   {
     timestamps: true,
   }
-)
+);
 
-module.exports = mongoose.model("talbai", talbaiSchema)
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("talbai", talbaiSchema);
+};
+//module.exports = mongoose.model("talbai", talbaiSchema);

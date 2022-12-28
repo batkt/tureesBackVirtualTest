@@ -1,8 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-mongoose.pluralize(null)
-const sonorduulgaSchema = new Schema({
+mongoose.pluralize(null);
+const sonorduulgaSchema = new Schema(
+  {
     id: String,
     ognoo: Date,
     ajiltniiId: String,
@@ -15,8 +16,15 @@ const sonorduulgaSchema = new Schema({
     title: String,
     message: String,
     kharsanEsekh: Boolean,
-    object: Schema.Types.Mixed
-},
-    { timestamps: true });
+    object: Schema.Types.Mixed,
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('sonorduulga', sonorduulgaSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("sonorduulga", sonorduulgaSchema);
+};
+//module.exports = mongoose.model("sonorduulga", sonorduulgaSchema);

@@ -12,14 +12,20 @@ const sanalGomdolSchema = new Schema(
     turul: String,
     tuluv: {
       type: Number,
-      default: 0
+      default: 0,
     },
     ognoo: Date,
     title: String,
     message: String,
-    kharsanEsekh: Boolean
+    kharsanEsekh: Boolean,
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("sanalGomdol", sanalGomdolSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("sanalGomdol", sanalGomdolSchema);
+};
+//module.exports = mongoose.model("sanalGomdol", sanalGomdolSchema);

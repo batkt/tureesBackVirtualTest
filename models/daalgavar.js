@@ -11,7 +11,7 @@ const daalgavarSchema = new Schema(
     file: [String],
     ognoo: Date,
     khuleejAvsanOgnoo: Date,
-    zartsuulsanKhugatsaa: Number,//Tsagaar
+    zartsuulsanKhugatsaa: Number, //Tsagaar
     shiidsenOgnoo: Date,
     duusakhOgnoo: Date,
     tuluv: Number,
@@ -19,11 +19,18 @@ const daalgavarSchema = new Schema(
     ajiltniiNer: String,
     baiguullagiinId: String,
     barilgiinId: String,
-    salbariinId: String
+    salbariinId: String,
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("daalgavar", daalgavarSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("daalgavar", daalgavarSchema);
+};
+
+//module.exports = mongoose.model("daalgavar", daalgavarSchema);

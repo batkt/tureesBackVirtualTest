@@ -21,4 +21,10 @@ const nevtreltiinTuukhSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("nevtreltiinTuukh", nevtreltiinTuukhSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("nevtreltiinTuukh", nevtreltiinTuukhSchema);
+};
+//module.exports = mongoose.model("nevtreltiinTuukh", nevtreltiinTuukhSchema);

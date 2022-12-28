@@ -16,4 +16,11 @@ const backTuukhSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("backTuukh", backTuukhSchema);
+//module.exports = mongoose.model("backTuukh", backTuukhSchema);
+
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("backTuukh", backTuukhSchema);
+};

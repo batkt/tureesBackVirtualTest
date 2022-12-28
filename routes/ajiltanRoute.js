@@ -23,16 +23,17 @@ crudWithFile(
   UstsanBarimt,
   async (req, res, next) => {
     try {
+      var ajiltanModel = Ajiltan(req.body.tukhainBaaziinKholbolt);
       if (req.params.id) {
         var ObjectId = require("mongodb").ObjectId;
-        var ajiltan = await Ajiltan.findOne({
+        var ajiltan = await ajiltanModel.findOne({
           nevtrekhNer: req.body.nevtrekhNer,
           _id: { $ne: ObjectId(req.params.id) },
         });
         if (ajiltan) throw new Error("Нэвтрэх нэр давхардаж байна!");
       } else {
         if (req.body.nevtrekhNer) {
-          var ajiltan = await Ajiltan.findOne({
+          var ajiltan = await ajiltanModel.findOne({
             nevtrekhNer: req.body.nevtrekhNer,
           });
           if (ajiltan) throw new Error("Нэвтрэх нэр давхардаж байна!");
@@ -84,13 +85,16 @@ router.get("/ustsanBarimt", tokenShalgakh, async (req, res, next) => {
     if (!!body?.khuudasniiKhemjee)
       body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
     console.log("body", body);
-    let jagsaalt = await UstsanBarimt.find(body.query)
+    let jagsaalt = await UstsanBarimt(req.body.tukhainBaaziinKholbolt)
+      .find(body.query)
       .sort(body.order)
       .collation(body.collation ? body.collation : {})
       .skip((body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee)
       .limit(body.khuudasniiKhemjee);
     console.log("jagsaalt", jagsaalt);
-    let niitMur = await UstsanBarimt.countDocuments(body.query);
+    let niitMur = await UstsanBarimt(
+      req.body.tukhainBaaziinKholbolt
+    ).countDocuments(body.query);
     let niitKhuudas =
       niitMur % khuudasniiKhemjee == 0
         ? Math.floor(niitMur / khuudasniiKhemjee)
@@ -116,7 +120,8 @@ router.post("/ajiltandTokenOnooyo", tokenShalgakh, (req, res, next) => {
     let update = {
       firebaseToken: req.body.token,
     };
-    Ajiltan.findOneAndUpdate(filter, update)
+    Ajiltan(req.body.tukhainBaaziinKholbolt)
+      .findOneAndUpdate(filter, update)
       .then((result) => {
         res.send("Amjilttai");
       })
@@ -136,12 +141,14 @@ router.post(
       if (!!req.body) {
         const { turul, ajiltnuud } = req.body;
         for await (const ajiltan of ajiltnuud) {
-          await Ajiltan.findOneAndUpdate(
-            { _id: ajiltan._id },
-            { $set: { [turul]: ajiltan.utga } }
-          ).catch((err) => {
-            next(err);
-          });
+          await Ajiltan(req.body.tukhainBaaziinKholbolt)
+            .findOneAndUpdate(
+              { _id: ajiltan._id },
+              { $set: { [turul]: ajiltan.utga } }
+            )
+            .catch((err) => {
+              next(err);
+            });
         }
         res.send("Amjilttai");
       } else next(new aldaa("Засах боломжгүй байна"));
@@ -154,12 +161,11 @@ router.post(
 router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
   try {
     if (!!req.body) {
-      await Ajiltan.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: req.body }
-      ).catch((err) => {
-        next(err);
-      });
+      await Ajiltan(req.body.tukhainBaaziinKholbolt)
+        .findOneAndUpdate({ _id: req.params.id }, { $set: req.body })
+        .catch((err) => {
+          next(err);
+        });
       res.send("Amjilttai");
     } else next(new aldaa("Засах боломжгүй байна"));
   } catch (error) {
@@ -170,12 +176,14 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
 router.post("/erkhteiEsekh", tokenShalgakh, async (req, res, next) => {
   try {
     if (!!req.body.zam) {
-      const khariu = await Ajiltan.countDocuments({
-        _id: req.body.nevtersenAjiltniiToken?.id,
-        $or: [{ tsonkhniiErkhuud: req.body.zam }, { erkh: "Admin" }],
-      }).catch((err) => {
-        next(err);
-      });
+      const khariu = await Ajiltan(req.body.tukhainBaaziinKholbolt)
+        .countDocuments({
+          _id: req.body.nevtersenAjiltniiToken?.id,
+          $or: [{ tsonkhniiErkhuud: req.body.zam }, { erkh: "Admin" }],
+        })
+        .catch((err) => {
+          next(err);
+        });
       res.send(!!khariu);
     } else next(new aldaa("Засах боломжгүй байна"));
   } catch (error) {

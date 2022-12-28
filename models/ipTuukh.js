@@ -15,4 +15,10 @@ const ipTuukhSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model("ipTuukh", ipTuukhSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("ipTuukh", ipTuukhSchema);
+};
+//module.exports = mongoose.model("ipTuukh", ipTuukhSchema);

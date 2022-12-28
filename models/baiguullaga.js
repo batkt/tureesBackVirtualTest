@@ -36,7 +36,7 @@ const baiguullagaSchema = new Schema(
             davkhar: String,
             talbai: Number,
             tariff: Number,
-            planZurag: String
+            planZurag: String,
           },
         ],
       },
@@ -82,7 +82,7 @@ const baiguullagaSchema = new Schema(
       khereglegchEkhlekhOgnoo: Date,
       zogsooliinMinut: Number,
       zogsooliinKhungulukhMinut: Number,
-      zogsooliinDun: Number
+      zogsooliinDun: Number,
     },
     erkhuud: [
       {
@@ -104,8 +104,16 @@ const baiguullagaSchema = new Schema(
   }
 );
 
-const BaiguullagaModel = mongoose.model("baiguullaga", baiguullagaSchema);
-var newId = new mongoose.mongo.ObjectId('62bbb00140b7dd4f39c99e64');
+//const BaiguullagaModel = mongoose.model("baiguullaga", baiguullagaSchema);
+
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("baiguullaga", baiguullagaSchema);
+};
+
+/*var newId = new mongoose.mongo.ObjectId('62bbb00140b7dd4f39c99e64');
 BaiguullagaModel.estimatedDocumentCount().then((count) => {
   if (count == 0) {
     BaiguullagaModel.create(
@@ -118,5 +126,5 @@ BaiguullagaModel.estimatedDocumentCount().then((count) => {
     );
   }
 });
-
-module.exports = BaiguullagaModel;
+*/
+//module.exports = BaiguullagaModel;

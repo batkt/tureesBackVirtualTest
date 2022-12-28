@@ -6,7 +6,7 @@ const zogsoolSchema = new Schema(
   {
     id: {
       type: String,
-      unique: true
+      unique: true,
     },
     car_number: String,
     check_in_time: Date,
@@ -16,11 +16,17 @@ const zogsoolSchema = new Schema(
     tulbur: Number,
     mashin: Schema.Types.Mixed,
     baiguullagiinId: String,
-    barilgiinId: String
+    barilgiinId: String,
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("zogsool", zogsoolSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("zogsool", zogsoolSchema);
+};
+//module.exports = mongoose.model("zogsool", zogsoolSchema);

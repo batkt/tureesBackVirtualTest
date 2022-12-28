@@ -33,18 +33,22 @@ const daalgavarRoute = require("./routes/daalgavarRoute");
 const zogsool = require("./controller/zogsool");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
+const { db } = require("zevback");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
 const dbUrl = process.env.BAAZ;
-mongoose
+
+server.listen(8081);
+
+/*mongoose
   .connect(dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
     useFindAndModify: false,
   })
-  .then((result) => server.listen(8081))
-  .catch((err) => console.log(err));
+  .then((result) => )
+  .catch((err) => console.log(err));*/
 
 process.env.TZ = "Asia/Ulaanbaatar";
 app.set("socketio", io);
@@ -55,6 +59,8 @@ app.use(
     extended: true,
   })
 );
+
+db.kholboltUusgey(app);
 
 app.use(
   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })

@@ -88,9 +88,8 @@ ajiltanSchema.methods.passwordShalgaya = async function (pass) {
   return await bcrypt.compare(pass, this.nuutsUg);
 };
 
-const AjiltanModel = mongoose.model("ajiltan", ajiltanSchema);
-
-AjiltanModel.estimatedDocumentCount().then((count) => {
+//const AjiltanModel = mongoose.model("ajiltan", ajiltanSchema);
+/*AjiltanModel.estimatedDocumentCount().then((count) => {
   console.dir(count);
 
   if (count == 0) {
@@ -108,6 +107,12 @@ AjiltanModel.estimatedDocumentCount().then((count) => {
       })
     );
   }
-});
+});*/
 
-module.exports = AjiltanModel;
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("ajiltan", ajiltanSchema);
+};
+//module.exports = AjiltanModel;

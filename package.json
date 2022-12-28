@@ -19,7 +19,7 @@
     "daalgavar": "^1.0.25",
     "express-useragent": "^1.0.15",
     "sharp": "^0.30.7",
-    "zevback": "^1.0.74",
+    "zevback": "^1.0.83",
     "zuragpack": "^1.0.11"
   },
   "devDependencies": {

@@ -1,0 +1,26 @@
+version: "3"
+services:
+  web:
+    image: batuk0227/turees-web:latest
+    restart: always
+    environment:
+      - URL=http://192.168.0.108:8081
+      - SOCKET=http://192.168.0.108:8081
+      - HTTP_URL=http://192.168.0.108:8081
+    ports:
+      - "3000:3000"
+
+  nosql-db:
+    image: mongo
+    ports:
+      - "27017:27017"
+    container_name: localbaaz
+    restart: always
+    volumes:
+      - ./db/:/data/db
+
+  back:
+    image: batuk0227/turees-back:latest
+    restart: always
+    ports:
+      - "8081:8081"

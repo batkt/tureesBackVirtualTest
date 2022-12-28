@@ -21,4 +21,10 @@ const khungulultiinTuukhSchema = new Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("khungulultiinTuukh", khungulultiinTuukhSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("khungulultiinTuukh", khungulultiinTuukhSchema);
+};
+//module.exports = mongoose.model("khungulultiinTuukh", khungulultiinTuukhSchema);

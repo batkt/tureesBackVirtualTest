@@ -28,8 +28,8 @@ const khariltsagchSchema = new Schema(
     segmentuud: [
       {
         ner: String,
-        utga: String
-      }
+        utga: String,
+      },
     ],
     nuutsUg: {
       type: String,
@@ -47,7 +47,7 @@ khariltsagchSchema.methods.tokenUusgeye = function () {
     {
       id: this._id,
       ner: this.ner,
-      baiguullagiinId: this.baiguullagiinId
+      baiguullagiinId: this.baiguullagiinId,
     },
     process.env.APP_SECRET,
     {
@@ -67,14 +67,19 @@ khariltsagchSchema.pre("updateOne", async function () {
   console.log("update xiigdej baina ==>", this._update);
   if (this._update.nuutsUg && this._update.nuutsUg !== "123")
     this._update.nuutsUg = await bcrypt.hash(this._update.nuutsUg, salt);
-  else
-    delete this._update.nuutsUg
+  else delete this._update.nuutsUg;
   if (this._update.utas && this._update.utas.length == 0)
-    delete this._update.utas
+    delete this._update.utas;
 });
 
 khariltsagchSchema.methods.passwordShalgaya = async function (pass) {
   return await bcrypt.compare(pass, this.nuutsUg);
 };
 
-module.exports = mongoose.model("khariltsagch", khariltsagchSchema);
+module.exports = function a(conn) {
+  if (!conn || !conn.kholbolt)
+    throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
+  conn = conn.kholbolt;
+  return conn.model("khariltsagch", khariltsagchSchema);
+};
+//module.exports = mongoose.model("khariltsagch", khariltsagchSchema);
