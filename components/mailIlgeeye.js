@@ -46,13 +46,21 @@ async function duriinMailIlgeeye(
   ilgeekhMail,
   zurag
 ) {
+  var tls = {};
+  if (host.includes("office365"))
+    tls = {
+      ciphers: "SSLv3",
+    };
+  else
+    tls = {
+      rejectUnauthorized: false,
+      secureProtocol: "TLSv1_method",
+    };
   let transporter = nodemailer.createTransport({
     host: host ? host : "smtp.zevtabs.mn",
     port: port ? 587 : port,
     secureConnection: false,
-    tls: {
-      ciphers: "SSLv3",
-    },
+    tls,
     pool: true,
     auth: {
       user: user, // generated ethereal user
