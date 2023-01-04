@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const GereeniiZaalt = require("../models/gereeniiZaalt");
 const GereeniiZagvar = require("../models/gereeniiZagvar");
-const Khariltsagch = require("../models/khariltsagch");;
+const Khariltsagch = require("../models/khariltsagch");
 const Baiguullaga = require("../models/baiguullaga");
 const Geree = require("../models/geree");
 const Talbai = require("../models/talbai");
@@ -21,186 +21,281 @@ function usegTooruuKhurvuulekh(useg) {
 
 function toogUsegruuKhurvuulekh(too) {
   if (!!too) {
-    if (too < 26)
-      return String.fromCharCode(too + 65);
+    if (too < 26) return String.fromCharCode(too + 65);
     else {
       var orongiinToo = Math.floor(too / 26);
       var uldegdel = too % 26;
-      return String.fromCharCode(orongiinToo + 64) + String.fromCharCode(uldegdel + 65);
+      return (
+        String.fromCharCode(orongiinToo + 64) +
+        String.fromCharCode(uldegdel + 65)
+      );
     }
-  }
-  else return 0;
+  } else return 0;
 }
 
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-async function gereeBaivalBugluy(mashiniiJagsaalt, baiguullagiinId) {
-  var utasnuud = []
-  mashiniiJagsaalt.forEach(a => {
+async function gereeBaivalBugluy(
+  mashiniiJagsaalt,
+  baiguullagiinId,
+  tukhainBaaziinKholbolt
+) {
+  var utasnuud = [];
+  mashiniiJagsaalt.forEach((a) => {
     utasnuud.push(a.ezemshigchiinUtas);
   });
-  console.log("utasnuud", utasnuud)
-  var gereeniiJagsaalt = await Geree.find({ "utas": { $in: utasnuud }, "baiguullagiinId": baiguullagiinId });
-  console.log("gereeniiJagsaalt", gereeniiJagsaalt)
+  console.log("utasnuud", utasnuud);
+  var gereeniiJagsaalt = await Geree(tukhainBaaziinKholbolt).find({
+    utas: { $in: utasnuud },
+    baiguullagiinId: baiguullagiinId,
+  });
+  console.log("gereeniiJagsaalt", gereeniiJagsaalt);
   if (gereeniiJagsaalt.length !== 0) {
     var tukhainMashin;
-    gereeniiJagsaalt.forEach(x => {
-      tukhainMashin = mashiniiJagsaalt.find(a => x.utas.includes(a.ezemshigchiinUtas));
+    gereeniiJagsaalt.forEach((x) => {
+      tukhainMashin = mashiniiJagsaalt.find((a) =>
+        x.utas.includes(a.ezemshigchiinUtas)
+      );
       if (tukhainMashin) {
         tukhainMashin.ezemshigchiinRegister = x.register;
-        tukhainMashin.ezemshigchiinTalbainDugaar = x.talbainDugaar
+        tukhainMashin.ezemshigchiinTalbainDugaar = x.talbainDugaar;
         tukhainMashin.ezemshigchiinNer = x.ner;
         tukhainMashin.gereeniiDugaar = x.gereeniiDugaar;
       }
-    })
+    });
   }
   return mashiniiJagsaalt;
 }
 
-async function gereeBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId) {
-  var jagsaalt = []
-  var shineAldaaniiMsg = ""
-  gereenuud.forEach(a => {
+async function gereeBaigaaEskhiigShalgaya(
+  gereenuud,
+  aldaaniiMsg,
+  baiguullagiinId,
+  tukhainBaaziinKholbolt
+) {
+  var jagsaalt = [];
+  var shineAldaaniiMsg = "";
+  gereenuud.forEach((a) => {
     jagsaalt.push(a.gereeniiDugaar);
   });
-  var gereeniiJagsaalt = await Geree.find({ "gereeniiDugaar": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId });
+  var gereeniiJagsaalt = await Geree(tukhainBaaziinKholbolt).find({
+    gereeniiDugaar: { $in: jagsaalt },
+    baiguullagiinId: baiguullagiinId,
+  });
   if (gereeniiJagsaalt.length !== 0) {
     gereeniiDugaaruud = [];
-    gereeniiJagsaalt.forEach(x => {
+    gereeniiJagsaalt.forEach((x) => {
       gereeniiDugaaruud.push(x.gereeniiDugaar);
-    })
-    shineAldaaniiMsg = aldaaniiMsg + "Гэрээний дугаар давхардаж байна! : " + gereeniiDugaaruud + '<br/>';
+    });
+    shineAldaaniiMsg =
+      aldaaniiMsg +
+      "Гэрээний дугаар давхардаж байна! : " +
+      gereeniiDugaaruud +
+      "<br/>";
   }
-  if (shineAldaaniiMsg)
-    aldaaniiMsg = shineAldaaniiMsg;
+  if (shineAldaaniiMsg) aldaaniiMsg = shineAldaaniiMsg;
   return aldaaniiMsg;
 }
 
-async function khariltsagchBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId, barilgiinId) {
+async function khariltsagchBaigaaEskhiigShalgaya(
+  gereenuud,
+  aldaaniiMsg,
+  baiguullagiinId,
+  barilgiinId,
+  tukhainBaaziinKholbolt
+) {
   console.log("gereenuud", gereenuud);
-  var jagsaalt = []
-  var shineAldaaniiMsg = ""
+  var jagsaalt = [];
+  var shineAldaaniiMsg = "";
   if (gereenuud)
-    gereenuud.forEach(a => {
+    gereenuud.forEach((a) => {
       jagsaalt.push(a.register);
     });
-  var khariltsagchiinJagsaalt = await Khariltsagch.find({ "register": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId, "barilgiinId": barilgiinId });
+  var khariltsagchiinJagsaalt = await Khariltsagch(tukhainBaaziinKholbolt).find(
+    {
+      register: { $in: jagsaalt },
+      baiguullagiinId: baiguullagiinId,
+      barilgiinId: barilgiinId,
+    }
+  );
   if (khariltsagchiinJagsaalt.length !== 0) {
     oldooguiJagsaalt = [];
-    jagsaalt.forEach(x => {
-      if (khariltsagchiinJagsaalt.find(a => a.register == x) == null)
+    jagsaalt.forEach((x) => {
+      if (khariltsagchiinJagsaalt.find((a) => a.register == x) == null)
         oldooguiJagsaalt.push(x);
-    })
+    });
     if (oldooguiJagsaalt.length !== 0)
-      shineAldaaniiMsg = aldaaniiMsg + "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " + oldooguiJagsaalt + '<br/>';
-  }
-  else
-    shineAldaaniiMsg = aldaaniiMsg + "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " + jagsaalt + '<br/>';
+      shineAldaaniiMsg =
+        aldaaniiMsg +
+        "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " +
+        oldooguiJagsaalt +
+        "<br/>";
+  } else
+    shineAldaaniiMsg =
+      aldaaniiMsg +
+      "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " +
+      jagsaalt +
+      "<br/>";
 
-  if (shineAldaaniiMsg)
-    aldaaniiMsg = shineAldaaniiMsg;
+  if (shineAldaaniiMsg) aldaaniiMsg = shineAldaaniiMsg;
   else {
     var tukhainKhariltsagch;
     if (gereenuud)
-      gereenuud.forEach(x => {
-        tukhainKhariltsagch = khariltsagchiinJagsaalt.find(a => a.register == x.register);
+      gereenuud.forEach((x) => {
+        tukhainKhariltsagch = khariltsagchiinJagsaalt.find(
+          (a) => a.register == x.register
+        );
         x.ovog = tukhainKhariltsagch.ovog;
         x.ner = tukhainKhariltsagch.ner;
         x.turul = tukhainKhariltsagch.turul;
         x.zakhirliinOvog = tukhainKhariltsagch.zakhirliinOvog;
         x.zakhirliinNer = tukhainKhariltsagch.zakhirliinNer;
         x.utas = tukhainKhariltsagch.utas;
-      })
+      });
   }
   return aldaaniiMsg;
 }
 
-async function khariltsagchBaikhguigShalgaya(khariltsagchid, aldaaniiMsg, baiguullagiinId, barilgiinId) {
-  var jagsaalt = []
-  var utasniiJagsaalt = []
-  var shineAldaaniiMsg = ""
+async function khariltsagchBaikhguigShalgaya(
+  khariltsagchid,
+  aldaaniiMsg,
+  baiguullagiinId,
+  barilgiinId,
+  tukhainBaaziinKholbolt
+) {
+  var jagsaalt = [];
+  var utasniiJagsaalt = [];
+  var shineAldaaniiMsg = "";
   if (khariltsagchid)
-    khariltsagchid.forEach(a => {
+    khariltsagchid.forEach((a) => {
       jagsaalt.push(a.register);
-      if (a.utas && a.utas.length > 0)
-        utasniiJagsaalt.push(a.utas[0]);
+      if (a.utas && a.utas.length > 0) utasniiJagsaalt.push(a.utas[0]);
     });
 
-  const toFindDuplicates = arry => arry.filter((item, index) => arry.indexOf(item) !== index)
+  const toFindDuplicates = (arry) =>
+    arry.filter((item, index) => arry.indexOf(item) !== index);
   var davkhardsanKod = toFindDuplicates(utasniiJagsaalt);
   if (davkhardsanKod && davkhardsanKod.length > 0)
-    shineAldaaniiMsg = aldaaniiMsg + "Дараах утасны дугаартай харилцагчид давхардаж байна! : " + davkhardsanKod + '<br/>';
+    shineAldaaniiMsg =
+      aldaaniiMsg +
+      "Дараах утасны дугаартай харилцагчид давхардаж байна! : " +
+      davkhardsanKod +
+      "<br/>";
 
-  var khariltsagchiinJagsaalt = await Khariltsagch.find({ "register": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId, "barilgiinId": barilgiinId });
+  var khariltsagchiinJagsaalt = await Khariltsagch(tukhainBaaziinKholbolt).find(
+    {
+      register: { $in: jagsaalt },
+      baiguullagiinId: baiguullagiinId,
+      barilgiinId: barilgiinId,
+    }
+  );
   if (khariltsagchiinJagsaalt.length > 0) {
-    var davkhardsanRegisteruud = []
-    khariltsagchiinJagsaalt.forEach(a => {
+    var davkhardsanRegisteruud = [];
+    khariltsagchiinJagsaalt.forEach((a) => {
       davkhardsanRegisteruud.push(a.register);
     });
-    shineAldaaniiMsg = aldaaniiMsg + "Дараах бүртгэлийн дугаартай харилцагчид бүртгэлтэй байна! : " + davkhardsanRegisteruud + '<br/>';
+    shineAldaaniiMsg =
+      aldaaniiMsg +
+      "Дараах бүртгэлийн дугаартай харилцагчид бүртгэлтэй байна! : " +
+      davkhardsanRegisteruud +
+      "<br/>";
   }
-  var khariltsagchiinUtasniiJagsaalt = await Khariltsagch.find({ "utas": { $in: utasniiJagsaalt }, "baiguullagiinId": baiguullagiinId, "barilgiinId": barilgiinId });
+  var khariltsagchiinUtasniiJagsaalt = await Khariltsagch(
+    tukhainBaaziinKholbolt
+  ).find({
+    utas: { $in: utasniiJagsaalt },
+    baiguullagiinId: baiguullagiinId,
+    barilgiinId: barilgiinId,
+  });
   if (khariltsagchiinUtasniiJagsaalt.length > 0) {
-    var davkhardsanUtasnuud = []
-    khariltsagchiinUtasniiJagsaalt.forEach(a => {
+    var davkhardsanUtasnuud = [];
+    khariltsagchiinUtasniiJagsaalt.forEach((a) => {
       davkhardsanUtasnuud.push(a.utas);
     });
-    davkhardsanUtasnuud = davkhardsanUtasnuud.filter((x) => utasniiJagsaalt.includes(x))
-    shineAldaaniiMsg = aldaaniiMsg + "Дараах утасны дугаартай харилцагчид бүртгэлтэй байна! : " + davkhardsanUtasnuud + '<br/>';
+    davkhardsanUtasnuud = davkhardsanUtasnuud.filter((x) =>
+      utasniiJagsaalt.includes(x)
+    );
+    shineAldaaniiMsg =
+      aldaaniiMsg +
+      "Дараах утасны дугаартай харилцагчид бүртгэлтэй байна! : " +
+      davkhardsanUtasnuud +
+      "<br/>";
   }
-  if (shineAldaaniiMsg)
-    aldaaniiMsg = shineAldaaniiMsg;
+  if (shineAldaaniiMsg) aldaaniiMsg = shineAldaaniiMsg;
   return aldaaniiMsg;
 }
 
-async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiinId, barilgiinId) {
-  var jagsaalt = []
-  var shineAldaaniiMsg = ""
-  gereenuud.forEach(a => {
+async function talbaiBaigaaEskhiigShalgaya(
+  gereenuud,
+  aldaaniiMsg,
+  baiguullagiinId,
+  barilgiinId,
+  tukhainBaaziinKholbolt
+) {
+  var jagsaalt = [];
+  var shineAldaaniiMsg = "";
+  gereenuud.forEach((a) => {
     if (a.talbainDugaar.includes(",")) {
       jagsaalt = [...jagsaalt, ...a.talbainDugaar.split(",")];
-    }
-    else
-      jagsaalt.push(a.talbainDugaar);
+    } else jagsaalt.push(a.talbainDugaar);
   });
-  var talbainJagsaalt = await Talbai.find({ "kod": { $in: jagsaalt }, "baiguullagiinId": baiguullagiinId, "barilgiinId": barilgiinId });
+  var talbainJagsaalt = await Talbai(tukhainBaaziinKholbolt).find({
+    kod: { $in: jagsaalt },
+    baiguullagiinId: baiguullagiinId,
+    barilgiinId: barilgiinId,
+  });
   if (talbainJagsaalt.length !== 0) {
     oldooguiJagsaalt = [];
-    jagsaalt.forEach(x => {
-      if (talbainJagsaalt.find(a => a.kod == x) == null)
+    jagsaalt.forEach((x) => {
+      if (talbainJagsaalt.find((a) => a.kod == x) == null)
         oldooguiJagsaalt.push(x);
-    })
+    });
     if (oldooguiJagsaalt.length !== 0)
-      shineAldaaniiMsg = aldaaniiMsg + "Дараах дугаартай талбайнуудын мэдээлэл олдсонгүй! : " + oldooguiJagsaalt + '<br/>';
-  }
-  else
-    shineAldaaniiMsg = aldaaniiMsg + "Дараах дугаартай талбайнуудын мэдээлэл олдсонгүй! : " + jagsaalt + '<br/>';
+      shineAldaaniiMsg =
+        aldaaniiMsg +
+        "Дараах дугаартай талбайнуудын мэдээлэл олдсонгүй! : " +
+        oldooguiJagsaalt +
+        "<br/>";
+  } else
+    shineAldaaniiMsg =
+      aldaaniiMsg +
+      "Дараах дугаартай талбайнуудын мэдээлэл олдсонгүй! : " +
+      jagsaalt +
+      "<br/>";
 
-  if (shineAldaaniiMsg)
-    aldaaniiMsg = shineAldaaniiMsg;
+  if (shineAldaaniiMsg) aldaaniiMsg = shineAldaaniiMsg;
   else {
-    gereenuud.forEach(x => {
+    gereenuud.forEach((x) => {
       console.log("end", x.talbainDugaar);
       if (x.talbainDugaar.includes(",")) {
-        var tukhainTalbainuud = talbainJagsaalt.filter(a => x.talbainDugaar.split(",").includes(a.kod));
+        var tukhainTalbainuud = talbainJagsaalt.filter((a) =>
+          x.talbainDugaar.split(",").includes(a.kod)
+        );
         console.log("tukhainTalbainuud", tukhainTalbainuud);
         console.log("talbainJagsaalt", talbainJagsaalt);
         console.log("x", x);
-        tukhainTalbainuud.forEach(mur => {
+        tukhainTalbainuud.forEach((mur) => {
           x.davkhar = mur.davkhar;
           x.talbainNegjUne = mur.talbainNegjUne;
-          x.talbainNiitUne = (x.talbainNiitUne != null ? x.talbainNiitUne : 0) + mur.talbainNiitUne;
-          x.talbainKhemjee = (x.talbainKhemjee != null ? x.talbainKhemjee : 0) + mur.talbainKhemjee;
+          x.talbainNiitUne =
+            (x.talbainNiitUne != null ? x.talbainNiitUne : 0) +
+            mur.talbainNiitUne;
+          x.talbainKhemjee =
+            (x.talbainKhemjee != null ? x.talbainKhemjee : 0) +
+            mur.talbainKhemjee;
           x.sariinTurees = x.talbainNiitUne;
           x.talbainIdnuud.push(x._id);
-          x.baritsaaAvakhDun = (x.baritsaaAwakhKhugatsaa * mur.talbainNiitUne) + (x.baritsaaAvakhDun != null ? x.baritsaaAvakhDun : 0);
-        })
-      }
-      else {
+          x.baritsaaAvakhDun =
+            x.baritsaaAwakhKhugatsaa * mur.talbainNiitUne +
+            (x.baritsaaAvakhDun != null ? x.baritsaaAvakhDun : 0);
+        });
+      } else {
         console.log(talbainJagsaalt);
-        var tukhainTalbai = talbainJagsaalt.find(a => a.kod == x.talbainDugaar);
+        var tukhainTalbai = talbainJagsaalt.find(
+          (a) => a.kod == x.talbainDugaar
+        );
         console.log("tukhainTalbai", tukhainTalbai);
         x.davkhar = tukhainTalbai.davkhar;
         x.talbainNegjUne = tukhainTalbai.talbainNegjUne;
@@ -208,9 +303,10 @@ async function talbaiBaigaaEskhiigShalgaya(gereenuud, aldaaniiMsg, baiguullagiin
         x.talbainKhemjee = tukhainTalbai.talbainKhemjee;
         x.sariinTurees = tukhainTalbai.talbainNiitUne;
         x.talbainIdnuud = [x._id];
-        x.baritsaaAvakhDun = x.baritsaaAwakhKhugatsaa * tukhainTalbai.talbainNiitUne;
+        x.baritsaaAvakhDun =
+          x.baritsaaAwakhKhugatsaa * tukhainTalbai.talbainNiitUne;
       }
-    })
+    });
   }
   return aldaaniiMsg;
 }
@@ -241,23 +337,26 @@ exports.gereeniiZaaltTatya = asyncHandler(async (req, res, next) => {
       range: 1,
     });
     data.forEach((mur) => {
-      let object = new GereeniiZaalt();
+      let object = new GereeniiZaalt(req.body.tukhainBaaziinKholbolt)();
       object.kharagdakhDugaar =
         mur[usegTooruuKhurvuulekh(tolgoinObject.kharagdakhDugaar)];
       object.zaalt = mur[usegTooruuKhurvuulekh(tolgoinObject.zaalt)];
       object.khamaarakh = mur[usegTooruuKhurvuulekh(tolgoinObject.khamaarakh)];
-      object.baiguullagiinId = req.body.baiguullagiinId;;
+      object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
       jagsaalt.push(object);
     });
     var aldaaniiMsg = "";
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
-    GereeniiZaalt.insertMany(jagsaalt, function (err) {
-      if (err) {
-        next(err);
+    GereeniiZaalt(req.body.tukhainBaaziinKholbolt).insertMany(
+      jagsaalt,
+      function (err) {
+        if (err) {
+          next(err);
+        }
+        res.status(200).send("Amjilttai");
       }
-      res.status(200).send("Amjilttai");
-    });
+    );
   } catch (error) {
     next(error);
   }
@@ -268,34 +367,44 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     const workbook = xlsx.read(req.file.buffer);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
-    var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "talbai" });
-    var ObjectId = require('mongodb').ObjectId;
-    var barilga = await Baiguullaga.aggregate([
+    var segmentuud = await Segment(req.body.tukhainBaaziinKholbolt).find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      turul: "talbai",
+    });
+    var ObjectId = require("mongodb").ObjectId;
+    var barilga = await Baiguullaga(req.body.tukhainBaaziinKholbolt).aggregate([
       {
-        '$match': {
-          '_id': new ObjectId(req.body.baiguullagiinId)
-        }
-      }, {
-        '$unwind': {
-          'path': '$barilguud'
-        }
-      }, {
-        '$match': {
-          'barilguud._id': new ObjectId(req.body.barilgiinId)
-        }
-      }, {
-        '$project': {
-          'davkhar': '$barilguud.davkharuud.davkhar'
-        }
-      }
+        $match: {
+          _id: new ObjectId(req.body.baiguullagiinId),
+        },
+      },
+      {
+        $unwind: {
+          path: "$barilguud",
+        },
+      },
+      {
+        $match: {
+          "barilguud._id": new ObjectId(req.body.barilgiinId),
+        },
+      },
+      {
+        $project: {
+          davkhar: "$barilguud.davkharuud.davkhar",
+        },
+      },
     ]);
     console.log("barilga", barilga);
     var tolgoinObject = {};
     var muriinDugaar = 1;
-    if (!worksheet["A1"].v.includes("Давхар") || !worksheet["B1"].v.includes("Код") ||
-      !worksheet["C1"].v.includes("Талбайн хэмжээ") || !worksheet["D1"].v.includes("Талбайн нэгж үнэ") ||
-      !worksheet["E1"].v.includes("Талбайн нийт үнэ") || !worksheet["F1"].v.includes("Тайлбар")
-      || !worksheet["G1"].v.includes("Нийтийн талбай эсэх")
+    if (
+      !worksheet["A1"].v.includes("Давхар") ||
+      !worksheet["B1"].v.includes("Код") ||
+      !worksheet["C1"].v.includes("Талбайн хэмжээ") ||
+      !worksheet["D1"].v.includes("Талбайн нэгж үнэ") ||
+      !worksheet["E1"].v.includes("Талбайн нийт үнэ") ||
+      !worksheet["F1"].v.includes("Тайлбар") ||
+      !worksheet["G1"].v.includes("Нийтийн талбай эсэх")
     ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
@@ -321,9 +430,10 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
         else if (worksheet[cellAsString].v.includes("Нийтийн талбай эсэх"))
           tolgoinObject.niitiinTalbai = cellAsString[0];
         else if (segmentuud && segmentuud.length > 0) {
-          var segment = segmentuud.find(element => element.ner === worksheet[cellAsString].v);
-          if (segment)
-            tolgoinObject[segment.ner] = cellAsString[0];
+          var segment = segmentuud.find(
+            (element) => element.ner === worksheet[cellAsString].v
+          );
+          if (segment) tolgoinObject[segment.ner] = cellAsString[0];
         }
       }
     }
@@ -331,10 +441,10 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
-    var kodnuud = []
+    var kodnuud = [];
     var aldaaniiMsg = "";
     for await (const mur of data) {
-      let object = new Talbai();
+      let object = new Talbai(req.body.tukhainBaaziinKholbolt)();
       object.davkhar = mur[usegTooruuKhurvuulekh(tolgoinObject.davkhar)];
       object.talbainKhemjee =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)];
@@ -344,8 +454,9 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       object.talbainNiitUne =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainNiitUne)];
       object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
-      object.niitiinTalbaiEsekh = (mur[usegTooruuKhurvuulekh(tolgoinObject.niitiinTalbai)] == "Тийм");
-      object.baiguullagiinId = req.body.baiguullagiinId;;
+      object.niitiinTalbaiEsekh =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.niitiinTalbai)] == "Тийм";
+      object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
       object.tureesiinTulbur = object.talbainNiitUne;
       if (segmentuud && segmentuud.length > 0) {
@@ -354,40 +465,57 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
             if (object.segmentuud && object.segmentuud.length > 0) {
               object.segmentuud.push({
                 ner: segment.ner,
-                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
+                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])],
               });
-            }
-            else {
-              object.segmentuud = [{
-                ner: segment.ner,
-                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
-              }];
+            } else {
+              object.segmentuud = [
+                {
+                  ner: segment.ner,
+                  utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])],
+                },
+              ];
             }
           }
-        })
+        });
       }
-      console.log("object", object)
-      if (object.davkhar || object.talbainKhemjee || object.kod || object.talbainNegjUne || object.talbainNiitUne || object.tailbar) {
-        if (!object.davkhar || !barilga[0].davkhar.includes(object.davkhar) || !object.talbainKhemjee || !object.kod || !object.talbainNegjUne
-          || !object.talbainNiitUne) {
+      console.log("object", object);
+      if (
+        object.davkhar ||
+        object.talbainKhemjee ||
+        object.kod ||
+        object.talbainNegjUne ||
+        object.talbainNiitUne ||
+        object.tailbar
+      ) {
+        if (
+          !object.davkhar ||
+          !barilga[0].davkhar.includes(object.davkhar) ||
+          !object.talbainKhemjee ||
+          !object.kod ||
+          !object.talbainNegjUne ||
+          !object.talbainNiitUne
+        ) {
           aldaaniiMsg = aldaaniiMsg + muriinDugaar + " дугаар мөрөнд ";
-          if (!object.davkhar)
-            aldaaniiMsg = aldaaniiMsg + "Давхар "
+          if (!object.davkhar) aldaaniiMsg = aldaaniiMsg + "Давхар ";
           if (!object.talbainKhemjee)
-            aldaaniiMsg = aldaaniiMsg + "Талбайн хэмжээ "
-          if (!object.kod)
-            aldaaniiMsg = aldaaniiMsg + "Код "
+            aldaaniiMsg = aldaaniiMsg + "Талбайн хэмжээ ";
+          if (!object.kod) aldaaniiMsg = aldaaniiMsg + "Код ";
           if (!object.talbainNegjUne)
-            aldaaniiMsg = aldaaniiMsg + "Талбайн нэгж үнэ "
+            aldaaniiMsg = aldaaniiMsg + "Талбайн нэгж үнэ ";
           if (!object.talbainNiitUne)
-            aldaaniiMsg = aldaaniiMsg + "Талбайн нийт үнэ "
-          if (!object.davkhar || !object.talbainKhemjee || !object.kod || !object.talbainNegjUne || !object.talbainNiitUne)
-            aldaaniiMsg = aldaaniiMsg + "талбар хоосон ,<br/>"
+            aldaaniiMsg = aldaaniiMsg + "Талбайн нийт үнэ ";
+          if (
+            !object.davkhar ||
+            !object.talbainKhemjee ||
+            !object.kod ||
+            !object.talbainNegjUne ||
+            !object.talbainNiitUne
+          )
+            aldaaniiMsg = aldaaniiMsg + "талбар хоосон ,<br/>";
           if (!barilga[0].davkhar.includes(object.davkhar))
-            aldaaniiMsg = aldaaniiMsg + "давхарын утгыг буруу оруулсан ! <br/>"
-          aldaaniiMsg = aldaaniiMsg + "байна! <br/>"
-        }
-        else {
+            aldaaniiMsg = aldaaniiMsg + "давхарын утгыг буруу оруулсан ! <br/>";
+          aldaaniiMsg = aldaaniiMsg + "байна! <br/>";
+        } else {
           jagsaalt.push(object);
           kodnuud.push(object.kod);
         }
@@ -395,26 +523,39 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       muriinDugaar = muriinDugaar + 1;
     }
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
-    const toFindDuplicates = arry => arry.filter((item, index) => arry.indexOf(item) !== index)
+    const toFindDuplicates = (arry) =>
+      arry.filter((item, index) => arry.indexOf(item) !== index);
     var davkhardsanKod = toFindDuplicates(kodnuud);
-    console.log("davkhardsanKod", davkhardsanKod)
+    console.log("davkhardsanKod", davkhardsanKod);
     if (davkhardsanKod && davkhardsanKod.length > 0)
-      throw new aldaa("Дараах дугаартай талбайнууд давхардаж байна! " + davkhardsanKod.toString());
-    var talbainuud = await Talbai.find({ kod: { $in: kodnuud }, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId })
+      throw new aldaa(
+        "Дараах дугаартай талбайнууд давхардаж байна! " +
+          davkhardsanKod.toString()
+      );
+    var talbainuud = await Talbai(req.body.tukhainBaaziinKholbolt).find({
+      kod: { $in: kodnuud },
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+    });
     if (talbainuud && talbainuud.length > 0) {
       var talbainDugaaruud = [];
       for await (const talbai of talbainuud) {
-        talbainDugaaruud.push(talbai.kod)
+        talbainDugaaruud.push(talbai.kod);
       }
-      throw new aldaa("Дараах дугаартай талбайнууд бүртгэлтэй байна! " + talbainDugaaruud.toString());
-    }
-    else
-      Talbai.insertMany(jagsaalt, function (err) {
-        if (err) {
-          throw new Error(err);
+      throw new aldaa(
+        "Дараах дугаартай талбайнууд бүртгэлтэй байна! " +
+          talbainDugaaruud.toString()
+      );
+    } else
+      Talbai(req.body.tukhainBaaziinKholbolt).insertMany(
+        jagsaalt,
+        function (err) {
+          if (err) {
+            throw new Error(err);
+          }
+          res.status(200).send("Amjilttai");
         }
-        res.status(200).send("Amjilttai");
-      });
+      );
   } catch (error) {
     next(error);
   }
@@ -430,13 +571,12 @@ exports.gereeniiZagvarTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
-    if (!worksheet["Гэрээ"])
-      throw new Error("Буруу файл байна!");
+    if (!worksheet["Гэрээ"]) throw new Error("Буруу файл байна!");
     var zagvariinNer = worksheet["Гэрээ"].v;
-    const zagvar = new GereeniiZagvar();
+    const zagvar = new GereeniiZagvar(req.body.tukhainBaaziinKholbolt)();
     zagvar.ner = zagvariinNer;
     data.forEach((mur) => {
-      let object = new GereeniiZaalt();
+      let object = new GereeniiZaalt(req.body.tukhainBaaziinKholbolt)();
       object.kharagdakhDugaar = mur[0];
       object.zaalt = mur[1];
       object.khamaarakhKheseg = mur[2];
@@ -494,8 +634,11 @@ exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
 exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Талбай");
-  console.log("req.body.baiguullagiinId", req.body.baiguullagiinId)
-  var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "talbai" });
+  console.log("req.body.baiguullagiinId", req.body.baiguullagiinId);
+  var segmentuud = await Segment(req.body.tukhainBaaziinKholbolt).find({
+    baiguullagiinId: req.body.baiguullagiinId,
+    turul: "talbai",
+  });
   var baganuud = [
     {
       header: "Давхар",
@@ -534,40 +677,40 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
     },
   ];
   if (segmentuud && segmentuud.length > 0) {
-    segmentuud.forEach(x => {
+    segmentuud.forEach((x) => {
       baganuud.push({
         header: x.ner,
         key: x.ner,
         width: 20,
-      })
-    })
+      });
+    });
   }
-  worksheet.columns = baganuud
+  worksheet.columns = baganuud;
   if (segmentuud && segmentuud.length > 0) {
     var baganiiToo = 7;
-    segmentuud.forEach(x => {
+    segmentuud.forEach((x) => {
       var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-      console.log("baganiiUseg", baganiiUseg)
-      var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
-      console.log("bagana", bagana.toString())
+      console.log("baganiiUseg", baganiiUseg);
+      var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
+      console.log("bagana", bagana.toString());
       worksheet.dataValidations.add(bagana, {
-        type: 'list',
+        type: "list",
         allowBlank: false,
-        formulae: [`"${x.utguud.join(',')}"`],
+        formulae: [`"${x.utguud.join(",")}"`],
         showErrorMessage: true,
-        errorStyle: 'error',
-        error: 'Тохирох утгыг сонгоно уу!',
+        errorStyle: "error",
+        error: "Тохирох утгыг сонгоно уу!",
       });
       baganiiToo = baganiiToo + 1;
-    })
+    });
   }
   worksheet.dataValidations.add("G2:G9999", {
-    type: 'list',
+    type: "list",
     allowBlank: false,
     formulae: ['"Тийм,Үгүй"'],
     showErrorMessage: true,
-    errorStyle: 'error',
-    error: 'Тохирох утгыг сонгоно уу!',
+    errorStyle: "error",
+    error: "Тохирох утгыг сонгоно уу!",
   });
   res.setHeader(
     "Content-Type",
@@ -582,7 +725,10 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
 exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Иргэн");
-  var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "khariltsagch" });
+  var segmentuud = await Segment(req.body.tukhainBaaziinKholbolt).find({
+    baiguullagiinId: req.body.baiguullagiinId,
+    turul: "khariltsagch",
+  });
   console.log("segmentuud", segmentuud);
   var baganuud = [
     {
@@ -623,31 +769,31 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
   ];
   var baganiiToo = baganuud.length;
   if (segmentuud && segmentuud.length > 0) {
-    segmentuud.forEach(x => {
+    segmentuud.forEach((x) => {
       baganuud.push({
         header: x.ner,
         key: x.ner,
         width: 20,
-      })
-    })
+      });
+    });
   }
-  worksheet.columns = baganuud
+  worksheet.columns = baganuud;
   if (segmentuud && segmentuud.length > 0) {
-    segmentuud.forEach(x => {
+    segmentuud.forEach((x) => {
       var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-      console.log("baganiiUseg", baganiiUseg)
-      var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
-      console.log("bagana", bagana.toString())
+      console.log("baganiiUseg", baganiiUseg);
+      var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
+      console.log("bagana", bagana.toString());
       worksheet.dataValidations.add(bagana, {
-        type: 'list',
+        type: "list",
         allowBlank: false,
-        formulae: [`"${x.utguud.join(',')}"`],
+        formulae: [`"${x.utguud.join(",")}"`],
         showErrorMessage: true,
-        errorStyle: 'error',
-        error: 'Тохирох утгыг сонгоно уу!',
+        errorStyle: "error",
+        error: "Тохирох утгыг сонгоно уу!",
       });
       baganiiToo = baganiiToo + 1;
-    })
+    });
   }
 
   let worksheet1 = workbook.addWorksheet("ААН");
@@ -695,31 +841,31 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
   ];
   baganiiToo = baganuud.length;
   if (segmentuud && segmentuud.length > 0) {
-    segmentuud.forEach(x => {
+    segmentuud.forEach((x) => {
       baganuud.push({
         header: x.ner,
         key: x.ner,
         width: 20,
-      })
-    })
+      });
+    });
   }
   worksheet1.columns = baganuud;
   if (segmentuud && segmentuud.length > 0) {
-    segmentuud.forEach(x => {
+    segmentuud.forEach((x) => {
       var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-      console.log("baganiiUseg", baganiiUseg)
-      var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
-      console.log("bagana", bagana.toString())
+      console.log("baganiiUseg", baganiiUseg);
+      var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
+      console.log("bagana", bagana.toString());
       worksheet1.dataValidations.add(bagana, {
-        type: 'list',
+        type: "list",
         allowBlank: false,
-        formulae: [`"${x.utguud.join(',')}"`],
+        formulae: [`"${x.utguud.join(",")}"`],
         showErrorMessage: true,
-        errorStyle: 'error',
-        error: 'Тохирох утгыг сонгоно уу!',
+        errorStyle: "error",
+        error: "Тохирох утгыг сонгоно уу!",
       });
       baganiiToo = baganiiToo + 1;
-    })
+    });
   }
   res.setHeader(
     "Content-Type",
@@ -737,8 +883,15 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
 exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Гэрээ");
-  var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "geree" });
-  var zardluud = await AshiglaltiinZardluud.find({ baiguullagiinId: req.body.baiguullagiinId });
+  var segmentuud = await Segment(req.body.tukhainBaaziinKholbolt).find({
+    baiguullagiinId: req.body.baiguullagiinId,
+    turul: "geree",
+  });
+  var zardluud = await AshiglaltiinZardluud(
+    req.body.tukhainBaaziinKholbolt
+  ).find({
+    baiguullagiinId: req.body.baiguullagiinId,
+  });
   console.log("zardluud", zardluud);
   console.log("segmentuud", segmentuud);
   var baganuud = [
@@ -786,67 +939,67 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       header: "Авлага",
       key: "Авлага",
       width: 20,
-    }
+    },
   ];
 
   var baganiiToo = baganuud.length;
   if (segmentuud && segmentuud.length > 0) {
-    segmentuud.forEach(x => {
+    segmentuud.forEach((x) => {
       baganuud.push({
         header: x.ner,
         key: x.ner,
         width: 20,
-      })
-    })
+      });
+    });
   }
   if (zardluud && zardluud.length > 0) {
-    zardluud.forEach(x => {
+    zardluud.forEach((x) => {
       baganuud.push({
         header: x.ner,
         key: x.ner,
         width: 20,
-      })
-    })
+      });
+    });
   }
   console.log("baganuud", baganuud);
   worksheet.columns = baganuud;
   if (segmentuud && segmentuud.length > 0) {
-    segmentuud.forEach(x => {
+    segmentuud.forEach((x) => {
       if (x.utguud) {
         var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-        console.log("baganiiUseg", baganiiUseg)
-        var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
-        console.log("bagana", bagana.toString())
+        console.log("baganiiUseg", baganiiUseg);
+        var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
+        console.log("bagana", bagana.toString());
         worksheet.dataValidations.add(bagana, {
-          type: 'list',
+          type: "list",
           allowBlank: false,
-          formulae: [`"${x.utguud.join(',')}"`],
+          formulae: [`"${x.utguud.join(",")}"`],
           showErrorMessage: true,
-          errorStyle: 'error',
-          error: 'Тохирох утгыг сонгоно уу!',
+          errorStyle: "error",
+          error: "Тохирох утгыг сонгоно уу!",
         });
       }
       baganiiToo = baganiiToo + 1;
-    })
+    });
   }
   if (zardluud && zardluud.length > 0) {
-    zardluud.forEach(x => {
+    zardluud.forEach((x) => {
       if (x.turul != "төг") {
         var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-        console.log("baganiiUseg", baganiiUseg)
-        var bagana = baganiiUseg + '2:' + baganiiUseg + '9999'
-        console.log("bagana", bagana.toString())
+        console.log("baganiiUseg", baganiiUseg);
+        var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
+        console.log("bagana", bagana.toString());
         worksheet.dataValidations.add(bagana, {
-          type: 'list',
+          type: "list",
           allowBlank: false,
           formulae: ['"Авна,Авахгүй"'],
           showErrorMessage: true,
-          errorStyle: 'error',
-          error: 'Тохирох утгыг сонгоно уу!',
+          errorStyle: "error",
+          error: "Тохирох утгыг сонгоно уу!",
         });
       }
       baganiiToo = baganiiToo + 1;
-    })
+    });
   }
   res.setHeader(
     "Content-Type",
@@ -865,29 +1018,37 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
   try {
     const workbook = xlsx.read(req.file.buffer);
     var zagvariinId;
-    if (req.body.zagvariinId)
-      zagvariinId = req.body.zagvariinId;
-    else
-      throw new aldaa("Загвараа сонгоно уу!")
-
+    if (req.body.zagvariinId) zagvariinId = req.body.zagvariinId;
+    else throw new aldaa("Загвараа сонгоно уу!");
     var ognoo;
-    var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "geree" });
-    var zardluud = await AshiglaltiinZardluud.find({ baiguullagiinId: req.body.baiguullagiinId });
+    var segmentuud = await Segment(req.body.tukhainBaaziinKholbolt).find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      turul: "geree",
+    });
+    var zardluud = await AshiglaltiinZardluud(
+      req.body.tukhainBaaziinKholbolt
+    ).find({
+      baiguullagiinId: req.body.baiguullagiinId,
+    });
     console.log("zardluud", zardluud);
-    if (req.body.ognoo)
-      ognoo = req.body.ognoo;
-    else
-      throw new aldaa("Огноо сонгоно уу!")
-    if (!req.body.barilgiinId)
-      throw new aldaa("Барилгаа сонгоно уу!")
+    if (req.body.ognoo) ognoo = req.body.ognoo;
+    else throw new aldaa("Огноо сонгоно уу!");
+    if (!req.body.barilgiinId) throw new aldaa("Барилгаа сонгоно уу!");
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const jagsaalt = [];
     var tolgoinObject = {};
-    var baritsaaAvakhSar = await Baiguullaga.findById({ _id: req.body.baiguullagiinId }).select({ "tokhirgoo.baritsaaAvakhSar": 1 });
-    if (baritsaaAvakhSar && baritsaaAvakhSar.tokhirgoo && baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar)
-      baritsaaAvakhSar = baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar
-    else
-      baritsaaAvakhSar = 0
+    var baritsaaAvakhSar = await Baiguullaga(req.body.tukhainBaaziinKholbolt)
+      .findById({
+        _id: req.body.baiguullagiinId,
+      })
+      .select({ "tokhirgoo.baritsaaAvakhSar": 1 });
+    if (
+      baritsaaAvakhSar &&
+      baritsaaAvakhSar.tokhirgoo &&
+      baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar
+    )
+      baritsaaAvakhSar = baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar;
+    else baritsaaAvakhSar = 0;
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
       if (
@@ -898,7 +1059,9 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         try {
           if (worksheet[cellAsString].v.includes("Гэрээний дугаар"))
             tolgoinObject.gereeniiDugaar = cellAsString[0];
-          else if (worksheet[cellAsString].v.includes("Регистр/Бүртгэлийн дугаар"))
+          else if (
+            worksheet[cellAsString].v.includes("Регистр/Бүртгэлийн дугаар")
+          )
             tolgoinObject.register = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Эхлэх огноо"))
             tolgoinObject.gereeniiOgnoo = cellAsString[0];
@@ -910,25 +1073,30 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             tolgoinObject.talbainDugaar = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Барьцаа авах хугацаа"))
             tolgoinObject.baritsaaAwakhKhugatsaa = cellAsString[0];
-          else if (worksheet[cellAsString].v.includes("Барьцаа байршуулах хугацаа"))
+          else if (
+            worksheet[cellAsString].v.includes("Барьцаа байршуулах хугацаа")
+          )
             tolgoinObject.baritsaaBairshuulakhKhugatsaa = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Авлага"))
             tolgoinObject.avlaga = cellAsString[0];
-          else if ((segmentuud && segmentuud.length > 0) || (zardluud && zardluud.length > 0)) {
+          else if (
+            (segmentuud && segmentuud.length > 0) ||
+            (zardluud && zardluud.length > 0)
+          ) {
             if (segmentuud && segmentuud.length > 0) {
-              var segment = segmentuud.find(element => element.ner === worksheet[cellAsString].v);
-              if (segment)
-                tolgoinObject[segment.ner] = cellAsString[0];
+              var segment = segmentuud.find(
+                (element) => element.ner === worksheet[cellAsString].v
+              );
+              if (segment) tolgoinObject[segment.ner] = cellAsString[0];
             }
             if (zardluud && zardluud.length > 0) {
-              var zardal = zardluud.find(element => element.ner === worksheet[cellAsString].v);
-              if (zardal)
-                tolgoinObject[zardal.ner] = cellAsString[0];
+              var zardal = zardluud.find(
+                (element) => element.ner === worksheet[cellAsString].v
+              );
+              if (zardal) tolgoinObject[zardal.ner] = cellAsString[0];
             }
           }
-
-        }
-        catch (err) {
+        } catch (err) {
           throw new aldaa("Буруу файл байна! " + err);
         }
       }
@@ -943,29 +1111,44 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     try {
       data.forEach((mur) => {
         muriinDugaar++;
-        let object = new Geree();
-        object.gereeniiDugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiDugaar)];
+        let object = new Geree(req.body.tukhainBaaziinKholbolt)();
+        object.gereeniiDugaar =
+          mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiDugaar)];
         object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
-        object.gereeniiOgnoo = new ExcelDateToJSDate(mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiOgnoo)]);
+        object.gereeniiOgnoo = new ExcelDateToJSDate(
+          mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiOgnoo)]
+        );
         object.khugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.khugatsaa)];
         var ekhlekhOgnoo = new Date(object.gereeniiOgnoo);
-        object.duusakhOgnoo = new Date(ekhlekhOgnoo.setMonth(ekhlekhOgnoo.getMonth() + object.khugatsaa));;
-        object.tulukhUdur = [mur[usegTooruuKhurvuulekh(tolgoinObject.tulukhUdur)]];
-        object.talbainDugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.talbainDugaar)];
-        object.baritsaaAwakhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaAwakhKhugatsaa)];
+        object.duusakhOgnoo = new Date(
+          ekhlekhOgnoo.setMonth(ekhlekhOgnoo.getMonth() + object.khugatsaa)
+        );
+        object.tulukhUdur = [
+          mur[usegTooruuKhurvuulekh(tolgoinObject.tulukhUdur)],
+        ];
+        object.talbainDugaar =
+          mur[usegTooruuKhurvuulekh(tolgoinObject.talbainDugaar)];
+        object.baritsaaAwakhKhugatsaa =
+          mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaAwakhKhugatsaa)];
         if (!object.baritsaaAwakhKhugatsaa) object.baritsaaAwakhKhugatsaa = 0;
-        object.baritsaaBairshuulakhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaBairshuulakhKhugatsaa)];
+        object.baritsaaBairshuulakhKhugatsaa =
+          mur[
+            usegTooruuKhurvuulekh(tolgoinObject.baritsaaBairshuulakhKhugatsaa)
+          ];
         object.uldegdel = mur[usegTooruuKhurvuulekh(tolgoinObject.avlaga)];
-        object.daraagiinTulukhOgnoo = moment(ognoo).add(1, 'month').set('date', object.tulukhUdur);
+        object.daraagiinTulukhOgnoo = moment(ognoo)
+          .add(1, "month")
+          .set("date", object.tulukhUdur);
         object.baritsaaAvakhKhugatsaa = baritsaaAvakhSar;
         object.avlaga = {
           guilgeenuud: [
             {
               ognoo,
               tulukhDun: object.uldegdel,
-              undsenDun: object.uldegdel
-            }]
-        }
+              undsenDun: object.uldegdel,
+            },
+          ],
+        };
         object.gereeniiZagvariinId = zagvariinId;
         object.baiguullagiinId = req.body.baiguullagiinId;
         object.barilgiinId = req.body.barilgiinId;
@@ -975,124 +1158,179 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
               if (object.segmentuud && object.segmentuud.length > 0) {
                 object.segmentuud.push({
                   ner: segment.ner,
-                  utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
+                  utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])],
                 });
-              }
-              else {
-                object.segmentuud = [{
-                  ner: segment.ner,
-                  utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
-                }];
+              } else {
+                object.segmentuud = [
+                  {
+                    ner: segment.ner,
+                    utga: mur[
+                      usegTooruuKhurvuulekh(tolgoinObject[segment.ner])
+                    ],
+                  },
+                ];
               }
             }
-          })
+          });
         }
 
         if (zardluud && zardluud.length > 0) {
           zardluud.forEach((zardal) => {
             if (tolgoinObject.hasOwnProperty(zardal.ner)) {
-              if (mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] != "Авахгүй" || mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] > 0) {
+              if (
+                mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] !=
+                  "Авахгүй" ||
+                mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] > 0
+              ) {
                 if (object.zardluud && object.zardluud.length > 0) {
                   object.zardluud.push({
                     ner: zardal.ner,
-                    dun: isNumeric(mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]) ? mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] : 0
+                    dun: isNumeric(
+                      mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]
+                    )
+                      ? mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]
+                      : 0,
                   });
-                }
-                else {
-                  object.zardluud = [{
-                    ner: zardal.ner,
-                    dun: isNumeric(mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]) ? mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] : 0
-                  }];
+                } else {
+                  object.zardluud = [
+                    {
+                      ner: zardal.ner,
+                      dun: isNumeric(
+                        mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]
+                      )
+                        ? mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]
+                        : 0,
+                    },
+                  ];
                 }
               }
             }
-          })
+          });
         }
         console.log("tulukhUdur", object.tulukhUdur);
-        if (!object.register || !object.gereeniiOgnoo || !object.khugatsaa || !object.talbainDugaar
-          || object.gereeniiOgnoo < Date.parse("2010-01-01") || !object.tulukhUdur || !isNumeric(object.tulukhUdur[0])) {
+        if (
+          !object.register ||
+          !object.gereeniiOgnoo ||
+          !object.khugatsaa ||
+          !object.talbainDugaar ||
+          object.gereeniiOgnoo < Date.parse("2010-01-01") ||
+          !object.tulukhUdur ||
+          !isNumeric(object.tulukhUdur[0])
+        ) {
           aldaaniiMsg = aldaaniiMsg + muriinDugaar + " дугаар мөрөнд ";
-          if (!object.register)
-            aldaaniiMsg = aldaaniiMsg + "Регистр "
+          if (!object.register) aldaaniiMsg = aldaaniiMsg + "Регистр ";
           if (!object.gereeniiOgnoo)
-            aldaaniiMsg = aldaaniiMsg + "Гэрээний огноо "
-          if (!object.khugatsaa)
-            aldaaniiMsg = aldaaniiMsg + "Хугацаа "
-          if (!object.talbainDugaar)
-            aldaaniiMsg = aldaaniiMsg + "Талбайн код "
-          if (!object.register || !object.gereeniiOgnoo || !object.khugatsaa || !object.talbainDugaar)
-            aldaaniiMsg = aldaaniiMsg + "талбар хоосон "
+            aldaaniiMsg = aldaaniiMsg + "Гэрээний огноо ";
+          if (!object.khugatsaa) aldaaniiMsg = aldaaniiMsg + "Хугацаа ";
+          if (!object.talbainDugaar) aldaaniiMsg = aldaaniiMsg + "Талбайн код ";
+          if (
+            !object.register ||
+            !object.gereeniiOgnoo ||
+            !object.khugatsaa ||
+            !object.talbainDugaar
+          )
+            aldaaniiMsg = aldaaniiMsg + "талбар хоосон ";
           if (object.gereeniiOgnoo < Date.parse("2010-01-01"))
-            aldaaniiMsg = aldaaniiMsg + "Гэрээний огноо буруу "
+            aldaaniiMsg = aldaaniiMsg + "Гэрээний огноо буруу ";
           if (!object.tulukhUdur || !isNumeric(object.tulukhUdur[0]))
-            aldaaniiMsg = aldaaniiMsg + "Төлөх өдөр буруу "
-          aldaaniiMsg = aldaaniiMsg + "байна! <br/>"
-        }
-        else
-          jagsaalt.push(object);
+            aldaaniiMsg = aldaaniiMsg + "Төлөх өдөр буруу ";
+          aldaaniiMsg = aldaaniiMsg + "байна! <br/>";
+        } else jagsaalt.push(object);
       });
+    } catch (err) {
+      throw new aldaa(
+        aldaaniiMsg + muriinDugaar + " дугаар мөрөнд алдаа гарлаа" + err
+      );
     }
-    catch (err) {
-      throw new aldaa(aldaaniiMsg + muriinDugaar + " дугаар мөрөнд алдаа гарлаа" + err);
-    }
-    if (jagsaalt.length == 0)
-      throw new Error("Хоосон файл байна!")
-    aldaaniiMsg = await gereeBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId);
-    aldaaniiMsg = await khariltsagchBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId, req.body.barilgiinId);
-    aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId, req.body.barilgiinId);
+    if (jagsaalt.length == 0) throw new Error("Хоосон файл байна!");
+    aldaaniiMsg = await gereeBaigaaEskhiigShalgaya(
+      jagsaalt,
+      aldaaniiMsg,
+      req.body.baiguullagiinId,
+      req.body.tukhainBaaziinKholbolt
+    );
+    aldaaniiMsg = await khariltsagchBaigaaEskhiigShalgaya(
+      jagsaalt,
+      aldaaniiMsg,
+      req.body.baiguullagiinId,
+      req.body.barilgiinId,
+      req.body.tukhainBaaziinKholbolt
+    );
+    aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(
+      jagsaalt,
+      aldaaniiMsg,
+      req.body.baiguullagiinId,
+      req.body.barilgiinId,
+      req.body.tukhainBaaziinKholbolt
+    );
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
-    jagsaalt.forEach(x => {
-      var data = []
-      new Array(x.khugatsaa || 0).fill('').map((mur, index) => {
+    jagsaalt.forEach((x) => {
+      var data = [];
+      new Array(x.khugatsaa || 0).fill("").map((mur, index) => {
         x.tulukhUdur.forEach((udur) => {
-          if (moment(ognoo).add(index + 1, 'month').set('date', udur) <= moment(x.duusakhOgnoo)) {
+          if (
+            moment(ognoo)
+              .add(index + 1, "month")
+              .set("date", udur) <= moment(x.duusakhOgnoo)
+          ) {
             data.push({
-              ognoo: moment(ognoo).add(index + 1, 'month').set('date', udur),
+              ognoo: moment(ognoo)
+                .add(index + 1, "month")
+                .set("date", udur),
               khyamdral: 0,
               undsenDun: x.talbainNiitUne,
-              tulukhDun: x.talbainNiitUne
-            })
+              tulukhDun: x.talbainNiitUne,
+            });
             if (x.zardluud && x.zardluud.length > 0)
               x.zardluud.forEach((zardal) => {
                 if (zardal.dun > 0)
                   data.push({
-                    ognoo: moment(ognoo).add(index + 1, 'month').set('date', udur),
+                    ognoo: moment(ognoo)
+                      .add(index + 1, "month")
+                      .set("date", udur),
                     turul: "avlaga",
                     tailbar: zardal.ner,
-                    tulukhDun: zardal.dun
-                  })
+                    tulukhDun: zardal.dun,
+                  });
               });
           }
-        })
-      })
+        });
+      });
       x.avlaga.guilgeenuud = [...x.avlaga.guilgeenuud, ...data];
       if (baritsaaAvakhSar > 0) {
-        x.avlaga.guilgeenuud = [...x.avlaga.guilgeenuud, {
-          turul: "baritsaa",
-          ognoo: x.gereeniiOgnoo,
-          khyamdral: 0,
-          undsenDun: x.talbainNiitUne * baritsaaAvakhSar,
-          tulukhDun: x.talbainNiitUne * baritsaaAvakhSar
-        }];
+        x.avlaga.guilgeenuud = [
+          ...x.avlaga.guilgeenuud,
+          {
+            turul: "baritsaa",
+            ognoo: x.gereeniiOgnoo,
+            khyamdral: 0,
+            undsenDun: x.talbainNiitUne * baritsaaAvakhSar,
+            tulukhDun: x.talbainNiitUne * baritsaaAvakhSar,
+          },
+        ];
       }
-    })
-    console.log("jagsaalt", jagsaalt)
-    Geree.insertMany(jagsaalt, function (err) {
+    });
+    console.log("jagsaalt", jagsaalt);
+    Geree(req.body.tukhainBaaziinKholbolt).insertMany(jagsaalt, function (err) {
       if (err) {
         next(err);
       }
-      var registeruud = []
-      var talbainKoduud = []
+      var registeruud = [];
+      var talbainKoduud = [];
       jagsaalt.forEach((a) => {
-        registeruud.push(a.register)
+        registeruud.push(a.register);
         if (a.talbainDugaar.includes(",")) {
           talbainKoduud = [...talbainKoduud, ...a.talbainDugaar.split(",")];
-        }
-        else
-          talbainKoduud.push(a.talbainDugaar);
+        } else talbainKoduud.push(a.talbainDugaar);
       });
-      Geree.updateMany({ register: { $in: registeruud }, barilgiinId: req.body.barilgiinId }, { $set: { idevkhiteiEsekh: true } })
-      Talbai.updateMany({ kod: { $in: talbainKoduud }, barilgiinId: req.body.barilgiinId }, { $set: { idevkhiteiEsekh: true } })
+      Geree(req.body.tukhainBaaziinKholbolt).updateMany(
+        { register: { $in: registeruud }, barilgiinId: req.body.barilgiinId },
+        { $set: { idevkhiteiEsekh: true } }
+      );
+      Talbai(req.body.tukhainBaaziinKholbolt).updateMany(
+        { kod: { $in: talbainKoduud }, barilgiinId: req.body.barilgiinId },
+        { $set: { idevkhiteiEsekh: true } }
+      );
       res.status(200).send("Amjilttai");
     });
   } catch (error) {
@@ -1113,7 +1351,7 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       header: "Машины дугаар",
       key: "Машины дугаар",
       headerRow: true,
-      width: 30
+      width: 30,
     },
     {
       header: "Эзэмшигчийн нэр",
@@ -1132,7 +1370,7 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       key: "Төрөл",
       headerRow: true,
       width: 20,
-    }
+    },
   ];
   /*['A1', 'B1', 'C1', 'D1'].map(key => {
     worksheet.getCell(key).fill = {
@@ -1141,13 +1379,13 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       bgColor: { argb: 'FF008000' }
     };
   });*/
-  worksheet.dataValidations.add('D2:D9999', {
-    type: 'list',
+  worksheet.dataValidations.add("D2:D9999", {
+    type: "list",
     allowBlank: false,
     formulae: ['"Гэрээт,Түрээслэгч,Дотоод"'],
     showErrorMessage: true,
-    errorStyle: 'error',
-    error: 'Тохирох утгыг сонгоно уу!',
+    errorStyle: "error",
+    error: "Тохирох утгыг сонгоно уу!",
   });
 
   res.setHeader(
@@ -1171,13 +1409,21 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     const mashinSheet = workbook.Sheets[workbook.SheetNames[0]];
     var jagsaalt = [];
     var tolgoinObject = {};
-    if (!mashinSheet["A1"].v.includes("Машины дугаар") || !mashinSheet["C1"].v.includes("Эзэмшигчийн утас") ||
-      !mashinSheet["B1"].v.includes("Эзэмшигчийн нэр") || !mashinSheet["D1"].v.includes("Төрөл")) {
+    if (
+      !mashinSheet["A1"].v.includes("Машины дугаар") ||
+      !mashinSheet["C1"].v.includes("Эзэмшигчийн утас") ||
+      !mashinSheet["B1"].v.includes("Эзэмшигчийн нэр") ||
+      !mashinSheet["D1"].v.includes("Төрөл")
+    ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
     for (let cell in mashinSheet) {
       var cellAsString = cell.toString();
-      if (cellAsString[1] === "1" && cellAsString.length == 2 && !!mashinSheet[cellAsString].v) {
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!mashinSheet[cellAsString].v
+      ) {
         if (mashinSheet[cellAsString].v.includes("Машины дугаар"))
           tolgoinObject.dugaar = cellAsString[0];
         else if (mashinSheet[cellAsString].v.includes("Эзэмшигчийн нэр"))
@@ -1197,7 +1443,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     console.log(tolgoinObject);
     data.forEach((mur) => {
       muriinDugaar++;
-      let object = new Mashin();
+      let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar)];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ezemshigchiinUtas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
@@ -1205,29 +1451,32 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
       if (!object.dugaar || !object.turul || !object.ezemshigchiinUtas) {
-        aldaaniiMsg = aldaaniiMsg + "Алдаа! " + muriinDugaar + " дугаар мөрөнд ";
-        if (!object.dugaar)
-          aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', "
-        if (!object.turul)
-          aldaaniiMsg = aldaaniiMsg + "'Төрөл', "
-        if (!object.ezemshigchiinUtas)
-          aldaaniiMsg = aldaaniiMsg + "'Утас', "
-        aldaaniiMsg = aldaaniiMsg.slice(0, -2)
-        aldaaniiMsg = aldaaniiMsg + " "
-        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
-      }
-      else
-        jagsaalt.push(object);
+        aldaaniiMsg =
+          aldaaniiMsg + "Алдаа! " + muriinDugaar + " дугаар мөрөнд ";
+        if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
+        if (!object.turul) aldaaniiMsg = aldaaniiMsg + "'Төрөл', ";
+        if (!object.ezemshigchiinUtas) aldaaniiMsg = aldaaniiMsg + "'Утас', ";
+        aldaaniiMsg = aldaaniiMsg.slice(0, -2);
+        aldaaniiMsg = aldaaniiMsg + " ";
+        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
+      } else jagsaalt.push(object);
     });
     if (jagsaalt)
-      jagsaalt = await gereeBaivalBugluy(jagsaalt, req.body.baiguullagiinId);
+      jagsaalt = await gereeBaivalBugluy(
+        jagsaalt,
+        req.body.baiguullagiinId,
+        req.body.tukhainBaaziinKholbolt
+      );
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
-    Mashin.insertMany(jagsaalt, function (err) {
-      if (err) {
-        next(err);
+    Mashin(req.body.tukhainBaaziinKholbolt).insertMany(
+      jagsaalt,
+      function (err) {
+        if (err) {
+          next(err);
+        }
+        res.status(200).send("Amjilttai");
       }
-      res.status(200).send("Amjilttai");
-    });
+    );
   } catch (error) {
     next(error);
   }
@@ -1240,19 +1489,34 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const irgenSheet = workbook.Sheets[workbook.SheetNames[0]];
     const aanSheet = workbook.Sheets[workbook.SheetNames[1]];
-    var segmentuud = await Segment.find({ baiguullagiinId: req.body.baiguullagiinId, turul: "khariltsagch" });
+    var segmentuud = await Segment(req.body.tukhainBaaziinKholbolt).find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      turul: "khariltsagch",
+    });
     const jagsaalt = [];
     var tolgoinObject = {};
     var muriinDugaar = 1;
-    if (!irgenSheet["A1"].v.includes("Код") || !irgenSheet["C1"].v.includes("Нэр") ||
-      !irgenSheet["B1"].v.includes("Овог") || !irgenSheet["D1"].v.includes("Регистр") ||
-      !irgenSheet["E1"].v.includes("Утас") || !irgenSheet["F1"].v.includes("Мэйл") || !irgenSheet["G1"].v.includes("Хаяг")) {
+    if (
+      !irgenSheet["A1"].v.includes("Код") ||
+      !irgenSheet["C1"].v.includes("Нэр") ||
+      !irgenSheet["B1"].v.includes("Овог") ||
+      !irgenSheet["D1"].v.includes("Регистр") ||
+      !irgenSheet["E1"].v.includes("Утас") ||
+      !irgenSheet["F1"].v.includes("Мэйл") ||
+      !irgenSheet["G1"].v.includes("Хаяг")
+    ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
-    if (!aanSheet["A1"].v.includes("Код") || !aanSheet["C1"].v.includes("Улсын бүртгэлийн дугаар") ||
-      !aanSheet["B1"].v.includes("Нэр") || !aanSheet["D1"].v.includes("Захирлын овог") ||
-      !aanSheet["E1"].v.includes("Захирлын нэр") || !aanSheet["F1"].v.includes("Мэйл") ||
-      !aanSheet["G1"].v.includes("Утас") || !aanSheet["H1"].v.includes("Хаяг")) {
+    if (
+      !aanSheet["A1"].v.includes("Код") ||
+      !aanSheet["C1"].v.includes("Улсын бүртгэлийн дугаар") ||
+      !aanSheet["B1"].v.includes("Нэр") ||
+      !aanSheet["D1"].v.includes("Захирлын овог") ||
+      !aanSheet["E1"].v.includes("Захирлын нэр") ||
+      !aanSheet["F1"].v.includes("Мэйл") ||
+      !aanSheet["G1"].v.includes("Утас") ||
+      !aanSheet["H1"].v.includes("Хаяг")
+    ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
     for (let cell in irgenSheet) {
@@ -1277,9 +1541,10 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
         else if (irgenSheet[cellAsString].v.includes("Хаяг"))
           tolgoinObject.khayag = cellAsString[0];
         else if (segmentuud && segmentuud.length > 0) {
-          var segment = segmentuud.find(element => element.ner === irgenSheet[cellAsString].v);
-          if (segment)
-            tolgoinObject[segment.ner] = cellAsString[0];
+          var segment = segmentuud.find(
+            (element) => element.ner === irgenSheet[cellAsString].v
+          );
+          if (segment) tolgoinObject[segment.ner] = cellAsString[0];
         }
       }
     }
@@ -1290,7 +1555,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
     var aldaaniiMsg = "";
     data.forEach((mur) => {
       muriinDugaar++;
-      let object = new Khariltsagch();
+      let object = new Khariltsagch(req.body.tukhainBaaziinKholbolt)();
       object.id = mur[usegTooruuKhurvuulekh(tolgoinObject.id)];
       object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ovog = mur[usegTooruuKhurvuulekh(tolgoinObject.ovog)];
@@ -1307,35 +1572,41 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             if (object.segmentuud && object.segmentuud.length > 0) {
               object.segmentuud.push({
                 ner: segment.ner,
-                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
+                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])],
               });
-            }
-            else {
-              object.segmentuud = [{
-                ner: segment.ner,
-                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
-              }];
+            } else {
+              object.segmentuud = [
+                {
+                  ner: segment.ner,
+                  utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])],
+                },
+              ];
             }
           }
-        })
+        });
       }
-      if (object.id || object.ner || object.register || object.ovog || object.utas || object.mail || object.khayag || object.mail) {
+      if (
+        object.id ||
+        object.ner ||
+        object.register ||
+        object.ovog ||
+        object.utas ||
+        object.mail ||
+        object.khayag ||
+        object.mail
+      ) {
         if (!object.id || !object.ner || !object.register || !object.utas) {
-          aldaaniiMsg = aldaaniiMsg + "Иргэн sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
-          if (!object.id)
-            aldaaniiMsg = aldaaniiMsg + "'Код', "
-          if (!object.ner)
-            aldaaniiMsg = aldaaniiMsg + "'Нэр', "
-          if (!object.register)
-            aldaaniiMsg = aldaaniiMsg + "'Регистр', "
+          aldaaniiMsg =
+            aldaaniiMsg + "Иргэн sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
+          if (!object.id) aldaaniiMsg = aldaaniiMsg + "'Код', ";
+          if (!object.ner) aldaaniiMsg = aldaaniiMsg + "'Нэр', ";
+          if (!object.register) aldaaniiMsg = aldaaniiMsg + "'Регистр', ";
           if (!object.utas || !object.utas[0])
-            aldaaniiMsg = aldaaniiMsg + "'Утас', "
-          aldaaniiMsg = aldaaniiMsg.slice(0, -2)
-          aldaaniiMsg = aldaaniiMsg + " "
-          aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
-        }
-        else
-          jagsaalt.push(object);
+            aldaaniiMsg = aldaaniiMsg + "'Утас', ";
+          aldaaniiMsg = aldaaniiMsg.slice(0, -2);
+          aldaaniiMsg = aldaaniiMsg + " ";
+          aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
+        } else jagsaalt.push(object);
       }
     });
 
@@ -1365,9 +1636,10 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
         else if (aanSheet[cellAsString].v.includes("Хаяг"))
           tolgoinObject.khayag = cellAsString[0];
         else if (segmentuud && segmentuud.length > 0) {
-          var segment = segmentuud.find(element => element.ner === aanSheet[cellAsString].v);
-          if (segment)
-            tolgoinObject[segment.ner] = cellAsString[0];
+          var segment = segmentuud.find(
+            (element) => element.ner === aanSheet[cellAsString].v
+          );
+          if (segment) tolgoinObject[segment.ner] = cellAsString[0];
         }
       }
     }
@@ -1377,13 +1649,15 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
     });
     data.forEach((mur) => {
       muriinDugaar++;
-      let object = new Khariltsagch();
+      let object = new Khariltsagch(req.body.tukhainBaaziinKholbolt)();
       object.id = mur[usegTooruuKhurvuulekh(tolgoinObject.id)];
       object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ovog = mur[usegTooruuKhurvuulekh(tolgoinObject.ovog)];
       object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
-      object.zakhirliinOvog = mur[usegTooruuKhurvuulekh(tolgoinObject.zakhirliinOvog)];
-      object.zakhirliinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.zakhirliinNer)];
+      object.zakhirliinOvog =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.zakhirliinOvog)];
+      object.zakhirliinNer =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.zakhirliinNer)];
       object.utas = [mur[usegTooruuKhurvuulekh(tolgoinObject.utas)]];
       object.mail = mur[usegTooruuKhurvuulekh(tolgoinObject.mail)];
       object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];
@@ -1396,46 +1670,62 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             if (object.segmentuud && object.segmentuud.length > 0) {
               object.segmentuud.push({
                 ner: segment.ner,
-                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
+                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])],
               });
-            }
-            else {
-              object.segmentuud = [{
-                ner: segment.ner,
-                utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])]
-              }];
+            } else {
+              object.segmentuud = [
+                {
+                  ner: segment.ner,
+                  utga: mur[usegTooruuKhurvuulekh(tolgoinObject[segment.ner])],
+                },
+              ];
             }
           }
-        })
+        });
       }
-      if (object.id || object.ner || object.register || object.zakhirliinOvog || object.utas || object.zakhirliinNer || object.khayag || object.mail) {
+      if (
+        object.id ||
+        object.ner ||
+        object.register ||
+        object.zakhirliinOvog ||
+        object.utas ||
+        object.zakhirliinNer ||
+        object.khayag ||
+        object.mail
+      ) {
         if (!object.id || !object.ner || !object.register || !object.utas) {
-          aldaaniiMsg = aldaaniiMsg + "ААН sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
-          if (!object.id)
-            aldaaniiMsg = aldaaniiMsg + "'Код', "
-          if (!object.ner)
-            aldaaniiMsg = aldaaniiMsg + "'Нэр', "
+          aldaaniiMsg =
+            aldaaniiMsg + "ААН sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
+          if (!object.id) aldaaniiMsg = aldaaniiMsg + "'Код', ";
+          if (!object.ner) aldaaniiMsg = aldaaniiMsg + "'Нэр', ";
           if (!object.register)
-            aldaaniiMsg = aldaaniiMsg + "'Улсын бүртгэлийн дугаар', "
+            aldaaniiMsg = aldaaniiMsg + "'Улсын бүртгэлийн дугаар', ";
           if (!object.utas || !object.utas[0])
-            aldaaniiMsg = aldaaniiMsg + "'Утас', "
+            aldaaniiMsg = aldaaniiMsg + "'Утас', ";
           console.log("object", object);
-          aldaaniiMsg = aldaaniiMsg.slice(0, -2)
-          aldaaniiMsg = aldaaniiMsg + " "
-          aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>"
-        }
-        else
-          jagsaalt.push(object);
+          aldaaniiMsg = aldaaniiMsg.slice(0, -2);
+          aldaaniiMsg = aldaaniiMsg + " ";
+          aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
+        } else jagsaalt.push(object);
       }
     });
-    aldaaniiMsg = await khariltsagchBaikhguigShalgaya(jagsaalt, aldaaniiMsg, req.body.baiguullagiinId, req.body.barilgiinId);
+    aldaaniiMsg = await khariltsagchBaikhguigShalgaya(
+      jagsaalt,
+      aldaaniiMsg,
+      req.body.baiguullagiinId,
+      req.body.barilgiinId,
+      req.body.tukhainBaaziinKholbolt
+    );
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
-    Khariltsagch.insertMany(jagsaalt, function (err) {
-      if (err) {
-        next(err);
+    Khariltsagch(req.body.tukhainBaaziinKholbolt).insertMany(
+      jagsaalt,
+      function (err) {
+        if (err) {
+          next(err);
+        }
+        res.status(200).send("Amjilttai");
       }
-      res.status(200).send("Amjilttai");
-    });
+    );
   } catch (error) {
     next(error);
   }

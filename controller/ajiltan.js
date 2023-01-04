@@ -11,7 +11,7 @@ const axios = require("axios");
 const fs = require("fs");
 const useragent = require("express-useragent");
 const http = require("http");
-const { kholbolt } = require("zevback");
+const { db } = require("zevback");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get(
@@ -50,10 +50,8 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
-  const kholboltuud = kholbolt.getKholboltuud();
-  console.log("kholboltuud1", kholboltuud);
-  kholboltuud.find((a) => a.baiguullagiinId == tokenObject.baiguullagiinId);
-  const ajiltan = await Ajiltan(req.body.tukhainBaaziinKholbolt)
+  console.log("db.erunkhiiKholbolt", db.erunkhiiKholbolt);
+  const ajiltan = await Ajiltan(db.erunkhiiKholbolt)
     .findOne()
     .select("+nuutsUg")
     .where("nevtrekhNer")
@@ -64,7 +62,9 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   if (!ajiltan) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
   var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
   if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-  var baiguullaga = await Baiguullaga.findById(ajiltan.baiguullagiinId);
+  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+    ajiltan.baiguullagiinId
+  );
   let duusakhOgnoo = null;
   var butsaakhObject = {
     result: ajiltan,
@@ -83,7 +83,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           butsaakhObject.token = jwt;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
-          var tuukh = new NevtreltiinTuukh(req.body.tukhainBaaziinKholbolt);
+          var tuukh = new NevtreltiinTuukh(db.erunkhiiKholbolt);
           tuukh.ajiltniiId = ajiltan._id;
           tuukh.ajiltniiNer = ajiltan.ner;
           tuukh.ognoo = new Date();
@@ -99,7 +99,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           tuukh.browser = ua.browser;
           tuukh.useragent = ua;
           tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
-          nevtreltiinTuukhKhadgalya(tuukh, req.body.tukhainBaaziinKholbolt);
+          nevtreltiinTuukhKhadgalya(tuukh, db.erunkhiiKholbolt);
           res.status(200).json(butsaakhObject);
         } else throw new Error(khariu.msg);
       } catch (err) {
@@ -120,12 +120,8 @@ async function khuuBodyo(dun, khuu) {
 
 exports.backAvya = asyncHandler(async (req, res, next) => {
   try {
-    var geree = {};
-    geree.dun = 10000;
-    geree.khuu = 1;
-    geree.udriinKhuu = await khuuBodyo(geree.dun, (geree.khuu * 12) / 100);
-    res.send(geree);
-    /*const { exec } = require("child_process");
+    var tukhainBaaziinKholbolt = req.body.tukhainBaaziinKholbolt;
+    const { exec } = require("child_process");
     try {
       fs.unlinkSync("dump.tar");
       console.log("removed");
@@ -138,7 +134,7 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
         " --port=" +
         "27017" +
         " --db=" +
-        "turees" +
+        tukhainBaaziinKholbolt.baaziinNer +
         " --archive=dump.tar" +
         "  --gzip",
       (err, stdout, stderr) => {
@@ -180,7 +176,7 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
             var fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
             var source = req.headers["user-agent"];
             var ua = useragent.parse(source);
-            var tuukh = new BackTuukh();
+            var tuukh = new BackTuukh(db.erunkhiiKholbolt);
             tuukh.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
             tuukh.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
             tuukh.ognoo = new Date();
@@ -207,7 +203,7 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
           }
         }
       }
-    );*/
+    );
   } catch (error) {
     next(error);
   }
@@ -224,7 +220,8 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
     if (tokenObject.id == "zochin")
       throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
     console.log("tokenObject", tokenObject);
-    Ajiltan.findById(tokenObject.id)
+    Ajiltan(kholbolt)
+      .findById(tokenObject.id)
       .then((urDun) => {
         var urdunJson = urDun.toJSON();
         urdunJson.duusakhOgnoo = tokenObject.duusakhOgnoo;

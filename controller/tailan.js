@@ -36,10 +36,12 @@ const chartUnguud = [
 
 exports.analitikTailanAvya = asyncHandler(async (req, res, next) => {
   try {
-    var gereenuud = await Geree.find({
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-    }).select("+avlaga");
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      .find({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+      })
+      .select("+avlaga");
     res.send(gereenuud);
   } catch (err) {
     next(err);
@@ -134,11 +136,15 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
       $sort: sort,
     },
   ];
-  var zardluud = await Zardal.find({
-    barilgiinId: req.body.barilgiinId,
-    baiguullagiinId: req.body.baiguullagiinId,
-  }).lean();
-  var zardliinDunguud = await BankniiGuilgee.aggregate([
+  var zardluud = await Zardal(req.body.tukhainBaaziinKholbolt)
+    .find({
+      barilgiinId: req.body.barilgiinId,
+      baiguullagiinId: req.body.baiguullagiinId,
+    })
+    .lean();
+  var zardliinDunguud = await BankniiGuilgee(
+    req.body.tukhainBaaziinKholbolt
+  ).aggregate([
     {
       $match: {
         baiguullagiinId: req.body.baiguullagiinId,
@@ -195,7 +201,8 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     },
   ]);
-  BankniiGuilgee.aggregate(query)
+  BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+    .aggregate(query)
     .then(async (result) => {
       if (result && result.length > 0) {
         var jagsaalt = [];
@@ -209,6 +216,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             labels.push(
               a["_id"].year + "/" + a["_id"].month + "/" + a["_id"].day
             );
+
           zardluud.push((a.dun * -1).toFixed(2));
         });
         if (
@@ -361,7 +369,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
       $sort: sort,
     },
   ];
-  var turluur = await Geree.aggregate([
+  var turluur = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
     {
       $unwind: {
         path: "$avlaga.guilgeenuud",
@@ -402,7 +410,8 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     },
   ]);
-  Geree.aggregate(query)
+  Geree(req.body.tukhainBaaziinKholbolt)
+    .aggregate(query)
     .then((result) => {
       if (result && result.length > 0) {
         var labels = [];
@@ -572,7 +581,9 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
         $sort: sort,
       },
     ];
-    var zardluud = await BankniiGuilgee.aggregate(query);
+    var zardluud = await BankniiGuilgee(
+      req.body.tukhainBaaziinKholbolt
+    ).aggregate(query);
     query = [
       {
         $match: {
@@ -628,7 +639,9 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
         $sort: sort,
       },
     ];
-    var orloguud = await BankniiGuilgee.aggregate(query);
+    var orloguud = await BankniiGuilgee(
+      req.body.tukhainBaaziinKholbolt
+    ).aggregate(query);
     var niitZardal = 0;
     var niitOrlogo = 0;
     var zardliinObjectuud = [];
@@ -864,7 +877,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
   var umnukhSar = moment(new Date(req.body.ekhlekhOgnoo))
     .add(-1, "month")
     .set("date", 1);
-  var turluur = await Geree.aggregate([
+  var turluur = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
     {
       $match: {
         barilgiinId: req.body.barilgiinId,
@@ -1080,7 +1093,8 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
     },
   ]);
   console.log("turluur", JSON.stringify(turluur, null, 4));
-  Geree.aggregate(query)
+  Geree(req.body.tukhainBaaziinKholbolt)
+    .aggregate(query)
     .then((result) => {
       if (result && result.length > 0) {
         var labels = [];
@@ -1179,7 +1193,9 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
-  var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+  var baiguullaga = await Baiguullaga(req.body.tukhainBaaziinKholbolt).findById(
+    req.body.baiguullagiinId
+  );
   var group = {
     _id: "$barilgiinId",
     tulukh: {
@@ -1229,7 +1245,7 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
       $group: group,
     },
   ];
-  var khariu = await Geree.aggregate(query);
+  var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
   var niitAvlaga = 0;
   var labels = [];
   var series = [];
@@ -1271,7 +1287,9 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
-  var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+  var baiguullaga = await Baiguullaga(req.body.tukhainBaaziinKholbolt).findById(
+    req.body.baiguullagiinId
+  );
   var group = {
     _id: "$barilgiinId",
     tulsun: {
@@ -1315,7 +1333,7 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
       $group: group,
     },
   ];
-  var khariu = await Geree.aggregate(query);
+  var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
   var labels = [];
   var series = [];
   khariu.forEach((a) => {
@@ -1354,7 +1372,9 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
 
 exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
   async (req, res, next) => {
-    var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+    var baiguullaga = await Baiguullaga(
+      req.body.tukhainBaaziinKholbolt
+    ).findById(req.body.baiguullagiinId);
     //aldax nukhtsul
     var nariivchlal = req.body.nariivchlal ? req.body.nariivchlal : "month";
     var ekhlekhOgnoo = req.body.ekhlekhOgnoo
@@ -1445,7 +1465,7 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         $group: group,
       },
     ];
-    var khariu = await Geree.aggregate(query);
+    var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
     var categories = [];
     const chartData = {
       series: baiguullaga.barilguud.map((mur, index) => ({

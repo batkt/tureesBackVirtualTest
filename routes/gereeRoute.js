@@ -122,7 +122,8 @@ router.route("/khuvaariUusgey").post(tokenShalgakh, khuvaariUusgey);
 router
   .route("/gereeniiTulultAvya/:gereeniiId")
   .get(tokenShalgakh, (req, res, next) => {
-    Geree.findById(req.params.gereeniiId)
+    Geree(req.body.tukhainBaaziinKholbolt)
+      .findById(req.params.gereeniiId)
       .select("avlaga")
       .then((result) => {
         if (lodash.isArray(lodash.get(result, "avlaga.guilgeenuud"))) {
@@ -153,7 +154,8 @@ router
 router
   .route("/baritsaaTulultAvya/:gereeniiId")
   .get(tokenShalgakh, (req, res, next) => {
-    Geree.findById(req.params.gereeniiId)
+    Geree(req.body.tukhainBaaziinKholbolt)
+      .findById(req.params.gereeniiId)
       .select("avlaga")
       .then((result) => {
         console.log("baritsaaTulultAvya", result);
@@ -178,12 +180,13 @@ router
         $lte: new Date(new Date().getFullYear(), 11, 31),
       };
       console.log(ognoo);
-      await Dugaarlalt.find({
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        turul: "nekhemjlekh",
-        ognoo: ognoo,
-      })
+      await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+        .find({
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          turul: "nekhemjlekh",
+          ognoo: ognoo,
+        })
         .sort({
           dugaar: -1,
         })
@@ -201,7 +204,7 @@ router
   .route("/nekhemjlekhiinDugaarlaltKhadgalya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      var dugaarlalt = new Dugaarlalt({
+      var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)({
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
         dugaar: req.body.dugaar,
@@ -225,7 +228,9 @@ crud(
   UstsanBarimt,
   async (req, res, next) => {
     try {
-      const khariltsagch = new Khariltsagch(req.body);
+      const khariltsagch = new Khariltsagch(req.body.tukhainBaaziinKholbolt)(
+        req.body
+      );
       khariltsagch.id = khariltsagch.register;
       var unuudur = new Date();
       unuudur = new Date(
@@ -234,12 +239,13 @@ crud(
         unuudur.getDate()
       );
       var maxDugaar = 1;
-      await Dugaarlalt.find({
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        turul: "geree",
-        ognoo: unuudur,
-      })
+      await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+        .find({
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          turul: "geree",
+          ognoo: unuudur,
+        })
         .sort({
           dugaar: -1,
         })
@@ -247,7 +253,7 @@ crud(
         .then((result) => {
           if (result != 0) maxDugaar = result[0].dugaar + 1;
         });
-      var dugaarlalt = new Dugaarlalt({
+      var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)({
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
         dugaar: maxDugaar,
@@ -273,7 +279,9 @@ crud(
 );
 
 router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
-  const khariltsagch = new Khariltsagch(req.body);
+  const khariltsagch = new Khariltsagch(req.body.tukhainBaaziinKholbolt)(
+    req.body
+  );
   khariltsagch.id = khariltsagch.register;
   var unuudur = new Date();
   unuudur = new Date(
@@ -282,12 +290,13 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     unuudur.getDate()
   );
   var maxDugaar = 1;
-  await Dugaarlalt.find({
-    baiguullagiinId: req.body.baiguullagiinId,
-    barilgiinId: req.body.barilgiinId,
-    turul: "geree",
-    ognoo: unuudur,
-  })
+  await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+    .find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      turul: "geree",
+      ognoo: unuudur,
+    })
     .sort({
       dugaar: -1,
     })
@@ -295,7 +304,7 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     .then((result) => {
       if (result != 0) maxDugaar = result[0].dugaar + 1;
     });
-  var dugaarlalt = new Dugaarlalt({
+  var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)({
     baiguullagiinId: req.body.baiguullagiinId,
     barilgiinId: req.body.barilgiinId,
     dugaar: maxDugaar,
@@ -304,13 +313,15 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     isNew: true,
   });
   req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
-  var khariltsagchShalguur = await Khariltsagch.findOne({
+  var khariltsagchShalguur = await Khariltsagch(
+    req.body.tukhainBaaziinKholbolt
+  ).findOne({
     register: khariltsagch.register,
     barilgiinId: req.body.barilgiinId,
   });
   if (!khariltsagchShalguur) await khariltsagch.save();
   dugaarlalt.save();
-  var geree = new Geree(req.body);
+  var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
   var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
   try {
     if (geree.avlaga.guilgeenuud && geree.avlaga.guilgeenuud.length > 0)
@@ -321,7 +332,10 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   geree.daraagiinTulukhOgnoo = daraagiinTulukhOgnoo;
   geree.tuluv = 1;
   await geree.save().then((result) => {
-    talbaiKhariltsagchiinTuluvUurchluy([result._id]);
+    talbaiKhariltsagchiinTuluvUurchluy(
+      [result._id],
+      req.body.tukhainBaaziinKholbolt
+    );
   });
   res.send("Amjilttai");
 });
@@ -330,9 +344,13 @@ router
   .route("/khariltsagchGereeniiKhuulgaAvya/:id")
   .get(tokenShalgakh, async (req, res, next) => {
     try {
-      var geree = await Geree.findById(req.params.id).select("+avlaga");
+      var geree = await Geree(req.body.tukhainBaaziinKholbolt)
+        .findById(req.params.id)
+        .select("+avlaga");
       if (lodash.isArray(lodash.get(geree, "avlaga.guilgeenuud"))) {
-        var baiguullaga = await Baiguullaga.findById(geree.baiguullagiinId);
+        var baiguullaga = await Baiguullaga(
+          req.body.tukhainBaaziinKholbolt
+        ).findById(geree.baiguullagiinId);
         var ekhlekhOgnoo = null;
         if (
           baiguullaga &&
@@ -380,14 +398,19 @@ router
     try {
       var geree = new Geree(req.body);
       geree.tuluv = 1;
-      await Geree.updateOne(
-        {
-          _id: geree._id,
-        },
-        geree
-      ).then((result) => {
-        talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
-      });
+      await Geree(req.body.tukhainBaaziinKholbolt)
+        .updateOne(
+          {
+            _id: geree._id,
+          },
+          geree
+        )
+        .then((result) => {
+          talbaiKhariltsagchiinTuluvUurchluy(
+            [geree._id],
+            req.body.tukhainBaaziinKholbolt
+          );
+        });
       res.send("Amjilttai");
     } catch (err) {
       next(err);
@@ -398,10 +421,12 @@ router
   .route("/gereeSungaya")
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
-      var geree = await Geree.findById(req.body.gereeniiId).select({
-        gereeniiTuukhuud: 1,
-        duusakhOgnoo: 1,
-      });
+      var geree = await Geree(req.body.tukhainBaaziinKholbolt)
+        .findById(req.body.gereeniiId)
+        .select({
+          gereeniiTuukhuud: 1,
+          duusakhOgnoo: 1,
+        });
       var shineDuusakhOgnoo = new Date(req.body.duusakhOgnoo);
       if (shineDuusakhOgnoo < new Date())
         throw new Error("Сунгах огноо өнөөдрөөс хойш байх шаардлагатай!");
@@ -414,17 +439,18 @@ router
         ajiltniiId: req.body.nevtersenAjiltniiToken.id,
       };
       if (geree.gereeniiTuukhuud) {
-        Geree.findOneAndUpdate(
-          { _id: req.body.gereeniiId },
-          {
-            $push: {
-              [`gereeniiTuukhuud`]: tuukh,
-            },
-            $set: {
-              duusakhOgnoo: req.body.duusakhOgnoo,
-            },
-          }
-        )
+        Geree(req.body.tukhainBaaziinKholbolt)
+          .findOneAndUpdate(
+            { _id: req.body.gereeniiId },
+            {
+              $push: {
+                [`gereeniiTuukhuud`]: tuukh,
+              },
+              $set: {
+                duusakhOgnoo: req.body.duusakhOgnoo,
+              },
+            }
+          )
           .then((result) => {
             res.send("Amjilttai");
           })
@@ -433,15 +459,16 @@ router
           });
       } else {
         tuukh = [tuukh];
-        Geree.findOneAndUpdate(
-          { _id: req.body.gereeniiId },
-          {
-            $set: {
-              duusakhOgnoo: req.body.duusakhOgnoo,
-              gereeniiTuukhuud: tuukh,
-            },
-          }
-        )
+        Geree(req.body.tukhainBaaziinKholbolt)
+          .findOneAndUpdate(
+            { _id: req.body.gereeniiId },
+            {
+              $set: {
+                duusakhOgnoo: req.body.duusakhOgnoo,
+                gereeniiTuukhuud: tuukh,
+              },
+            }
+          )
           .then((result) => {
             res.send("Amjilttai");
           })
@@ -456,11 +483,13 @@ router
   .route("/gereeSergeeye")
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
-      var geree = await Geree.findById(req.body.gereeniiId).select({
-        gereeniiTuukhuud: 1,
-        duusakhOgnoo: 1,
-        tuluv: 1,
-      });
+      var geree = await Geree(req.body.tukhainBaaziinKholbolt)
+        .findById(req.body.gereeniiId)
+        .select({
+          gereeniiTuukhuud: 1,
+          duusakhOgnoo: 1,
+          tuluv: 1,
+        });
       if (geree.tuluv !== -1)
         throw new Error("Зөвхөн цуцалсан төлөвтэй гэрээг сэргээх боломжтой!");
       var tuukh = {
@@ -501,21 +530,25 @@ router
         });
       });
       if (geree.gereeniiTuukhuud) {
-        Geree.findOneAndUpdate(
-          { _id: req.body.gereeniiId },
-          {
-            $push: {
-              [`gereeniiTuukhuud`]: tuukh,
-              [`avlaga.guilgeenuud`]: khuvaariud,
-            },
-            $set: {
-              tsutsalsanOgnoo: null,
-              tuluv: 1,
-            },
-          }
-        )
+        Geree(req.body.tukhainBaaziinKholbolt)
+          .findOneAndUpdate(
+            { _id: req.body.gereeniiId },
+            {
+              $push: {
+                [`gereeniiTuukhuud`]: tuukh,
+                [`avlaga.guilgeenuud`]: khuvaariud,
+              },
+              $set: {
+                tsutsalsanOgnoo: null,
+                tuluv: 1,
+              },
+            }
+          )
           .then((result) => {
-            talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
+            talbaiKhariltsagchiinTuluvUurchluy(
+              [geree._id],
+              req.body.tukhainBaaziinKholbolt
+            );
             res.send("Amjilttai");
           })
           .catch((err) => {
@@ -523,21 +556,25 @@ router
           });
       } else {
         tuukh = [tuukh];
-        Geree.findOneAndUpdate(
-          { _id: req.body.gereeniiId },
-          {
-            $push: {
-              [`avlaga.guilgeenuud`]: khuvaariud,
-            },
-            $set: {
-              tsutsalsanOgnoo: null,
-              tuluv: 1,
-              gereeniiTuukhuud: tuukh,
-            },
-          }
-        )
+        Geree(req.body.tukhainBaaziinKholbolt)
+          .findOneAndUpdate(
+            { _id: req.body.gereeniiId },
+            {
+              $push: {
+                [`avlaga.guilgeenuud`]: khuvaariud,
+              },
+              $set: {
+                tsutsalsanOgnoo: null,
+                tuluv: 1,
+                gereeniiTuukhuud: tuukh,
+              },
+            }
+          )
           .then((result) => {
-            talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
+            talbaiKhariltsagchiinTuluvUurchluy(
+              [geree._id],
+              req.body.tukhainBaaziinKholbolt
+            );
             res.send("Amjilttai");
           })
           .catch((err) => {
@@ -549,21 +586,28 @@ router
     }
   });
 
-async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
+async function talbaiKhariltsagchiinTuluvUurchluy(
+  gereeniiIdnuud,
+  tukhainBaaziinKholbolt
+) {
   if (gereeniiIdnuud && gereeniiIdnuud.length > 0) {
     var talbainBulk = [];
     var khariltsagchiinBulk = [];
     for await (const id of gereeniiIdnuud) {
-      let geree = await Geree.findById(id);
-      let busadGereenuud = await Geree.findOne({
+      let geree = await Geree(tukhainBaaziinKholbolt).findById(id);
+      let busadGereenuud = await Geree(tukhainBaaziinKholbolt).findOne({
         register: geree.register,
         barilgiinId: geree.barilgiinId,
         tuluv: { $ne: -1 },
       });
-      var talbainuud = await Talbai.find({ _id: { $in: geree.talbainIdnuud } });
+      var talbainuud = await Talbai(tukhainBaaziinKholbolt).find({
+        _id: { $in: geree.talbainIdnuud },
+      });
       for await (const talbai of talbainuud) {
         if (talbai.niitiinTalbaiEsekh) {
-          let tukhainTalbainGereenuud = await Geree.find({
+          let tukhainTalbainGereenuud = await Geree(
+            tukhainBaaziinKholbolt
+          ).find({
             barilgiinId: geree.barilgiinId,
             tuluv: { $ne: -1 },
             talbainIdnuud: talbai._id,
@@ -613,7 +657,8 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
       }
     }
     if (talbainBulk)
-      Talbai.bulkWrite(talbainBulk)
+      Talbai(tukhainBaaziinKholbolt)
+        .bulkWrite(talbainBulk)
         .then((bulkWriteOpResult) => {
           console.log("BULK update OK", bulkWriteOpResult);
         })
@@ -622,7 +667,8 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
         });
 
     if (khariltsagchiinBulk)
-      Khariltsagch.bulkWrite(khariltsagchiinBulk)
+      Khariltsagch(tukhainBaaziinKholbolt)
+        .bulkWrite(khariltsagchiinBulk)
         .then((bulkWriteOpResult) => {
           console.log("BULK update OK", bulkWriteOpResult);
         })
@@ -635,10 +681,12 @@ async function talbaiKhariltsagchiinTuluvUurchluy(gereeniiIdnuud) {
 router
   .route("/gereeTsutslaya")
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
-    var geree = await Geree.findById(req.body.gereeniiId).select({
-      gereeniiTuukhuud: 1,
-      duusakhOgnoo: 1,
-    });
+    var geree = await Geree(req.body.tukhainBaaziinKholbolt)
+      .findById(req.body.gereeniiId)
+      .select({
+        gereeniiTuukhuud: 1,
+        duusakhOgnoo: 1,
+      });
     var tuukh = {
       umnukhDuusakhOgnoo: geree.duusakhOgnoo,
       tsutslasanShaltgaan: req.body.shaltgaan,
@@ -649,21 +697,25 @@ router
     };
     console.log(tuukh);
     if (geree.gereeniiTuukhuud) {
-      Geree.findOneAndUpdate(
-        { _id: req.body.gereeniiId },
-        {
-          $push: {
-            [`gereeniiTuukhuud`]: tuukh,
-          },
-          $set: {
-            tsutsalsanOgnoo: new Date(),
-            tuluv: -1,
-          },
-          $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } },
-        }
-      )
+      Geree(req.body.tukhainBaaziinKholbolt)
+        .findOneAndUpdate(
+          { _id: req.body.gereeniiId },
+          {
+            $push: {
+              [`gereeniiTuukhuud`]: tuukh,
+            },
+            $set: {
+              tsutsalsanOgnoo: new Date(),
+              tuluv: -1,
+            },
+            $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } },
+          }
+        )
         .then((result) => {
-          talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
+          talbaiKhariltsagchiinTuluvUurchluy(
+            [geree._id],
+            req.body.tukhainBaaziinKholbolt
+          );
           res.send("Amjilttai");
         })
         .catch((err) => {
@@ -672,19 +724,23 @@ router
     } else {
       tuukh = [tuukh];
       console.log(tuukh);
-      Geree.findOneAndUpdate(
-        { _id: req.body.gereeniiId },
-        {
-          $set: {
-            gereeniiTuukhuud: tuukh,
-            tsutsalsanOgnoo: new Date(),
-            tuluv: -1,
-          },
-          $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } },
-        }
-      )
+      Geree(req.body.tukhainBaaziinKholbolt)
+        .findOneAndUpdate(
+          { _id: req.body.gereeniiId },
+          {
+            $set: {
+              gereeniiTuukhuud: tuukh,
+              tsutsalsanOgnoo: new Date(),
+              tuluv: -1,
+            },
+            $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } },
+          }
+        )
         .then((result) => {
-          talbaiKhariltsagchiinTuluvUurchluy([geree._id]);
+          talbaiKhariltsagchiinTuluvUurchluy(
+            [geree._id],
+            req.body.tukhainBaaziinKholbolt
+          );
           res.send("Amjilttai");
         })
         .catch((err) => {
@@ -709,7 +765,7 @@ router
       }
 
       body.lean = true;
-      khuudaslalt(Geree, body)
+      khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
         .then(async (result) => {
           console.log("result", result);
           if (result && result.jagsaalt && result.jagsaalt.length > 0) {
@@ -1024,7 +1080,9 @@ router
                 },
               },
             ];
-            var gereenuud = await Geree.aggregate(query);
+            var gereenuud = await Geree(
+              req.body.tukhainBaaziinKholbolt
+            ).aggregate(query);
             if (result && result.jagsaalt && result.jagsaalt.length > 0) {
               result.jagsaalt = result.jagsaalt.filter((a) =>
                 gereenuud[0].niitUldegdel.find((b) => b._id == a.gereeniiDugaar)
@@ -1581,7 +1639,9 @@ router
         },
       ];
       console.log("zadargaa query", JSON.stringify(query, null, 4));
-      var gereenuud = await Geree.aggregate(query);
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(
+        query
+      );
       res.send(gereenuud);
     } catch (error) {
       next(error);
@@ -1600,7 +1660,7 @@ router
       if (!!body?.search) body.search = String(body.search);
 
       body.lean = true;
-      khuudaslalt(Geree, body)
+      khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
         .then(async (result) => {
           if (result && result.jagsaalt && result.jagsaalt.length > 0) {
             var idnuud = [];
@@ -1775,7 +1835,9 @@ router
                 },
               },
             ];
-            var gereenuud = await Geree.aggregate(query);
+            var gereenuud = await Geree(
+              req.body.tukhainBaaziinKholbolt
+            ).aggregate(query);
             console.log("gereenuud", JSON.stringify(gereenuud, null, 4));
             result.jagsaalt.forEach((x) => {
               x.eneSardTulukhDun =
@@ -1810,7 +1872,13 @@ router
     }
   });
 
-async function turluurDunBugluy(jagsaalt, ekhlekhOgnoo, duusakhOgnoo, turul) {
+async function turluurDunBugluy(
+  jagsaalt,
+  ekhlekhOgnoo,
+  duusakhOgnoo,
+  turul,
+  tukhainBaaziinKholbolt
+) {
   if (jagsaalt && jagsaalt.length > 0) {
     var idnuud = [];
     var matchQuery = {
@@ -1862,7 +1930,7 @@ async function turluurDunBugluy(jagsaalt, ekhlekhOgnoo, duusakhOgnoo, turul) {
       },
     ];
     console.log(JSON.stringify(query, null, 4));
-    var gereenuud = await Geree.aggregate(query);
+    var gereenuud = await Geree(tukhainBaaziinKholbolt).aggregate(query);
     jagsaalt.forEach((x) => {
       if (turul == "voucher")
         x.voucherDun =
@@ -1907,13 +1975,14 @@ router
         },
       };
       body.lean = true;
-      khuudaslalt(Geree, body)
+      khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
         .then(async (result) => {
           butsaakhJagsaalt = await turluurDunBugluy(
             result.jagsaalt,
             req.params.ekhlekhOgnoo,
             req.params.duusakhOgnoo,
-            "voucher"
+            "voucher",
+            req.body.tukhainBaaziinKholbolt
           );
           res.send(result);
         })
@@ -1953,13 +2022,14 @@ router
         },
       };
       body.lean = true;
-      khuudaslalt(Geree, body)
+      khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
         .then(async (result) => {
           butsaakhJagsaalt = await turluurDunBugluy(
             result.jagsaalt,
             req.params.ekhlekhOgnoo,
             req.params.duusakhOgnoo,
-            null
+            null,
+            req.body.tukhainBaaziinKholbolt
           );
           res.send(result);
         })
@@ -2004,13 +2074,14 @@ router
       console.log("params", req.params);
       console.log(JSON.stringify(body, null, 4));
       body.lean = true;
-      khuudaslalt(Geree, body)
+      khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
         .then(async (result) => {
           butsaakhJagsaalt = await turluurDunBugluy(
             result.jagsaalt,
             req.params.ekhlekhOgnoo,
             req.params.duusakhOgnoo,
-            "khungulult"
+            "khungulult",
+            req.body.tukhainBaaziinKholbolt
           );
           res.send(result);
         })
@@ -2026,7 +2097,7 @@ router
   .route("/utasniiDugaaraarGereeAvya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      var geree = await Geree.findOne({
+      var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
         utas: { $in: [req.body.utas] },
         baiguullagiinId: req.body.baiguullagiinId,
       });
@@ -2137,7 +2208,9 @@ router
           },
         },
       ];
-      var gereenuud = await Geree.aggregate(query);
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(
+        query
+      );
       console.log(gereenuud);
       if (gereenuud.length < 0 || gereenuud[0].tuluvluguut.length < 1)
         res.send(null);
@@ -2157,7 +2230,7 @@ router
         body.lean = true;
 
         console.log("body", body);
-        khuudaslalt(Geree, body)
+        khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
           .then((result) => {
             console.log("result", result);
             if (result && result.jagsaalt && result.jagsaalt.length > 0)
@@ -2229,7 +2302,9 @@ router
           },
         },
       ];
-      var gereenuud = await Geree.aggregate(query);
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(
+        query
+      );
       tuluuguiToo = 0;
       if (gereenuud && gereenuud.length > 0) tuluuguiToo = gereenuud[0].niit;
       res.send({ too: tuluuguiToo });

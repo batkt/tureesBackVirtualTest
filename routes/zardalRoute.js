@@ -8,69 +8,81 @@ const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
 crud(router, "zardal", Zardal, UstsanBarimt);
 
 router.post("/zardliinDunAvya", tokenShalgakh, async (req, res, next) => {
-    var query = [
-        {
-            "$match": {
-                "baiguullagiinId": req.body.baiguullagiinId,
-                "barilgiinId": req.body.barilgiinId,
-                "zardliinBulgiinId": {
-                    "$in": req.body.idnuud
-                },
-                "$or": [
-                    {
-                        "TxDt": {
-                            $gte: new Date(req.body.ekhlekhOgnoo),
-                            $lte: new Date(req.body.duusakhOgnoo)
-                        }
-                    },
-                    {
-                        "tranDate": {
-                            $gte: new Date(req.body.ekhlekhOgnoo),
-                            $lte: new Date(req.body.duusakhOgnoo)
-                        }
-                    }
-                ]
-            }
+  var query = [
+    {
+      $match: {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        zardliinBulgiinId: {
+          $in: req.body.idnuud,
         },
-        {
-            "$group": {
-                "_id": "aa",
-                "niitDun": {
-                    $sum: {
-                        "$add": [
-                            { "$ifNull": ["$Amt", 0] },
-                            { "$ifNull": ["$amount", 0] }
-                        ]
-                    }
-                }
-            }
-        }
-    ]
-    BankniiGuilgee.aggregate(query).then((result) => {
-        var dun = 0;
-        if (result && result.length > 0) {
-            dun = result[0].niitDun
-        }
-        res.send(dun.toString());
-    }).catch((err) => {
-        next(err);
+        $or: [
+          {
+            TxDt: {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+          },
+          {
+            tranDate: {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+          },
+        ],
+      },
+    },
+    {
+      $group: {
+        _id: "aa",
+        niitDun: {
+          $sum: {
+            $add: [{ $ifNull: ["$Amt", 0] }, { $ifNull: ["$amount", 0] }],
+          },
+        },
+      },
+    },
+  ];
+  BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+    .aggregate(query)
+    .then((result) => {
+      var dun = 0;
+      if (result && result.length > 0) {
+        dun = result[0].niitDun;
+      }
+      res.send(dun.toString());
     })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 router.post("/zardalKhuvaarilya", tokenShalgakh, async (req, res, next) => {
-    BankniiGuilgee.updateOne({ _id: req.body.guilgeeniiId }, { $set: { zardliinBulgiinId: req.body.zardliinId } }).then((result) => {
-        res.send("Amjilttai");
-    }).then((err) => {
-        next(err);
+  BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+    .updateOne(
+      { _id: req.body.guilgeeniiId },
+      { $set: { zardliinBulgiinId: req.body.zardliinId } }
+    )
+    .then((result) => {
+      res.send("Amjilttai");
     })
+    .then((err) => {
+      next(err);
+    });
 });
 
 router.post("/zardalTsutslaya", tokenShalgakh, async (req, res, next) => {
-    BankniiGuilgee.updateOne({ _id: req.body.guilgeeniiId }, { $set: { zardliinBulgiinId: null } }).then((result) => {
-        res.send("Amjilttai");
-    }).then((err) => {
-        next(err);
+  BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+    .updateOne(
+      { _id: req.body.guilgeeniiId },
+      { $set: { zardliinBulgiinId: null } }
+    )
+    .then((result) => {
+      res.send("Amjilttai");
     })
+    .then((err) => {
+      next(err);
+    });
 });
 
 module.exports = router;

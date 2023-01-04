@@ -13,7 +13,8 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
     console.log(req.body);
     const baiguullaga = new Baiguullaga(req.body);
     baiguullaga.isNew = !baiguullaga.zasakhEsekh;
-    baiguullaga.save()
+    baiguullaga
+      .save()
       .then((result) => {
         if (req.body.ajiltan) {
           let ajiltan = new Ajiltan(req.body.ajiltan);
@@ -46,20 +47,18 @@ router.post(
   }
 );
 
-router.post(
-  "/baiguullagaAvya",
-  (req, res, next) => {
-    Baiguullaga.findOne({
-      "register": req.body.register,
+router.post("/baiguullagaAvya", (req, res, next) => {
+  Baiguullaga(req.body.tukhainBaaziinKholbolt)
+    .findOne({
+      register: req.body.register,
     })
-      .then((result) => {
-        res.send(result);
-      })
-      .catch((err) => {
-        next(err);
-      });
-  }
-);
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
 
 router.post(
   "/baiguullagaTokhirgooZasya",
@@ -73,11 +72,12 @@ router.post(
             update["tokhirgoo." + field] = req.body.tokhirgoo[field];
         }
         console.log("update", update);
-        await Baiguullaga.findOneAndUpdate({ _id: req.body.baiguullagiinId }, update);
+        await Baiguullaga(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+          { _id: req.body.baiguullagiinId },
+          update
+        );
         res.send("Amjilttai");
-      }
-      else
-        next(new aldaa("Засах боломжгүй байна"))
+      } else next(new aldaa("Засах боломжгүй байна"));
     } catch (error) {
       next(error);
     }
