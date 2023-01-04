@@ -115,12 +115,7 @@ async function khuuBodyo(dun, khuu) {
 
 exports.backAvya = asyncHandler(async (req, res, next) => {
   try {
-    var geree = {};
-    geree.dun = 10000;
-    geree.khuu = 1;
-    geree.udriinKhuu = await khuuBodyo(geree.dun, (geree.khuu * 12) / 100);
-    res.send(geree);
-    /*const { exec } = require("child_process");
+    const { exec } = require("child_process");
     try {
       fs.unlinkSync("dump.tar");
       console.log("removed");
@@ -202,7 +197,7 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
           }
         }
       }
-    );*/
+    );
   } catch (error) {
     next(error);
   }
