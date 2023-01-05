@@ -1409,8 +1409,8 @@ exports.gereeAutomataarSungaya = asyncHandler(async (req, res, next) => {
         if (gereenuud) {
           for await (const geree of gereenuud) {
             tulultiinJagsaalt = [];
-            await new Array(khugatsaa).fill("").map((mur, index) => {
-              tulukhUdruud.forEach((udur) => {
+            await new Array(geree.khugatsaa).fill("").map((mur, index) => {
+              geree.tulukhUdur.forEach((udur) => {
                 var ognoo = new Date();
                 var uusgexOgnoo = moment(ognoo)
                   .add(index, "month")
