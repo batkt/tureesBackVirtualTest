@@ -1409,8 +1409,8 @@ exports.gereeAutomataarSungaya = asyncHandler(async (req, res, next) => {
         if (gereenuud) {
           for await (const geree of gereenuud) {
             tulultiinJagsaalt = [];
-            for (index = 0; index < geree.khugatsaa; index++) {
-              for await (const udur of geree.tulukhUdur) {
+            await new Array(khugatsaa).fill("").map((mur, index) => {
+              tulukhUdruud.forEach((udur) => {
                 var ognoo = new Date();
                 var uusgexOgnoo = moment(ognoo)
                   .add(index, "month")
@@ -1422,8 +1422,8 @@ exports.gereeAutomataarSungaya = asyncHandler(async (req, res, next) => {
                     undsenDun: geree.sariinTurees,
                     tulukhDun: geree.sariinTurees,
                   });
-              }
-            }
+              });
+            });
             var shineDuusakhOgnoo = new Date(
               moment(geree.duusakhOgnoo).add(geree.khugatsaa, "month")
             );
