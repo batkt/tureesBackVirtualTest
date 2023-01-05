@@ -896,6 +896,7 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
           object = {
             tulukhDun: element.sariinTurees,
             undsenDun: element.sariinTurees,
+            turul: "khuvaari",
             ognoo: moment(req.body.duusakhOgnoo).set(
               "date",
               element.tulukhUdur[0]
@@ -1409,24 +1410,25 @@ exports.gereeAutomataarSungaya = asyncHandler(async (req, res, next) => {
         if (gereenuud) {
           for await (const geree of gereenuud) {
             tulultiinJagsaalt = [];
+            var shineDuusakhOgnoo = new Date(
+              moment(geree.duusakhOgnoo).add(geree.khugatsaa, "month")
+            );
             await new Array(geree.khugatsaa).fill("").map((mur, index) => {
               geree.tulukhUdur.forEach((udur) => {
                 var ognoo = new Date();
                 var uusgexOgnoo = moment(ognoo)
                   .add(index, "month")
                   .set("date", udur);
-                if (uusgexOgnoo <= moment(geree.duusakhOgnoo))
+                if (uusgexOgnoo <= moment(shineDuusakhOgnoo))
                   tulultiinJagsaalt.push({
                     ognoo: moment(ognoo).add(index, "month").set("date", udur),
                     khyamdral: 0,
+                    turul: "khuvaari",
                     undsenDun: geree.sariinTurees,
                     tulukhDun: geree.sariinTurees,
                   });
               });
             });
-            var shineDuusakhOgnoo = new Date(
-              moment(geree.duusakhOgnoo).add(geree.khugatsaa, "month")
-            );
             if (tulultiinJagsaalt)
               await Geree.findByIdAndUpdate(
                 { _id: geree._id },
