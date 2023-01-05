@@ -3,12 +3,18 @@ const router = express.Router();
 const Sonorduulga = require("../components/sonorduulga");
 const SonorduulgiinModel = require("../models/sonorduulga");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
-//const { Daalgavar } = require("daalgavar");
+const { Daalgavar } = require("daalgavar");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 //const Daalgavar = require("../models/daalgavar");
 const Ajiltan = require("../models/ajiltan");
 
-//Daalgavar(router, Sonorduulga.ilgeeye, sonorduulgaIlgeeye, SonorduulgiinModel, Ajiltan);
+Daalgavar(
+  router,
+  Sonorduulga.ilgeeye,
+  sonorduulgaIlgeeye,
+  SonorduulgiinModel,
+  Ajiltan
+);
 /*
 crud(router, "daalgavar", Daalgavar, UstsanBarimt);
 crud(router, "setgegdel", Setgegdel, UstsanBarimt);
