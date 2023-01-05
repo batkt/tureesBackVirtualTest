@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
 
-const gereeniiZaaltSchema = new Schema(
+const gereeniiZagvarSchema = new Schema(
   {
     id: String,
     ner: String,
@@ -27,6 +27,6 @@ module.exports = function a(conn) {
   if (!conn || !conn.kholbolt)
     throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
   conn = conn.kholbolt;
-  return conn.model("gereeniiZaalt", gereeniiZaaltSchema);
+  return conn.model("gereeniiZagvar", gereeniiZagvarSchema);
 };
-//module.exports = mongoose.model("gereeniiZaalt", gereeniiZaaltSchema);
+//module.exports = mongoose.model("gereeniiZagvar", gereeniiZagvarSchema);
