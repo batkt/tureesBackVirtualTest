@@ -1070,7 +1070,7 @@ exports.tukhainOgnoogoorBukhAvlagaBodojOruulya = asyncHandler(
             khyamdral: 0,
           };
           console.log("object", object);
-          Geree.updateOne(
+          await Geree.updateOne(
             { _id: element._id },
             {
               $push: {
