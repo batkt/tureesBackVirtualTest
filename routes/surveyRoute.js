@@ -11,13 +11,16 @@ crud(router, "asuult", Asuult, UstsanBarimt);
 crud(router, "khariult", Khariult, UstsanBarimt);
 
 router.route("/surveyKhadgalya").post(async (req, res, next) => {
-    const data = new Khariult(req.body);
-    data.save().then((result) => res.send("Amjilttai")).catch((err) => next(err));
+  const data = new Khariult(req.body);
+  data
+    .save()
+    .then((result) => res.send("Amjilttai"))
+    .catch((err) => next(err));
 });
 
 router.route("/asuultAvya/:id").get(async (req, res, next) => {
-    const data = await Asuult.findOne({_id:req.params.id})
-    res.send(data)
+  const data = await Asuult.findOne({ _id: req.params.id });
+  res.send(data);
 });
 
 module.exports = router;

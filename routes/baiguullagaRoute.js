@@ -5,19 +5,21 @@ const Ajiltan = require("../models/ajiltan");
 //const { crudWithFile, crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
+const { tokenShalgakh, crud, UstsanBarimt, db } = require("zevback");
 
 crud(router, "baiguullaga", Baiguullaga, UstsanBarimt);
 router.post("/baiguullagaBurtgekh", async (req, res, next) => {
   try {
     console.log(req.body);
-    const baiguullaga = new Baiguullaga(req.body);
+    const baiguullaga = new Baiguullaga(req.body.erunkhiiKholbolt)(req.body);
     baiguullaga.isNew = !baiguullaga.zasakhEsekh;
     baiguullaga
       .save()
       .then((result) => {
         if (req.body.ajiltan) {
-          let ajiltan = new Ajiltan(req.body.ajiltan);
+          let ajiltan = new Ajiltan(req.body.erunkhiiKholbolt)(
+            req.body.ajiltan
+          );
           ajiltan.erkh = "Admin";
           ajiltan.baiguullagiinId = result._id;
           ajiltan.baiguullagiinNer = result.ner;
@@ -48,7 +50,7 @@ router.post(
 );
 
 router.post("/baiguullagaAvya", (req, res, next) => {
-  Baiguullaga(req.body.tukhainBaaziinKholbolt)
+  Baiguullaga(req.body.erunkhiiKholbolt)
     .findOne({
       register: req.body.register,
     })
@@ -72,7 +74,7 @@ router.post(
             update["tokhirgoo." + field] = req.body.tokhirgoo[field];
         }
         console.log("update", update);
-        await Baiguullaga(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+        await Baiguullaga(req.body.erunkhiiKholbolt).findOneAndUpdate(
           { _id: req.body.baiguullagiinId },
           update
         );

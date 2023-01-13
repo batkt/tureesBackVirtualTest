@@ -4,7 +4,13 @@ const Ajiltan = require("../models/ajiltan");
 const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 const BackTuukh = require("../models/backTuukh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crudWithFile, crud, UstsanBarimt } = require("zevback");
+const {
+  tokenShalgakh,
+  crudWithFile,
+  crud,
+  UstsanBarimt,
+  db,
+} = require("zevback");
 const {
   ajiltanNevtrey,
   backAvya,
@@ -23,7 +29,7 @@ crudWithFile(
   UstsanBarimt,
   async (req, res, next) => {
     try {
-      var ajiltanModel = Ajiltan(req.body.tukhainBaaziinKholbolt);
+      var ajiltanModel = Ajiltan(req.body.erunkhiiKholbolt);
       if (req.params.id) {
         var ObjectId = require("mongodb").ObjectId;
         var ajiltan = await ajiltanModel.findOne({
@@ -120,8 +126,8 @@ router.post("/ajiltandTokenOnooyo", tokenShalgakh, (req, res, next) => {
     let update = {
       firebaseToken: req.body.token,
     };
-    Ajiltan(req.body.tukhainBaaziinKholbolt)
-      .findOneAndUpdate(filter, update)
+    Ajiltan(req.body.erunkhiiKholbolt)
+      .updateOne(filter, update)
       .then((result) => {
         res.send("Amjilttai");
       })
@@ -141,8 +147,8 @@ router.post(
       if (!!req.body) {
         const { turul, ajiltnuud } = req.body;
         for await (const ajiltan of ajiltnuud) {
-          await Ajiltan(req.body.tukhainBaaziinKholbolt)
-            .findOneAndUpdate(
+          await Ajiltan(req.body.erunkhiiKholbolt)
+            .updateOne(
               { _id: ajiltan._id },
               { $set: { [turul]: ajiltan.utga } }
             )
@@ -161,11 +167,14 @@ router.post(
 router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
   try {
     if (!!req.body) {
-      await Ajiltan(req.body.tukhainBaaziinKholbolt)
-        .findOneAndUpdate({ _id: req.params.id }, { $set: req.body })
-        .catch((err) => {
-          next(err);
-        });
+      var ajiltan = new Ajiltan(req.body.erunkhiiKholbolt)({
+        _id: req.params.id,
+        ...req.body,
+      });
+      await Ajiltan(req.body.erunkhiiKholbolt).updateOne(
+        { _id: req.params.id },
+        ajiltan
+      );
       res.send("Amjilttai");
     } else next(new aldaa("Засах боломжгүй байна"));
   } catch (error) {
@@ -176,7 +185,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
 router.post("/erkhteiEsekh", tokenShalgakh, async (req, res, next) => {
   try {
     if (!!req.body.zam) {
-      const khariu = await Ajiltan(req.body.tukhainBaaziinKholbolt)
+      const khariu = await Ajiltan(req.body.erunkhiiKholbolt)
         .countDocuments({
           _id: req.body.nevtersenAjiltniiToken?.id,
           $or: [{ tsonkhniiErkhuud: req.body.zam }, { erkh: "Admin" }],

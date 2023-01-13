@@ -396,7 +396,7 @@ router
   .route("/gereeZasya")
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
-      var geree = new Geree(req.body);
+      var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       geree.tuluv = 1;
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
@@ -1886,6 +1886,10 @@ async function turluurDunBugluy(
         $lte: new Date(duusakhOgnoo),
         $gte: new Date(ekhlekhOgnoo),
       },
+      "avlaga.guilgeenuud.turul": {
+        $lte: new Date(duusakhOgnoo),
+        $gte: new Date(ekhlekhOgnoo),
+      },
     };
     var groupQuery = {
       _id: "$gereeniiDugaar",
@@ -1893,7 +1897,10 @@ async function turluurDunBugluy(
 
     if (turul == "voucher") {
       matchQuery["avlaga.guilgeenuud.turul"] = "voucher";
-    }
+    } else
+      matchQuery["avlaga.guilgeenuud.turul"] = {
+        $ne: "baritsaa",
+      };
 
     if (turul == "khungulult") {
       matchQuery["avlaga.guilgeenuud.khyamdral"] = {
@@ -2019,6 +2026,9 @@ router
           tulsunDun: {
             $gt: 0,
           },
+          turul: {
+            $ne: "baritsaa",
+          },
         },
       };
       body.lean = true;
@@ -2135,6 +2145,9 @@ router
                 $match: {
                   "avlaga.guilgeenuud.ognoo": {
                     $lte: new Date(req.body.duusakhOgnoo),
+                  },
+                  "avlaga.guilgeenuud.turul": {
+                    $ne: "baritsaa",
                   },
                 },
               },

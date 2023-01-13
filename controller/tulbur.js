@@ -11,7 +11,7 @@ const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 
 exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
   var guilgeenuud = req.body.guilgeenuud;
-  const session = await mongoose.startSession();
+  const session = await req.body.tukhainBaaziinKholbolt.kholbolt.startSession();
   session.startTransaction();
   try {
     var aldaaniiMsg;
@@ -95,7 +95,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
 
 exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
   var guilgee = req.body;
-  const session = await mongoose.startSession();
+  const session = await req.body.tukhainBaaziinKholbolt.kholbolt.startSession();
   session.startTransaction();
   try {
     var aldaaniiMsg;
@@ -562,7 +562,7 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
         "ИБаримт авсан гүйлгээг устгах боломжгүй! ИБаримтын гүйлгээг устгасны дараа устгах боломжтой!"
       );
   }
-  const session = await mongoose.startSession();
+  const session = await req.body.tukhainBaaziinKholbolt.kholbolt.startSession();
   session.startTransaction();
   try {
     var ObjectId = require("mongodb").ObjectId;
@@ -658,7 +658,7 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
 });
 
 exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
-  const session = await mongoose.startSession();
+  const session = await req.body.tukhainBaaziinKholbolt.kholbolt.startSession();
   session.startTransaction();
   try {
     await Geree(req.body.tukhainBaaziinKholbolt)
@@ -805,7 +805,8 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
 
 exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
   try {
-    const session = await mongoose.startSession();
+    const session =
+      await req.body.tukhainBaaziinKholbolt.kholbolt.startSession();
     session.startTransaction();
     try {
       var khungulult = new KhungulultiinTuukh(req.body.tukhainBaaziinKholbolt)(
@@ -857,7 +858,8 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
 
 exports.khungulultUstgaya = asyncHandler(async (req, res, next) => {
   try {
-    const session = await mongoose.startSession();
+    const session =
+      await req.body.tukhainBaaziinKholbolt.kholbolt.startSession();
     session.startTransaction();
     try {
       var khungulult = await KhungulultiinTuukh(
