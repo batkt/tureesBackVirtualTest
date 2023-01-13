@@ -16,165 +16,201 @@ const {
   bankniiKhuulgaTatajKhadgalya,
 } = require("../controller/cgw");
 
-const {
-  qpayGargaya,
-  qpayTulye
-} = require("../controller/qpay");
+const { qpayGargaya, qpayTulye } = require("../controller/qpay");
 
 const {
   khariltsagchNevtrey,
   sergeekhKodAvya,
   nuutsUgSergeeye,
   khariltsagchidTokenOnooyo,
-  tokenoorKhariltsagchAvya
-} = require('../controller/khariltsagch')
+  tokenoorKhariltsagchAvya,
+} = require("../controller/khariltsagch");
 
 const {
   khariltsagchiinTooAvya,
-  khyanakhSambariinUgugdul
+  khyanakhSambariinUgugdul,
 } = require("../controller/toololt");
 
-const { khariltsagchZagvarAvya, khariltsagchTatya } = require("../controller/excel");
+const {
+  khariltsagchZagvarAvya,
+  khariltsagchTatya,
+} = require("../controller/excel");
 
-crud(router, "khariltsagch", Khariltsagch, UstsanBarimt, async (req, res, next) => {
-  try {
-    if (!req.body.register)
-      throw new Error("Регистрийн дугаар бөглөнө үү!")
-    else {
-      var khariltsagch = await Khariltsagch.findOne({ register: req.body.register, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId });
-      if (khariltsagch)
-        throw new Error("Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!")
-      else if (Array.isArray(req.body.utas)) {
-        khariltsagch = await Khariltsagch.findOne({ utas: { $in: req.body.utas }, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId });
+crud(
+  router,
+  "khariltsagch",
+  Khariltsagch,
+  UstsanBarimt,
+  async (req, res, next) => {
+    try {
+      if (!req.body.register) throw new Error("Регистрийн дугаар бөглөнө үү!");
+      else {
+        var khariltsagch = await Khariltsagch.findOne({
+          register: req.body.register,
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+        });
         if (khariltsagch)
-          throw new Error("Тухайн утасны дугаараар харилцагч бүртгэлтэй байна!")
+          throw new Error(
+            "Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!"
+          );
+        else if (Array.isArray(req.body.utas)) {
+          khariltsagch = await Khariltsagch.findOne({
+            utas: { $in: req.body.utas },
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+          });
+          if (khariltsagch)
+            throw new Error(
+              "Тухайн утасны дугаараар харилцагч бүртгэлтэй байна!"
+            );
+        }
       }
+      next();
+    } catch (error) {
+      next(error);
     }
-    next();
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 router.route("/khariltsagchNevtrey").post(khariltsagchNevtrey);
 router.route("/sergeekhKodAvya").post(sergeekhKodAvya);
 router.route("/nuutsUgSergeeye").post(nuutsUgSergeeye);
-router.route("/tokenoorKhariltsagchAvya").post(tokenoorKhariltsagchAvya)
+router.route("/tokenoorKhariltsagchAvya").post(tokenoorKhariltsagchAvya);
 router.route("/khariltsagchidTokenOnooyo").post(khariltsagchidTokenOnooyo);
-router.route("/khariltsagchiinTooAvya/:barilgiinId").get(tokenShalgakh, khariltsagchiinTooAvya);
-router.route("/khyanakhSambariinUgugdul").post(tokenShalgakh, khyanakhSambariinUgugdul);
-router.route("/bankniiDansniiJagsaaltAvya").get(tokenShalgakh, bankniiDansniiJagsaaltAvya);
+router
+  .route("/khariltsagchiinTooAvya/:barilgiinId")
+  .get(tokenShalgakh, khariltsagchiinTooAvya);
+router
+  .route("/khyanakhSambariinUgugdul")
+  .post(tokenShalgakh, khyanakhSambariinUgugdul);
+router
+  .route("/bankniiDansniiJagsaaltAvya")
+  .get(tokenShalgakh, bankniiDansniiJagsaaltAvya);
 router.route("/dansniiUldegdelAvya").post(tokenShalgakh, dansniiUldegdelAvya);
-router.route("/bankniiDansniiKhuulgaAvya").post(tokenShalgakh, bankniiDansniiKhuulgaAvya);
+router
+  .route("/bankniiDansniiKhuulgaAvya")
+  .post(tokenShalgakh, bankniiDansniiKhuulgaAvya);
 router.route("/qpayGargaya").post(tokenShalgakh, qpayGargaya);
 router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").get(qpayTulye);
-router.route("/bankniiKhuulgaTatajKhadgalya").post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
-router.route("/khariltsagchZagvarAvya").get(tokenShalgakh, khariltsagchZagvarAvya);
-router.route("/khariltsagchTatya").post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);
+router
+  .route("/bankniiKhuulgaTatajKhadgalya")
+  .post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
+router
+  .route("/khariltsagchZagvarAvya")
+  .get(tokenShalgakh, khariltsagchZagvarAvya);
+router
+  .route("/khariltsagchTatya")
+  .post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);
 
-router.route("/khariltsagchUstgaya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    Khariltsagch.findOne({
-      _id: req.body.id,
-    }).then(async (result) => {
-      var geree = await Geree.findOne({ tuluv: 1, register: result.register, barilgiinId: result.barilgiinId, baiguullagiinId: result.baiguullagiinId });
-      if (geree)
-        throw new Error("Тухайн харилцагч дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!");
-      var barimt = new UstsanBarimt();
-      barimt.class = "Khariltsagch";
-      barimt.object = result;
-      if (req.body.nevtersenAjiltniiToken) {
-        barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
-        barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
-      }
-      barimt.baiguullagiinId = req.body.baiguullagiinId;
-      barimt.isNew = true;
-      barimt.save();
-      Khariltsagch.deleteOne({
+router
+  .route("/khariltsagchUstgaya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      Khariltsagch.findOne({
         _id: req.body.id,
       })
-        .then((result1) => {
-          res.send("Amjilttai");
+        .then(async (result) => {
+          var geree = await Geree.findOne({
+            tuluv: 1,
+            register: result.register,
+            barilgiinId: result.barilgiinId,
+            baiguullagiinId: result.baiguullagiinId,
+          });
+          if (geree)
+            throw new Error(
+              "Тухайн харилцагч дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!"
+            );
+          var barimt = new UstsanBarimt();
+          barimt.class = "Khariltsagch";
+          barimt.object = result;
+          if (req.body.nevtersenAjiltniiToken) {
+            barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+            barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+          }
+          barimt.baiguullagiinId = req.body.baiguullagiinId;
+          barimt.isNew = true;
+          barimt.save();
+          Khariltsagch.deleteOne({
+            _id: req.body.id,
+          })
+            .then((result1) => {
+              res.send("Amjilttai");
+            })
+            .catch((err) => {
+              next(err);
+            });
         })
-        .catch((err) => {
-          next(err);
+        .catch((err1) => {
+          next(err1);
         });
-    }).catch((err1) => {
-      next(err1);
-    });
-  }
-  catch (err2) {
-    next(err2);
-  }
-});
-
-
-router.route("/khariltsagchDavkhraarAvya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    var davkhar = req.body.davkhar;
-    var matchQuery = {}
-    var query = [
-      {
-        '$match': {
-          'baiguullagiinId': req.body.baiguullagiinId,
-          'barilgiinId': req.body.barilgiinId
-        }
-      },
-      {
-        "$lookup":
-        {
-          'from': 'geree',
-          'let': {
-            "register": "$register",
-            "baiguullagiinId": "$baiguullagiinId",
-            "barilgiinId": "$barilgiinId"
-          },
-          'pipeline': [
-            {
-              '$match':
-              {
-                '$expr':
-                {
-                  '$and':
-                    [
-                      { '$eq': ["$register", "$$register"] },
-                      { '$eq': ["$baiguullagiinId", "$$baiguullagiinId"] },
-                      { '$eq': ["$barilgiinId", "$$barilgiinId"] }
-                    ]
-                }
-              }
-            }
-          ],
-          'as': 'geree'
-        }
-      },
-    ]
-    if (req.body.query)
-      matchQuery = req.body.query
-    if (davkhar) {
-      matchQuery["geree.davkhar"] = davkhar
-      matchQuery["geree.tuluv"] = { $nin: [-1] }
+    } catch (err2) {
+      next(err2);
     }
-    if (matchQuery)
-      query.push({
-        "$match": matchQuery
-      })
-    query.push(
-      {
-        "$project":
+  });
+
+router
+  .route("/khariltsagchDavkhraarAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var davkhar = req.body.davkhar;
+      var matchQuery = {};
+      var query = [
         {
-          "geree": 0
-        }
-      })
-    var result = await Khariltsagch.aggregate(query);
-    res.send(result);
-  } catch (error) {
-    next(error);
-  }
-});
-
-
-
-
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+          },
+        },
+        {
+          $lookup: {
+            from: "geree",
+            let: {
+              register: "$register",
+              baiguullagiinId: "$baiguullagiinId",
+              barilgiinId: "$barilgiinId",
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ["$register", "$$register"] },
+                      { $eq: ["$baiguullagiinId", "$$baiguullagiinId"] },
+                      { $eq: ["$barilgiinId", "$$barilgiinId"] },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: "geree",
+          },
+        },
+      ];
+      if (req.body.query) matchQuery = req.body.query;
+      if (davkhar) {
+        matchQuery["geree.davkhar"] = davkhar;
+        matchQuery["geree.tuluv"] = { $nin: [-1] };
+      }
+      if (matchQuery)
+        query.push({
+          $match: matchQuery,
+        });
+      query.push({
+        $addFields: {
+          talbainDugaaruud: "$geree.talbainDugaar",
+        },
+      });
+      query.push({
+        $project: {
+          geree: 0,
+        },
+      });
+      var result = await Khariltsagch.aggregate(query);
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  });
 
 module.exports = router;
