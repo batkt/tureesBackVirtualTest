@@ -877,7 +877,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
           $ne: "System",
         },
         "avlaga.guilgeenuud.turul": {
-          $nin: ["baritsaa"],
+          $nin: ["baritsaa", "aldangi"],
         },
       },
     },
