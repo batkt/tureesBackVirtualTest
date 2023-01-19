@@ -1109,12 +1109,6 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
               dun: turluur[0].khurimtlagdsan[0].uldegdel,
               ungu: unguud[1],
             });
-          if (turluur[0] && turluur[0].niit && turluur[0].niit.length > 0)
-            jagsaalt.push({
-              ner: "Нийт",
-              dun: turluur[0].niit[0].uldegdel,
-              ungu: unguud[2],
-            });
           if (
             turluur[0] &&
             turluur[0].eneSariin &&
@@ -1124,6 +1118,12 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
               ner: "Энэ сарын",
               dun: turluur[0].eneSariin[0].uldegdel,
               ungu: unguud[3],
+            });
+          if (turluur[0] && turluur[0].niit && turluur[0].niit.length > 0)
+            jagsaalt.push({
+              ner: "Нийт",
+              dun: turluur[0].niit[0].uldegdel,
+              ungu: unguud[2],
             });
         }
         var data = {
