@@ -826,6 +826,9 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
       $match: {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
+        tuluv: {
+          $ne: -1,
+        },
       },
     },
     {
@@ -834,15 +837,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     },
     {
-      $unwind: {
-        path: "$avlaga.guilgeenuud.ognoo",
-      },
-    },
-    {
       $match: {
-        tuluv: {
-          $ne: -1,
-        },
         "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
           $ne: "System",
         },
