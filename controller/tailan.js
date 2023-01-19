@@ -1044,6 +1044,21 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
           },
           {
             $group: {
+              _id: "$gereeniiDugaar",
+              uldegdel: {
+                $sum: "$uldegdel",
+              },
+            },
+          },
+          {
+            $match: {
+              uldegdel: {
+                $gt: 0,
+              },
+            },
+          },
+          {
+            $group: {
               _id: "niit",
               uldegdel: {
                 $sum: "$uldegdel",
