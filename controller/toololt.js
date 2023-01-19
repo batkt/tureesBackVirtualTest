@@ -528,7 +528,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $group: {
           _id: "tsutslagdsanAvlaga",
           dun: {
-            $sum: $dun,
+            $sum: "$dun",
           },
         },
       },
