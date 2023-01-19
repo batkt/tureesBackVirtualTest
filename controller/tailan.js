@@ -927,66 +927,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             },
           },
         ],
-        umnukhSariin1: [
-          {
-            $match: {
-              "avlaga.guilgeenuud.ognoo": {
-                $lt: new Date(umnukhSar),
-              },
-              tuluv: {
-                $ne: -1,
-              },
-            },
-          },
-          {
-            $group: {
-              _id: "$gereeniiDugaar",
-              tulukh: {
-                $sum: {
-                  $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
-                },
-              },
-              khyamdral: {
-                $sum: {
-                  $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
-                },
-              },
-              tulsun: {
-                $sum: {
-                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                },
-              },
-            },
-          },
-          {
-            $project: {
-              dun: {
-                $subtract: [
-                  "$tulukh",
-                  {
-                    $sum: ["$tulsun", "$khyamdral"],
-                  },
-                ],
-              },
-            },
-          },
-          {
-            $match: {
-              dun: {
-                $gt: 0,
-              },
-            },
-          },
-          {
-            $group: {
-              _id: "umnukhSariin",
-              uldegdel: {
-                $sum: "$dun",
-              },
-            },
-          },
-        ],
-        umnukhSariin2: [
+        khurimtlagdsan: [
           {
             $match: {
               "avlaga.guilgeenuud.ognoo": {
@@ -1168,21 +1109,14 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             });
           if (
             turluur[0] &&
-            turluur[0].umnukhSariin2 &&
-            turluur[0].umnukhSariin2.length > 0
+            turluur[0].khurimtlagdsan &&
+            turluur[0].khurimtlagdsan.length > 0
           )
-            var dun =
-              (turluur[0].umnukhSariin2[0].uldegdel
-                ? turluur[0].umnukhSariin2[0].uldegdel
-                : 0) -
-              (turluur[0].umnukhSariin1[0]?.uldegdel
-                ? turluur[0].umnukhSariin1[0]?.uldegdel
-                : 0);
-          jagsaalt.push({
-            ner: "Өмнөх сар",
-            dun: dun,
-            ungu: unguud[1],
-          });
+            jagsaalt.push({
+              ner: "Хуримтлагдсан",
+              dun: turluur[0].khurimtlagdsan[0].uldegdel,
+              ungu: unguud[1],
+            });
           if (turluur[0] && turluur[0].niit && turluur[0].niit.length > 0)
             jagsaalt.push({
               ner: "Нийт",
