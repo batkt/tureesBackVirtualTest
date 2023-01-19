@@ -963,13 +963,6 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             },
           },
           {
-            $match: {
-              dun: {
-                $gt: 0,
-              },
-            },
-          },
-          {
             $group: {
               _id: "umnukhSariin",
               uldegdel: {
@@ -1039,21 +1032,6 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                     ],
                   },
                 ],
-              },
-            },
-          },
-          {
-            $group: {
-              _id: "$gereeniiDugaar",
-              uldegdel: {
-                $sum: "$uldegdel",
-              },
-            },
-          },
-          {
-            $match: {
-              uldegdel: {
-                $gt: 0,
               },
             },
           },

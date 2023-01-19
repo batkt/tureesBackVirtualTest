@@ -480,14 +480,11 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           "avlaga.guilgeenuud.ognoo": {
             $lte: duusakhOgnoo,
           },
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
-          },
         },
       },
       {
         $group: {
-          _id: "$gereeniiDugaar",
+          _id: "tsutslagdsanAvlaga",
           tulukh: {
             $sum: {
               $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -514,21 +511,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
                 $sum: ["$tulsun", "$khyamdral"],
               },
             ],
-          },
-        },
-      },
-      {
-        $match: {
-          dun: {
-            $gt: 0,
-          },
-        },
-      },
-      {
-        $group: {
-          _id: "tsutslagdsanAvlaga",
-          dun: {
-            $sum: "$dun",
           },
         },
       },
