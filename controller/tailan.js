@@ -1045,6 +1045,48 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
             },
           },
         ],
+        eneSariin: [
+          {
+            $match: {
+              "avlaga.guilgeenuud.ognoo": {
+                $lte: new Date(req.body.duusakhOgnoo),
+                $gte: new Date(req.body.ekhlekhOgnoo),
+              },
+              tuluv: {
+                $ne: -1,
+              },
+            },
+          },
+          {
+            $project: {
+              uldegdel: {
+                $subtract: [
+                  {
+                    $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                  },
+                  {
+                    $add: [
+                      {
+                        $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                      },
+                      {
+                        $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: "niit",
+              uldegdel: {
+                $sum: "$uldegdel",
+              },
+            },
+          },
+        ],
         niit: [
           {
             $project: {
@@ -1146,6 +1188,16 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
               ner: "Нийт",
               dun: turluur[0].niit[0].uldegdel,
               ungu: unguud[2],
+            });
+          if (
+            turluur[0] &&
+            turluur[0].eneSariin &&
+            turluur[0].eneSariin.length > 0
+          )
+            jagsaalt.push({
+              ner: "Энэ сарын",
+              dun: turluur[0].eneSariin[0].uldegdel,
+              ungu: unguud[3],
             });
         }
         var data = {
