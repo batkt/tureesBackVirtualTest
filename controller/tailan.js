@@ -877,7 +877,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
           $ne: "System",
         },
         "avlaga.guilgeenuud.turul": {
-          $nin: ["baritsaa", "aldangi"],
+          $nin: ["baritsaa"],
         },
       },
     },
@@ -959,13 +959,6 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
                     $sum: ["$tulsun", "$khyamdral"],
                   },
                 ],
-              },
-            },
-          },
-          {
-            $match: {
-              dun: {
-                $gt: 0,
               },
             },
           },
