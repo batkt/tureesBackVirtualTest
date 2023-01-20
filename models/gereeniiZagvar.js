@@ -14,6 +14,8 @@ const gereeniiZaaltSchema = new Schema(
     tolgoi: String,
     baruunTolgoi: String,
     zuunTolgoi: String,
+    baruunKhul: String,
+    zuunKhul: String,
     khul: String,
     dedKhesguud: Array,
     turGereeEsekh: Boolean,
