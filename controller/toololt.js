@@ -480,9 +480,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           "avlaga.guilgeenuud.ognoo": {
             $lte: duusakhOgnoo,
           },
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
-          },
         },
       },
       {
