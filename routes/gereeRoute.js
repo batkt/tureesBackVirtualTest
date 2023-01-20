@@ -2110,11 +2110,8 @@ router
                   },
                   $or: [
                     {
-                      "avlaga.guilgeenuud.turul": "khuvaari",
-                    },
-                    {
                       "avlaga.guilgeenuud.turul": {
-                        $exists: false,
+                        $nin: ["baritsaa"],
                       },
                     },
                   ],
