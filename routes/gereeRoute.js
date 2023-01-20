@@ -2081,7 +2081,9 @@ router
                     },
                   },
                   tulsun: {
-                    $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                    },
                   },
                 },
               },
