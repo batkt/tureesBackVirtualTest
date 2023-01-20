@@ -2071,13 +2071,17 @@ router
                 $group: {
                   _id: "$gereeniiDugaar",
                   tulukh: {
-                    $sum: "$avlaga.guilgeenuud.tulukhDun",
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
                   },
                   khyamdral: {
-                    $sum: "$avlaga.guilgeenuud.khyamdral",
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                    },
                   },
                   tulsun: {
-                    $sum: "$avlaga.guilgeenuud.tulsunDun",
+                    $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
                   },
                 },
               },
@@ -2102,10 +2106,16 @@ router
                     $lte: new Date(req.body.duusakhOgnoo),
                     $gte: new Date(req.body.ekhlekhOgnoo),
                   },
-                  "avlaga.guilgeenuud.turul": "khuvaari",
-                  "avlaga.guilgeenuud.turul": {
-                    $nin: ["baritsaa"],
-                  },
+                  $or: [
+                    {
+                      "avlaga.guilgeenuud.turul": "khuvaari",
+                    },
+                    {
+                      "avlaga.guilgeenuud.turul": {
+                        $exists: false,
+                      },
+                    },
+                  ],
                 },
               },
               {
