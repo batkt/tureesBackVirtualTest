@@ -2102,9 +2102,6 @@ router
                     $lte: new Date(req.body.duusakhOgnoo),
                     $gte: new Date(req.body.ekhlekhOgnoo),
                   },
-                  "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-                    $ne: "System",
-                  },
                   "avlaga.guilgeenuud.turul": "khuvaari",
                   "avlaga.guilgeenuud.turul": {
                     $nin: ["baritsaa"],

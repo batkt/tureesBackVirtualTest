@@ -346,9 +346,6 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
           $gte: new Date(req.body.ekhlekhOgnoo),
           $lte: new Date(req.body.duusakhOgnoo),
         },
-        "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-          $ne: "System",
-        },
         "avlaga.guilgeenuud.turul": {
           $nin: ["baritsaa"],
         },
@@ -373,9 +370,6 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         barilgiinId: req.body.barilgiinId,
         tuluv: {
           $ne: -1,
-        },
-        "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-          $ne: "System",
         },
         "avlaga.guilgeenuud.ognoo": {
           $gte: new Date(req.body.ekhlekhOgnoo),
@@ -838,9 +832,6 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
     },
     {
       $match: {
-        "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-          $ne: "System",
-        },
         "avlaga.guilgeenuud.ognoo": {
           $lte: new Date(req.body.duusakhOgnoo),
         },
@@ -1181,9 +1172,6 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
         tuluv: {
           $ne: -1,
         },
-        "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-          $ne: "System",
-        },
         "avlaga.guilgeenuud.ognoo": {
           $gte: new Date("2022-01-01 00:00:00"),
           $lte: new Date("2022-12-31 23:59:59"),
@@ -1266,9 +1254,6 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
       $match: {
         tuluv: {
           $ne: -1,
-        },
-        "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-          $ne: "System",
         },
         "avlaga.guilgeenuud.ognoo": {
           $gte: new Date("2022-01-01 00:00:00"),
@@ -1396,9 +1381,6 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         $match: {
           tuluv: {
             $ne: -1,
-          },
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
           },
           "avlaga.guilgeenuud.ognoo": {
             $gte: ekhlekhOgnoo,

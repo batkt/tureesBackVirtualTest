@@ -160,9 +160,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           "avlaga.guilgeenuud.ognoo": {
             $lt: ekhlekhOgnoo,
           },
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
-          },
           "avlaga.guilgeenuud.turul": {
             $nin: ["baritsaa"],
           },
@@ -237,9 +234,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             $lte: duusakhOgnoo,
             $gte: ekhlekhOgnoo,
           },
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
-          },
           "avlaga.guilgeenuud.turul": "voucher",
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
@@ -268,9 +262,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $match: {
           daraagiinTulukhOgnoo: {
             $lte: duusakhOgnoo,
-          },
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
           },
           "avlaga.guilgeenuud.turul": {
             $nin: ["baritsaa"],
@@ -346,9 +337,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           },
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
-          },
           "avlaga.guilgeenuud.turul": {
             $nin: ["baritsaa"],
           },
@@ -393,9 +381,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             $gte: ekhlekhOgnoo,
             $lte: duusakhOgnoo,
           },
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
-          },
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
           "avlaga.guilgeenuud.turul": {
@@ -427,9 +412,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           "avlaga.guilgeenuud.ognoo": {
             $gte: ekhlekhOgnoo,
             $lte: duusakhOgnoo,
-          },
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
           },
           "avlaga.guilgeenuud.turul": {
             $nin: ["baritsaa"],
@@ -819,9 +801,6 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
             $lte: duusakhOgnoo,
           },
           baiguullagiinId: req.body.baiguullagiinId,
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
-          },
           "avlaga.guilgeenuud.turul": {
             $nin: ["baritsaa"],
           },
@@ -865,9 +844,6 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
           "avlaga.guilgeenuud.ognoo": {
             $gte: ekhlekhOgnoo,
             $lte: duusakhOgnoo,
-          },
-          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
-            $ne: "System",
           },
           baiguullagiinId: req.body.baiguullagiinId,
           "avlaga.guilgeenuud.turul": {
