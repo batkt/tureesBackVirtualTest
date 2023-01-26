@@ -36,7 +36,7 @@ const baiguullagaSchema = new Schema(
             davkhar: String,
             talbai: Number,
             tariff: Number,
-            planZurag: String
+            planZurag: String,
           },
         ],
       },
@@ -82,7 +82,13 @@ const baiguullagaSchema = new Schema(
       khereglegchEkhlekhOgnoo: Date,
       zogsooliinMinut: Number,
       zogsooliinKhungulukhMinut: Number,
-      zogsooliinDun: Number
+      zogsooliinDun: Number,
+      apiAvlagaDans: String,
+      apiOrlogoDans: String,
+      apiNuatDans: String,
+      apiZogsoolDans: String,
+      apiZogsoolDans: String,
+      apiTogloomiinTuvDans: String,
     },
     erkhuud: [
       {
@@ -105,7 +111,7 @@ const baiguullagaSchema = new Schema(
 );
 
 const BaiguullagaModel = mongoose.model("baiguullaga", baiguullagaSchema);
-var newId = new mongoose.mongo.ObjectId('62bbb00140b7dd4f39c99e64');
+var newId = new mongoose.mongo.ObjectId("62bbb00140b7dd4f39c99e64");
 BaiguullagaModel.estimatedDocumentCount().then((count) => {
   if (count == 0) {
     BaiguullagaModel.create(
@@ -113,7 +119,7 @@ BaiguullagaModel.estimatedDocumentCount().then((count) => {
         _id: newId,
         ner: "E-Mart",
         utas: "80994111",
-        register: "5811651"
+        register: "5811651",
       })
     );
   }
