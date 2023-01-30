@@ -204,9 +204,8 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
   });
   console.log("req.query", req.query);
   console.log("req.params", req.params);
-  var payment_id = req.params.payment_id;
-  console.log("qpayBarimt", qpayBarimt);
-  qpayBarimt.payment_id = payment_id;
+  if (req.query && req.query.qpay_payment_id)
+    qpayBarimt.payment_id = req.query.qpay_payment_id;
   qpayBarimt.tulsunEsekh = true;
   qpayBarimt.isNew = false;
   var tulbur = {

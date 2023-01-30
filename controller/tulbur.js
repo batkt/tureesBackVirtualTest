@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const QpayObject = require("../models/qpayObject");
 const Baiguullaga = require("../models/baiguullaga");
 const Talbai = require("../models/talbai");
 const { UstsanBarimt } = require("zevback");
@@ -377,42 +378,70 @@ module.exports.tulultTaniya = async function tulultTaniya() {
   console.log("tulult taniya", guilgeenuud);
   var khaikhNukhtsul;
   var tailbar = [];
+  var qpaynuud = await QpayObject.find({
+    payment_id: { $exists: true },
+    updatedAt: { $gte: new Date(new Date().getTime() - 30 * 60000) },
+  });
   if (guilgeenuud != null && guilgeenuud.length > 0) {
     try {
       guilgeenuud.forEach(async (x) => {
-        khaikhNukhtsul = [];
-        if (x.description) tailbar = x.description.split(" ");
-        else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
-        if (x.relatedAccount != null)
-          khaikhNukhtsul.push({
-            "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
+        if (
+          ((x.description && x.description.toLowerCase().includes("qpay")) ||
+            (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay"))) &&
+          qpaynuud &&
+          qpaynuud.length > 0
+        ) {
+          for await (const qpay of qpaynuud) {
+            if (x.description && x.description.includes(qpay.payment_id)) {
+              var geree = await Geree.findById(qpay.gereeniiId);
+              x.kholbosonGereeniiId = [qpay.gereeniiId];
+              x.kholbosonDun = x.amount;
+              x.kholbosonTalbainId = [geree.talbainDugaar];
+              x.save();
+            } else if (x.TxAddInf && x.TxAddInf.includes(qpay.payment_id)) {
+              var geree = await Geree.findById(qpay.gereeniiId);
+              x.kholbosonGereeniiId = [qpay.gereeniiId];
+              x.kholbosonDun = x.Amt;
+              x.kholbosonTalbainId = [geree.talbainDugaar];
+              x.save();
+            }
+            continue;
+          }
+        } else {
+          khaikhNukhtsul = [];
+          if (x.description) tailbar = x.description.split(" ");
+          else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
+          if (x.relatedAccount != null)
+            khaikhNukhtsul.push({
+              "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
+            });
+          else if (x.CtAcntOrg != null)
+            khaikhNukhtsul.push({
+              "avlaga.guilgeenuud.dansniiDugaar": x.CtAcntOrg,
+            });
+          tailbar.forEach((y) => {
+            khaikhNukhtsul.push({ utas: y });
+            khaikhNukhtsul.push({ register: y });
+            y = y.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
+            khaikhNukhtsul.push({ talbainDugaar: { $regex: ".*" + y + ".*" } });
           });
-        else if (x.CtAcntOrg != null)
-          khaikhNukhtsul.push({
-            "avlaga.guilgeenuud.dansniiDugaar": x.CtAcntOrg,
+          console.log(khaikhNukhtsul);
+          var oldsonGereenuud = await Geree.find({
+            $or: khaikhNukhtsul,
+            barilgiinId: guilgeenuud.barilgiinId,
           });
-        tailbar.forEach((y) => {
-          khaikhNukhtsul.push({ utas: y });
-          khaikhNukhtsul.push({ register: y });
-          y = y.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
-          khaikhNukhtsul.push({ talbainDugaar: { $regex: ".*" + y + ".*" } });
-        });
-        console.log(khaikhNukhtsul);
-        var oldsonGereenuud = await Geree.find({
-          $or: khaikhNukhtsul,
-          barilgiinId: guilgeenuud.barilgiinId,
-        });
-        if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
-          oldsonGereenuud.forEach((a) => {
-            if (
-              x.magadlaltaiGereenuud != null &&
-              !x.magadlaltaiGereenuud.includes(a._id)
-            )
-              x.magadlaltaiGereenuud.push(a._id);
-            else x.magadlaltaiGereenuud = [a._id];
-          });
-          x.isNew = false;
-          x.save();
+          if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
+            oldsonGereenuud.forEach((a) => {
+              if (
+                x.magadlaltaiGereenuud != null &&
+                !x.magadlaltaiGereenuud.includes(a._id)
+              )
+                x.magadlaltaiGereenuud.push(a._id);
+              else x.magadlaltaiGereenuud = [a._id];
+            });
+            x.isNew = false;
+            x.save();
+          }
         }
       });
     } catch (error) {
