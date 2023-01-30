@@ -397,12 +397,14 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               x.kholbosonGereeniiId = [qpay.gereeniiId];
               x.kholbosonDun = x.amount;
               x.kholbosonTalbainId = [geree.talbainDugaar];
+              oldsonGuilgee.isNew = false;
               x.save();
             } else if (x.TxAddInf && x.TxAddInf.includes(qpay.payment_id)) {
               var geree = await Geree.findById(qpay.gereeniiId);
               x.kholbosonGereeniiId = [qpay.gereeniiId];
               x.kholbosonDun = x.Amt;
               x.kholbosonTalbainId = [geree.talbainDugaar];
+              oldsonGuilgee.isNew = false;
               x.save();
             }
             continue;
