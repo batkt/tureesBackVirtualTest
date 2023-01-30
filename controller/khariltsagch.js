@@ -36,40 +36,42 @@ async function kodUusgey() {
 
 function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
   try {
-    url = process.env.MSG_SERVER + "/send"
-      + "?key=" + key + "&from=" + dugaar + "&to="
-      + jagsaalt[index].to.toString() + "&text=" + jagsaalt[index].text.toString();
+    url =
+      process.env.MSG_SERVER +
+      "/send" +
+      "?key=" +
+      key +
+      "&from=" +
+      dugaar +
+      "&to=" +
+      jagsaalt[index].to.toString() +
+      "&text=" +
+      jagsaalt[index].text.toString();
     url = encodeURI(url);
-    request(url,
-      { json: true },
-      (err1, res1, body) => {
-        if (err1) {
+    request(url, { json: true }, (err1, res1, body) => {
+      if (err1) {
+        console.log("url", url);
+        next(err1);
+      } else {
+        var msg = new MsgTuukh();
+        msg.baiguullagiinId = req.body.baiguullagiinId;
+        msg.barilgiinId = req.body.barilgiinId;
+        msg.dugaar = jagsaalt[index].to;
+        msg.gereeniiId = jagsaalt[index].gereeniiId;
+        msg.msg = jagsaalt[index].text;
+        msg.save();
+        if (jagsaalt.length > index + 1) {
           console.log("url", url);
-          next(err1);
-        }
-        else {
-          var msg = new MsgTuukh();
-          msg.baiguullagiinId = req.body.baiguullagiinId;
-          msg.barilgiinId = req.body.barilgiinId;
-          msg.dugaar = jagsaalt[index].to;
-          msg.gereeniiId = jagsaalt[index].gereeniiId;
-          msg.msg = jagsaalt[index].text;
-          msg.save();
-          if (jagsaalt.length > index + 1) {
-            console.log("url", url);
-            console.log("body", body)
-            khariu.push(body[0]);
-            msgIlgeeye(jagsaalt, key, dugaar, khariu, index + 1, next, req, res)
-          }
-          else {
-            console.log("url", url);
-            khariu.push(body[0]);
-          }
+          console.log("body", body);
+          khariu.push(body[0]);
+          msgIlgeeye(jagsaalt, key, dugaar, khariu, index + 1, next, req, res);
+        } else {
+          console.log("url", url);
+          khariu.push(body[0]);
         }
       }
-    );
-  }
-  catch (err) {
+    });
+  } catch (err) {
     next(err);
   }
 }
@@ -77,10 +79,9 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
 exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
   try {
     const khariltsagch = await Khariltsagch.findOne({
-      utas: req.body.utas
-    })
-    if (!khariltsagch)
-      throw new Error("Бүртгэлтэй харилцагч олдсонгүй!");
+      utas: req.body.utas,
+    });
+    if (!khariltsagch) throw new Error("Бүртгэлтэй харилцагч олдсонгүй!");
     khariltsagch.sergeekhKod = await kodUusgey();
     var baiguullaga = await Baiguullaga.findById(khariltsagch.baiguullagiinId);
     var msgIlgeekhKey;
@@ -88,15 +89,35 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
     try {
       msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
       msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
-    }
-    catch (error) {
+    } catch (error) {
       throw new aldaa("Тохиргоо хийгдээгүй байна!");
     }
     if (!msgIlgeekhKey || !msgIlgeekhDugaar)
       throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
-    await Khariltsagch.updateOne({ _id: khariltsagch._id }, { $set: { sergeekhKod: khariltsagch.sergeekhKod } });
-    await msgIlgeeye([{ text: "Нууц үг сэргээх код: " + khariltsagch.sergeekhKod, to: khariltsagch?.utas }], msgIlgeekhKey, msgIlgeekhDugaar, [], 0, next, res)
-    res.send(khariltsagch._id)
+    await Khariltsagch.updateOne(
+      { _id: khariltsagch._id },
+      { $set: { sergeekhKod: khariltsagch.sergeekhKod } }
+    );
+    await msgIlgeeye(
+      [
+        {
+          text: "Нууц үг сэргээх код: " + khariltsagch.sergeekhKod,
+          to: khariltsagch?.utas,
+        },
+      ],
+      msgIlgeekhKey,
+      msgIlgeekhDugaar,
+      [],
+      0,
+      next,
+      {
+        body: {
+          baiguullagiinId: khariltsagch.baiguullagiinId,
+        },
+      },
+      res
+    );
+    res.send(khariltsagch._id);
   } catch (err) {
     next(err);
   }
@@ -105,8 +126,7 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
 exports.nuutsUgSergeeye = asyncHandler(async (req, res, next) => {
   try {
     var khariltsagch = await Khariltsagch.findById(req.body.id);
-    if (!khariltsagch)
-      throw new Error("Харилцагч олдсонгүй!");
+    if (!khariltsagch) throw new Error("Харилцагч олдсонгүй!");
     if (khariltsagch.sergeekhKod != req.body.sergeekhKod)
       throw new Error("Сэргээх код буруу байна!");
     var token = await khariltsagch.tokenUusgeye();
