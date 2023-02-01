@@ -7,19 +7,7 @@ const QpayObject = require("../models/qpayObject");
 const Geree = require("../models/geree");
 const got = require("got");
 const { URL } = require("url");
-const got = require("got");
-const { URL } = require("url");
 const instance = got.extend({
-  hooks: {
-    beforeRequest: [
-      (options) => {
-        options.headers["Content-Type"] = "application/json";
-        if (options.context && options.context.token) {
-          options.headers["Authorization"] = options.context.token;
-        }
-      },
-    ],
-  },
   hooks: {
     beforeRequest: [
       (options) => {
@@ -32,22 +20,29 @@ const instance = got.extend({
   },
 });
 
-async function tokenAvya(username, password, next, baiguullagiinId,tukhainBaaziinKholbolt) {
+async function tokenAvya(
+  username,
+  password,
+  next,
+  baiguullagiinId,
+  tukhainBaaziinKholbolt
+) {
   try {
     var url = new URL(process.env.QPAY_SERVER + "v2/auth/token/");
     url.username = username;
     url.password = password;
     const response = await instance.post(url);
     var khariu = JSON.parse(response.body);
-    Token(tukhainBaaziinKholbolt).updateOne(
-      { turul: "qpay", baiguullagiinId: baiguullagiinId },
-      {
-        ognoo: new Date(),
-        token: khariu.access_token,
-        refreshToken: khariu.refresh_token,
-      },
-      { upsert: true }
-    )
+    Token(tukhainBaaziinKholbolt)
+      .updateOne(
+        { turul: "qpay", baiguullagiinId: baiguullagiinId },
+        {
+          ognoo: new Date(),
+          token: khariu.access_token,
+          refreshToken: khariu.refresh_token,
+        },
+        { upsert: true }
+      )
       .then((x) => {
         console.log(x);
       })

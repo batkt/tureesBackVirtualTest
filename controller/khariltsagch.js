@@ -107,7 +107,6 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
       msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
       msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
     } catch (error) {
-    } catch (error) {
       throw new aldaa("Тохиргоо хийгдээгүй байна!");
     }
     if (!msgIlgeekhKey || !msgIlgeekhDugaar)

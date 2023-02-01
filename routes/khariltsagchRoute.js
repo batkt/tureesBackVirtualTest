@@ -15,15 +15,12 @@ const {
 } = require("../controller/cgw");
 
 const { qpayGargaya, qpayTulye } = require("../controller/qpay");
-const { qpayGargaya, qpayTulye } = require("../controller/qpay");
 
 const {
   khariltsagchNevtrey,
   sergeekhKodAvya,
   nuutsUgSergeeye,
   khariltsagchidTokenOnooyo,
-  tokenoorKhariltsagchAvya,
-} = require("../controller/khariltsagch");
   tokenoorKhariltsagchAvya,
 } = require("../controller/khariltsagch");
 
@@ -54,7 +51,9 @@ crud(
           barilgiinId: req.body.barilgiinId,
         });
         if (khariltsagch)
-          throw new Error("Тухайн утасны дугаараар харилцагч бүртгэлтэй байна!")
+          throw new Error(
+            "Тухайн утасны дугаараар харилцагч бүртгэлтэй байна!"
+          );
       }
       next();
     } catch (error) {
@@ -76,7 +75,6 @@ router
   .route("/khyanakhSambariinUgugdul")
   .post(tokenShalgakh, khyanakhSambariinUgugdul);
 router.route("/dansniiUldegdelAvya").post(tokenShalgakh, dansniiUldegdelAvya);
-router.route("/bankniiDansniiKhuulgaAvya").post(tokenShalgakh, bankniiDansniiKhuulgaAvya);
 router.route("/qpayGargaya").post(tokenShalgakh, qpayGargaya);
 router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").get(qpayTulye);
 router
@@ -145,18 +143,7 @@ router
       next(err2);
     }
   });
-    } catch (err2) {
-      next(err2);
-    }
-  });
 
-router
-  .route("/khariltsagchDavkhraarAvya")
-  .post(tokenShalgakh, async (req, res, next) => {
-    try {
-      var davkhar = req.body.davkhar;
-      var matchQuery = {};
-      var query = [
 router
   .route("/khariltsagchDavkhraarAvya")
   .post(tokenShalgakh, async (req, res, next) => {
@@ -169,16 +156,6 @@ router
             baiguullagiinId: req.body.baiguullagiinId,
             barilgiinId: req.body.barilgiinId,
           },
-        },
-        {
-          $lookup: {
-            from: "geree",
-            let: {
-              register: "$register",
-              baiguullagiinId: "$baiguullagiinId",
-              barilgiinId: "$barilgiinId",
-            },
-            pipeline: [
         },
         {
           $lookup: {
@@ -215,20 +192,18 @@ router
           $match: matchQuery,
         });
       query.push({
-        "$match": matchQuery
-      })
-    query.push(
-      {
-        "$project":
-        {
-          "geree": 0
-        }
-      })
-    var result = await Khariltsagch.aggregate(query);
-    res.send(result);
-  } catch (error) {
-    next(error);
-  }
-});
+        $match: matchQuery,
+      });
+      query.push({
+        $project: {
+          geree: 0,
+        },
+      });
+      var result = await Khariltsagch.aggregate(query);
+      res.send(result);
+    } catch (error) {
+      next(error);
+    }
+  });
 
 module.exports = router;
