@@ -13,6 +13,8 @@ const request = require("request");
 function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
   return (bodokhDun - nuatguiDun).toFixed(2).toString();
+  var nuatguiDun = bodokhDun / 1.1;
+  return (bodokhDun - nuatguiDun).toFixed(2).toString();
 }
 
 async function guilgeeneesEbarimtUusgye(
@@ -34,7 +36,11 @@ async function guilgeeneesEbarimtUusgye(
   console.log("date", today.getDate());
   console.log("guilgeeniiSar", guilgeeniiSar);
   console.log("aaaa", today.getMonth());
-  if (today.getDate() < 9 && guilgeeniiSar < today.getMonth()) {
+  if (
+    today.getDate() < 8 &&
+    (guilgeeniiSar < today.getMonth() ||
+      (guilgeeniiSar == 11 && today.getMonth() == 0))
+  ) {
     ebarimt.reportMonth =
       today.getFullYear().toString() +
       "-" +
@@ -72,6 +78,25 @@ async function guilgeeneesEbarimtUusgye(
 }
 
 async function ebarimtDuudya(ugugdul, onFinish, next) {
+  try {
+    const data = new TextEncoder().encode(JSON.stringify(ugugdul));
+    var url = process.env.EBARIMT_IP + "/put";
+    if (ugugdul.barilgiinId)
+      url = url + "?lib=" + ugugdul.barilgiinId.toString();
+    request.post(
+      url,
+      { json: true, body: { data: ugugdul } },
+      (err, res1, body) => {
+        if (err) next(err);
+        else {
+          console.log("ebarimt body", body);
+          onFinish(body);
+        }
+      }
+    );
+  } catch (aldaa) {
+    next(aldaa);
+  }
   try {
     const data = new TextEncoder().encode(JSON.stringify(ugugdul));
     var url = process.env.EBARIMT_IP + "/put";
@@ -430,6 +455,24 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
         next(err);
       });
 
+    khariu = {
+      ilgeesenDun: 0,
+      ilgeesenToo: 0,
+      butsaasanDun: 0,
+      butsaasanToo: 0,
+      avakhDun: 0,
+      avakhToo: 0,
+    };
+    if (result[0]) {
+      if (result[0].butsaasan[0]) {
+        khariu.butsaasanDun = parseFloat(result[0].butsaasan[0].dun);
+        khariu.butsaasanToo = result[0].butsaasan[0].too;
+      }
+      if (result[0].ilgeesen[0]) {
+        khariu.ilgeesenDun = parseFloat(result[0].ilgeesen[0].dun);
+        khariu.ilgeesenToo = result[0].ilgeesen[0].too;
+      }
+    }
     khariu = {
       ilgeesenDun: 0,
       ilgeesenToo: 0,

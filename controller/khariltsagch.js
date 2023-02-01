@@ -49,6 +49,17 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
       jagsaalt[index].to.toString() +
       "&text=" +
       jagsaalt[index].text.toString();
+    url =
+      process.env.MSG_SERVER +
+      "/send" +
+      "?key=" +
+      key +
+      "&from=" +
+      dugaar +
+      "&to=" +
+      jagsaalt[index].to.toString() +
+      "&text=" +
+      jagsaalt[index].text.toString();
     url = encodeURI(url);
     request(url, { json: true }, (err1, res1, body) => {
       if (err1) {
@@ -95,6 +106,7 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
     try {
       msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
       msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
+    } catch (error) {
     } catch (error) {
       throw new aldaa("Тохиргоо хийгдээгүй байна!");
     }

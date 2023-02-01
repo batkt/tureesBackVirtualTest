@@ -7,7 +7,19 @@ const QpayObject = require("../models/qpayObject");
 const Geree = require("../models/geree");
 const got = require("got");
 const { URL } = require("url");
+const got = require("got");
+const { URL } = require("url");
 const instance = got.extend({
+  hooks: {
+    beforeRequest: [
+      (options) => {
+        options.headers["Content-Type"] = "application/json";
+        if (options.context && options.context.token) {
+          options.headers["Authorization"] = options.context.token;
+        }
+      },
+    ],
+  },
   hooks: {
     beforeRequest: [
       (options) => {
@@ -20,14 +32,14 @@ const instance = got.extend({
   },
 });
 
-async function tokenAvya(username, password, next, baiguullagiinId) {
+async function tokenAvya(username, password, next, baiguullagiinId,tukhainBaaziinKholbolt) {
   try {
     var url = new URL(process.env.QPAY_SERVER + "v2/auth/token/");
     url.username = username;
     url.password = password;
     const response = await instance.post(url);
     var khariu = JSON.parse(response.body);
-    Token.updateOne(
+    Token(tukhainBaaziinKholbolt).updateOne(
       { turul: "qpay", baiguullagiinId: baiguullagiinId },
       {
         ognoo: new Date(),
@@ -166,7 +178,8 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
       dans.qpayUsername,
       dans.qpayPassword,
       next,
-      req.body.baiguullagiinId
+      req.body.baiguullagiinId,
+      req.body.tukhainBaaziinKholbolt
     );
     token = tokenObject.access_token;
   } else {
@@ -210,6 +223,8 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
     barilgiinId: req.params.barilgiinId,
   });
   console.log("qpayBarimt", qpayBarimt);
+  if (req.query && req.query.qpay_payment_id)
+    qpayBarimt.payment_id = req.query.qpay_payment_id;
   qpayBarimt.tulsunEsekh = true;
   qpayBarimt.isNew = false;
   var tulbur = {

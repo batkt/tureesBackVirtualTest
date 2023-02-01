@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const QpayObject = require("../models/qpayObject");
 const Baiguullaga = require("../models/baiguullaga");
 const Talbai = require("../models/talbai");
 const { UstsanBarimt } = require("zevbackv2");
@@ -356,9 +357,38 @@ module.exports.tulultTaniya = async function tulultTaniya() {
       });
       var khaikhNukhtsul;
       var tailbar = [];
+      var qpaynuud = await QpayObject(kholbolt).find({
+        payment_id: { $exists: true },
+        updatedAt: { $gte: new Date(new Date().getTime() - 30 * 60000) },
+      });
       if (guilgeenuud != null && guilgeenuud.length > 0) {
         try {
           guilgeenuud.forEach(async (x) => {
+            if (
+              ((x.description && x.description.toLowerCase().includes("qpay")) ||
+                (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay"))) &&
+              qpaynuud &&
+              qpaynuud.length > 0
+            ) {
+              for await (const qpay of qpaynuud) {
+                if (x.description && x.description.includes(qpay.payment_id)) {
+                  var geree = await Geree.findById(qpay.gereeniiId);
+                  x.kholbosonGereeniiId = [qpay.gereeniiId];
+                  x.kholbosonDun = x.amount;
+                  x.kholbosonTalbainId = [geree.talbainDugaar];
+                  x.isNew = false;
+                  x.save();
+                } else if (x.TxAddInf && x.TxAddInf.includes(qpay.payment_id)) {
+                  var geree = await Geree.findById(qpay.gereeniiId);
+                  x.kholbosonGereeniiId = [qpay.gereeniiId];
+                  x.kholbosonDun = x.Amt;
+                  x.kholbosonTalbainId = [geree.talbainDugaar];
+                  x.isNew = false;
+                  x.save();
+                }
+                continue;
+              }
+            } else {
             khaikhNukhtsul = [];
             if (x.description) tailbar = x.description.split(" ");
             else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
@@ -395,6 +425,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               x.isNew = false;
               x.save();
             }
+          }
           });
         } catch (error) {
           next(error);
@@ -919,6 +950,7 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
           object = {
             tulukhDun: element.sariinTurees,
             undsenDun: element.sariinTurees,
+            turul: "khuvaari",
             ognoo: moment(req.body.duusakhOgnoo).set(
               "date",
               element.tulukhUdur[0]
@@ -951,7 +983,14 @@ exports.talbainIdnuudOruulya = asyncHandler(async (req, res, next) => {
   try {
     var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
       talbainDugaar: { $exists: true },
-      "talbainIdnuud.0": { $exists: false },
+      $or: [
+        {
+          "talbainIdnuud.0": { $exists: false },
+        },
+        {
+          talbainIdnuud: { $exists: false },
+        },
+      ],
     });
     var bulkOps = [];
     if (gereenuud)
@@ -1103,7 +1142,7 @@ exports.tukhainOgnoogoorBukhAvlagaBodojOruulya = asyncHandler(
             khyamdral: 0,
           };
           console.log("object", object);
-          Geree(req.body.tukhainBaaziinKholbolt)
+          await Geree(req.body.tukhainBaaziinKholbolt)
             .updateOne(
               { _id: element._id },
               {
@@ -1463,6 +1502,9 @@ exports.gereeAutomataarSungaya = asyncHandler(async (req, res, next) => {
             if (gereenuud) {
               for await (const geree of gereenuud) {
                 tulultiinJagsaalt = [];
+                var shineDuusakhOgnoo = new Date(
+                  moment(geree.duusakhOgnoo).add(geree.khugatsaa, "month")
+                );
                 await new Array(geree.khugatsaa).fill("").map((mur, index) => {
                   geree.tulukhUdur.forEach((udur) => {
                     var ognoo = new Date();

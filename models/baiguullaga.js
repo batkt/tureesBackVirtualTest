@@ -37,6 +37,7 @@ const baiguullagaSchema = new Schema(
             talbai: Number,
             tariff: Number,
             planZurag: String,
+            planZurag: String,
           },
         ],
       },
@@ -83,6 +84,12 @@ const baiguullagaSchema = new Schema(
       zogsooliinMinut: Number,
       zogsooliinKhungulukhMinut: Number,
       zogsooliinDun: Number,
+      apiAvlagaDans: String,
+      apiOrlogoDans: String,
+      apiNuatDans: String,
+      apiZogsoolDans: String,
+      apiZogsoolDans: String,
+      apiTogloomiinTuvDans: String,
     },
     erkhuud: [
       {
@@ -121,7 +128,7 @@ BaiguullagaModel.estimatedDocumentCount().then((count) => {
         _id: newId,
         ner: "E-Mart",
         utas: "80994111",
-        register: "5811651"
+        register: "5811651",
       })
     );
   }

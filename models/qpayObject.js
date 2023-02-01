@@ -10,6 +10,7 @@ const qpayObjectSchema = new Schema(
     tulsunEsekh: Boolean,
     ognoo: Date,
     qpay: Schema.Types.Mixed,
+    payment_id: String,
   },
   {
     timestamps: true,

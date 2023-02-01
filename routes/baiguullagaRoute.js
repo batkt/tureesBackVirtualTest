@@ -6,6 +6,7 @@ const Ajiltan = require("../models/ajiltan");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt, db } = require("zevbackv2");
+const axios = require("axios");
 
 crud(router, "baiguullaga", Baiguullaga, UstsanBarimt);
 router.post("/baiguullagaBurtgekh", async (req, res, next) => {
@@ -63,6 +64,20 @@ router.post("/baiguullagaAvya", (req, res, next) => {
     });
 });
 
+router.post("/moduliinMedeelelAvya", tokenShalgakh, async (req, res, next) => {
+  try {
+    var axiosKhariu = await axios.post(
+      "http://103.50.205.33:8282/moduliinMedeelelAvya",
+      {
+        register: req.body.register,
+      }
+    );
+    if (axiosKhariu && axiosKhariu.data) res.send(axiosKhariu.data);
+    else res.send("Мэдээлэл олдсонгүй!");
+  } catch (err) {
+    next(err);
+  }
+});
 router.post(
   "/baiguullagaTokhirgooZasya",
   tokenShalgakh,
