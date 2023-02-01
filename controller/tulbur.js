@@ -958,7 +958,14 @@ exports.talbainIdnuudOruulya = asyncHandler(async (req, res, next) => {
   try {
     var gereenuud = await Geree.find({
       talbainDugaar: { $exists: true },
-      "talbainIdnuud.0": { $exists: false },
+      $or: [
+        {
+          "talbainIdnuud.0": { $exists: false },
+        },
+        {
+          talbainIdnuud: { $exists: false },
+        },
+      ],
     });
     var bulkOps = [];
     if (gereenuud)
