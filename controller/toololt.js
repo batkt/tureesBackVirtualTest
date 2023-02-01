@@ -898,7 +898,9 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
         },
       },
     ];
-    var khariu = await Khariltsagch.aggregate(query);
+    var khariu = await Khariltsagch(req.body.tukhainBaaziinKholbolt).aggregate(
+      query
+    );
     res.send({ dutuu, tulsunDun, khariu });
   } catch (err) {
     next(err);
