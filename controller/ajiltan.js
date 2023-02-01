@@ -11,7 +11,7 @@ const axios = require("axios");
 const fs = require("fs");
 const useragent = require("express-useragent");
 const http = require("http");
-const { db } = require("zevback");
+const { db } = require("zevbackv2");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get(

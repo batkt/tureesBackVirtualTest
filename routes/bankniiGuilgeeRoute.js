@@ -4,7 +4,7 @@ const BankniiGuilgee = require("../models/bankniiGuilgee");
 const { tdbcer } = require("../kholbolt/tdbcer");
 const { bankniiGuilgeeToololtAvya } = require("../controller/toololt");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 //const { crud } = require('../components/crud');
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 

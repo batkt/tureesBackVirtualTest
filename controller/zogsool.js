@@ -3,7 +3,7 @@ const Mashin = require("../models/mashin");
 const Baiguullaga = require("../models/baiguullaga");
 
 module.exports.mashinTaniya = async function mashinTaniya() {
-  const { db } = require("zevback");
+  const { db } = require("zevbackv2");
   var kholboltuud = db.kholboltuud;
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {
@@ -34,7 +34,7 @@ module.exports.mashinTaniya = async function mashinTaniya() {
 };
 
 module.exports.tulburZooyo = async function tulburZooyo() {
-  const { db } = require("zevback");
+  const { db } = require("zevbackv2");
   var kholboltuud = db.kholboltuud;
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {

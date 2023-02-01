@@ -7,7 +7,7 @@ const storage = multer.memoryStorage();
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const { crud } = require("../components/crud");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt, Segment } = require("zevback");
+const { tokenShalgakh, crud, UstsanBarimt, Segment } = require("zevbackv2");
 const moment = require("moment");
 const uploadFile = multer({ storage: storage });
 

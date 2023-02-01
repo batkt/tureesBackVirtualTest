@@ -23,7 +23,7 @@ const {
   khuudaslalt,
   Dugaarlalt,
   UstsanBarimt,
-} = require("zevback");
+} = require("zevbackv2");
 
 const {
   gereeniiToololtAvya,

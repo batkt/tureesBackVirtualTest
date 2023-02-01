@@ -7,7 +7,7 @@ const router = express.Router();
 const aldaa = require("../components/aldaa");
 //const khuudaslalt = require("../components/khuudaslalt");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
-const { tokenShalgakh, khuudaslalt } = require("zevback");
+const { tokenShalgakh, khuudaslalt } = require("zevbackv2");
 const request = require("request");
 
 function nuatBodyo(bodokhDun) {

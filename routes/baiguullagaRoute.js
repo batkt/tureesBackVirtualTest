@@ -5,17 +5,18 @@ const Ajiltan = require("../models/ajiltan");
 //const { crudWithFile, crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt, db } = require("zevback");
+const { tokenShalgakh, crud, UstsanBarimt, db } = require("zevbackv2");
 
 crud(router, "baiguullaga", Baiguullaga, UstsanBarimt);
 router.post("/baiguullagaBurtgekh", async (req, res, next) => {
   try {
-    console.log(req.body);
+    const { db } = require("zevbackv2");
     const baiguullaga = new Baiguullaga(req.body.erunkhiiKholbolt)(req.body);
     baiguullaga.isNew = !baiguullaga.zasakhEsekh;
     baiguullaga
       .save()
       .then((result) => {
+        db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
         if (req.body.ajiltan) {
           let ajiltan = new Ajiltan(req.body.erunkhiiKholbolt)(
             req.body.ajiltan

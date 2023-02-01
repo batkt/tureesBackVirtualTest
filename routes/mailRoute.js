@@ -10,7 +10,7 @@ const request = require("request");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const { crud } = require('../components/crud');
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 
 crud(router, "mailiinZagvar", MailiinZagvar, UstsanBarimt);
 crud(router, "msgTuukh", MsgTuukh, UstsanBarimt);

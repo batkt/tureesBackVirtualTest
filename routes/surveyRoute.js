@@ -4,7 +4,7 @@ const Survey = require("../models/survey");
 const Asuult = require("../models/asuult");
 const Khariult = require("../models/khariult");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 
 crud(router, "survey", Survey, UstsanBarimt);
 crud(router, "asuult", Asuult, UstsanBarimt);

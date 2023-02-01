@@ -5,7 +5,7 @@ const mimetype = require("mime");
 const storage = multer.memoryStorage();
 const fs = require("fs");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
-const { tokenShalgakh } = require("zevback");
+const { tokenShalgakh } = require("zevbackv2");
 
 const filter = (req, file, cb) => {
   if (
@@ -22,7 +22,7 @@ const upload = multer({
 });
 
 const uploadFile = multer({
-  storage: storage
+  storage: storage,
 });
 
 const router = express.Router();
@@ -88,42 +88,38 @@ router.post(
             fs.mkdirSync("./file/");
           }
         });
-        fs.access(
-          "./file/" + req.body.baiguullagiinId + "/",
-          (err) => {
+        fs.access("./file/" + req.body.baiguullagiinId + "/", (err) => {
+          if (err) {
+            fs.mkdirSync("./file/" + req.body.baiguullagiinId + "/");
+          }
+        });
+        fs.writeFile(
+          "./file/" + req.body.baiguullagiinId + "/" + id,
+          req.file.buffer,
+          function (err, data) {
             if (err) {
-              fs.mkdirSync(
-                "./file/" + req.body.baiguullagiinId + "/"
-              );
-            }
+              next(err);
+            } else res.status(200).json({ id: id });
+            console.log(data);
           }
         );
-        fs.writeFile("./file/" + req.body.baiguullagiinId + "/" + id, req.file.buffer, function (err, data) {
-          if (err) {
-            next(err);
-          }
-          else
-            res.status(200).json({ id: id });
-          console.log(data);
-        });
-      }
-      else
-        throw new Error("Хадгалах file алга байна!");
+      } else throw new Error("Хадгалах file алга байна!");
     } catch (err) {
       next(err);
     }
-  });
+  }
+);
 
 router.get(
   "/zuragAvya/:turul/:baiguullagiinId/:zurgiinNer",
   (req, res, next) => {
     res.download(
       "./zurag/" +
-      req.params.turul +
-      "/" +
-      req.params.baiguullagiinId +
-      "/" +
-      req.params.zurgiinNer,
+        req.params.turul +
+        "/" +
+        req.params.baiguullagiinId +
+        "/" +
+        req.params.zurgiinNer,
       req.params.zurgiinNer,
       (err) => {
         if (err) next(err);
@@ -132,20 +128,14 @@ router.get(
   }
 );
 
-router.get(
-  "/fileAvya/:baiguullagiinId/:id",
-  (req, res, next) => {
-    res.download(
-      "./file/" +
-      req.params.baiguullagiinId +
-      "/" +
-      req.params.id,
-      req.params.id,
-      (err) => {
-        if (err) next(err);
-      }
-    );
-  }
-);
+router.get("/fileAvya/:baiguullagiinId/:id", (req, res, next) => {
+  res.download(
+    "./file/" + req.params.baiguullagiinId + "/" + req.params.id,
+    req.params.id,
+    (err) => {
+      if (err) next(err);
+    }
+  );
+});
 
 module.exports = router;

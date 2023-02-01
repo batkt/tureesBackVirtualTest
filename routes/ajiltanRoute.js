@@ -10,7 +10,7 @@ const {
   crud,
   UstsanBarimt,
   db,
-} = require("zevback");
+} = require("zevbackv2");
 const {
   ajiltanNevtrey,
   backAvya,

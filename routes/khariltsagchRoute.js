@@ -6,7 +6,7 @@ const Geree = require("../models/geree");
 //const { crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
 const {

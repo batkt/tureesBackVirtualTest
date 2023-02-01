@@ -5,7 +5,7 @@ const Baiguullaga = require("../models/baiguullaga");
 const jwt = require("jsonwebtoken");
 const MsgTuukh = require("../models/msgTuukh");
 const request = require("request");
-const { db } = require("zevback");
+const { db } = require("zevbackv2");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {

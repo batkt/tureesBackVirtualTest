@@ -3,7 +3,7 @@ const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Baiguullaga = require("../models/baiguullaga");
 const Talbai = require("../models/talbai");
-const { UstsanBarimt } = require("zevback");
+const { UstsanBarimt } = require("zevbackv2");
 const lodash = require("lodash");
 const moment = require("moment");
 const mongoose = require("mongoose");
@@ -339,7 +339,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
 });
 
 module.exports.tulultTaniya = async function tulultTaniya() {
-  const { db } = require("zevback");
+  const { db } = require("zevbackv2");
   var kholboltuud = db.kholboltuud;
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {
@@ -406,7 +406,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
 
 module.exports.aldangiBodyo = async function aldangiBodyo() {
   try {
-    const { db } = require("zevback");
+    const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
@@ -1440,7 +1440,7 @@ exports.testiinBankniiGuilgeeOruulya = asyncHandler(async (req, res, next) => {
 
 exports.gereeAutomataarSungaya = asyncHandler(async (req, res, next) => {
   try {
-    const { db } = require("zevback");
+    const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {

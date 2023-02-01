@@ -3,7 +3,7 @@ const router = express.Router();
 const Zardal = require("../models/zardal");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt } = require("zevback");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 
 crud(router, "zardal", Zardal, UstsanBarimt);
 

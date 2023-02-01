@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 //const Dugaarlalt = require("../models/dugaarlalt");
-const { Dugaarlalt, Token, Dans } = require("zevback");
+const { Dugaarlalt, Token, Dans } = require("zevbackv2");
 const xml2js = require("xml2js");
 const got = require("got");
 const { URL } = require("url");
@@ -339,7 +339,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
 
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
   try {
-    const { db } = require("zevback");
+    const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     var dansnuud;
     if (kholboltuud) {

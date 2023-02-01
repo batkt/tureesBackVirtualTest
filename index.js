@@ -33,7 +33,7 @@ const daalgavarRoute = require("./routes/daalgavarRoute");
 const zogsool = require("./controller/zogsool");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
-const { db } = require("zevback");
+const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
 const dbUrl = process.env.BAAZ;
