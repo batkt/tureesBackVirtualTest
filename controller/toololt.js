@@ -8,10 +8,10 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
   var gereeObject = Geree(req.body.tukhainBaaziinKholbolt);
   let query = [
     {
-      '$match': {
-        'baiguullagiinId': req.body.baiguullagiinId,
-        'barilgiinId': req.body.barilgiinId
-      }
+      $match: {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+      },
     },
     {
       $facet: {
@@ -144,7 +144,7 @@ exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
     })
     .catch((err) => {
       next(err);
-    });;
+    });
 });
 
 exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
@@ -217,7 +217,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         },
       },
     ];
-    var avlaga = await Geree.aggregate(query);
+    var avlaga = await gereeObject.aggregate(query);
     query = [
       {
         $unwind: {
@@ -270,52 +270,55 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           uldegdel: {
             $gte: 0,
           },
-          "uldegdel": {
-            "$gte": 0
-          }
-        }
-      }, {
-        '$unwind': {
-          'path': '$avlaga.guilgeenuud'
-        }
-      }, {
-        '$match': {
-          'avlaga.guilgeenuud.ognoo': {
-            '$lte': duusakhOgnoo
-          }
-        }
-      }, {
-        '$group': {
-          '_id': 'khugatsaaKhetersen',
-          'tulukh': {
-            '$sum': {
-              '$ifNull': ['$avlaga.guilgeenuud.tulukhDun', 0]
-            }
+          uldegdel: {
+            $gte: 0,
           },
-          'khyamdral': {
-            '$sum': {
-              '$ifNull': ['$avlaga.guilgeenuud.khyamdral', 0]
-            }
+        },
+      },
+      {
+        $unwind: {
+          path: "$avlaga.guilgeenuud",
+        },
+      },
+      {
+        $match: {
+          "avlaga.guilgeenuud.ognoo": {
+            $lte: duusakhOgnoo,
           },
-          'tulsun': {
-            '$sum': {
-              '$ifNull': ['$avlaga.guilgeenuud.tulsunDun', 0]
-            }
-          }
-        }
-      }, {
-        '$project': {
-          'dun': {
-            '$subtract': [
-              '$tulukh', {
-                '$sum': [
-                  '$tulsun', '$khyamdral'
-                ]
-              }
-            ]
-          }
-        }
-      }
+        },
+      },
+      {
+        $group: {
+          _id: "khugatsaaKhetersen",
+          tulukh: {
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+            },
+          },
+          khyamdral: {
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+            },
+          },
+          tulsun: {
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          dun: {
+            $subtract: [
+              "$tulukh",
+              {
+                $sum: ["$tulsun", "$khyamdral"],
+              },
+            ],
+          },
+        },
+      },
     ];
 
     var khugatsaaKhetersen = await gereeObject.aggregate(query);
@@ -367,36 +370,38 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     var eneSardTulukh = await gereeObject.aggregate(query);
     query = [
       {
-        '$unwind': {
-          'path': '$avlaga.guilgeenuud'
-        }
-      }, {
-        '$match': {
-          'avlaga.guilgeenuud.ognoo': {
-            '$gte': ekhlekhOgnoo,
-            '$lte': duusakhOgnoo
+        $unwind: {
+          path: "$avlaga.guilgeenuud",
+        },
+      },
+      {
+        $match: {
+          "avlaga.guilgeenuud.ognoo": {
+            $gte: ekhlekhOgnoo,
+            $lte: duusakhOgnoo,
           },
-          'avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer': {
-            '$ne': 'System'
+          "avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer": {
+            $ne: "System",
           },
-          'baiguullagiinId': req.body.baiguullagiinId,
-          'barilgiinId': req.body.barilgiinId,
-          'avlaga.guilgeenuud.turul': {
-            '$nin': ["baritsaa"]
-          }
-        }
-      }, {
-        '$group': {
-          '_id': 'tulsun',
-          'dun': {
-            '$sum': {
-              '$ifNull': ['$avlaga.guilgeenuud.tulsunDun', 0]
-            }
-          }
-        }
-      }
-    ]
-    var eneSardTulsun = await Geree.aggregate(query);
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["baritsaa"],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "tulsun",
+          dun: {
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+            },
+          },
+        },
+      },
+    ];
+    var eneSardTulsun = await gereeObject.aggregate(query);
 
     query = [
       {
@@ -436,7 +441,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         },
       },
     ];
-    var khungulult = await Geree.aggregate(query);
+    var khungulult = await gereeObject.aggregate(query);
 
     query = [
       {
@@ -562,33 +567,34 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
               },
             },
           ],
-          magadlaltai: [{
-            $match: {
-              "magadlaltaiGereenuud": {
-                $exists: true
-              },
-              $or: [
-                {
-                  "kholbosonGereeniiId": {
-                    $exists: false
-                  }
+          magadlaltai: [
+            {
+              $match: {
+                magadlaltaiGereenuud: {
+                  $exists: true,
                 },
-                {
-                  "kholbosonGereeniiId": {
-                    $size: 0
-                  }
-                }
-              ]
-            }
-          },
-          {
-            $group: {
-              "_id": "",
-              "niit": {
-                $sum: 1
-              }
-            }
-          }
+                $or: [
+                  {
+                    kholbosonGereeniiId: {
+                      $exists: false,
+                    },
+                  },
+                  {
+                    kholbosonGereeniiId: {
+                      $size: 0,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $group: {
+                _id: "",
+                niit: {
+                  $sum: 1,
+                },
+              },
+            },
           ],
           todorkhoigui: [
             {
@@ -649,33 +655,34 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
               },
             },
           ],
-          magadlaltai: [{
-            $match: {
-              "magadlaltaiGereenuud": {
-                $exists: true
-              },
-              $or: [
-                {
-                  "kholbosonGereeniiId": {
-                    $exists: false
-                  }
+          magadlaltai: [
+            {
+              $match: {
+                magadlaltaiGereenuud: {
+                  $exists: true,
                 },
-                {
-                  "kholbosonGereeniiId": {
-                    $size: 0
-                  }
-                }
-              ]
-            }
-          },
-          {
-            $group: {
-              "_id": "",
-              "niit": {
-                $sum: 1
-              }
-            }
-          }
+                $or: [
+                  {
+                    kholbosonGereeniiId: {
+                      $exists: false,
+                    },
+                  },
+                  {
+                    kholbosonGereeniiId: {
+                      $size: 0,
+                    },
+                  },
+                ],
+              },
+            },
+            {
+              $group: {
+                _id: "",
+                niit: {
+                  $sum: 1,
+                },
+              },
+            },
           ],
           todorkhoigui: [
             {
@@ -700,7 +707,7 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
         },
       },
     ];
-    BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+  BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
     .then((result) => {
       console.log("bankniiGuilgee", result);
       if (result && result.length > 0) {
@@ -861,7 +868,7 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
         },
       },
     ];
-    var eneSardTulsun = await Geree.aggregate(query);
+    var eneSardTulsun = await gereeObject.aggregate(query);
     var tulukhDun =
       eneSardTulukh && eneSardTulukh.length > 0 && eneSardTulukh[0].dun
         ? eneSardTulukh[0].dun
@@ -879,17 +886,18 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
       },
       {
         $project: {
-          idevkhiteiEsekh: { $ifNull: ["$idevkhiteiEsekh", false] }
-        }
-      }, {
-        '$group': {
-          '_id': '$idevkhiteiEsekh',
-          'too': {
-            '$sum': 1
-          }
-        }
-      }
-    ]
+          idevkhiteiEsekh: { $ifNull: ["$idevkhiteiEsekh", false] },
+        },
+      },
+      {
+        $group: {
+          _id: "$idevkhiteiEsekh",
+          too: {
+            $sum: 1,
+          },
+        },
+      },
+    ];
     var khariu = await Khariltsagch.aggregate(query);
     res.send({ dutuu, tulsunDun, khariu });
   } catch (err) {
