@@ -1,6 +1,6 @@
 const express = require("express");
 const Ajiltan = require("../models/ajiltan");
-const { tokenShalgakh } = require("zevback");
+const { tokenShalgakh } = require("zevbackv2");
 router.post(
   "/sankhuugiinGuilgeeTatya",
   tokenShalgakh,
