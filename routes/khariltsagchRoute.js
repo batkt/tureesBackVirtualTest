@@ -103,7 +103,7 @@ router
           _id: req.body.id,
         })
         .then(async (result) => {
-          var geree = await Geree(db.tukhainBaaziinKholbolt).findOne({
+          var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
             tuluv: 1,
             register: result.register,
             barilgiinId: result.barilgiinId,
@@ -113,7 +113,7 @@ router
             throw new Error(
               "Тухайн харилцагч дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!"
             );
-          var barimt = new UstsanBarimt(db.tukhainBaaziinKholbolt)();
+          var barimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
           barimt.class = "Khariltsagch";
           barimt.object = result;
           if (req.body.nevtersenAjiltniiToken) {
