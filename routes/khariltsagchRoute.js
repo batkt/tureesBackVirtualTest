@@ -6,7 +6,7 @@ const Geree = require("../models/geree");
 //const { crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
+const { tokenShalgakh, crud, UstsanBarimt, db } = require("zevbackv2");
 const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
 const {
@@ -43,9 +43,7 @@ crud(
     try {
       if (!req.body.register) throw new Error("Регистрийн дугаар бөглөнө үү!");
       else {
-        var khariltsagch = await Khariltsagch(
-          req.body.tukhainBaaziinKholbolt
-        ).findOne({
+        var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
           register: req.body.register,
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
@@ -100,12 +98,12 @@ router
   .route("/khariltsagchUstgaya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      Khariltsagch(req.body.tukhainBaaziinKholbolt)
+      Khariltsagch(db.erunkhiiKholbolt)
         .findOne({
           _id: req.body.id,
         })
         .then(async (result) => {
-          var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
+          var geree = await Geree(db.erunkhiiKholbolt).findOne({
             tuluv: 1,
             register: result.register,
             barilgiinId: result.barilgiinId,
@@ -115,7 +113,7 @@ router
             throw new Error(
               "Тухайн харилцагч дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!"
             );
-          var barimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
+          var barimt = new UstsanBarimt(db.erunkhiiKholbolt)();
           barimt.class = "Khariltsagch";
           barimt.object = result;
           if (req.body.nevtersenAjiltniiToken) {
@@ -125,7 +123,7 @@ router
           barimt.baiguullagiinId = req.body.baiguullagiinId;
           barimt.isNew = true;
           barimt.save();
-          Khariltsagch(req.body.tukhainBaaziinKholbolt)
+          Khariltsagch(db.erunkhiiKholbolt)
             .deleteOne({
               _id: req.body.id,
             })
@@ -199,9 +197,7 @@ router
           geree: 0,
         },
       });
-      var result = await Khariltsagch(
-        req.body.tukhainBaaziinKholbolt
-      ).aggregate(query);
+      var result = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
       res.send(result);
     } catch (error) {
       next(error);

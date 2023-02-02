@@ -91,16 +91,14 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
 
 exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
   try {
-    const khariltsagch = await Khariltsagch(
-      req.body.tukhainBaaziinKholbolt
-    ).findOne({
+    const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
       utas: req.body.utas,
     });
     if (!khariltsagch) throw new Error("Бүртгэлтэй харилцагч олдсонгүй!");
     khariltsagch.sergeekhKod = await kodUusgey();
-    var baiguullaga = await Baiguullaga(
-      req.body.tukhainBaaziinKholbolt
-    ).findById(khariltsagch.baiguullagiinId);
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      khariltsagch.baiguullagiinId
+    );
     var msgIlgeekhKey;
     var msgIlgeekhDugaar;
     try {
@@ -111,7 +109,7 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
     }
     if (!msgIlgeekhKey || !msgIlgeekhDugaar)
       throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
-    await Khariltsagch(req.body.tukhainBaaziinKholbolt).updateOne(
+    await Khariltsagch(db.erunkhiiKholbolt).updateOne(
       { _id: khariltsagch._id },
       { $set: { sergeekhKod: khariltsagch.sergeekhKod } }
     );
@@ -137,9 +135,9 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
 
 exports.nuutsUgSergeeye = asyncHandler(async (req, res, next) => {
   try {
-    var khariltsagch = await Khariltsagch(
-      req.body.tukhainBaaziinKholbolt
-    ).findById(req.body.id);
+    var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findById(
+      req.body.id
+    );
     if (!khariltsagch) throw new Error("Харилцагч олдсонгүй!");
     if (khariltsagch.sergeekhKod != req.body.sergeekhKod)
       throw new Error("Сэргээх код буруу байна!");
@@ -158,7 +156,7 @@ exports.khariltsagchidTokenOnooyo = asyncHandler(async (req, res, next) => {
     let update = {
       firebaseToken: req.body.token,
     };
-    Khariltsagch(req.body.tukhainBaaziinKholbolt)
+    Khariltsagch(db.erunkhiiKholbolt)
       .findOneAndUpdate(filter, update)
       .then((result) => {
         res.send("Amjilttai");
@@ -178,7 +176,7 @@ exports.tokenoorKhariltsagchAvya = asyncHandler(async (req, res, next) => {
     }
     const token = req.headers.authorization.split(" ")[1];
     const tokenObject = jwt.verify(token, process.env.APP_SECRET, 401);
-    Khariltsagch(req.body.tukhainBaaziinKholbolt)
+    Khariltsagch(db.erunkhiiKholbolt)
       .findById(tokenObject.id)
       .then((urDun) => {
         var urdunJson = urDun.toJSON();
