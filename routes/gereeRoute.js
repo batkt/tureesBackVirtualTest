@@ -228,9 +228,8 @@ crud(
   UstsanBarimt,
   async (req, res, next) => {
     try {
-      const khariltsagch = new Khariltsagch(req.body.tukhainBaaziinKholbolt)(
-        req.body
-      );
+      const { db } = require("zevbackv2");
+      const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(req.body);
       khariltsagch.id = khariltsagch.register;
       var unuudur = new Date();
       unuudur = new Date(
@@ -279,9 +278,8 @@ crud(
 );
 
 router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
-  const khariltsagch = new Khariltsagch(req.body.tukhainBaaziinKholbolt)(
-    req.body
-  );
+  const { db } = require("zevbackv2");
+  const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(req.body);
   khariltsagch.id = khariltsagch.register;
   var unuudur = new Date();
   unuudur = new Date(
@@ -313,9 +311,7 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     isNew: true,
   });
   req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
-  var khariltsagchShalguur = await Khariltsagch(
-    req.body.tukhainBaaziinKholbolt
-  ).findOne({
+  var khariltsagchShalguur = await Khariltsagch(db.erunkhiiKholbolt).findOne({
     register: khariltsagch.register,
     barilgiinId: req.body.barilgiinId,
   });
@@ -590,6 +586,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
   gereeniiIdnuud,
   tukhainBaaziinKholbolt
 ) {
+  const { db } = require("zevbackv2");
   if (gereeniiIdnuud && gereeniiIdnuud.length > 0) {
     var talbainBulk = [];
     var khariltsagchiinBulk = [];
@@ -667,7 +664,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
         });
 
     if (khariltsagchiinBulk)
-      Khariltsagch(tukhainBaaziinKholbolt)
+      Khariltsagch(db.erunkhiiKholbolt)
         .bulkWrite(khariltsagchiinBulk)
         .then((bulkWriteOpResult) => {
           console.log("BULK update OK", bulkWriteOpResult);
