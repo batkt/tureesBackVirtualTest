@@ -16,10 +16,10 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "daalgavar": "^1.0.37",
+    "daalgavar": "^1.0.38",
     "express-useragent": "^1.0.15",
     "sharp": "^0.30.7",
-    "zevbackv2": "^1.1.8",
+    "zevbackv2": "^1.1.9",
     "zuragpack": "^1.0.11"
   },
   "devDependencies": {
