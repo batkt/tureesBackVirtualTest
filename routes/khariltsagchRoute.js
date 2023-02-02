@@ -9,6 +9,7 @@ const Geree = require("../models/geree");
 const { tokenShalgakh, crud, UstsanBarimt, db } = require("zevbackv2");
 const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
+const { db } = require("zevbackv2");
 const {
   dansniiUldegdelAvya,
   bankniiKhuulgaTatajKhadgalya,

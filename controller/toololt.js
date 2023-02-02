@@ -735,7 +735,7 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
 
 exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
   try {
-    var khariltsagchObject = Khariltsagch(req.body.tukhainBaaziinKholbolt);
+    var khariltsagchObject = Khariltsagch(db.erunkhiiKholbolt);
     let query = [
       {
         $match: {
@@ -899,9 +899,7 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
         },
       },
     ];
-    var khariu = await Khariltsagch(req.body.tukhainBaaziinKholbolt).aggregate(
-      query
-    );
+    var khariu = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
     res.send({ dutuu, tulsunDun, khariu });
   } catch (err) {
     next(err);
