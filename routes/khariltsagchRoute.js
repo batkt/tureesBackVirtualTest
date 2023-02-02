@@ -6,7 +6,7 @@ const Geree = require("../models/geree");
 //const { crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt, db } = require("zevbackv2");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
 const {
@@ -41,11 +41,10 @@ crud(
   UstsanBarimt,
   async (req, res, next) => {
     try {
+      const { db } = require("zevbackv2");
       if (!req.body.register) throw new Error("Регистрийн дугаар бөглөнө үү!");
       else {
-        var khariltsagch = await Khariltsagch(
-          req.body.erunkhiiKholbolt
-        ).findOne({
+        var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
           register: req.body.register,
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
@@ -100,7 +99,8 @@ router
   .route("/khariltsagchUstgaya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      Khariltsagch(req.body.erunkhiiKholbolt)
+      const { db } = require("zevbackv2");
+      Khariltsagch(db.erunkhiiKholbolt)
         .findOne({
           _id: req.body.id,
         })
@@ -127,7 +127,7 @@ router
           barimt.baiguullagiinId = req.body.baiguullagiinId;
           barimt.isNew = true;
           barimt.save();
-          Khariltsagch(req.body.erunkhiiKholbolt)
+          Khariltsagch(db.erunkhiiKholbolt)
             .deleteOne({
               _id: req.body.id,
             })
@@ -150,6 +150,7 @@ router
   .route("/khariltsagchDavkhraarAvya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
+      const { db } = require("zevbackv2");
       var davkhar = req.body.davkhar;
       var matchQuery = {};
       var query = [
@@ -201,9 +202,7 @@ router
           geree: 0,
         },
       });
-      var result = await Khariltsagch(req.body.erunkhiiKholbolt).aggregate(
-        query
-      );
+      var result = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
       res.send(result);
     } catch (error) {
       next(error);

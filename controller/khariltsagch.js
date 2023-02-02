@@ -91,6 +91,7 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
 
 exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
       utas: req.body.utas,
     });
@@ -135,6 +136,7 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
 
 exports.nuutsUgSergeeye = asyncHandler(async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findById(
       req.body.id
     );
@@ -150,6 +152,7 @@ exports.nuutsUgSergeeye = asyncHandler(async (req, res, next) => {
 
 exports.khariltsagchidTokenOnooyo = asyncHandler(async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     let filter = {
       _id: req.body.id,
     };
@@ -171,6 +174,7 @@ exports.khariltsagchidTokenOnooyo = asyncHandler(async (req, res, next) => {
 
 exports.tokenoorKhariltsagchAvya = asyncHandler(async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     if (!req.headers.authorization) {
       throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
     }

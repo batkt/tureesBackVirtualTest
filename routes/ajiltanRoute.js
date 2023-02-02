@@ -29,7 +29,8 @@ crudWithFile(
   UstsanBarimt,
   async (req, res, next) => {
     try {
-      var ajiltanModel = Ajiltan(req.body.erunkhiiKholbolt);
+      const { db } = require("zevbackv2");
+      var ajiltanModel = Ajiltan(db.erunkhiiKholbolt);
       if (req.params.id) {
         var ObjectId = require("mongodb").ObjectId;
         var ajiltan = await ajiltanModel.findOne({
@@ -120,13 +121,14 @@ router.get("/ustsanBarimt", tokenShalgakh, async (req, res, next) => {
 
 router.post("/ajiltandTokenOnooyo", tokenShalgakh, (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     let filter = {
       _id: req.body.id,
     };
     let update = {
       firebaseToken: req.body.token,
     };
-    Ajiltan(req.body.erunkhiiKholbolt)
+    Ajiltan(db.erunkhiiKholbolt)
       .updateOne(filter, update)
       .then((result) => {
         res.send("Amjilttai");
@@ -144,10 +146,11 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
+      const { db } = require("zevbackv2");
       if (!!req.body) {
         const { turul, ajiltnuud } = req.body;
         for await (const ajiltan of ajiltnuud) {
-          await Ajiltan(req.body.erunkhiiKholbolt)
+          await Ajiltan(db.erunkhiiKholbolt)
             .updateOne(
               { _id: ajiltan._id },
               { $set: { [turul]: ajiltan.utga } }
@@ -166,12 +169,13 @@ router.post(
 
 router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     if (!!req.body) {
-      var ajiltan = new Ajiltan(req.body.erunkhiiKholbolt)({
+      var ajiltan = new Ajiltan(db.erunkhiiKholbolt)({
         _id: req.params.id,
         ...req.body,
       });
-      await Ajiltan(req.body.erunkhiiKholbolt).updateOne(
+      await Ajiltan(db.erunkhiiKholbolt).updateOne(
         { _id: req.params.id },
         ajiltan
       );
@@ -184,8 +188,9 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
 
 router.post("/erkhteiEsekh", tokenShalgakh, async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     if (!!req.body.zam) {
-      const khariu = await Ajiltan(req.body.erunkhiiKholbolt)
+      const khariu = await Ajiltan(db.erunkhiiKholbolt)
         .countDocuments({
           _id: req.body.nevtersenAjiltniiToken?.id,
           $or: [{ tsonkhniiErkhuud: req.body.zam }, { erkh: "Admin" }],

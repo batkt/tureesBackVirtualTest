@@ -82,6 +82,7 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
+      const { db } = require("zevbackv2");
       if (!!req.body) {
         var update = {};
         for (var field in req.body.tokhirgoo) {
@@ -89,7 +90,7 @@ router.post(
             update["tokhirgoo." + field] = req.body.tokhirgoo[field];
         }
         console.log("update", update);
-        await Baiguullaga(req.body.erunkhiiKholbolt).findOneAndUpdate(
+        await Baiguullaga(db.erunkhiiKholbolt).findOneAndUpdate(
           { _id: req.body.baiguullagiinId },
           update
         );

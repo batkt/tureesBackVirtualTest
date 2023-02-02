@@ -3,7 +3,6 @@ const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
 const moment = require("moment");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
-const { db } = require("zevbackv2");
 
 exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
   var gereeObject = Geree(req.body.tukhainBaaziinKholbolt);
@@ -736,7 +735,8 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
 
 exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
   try {
-    var khariltsagchObject = Khariltsagch(req.body.erunkhiiKholbolt);
+    const { db } = require("zevbackv2");
+    var khariltsagchObject = Khariltsagch(db.erunkhiiKholbolt);
     let query = [
       {
         $match: {
@@ -793,6 +793,7 @@ exports.khariltsagchiinTooAvya = asyncHandler(async (req, res, next) => {
 
 exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     var gereeObject = Geree(req.body.tukhainBaaziinKholbolt);
     var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
     var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
@@ -900,7 +901,7 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
         },
       },
     ];
-    var khariu = await Khariltsagch(req.body.erunkhiiKholbolt).aggregate(query);
+    var khariu = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
     res.send({ dutuu, tulsunDun, khariu });
   } catch (err) {
     next(err);
