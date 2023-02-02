@@ -3,6 +3,7 @@ const Geree = require("../models/geree");
 const Khariltsagch = require("../models/khariltsagch");
 const moment = require("moment");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const { db } = require("zevbackv2");
 
 exports.gereeniiToololtAvya = asyncHandler(async (req, res, next) => {
   var gereeObject = Geree(req.body.tukhainBaaziinKholbolt);
