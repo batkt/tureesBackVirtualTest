@@ -5,7 +5,7 @@ const Ajiltan = require("../models/ajiltan");
 //const { crudWithFile, crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt, db } = require("zevbackv2");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const axios = require("axios");
 
 crud(router, "baiguullaga", Baiguullaga, UstsanBarimt);
@@ -50,6 +50,7 @@ router.post(
 );
 
 router.post("/baiguullagaAvya", (req, res, next) => {
+  const { db } = require("zevbackv2");
   Baiguullaga(db.erunkhiiKholbolt)
     .findOne({
       register: req.body.register,
@@ -88,7 +89,7 @@ router.post(
             update["tokhirgoo." + field] = req.body.tokhirgoo[field];
         }
         console.log("update", update);
-        await Baiguullaga(db.erunkhiiKholbolt).findOneAndUpdate(
+        await Baiguullaga(req.body.erunkhiiKholbolt).findOneAndUpdate(
           { _id: req.body.baiguullagiinId },
           update
         );

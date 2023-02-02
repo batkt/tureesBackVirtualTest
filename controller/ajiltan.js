@@ -50,8 +50,8 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
-  console.log("db.erunkhiiKholbolt", db.erunkhiiKholbolt);
-  const ajiltan = await Ajiltan(db.erunkhiiKholbolt)
+  console.log("req.body.erunkhiiKholbolt", req.body.erunkhiiKholbolt);
+  const ajiltan = await Ajiltan(req.body.erunkhiiKholbolt)
     .findOne()
     .select("+nuutsUg")
     .where("nevtrekhNer")
@@ -62,7 +62,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   if (!ajiltan) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
   var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
   if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+  var baiguullaga = await Baiguullaga(req.body.erunkhiiKholbolt).findById(
     ajiltan.baiguullagiinId
   );
   var butsaakhObject = {
@@ -82,7 +82,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           butsaakhObject.token = jwt;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
-          var tuukh = new NevtreltiinTuukh(db.erunkhiiKholbolt);
+          var tuukh = new NevtreltiinTuukh(req.body.erunkhiiKholbolt);
           tuukh.ajiltniiId = ajiltan._id;
           tuukh.ajiltniiNer = ajiltan.ner;
           tuukh.ognoo = new Date();
@@ -98,7 +98,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           tuukh.browser = ua.browser;
           tuukh.useragent = ua;
           tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
-          nevtreltiinTuukhKhadgalya(tuukh, db.erunkhiiKholbolt);
+          nevtreltiinTuukhKhadgalya(tuukh, req.body.erunkhiiKholbolt);
           res.status(200).json(butsaakhObject);
         } else throw new Error(khariu.msg);
       } catch (err) {
@@ -175,7 +175,7 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
             var fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
             var source = req.headers["user-agent"];
             var ua = useragent.parse(source);
-            var tuukh = new BackTuukh(db.erunkhiiKholbolt);
+            var tuukh = new BackTuukh(req.body.erunkhiiKholbolt);
             tuukh.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
             tuukh.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
             tuukh.ognoo = new Date();
@@ -219,7 +219,7 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
     if (tokenObject.id == "zochin")
       throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
     console.log("tokenObject", tokenObject);
-    Ajiltan(db.erunkhiiKholbolt)
+    Ajiltan(req.body.erunkhiiKholbolt)
       .findById(tokenObject.id)
       .then((urDun) => {
         var urdunJson = urDun.toJSON();

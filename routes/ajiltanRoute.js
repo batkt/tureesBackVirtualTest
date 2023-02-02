@@ -29,7 +29,7 @@ crudWithFile(
   UstsanBarimt,
   async (req, res, next) => {
     try {
-      var ajiltanModel = Ajiltan(db.erunkhiiKholbolt);
+      var ajiltanModel = Ajiltan(req.body.erunkhiiKholbolt);
       if (req.params.id) {
         var ObjectId = require("mongodb").ObjectId;
         var ajiltan = await ajiltanModel.findOne({
@@ -126,7 +126,7 @@ router.post("/ajiltandTokenOnooyo", tokenShalgakh, (req, res, next) => {
     let update = {
       firebaseToken: req.body.token,
     };
-    Ajiltan(db.erunkhiiKholbolt)
+    Ajiltan(req.body.erunkhiiKholbolt)
       .updateOne(filter, update)
       .then((result) => {
         res.send("Amjilttai");
@@ -147,7 +147,7 @@ router.post(
       if (!!req.body) {
         const { turul, ajiltnuud } = req.body;
         for await (const ajiltan of ajiltnuud) {
-          await Ajiltan(db.erunkhiiKholbolt)
+          await Ajiltan(req.body.erunkhiiKholbolt)
             .updateOne(
               { _id: ajiltan._id },
               { $set: { [turul]: ajiltan.utga } }
@@ -167,11 +167,11 @@ router.post(
 router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
   try {
     if (!!req.body) {
-      var ajiltan = new Ajiltan(db.erunkhiiKholbolt)({
+      var ajiltan = new Ajiltan(req.body.erunkhiiKholbolt)({
         _id: req.params.id,
         ...req.body,
       });
-      await Ajiltan(db.erunkhiiKholbolt).updateOne(
+      await Ajiltan(req.body.erunkhiiKholbolt).updateOne(
         { _id: req.params.id },
         ajiltan
       );
@@ -185,7 +185,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
 router.post("/erkhteiEsekh", tokenShalgakh, async (req, res, next) => {
   try {
     if (!!req.body.zam) {
-      const khariu = await Ajiltan(db.erunkhiiKholbolt)
+      const khariu = await Ajiltan(req.body.erunkhiiKholbolt)
         .countDocuments({
           _id: req.body.nevtersenAjiltniiToken?.id,
           $or: [{ tsonkhniiErkhuud: req.body.zam }, { erkh: "Admin" }],

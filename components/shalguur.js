@@ -3,7 +3,7 @@ const { db } = require("zevbackv2");
 
 async function gereeZasakhShalguur(req, res, next) {
   if (req.body.nevtersenAjiltniiToken && req.body.barilgiinId) {
-    var ajiltan = await Ajiltan(db.erunkhiiKholbolt).findById(
+    var ajiltan = await Ajiltan(req.body.erunkhiiKholbolt).findById(
       req.body.nevtersenAjiltniiToken.id
     );
     if (
@@ -20,7 +20,7 @@ async function gereeZasakhShalguur(req, res, next) {
 
 async function guilgeeUstgakhShalguur(req, res, next) {
   if (req.body.nevtersenAjiltniiToken && req.body.barilgiinId) {
-    var ajiltan = await Ajiltan(db.erunkhiiKholbolt).findById(
+    var ajiltan = await Ajiltan(req.body.erunkhiiKholbolt).findById(
       req.body.nevtersenAjiltniiToken.id
     );
     if (

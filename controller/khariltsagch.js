@@ -5,10 +5,10 @@ const Baiguullaga = require("../models/baiguullaga");
 const jwt = require("jsonwebtoken");
 const MsgTuukh = require("../models/msgTuukh");
 const request = require("request");
-const { db } = require("zevbackv2");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt)
       .findOne({ utas: req.body.utas })
       .select("+nuutsUg")

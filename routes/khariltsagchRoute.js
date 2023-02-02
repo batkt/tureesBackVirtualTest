@@ -43,7 +43,9 @@ crud(
     try {
       if (!req.body.register) throw new Error("Регистрийн дугаар бөглөнө үү!");
       else {
-        var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+        var khariltsagch = await Khariltsagch(
+          req.body.erunkhiiKholbolt
+        ).findOne({
           register: req.body.register,
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
@@ -98,11 +100,13 @@ router
   .route("/khariltsagchUstgaya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      Khariltsagch(db.erunkhiiKholbolt)
+      Khariltsagch(req.body.erunkhiiKholbolt)
         .findOne({
           _id: req.body.id,
         })
         .then(async (result) => {
+          console.log("req.body.id", req.body.id);
+          console.log("result", result);
           var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
             tuluv: 1,
             register: result.register,
@@ -123,7 +127,7 @@ router
           barimt.baiguullagiinId = req.body.baiguullagiinId;
           barimt.isNew = true;
           barimt.save();
-          Khariltsagch(db.erunkhiiKholbolt)
+          Khariltsagch(req.body.erunkhiiKholbolt)
             .deleteOne({
               _id: req.body.id,
             })
@@ -197,7 +201,9 @@ router
           geree: 0,
         },
       });
-      var result = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
+      var result = await Khariltsagch(req.body.erunkhiiKholbolt).aggregate(
+        query
+      );
       res.send(result);
     } catch (error) {
       next(error);
