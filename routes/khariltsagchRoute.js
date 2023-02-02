@@ -162,7 +162,7 @@ router
         },
         {
           $lookup: {
-            from: "geree",
+            from: req.body.tukhainBaaziinKholbolt.baaziinNer + ".geree",
             let: {
               register: "$register",
               baiguullagiinId: "$baiguullagiinId",
