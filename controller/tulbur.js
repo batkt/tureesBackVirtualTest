@@ -365,7 +365,8 @@ module.exports.tulultTaniya = async function tulultTaniya() {
         try {
           guilgeenuud.forEach(async (x) => {
             if (
-              ((x.description && x.description.toLowerCase().includes("qpay")) ||
+              ((x.description &&
+                x.description.toLowerCase().includes("qpay")) ||
                 (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay"))) &&
               qpaynuud &&
               qpaynuud.length > 0
@@ -389,43 +390,43 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                 continue;
               }
             } else {
-            khaikhNukhtsul = [];
-            if (x.description) tailbar = x.description.split(" ");
-            else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
-            if (x.relatedAccount != null)
-              khaikhNukhtsul.push({
-                "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
+              khaikhNukhtsul = [];
+              if (x.description) tailbar = x.description.split(" ");
+              else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
+              if (x.relatedAccount != null)
+                khaikhNukhtsul.push({
+                  "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
+                });
+              else if (x.CtAcntOrg != null)
+                khaikhNukhtsul.push({
+                  "avlaga.guilgeenuud.dansniiDugaar": x.CtAcntOrg,
+                });
+              tailbar.forEach((y) => {
+                khaikhNukhtsul.push({ utas: y });
+                khaikhNukhtsul.push({ register: y });
+                y = y.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
+                khaikhNukhtsul.push({
+                  talbainDugaar: { $regex: ".*" + y + ".*" },
+                });
               });
-            else if (x.CtAcntOrg != null)
-              khaikhNukhtsul.push({
-                "avlaga.guilgeenuud.dansniiDugaar": x.CtAcntOrg,
+              console.log(khaikhNukhtsul);
+              var oldsonGereenuud = await Geree(kholbolt).find({
+                $or: khaikhNukhtsul,
+                barilgiinId: guilgeenuud.barilgiinId,
               });
-            tailbar.forEach((y) => {
-              khaikhNukhtsul.push({ utas: y });
-              khaikhNukhtsul.push({ register: y });
-              y = y.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
-              khaikhNukhtsul.push({
-                talbainDugaar: { $regex: ".*" + y + ".*" },
-              });
-            });
-            console.log(khaikhNukhtsul);
-            var oldsonGereenuud = await Geree(kholbolt).find({
-              $or: khaikhNukhtsul,
-              barilgiinId: guilgeenuud.barilgiinId,
-            });
-            if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
-              oldsonGereenuud.forEach((a) => {
-                if (
-                  x.magadlaltaiGereenuud != null &&
-                  !x.magadlaltaiGereenuud.includes(a._id)
-                )
-                  x.magadlaltaiGereenuud.push(a._id);
-                else x.magadlaltaiGereenuud = [a._id];
-              });
-              x.isNew = false;
-              x.save();
+              if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
+                oldsonGereenuud.forEach((a) => {
+                  if (
+                    x.magadlaltaiGereenuud != null &&
+                    !x.magadlaltaiGereenuud.includes(a._id)
+                  )
+                    x.magadlaltaiGereenuud.push(a._id);
+                  else x.magadlaltaiGereenuud = [a._id];
+                });
+                x.isNew = false;
+                x.save();
+              }
             }
-          }
           });
         } catch (error) {
           next(error);
