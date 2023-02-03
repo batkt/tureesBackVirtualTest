@@ -19,7 +19,17 @@ router.route("/surveyKhadgalya").post(async (req, res, next) => {
 });
 
 router.route("/asuultAvya/:id").get(async (req, res, next) => {
-  const data = await Asuult.findOne({ _id: req.params.id });
+  const { db } = require("zevbackv2");
+  console.log("db.kholboltuud", db.kholboltuud);
+  console.log("req.params", req.params);
+  var kholboltuud = db.kholboltuud;
+  var tukhainBaaziinKholbolt = kholboltuud.find(
+    (a) => a.baiguullagiinId == req.params.baiguullagiinId
+  );
+  const data = await Asuult(tukhainBaaziinKholbolt).findOne({
+    _id: req.params.id,
+    baiguull,
+  });
   res.send(data);
 });
 
