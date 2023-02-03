@@ -40,6 +40,7 @@ const {
   khuvaariUusgey,
   uldegdelBodyo,
   tukhainOgnoogoorAvlagaBodojOruulya,
+  tukhainOgnoogoorZardalBodojOruulya,
   talbainIdnuudOruulya,
   bankniiGuilgeegeerOruulya,
   aldaataiBankniiGuilgeeZasya,
@@ -86,6 +87,9 @@ router
 router
   .route("/tukhainOgnoogoorAvlagaBodojOruulya")
   .post(tokenShalgakh, tukhainOgnoogoorAvlagaBodojOruulya);
+router
+  .route("/tukhainOgnoogoorZardalBodojOruulya")
+  .post(tokenShalgakh, tukhainOgnoogoorZardalBodojOruulya);
 router.route("/talbainIdnuudOruulya").post(tokenShalgakh, talbainIdnuudOruulya);
 router
   .route("/bankniiGuilgeegeerOruulya")

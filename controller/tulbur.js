@@ -934,6 +934,63 @@ exports.khungulultUstgaya = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var gereeniiDugaar = req.body.gereeniiDugaar;
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
+        gereeniiDugaar: {
+          $in: gereeniiDugaar,
+        },
+      });
+      var khariu = [];
+      console.log("gereenuud", gereenuud);
+      if (gereenuud)
+        for await (const element of gereenuud) {
+          if (element.zardluud && element.zardluud.length > 0) {
+            var butsaakhJagsaalt = [];
+            element.zardluud.forEach((zardal) => {
+              if (zardal) {
+                if (zardal.turul == "1м2")
+                  zardal.dun = tooZasyaSync(
+                    zardal.tariff * geree.talbainKhemjee
+                  );
+                if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
+                butsaakhJagsaalt.push({
+                  turul: "avlaga",
+                  tailbar: zardal.ner,
+                  tulukhDun: zardal.dun,
+                  ognoo: moment(req.body.duusakhOgnoo).set(
+                    "date",
+                    element.tulukhUdur[0]
+                  ),
+                });
+              }
+            });
+            Geree(req.body.tukhainBaaziinKholbolt)
+              .updateOne(
+                { _id: element._id },
+                {
+                  $push: {
+                    ["avlaga.guilgeenuud"]: {
+                      $each: butsaakhJagsaalt,
+                    },
+                  },
+                }
+              )
+              .then(async (result) => {
+                console.log("result", result);
+                khariu.push(result);
+              });
+          }
+        }
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
   async (req, res, next) => {
     try {
