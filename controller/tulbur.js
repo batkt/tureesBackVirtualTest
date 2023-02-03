@@ -937,11 +937,8 @@ exports.khungulultUstgaya = asyncHandler(async (req, res, next) => {
 exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
   async (req, res, next) => {
     try {
-      var gereeniiDugaar = req.body.gereeniiDugaar;
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
-        gereeniiDugaar: {
-          $in: gereeniiDugaar,
-        },
+        barilgiinId: req.body.barilgiinId,
       });
       var khariu = [];
       console.log("gereenuud", gereenuud);
