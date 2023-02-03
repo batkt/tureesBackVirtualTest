@@ -18,7 +18,7 @@ router.route("/surveyKhadgalya").post(async (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.route("/asuultAvya/:id").get(async (req, res, next) => {
+router.route("/asuultAvya/:baiguullagiinId/:id").get(async (req, res, next) => {
   const { db } = require("zevbackv2");
   console.log("db.kholboltuud", db.kholboltuud);
   console.log("req.params", req.params);
