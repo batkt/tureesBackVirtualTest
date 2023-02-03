@@ -28,7 +28,6 @@ router.route("/asuultAvya/:id").get(async (req, res, next) => {
   );
   const data = await Asuult(tukhainBaaziinKholbolt).findOne({
     _id: req.params.id,
-    baiguull,
   });
   res.send(data);
 });
