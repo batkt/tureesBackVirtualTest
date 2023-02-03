@@ -847,50 +847,9 @@ router
                         "avlaga.guilgeenuud.turul": {
                           $nin: ["baritsaa"],
                         },
-                        $or: [
-                          {
-                            "avlaga.guilgeenuud.ognoo": {
-                              $lt: new Date(req.body.ekhlekhOgnoo),
-                            },
-                          },
-                          {
-                            $and: [
-                              {
-                                "avlaga.guilgeenuud.ognoo": {
-                                  $lte: new Date(
-                                    req.body.nekhemjlekhAvakhOgnoo
-                                  ),
-                                  $gte: new Date(req.body.ekhlekhOgnoo),
-                                },
-                              },
-                              {
-                                $or: [
-                                  {
-                                    "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh":
-                                      {
-                                        $exists: false,
-                                      },
-                                  },
-                                  {
-                                    "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": false,
-                                  },
-                                ],
-                              },
-                              {
-                                $or: [
-                                  {
-                                    "avlaga.guilgeenuud.undsenDun": {
-                                      $exists: false,
-                                    },
-                                  },
-                                  {
-                                    "avlaga.guilgeenuud.undsenDun": 0,
-                                  },
-                                ],
-                              },
-                            ],
-                          },
-                        ],
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lt: new Date(req.body.ekhlekhOgnoo),
+                        },
                       },
                     },
                     {
