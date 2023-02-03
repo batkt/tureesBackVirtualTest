@@ -1034,6 +1034,45 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
   }
 );
 
+exports.tukhainOgnoogoorAvlagaZasajOruulya = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
+        barilgiinId: req.body.barilgiinId,
+      });
+      var khariu = [];
+      console.log("gereenuud", gereenuud.length);
+      if (gereenuud)
+        for await (const element of gereenuud) {
+          await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+            { gereeniiDugaar: element.gereeniiDugaar },
+            {
+              $set: {
+                "avlaga.guilgeenuud.$[t].tulukhDun": element.sariinTurees,
+                "avlaga.guilgeenuud.$[t].undsenDun": element.sariinTurees,
+              },
+            },
+            {
+              arrayFilters: [
+                {
+                  "t.turul": "khuvaari",
+                  "t.ognoo": {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                    $lte: new Date(req.body.duusakhOgnoo),
+                  },
+                },
+              ],
+            }
+          );
+        }
+      res.send(khariu);
+    } catch (err) {
+      console.log(err);
+      next(err);
+    }
+  }
+);
+
 exports.talbainIdnuudOruulya = asyncHandler(async (req, res, next) => {
   try {
     var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
