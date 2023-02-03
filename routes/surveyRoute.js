@@ -20,15 +20,16 @@ router.route("/surveyKhadgalya").post(async (req, res, next) => {
 
 router.route("/asuultAvya/:baiguullagiinId/:id").get(async (req, res, next) => {
   const { db } = require("zevbackv2");
-  console.log("db.kholboltuud", db.kholboltuud);
   console.log("req.params", req.params);
   var kholboltuud = db.kholboltuud;
   var tukhainBaaziinKholbolt = kholboltuud.find(
     (a) => a.baiguullagiinId == req.params.baiguullagiinId
   );
+  console.log("tukhainBaaziinKholbolt", tukhainBaaziinKholbolt);
   const data = await Asuult(tukhainBaaziinKholbolt).findOne({
     _id: req.params.id,
   });
+  console.log("data", data);
   res.send(data);
 });
 
