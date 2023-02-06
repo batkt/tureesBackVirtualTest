@@ -82,7 +82,8 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           butsaakhObject.token = jwt;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
-          var tuukh = new NevtreltiinTuukh(db.erunkhiiKholbolt);
+          var tuukh = new NevtreltiinTuukh(db.erunkhiiKholbolt)();
+          console.log("tuukh", tuukh);
           tuukh.ajiltniiId = ajiltan._id;
           tuukh.ajiltniiNer = ajiltan.ner;
           tuukh.ognoo = new Date();
@@ -98,7 +99,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           tuukh.browser = ua.browser;
           tuukh.useragent = ua;
           tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
-          nevtreltiinTuukhKhadgalya(tuukh, db.erunkhiiKholbolt);
+          await nevtreltiinTuukhKhadgalya(tuukh, db.erunkhiiKholbolt);
           res.status(200).json(butsaakhObject);
         } else throw new Error(khariu.msg);
       } catch (err) {

@@ -102,10 +102,15 @@ async function qpayShivye(token, qpayObject, next) {
   }
 }
 
-async function qpayObjectUusgeye(body, invoiceCode, next) {
+async function qpayObjectUusgeye(
+  body,
+  invoiceCode,
+  next,
+  tukhainBaaziinKholbolt
+) {
   try {
     var maxDugaar = 1;
-    await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+    await Dugaarlalt(tukhainBaaziinKholbolt)
       .find({
         baiguullagiinId: body.baiguullagiinId,
         barilgiinId: body.barilgiinId,
@@ -185,7 +190,8 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
   var qpayObject = await qpayObjectUusgeye(
     req.body,
     dans.qpayInvoiceCode,
-    next
+    next,
+    req.body.tukhainBaaziinKholbolt
   );
   console.log("qpayObject", qpayObject);
   var khariu = await qpayShivye(token, qpayObject, next);
