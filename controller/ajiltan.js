@@ -35,7 +35,7 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
       "https://api.ipgeolocation.io/ipgeo?apiKey=8ee349f1c7304c379fdb6b855d1e9df4&ip=" +
         tuukh.ip.toString()
     );
-    ipTuukh = new IpTuukh(tukhainBaaziinKholbolt);
+    ipTuukh = new IpTuukh(tukhainBaaziinKholbolt)();
     ipTuukh.ognoo = new Date();
     ipTuukh.medeelel = axiosKhariu.data;
     ipTuukh.bairshilUls = axiosKhariu.data.country_name;
