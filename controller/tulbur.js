@@ -373,14 +373,14 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             ) {
               for await (const qpay of qpaynuud) {
                 if (x.description && x.description.includes(qpay.payment_id)) {
-                  var geree = await Geree.findById(qpay.gereeniiId);
+                  var geree = await Geree(kholbolt).findById(qpay.gereeniiId);
                   x.kholbosonGereeniiId = [qpay.gereeniiId];
                   x.kholbosonDun = x.amount;
                   x.kholbosonTalbainId = [geree.talbainDugaar];
                   x.isNew = false;
                   x.save();
                 } else if (x.TxAddInf && x.TxAddInf.includes(qpay.payment_id)) {
-                  var geree = await Geree.findById(qpay.gereeniiId);
+                  var geree = await Geree(kholbolt).findById(qpay.gereeniiId);
                   x.kholbosonGereeniiId = [qpay.gereeniiId];
                   x.kholbosonDun = x.Amt;
                   x.kholbosonTalbainId = [geree.talbainDugaar];
