@@ -95,6 +95,7 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
     const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
       utas: req.body.utas,
     });
+    req.body.tukhainBaaziinKholbolt = db.erunkhiiKholbolt;
     if (!khariltsagch) throw new Error("Бүртгэлтэй харилцагч олдсонгүй!");
     khariltsagch.sergeekhKod = await kodUusgey();
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
@@ -126,6 +127,7 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
       [],
       0,
       next,
+      req,
       res
     );
     res.send(khariltsagch._id);
