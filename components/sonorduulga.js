@@ -1,7 +1,7 @@
 const Sonorduulga = require("../models/sonorduulga");
 
-async function ilgeeye(io, medegdel) {
-  let sonorduulga = new Sonorduulga();
+async function ilgeeye(io, medegdel, tukhainBaaziinKholbolt) {
+  let sonorduulga = new Sonorduulga(tukhainBaaziinKholbolt)();
   sonorduulga.baiguullagiinId = medegdel.baiguullagiinId;
   sonorduulga.barilgiinId = medegdel.barilgiinId;
   if (medegdel.barilgiinId && medegdel.turul != "daalgavar")

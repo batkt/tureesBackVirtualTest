@@ -24,7 +24,11 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
     medegdel.ognoo = new Date();
     medegdel.save(req.body).then(async (khariu) => {
       if (medegdel.turul != "shaardlaga") {
-        Sonorduulga.ilgeeye((io = req.app.get("socketio")), medegdel);
+        Sonorduulga.ilgeeye(
+          (io = req.app.get("socketio")),
+          medegdel,
+          req.body.tukhainBaaziinKholbolt
+        );
         res.send("Amjilttai");
       } else {
         var firebaseToken = req.body.firebaseToken;
