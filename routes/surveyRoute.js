@@ -11,7 +11,12 @@ crud(router, "asuult", Asuult, UstsanBarimt);
 crud(router, "khariult", Khariult, UstsanBarimt);
 
 router.route("/surveyKhadgalya").post(async (req, res, next) => {
-  const data = new Khariult(req.body);
+  const { db } = require("zevbackv2");
+  var kholboltuud = db.kholboltuud;
+  var tukhainBaaziinKholbolt = kholboltuud.find(
+    (a) => a.baiguullagiinId == req.body.baiguullagiinId
+  );
+  const data = new Khariult(tukhainBaaziinKholbolt)(req.body);
   data
     .save()
     .then((result) => res.send("Amjilttai"))
