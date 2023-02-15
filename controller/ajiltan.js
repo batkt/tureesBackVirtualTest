@@ -50,7 +50,6 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   const { db } = require("zevbackv2");
-  console.log("db.erunkhiiKholbolt", db.erunkhiiKholbolt);
   const ajiltan = await Ajiltan(db.erunkhiiKholbolt)
     .findOne()
     .select("+nuutsUg")
