@@ -1155,7 +1155,8 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
-  var baiguullaga = await Baiguullaga(req.body.tukhainBaaziinKholbolt).findById(
+  const { db } = require("zevbackv2");
+  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     req.body.baiguullagiinId
   );
   var group = {
@@ -1246,7 +1247,8 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
-  var baiguullaga = await Baiguullaga(req.body.tukhainBaaziinKholbolt).findById(
+  const { db } = require("zevbackv2");
+  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     req.body.baiguullagiinId
   );
   var group = {
@@ -1328,9 +1330,10 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
 
 exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
   async (req, res, next) => {
-    var baiguullaga = await Baiguullaga(
-      req.body.tukhainBaaziinKholbolt
-    ).findById(req.body.baiguullagiinId);
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      req.body.baiguullagiinId
+    );
     //aldax nukhtsul
     var nariivchlal = req.body.nariivchlal ? req.body.nariivchlal : "month";
     var ekhlekhOgnoo = req.body.ekhlekhOgnoo

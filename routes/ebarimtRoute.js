@@ -162,12 +162,13 @@ async function ebarimtButsaaya(ugugdul, onFinish, next) {
 
 router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     var guilgee = await BankniiGuilgee(
       req.body.tukhainBaaziinKholbolt
     ).findById(req.body.id);
-    var baiguullaga = await Baiguullaga(
-      req.body.tukhainBaaziinKholbolt
-    ).findById(req.body.baiguullagiinId);
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      req.body.baiguullagiinId
+    );
     if (guilgee.ebarimtAvsanEsekh)
       throw new aldaa("Ибаримт хэвлэж авсан байна!");
     var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(

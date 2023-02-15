@@ -372,7 +372,9 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       turul: "talbai",
     });
     var ObjectId = require("mongodb").ObjectId;
-    var barilga = await Baiguullaga(req.body.tukhainBaaziinKholbolt).aggregate([
+
+    const { db } = require("zevbackv2");
+    var barilga = await Baiguullaga(db.erunkhiiKholbolt).aggregate([
       {
         $match: {
           _id: new ObjectId(req.body.baiguullagiinId),
@@ -489,7 +491,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       ) {
         if (
           !object.davkhar ||
-          !barilga[0].davkhar.includes(object.davkhar) ||
+          !l[0].davkhar.includes(object.davkhar) ||
           !object.talbainKhemjee ||
           !object.kod ||
           !object.talbainNegjUne ||

@@ -38,7 +38,7 @@ module.exports.tulburZooyo = async function tulburZooyo() {
   var kholboltuud = db.kholboltuud;
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {
-      var baiguullaguud = await Baiguullaga(kholbolt).find({
+      var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
         "tokhirgoo.zogsooliinMinut": { $exists: true },
         "tokhirgoo.zogsooliinDun": { $exists: true },
       });

@@ -349,13 +349,14 @@ router
   .route("/khariltsagchGereeniiKhuulgaAvya/:id")
   .get(tokenShalgakh, async (req, res, next) => {
     try {
+      const { db } = require("zevbackv2");
       var geree = await Geree(req.body.tukhainBaaziinKholbolt)
         .findById(req.params.id)
         .select("+avlaga");
       if (lodash.isArray(lodash.get(geree, "avlaga.guilgeenuud"))) {
-        var baiguullaga = await Baiguullaga(
-          req.body.tukhainBaaziinKholbolt
-        ).findById(geree.baiguullagiinId);
+        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+          geree.baiguullagiinId
+        );
         var ekhlekhOgnoo = null;
         if (
           baiguullaga &&

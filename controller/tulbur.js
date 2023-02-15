@@ -442,7 +442,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo() {
     var kholboltuud = db.kholboltuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        var baiguullaguud = await Baiguullaga(kholbolt)
+        var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt)
           .find({
             "tokhirgoo.aldangiinKhuvi": { $gt: 0 },
           })
@@ -1577,7 +1577,7 @@ exports.gereeAutomataarSungaya = asyncHandler(async (req, res, next) => {
     var kholboltuud = db.kholboltuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        var baiguullaguud = await Baiguullaga(kholbolt).find({
+        var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
           "tokhirgoo.gereeAvtomataarSungakhEsekh": true,
         });
         var tulultiinJagsaalt = [];

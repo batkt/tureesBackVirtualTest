@@ -36,11 +36,10 @@ router.post("/duriinMailIlgeeye", tokenShalgakh, (req, res, next) => {
 });
 
 router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
-  var baiguullaga = await Baiguullaga(req.body.tukhainBaaziinKholbolt).findById(
-    {
-      _id: req.body.baiguullagiinId,
-    }
-  );
+  const { db } = require("zevbackv2");
+  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById({
+    _id: req.body.baiguullagiinId,
+  });
   console.log("baiguullaga", baiguullaga);
   if (
     !baiguullaga ||
@@ -140,9 +139,10 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
 
 router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
   try {
-    var baiguullaga = await Baiguullaga(
-      req.body.tukhainBaaziinKholbolt
-    ).findById(req.body.baiguullagiinId);
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      req.body.baiguullagiinId
+    );
     var msgIlgeekhKey;
     var msgIlgeekhDugaar;
     try {
@@ -171,9 +171,10 @@ router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
 
 router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
   try {
-    var baiguullaga = await Baiguullaga(
-      req.body.tukhainBaaziinKholbolt
-    ).findById(req.body.baiguullagiinId);
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      req.body.baiguullagiinId
+    );
     var msgIlgeekhKey;
     var msgIlgeekhDugaar;
     try {
