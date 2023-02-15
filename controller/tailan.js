@@ -1421,7 +1421,7 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
     var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
     var categories = [];
     const chartData = {
-      series: baiguullaga.barilguud.map((mur, index) => ({
+      series: baiguullaga?.barilguud.map((mur, index) => ({
         backgroundColor: chartUnguud[index],
         borderColor: chartUnguud[index],
         fill: false,
