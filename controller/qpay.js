@@ -195,6 +195,7 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
   );
   console.log("qpayObject", qpayObject);
   var khariu = await qpayShivye(token, qpayObject, next);
+  if (khariu && khariu.invoice_id) qpayObject.invoice_id = khariu.invoice_id;
   var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)();
   dugaarlalt.baiguullagiinId = req.body.baiguullagiinId;
   dugaarlalt.barilgiinId = req.body.barilgiinId;
