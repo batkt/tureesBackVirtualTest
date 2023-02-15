@@ -491,7 +491,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       ) {
         if (
           !object.davkhar ||
-          !l[0].davkhar.includes(object.davkhar) ||
+          !barilga[0].davkhar.includes(object.davkhar) ||
           !object.talbainKhemjee ||
           !object.kod ||
           !object.talbainNegjUne ||
