@@ -29,6 +29,7 @@ const dansRoute = require("./routes/dansRoute");
 const zogsoolRoute = require("./routes/zogsoolRoute");
 const zardalRoute = require("./routes/zardalRoute");
 const surveyRoute = require("./routes/surveyRoute");
+const togloomiinTuvRoute = require("./routes/togloomiinTuvRoute");
 const daalgavarRoute = require("./routes/daalgavarRoute");
 const zogsool = require("./controller/zogsool");
 const cgw = require("./controller/cgw");
@@ -85,6 +86,7 @@ app.use(dansRoute);
 app.use(zardalRoute);
 app.use(surveyRoute);
 app.use(daalgavarRoute);
+app.use(togloomiinTuvRoute);
 zuragPack(app);
 
 app.use(aldaaBarigch);
