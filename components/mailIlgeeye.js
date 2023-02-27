@@ -58,7 +58,7 @@ async function duriinMailIlgeeye(
     };
   let transporter = nodemailer.createTransport({
     host: host ? host : "smtp.zevtabs.mn",
-    port: port ? 587 : port,
+    port: port ? port : 587,
     secureConnection: false,
     tls,
     pool: true,
