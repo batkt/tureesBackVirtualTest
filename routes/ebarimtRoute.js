@@ -17,15 +17,9 @@ function nuatBodyo(bodokhDun) {
   return (bodokhDun - nuatguiDun).toFixed(2).toString();
 }
 
-async function guilgeeneesEbarimtUusgye(
-  guilgee,
-  geree,
-  register,
-  turul,
-  tukhainBaaziinKholbolt
-) {
+async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
   var dun = guilgee.amount ? guilgee.amount : guilgee.Amt;
-  var ebarimt = new Ebarimt(tukhainBaaziinKholbolt)();
+  var ebarimt = {};
   if (register) {
     if (turul) ebarimt.billType = turul;
     ebarimt.customerNo = register;
@@ -188,8 +182,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
       guilgee,
       geree,
       req.body.register,
-      req.body.turul,
-      req.body.tukhainBaaziinKholbolt
+      req.body.turul
     );
     console.log("ebarimt", ebarimt);
     ebarimtDuudya(
