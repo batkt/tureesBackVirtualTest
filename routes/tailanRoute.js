@@ -11,7 +11,7 @@ const {
   ashigiinTailanAvya,
   analitikTailanAvya,
 } = require("../controller/tailan");
-const tailangiinZagvar = require("../models/tailangiinZagvar");
+const TailangiinZagvar = require("../models/tailangiinZagvar");
 
 crud(router, "tailangiinZagvar", TailangiinZagvar, UstsanBarimt);
 
