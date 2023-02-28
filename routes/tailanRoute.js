@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { tokenShalgakh } = require("zevbackv2");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const {
   borluulaltiinTailanAvya,
   avlagiinTailanAvya,
@@ -11,6 +11,9 @@ const {
   ashigiinTailanAvya,
   analitikTailanAvya,
 } = require("../controller/tailan");
+const tailangiinZagvar = require("../models/tailangiinZagvar");
+
+crud(router, "tailangiinZagvar", TailangiinZagvar, UstsanBarimt);
 
 router
   .route("/borluulaltiinTailanAvya")
