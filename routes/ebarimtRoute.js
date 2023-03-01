@@ -77,6 +77,7 @@ async function ebarimtDuudya(ugugdul, onFinish, next) {
     var url = process.env.EBARIMT_IP + "/put";
     if (ugugdul.barilgiinId)
       url = url + "?lib=" + ugugdul.barilgiinId.toString();
+    console.log("ebarimt put ==>", url);
     request.post(
       url,
       { json: true, body: { data: ugugdul } },
@@ -205,7 +206,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
             .catch((err) => {
               console.log(err);
             });
-          console.log("duuslaa", d);
+          console.log("ebarimt duuslaa");
           res.send(d);
         } catch (err) {
           next(err);
