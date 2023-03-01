@@ -13,19 +13,18 @@ const request = require("request");
 function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
   return (bodokhDun - nuatguiDun).toFixed(2).toString();
-  var nuatguiDun = bodokhDun / 1.1;
-  return (bodokhDun - nuatguiDun).toFixed(2).toString();
 }
 
 async function guilgeeneesEbarimtUusgye(guilgee, geree, register, turul) {
   var dun = guilgee.amount ? guilgee.amount : guilgee.Amt;
+  var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
   var ebarimt = {};
   if (register) {
     if (turul) ebarimt.billType = turul;
     ebarimt.customerNo = register;
   }
   var today = new Date();
-  var guilgeeniiSar = new Date(guilgee.createdAt).getMonth();
+  var guilgeeniiSar = new Date(ognoo).getMonth();
   //ene xesegt getMonth 0-11 gsn too butsaadag uchir shuud xiilee
   console.log("date", today.getDate());
   console.log("guilgeeniiSar", guilgeeniiSar);
