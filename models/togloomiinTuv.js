@@ -14,6 +14,10 @@ const togloomiinTuvSchema = new Schema(
     ekhlekhTsag: Date,
     duusakhTsag: Date,
     turul: Date,
+    tuluv: {
+      type: Number,
+      default: 0,
+    },
     khugatsaa: Number, //minutaar
     tariff: Number, //tsagiin
     niitDun: Number, //minutaar
