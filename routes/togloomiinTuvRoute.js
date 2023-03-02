@@ -40,4 +40,36 @@ router
       next(err);
     }
   });
+router
+  .route("/togloomiinDunAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+      var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+      var khariu = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            ognoo: {
+              $gte: ekhlekhOgnoo,
+              $lte: duusakhOgnoo,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "id",
+            dun: {
+              $sum: $niitDun,
+            },
+          },
+        },
+      ]);
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  });
 module.exports = router;
