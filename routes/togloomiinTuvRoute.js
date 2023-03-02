@@ -62,7 +62,7 @@ router
           $group: {
             _id: "id",
             dun: {
-              $sum: $niitDun,
+              $sum: "$niitDun",
             },
           },
         },
