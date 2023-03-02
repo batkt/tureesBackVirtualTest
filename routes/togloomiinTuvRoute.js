@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { crud, UstsanBarimt } = require("zevbackv2");
+const { crud, UstsanBarimt, tokenShalgakh } = require("zevbackv2");
 const { Pool } = require("pg");
 const TogloomiinTariff = require("../models/togloomiinTariff");
 const TogloomiinTuv = require("../models/togloomiinTuv");
