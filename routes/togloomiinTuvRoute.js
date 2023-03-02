@@ -14,7 +14,9 @@ router
     try {
       var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
       var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
-      var khariu = await TogloomiinTuv.aggregate([
+      var khariu = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
         {
           $match: {
             baiguullagiinId: req.body.baiguullagiinId,
