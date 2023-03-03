@@ -480,7 +480,8 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
           }
         });
       }
-      console.log("object", object);
+
+      muriinDugaar = muriinDugaar + 1;
       if (
         object.davkhar ||
         object.talbainKhemjee ||
@@ -514,15 +515,16 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
             !object.talbainNiitUne
           )
             aldaaniiMsg = aldaaniiMsg + "талбар хоосон ,<br/>";
-          if (!barilga[0].davkhar.includes(object.davkhar))
+          if (!barilga[0].davkhar.includes(object.davkhar)) {
             aldaaniiMsg = aldaaniiMsg + "давхарын утгыг буруу оруулсан ! <br/>";
+          }
+
           aldaaniiMsg = aldaaniiMsg + "байна! <br/>";
         } else {
           jagsaalt.push(object);
           kodnuud.push(object.kod);
         }
       }
-      muriinDugaar = muriinDugaar + 1;
     }
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     const toFindDuplicates = (arry) =>
