@@ -446,6 +446,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     var kodnuud = [];
     var aldaaniiMsg = "";
     for await (const mur of data) {
+      muriinDugaar++;
       let object = new Talbai(req.body.tukhainBaaziinKholbolt)();
       object.davkhar = mur[usegTooruuKhurvuulekh(tolgoinObject.davkhar)];
       object.talbainKhemjee =
@@ -480,8 +481,6 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
           }
         });
       }
-
-      muriinDugaar = muriinDugaar + 1;
       if (
         object.davkhar ||
         object.talbainKhemjee ||
