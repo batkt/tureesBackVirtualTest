@@ -13,7 +13,8 @@ const togloomiinTuvSchema = new Schema(
     ognoo: Date,
     ekhlekhTsag: Date,
     duusakhTsag: Date,
-    turul: Date,
+    khungulsunShaltgaan: String,
+    khungulsunEsekh: Boolean,
     tuluv: {
       type: Number,
       default: 0,

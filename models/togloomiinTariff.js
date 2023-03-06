@@ -5,8 +5,12 @@ mongoose.pluralize(null);
 const togloomiinTariffSchema = new Schema(
   {
     udur: [String],
-    tsag: Number,
-    tariff: Number,
+    tariffuud: [
+      {
+        minut: Number, //minut xurtel dun
+        tariff: Number,
+      },
+    ],
     baiguullagiinId: String,
     barilgiinId: String,
   },
