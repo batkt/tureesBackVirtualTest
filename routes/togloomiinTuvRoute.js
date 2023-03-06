@@ -102,4 +102,34 @@ router
       next(err);
     }
   });
+router
+  .route("/togloomiinTulburTulye")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var minut = Number(req.body.minut);
+      var dun = 0;
+      var unuudur = new Date().getDay();
+      var khariu = await TogloomiinTariff(
+        req.body.tukhainBaaziinKholbolt
+      ).findOne({
+        udruud: unuudur,
+        baiguullagiinId: req.body.baiguullagiinId,
+      });
+      if (khariu && khariu.tariffuud) {
+        khariu.tariffuud.sort(function (a, b) {
+          return a.minut - b.minut;
+        });
+        for await (const x of khariu.tariffuud) {
+          dun = x.tariff;
+          if (minut > x.minut) continue;
+        }
+      }
+
+      res.send({
+        dun,
+      });
+    } catch (err) {
+      next(err);
+    }
+  });
 module.exports = router;
