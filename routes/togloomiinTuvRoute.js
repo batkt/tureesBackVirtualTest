@@ -197,7 +197,7 @@ router
     }
   });
 
-router.route("/khuukhedGargay").post(tokenShalgakh, async (req, res, next) => {
+router.route("/khuukhedGargaya").post(tokenShalgakh, async (req, res, next) => {
   try {
     await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
       req.body.id,
@@ -208,4 +208,18 @@ router.route("/khuukhedGargay").post(tokenShalgakh, async (req, res, next) => {
     next(err);
   }
 });
+
+router
+  .route("/togloomTsutslaya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+        req.body.id,
+        { tuluv: -1, tsutsalsanShaltgaan: req.body.shaltgaan }
+      );
+      res.send("Amjilttai");
+    } catch (err) {
+      next(err);
+    }
+  });
 module.exports = router;
