@@ -188,7 +188,7 @@ router
       guilgeeniiTuukh.forEach((mur) => (mur.ognoo = new Date()));
       await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
         req.body.id,
-        { tulburTulsunEsekh: true, tulbur: guilgeenuud }
+        { tulburTulsunEsekh: true, tuluv: 1, tulbur: guilgeenuud }
       );
       await TogloomiinTulbur.insertMany(guilgeenuud);
       res.send("Amjilttai");
@@ -196,4 +196,16 @@ router
       next(err);
     }
   });
+
+router.route("/khuukhedGargay").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+      req.body.id,
+      { tuluv: 3, garsanTsag: new Date() }
+    );
+    res.send("Amjilttai");
+  } catch (err) {
+    next(err);
+  }
+});
 module.exports = router;
