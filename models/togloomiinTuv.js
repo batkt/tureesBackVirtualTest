@@ -22,8 +22,17 @@ const togloomiinTuvSchema = new Schema(
     khugatsaa: Number, //minutaar
     tariff: Number, //tsagiin
     niitDun: Number, //minutaar
+    tulbur: [
+      {
+        turul: String,
+        dun: Number,
+        object: Schema.Types.Mixed,
+      },
+    ],
     baiguullagiinId: String,
     barilgiinId: String,
+    tulburTulsunEsekh: Boolean,
+    ebarimtAvsanEsekh: Boolean,
   },
   {
     timestamps: true,

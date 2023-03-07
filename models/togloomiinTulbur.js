@@ -2,16 +2,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
-const togloomiinTariffSchema = new Schema(
+const togloomiinTulburSchema = new Schema(
   {
-    udur: [String],
-    tariffuud: [
-      {
-        minut: Number, //minut xurtel dun
-        tariff: Number,
-      },
-    ],
-    undsenTariff: Number, //tsagiin tariff
+    ognoo: Date,
+    turul: String,
+    khariu: Schema.Types.Mixed,
+    tolgoomiinId: String,
+    msg: String,
+    dun: Number,
     baiguullagiinId: String,
     barilgiinId: String,
   },
@@ -24,5 +22,5 @@ module.exports = function a(conn) {
   if (!conn || !conn.kholbolt)
     throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
   conn = conn.kholbolt;
-  return conn.model("togloomiinTariff", togloomiinTariffSchema);
+  return conn.model("togloomiinTulbur", togloomiinTulburSchema);
 };
