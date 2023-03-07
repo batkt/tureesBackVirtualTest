@@ -29,9 +29,60 @@ router
         },
         {
           $group: {
-            _id: "tuluv",
-            too: {
-              $sum: 1,
+            _id: "aaa",
+            ekhlesen: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      {
+                        $gte: ["$ekhlekhTsag", new Date()],
+                      },
+                      {
+                        $lt: ["$duusakhTsag", new Date()],
+                      },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+            tulsun: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      {
+                        $gte: ["$duusakhTsag", new Date()],
+                      },
+                      {
+                        $eq: ["$tulburTulsunEsekh", true],
+                      },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+            tuluugui: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      {
+                        $gte: ["$duusakhTsag", new Date()],
+                      },
+                      {
+                        $eq: ["$tulburTulsunEsekh", false],
+                      },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
             },
           },
         },
