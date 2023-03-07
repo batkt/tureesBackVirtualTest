@@ -80,7 +80,7 @@ router
                             $eq: ["$tulburTulsunEsekh", false],
                           },
                           {
-                            $eq: ["$tulburTulsunEsekh", null],
+                            $not: ["$tulburTulsunEsekh"],
                           },
                         ],
                       },
