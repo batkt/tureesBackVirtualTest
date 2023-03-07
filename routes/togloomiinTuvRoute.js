@@ -75,7 +75,14 @@ router
                         $gte: ["$duusakhTsag", new Date()],
                       },
                       {
-                        $eq: ["$tulburTulsunEsekh", false],
+                        $or: [
+                          {
+                            $eq: ["$tulburTulsunEsekh", false],
+                          },
+                          {
+                            $eq: ["$tulburTulsunEsekh", null],
+                          },
+                        ],
                       },
                     ],
                   },
@@ -182,7 +189,7 @@ router
       var guilgeenuud = req.body.tulbur;
       if (Array.isArray(guilgeenuud)) {
         guilgeenuud.forEach((mur) =>
-          guilgeeniiTuukh.push(new GuilgeeniiTuukh(mur))
+          guilgeeniiTuukh.push(new TogloomiinTulbur(mur))
         );
       }
       guilgeeniiTuukh.forEach((mur) => (mur.ognoo = new Date()));
