@@ -197,7 +197,9 @@ router
         req.body.id,
         { tulburTulsunEsekh: true, tuluv: 1, tulbur: guilgeenuud }
       );
-      await TogloomiinTulbur.insertMany(guilgeenuud);
+      await TogloomiinTulbur(req.body.tukhainBaaziinKholbolt).insertMany(
+        guilgeenuud
+      );
       res.send("Amjilttai");
     } catch (err) {
       next(err);
