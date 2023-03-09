@@ -168,6 +168,8 @@ router
         }
         if (minut > maxTsag) {
           var tsag = Math.ceil(minut - maxTsag / 60);
+          console.log("tsag", tsag);
+          console.log("khariu.undsenTariff", khariu.undsenTariff);
           dun = tsag * khariu.undsenTariff + dun;
         }
       }
