@@ -161,12 +161,10 @@ router
           return a.minut - b.minut;
         });
         maxTsag = khariu.tariffuud[khariu.tariffuud.length - 1].minut;
+        console.log("maxTsag", maxTsag);
         for await (const x of khariu.tariffuud) {
           dun = x.tariff;
-          if (minut <= x.minut) {
-            iluuGarsan = false;
-            continue;
-          }
+          if (minut <= x.minut) continue;
         }
         if (minut > maxTsag) {
           var tsag = Math.ceil(minut - maxTsag / 60);
