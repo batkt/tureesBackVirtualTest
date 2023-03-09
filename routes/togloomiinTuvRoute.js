@@ -189,7 +189,9 @@ router
       var guilgeenuud = req.body.tulbur;
       if (Array.isArray(guilgeenuud)) {
         guilgeenuud.forEach((mur) =>
-          guilgeeniiTuukh.push(new TogloomiinTulbur(mur))
+          guilgeeniiTuukh.push(
+            new TogloomiinTulbur(req.body.tukhainBaaziinKholbolt)(mur)
+          )
         );
       }
       guilgeeniiTuukh.forEach((mur) => (mur.ognoo = new Date()));
