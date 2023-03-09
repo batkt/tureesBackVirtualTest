@@ -28,6 +28,7 @@ const togloomiinTuvSchema = new Schema(
     tulbur: [
       {
         turul: String,
+        tailbar: String,
         dun: Number,
         object: Schema.Types.Mixed,
       },

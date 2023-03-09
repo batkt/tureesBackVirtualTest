@@ -8,6 +8,7 @@ const togloomiinTulburSchema = new Schema(
     turul: String,
     khariu: Schema.Types.Mixed,
     tolgoomiinId: String,
+    tailbar: String,
     msg: String,
     dun: Number,
     baiguullagiinId: String,
