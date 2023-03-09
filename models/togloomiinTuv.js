@@ -24,6 +24,7 @@ const togloomiinTuvSchema = new Schema(
     tariff: Number, //tsagiin
     niitDun: Number, //minutaar
     tsutsalsanShaltgaan: String,
+    turul: String,
     tulbur: [
       {
         turul: String,
