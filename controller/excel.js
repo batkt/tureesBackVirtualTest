@@ -1492,6 +1492,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const irgenSheet = workbook.Sheets[workbook.SheetNames[0]];
     const aanSheet = workbook.Sheets[workbook.SheetNames[1]];
+    const { db } = require("zevbackv2");
     var segmentuud = await Segment(req.body.tukhainBaaziinKholbolt).find({
       baiguullagiinId: req.body.baiguullagiinId,
       turul: "khariltsagch",
@@ -1558,7 +1559,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
     var aldaaniiMsg = "";
     data.forEach((mur) => {
       muriinDugaar++;
-      let object = new Khariltsagch(req.body.tukhainBaaziinKholbolt)();
+      let object = new Khariltsagch(db.erunkhiiKholbolt)();
       object.id = mur[usegTooruuKhurvuulekh(tolgoinObject.id)];
       object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ovog = mur[usegTooruuKhurvuulekh(tolgoinObject.ovog)];
@@ -1652,7 +1653,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
     });
     data.forEach((mur) => {
       muriinDugaar++;
-      let object = new Khariltsagch(req.body.tukhainBaaziinKholbolt)();
+      let object = new Khariltsagch(db.erunkhiiKholbolt)();
       object.id = mur[usegTooruuKhurvuulekh(tolgoinObject.id)];
       object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ovog = mur[usegTooruuKhurvuulekh(tolgoinObject.ovog)];
@@ -1717,18 +1718,15 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       aldaaniiMsg,
       req.body.baiguullagiinId,
       req.body.barilgiinId,
-      req.body.tukhainBaaziinKholbolt
+      db.erunkhiiKholbolt
     );
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
-    Khariltsagch(req.body.tukhainBaaziinKholbolt).insertMany(
-      jagsaalt,
-      function (err) {
-        if (err) {
-          next(err);
-        }
-        res.status(200).send("Amjilttai");
+    Khariltsagch(db.erunkhiiKholbolt).insertMany(jagsaalt, function (err) {
+      if (err) {
+        next(err);
       }
-    );
+      res.status(200).send("Amjilttai");
+    });
   } catch (error) {
     next(error);
   }
