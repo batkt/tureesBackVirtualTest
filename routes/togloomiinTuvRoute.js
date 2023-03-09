@@ -36,10 +36,10 @@ router
                   {
                     $and: [
                       {
-                        $gte: ["$ekhlekhTsag", new Date()],
+                        $lte: ["$ekhlekhTsag", new Date()],
                       },
                       {
-                        $lt: ["$duusakhTsag", new Date()],
+                        $gt: ["$duusakhTsag", new Date()],
                       },
                     ],
                   },
@@ -54,7 +54,7 @@ router
                   {
                     $and: [
                       {
-                        $gte: ["$duusakhTsag", new Date()],
+                        $lte: ["$duusakhTsag", new Date()],
                       },
                       {
                         $eq: ["$tulburTulsunEsekh", true],
@@ -72,7 +72,7 @@ router
                   {
                     $and: [
                       {
-                        $gte: ["$duusakhTsag", new Date()],
+                        $lte: ["$duusakhTsag", new Date()],
                       },
                       {
                         $or: [
