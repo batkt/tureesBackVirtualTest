@@ -167,7 +167,7 @@ router
           if (minut <= x.minut) break;
         }
         if (minut > maxTsag) {
-          var tsag = Math.ceil(minut - maxTsag / 60);
+          var tsag = Math.ceil((minut - maxTsag) / 60);
           console.log("tsag", tsag);
           console.log("khariu.undsenTariff", khariu.undsenTariff);
           dun = tsag * khariu.undsenTariff + dun;
