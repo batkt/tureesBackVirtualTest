@@ -129,6 +129,9 @@ router
               $gte: ekhlekhOgnoo,
               $lte: duusakhOgnoo,
             },
+            tuluv: {
+              $ne: -1,
+            },
           },
         },
         {
