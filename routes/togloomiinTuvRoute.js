@@ -36,6 +36,9 @@ router
                   {
                     $and: [
                       {
+                        $ne: ["$tuluv", -1],
+                      },
+                      {
                         $lte: ["$ekhlekhTsag", new Date()],
                       },
                       {
@@ -95,6 +98,17 @@ router
               },
             },
             tsutsalsan: {
+              $sum: {
+                $cond: [
+                  {
+                    $eq: ["$tuluv", -1],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+            khungulsun: {
               $sum: {
                 $cond: [
                   {
