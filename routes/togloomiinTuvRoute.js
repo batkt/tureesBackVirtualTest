@@ -72,6 +72,9 @@ router
                   {
                     $and: [
                       {
+                        $ne: ["$tuluv", -1],
+                      },
+                      {
                         $lte: ["$duusakhTsag", new Date()],
                       },
                       {
