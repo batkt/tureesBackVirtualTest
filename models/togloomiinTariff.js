@@ -12,6 +12,7 @@ const togloomiinTariffSchema = new Schema(
       },
     ],
     undsenTariff: Number, //tsagiin tariff
+    asragchiinTariff: Number, //nemelt asran xamgaalagchiin tariff
     baiguullagiinId: String,
     barilgiinId: String,
   },

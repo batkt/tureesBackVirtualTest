@@ -167,6 +167,7 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       var minut = Number(req.body.minut);
+      var asragchiinToo = Number(req.body.asragchiinToo);
       var dun = 0;
       var unuudur = new Date().getDay();
       var maxTsag = 0;
@@ -192,6 +193,13 @@ router
           console.log("khariu.undsenTariff", khariu.undsenTariff);
           dun = tsag * khariu.undsenTariff + dun;
         }
+        if (asragchiinToo > 1) {
+          var asragchTariff = Number(khariu.asragchiinTariff);
+          if (asragchTariff > 0) {
+            asragchiinDun = (asragchiinToo - 1) * asragchTariff;
+            dun = dun + asragchiinDun;
+          }
+        }
       }
 
       res.send({
@@ -214,7 +222,13 @@ router
           )
         );
       }
-      guilgeeniiTuukh.forEach((mur) => (mur.ognoo = new Date()));
+      guilgeeniiTuukh.forEach((mur) => {
+        mur.ognoo = new Date();
+        if (mur.turul == "khunglukh") {
+          mur.khungulsunEsekh = true;
+          mur.khungulsunDun = mur.dun;
+        }
+      });
       await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
         req.body.id,
         { tulburTulsunEsekh: true, tuluv: 1, tulbur: guilgeenuud }
