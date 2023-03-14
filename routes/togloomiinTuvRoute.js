@@ -112,7 +112,14 @@ router
               $sum: {
                 $cond: [
                   {
-                    $eq: ["$tuluv", -1],
+                    $and: [
+                      {
+                        $eq: ["$tuluv", -1],
+                      },
+                      {
+                        $khungulsunEsekh: true,
+                      },
+                    ],
                   },
                   1,
                   0,
