@@ -194,7 +194,7 @@ router
           dun = tsag * khariu.undsenTariff + dun;
         }
         if (asragchiinToo > 1) {
-          var asragchTariff = Number(khariu.asragchiinTariff);
+          var asragchTariff = Number(khariu.asragchTariff);
           if (asragchTariff > 0) {
             asragchiinDun = (asragchiinToo - 1) * asragchTariff;
             dun = dun + asragchiinDun;
