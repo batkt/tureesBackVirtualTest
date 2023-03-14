@@ -117,7 +117,7 @@ router
                         $eq: ["$tuluv", -1],
                       },
                       {
-                        $khungulsunEsekh: true,
+                        $eq: [$khungulsunEsekh, true],
                       },
                     ],
                   },
