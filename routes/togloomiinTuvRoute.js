@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const { crud, UstsanBarimt, tokenShalgakh } = require("zevbackv2");
-const { Pool } = require("pg");
 const TogloomiinTariff = require("../models/togloomiinTariff");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const TogloomiinTulbur = require("../models/togloomiinTulbur");
+const lodash = require("lodash");
 
 crud(router, "togloomiinTariff", TogloomiinTariff, UstsanBarimt);
 crud(router, "togloomiinTuv", TogloomiinTuv, UstsanBarimt);
@@ -114,10 +114,25 @@ router
                   {
                     $and: [
                       {
-                        $eq: ["$tuluv", -1],
+                        $ne: ["$tuluv", -1],
                       },
                       {
                         $eq: ["$khungulsunEsekh", true],
+                      },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+            garsan: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      {
+                        $eq: ["$tuluv", 3],
                       },
                     ],
                   },
@@ -229,6 +244,9 @@ router
           )
         );
       }
+      var niitDun = lodash.sumBy(guilgeeniiTuukh, function (object) {
+        return object.dun;
+      });
       var update = {
         tulburTulsunEsekh: true,
         tuluv: 1,
@@ -239,6 +257,7 @@ router
         if (mur.turul == "khunglukh") {
           update.khungulsunEsekh = true;
           update.khungulsunDun = mur.dun;
+          update.niitDun = niitDun - mur.dun;
         }
       });
       await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
@@ -272,7 +291,7 @@ router
     try {
       await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
         req.body.id,
-        { tuluv: -1, tsutsalsanShaltgaan: req.body.shaltgaan }
+        { tuluv: -1, tsutsalsanShaltgaan: req.body.shaltgaan, niitDun: 0 }
       );
       res.send("Amjilttai");
     } catch (err) {
