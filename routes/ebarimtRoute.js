@@ -88,6 +88,7 @@ async function togloomoosEbarimtUusgye(
     if (turul) ebarimt.billType = turul;
     ebarimt.customerNo = register;
   }
+  ebarimt.togloomiinId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
   ebarimt.utas = guilgee.utas[0];
@@ -209,6 +210,17 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           ebarimt.save().catch((err) => {
             next(err);
           });
+          TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
+            .findByIdAndUpdate(
+              { _id: req.body.id },
+              { ebarimtAvsanEsekh: true }
+            )
+            .then((xariu) => {
+              console.log(xariu);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
           console.log("ebarimt duuslaa");
           res.send(d);
         } catch (err) {
@@ -332,6 +344,17 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
               next(err);
               console.log("aldaa", err);
             });
+        else if (butsaakhBarimt.togloomiinId) {
+          await TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
+            .findByIdAndUpdate(
+              { _id: butsaakhBarimt.togloomiinId },
+              { ebarimtAvsanEsekh: false }
+            )
+            .catch((err) => {
+              next(err);
+              console.log("aldaa", err);
+            });
+        }
         console.log("duuslaa", d);
         res.json(d);
       },
