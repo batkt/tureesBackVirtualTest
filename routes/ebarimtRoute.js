@@ -203,6 +203,19 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         req.body.turul,
         req.body.tukhainBaaziinKholbolt
       );
+      butsaakhMethod = function (d) {
+        try {
+          if (!d.success) throw new Error(d.message);
+          var ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          ebarimt.save().catch((err) => {
+            next(err);
+          });
+          console.log("ebarimt duuslaa");
+          res.send(d);
+        } catch (err) {
+          next(err);
+        }
+      };
     } else {
       var guilgee = await BankniiGuilgee(
         req.body.tukhainBaaziinKholbolt
@@ -224,7 +237,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         req.body.register = geree.register;
         req.body.turul = "3";
       }
-      butsaakhMethod = (d) => {
+      butsaakhMethod = function (d) {
         try {
           if (!d.success) throw new Error(d.message);
           var ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
