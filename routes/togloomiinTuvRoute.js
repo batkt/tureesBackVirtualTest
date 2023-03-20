@@ -141,6 +141,11 @@ router
                 ],
               },
             },
+            sungasan: {
+              $sum: {
+                $cond: ["$sungalt.0", 1, 0],
+              },
+            },
           },
         },
       ]);
@@ -251,6 +256,8 @@ router
         tulburTulsunEsekh: true,
         tuluv: 1,
         tulbur: guilgeeniiTuukh,
+        dutuuDun: 0,
+        ebarimtAvakhDun: 0,
       };
       guilgeeniiTuukh.forEach((mur) => {
         mur.ognoo = new Date();
@@ -258,6 +265,8 @@ router
           update.khungulsunEsekh = true;
           update.khungulsunDun = mur.dun;
           update.niitDun = niitDun - mur.dun;
+        } else {
+          update.ebarimtAvakhDun = update.ebarimtAvakhDun + mur.dun;
         }
       });
       await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
@@ -298,4 +307,42 @@ router
       next(err);
     }
   });
+
+router.route("/togloomSungaya").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    var umnukh = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findOne({
+      _id: req.body.id,
+    });
+    if (!umnukh || !umnukh.tulburTulsunEsekh || !umnukh.ebarimtAvsanEsekh)
+      throw new Error(
+        "Зөвхөн төлбөр төлж ИБаримт авсаны дараагаар сунгах боломжтой!"
+      );
+    if (umnukh.sungalt && umnukh.sungalt.length > 0) {
+      umnukh.sungalt.push({
+        khugatsaa: req.body.khugatsaa,
+        tariff: req.body.tariff,
+        niitDun: umnukh.niitDun + req.body.niitDun,
+        ekhlekhTsag: req.body.ekhlekhTsag,
+        duusakhTsag: req.body.duusakhTsag,
+      });
+    } else {
+      umnukh.sungalt = [
+        {
+          khugatsaa: req.body.khugatsaa,
+          tariff: req.body.tariff,
+          niitDun: umnukh.niitDun + req.body.niitDun,
+          ekhlekhTsag: req.body.ekhlekhTsag,
+          duusakhTsag: req.body.duusakhTsag,
+        },
+      ];
+    }
+    umnukh.duusakhTsag = req.body.duusakhTsag;
+    umnukh.tulburTulsunEsekh = false;
+    umnukh.ebarimtAvsanEsekh = false;
+    umnukh.dutuuDun = req.body.niitDun;
+    res.send("Amjilttai");
+  } catch (err) {
+    next(err);
+  }
+});
 module.exports = router;

@@ -92,9 +92,9 @@ async function togloomoosEbarimtUusgye(
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
   ebarimt.utas = guilgee.utas[0];
-  ebarimt.amount = guilgee.niitDun.toFixed(2).toString();
-  ebarimt.vat = nuatBodyo(guilgee.niitDun);
-  ebarimt.cashAmount = guilgee.niitDun.toFixed(2).toString();
+  ebarimt.amount = guilgee.ebarimtAvakhDun.toFixed(2).toString();
+  ebarimt.vat = nuatBodyo(guilgee.ebarimtAvakhDun);
+  ebarimt.cashAmount = guilgee.ebarimtAvakhDun.toFixed(2).toString();
   ebarimt.nonCashAmount = "0.00";
   ebarimt.cityTax = "0.00";
   ebarimt.districtCode = "12";
@@ -105,10 +105,10 @@ async function togloomoosEbarimtUusgye(
     name: "Биеийн тамир, амралт, зугаа цэнгэлийн үйлчилгээ",
     measureUnit: "шир",
     qty: "1.00",
-    unitPrice: guilgee.niitDun.toFixed(2).toString(),
-    totalAmount: guilgee.niitDun.toFixed(2).toString(),
+    unitPrice: guilgee.ebarimtAvakhDun.toFixed(2).toString(),
+    totalAmount: guilgee.ebarimtAvakhDun.toFixed(2).toString(),
     cityTax: "0.00",
-    vat: nuatBodyo(guilgee.niitDun),
+    vat: nuatBodyo(guilgee.ebarimtAvakhDun),
     barCode: "965",
   };
   stocks.push(stock);

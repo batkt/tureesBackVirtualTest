@@ -22,9 +22,20 @@ const togloomiinTuvSchema = new Schema(
       type: Number,
       default: 0,
     },
+    sungalt: [
+      {
+        khugatsaa: Number, //minutaar
+        tariff: Number, //tsagiin
+        niitDun: Number, //minutaar
+        ekhlekhTsag: Date,
+        duusakhTsag: Date,
+      },
+    ],
     khugatsaa: Number, //minutaar
     tariff: Number, //tsagiin
-    niitDun: Number, //minutaar
+    niitDun: Number,
+    dutuuDun: Number, //Dutuu bga dun
+    ebarimtAvakhDun: Number,
     tsutsalsanShaltgaan: String,
     turul: String,
     tulbur: [
