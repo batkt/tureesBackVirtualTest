@@ -78,7 +78,7 @@ async function guilgeeneesEbarimtUusgye(
 }
 
 async function togloomoosEbarimtUusgye(
-  dun,
+  guilgee,
   utas,
   register,
   turul,
@@ -92,9 +92,9 @@ async function togloomoosEbarimtUusgye(
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
   ebarimt.utas = utas;
-  ebarimt.amount = dun.toFixed(2).toString();
-  ebarimt.vat = nuatBodyo(dun);
-  ebarimt.cashAmount = dun.toFixed(2).toString();
+  ebarimt.amount = guilgee.niitDun.toFixed(2).toString();
+  ebarimt.vat = nuatBodyo(guilgee.niitDun);
+  ebarimt.cashAmount = guilgee.niitDun.toFixed(2).toString();
   ebarimt.nonCashAmount = "0.00";
   ebarimt.cityTax = "0.00";
   ebarimt.districtCode = "12";
@@ -105,11 +105,11 @@ async function togloomoosEbarimtUusgye(
     name: "Биеийн тамир, амралт, зугаа цэнгэлийн үйлчилгээ",
     measureUnit: "шир",
     qty: "1.00",
-    unitPrice: dun.toFixed(2).toString(),
-    totalAmount: dun.toFixed(2).toString(),
+    unitPrice: guilgee.niitDun.toFixed(2).toString(),
+    totalAmount: guilgee.niitDun.toFixed(2).toString(),
     cityTax: "0.00",
-    vat: nuatBodyo(dun),
-    barCode: "721",
+    vat: nuatBodyo(guilgee.niitDun),
+    barCode: "965",
   };
   stocks.push(stock);
   ebarimt.stocks = stocks;
