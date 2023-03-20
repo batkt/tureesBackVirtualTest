@@ -79,7 +79,6 @@ async function guilgeeneesEbarimtUusgye(
 
 async function togloomoosEbarimtUusgye(
   guilgee,
-  utas,
   register,
   turul,
   tukhainBaaziinKholbolt
@@ -91,7 +90,7 @@ async function togloomoosEbarimtUusgye(
   }
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
-  ebarimt.utas = utas;
+  ebarimt.utas = guilgee.utas[0];
   ebarimt.amount = guilgee.niitDun.toFixed(2).toString();
   ebarimt.vat = nuatBodyo(guilgee.niitDun);
   ebarimt.cashAmount = guilgee.niitDun.toFixed(2).toString();
@@ -122,6 +121,7 @@ async function ebarimtDuudya(ugugdul, onFinish, next) {
     var url = process.env.EBARIMT_IP + "/put";
     if (ugugdul.barilgiinId)
       url = url + "?lib=" + ugugdul.barilgiinId.toString();
+    console.log("url", url);
     request.post(
       url,
       { json: true, body: { data: ugugdul } },
@@ -198,7 +198,6 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
       ebarimt = await togloomoosEbarimtUusgye(
         guilgee,
-        guilgee.utas[0],
         req.body.register,
         req.body.turul,
         req.body.tukhainBaaziinKholbolt
