@@ -2,6 +2,7 @@ const express = require("express");
 const Ebarimt = require("../models/ebarimt");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Baiguullaga = require("../models/baiguullaga");
+const TogloomiinTuv = require("../models/togloomiinTuv");
 const Geree = require("../models/geree");
 const router = express.Router();
 const aldaa = require("../components/aldaa");
@@ -76,6 +77,45 @@ async function guilgeeneesEbarimtUusgye(
   return ebarimt;
 }
 
+async function togloomoosEbarimtUusgye(
+  dun,
+  utas,
+  register,
+  turul,
+  tukhainBaaziinKholbolt
+) {
+  var ebarimt = new Ebarimt(tukhainBaaziinKholbolt)();
+  if (register) {
+    if (turul) ebarimt.billType = turul;
+    ebarimt.customerNo = register;
+  }
+  ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
+  ebarimt.barilgiinId = guilgee.barilgiinId;
+  ebarimt.utas = utas;
+  ebarimt.amount = dun.toFixed(2).toString();
+  ebarimt.vat = nuatBodyo(dun);
+  ebarimt.cashAmount = dun.toFixed(2).toString();
+  ebarimt.nonCashAmount = "0.00";
+  ebarimt.cityTax = "0.00";
+  ebarimt.districtCode = "12";
+  ebarimt.posNo = "0001";
+  var stocks = [];
+  var stock = {
+    code: "965",
+    name: "Биеийн тамир, амралт, зугаа цэнгэлийн үйлчилгээ",
+    measureUnit: "шир",
+    qty: "1.00",
+    unitPrice: dun.toFixed(2).toString(),
+    totalAmount: dun.toFixed(2).toString(),
+    cityTax: "0.00",
+    vat: nuatBodyo(dun),
+    barCode: "721",
+  };
+  stocks.push(stock);
+  ebarimt.stocks = stocks;
+  return ebarimt;
+}
+
 async function ebarimtDuudya(ugugdul, onFinish, next) {
   try {
     const data = new TextEncoder().encode(JSON.stringify(ugugdul));
@@ -109,6 +149,7 @@ async function ebarimtMedeelelAvya(ugugdul, onFinish, next) {
     }
   });
 }
+
 router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
   try {
     ebarimtMedeelelAvya(
@@ -143,38 +184,47 @@ async function ebarimtButsaaya(ugugdul, onFinish, next) {
 router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
-    var guilgee = await BankniiGuilgee(
-      req.body.tukhainBaaziinKholbolt
-    ).findById(req.body.id);
+    var ebarimtiinTurul = req.body.ebarimtiinTurul;
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       req.body.baiguullagiinId
     );
-    if (guilgee.ebarimtAvsanEsekh)
-      throw new aldaa("Ибаримт хэвлэж авсан байна!");
-    var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
-      guilgee.kholbosonGereeniiId[0]
-    );
-    if (!geree)
-      throw new aldaa("Холбогдсон гэрээ байхгүй тул ибаримт хэвлэх боломжгүй");
-    if (
-      baiguullaga &&
-      baiguullaga.tokhirgoo &&
-      baiguullaga.tokhirgoo.eBarimtAutomataarShivikh
-    ) {
-      req.body.register = geree.register;
-      req.body.turul = "3";
-    }
-    var ebarimt = await guilgeeneesEbarimtUusgye(
-      guilgee,
-      geree,
-      req.body.register,
-      req.body.turul,
-      req.body.tukhainBaaziinKholbolt
-    );
-    console.log("ebarimt", ebarimt);
-    ebarimtDuudya(
-      ebarimt,
-      (d) => {
+    var butsaakhMethod;
+    var ebarimt;
+    if (ebarimtiinTurul == "togloom") {
+      var guilgee = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).findById(req.body.id);
+      if (guilgee.ebarimtAvsanEsekh)
+        throw new aldaa("Ибаримт хэвлэж авсан байна!");
+      ebarimt = await togloomoosEbarimtUusgye(
+        guilgee.niitDun,
+        guilgee.utas[0],
+        req.body.register,
+        req.body.turul,
+        req.body.tukhainBaaziinKholbolt
+      );
+    } else {
+      var guilgee = await BankniiGuilgee(
+        req.body.tukhainBaaziinKholbolt
+      ).findById(req.body.id);
+      if (guilgee.ebarimtAvsanEsekh)
+        throw new aldaa("Ибаримт хэвлэж авсан байна!");
+      var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
+        guilgee.kholbosonGereeniiId[0]
+      );
+      if (!geree)
+        throw new aldaa(
+          "Холбогдсон гэрээ байхгүй тул ибаримт хэвлэх боломжгүй"
+        );
+      if (
+        baiguullaga &&
+        baiguullaga.tokhirgoo &&
+        baiguullaga.tokhirgoo.eBarimtAutomataarShivikh
+      ) {
+        req.body.register = geree.register;
+        req.body.turul = "3";
+      }
+      butsaakhMethod = (d) => {
         try {
           if (!d.success) throw new Error(d.message);
           var ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
@@ -197,9 +247,17 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         } catch (err) {
           next(err);
         }
-      },
-      next
-    );
+      };
+      ebarimt = await guilgeeneesEbarimtUusgye(
+        guilgee,
+        geree,
+        req.body.register,
+        req.body.turul,
+        req.body.tukhainBaaziinKholbolt
+      );
+    }
+    console.log("ebarimt", ebarimt);
+    ebarimtDuudya(ebarimt, butsaakhMethod, next);
   } catch (error) {
     next(error);
   }
