@@ -31,11 +31,16 @@ const togloomiinTuvSchema = new Schema(
         duusakhTsag: Date,
       },
     ],
+    sungasanMinut: {
+      type: Number,
+      default: 0,
+    },
     khugatsaa: Number, //minutaar
     tariff: Number, //tsagiin
     niitDun: Number,
     dutuuDun: Number, //Dutuu bga dun
     ebarimtAvakhDun: Number,
+    ebarimtRegister: String,
     tsutsalsanShaltgaan: String,
     turul: String,
     tulbur: [

@@ -210,11 +210,10 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           ebarimt.save().catch((err) => {
             next(err);
           });
+          var update = { ebarimtAvsanEsekh: true };
+          if (ebarimt.customerNo) update.ebarimtRegister = ebarimt.customerNo;
           TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
-            .findByIdAndUpdate(
-              { _id: req.body.id },
-              { ebarimtAvsanEsekh: true }
-            )
+            .findByIdAndUpdate({ _id: req.body.id }, update)
             .then((xariu) => {
               console.log(xariu);
             })
