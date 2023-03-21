@@ -338,6 +338,7 @@ router.route("/togloomSungaya").post(tokenShalgakh, async (req, res, next) => {
     umnukh.tulburTulsunEsekh = false;
     umnukh.ebarimtAvsanEsekh = false;
     umnukh.dutuuDun = req.body.niitDun;
+    umnukh.niitDun = umnukh.niitDun + req.body.niitDun;
     umnukh.sungasanMinut =
       (umnukh.sungasanMinut ? umnukh.sungasanMinut : 0) + req.body.khugatsaa;
     await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
