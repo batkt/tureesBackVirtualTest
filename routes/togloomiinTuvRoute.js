@@ -320,7 +320,6 @@ router.route("/togloomSungaya").post(tokenShalgakh, async (req, res, next) => {
     if (umnukh.sungalt && umnukh.sungalt.length > 0) {
       umnukh.sungalt.push({
         khugatsaa: req.body.khugatsaa,
-        tariff: req.body.tariff,
         niitDun: umnukh.niitDun + req.body.niitDun,
         ekhlekhTsag: req.body.ekhlekhTsag,
         duusakhTsag: req.body.duusakhTsag,
@@ -329,7 +328,6 @@ router.route("/togloomSungaya").post(tokenShalgakh, async (req, res, next) => {
       umnukh.sungalt = [
         {
           khugatsaa: req.body.khugatsaa,
-          tariff: req.body.tariff,
           niitDun: umnukh.niitDun + req.body.niitDun,
           ekhlekhTsag: req.body.ekhlekhTsag,
           duusakhTsag: req.body.duusakhTsag,
