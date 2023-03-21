@@ -199,6 +199,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
       ).findById(req.body.id);
       if (guilgee.ebarimtAvsanEsekh)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
+      if (!ebarimt.ebarimtAvakhDun) ebarimt.ebarimtAvakhDun = ebarimt.niitDun;
       ebarimt = await togloomoosEbarimtUusgye(
         guilgee,
         req.body.register,
