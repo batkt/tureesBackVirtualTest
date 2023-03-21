@@ -99,7 +99,7 @@ async function togloomoosEbarimtUusgye(
   ebarimt.cashAmount = guilgee.ebarimtAvakhDun.toFixed(2).toString();
   ebarimt.nonCashAmount = "0.00";
   ebarimt.cityTax = "0.00";
-  ebarimt.districtCode = "12";
+  ebarimt.districtCode = "23";
   ebarimt.posNo = "0001";
   var stocks = [];
   var stock = {
