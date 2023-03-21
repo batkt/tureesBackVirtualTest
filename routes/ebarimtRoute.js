@@ -88,6 +88,8 @@ async function togloomoosEbarimtUusgye(
     if (turul) ebarimt.billType = turul;
     ebarimt.customerNo = register;
   }
+  var unuudur = new Date().getDay();
+  var amraltiinUdur = unuudur == 0 || unuudur == 6;
   ebarimt.togloomiinId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
@@ -101,15 +103,15 @@ async function togloomoosEbarimtUusgye(
   ebarimt.posNo = "0001";
   var stocks = [];
   var stock = {
-    code: "965",
-    name: "Биеийн тамир, амралт, зугаа цэнгэлийн үйлчилгээ",
+    code: amraltiinUdur ? "201" : "100",
+    name: amraltiinUdur ? "Амралтын өдөр 1 цаг" : "Ажлын өдөр 1 цаг",
     measureUnit: "шир",
     qty: "1.00",
     unitPrice: guilgee.ebarimtAvakhDun.toFixed(2).toString(),
     totalAmount: guilgee.ebarimtAvakhDun.toFixed(2).toString(),
     cityTax: "0.00",
     vat: nuatBodyo(guilgee.ebarimtAvakhDun),
-    barCode: "965",
+    barCode: amraltiinUdur ? "201" : "100",
   };
   stocks.push(stock);
   ebarimt.stocks = stocks;
