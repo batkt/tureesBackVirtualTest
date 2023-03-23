@@ -1039,6 +1039,7 @@ exports.tukhainOgnoogoorAvlagaZasajOruulya = asyncHandler(
     try {
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
         barilgiinId: req.body.barilgiinId,
+        "talbainIdnuud.1": { $exists: true },
       });
       var khariu = [];
       console.log("gereenuud", gereenuud.length);
