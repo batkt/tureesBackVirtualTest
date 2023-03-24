@@ -265,8 +265,10 @@ router
           update.khungulsunEsekh = true;
           update.khungulsunDun = mur.dun;
           update.niitDun = niitDun - mur.dun;
-        } else {
+        } else if (mur.turul != "khariult") {
           update.ebarimtAvakhDun = update.ebarimtAvakhDun + mur.dun;
+        } else if (mur.turul == "khariult") {
+          update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
         }
       });
       await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
@@ -350,4 +352,67 @@ router.route("/togloomSungaya").post(tokenShalgakh, async (req, res, next) => {
     next(err);
   }
 });
+
+async function dunBoduulya(tukhainBaaziinKholbolt, minut, asragchiinToo) {
+  var dun = 0;
+  var unuudur = new Date().getDay();
+  var maxTsag = 0;
+  var khariu = await TogloomiinTariff(tukhainBaaziinKholbolt).findOne({
+    udruud: unuudur,
+    baiguullagiinId: baiguullagiinId,
+  });
+  if (khariu && khariu.tariffuud) {
+    khariu.tariffuud.sort(function (a, b) {
+      return a.minut - b.minut;
+    });
+    maxTsag = khariu.tariffuud[khariu.tariffuud.length - 1].minut;
+    console.log("maxTsag", maxTsag);
+    for await (const x of khariu.tariffuud) {
+      dun = x.tariff;
+      if (minut <= x.minut) break;
+    }
+    if (minut > maxTsag) {
+      var tsag = Math.ceil((minut - maxTsag) / 60);
+      console.log("tsag", tsag);
+      console.log("khariu.undsenTariff", khariu.undsenTariff);
+      dun = tsag * khariu.undsenTariff + dun;
+    }
+    if (asragchiinToo > 1) {
+      var asragchTariff = Number(khariu.asragchTariff);
+      if (asragchTariff > 0) {
+        asragchiinDun = (asragchiinToo - 1) * asragchTariff;
+        dun = dun + asragchiinDun;
+      }
+    }
+    return dun;
+  }
+}
+router
+  .route("/togloomiinTuvKhadgalya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var togloomiinTuv = new TogloomiinTuv(req.body.tukhainBaaziinKholbolt)(
+        req.body
+      );
+      var minut = Number(togloomiinTuv.khugatsaa);
+      var asragchiinToo = Number(
+        togloomiinTuv.asragchiinTurul ? togloomiinTuv.asragchiinTurul.length : 0
+      );
+      togloomiinTuv.niitDun = await dunBoduulya(
+        req.body.tukhainBaaziinKholbolt,
+        minut,
+        asragchiinToo
+      );
+      togloomiinTuv
+        .save()
+        .then((result) => {
+          res.send("Amjilttai");
+        })
+        .catch((er) => {
+          next(er);
+        });
+    } catch (err) {
+      next(err);
+    }
+  });
 module.exports = router;
