@@ -353,7 +353,12 @@ router.route("/togloomSungaya").post(tokenShalgakh, async (req, res, next) => {
   }
 });
 
-async function dunBoduulya(tukhainBaaziinKholbolt, minut, asragchiinToo) {
+async function dunBoduulya(
+  tukhainBaaziinKholbolt,
+  minut,
+  asragchiinToo,
+  baiguullagiinId
+) {
   var dun = 0;
   var unuudur = new Date().getDay();
   var maxTsag = 0;
@@ -401,7 +406,8 @@ router
       togloomiinTuv.niitDun = await dunBoduulya(
         req.body.tukhainBaaziinKholbolt,
         minut,
-        asragchiinToo
+        asragchiinToo,
+        req.body.baiguullagiinId
       );
       togloomiinTuv
         .save()
