@@ -363,7 +363,7 @@ async function dunBoduulya(
   var unuudur = new Date().getDay();
   var maxTsag = 0;
   var khariu = await TogloomiinTariff(tukhainBaaziinKholbolt).findOne({
-    udruud: unuudur,
+    udur: unuudur,
     baiguullagiinId: baiguullagiinId,
   });
   if (khariu && khariu.tariffuud) {
