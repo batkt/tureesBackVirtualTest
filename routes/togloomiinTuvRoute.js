@@ -201,7 +201,7 @@ router
       var khariu = await TogloomiinTariff(
         req.body.tukhainBaaziinKholbolt
       ).findOne({
-        udruud: unuudur,
+        udur: unuudur,
         baiguullagiinId: req.body.baiguullagiinId,
       });
       if (khariu && khariu.tariffuud) {
