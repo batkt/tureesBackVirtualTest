@@ -176,7 +176,7 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
             var fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024);
             var source = req.headers["user-agent"];
             var ua = useragent.parse(source);
-            var tuukh = new BackTuukh(db.erunkhiiKholbolt);
+            var tuukh = new BackTuukh(db.erunkhiiKholbolt)();
             tuukh.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
             tuukh.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
             tuukh.ognoo = new Date();
