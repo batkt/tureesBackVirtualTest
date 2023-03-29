@@ -45,6 +45,7 @@ const {
   talbainIdnuudOruulya,
   bankniiGuilgeegeerOruulya,
   aldaataiBankniiGuilgeeZasya,
+  qpayGuilgeeGereeOnooyo,
   tukhainOgnoogoorBukhAvlagaBodojOruulya,
   gereenuudedZalruulgaOruulya,
   tsutsalgdanGuilgeeZasya,
@@ -102,6 +103,9 @@ router
 router
   .route("/aldaataiBankniiGuilgeeZasya")
   .post(tokenShalgakh, aldaataiBankniiGuilgeeZasya);
+router
+  .route("/qpayGuilgeeGereeOnooyo")
+  .post(tokenShalgakh, qpayGuilgeeGereeOnooyo);
 router
   .route("/tukhainOgnoogoorBukhAvlagaBodojOruulya")
   .post(tokenShalgakh, tukhainOgnoogoorBukhAvlagaBodojOruulya);
