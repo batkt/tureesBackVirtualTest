@@ -1211,7 +1211,7 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
             kholbosonGereeniiId: [],
           },
           { TxAddInf: { $regex: "qpay", $options: "i" } },
-          { TxAddInf: { $regex: "309" } },
+          { TxAddInf: { $regex: ", " + guilgee.qpay.sender_invoice_no } },
         ],
       });
       if (oldsonGuilgee) {
