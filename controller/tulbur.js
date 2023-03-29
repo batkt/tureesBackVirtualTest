@@ -1215,7 +1215,7 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
         ],
       });
       if (oldsonGuilgee) {
-        await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).updateOne(
           { _id: oldsonGuilgee._id },
           {
             $set: {
