@@ -1231,6 +1231,45 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.qpayGuilgeeTalbainDugaarOnooyo = asyncHandler(
+  async (req, res, next) => {
+    try {
+      var guilgeenuud = await BankniiGuilgee(
+        req.body.tukhainBaaziinKholbolt
+      ).findOne({
+        $and: [
+          {
+            "kholbosonGereeniiId.0": { $exists: true },
+          },
+          {
+            kholbosonTalbainId: [],
+          },
+          { TxAddInf: { $regex: "qpay", $options: "i" } },
+          { TxAddInf: { $regex: ", " + guilgee.qpay.sender_invoice_no } },
+        ],
+      });
+      for await (const guilgee of guilgeenuud) {
+        var oldsonGeree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
+          guilgee.kholbosonGereeniiId[0]
+        );
+        if (oldsonGeree) {
+          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).updateOne(
+            { _id: guilgee._id },
+            {
+              $set: {
+                kholbosonTalbainId: [oldsonGeree.talbainDugaar],
+              },
+            }
+          );
+        }
+      }
+      res.send("Amjilttai");
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 exports.tukhainOgnoogoorBukhAvlagaBodojOruulya = asyncHandler(
   async (req, res, next) => {
     try {
