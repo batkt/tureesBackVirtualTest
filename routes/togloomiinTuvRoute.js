@@ -357,7 +357,8 @@ async function dunBoduulya(
   tukhainBaaziinKholbolt,
   minut,
   asragchiinToo,
-  baiguullagiinId
+  baiguullagiinId,
+  khuukhdiinToo
 ) {
   var dun = 0;
   var unuudur = new Date().getDay();
@@ -382,13 +383,14 @@ async function dunBoduulya(
       console.log("khariu.undsenTariff", khariu.undsenTariff);
       dun = tsag * khariu.undsenTariff + dun;
     }
-    if (asragchiinToo > 1) {
+    if (asragchiinToo > 1 && khuukhdiinToo < 2) {
       var asragchTariff = Number(khariu.asragchTariff);
       if (asragchTariff > 0) {
         asragchiinDun = (asragchiinToo - 1) * asragchTariff;
         dun = dun + asragchiinDun;
       }
     }
+    if (khuukhdiinToo > 1) dun = dun * khuukhdiinToo;
     return dun;
   }
 }
@@ -407,7 +409,8 @@ router
         req.body.tukhainBaaziinKholbolt,
         minut,
         asragchiinToo,
-        req.body.baiguullagiinId
+        req.body.baiguullagiinId,
+        togloomiinTuv.khuukhdiinToo
       );
       togloomiinTuv
         .save()
