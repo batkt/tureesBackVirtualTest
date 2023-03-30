@@ -1245,7 +1245,6 @@ exports.qpayGuilgeeTalbainDugaarOnooyo = asyncHandler(
             kholbosonTalbainId: [],
           },
           { TxAddInf: { $regex: "qpay", $options: "i" } },
-          { TxAddInf: { $regex: ", " + guilgee.qpay.sender_invoice_no } },
         ],
       });
       for await (const guilgee of guilgeenuud) {
