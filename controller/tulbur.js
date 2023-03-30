@@ -1236,7 +1236,7 @@ exports.qpayGuilgeeTalbainDugaarOnooyo = asyncHandler(
     try {
       var guilgeenuud = await BankniiGuilgee(
         req.body.tukhainBaaziinKholbolt
-      ).findOne({
+      ).find({
         $and: [
           {
             "kholbosonGereeniiId.0": { $exists: true },
