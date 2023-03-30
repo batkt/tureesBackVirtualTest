@@ -42,6 +42,10 @@ const togloomiinTuvSchema = new Schema(
     ebarimtAvakhDun: Number,
     ebarimtRegister: String,
     tsutsalsanShaltgaan: String,
+    khuukhdiinToo: {
+      type: Number,
+      default: 1,
+    },
     turul: String,
     tulbur: [
       {
