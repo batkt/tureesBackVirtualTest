@@ -212,7 +212,7 @@ async function khariltsagchBaikhguigShalgaya(
   if (khariltsagchiinUtasniiJagsaalt.length > 0) {
     var davkhardsanUtasnuud = [];
     khariltsagchiinUtasniiJagsaalt.forEach((a) => {
-      davkhardsanUtasnuud.push(a.utas);
+      davkhardsanUtasnuud.push(...a.utas);
     });
     davkhardsanUtasnuud = davkhardsanUtasnuud.filter((x) =>
       utasniiJagsaalt.includes(x)
