@@ -239,7 +239,10 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
 
 exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
   try {
-    var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      req.body.baiguullagiinId
+    );
     if (baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     request.post(
       "http://103.50.205.33:8282/erkhiinMedeelelAvya",
