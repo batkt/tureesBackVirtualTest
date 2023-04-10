@@ -3,6 +3,8 @@ const router = express.Router();
 const Ajiltan = require("../models/ajiltan");
 const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 const BackTuukh = require("../models/backTuukh");
+const Baiguullaga = require("../models/baiguullaga");
+const request = require("request");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const {
   tokenShalgakh,
@@ -58,7 +60,7 @@ crud(router, "backTuukh", BackTuukh, UstsanBarimt);
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);
-router.route("/erkhiinMedeelelAvya").post(erkhiinMedeelelAvya);
+router.route("/erkhiinMedeelelAvya").post(tokenShalgakh, erkhiinMedeelelAvya);
 router.get("/ajiltniiZuragAvya/:baiguullaga/:ner", (req, res, next) => {
   const fileName = req.params.ner;
   const directoryPath = "zurag/ajiltan/" + req.params.baiguullaga + "/";
@@ -173,6 +175,9 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     if (!!req.body) {
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+        req.body.baiguullagiinId
+      );
       var ajiltan = new Ajiltan(db.erunkhiiKholbolt)({
         _id: req.params.id,
         ...req.body,
@@ -181,6 +186,20 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
         { _id: req.params.id },
         ajiltan
       );
+      if (req.body.erkhuud && req.body.erkhuud.length > 0) {
+        var ilgeekhBody = {
+          register: baiguullaga.register,
+          erkhuud: req.body.erkhuud,
+        };
+        await request.post(
+          "http://103.50.205.33:8282/erkhOruulya",
+          { json: true, body: ilgeekhBody },
+          (err, res1, body) => {
+            if (err) next(err);
+            console.log(body);
+          }
+        );
+      }
       res.send("Amjilttai");
     } else next(new aldaa("Засах боломжгүй байна"));
   } catch (error) {
