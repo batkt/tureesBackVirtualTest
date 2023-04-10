@@ -239,9 +239,11 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
 
 exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
   try {
+    var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+    if (baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     request.post(
       "http://103.50.205.33:8282/erkhiinMedeelelAvya",
-      { json: true, body: req.body },
+      { json: true, body: { register: baiguullaga.register } },
       (err, res1, body) => {
         if (err) next(err);
         else {
