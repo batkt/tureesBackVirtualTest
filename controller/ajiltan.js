@@ -244,7 +244,7 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
       req.body.baiguullagiinId
     );
     console.log("baiguullaga", baiguullaga);
-    if (baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
+    if (!baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     request.post(
       "http://103.50.205.33:8282/erkhiinMedeelelAvya",
       { json: true, body: { register: baiguullaga.register } },
