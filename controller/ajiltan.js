@@ -243,6 +243,7 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       req.body.baiguullagiinId
     );
+    console.log("baiguullaga", baiguullaga);
     if (baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     request.post(
       "http://103.50.205.33:8282/erkhiinMedeelelAvya",
