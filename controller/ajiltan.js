@@ -236,3 +236,20 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
+
+exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
+  try {
+    request.post(
+      "http://103.50.205.33:8282/erkhiinMedeelelAvya",
+      { json: true, body: req.body },
+      (err, res1, body) => {
+        if (err) next(err);
+        else {
+          res.send(body);
+        }
+      }
+    );
+  } catch (error) {
+    next(error);
+  }
+});

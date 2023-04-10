@@ -15,6 +15,7 @@ const {
   ajiltanNevtrey,
   backAvya,
   tokenoorAjiltanAvya,
+  erkhiinMedeelelAvya,
 } = require("../controller/ajiltan");
 const aldaa = require("../components/aldaa");
 
@@ -57,6 +58,7 @@ crud(router, "backTuukh", BackTuukh, UstsanBarimt);
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);
+router.route("/erkhiinMedeelelAvya").post(erkhiinMedeelelAvya);
 router.get("/ajiltniiZuragAvya/:baiguullaga/:ner", (req, res, next) => {
   const fileName = req.params.ner;
   const directoryPath = "zurag/ajiltan/" + req.params.baiguullaga + "/";
