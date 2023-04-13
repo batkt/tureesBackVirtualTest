@@ -35,6 +35,7 @@ const zogsool = require("./controller/zogsool");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
 const apiRoute = require("./routes/apiRoute");
+const qpayRoute = require("./routes/qpayRoute");
 const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
@@ -89,6 +90,7 @@ app.use(surveyRoute);
 app.use(daalgavarRoute);
 app.use(togloomiinTuvRoute);
 app.use(apiRoute);
+app.use(qpayRoute);
 zuragPack(app);
 
 app.use(aldaaBarigch);
