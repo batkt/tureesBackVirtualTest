@@ -34,7 +34,11 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
 
 router.post("/qpayKhariltsagchUusgey", tokenShalgakh, async (req, res, next) => {
     try {
-        const khariu = await qpayKhariltsagchUusgey(req.body, req.body.tukhainBaaziinKholbolt);
+        var baiguullaga = await Baiguullaga.findOne({
+            register: req.body.register,
+        });
+        req.body.baiguullagiinId = baiguullaga._id;
+        var khariu = await qpayKhariltsagchUusgey(req.body);
         res.send(khariu);
     } catch (err) {
         next(err);
@@ -43,11 +47,15 @@ router.post("/qpayKhariltsagchUusgey", tokenShalgakh, async (req, res, next) => 
 
 router.post("/qpayKhariltsagchAvay", tokenShalgakh, async (req, res, next) => {
     try {
-        const baiguullaga = await QuickQpayObject.findOne({ baiguullagiinId: req.body.baiguullagiinId});
-        if(baiguullaga)
-            res.send(baiguullaga);
-        else
-            res.send(undefined);
+        var baiguullaga1 = await Baiguullaga.findOne({
+            register: req.body.register,
+        });
+        req.body.baiguullagiinId = baiguullaga1._id;
+        const baiguullaga = await QpayKhariltsagch.findOne({
+            baiguullagiinId: req.body.baiguullagiinId,
+        });
+        if (baiguullaga) res.send(baiguullaga);
+        else res.send(undefined);
     } catch (err) {
         next(err);
     }
