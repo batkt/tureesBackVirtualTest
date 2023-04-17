@@ -1,9 +1,10 @@
 const express = require("express");
+const Baiguullaga = require("../models/baiguullaga");
 const { tokenShalgakh } = require("zevbackv2");
 
 const router = express.Router();
 
-const {  qpayKhariltsagchUusgey, qpayGargaya, QuickQpayObject} = require("quickqpaypackv2");
+const {  qpayKhariltsagchUusgey, qpayGargaya, QuickQpayObject, QpayKhariltsagch} = require("quickqpaypackv2");
 
 router.get("/qpaycallback/:baiguullagiinId/:zakhialgiinDugaar", async (req, res, next) => {
     try {
@@ -34,7 +35,8 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
 
 router.post("/qpayKhariltsagchUusgey", tokenShalgakh, async (req, res, next) => {
     try {
-        var baiguullaga = await Baiguullaga.findOne({
+        const { db } = require("zevbackv2");
+        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
             register: req.body.register,
         });
         req.body.baiguullagiinId = baiguullaga._id;
