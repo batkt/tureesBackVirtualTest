@@ -45,7 +45,7 @@ router.post("/qpayMerchantGargaya", tokenShalgakh, async (req, res, next) => {
     const khariu = await qpayGargaya(
       req.body,
       callback_url,
-      req.body.tukhainBaaziinKholbolt
+      req.body.erunkhiiKholbolt
     );
     res.send({ khariu });
   } catch (err) {
