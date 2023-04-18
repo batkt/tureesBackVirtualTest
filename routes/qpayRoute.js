@@ -85,6 +85,7 @@ router.post("/qpayKhariltsagchAvay", tokenShalgakh, async (req, res, next) => {
     var kholbolt = db.kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullaga._id
     );
+    console.log("kholbolt", kholbolt);
     req.body.baiguullagiinId = baiguullaga1._id;
     const baiguullaga = await QpayKhariltsagch(kholbolt).findOne({
       baiguullagiinId: req.body.baiguullagiinId,
