@@ -83,7 +83,7 @@ router.post("/qpayKhariltsagchAvay", tokenShalgakh, async (req, res, next) => {
       register: req.body.register,
     });
     var kholbolt = db.kholboltuud.find(
-      (a) => a.baiguullagiinId == baiguullaga._id
+      (a) => a.baiguullagiinId == baiguullaga1._id
     );
     console.log("kholbolt", kholbolt);
     req.body.baiguullagiinId = baiguullaga1._id;
