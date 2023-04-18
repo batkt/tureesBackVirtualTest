@@ -63,7 +63,7 @@ router.post(
         register: req.body.register,
       });
       req.body.baiguullagiinId = baiguullaga._id;
-      var khariu = await qpayKhariltsagchUusgey(req.body);
+      var khariu = await qpayKhariltsagchUusgey(req.body, db.erunkhiiKholbolt);
       res.send(khariu);
     } catch (err) {
       next(err);
