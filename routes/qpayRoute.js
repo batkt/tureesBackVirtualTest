@@ -45,7 +45,7 @@ router.post("/qpayMerchantGargaya", tokenShalgakh, async (req, res, next) => {
     const khariu = await qpayGargaya(
       req.body,
       callback_url,
-      req.body.erunkhiiKholbolt
+      req.body.tukhainBaaziinKholbolt
     );
     res.send({ khariu });
   } catch (err) {
@@ -62,10 +62,13 @@ router.post(
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
         register: req.body.register,
       });
+      var kholbolt = db.kholboltuud.find(
+        (a) => a.baiguullagiinId == baiguullaga._id
+      );
       req.body.baiguullagiinId = baiguullaga._id;
       delete req.body.tukhainBaaziinKholbolt;
       delete req.body.erunkhiiKholbolt;
-      var khariu = await qpayKhariltsagchUusgey(req.body, db.erunkhiiKholbolt);
+      var khariu = await qpayKhariltsagchUusgey(req.body, kholbolt);
       res.send(khariu);
     } catch (err) {
       next(err);
@@ -79,8 +82,11 @@ router.post("/qpayKhariltsagchAvay", tokenShalgakh, async (req, res, next) => {
     var baiguullaga1 = await Baiguullaga(db.erunkhiiKholbolt).findOne({
       register: req.body.register,
     });
+    var kholbolt = db.kholboltuud.find(
+      (a) => a.baiguullagiinId == baiguullaga._id
+    );
     req.body.baiguullagiinId = baiguullaga1._id;
-    const baiguullaga = await QpayKhariltsagch(db.erunkhiiKholbolt).findOne({
+    const baiguullaga = await QpayKhariltsagch(kholbolt).findOne({
       baiguullagiinId: req.body.baiguullagiinId,
     });
     if (baiguullaga) res.send(baiguullaga);
