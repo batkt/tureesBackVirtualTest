@@ -63,6 +63,7 @@ router.post(
         register: req.body.register,
       });
       req.body.baiguullagiinId = baiguullaga._id;
+      delete req.body.tukhainBaaziinKholbolt;
       var khariu = await qpayKhariltsagchUusgey(req.body, db.erunkhiiKholbolt);
       res.send(khariu);
     } catch (err) {
