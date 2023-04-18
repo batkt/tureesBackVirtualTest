@@ -78,7 +78,7 @@ router.post("/qpayKhariltsagchAvay", tokenShalgakh, async (req, res, next) => {
       register: req.body.register,
     });
     req.body.baiguullagiinId = baiguullaga1._id;
-    const baiguullaga = await QpayKhariltsagch.findOne({
+    const baiguullaga = await QpayKhariltsagch(db.erunkhiiKholbolt).findOne({
       baiguullagiinId: req.body.baiguullagiinId,
     });
     if (baiguullaga) res.send(baiguullaga);
