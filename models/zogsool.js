@@ -29,4 +29,3 @@ module.exports = function a(conn) {
   conn = conn.kholbolt;
   return conn.model("zogsool", zogsoolSchema);
 };
-//module.exports = mongoose.model("zogsool", zogsoolSchema);
