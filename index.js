@@ -165,7 +165,7 @@ cron.schedule(
   }
 );
 
-io.on("connection", (socket) => {
+io.once("connection", (socket) => {
   console.log("connected");
   socket.on("disconnect", () => {
     console.log("disconnected");
