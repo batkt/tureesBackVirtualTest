@@ -88,6 +88,7 @@ const baiguullagaSchema = new Schema(
       apiNuatDans: String,
       apiZogsoolDans: String,
       apiTogloomiinTuvDans: String,
+      aktAshiglakhEsekh: Boolean,
     },
     erkhuud: [
       {
