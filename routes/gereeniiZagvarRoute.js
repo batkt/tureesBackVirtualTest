@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const GereeniiZagvar = require("../models/gereeniiZagvar");
 const GereeniiZaalt = require("../models/gereeniiZaalt");
+const AktiinZagvar = require("../models/aktiinZagvar");
 //const { crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
@@ -12,6 +13,7 @@ const uploadFile = multer({ storage: storage });
 
 crud(router, "gereeniiZagvar", GereeniiZagvar, UstsanBarimt);
 crud(router, "gereeniiZaalt", GereeniiZaalt, UstsanBarimt);
+crud(router, "aktiinZagvar", AktiinZagvar, UstsanBarimt);
 
 const {
   gereeniiZaaltTatya,
