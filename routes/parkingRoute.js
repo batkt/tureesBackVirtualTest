@@ -4,7 +4,9 @@ const { tokenShalgakh, khuudaslalt, crud, UstsanBarimt } = require("zevbackv2");
 const {
   Parking,
   Uilchluulegch,
-  zogsoolUusgey,} = require("parking-v1");
+  zogsoolUusgey,
+    sdkData,
+} = require("parking-v1");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
     console.log('parking --- ', req.body);
@@ -74,7 +76,7 @@ router.get("/zogsoolJagsaalt", tokenShalgakh, async (req, res, next) => {
 });
 
 router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
-  console.log('req.query1---', req.query);
+  // console.log('req.query1---', req.query);
   try {
     Parking(req.body.tukhainBaaziinKholbolt)
         .findOne({
@@ -113,6 +115,16 @@ router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
 router.post("/zogsoolUilchiluulegchidiinDun", tokenShalgakh, async (req, res, next) => {
     try {
         const khariu = await zogsoolUusgey(req.body);
+        res.send(khariu);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
+    console.log('zogsoolSdkService---', req.query);
+    try {
+        const khariu = await sdkData(req.body);
         res.send(khariu);
     } catch (err) {
         next(err);

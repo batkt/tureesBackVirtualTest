@@ -261,13 +261,13 @@ router
       };
       guilgeeniiTuukh.forEach((mur) => {
         mur.ognoo = new Date();
-        if (mur.turul == "khunglukh") {
+        if (mur.turul === "khunglukh") {
           update.khungulsunEsekh = true;
           update.khungulsunDun = mur.dun;
           update.niitDun = niitDun - mur.dun;
-        } else if (mur.turul != "khariult") {
+        } else if (mur.turul !== "khariult") {
           update.ebarimtAvakhDun = update.ebarimtAvakhDun + mur.dun;
-        } else if (mur.turul == "khariult") {
+        } else if (mur.turul === "khariult") {
           update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
         }
       });
