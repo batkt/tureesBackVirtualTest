@@ -122,7 +122,7 @@ router.post("/zogsoolUilchiluulegchidiinDun", tokenShalgakh, async (req, res, ne
 });
 
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
-    console.log('zogsoolSdkService---', req.query);
+    console.log('zogsoolSdkService--- ', req?.body);
     try {
         const khariu = await sdkData(req.body);
         res.send(khariu);
