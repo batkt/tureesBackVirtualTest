@@ -96,6 +96,9 @@ async function tulultiinMsgIlgeeye(gereeniiDugaar, utas, dun) {
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       req.params.baiguullagiinId
     );
+    console.log("gereeniiDugaar ", gereeniiDugaar);
+    console.log("utas ", utas);
+    console.log("dun ", dun);
     var msgIlgeekhKey;
     var msgIlgeekhDugaar;
     try {

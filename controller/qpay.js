@@ -255,12 +255,14 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         qpayBarimt.gereeniiId,
         tukhainBaaziinKholbolt
       );
-      if (result && result.utas && result.utas.length > 0)
+      if (result && result.utas && result.utas.length > 0) {
+        console.log("baina ilgeeye");
         tulultiinMsgIlgeeye(
           result.gereeniiDugaar,
           result.utas[0],
           tulbur.tulsunDun
         );
+      }
       res.sendStatus(200);
     })
     .catch((err) => {
