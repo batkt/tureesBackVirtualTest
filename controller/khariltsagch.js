@@ -5,6 +5,7 @@ const Baiguullaga = require("../models/baiguullaga");
 const jwt = require("jsonwebtoken");
 const MsgTuukh = require("../models/msgTuukh");
 const request = require("request");
+const { formatNumber } = require("zevbackv2");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {
@@ -88,6 +89,50 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
     next(err);
   }
 }
+
+async function tulultiinMsgIlgeeye(gereeniiDugaar, utas, dun) {
+  try {
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      req.params.baiguullagiinId
+    );
+    var msgIlgeekhKey;
+    var msgIlgeekhDugaar;
+    try {
+      msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
+      msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
+    } catch (error) {
+      console.log("msg tokhirgoo bxgui");
+    }
+    if (!!msgIlgeekhKey && !!msgIlgeekhDugaar) {
+    }
+    var text =
+      gereeniiDugaar +
+      " дугаартай гэрээний түрээсийн төлбөр " +
+      (await formatNumber(dun)) +
+      " төлөгдлөө";
+    dun;
+    msgIlgeeye(
+      [
+        {
+          to: utas,
+          text,
+        },
+      ],
+      msgIlgeekhKey,
+      msgIlgeekhDugaar,
+      [],
+      0,
+      next,
+      req,
+      res
+    );
+  } catch (err) {
+    console.log("tulburiin msg ilgeexed aldaa garsan " + err);
+  }
+}
+
+exports.tulultiinMsgIlgeeye = tulultiinMsgIlgeeye;
 
 exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
   try {

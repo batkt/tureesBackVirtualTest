@@ -4,6 +4,7 @@ const Tulbur = require("./tulbur");
 //const Dugaarlalt = require("../models/dugaarlalt");
 const { Dugaarlalt, Token, Dans, db } = require("zevbackv2");
 const QpayObject = require("../models/qpayObject");
+const { tulultiinMsgIlgeeye } = require("../controller/khariltsagch");
 const Geree = require("../models/geree");
 const got = require("got");
 const { URL } = require("url");
@@ -242,14 +243,23 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         $push: {
           [`avlaga.guilgeenuud`]: tulbur,
         },
+      },
+      {
+        new: true,
       }
     )
-    .then((result) => {
+    .then(async (result) => {
       qpayBarimt.save();
       Tulbur.daraagiinTulukhOgnooZasya(
         qpayBarimt.gereeniiId,
         tukhainBaaziinKholbolt
       );
+      if (result && result.utas && result.utas.length > 0)
+        tulultiinMsgIlgeeye(
+          result.gereeniiDugaar,
+          result.utas[0],
+          tulbur.tulsunDun
+        );
       res.sendStatus(200);
     })
     .catch((err) => {
