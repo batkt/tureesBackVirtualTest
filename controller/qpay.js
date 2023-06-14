@@ -254,6 +254,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       try {
         console.log("baina ilgeeye");
         tulultiinMsgIlgeeye(
+          req.params.baiguullagiinId,
           result.gereeniiDugaar,
           result.utas[0],
           tulbur.tulsunDun

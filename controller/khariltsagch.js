@@ -90,11 +90,11 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
   }
 }
 
-async function tulultiinMsgIlgeeye(gereeniiDugaar, utas, dun) {
+async function tulultiinMsgIlgeeye(baiguullagiinId, gereeniiDugaar, utas, dun) {
   try {
     const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      req.params.baiguullagiinId
+      baiguullagiinId
     );
     console.log("gereeniiDugaar ", gereeniiDugaar);
     console.log("utas ", utas);
