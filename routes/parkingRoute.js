@@ -143,7 +143,6 @@ router
     .route("/zogsooliinTulburTulye")
     .post(tokenShalgakh, async (req, res, next) => {
         try {
-            console.log('req.body.tulbur', req.body);
             var guilgeeniiTuukh = [];
             var guilgeenuud = req.body.tulbur;
             if (Array.isArray(guilgeenuud)) {
