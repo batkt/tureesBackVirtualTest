@@ -250,6 +250,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
     )
     .then(async (result) => {
       qpayBarimt.save();
+      console.log("qpay tuluv:", result);
       Tulbur.daraagiinTulukhOgnooZasya(
         qpayBarimt.gereeniiId,
         tukhainBaaziinKholbolt
