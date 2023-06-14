@@ -132,7 +132,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try {
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
-    const khariu = await sdkData(req.body);
+    const khariu = await sdkData(req);
     res.send(khariu);
   } catch (err) {
     next(err);
