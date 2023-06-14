@@ -126,9 +126,9 @@ async function tulultiinMsgIlgeeye(gereeniiDugaar, utas, dun) {
       msgIlgeekhDugaar,
       [],
       0,
-      next,
-      req,
-      res
+      null,
+      null,
+      null
     );
   } catch (err) {
     console.log("tulburiin msg ilgeexed aldaa garsan " + err);
