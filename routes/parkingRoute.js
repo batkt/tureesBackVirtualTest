@@ -4,9 +4,11 @@ const { tokenShalgakh, khuudaslalt, crud, UstsanBarimt } = require("zevbackv2");
 const {
   Parking,
   Uilchluulegch,
+  ZogsooliinTulbur,
   zogsoolUusgey,
   sdkData,
 } = require("parking-v1");
+const lodash = require("lodash");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
     console.log('parking --- ', req.body);
@@ -136,5 +138,54 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
     next(err);
   }
 });
+
+router
+    .route("/zogsooliinTulburTulye")
+    .post(tokenShalgakh, async (req, res, next) => {
+        try {
+            console.log('req.body.tulbur', req.body);
+            var guilgeeniiTuukh = [];
+            var guilgeenuud = req.body.tulbur;
+            if (Array.isArray(guilgeenuud)) {
+                guilgeenuud.forEach((mur) =>
+                    guilgeeniiTuukh.push(
+                        new ZogsooliinTulbur(req.body.tukhainBaaziinKholbolt)(mur)
+                    )
+                );
+            }
+            var niitDun = lodash.sumBy(guilgeeniiTuukh, function (object) {
+                return object.dun;
+            });
+            var update = {
+                tulburTulsunEsekh: true,
+                tuluv: 1,
+                tulbur: guilgeeniiTuukh,
+                dutuuDun: 0,
+                ebarimtAvakhDun: 0,
+            };
+            guilgeeniiTuukh.forEach((mur) => {
+                mur.ognoo = new Date();
+                if (mur.turul === "khunglukh") {
+                    update.khungulsunEsekh = true;
+                    update.khungulsunDun = mur.dun;
+                    update.niitDun = niitDun - mur.dun;
+                } else if (mur.turul !== "khariult") {
+                    update.ebarimtAvakhDun = update.ebarimtAvakhDun + mur.dun;
+                } else if (mur.turul === "khariult") {
+                    update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
+                }
+            });
+            await ZogsooliinTulbur(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+                req.body.id,
+                update
+            );
+            await ZogsooliinTulbur(req.body.tukhainBaaziinKholbolt).insertMany(
+                guilgeeniiTuukh
+            );
+            res.send("Amjilttai");
+        } catch (err) {
+            next(err);
+        }
+    });
 
 module.exports = router;
