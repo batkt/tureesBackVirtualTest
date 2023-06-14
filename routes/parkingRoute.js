@@ -5,7 +5,7 @@ const {
   Parking,
   Uilchluulegch,
   zogsoolUusgey,
-    sdkData,
+  sdkData,
 } = require("parking-v1");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
@@ -64,12 +64,12 @@ router.get("/zogsoolJagsaalt", tokenShalgakh, async (req, res, next) => {
     if (!!body?.search) body.search = String(body.search);
 
     khuudaslalt(Parking(req.body.tukhainBaaziinKholbolt), body)
-        .then((result) => {
-          res.send(result);
-        })
-        .catch((err) => {
-          next(err);
-        });
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        next(err);
+      });
   } catch (error) {
     next(error);
   }
@@ -79,56 +79,62 @@ router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
   // console.log('req.query1---', req.query);
   try {
     Parking(req.body.tukhainBaaziinKholbolt)
-        .findOne({
-          _id: req.body.id,
-        })
-        .then(async (result) => {
-          var barimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
-          barimt.class = "Zogsool";
-          barimt.object = result;
-          if (req.body.nevtersenAjiltniiToken) {
-            barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
-            barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
-          }
-          barimt.baiguullagiinId = req.body.baiguullagiinId;
-          barimt.isNew = true;
-          barimt.save();
-          Parking(req.body.tukhainBaaziinKholbolt)
-              .deleteOne({
-                _id: req.body.id,
-              })
-              .then((result1) => {
-                res.send("Amjilttai");
-              })
-              .catch((err) => {
-                next(err);
-              });
-        })
-        .catch((err1) => {
-          next(err1);
-        });
+      .findOne({
+        _id: req.body.id,
+      })
+      .then(async (result) => {
+        var barimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
+        barimt.class = "Zogsool";
+        barimt.object = result;
+        if (req.body.nevtersenAjiltniiToken) {
+          barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+          barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+        }
+        barimt.baiguullagiinId = req.body.baiguullagiinId;
+        barimt.isNew = true;
+        barimt.save();
+        Parking(req.body.tukhainBaaziinKholbolt)
+          .deleteOne({
+            _id: req.body.id,
+          })
+          .then((result1) => {
+            res.send("Amjilttai");
+          })
+          .catch((err) => {
+            next(err);
+          });
+      })
+      .catch((err1) => {
+        next(err1);
+      });
   } catch (error) {
     next(error);
   }
 });
 
-router.post("/zogsoolUilchiluulegchidiinDun", tokenShalgakh, async (req, res, next) => {
+router.post(
+  "/zogsoolUilchiluulegchidiinDun",
+  tokenShalgakh,
+  async (req, res, next) => {
     try {
-        const khariu = await zogsoolUusgey(req.body);
-        res.send(khariu);
+      const khariu = await zogsoolUusgey(req.body);
+      res.send(khariu);
     } catch (err) {
-        next(err);
+      next(err);
     }
-});
+  }
+);
 
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
-    console.log('zogsoolSdkService--- ', req?.body);
-    try {
-        const khariu = await sdkData(req.body);
-        res.send(khariu);
-    } catch (err) {
-        next(err);
-    }
+  console.log("zogsoolSdkService--- ", req?.body);
+  try {
+    if (req.body.mashiniiDugaar)
+      req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace("\u0000", "");
+    const khariu = await sdkData(req.body);
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
