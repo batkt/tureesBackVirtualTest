@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { tokenShalgakh, khuudaslalt, crud, UstsanBarimt } = require("zevbackv2");
 const {
-  Parking,
-  Uilchluulegch,
-  ZogsooliinTulbur,
-  zogsoolUusgey,
-  sdkData,
+    Parking,
+    Uilchluulegch,
+    ZogsooliinTulbur,
+    zogsoolUusgey,
+    sdkData,
 } = require("parking-v1");
 const lodash = require("lodash");
 
@@ -54,89 +54,119 @@ crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
 });*/
 
 router.get("/zogsoolJagsaalt", tokenShalgakh, async (req, res, next) => {
-  // console.log('req.query---', req.query);
-  try {
-    const body = req.query;
-    if (!!body?.query) body.query = JSON.parse(body.query);
-    if (!!body?.order) body.order = JSON.parse(body.order);
-    if (!!body?.khuudasniiDugaar)
-      body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-    if (!!body?.khuudasniiKhemjee)
-      body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    if (!!body?.search) body.search = String(body.search);
+    // console.log('req.query---', req.query);
+    try {
+        const body = req.query;
+        if (!!body?.query) body.query = JSON.parse(body.query);
+        if (!!body?.order) body.order = JSON.parse(body.order);
+        if (!!body?.khuudasniiDugaar)
+            body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+        if (!!body?.khuudasniiKhemjee)
+            body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+        if (!!body?.search) body.search = String(body.search);
 
-    khuudaslalt(Parking(req.body.tukhainBaaziinKholbolt), body)
-      .then((result) => {
-        res.send(result);
-      })
-      .catch((err) => {
-        next(err);
-      });
-  } catch (error) {
-    next(error);
-  }
+        khuudaslalt(Parking(req.body.tukhainBaaziinKholbolt), body)
+            .then((result) => {
+                res.send(result);
+            })
+            .catch((err) => {
+                next(err);
+            });
+    } catch (error) {
+        next(error);
+    }
 });
 
 router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
-  // console.log('req.query1---', req.query);
-  try {
-    Parking(req.body.tukhainBaaziinKholbolt)
-      .findOne({
-        _id: req.body.id,
-      })
-      .then(async (result) => {
-        var barimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
-        barimt.class = "Zogsool";
-        barimt.object = result;
-        if (req.body.nevtersenAjiltniiToken) {
-          barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
-          barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
-        }
-        barimt.baiguullagiinId = req.body.baiguullagiinId;
-        barimt.isNew = true;
-        barimt.save();
+    // console.log('req.query1---', req.query);
+    try {
         Parking(req.body.tukhainBaaziinKholbolt)
-          .deleteOne({
-            _id: req.body.id,
-          })
-          .then((result1) => {
-            res.send("Amjilttai");
-          })
-          .catch((err) => {
-            next(err);
-          });
-      })
-      .catch((err1) => {
-        next(err1);
-      });
-  } catch (error) {
-    next(error);
-  }
+            .findOne({
+                _id: req.body.id,
+            })
+            .then(async (result) => {
+                var barimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
+                barimt.class = "Zogsool";
+                barimt.object = result;
+                if (req.body.nevtersenAjiltniiToken) {
+                    barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+                    barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+                }
+                barimt.baiguullagiinId = req.body.baiguullagiinId;
+                barimt.isNew = true;
+                barimt.save();
+                Parking(req.body.tukhainBaaziinKholbolt)
+                    .deleteOne({
+                        _id: req.body.id,
+                    })
+                    .then((result1) => {
+                        res.send("Amjilttai");
+                    })
+                    .catch((err) => {
+                        next(err);
+                    });
+            })
+            .catch((err1) => {
+                next(err1);
+            });
+    } catch (error) {
+        next(error);
+    }
 });
 
 router.post(
-  "/zogsoolUilchiluulegchidiinDun",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      const khariu = await zogsoolUusgey(req.body);
-      res.send(khariu);
-    } catch (err) {
-      next(err);
+    "/zogsoolUilchiluulegchidiinDunAvay",
+    tokenShalgakh,
+    async (req, res, next) => {
+        try {
+            const match = {
+                baiguullagiinId: req.body.baiguullagiinId,
+                createdAt: {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                    $lte: new Date(req.body.duusakhOgnoo),
+                },
+                "tuukh.zogsooliinId": req.body.zogsooliinId,
+                "tuukh.tuluv": 1,
+            };
+            if (!!req.body.barilgiinId) match.barilgiinId = req.body.barilgiinId;
+            const query = [
+                {
+                    $match: match,
+                },
+                {
+                    $project: {
+                        tulukhDun : {
+                            $sum: {$ifNull: ["$tuukh.tulukhDun", 0]},
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id : "id",
+                        dun : {
+                            $sum: {$ifNull: ["$tulukhDun", 0]}
+                        }
+                    }
+                }
+            ];
+            const khariu = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).aggregate(query);
+            res.send(khariu);
+        } catch (err) {
+            next(err);
+        }
     }
-  }
 );
 
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
-  console.log("zogsoolSdkService--- ", req?.body);
-  try {
-    if (req.body.mashiniiDugaar)
-      req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
-    const khariu = await sdkData(req);
-    res.send(khariu);
-  } catch (err) {
-    next(err);
-  }
+    console.log("zogsoolSdkService--- ", req?.body);
+    try {
+        if (req.body.mashiniiDugaar)
+            req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
+        const khariu = await sdkData(req);
+        res.send(khariu);
+    } catch (err) {
+        next(err);
+    }
 });
 
 router
