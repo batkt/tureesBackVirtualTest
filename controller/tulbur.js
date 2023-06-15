@@ -772,6 +772,8 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
 });
 
 exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
+  var ognoo = new Date();
+  console.log("uldegdelBodyo", ognoo);
   var query = [
     {
       $match: {
@@ -788,7 +790,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     {
       $match: {
         "avlaga.guilgeenuud.ognoo": {
-          $lte: new Date(),
+          $lte: ognoo,
         },
         "avlaga.guilgeenuud.turul": {
           $nin: ["baritsaa"],
