@@ -799,13 +799,19 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
       $group: {
         _id: "aaa",
         tulukh: {
-          $sum: "$avlaga.guilgeenuud.tulukhDun",
+          $sum: {
+            $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+          },
         },
         khyamdral: {
-          $sum: "$avlaga.guilgeenuud.khyamdral",
+          $sum: {
+            $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+          },
         },
         tulsun: {
-          $sum: "$avlaga.guilgeenuud.tulsunDun",
+          $sum: {
+            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+          },
         },
       },
     },
