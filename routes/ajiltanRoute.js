@@ -123,6 +123,32 @@ router.get("/ustsanBarimt", tokenShalgakh, async (req, res, next) => {
   }
 });
 
+router.post(
+  "/tsonkhniiErkhiinTooAvya",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      console.log(req.body);
+      const { db } = require("zevbackv2");
+      if (req.body.erkhuud && req.body.erkhuud.length > 0)
+        var moduluud = req.body.erkhuud;
+      await moduluud.forEach(async (element) => {
+        var queryAjiltan = {
+          tsonkhniiErkhuud: element.zam,
+          baiguullagiinId: req.body.baiguullagiinId,
+        };
+        var ajiltanErkhiinToo = await Ajiltan(
+          db.erunkhiiKholbolt
+        ).countDocuments(queryAjiltan);
+        element.odoogiin = ajiltanErkhiinToo;
+      });
+      res.send(moduluud);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 router.post("/ajiltandTokenOnooyo", tokenShalgakh, (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
@@ -187,6 +213,16 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
         ajiltan
       );
       if (req.body.erkhuud && req.body.erkhuud.length > 0) {
+        req.body.erkhuud.forEach(async (element) => {
+          var queryAjiltan = {
+            tsonkhniiErkhuud: element.zam,
+            baiguullagiinId: req.body.baiguullagiinId,
+          };
+          var ajiltanErkhiinToo = await Ajiltan(
+            db.erunkhiiKholbolt
+          ).countDocuments(queryAjiltan);
+          element.too = ajiltanErkhiinToo;
+        });
         var ilgeekhBody = {
           register: baiguullaga.register,
           erkhuud: req.body.erkhuud,
