@@ -132,7 +132,7 @@ router.post(
       const { db } = require("zevbackv2");
       if (req.body.erkhuud && req.body.erkhuud.length > 0)
         var moduluud = req.body.erkhuud;
-      await moduluud.forEach(async (element) => {
+      for await (const element of moduluud) {
         var queryAjiltan = {
           tsonkhniiErkhuud: element.zam,
           baiguullagiinId: req.body.baiguullagiinId,
@@ -141,7 +141,7 @@ router.post(
           db.erunkhiiKholbolt
         ).countDocuments(queryAjiltan);
         element.odoogiin = ajiltanErkhiinToo;
-      });
+      }
       res.send(moduluud);
     } catch (error) {
       next(error);
@@ -213,7 +213,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
         ajiltan
       );
       if (req.body.erkhuud && req.body.erkhuud.length > 0) {
-        req.body.erkhuud.forEach(async (element) => {
+        for await (const element of req.body.erkhuud) {
           var queryAjiltan = {
             tsonkhniiErkhuud: element.zam,
             baiguullagiinId: req.body.baiguullagiinId,
@@ -222,7 +222,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
             db.erunkhiiKholbolt
           ).countDocuments(queryAjiltan);
           element.too = ajiltanErkhiinToo;
-        });
+        }
         var ilgeekhBody = {
           register: baiguullaga.register,
           erkhuud: req.body.erkhuud,
