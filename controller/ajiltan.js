@@ -14,7 +14,7 @@ const http = require("http");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get(
-    "http://103.50.205.33:8282/baiguullagiinDuusakhKhugatsaaAvya",
+    "http://103.143.40.43:8282/baiguullagiinDuusakhKhugatsaaAvya",
     { json: true, body: ugugdul },
     (err, res1, body) => {
       if (err) next(err);
@@ -246,7 +246,7 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
     console.log("baiguullaga", baiguullaga);
     if (!baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     request.post(
-      "http://103.50.205.33:8282/erkhiinMedeelelAvya",
+      "http://103.143.40.43:8282/erkhiinMedeelelAvya",
       { json: true, body: { register: baiguullaga.register } },
       (err, res1, body) => {
         if (err) next(err);

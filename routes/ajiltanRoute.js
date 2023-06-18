@@ -228,7 +228,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
           erkhuud: req.body.erkhuud,
         };
         await request.post(
-          "http://103.50.205.33:8282/erkhOruulya",
+          "http://103.143.40.43:8282/erkhOruulya",
           { json: true, body: ilgeekhBody },
           (err, res1, body) => {
             if (err) next(err);
