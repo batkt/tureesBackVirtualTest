@@ -126,7 +126,7 @@ router.post(
                     $lte: new Date(req.body.duusakhOgnoo),
                 },
                 "tuukh.zogsooliinId": req.body.zogsooliinId,
-                "tuukh.tuluv": 1,
+                // "tuukh.tuluv": 1,
             };
             if (!!req.body.barilgiinId) match.barilgiinId = req.body.barilgiinId;
             const query = [
@@ -136,8 +136,18 @@ router.post(
                 {
                     $project: {
                         tulukhDun : {
+                            $sum: {
+                                $cond:[
+                                    {
+                                        $eq: ["$tuukh.tuluv",1]
+                                    },
+                                    "$tuukh.tulukhDun",
+                                    0
+                                ]},
+                        },
+                        niitDun : {
                             $sum: {$ifNull: ["$tuukh.tulukhDun", 0]},
-                        }
+                        },
                     }
                 },
                 {
@@ -145,6 +155,9 @@ router.post(
                         _id : "id",
                         dun : {
                             $sum: {$ifNull: ["$tulukhDun", 0]}
+                        },
+                        niitDun : {
+                            $sum: {$ifNull: ["$niitDun", 0]}
                         }
                     }
                 }
