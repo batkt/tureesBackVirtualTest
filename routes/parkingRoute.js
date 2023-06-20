@@ -135,15 +135,8 @@ router.post(
                 },
                 {
                     $project: {
-                        tulukhDun : {
-                            $sum: {
-                                $cond:[
-                                    {
-                                        $eq: ["$tuukh.tuluv",1]
-                                    },
-                                    "$tuukh.tulukhDun",
-                                    0
-                                ]},
+                        tuluv: {
+                            $first: "$tuukh.tuluv",
                         },
                         niitDun : {
                             $sum: {$ifNull: ["$tuukh.tulukhDun", 0]},
@@ -153,8 +146,16 @@ router.post(
                 {
                     $group: {
                         _id : "id",
-                        dun : {
-                            $sum: {$ifNull: ["$tulukhDun", 0]}
+                        dun: {
+                            $sum: {
+                                $cond: [
+                                    {
+                                        $eq: ["$tuluv", 1],
+                                    },
+                                    "$niitDun",
+                                    0,
+                                ],
+                            },
                         },
                         niitDun : {
                             $sum: {$ifNull: ["$niitDun", 0]}
