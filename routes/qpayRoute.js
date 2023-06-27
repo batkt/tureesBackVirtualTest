@@ -25,9 +25,7 @@ router.get(
       });
       console.log("qpaycallback-baiguullaga ", baiguullaga);
       if (z === baiguullaga.zakhialgiinDugaar)
-        req.app
-          .get("socketio")
-          .emit("Захиалгын дугаар: " + z + " Гүйлгээ амжилттай хийгдлээ. ", b);
+        req.app.get("socketio").emit(`qpay${baiguullaga.zakhialgiinDugaar}`);
     } catch (err) {
       next(err);
     }
