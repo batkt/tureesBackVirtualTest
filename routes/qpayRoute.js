@@ -18,8 +18,11 @@ router.get(
       console.log("req.params", req.params);
       console.log("req.query", req.query);
       const b = req.params.baiguullagiinId;
+      const { db } = require("zevbackv2");
       const z = req.params.zakhialgiinDugaar;
-      const baiguullaga = await QuickQpayObject.findOne({ baiguullagiinId: b });
+      const baiguullaga = await QuickQpayObject(db.erunkhiiKholbolt).findOne({
+        baiguullagiinId: b,
+      });
       console.log("qpaycallback-baiguullaga ", baiguullaga);
       if (z === baiguullaga.zakhialgiinDugaar)
         req.app
@@ -85,11 +88,13 @@ router.post("/qpayKhariltsagchAvay", tokenShalgakh, async (req, res, next) => {
     var kholbolt = db.kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullaga1._id
     );
-    console.log("kholbolt", kholbolt);
+    var qpayKhariltsagch = new QpayKhariltsagch(kholbolt);
+
     req.body.baiguullagiinId = baiguullaga1._id;
-    const baiguullaga = await QpayKhariltsagch(kholbolt).findOne({
+    const baiguullaga = await qpayKhariltsagch.findOne({
       baiguullagiinId: req.body.baiguullagiinId,
     });
+    console.log("baiguullaga", baiguullaga);
     if (baiguullaga) res.send(baiguullaga);
     else res.send(undefined);
   } catch (err) {
