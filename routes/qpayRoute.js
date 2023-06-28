@@ -38,8 +38,10 @@ router.post("/qpayMerchantGargaya", tokenShalgakh, async (req, res, next) => {
   try {
     req.body.tailbar = "testiin guilgee";
     const callback_url =
+      "http://" +
       process.env.UNDSEN_IP +
-      process.env.UNDSEN_PORT +
+      ":" +
+      process.env.PORT +
       "/qpaycallback/" +
       req.body.baiguullagiinId +
       "/" +
