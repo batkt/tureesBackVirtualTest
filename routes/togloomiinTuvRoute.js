@@ -270,6 +270,9 @@ router
       ) {
         update.tulburTulsunEsekh = true;
       }
+      if (togloomiinTuvTulbur?.dutuuDun) {
+        update.dutuuDun = togloomiinTuvTulbur.dutuuDun;
+      }
       guilgeeniiTuukh.forEach((mur) => {
         mur.ognoo = new Date();
         if (mur.turul === "khunglukh") {
