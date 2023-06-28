@@ -19,12 +19,13 @@ router.get(
       console.log("req.query", req.query);
       const { db } = require("zevbackv2");
       const b = req.params.baiguullagiinId;
-      const qpayObject = await QuickQpayObject(db.erunkhiiKholbolt).findOne({
+      var kholbolt = db.kholboltuud.find((a) => a.baiguullagiinId == b);
+      const qpayObject = await QuickQpayObject(kholbolt).findOne({
         zakhialgiinDugaar: req.params.zakhialgiinDugaar,
       });
+      console.log("qpayObject ", qpayObject);
       qpayObject.tulsunEsekh = true;
       qpayObject.isNew = false;
-      console.log("qpayObject ", qpayObject);
       await qpayObject.save();
       req.app.get("socketio").emit(`qpay/${b}/${qpayObject.zakhialgiinDugaar}`);
       res.sendStatus(200);
