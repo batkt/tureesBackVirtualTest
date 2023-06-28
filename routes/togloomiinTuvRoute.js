@@ -253,12 +253,23 @@ router
         return object.dun;
       });
       var update = {
-        tulburTulsunEsekh: true,
+        tulburTulsunEsekh: false,
         tuluv: 1,
         tulbur: guilgeeniiTuukh,
         dutuuDun: 0,
         ebarimtAvakhDun: 0,
       };
+      var togloomiinTuvTulbur = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).findById(req.body.id);
+      if (
+        (togloomiinTuvTulbur?.dutuuDun
+          ? togloomiinTuvTulbur?.dutuuDun
+          : togloomiinTuvTulbur?.niitDun) ==
+        guilgeeniiTuukh.reduce((a, b) => a + b.dun, 0)
+      ) {
+        update.tulburTulsunEsekh = true;
+      }
       guilgeeniiTuukh.forEach((mur) => {
         mur.ognoo = new Date();
         if (mur.turul === "khunglukh") {
@@ -275,10 +286,12 @@ router
         req.body.id,
         update
       );
-      await TogloomiinTulbur(req.body.tukhainBaaziinKholbolt).insertMany(
-        guilgeeniiTuukh
-      );
-      res.send("Amjilttai");
+      if (update.tulburTulsunEsekh === true) {
+        await TogloomiinTulbur(req.body.tukhainBaaziinKholbolt).insertMany(
+          guilgeeniiTuukh
+        );
+        res.send("Amjilttai");
+      } else res.send("TulburDutuu");
     } catch (err) {
       next(err);
     }
