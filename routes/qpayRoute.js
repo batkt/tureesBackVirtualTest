@@ -25,7 +25,9 @@ router.get(
       });
       console.log("qpaycallback-baiguullaga ", baiguullaga);
       if (z === baiguullaga.zakhialgiinDugaar)
-        req.app.get("socketio").emit(`qpay${baiguullaga.zakhialgiinDugaar}`);
+        req.app
+          .get("socketio")
+          .emit(`qpay/${b}/${baiguullaga.zakhialgiinDugaar}`);
     } catch (err) {
       next(err);
     }
@@ -38,7 +40,7 @@ router.post("/qpayMerchantGargaya", tokenShalgakh, async (req, res, next) => {
     const callback_url =
       process.env.UNDSEN_IP +
       process.env.UNDSEN_PORT +
-      "/qpaycallback" +
+      "/qpaycallback/" +
       req.body.baiguullagiinId +
       "/" +
       req.body.zakhialgiinDugaar;
