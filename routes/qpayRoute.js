@@ -21,7 +21,7 @@ router.get(
       const { db } = require("zevbackv2");
       const z = req.params.zakhialgiinDugaar;
       const baiguullaga = await QuickQpayObject(db.erunkhiiKholbolt).findOne({
-        baiguullagiinId: b,
+        zakhialgiinDugaar: req.params.zakhialgiinDugaar,
       });
       console.log("qpaycallback-baiguullaga ", baiguullaga);
       if (z === baiguullaga.zakhialgiinDugaar)
