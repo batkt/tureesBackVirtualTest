@@ -17,17 +17,17 @@ router.get(
     try {
       console.log("req.params", req.params);
       console.log("req.query", req.query);
-      const b = req.params.baiguullagiinId;
       const { db } = require("zevbackv2");
-      const z = req.params.zakhialgiinDugaar;
-      const baiguullaga = await QuickQpayObject(db.erunkhiiKholbolt).findOne({
+      const b = req.params.baiguullagiinId;
+      const qpayObject = await QuickQpayObject(db.erunkhiiKholbolt).findOne({
         zakhialgiinDugaar: req.params.zakhialgiinDugaar,
       });
-      console.log("qpaycallback-baiguullaga ", baiguullaga);
-      if (z === baiguullaga.zakhialgiinDugaar)
-        req.app
-          .get("socketio")
-          .emit(`qpay/${b}/${baiguullaga.zakhialgiinDugaar}`);
+      qpayObject.tulsunEsekh = true;
+      qpayObject.isNew = false;
+      console.log("qpayObject ", qpayObject);
+      await qpayObject.save();
+      req.app.get("socketio").emit(`qpay/${b}/${qpayObject.zakhialgiinDugaar}`);
+      res.sendStatus(200);
     } catch (err) {
       next(err);
     }
