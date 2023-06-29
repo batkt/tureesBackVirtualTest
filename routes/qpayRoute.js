@@ -35,7 +35,7 @@ router.get(
   }
 );
 
-router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
+router.post("/qpayMerchantGargaya", tokenShalgakh, async (req, res, next) => {
   try {
     var maxDugaar = 1;
     await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
