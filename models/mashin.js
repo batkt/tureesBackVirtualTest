@@ -9,6 +9,7 @@ const mashinSchema = new Schema(
     barilgiinId: String,
     turul: String,
     dugaar: String,
+    tailbar: String,
     ezemshigchiinNer: String,
     ezemshigchiinRegister: String,
     ezemshigchiinUtas: String,
