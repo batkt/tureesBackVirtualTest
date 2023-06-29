@@ -75,7 +75,8 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
         body.barilgiinId.toString() +
         "/" +
         maxDugaar.toString();
-        req.body?.zakhialgiinDugaar = maxDugaar.toString();
+
+      req.body.zakhialgiinDugaar = maxDugaar.toString();
     }
 
     console.log("callback_url", callback_url);
