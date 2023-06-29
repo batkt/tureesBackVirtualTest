@@ -70,9 +70,9 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
         ":" +
         process.env.PORT +
         "/qpayTulye/" +
-        body.baiguullagiinId.toString() +
+        req.body.baiguullagiinId.toString() +
         "/" +
-        body.barilgiinId.toString() +
+        req.body.barilgiinId.toString() +
         "/" +
         maxDugaar.toString();
 
