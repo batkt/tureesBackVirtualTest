@@ -19,7 +19,7 @@
     "daalgavar": "^1.0.44",
     "express-useragent": "^1.0.15",
     "parking-v1": "^1.1.32",
-    "quickqpaypackv2": "^1.0.12",
+    "quickqpaypackv2": "^1.0.13",
     "sharp": "^0.30.7",
     "zevbackv2": "^1.1.10",
     "zuragpack": "^1.0.11"
