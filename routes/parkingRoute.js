@@ -157,6 +157,17 @@ router.post(
                                 ],
                             },
                         },
+                        garsanKhaalga: !!req.body.garakhKhaalgaIp ? {
+                            $sum: {
+                                $cond: [
+                                    {
+                                        $eq: ["$garsanKhaalga", req.body.garakhKhaalgaIp],
+                                    },
+                                    "$niitDun",
+                                    0,
+                                ],
+                            },
+                        } : 0,
                         niitDun : {
                             $sum: {$ifNull: ["$niitDun", 0]}
                         }
