@@ -167,7 +167,7 @@ router.post(
                                     0,
                                 ],
                             },
-                        } : 0,
+                        } : {},
                         niitDun : {
                             $sum: {$ifNull: ["$niitDun", 0]}
                         }
