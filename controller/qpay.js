@@ -7,6 +7,7 @@ const QpayObject = require("../models/qpayObject");
 const { tulultiinMsgIlgeeye } = require("../controller/khariltsagch");
 const Geree = require("../models/geree");
 const got = require("got");
+const { QuickQpayObject } = require("quickqpaypackv2");
 const { URL } = require("url");
 const instance = got.extend({
   hooks: {
@@ -220,10 +221,10 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
   var tukhainBaaziinKholbolt = kholboltuud.find(
     (a) => a.baiguullagiinId == req.params.baiguullagiinId
   );
-  var qpayBarimt = await QpayObject(tukhainBaaziinKholbolt).findOne({
-    "qpay.sender_invoice_no": req.params.dugaar,
+  var qpayBarimt = await QuickQpayObject(tukhainBaaziinKholbolt).findOne({
+    zakhialgiinDugaar: req.params.dugaar,
     baiguullagiinId: req.params.baiguullagiinId,
-    barilgiinId: req.params.barilgiinId,
+    salbariinId: req.params.barilgiinId,
   });
   console.log("qpayBarimt", qpayBarimt);
   if (req.query && req.query.qpay_payment_id)

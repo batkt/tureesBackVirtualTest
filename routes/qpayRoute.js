@@ -35,13 +35,13 @@ router.get(
   }
 );
 
-router.post("/qpayMerchantGargaya", tokenShalgakh, async (req, res, next) => {
+router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
   try {
     var maxDugaar = 1;
     await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
       .find({
-        baiguullagiinId: body.baiguullagiinId,
-        barilgiinId: body.barilgiinId,
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
         turul: "qpay",
       })
       .sort({
@@ -51,8 +51,9 @@ router.post("/qpayMerchantGargaya", tokenShalgakh, async (req, res, next) => {
       .then((result) => {
         if (result != 0) maxDugaar = result[0].dugaar + 1;
       });
-    req.body.tailbar = "Түрээсийн г";
-    const callback_url =
+    req.body.tailbar = req.body.gereeniiId ? "Түрээсийн төлбөр" : "Төлбөр";
+    /*Төлбөр callback url*/
+    var callback_url =
       "http://" +
       process.env.UNDSEN_IP +
       ":" +
@@ -60,15 +61,36 @@ router.post("/qpayMerchantGargaya", tokenShalgakh, async (req, res, next) => {
       "/qpaycallback/" +
       req.body.baiguullagiinId +
       "/" +
-      req.body?.zakhialgiinDugaar
-        ? req.body.zakhialgiinDugaar
-        : maxDugaar.toString();
+      req.body?.zakhialgiinDugaar;
+    /*Түрээсийн төлбөр callback url*/
+    if (req.body.gereeniiId || req.body.dansniiDugaar) {
+      callback_url =
+        "http://" +
+        process.env.UNDSEN_IP +
+        ":" +
+        process.env.PORT +
+        "/qpayTulye/" +
+        body.baiguullagiinId.toString() +
+        "/" +
+        body.barilgiinId.toString() +
+        "/" +
+        maxDugaar.toString();
+        req.body?.zakhialgiinDugaar = maxDugaar.toString();
+    }
+
     console.log("callback_url", callback_url);
     const khariu = await qpayGargaya(
       req.body,
       callback_url,
       req.body.tukhainBaaziinKholbolt
     );
+    var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)();
+    dugaarlalt.baiguullagiinId = req.body.baiguullagiinId;
+    dugaarlalt.barilgiinId = req.body.barilgiinId;
+    dugaarlalt.ognoo = new Date();
+    dugaarlalt.turul = "qpay";
+    dugaarlalt.dugaar = maxDugaar;
+    dugaarlalt.save();
     res.send({ khariu });
   } catch (err) {
     next(err);
