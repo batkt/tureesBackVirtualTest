@@ -1,6 +1,6 @@
 const express = require("express");
 const Baiguullaga = require("../models/baiguullaga");
-const { tokenShalgakh } = require("zevbackv2");
+const { tokenShalgakh, Dugaarlalt } = require("zevbackv2");
 
 const router = express.Router();
 
@@ -37,7 +37,21 @@ router.get(
 
 router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
   try {
-    req.body.tailbar = "testiin guilgee";
+    var maxDugaar = 1;
+    await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+      .find({
+        baiguullagiinId: body.baiguullagiinId,
+        barilgiinId: body.barilgiinId,
+        turul: "qpay",
+      })
+      .sort({
+        dugaar: -1,
+      })
+      .limit(1)
+      .then((result) => {
+        if (result != 0) maxDugaar = result[0].dugaar + 1;
+      });
+    req.body.tailbar = "Түрээсийн г";
     const callback_url =
       "http://" +
       process.env.UNDSEN_IP +
@@ -46,7 +60,9 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       "/qpaycallback/" +
       req.body.baiguullagiinId +
       "/" +
-      req.body.zakhialgiinDugaar;
+      req.body?.zakhialgiinDugaar
+        ? req.body.zakhialgiinDugaar
+        : maxDugaar.toString();
     console.log("callback_url", callback_url);
     const khariu = await qpayGargaya(
       req.body,
