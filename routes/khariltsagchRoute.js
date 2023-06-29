@@ -74,7 +74,7 @@ router
   .route("/khyanakhSambariinUgugdul")
   .post(tokenShalgakh, khyanakhSambariinUgugdul);
 router.route("/dansniiUldegdelAvya").post(tokenShalgakh, dansniiUldegdelAvya);
-router.route("/qpayGargaya").post(tokenShalgakh, qpayGargaya);
+// router.route("/qpayGargaya").post(tokenShalgakh, qpayGargaya);
 router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").get(qpayTulye);
 router
   .route("/bankniiKhuulgaTatajKhadgalya")

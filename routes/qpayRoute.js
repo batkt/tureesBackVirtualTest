@@ -35,7 +35,7 @@ router.get(
   }
 );
 
-router.post("/qpayMerchantGargaya", tokenShalgakh, async (req, res, next) => {
+router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
   try {
     req.body.tailbar = "testiin guilgee";
     const callback_url =
