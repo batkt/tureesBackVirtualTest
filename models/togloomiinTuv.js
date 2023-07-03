@@ -47,6 +47,14 @@ const togloomiinTuvSchema = new Schema(
       default: 1,
     },
     turul: String,
+    niitTulbur: [
+      {
+        turul: String,
+        tailbar: String,
+        dun: Number,
+        object: Schema.Types.Mixed,
+      },
+    ],
     tulbur: [
       {
         turul: String,
