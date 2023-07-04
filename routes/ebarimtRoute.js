@@ -292,6 +292,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
       var guilgee = await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
         .findById(req.body.id)
         .lean();
+      console.log("guilgee", guilgee);
       if (guilgee.tuukh?.length > 0 && guilgee.tuukh[0].ebarimtAvsanEsekh)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
       ebarimt = await zogsooloosEbarimtUusgye(
