@@ -256,7 +256,6 @@ router
       var update = {
         tulburTulsunEsekh: false,
         tuluv: 1,
-        niitTulbur: [],
         tulbur: guilgeeniiTuukh,
         dutuuDun: 0,
         ebarimtAvakhDun: 0,
