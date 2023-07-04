@@ -92,7 +92,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
     dugaarlalt.turul = "qpay";
     dugaarlalt.dugaar = maxDugaar;
     dugaarlalt.save();
-    res.send({ khariu });
+    res.send(khariu);
   } catch (err) {
     next(err);
   }
