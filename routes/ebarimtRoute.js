@@ -10,6 +10,13 @@ const aldaa = require("../components/aldaa");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 const { tokenShalgakh, khuudaslalt } = require("zevbackv2");
 const request = require("request");
+const {
+  Parking,
+  Uilchluulegch,
+  ZogsooliinTulbur,
+  zogsoolUusgey,
+  sdkData,
+} = require("parking-v1");
 
 function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
@@ -118,6 +125,59 @@ async function togloomoosEbarimtUusgye(
   return ebarimt;
 }
 
+async function zogsooloosEbarimtUusgye(
+  guilgee,
+  register,
+  turul,
+  tukhainBaaziinKholbolt
+) {
+  var ebarimt = new Ebarimt(tukhainBaaziinKholbolt)();
+  if (register) {
+    if (turul) ebarimt.billType = turul;
+    ebarimt.customerNo = register;
+  }
+
+  console.log("guilgee", guilgee);
+  console.log("guilgee22", guilgee.tuukh);
+  var undsenUne = guilgee.tuukh[0].undsenUne;
+  var tulukhDun = guilgee.tuukh[0].tulukhDun;
+  console.log(
+    "tulukhDun",
+    tulukhDun,
+    tulukhDun,
+    "guilgee.tuukh",
+    guilgee.tuukh
+  );
+  var unuudur = new Date().getDay();
+  var amraltiinUdur = unuudur == 0 || unuudur == 6;
+  ebarimt.zogsooliinId = guilgee._id;
+  ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
+  ebarimt.barilgiinId = guilgee.barilgiinId;
+  ebarimt.mashiniiDugaar = guilgee.mashiniiDugaar;
+  ebarimt.amount = undsenUne.toFixed(2).toString();
+  ebarimt.vat = nuatBodyo(tulukhDun);
+  ebarimt.cashAmount = undsenUne.toFixed(2).toString();
+  ebarimt.nonCashAmount = "0.00";
+  ebarimt.cityTax = "0.00";
+  ebarimt.districtCode = "23";
+  ebarimt.posNo = "0001";
+  var stocks = [];
+  var stock = {
+    code: amraltiinUdur ? "201" : "100",
+    name: amraltiinUdur ? "Амралтын өдөр 1 цаг" : "Ажлын өдөр 1 цаг",
+    measureUnit: "шир",
+    qty: "1.00",
+    unitPrice: tulukhDun.toFixed(2).toString(),
+    totalAmount: tulukhDun.toFixed(2).toString(),
+    cityTax: "0.00",
+    vat: nuatBodyo(tulukhDun),
+    barCode: amraltiinUdur ? "201" : "100",
+  };
+  stocks.push(stock);
+  ebarimt.stocks = stocks;
+  return ebarimt;
+}
+
 async function ebarimtDuudya(ugugdul, onFinish, next) {
   try {
     const data = new TextEncoder().encode(JSON.stringify(ugugdul));
@@ -218,6 +278,45 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
             .findByIdAndUpdate({ _id: req.body.id }, update)
             .then((xariu) => {
               console.log(xariu);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          console.log("ebarimt duuslaa");
+          res.send(d);
+        } catch (err) {
+          next(err);
+        }
+      };
+    } else if (ebarimtiinTurul == "zogsool") {
+      var guilgee = await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+        .findById(req.body.id)
+        .lean();
+      if (guilgee.ebarimtAvsanEsekh)
+        throw new aldaa("Ибаримт хэвлэж авсан байна!");
+      ebarimt = await zogsooloosEbarimtUusgye(
+        guilgee,
+        req.body.register,
+        req.body.turul,
+        req.body.tukhainBaaziinKholbolt
+      );
+      butsaakhMethod = function (d) {
+        try {
+          if (!d.success) throw new Error(d.message);
+          var ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          ebarimt.save().catch((err) => {
+            next(err);
+          });
+          var update = { "tuukh.0.ebarimtAvsanEsekh": true };
+          if (ebarimt.customerNo)
+            update = {
+              ...update,
+              "tuukh.0.ebarimtRegister": ebarimt.customerNo,
+            };
+          Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+            .findByIdAndUpdate(req.body.id, update)
+            .then((xariu) => {
+              console.log("xariu", xariu);
             })
             .catch((err) => {
               console.log(err);

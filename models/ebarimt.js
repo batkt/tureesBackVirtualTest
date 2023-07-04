@@ -9,6 +9,7 @@ const ebarimtSchema = new Schema(
     gereeniiDugaar: String,
     guilgeeniiId: String,
     togloomiinId: String,
+    zogsooliinId: String,
     tulultiinId: String,
     ustgasanOgnoo: Date,
     amount: String,
@@ -29,6 +30,7 @@ const ebarimtSchema = new Schema(
     talbainDugaar: String,
     gereeniiDugaar: String,
     utas: String,
+    mashiniiDugaar: String,
     stocks: [
       {
         code: String,
