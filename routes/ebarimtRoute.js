@@ -141,15 +141,7 @@ async function zogsooloosEbarimtUusgye(
   console.log("guilgee22", guilgee.tuukh);
   var undsenUne = guilgee.tuukh[0].undsenUne;
   var tulukhDun = guilgee.tuukh[0].tulukhDun;
-  console.log(
-    "tulukhDun",
-    tulukhDun,
-    tulukhDun,
-    "guilgee.tuukh",
-    guilgee.tuukh
-  );
-  var unuudur = new Date().getDay();
-  var amraltiinUdur = unuudur == 0 || unuudur == 6;
+
   ebarimt.zogsooliinId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
@@ -163,15 +155,15 @@ async function zogsooloosEbarimtUusgye(
   ebarimt.posNo = "0001";
   var stocks = [];
   var stock = {
-    code: amraltiinUdur ? "201" : "100",
-    name: amraltiinUdur ? "Амралтын өдөр 1 цаг" : "Ажлын өдөр 1 цаг",
+    code: "6743000",
+    name: "Автомашины зогсоолын үйлчилгээ",
     measureUnit: "шир",
     qty: "1.00",
     unitPrice: tulukhDun.toFixed(2).toString(),
     totalAmount: tulukhDun.toFixed(2).toString(),
     cityTax: "0.00",
     vat: nuatBodyo(tulukhDun),
-    barCode: amraltiinUdur ? "201" : "100",
+    barCode: "6743000",
   };
   stocks.push(stock);
   ebarimt.stocks = stocks;
@@ -450,6 +442,16 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
             .findByIdAndUpdate(
               { _id: butsaakhBarimt.togloomiinId },
               { ebarimtAvsanEsekh: false }
+            )
+            .catch((err) => {
+              next(err);
+              console.log("aldaa", err);
+            });
+        } else if (butsaakhBarimt.zogsooliinId) {
+          await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+            .findByIdAndUpdate(
+              { _id: butsaakhBarimt.togloomiinId },
+              { "tuukh.0.ebarimtAvsanEsekh": false }
             )
             .catch((err) => {
               next(err);
