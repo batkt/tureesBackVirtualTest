@@ -202,16 +202,30 @@ router
   .route("/zogsooliinTulburTulye")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      var guilgeeniiTuukh = [];
       var guilgeenuud = req.body.tulbur;
+      console.log('zogsooliinTulburTulye: ', guilgeenuud);
       if (Array.isArray(guilgeenuud)) {
-        guilgeenuud.forEach((mur) =>
-          guilgeeniiTuukh.push(
-            new ZogsooliinTulbur(req.body.tukhainBaaziinKholbolt)(mur)
-          )
-        );
+        for await (const mur of guilgeenuud) {
+          await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+              req.body.id,
+              {
+                $set: {
+                  "tuukh.$[t].burtgesenAjiltaniiId": mur.burtgesenAjiltaniiId,
+                  "tuukh.$[t].burtgesenAjiltaniiNer": mur.burtgesenAjiltaniiId,
+                  "tuukh.$[t].tulburTulsunKhelber": mur.turul,
+                },
+              },
+              {
+                arrayFilters: [
+                  {
+                    "t.zogsooliinId": mur.zogsooliinId,
+                  },
+                ],
+              }
+          );
+        };
       }
-      var niitDun = lodash.sumBy(guilgeeniiTuukh, function (object) {
+      /*var niitDun = lodash.sumBy(guilgeeniiTuukh, function (object) {
         return object.dun;
       });
       var update = {
@@ -239,7 +253,7 @@ router
       );
       await ZogsooliinTulbur(req.body.tukhainBaaziinKholbolt).insertMany(
         guilgeeniiTuukh
-      );
+      );*/
       res.send("Amjilttai");
     } catch (err) {
       next(err);
