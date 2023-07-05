@@ -205,6 +205,7 @@ router
       var guilgeenuud = req.body.tulbur;
       console.log('zogsooliinTulburTulye: ', guilgeenuud);
       if (Array.isArray(guilgeenuud)) {
+        console.log('zogsooliinTulburTulye1: ',req.body.id);
         for await (const mur of guilgeenuud) {
           await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
               req.body.id,
@@ -213,6 +214,7 @@ router
                   "tuukh.$[t].burtgesenAjiltaniiId": mur.burtgesenAjiltaniiId,
                   "tuukh.$[t].burtgesenAjiltaniiNer": mur.burtgesenAjiltaniiId,
                   "tuukh.$[t].tulburTulsunKhelber": mur.turul,
+                  "tuukh.$[t].tuluv": 1,
                 },
               },
               {
