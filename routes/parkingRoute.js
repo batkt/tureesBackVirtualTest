@@ -205,27 +205,34 @@ router
       var guilgeenuud = req.body.tulbur;
       console.log('zogsooliinTulburTulye: ', guilgeenuud);
       if (Array.isArray(guilgeenuud)) {
-        console.log('zogsooliinTulburTulye1: ',req.body.id);
-        for await (const mur of guilgeenuud) {
-          await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-              req.body.id,
+        let tulbur = [];
+        guilgeenuud.map((guilgee)=>{
+          tulbur.push(
               {
-                $set: {
-                  "tuukh.$[t].burtgesenAjiltaniiId": mur.burtgesenAjiltaniiId,
-                  "tuukh.$[t].burtgesenAjiltaniiNer": mur.burtgesenAjiltaniiId,
-                  "tuukh.$[t].tulburTulsunKhelber": mur.turul,
-                  "tuukh.$[t].tuluv": 1,
-                },
-              },
-              {
-                arrayFilters: [
-                  {
-                    "t.zogsooliinId": mur.zogsooliinId,
-                  },
-                ],
+                ognoo: guilgee.ognoo,
+                turul: guilgee.turul,
+                dun: guilgee.tulsunDun,
               }
-          );
-        };
+          )
+        });
+        await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+            req.body.id,
+            {
+              $set: {
+                "tuukh.$[t].burtgesenAjiltaniiId": guilgeenuud[0].burtgesenAjiltaniiId,
+                "tuukh.$[t].burtgesenAjiltaniiNer": guilgeenuud[0].burtgesenAjiltaniiId,
+                "tuukh.$[t].tulbur": tulbur,
+                "tuukh.$[t].tuluv": 1,
+              },
+            },
+            {
+              arrayFilters: [
+                {
+                  "t.zogsooliinId": guilgeenuud[0].zogsooliinId,
+                },
+              ],
+            }
+        );
       }
       /*var niitDun = lodash.sumBy(guilgeeniiTuukh, function (object) {
         return object.dun;
