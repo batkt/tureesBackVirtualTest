@@ -211,7 +211,7 @@ router
               {
                 ognoo: guilgee.ognoo,
                 turul: guilgee.turul,
-                dun: guilgee.tulsunDun,
+                dun: guilgee.dun,
               }
           )
         });
