@@ -450,7 +450,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
         } else if (butsaakhBarimt.zogsooliinId) {
           await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(
-              { _id: butsaakhBarimt.togloomiinId },
+              { _id: butsaakhBarimt.zogsooliinId },
               { "tuukh.0.ebarimtAvsanEsekh": false }
             )
             .catch((err) => {
