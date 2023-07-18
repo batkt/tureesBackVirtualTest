@@ -139,16 +139,16 @@ async function zogsooloosEbarimtUusgye(
 
   console.log("guilgee", guilgee);
   console.log("guilgee22", guilgee.tuukh);
-  var undsenUne = guilgee.tuukh[0].undsenUne;
+  // var undsenUne = guilgee.tuukh[0].undsenUne;
   var tulukhDun = guilgee.tuukh[0].tulukhDun;
 
   ebarimt.zogsooliinId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
   ebarimt.mashiniiDugaar = guilgee.mashiniiDugaar;
-  ebarimt.amount = undsenUne.toFixed(2).toString();
+  ebarimt.amount = tulukhDun.toFixed(2).toString();
   ebarimt.vat = nuatBodyo(tulukhDun);
-  ebarimt.cashAmount = undsenUne.toFixed(2).toString();
+  ebarimt.cashAmount = tulukhDun.toFixed(2).toString();
   ebarimt.nonCashAmount = "0.00";
   ebarimt.cityTax = "0.00";
   ebarimt.districtCode = "23";
