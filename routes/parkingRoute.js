@@ -272,8 +272,9 @@ router
 
 router.get("/zogsooliinIpAvaya/:barilgiinId", async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     if (req.params.barilgiinId) {
-      ZogsooliinIp(req.body.tukhainBaaziinKholbolt)
+      ZogsooliinIp(db.erunkhiiKholbolt)
         .findOne({
           barilgiinId: req.params.barilgiinId,
         })
