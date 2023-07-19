@@ -8,6 +8,7 @@ const {
   zogsoolUusgey,
   sdkData,
 } = require("parking-v1");
+const ZogsooliinIp = require("../models/zogsooliinIp");
 const lodash = require("lodash");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
@@ -268,5 +269,26 @@ router
       next(err);
     }
   });
+
+router.get("/zogsooliinIpAvaya",  async (req, res, next) => {
+  console.log("zogsooliinIpAvaya--- ", req?.body);
+  try {
+    if (req.body.barilgiinId) {
+      ZogsooliinIp(req.body.tukhainBaaziinKholbolt)
+          .findOne({
+            barilgiinId: req.body.barilgiinId,
+          })
+          .then((result) => {
+            res.send(result);
+          })
+          .catch((err1) => {
+            next(err1);
+          });
+    } else
+      res.send('BarilgiinId baihgui bn');
+  } catch (err) {
+    next(err);
+  }
+});
 
 module.exports = router;
