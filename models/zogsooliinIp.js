@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 mongoose.pluralize(null);
 const zogsooliinIpSchema = new Schema(
   {
-    ip: [''],
+    ip: [String],
     baiguullagiinId: String,
     barilgiinId: String,
   },
