@@ -204,35 +204,35 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       var guilgeenuud = req.body.tulbur;
-      console.log('zogsooliinTulburTulye: ', guilgeenuud);
+      console.log("zogsooliinTulburTulye: ", guilgeenuud);
       if (Array.isArray(guilgeenuud)) {
         let tulbur = [];
-        guilgeenuud.map((guilgee)=>{
-          tulbur.push(
-              {
-                ognoo: guilgee.ognoo,
-                turul: guilgee.turul,
-                dun: guilgee.dun,
-              }
-          )
+        guilgeenuud.map((guilgee) => {
+          tulbur.push({
+            ognoo: guilgee.ognoo,
+            turul: guilgee.turul,
+            dun: guilgee.dun,
+          });
         });
         await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-            req.body.id,
-            {
-              $set: {
-                "tuukh.$[t].burtgesenAjiltaniiId": guilgeenuud[0].burtgesenAjiltaniiId,
-                "tuukh.$[t].burtgesenAjiltaniiNer": guilgeenuud[0].burtgesenAjiltaniiId,
-                "tuukh.$[t].tulbur": tulbur,
-                "tuukh.$[t].tuluv": 1,
-              },
+          req.body.id,
+          {
+            $set: {
+              "tuukh.$[t].burtgesenAjiltaniiId":
+                guilgeenuud[0].burtgesenAjiltaniiId,
+              "tuukh.$[t].burtgesenAjiltaniiNer":
+                guilgeenuud[0].burtgesenAjiltaniiId,
+              "tuukh.$[t].tulbur": tulbur,
+              "tuukh.$[t].tuluv": 1,
             },
-            {
-              arrayFilters: [
-                {
-                  "t.zogsooliinId": guilgeenuud[0].zogsooliinId,
-                },
-              ],
-            }
+          },
+          {
+            arrayFilters: [
+              {
+                "t.zogsooliinId": guilgeenuud[0].zogsooliinId,
+              },
+            ],
+          }
         );
       }
       /*var niitDun = lodash.sumBy(guilgeeniiTuukh, function (object) {
@@ -270,22 +270,20 @@ router
     }
   });
 
-router.get("/zogsooliinIpAvaya",  async (req, res, next) => {
-  console.log("zogsooliinIpAvaya--- ", req?.body);
+router.get("/zogsooliinIpAvaya/:barilgiinId", async (req, res, next) => {
   try {
-    if (req.body.barilgiinId) {
+    if (req.params.barilgiinId) {
       ZogsooliinIp(req.body.tukhainBaaziinKholbolt)
-          .findOne({
-            barilgiinId: req.body.barilgiinId,
-          })
-          .then((result) => {
-            res.send(result);
-          })
-          .catch((err1) => {
-            next(err1);
-          });
-    } else
-      res.send('BarilgiinId baihgui bn');
+        .findOne({
+          barilgiinId: req.params.barilgiinId,
+        })
+        .then((result) => {
+          res.send(result);
+        })
+        .catch((err1) => {
+          next(err1);
+        });
+    } else res.send("BarilgiinId baihgui bn");
   } catch (err) {
     next(err);
   }
