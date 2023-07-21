@@ -199,8 +199,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   }
 });
 
-router
-  .route("/zogsooliinTulburTulye")
+router.route("/zogsooliinTulburTulye")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       var guilgeenuud = req.body.tulbur;
