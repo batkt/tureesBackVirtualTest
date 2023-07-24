@@ -102,4 +102,14 @@ router.post(
   }
 );
 
+router.get("/tatvaraasBaiguullagaAvya/:regno", (req, res, next) => {
+  var url = encodeURI(
+    "http://info.ebarimt.mn/rest/merchant/info?regno=" + req.params.regno
+  );
+  request(url, { json: true }, (err, res1, body) => {
+    if (err) next(err);
+    else res.send(body);
+  });
+});
+
 module.exports = router;
