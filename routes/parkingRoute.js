@@ -6,7 +6,7 @@ const {
   Mashin,
   Uilchluulegch,
   ZogsooliinTulbur,
-  zogsoolUusgey,
+  uilchluulegchdiinТоо,
   sdkData,
 } = require("parking-v1");
 const ZogsooliinIp = require("../models/zogsooliinIp");
@@ -117,78 +117,6 @@ router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
   }
 });
 
-router.post(
-  "/zogsoolUilchiluulegchidiinDunAvay",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      const match = {
-        baiguullagiinId: req.body.baiguullagiinId,
-        createdAt: {
-          $gte: new Date(req.body.ekhlekhOgnoo),
-          $lte: new Date(req.body.duusakhOgnoo),
-        },
-        "tuukh.zogsooliinId": req.body.zogsooliinId,
-        // "tuukh.tuluv": 1,
-      };
-      if (!!req.body.barilgiinId) match.barilgiinId = req.body.barilgiinId;
-      const query = [
-        {
-          $match: match,
-        },
-        {
-          $project: {
-            tuluv: {
-              $first: "$tuukh.tuluv",
-            },
-            niitDun: {
-              $sum: { $ifNull: ["$tuukh.tulukhDun", 0] },
-            },
-          },
-        },
-        {
-          $group: {
-            _id: "id",
-            dun: {
-              $sum: {
-                $cond: [
-                  {
-                    $eq: ["$tuluv", 1],
-                  },
-                  "$niitDun",
-                  0,
-                ],
-              },
-            },
-            garsanKhaalga: !!req.body.garakhKhaalgaIp
-              ? {
-                  $sum: {
-                    $cond: [
-                      {
-                        $eq: ["$garsanKhaalga", req.body.garakhKhaalgaIp],
-                      },
-                      "$niitDun",
-                      0,
-                    ],
-                  },
-                }
-              : { $sum: 0 },
-            niitDun: {
-              $sum: { $ifNull: ["$niitDun", 0] },
-            },
-          },
-        },
-      ];
-      const khariu = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt
-      ).aggregate(query);
-      res.send(khariu);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   console.log("zogsoolSdkService--- ", req?.body?.mashiniiDugaar);
   try {
@@ -290,5 +218,94 @@ router.get("/zogsooliinIpAvaya/:barilgiinId", async (req, res, next) => {
     next(err);
   }
 });
+
+router.post(
+    "/zogsoolUilchluulegchdiinToo",
+    tokenShalgakh,
+    async (req, res, next) => {
+      try {
+        uilchluulegchdiinТоо(req.body).then(result=>{
+              if(!!result){
+                res.send(result);
+              }
+            }
+        );
+      } catch (err) {
+        next(err);
+      }
+    }
+);
+
+router.post(
+    "/zogsoolUilchluulegchdiinDunAvay",
+    tokenShalgakh,
+    async (req, res, next) => {
+      try {
+        const match = {
+          baiguullagiinId: req.body.baiguullagiinId,
+          createdAt: {
+            $gte: new Date(req.body.ekhlekhOgnoo),
+            $lte: new Date(req.body.duusakhOgnoo),
+          },
+          "tuukh.zogsooliinId": req.body.zogsooliinId,
+          // "tuukh.tuluv": 1,
+        };
+        if (!!req.body.barilgiinId) match.barilgiinId = req.body.barilgiinId;
+        const query = [
+          {
+            $match: match,
+          },
+          {
+            $project: {
+              tuluv: {
+                $first: "$tuukh.tuluv",
+              },
+              niitDun: {
+                $sum: { $ifNull: ["$tuukh.tulukhDun", 0] },
+              },
+            },
+          },
+          {
+            $group: {
+              _id: "id",
+              dun: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: ["$tuluv", 1],
+                    },
+                    "$niitDun",
+                    0,
+                  ],
+                },
+              },
+              garsanKhaalga: !!req.body.garakhKhaalgaIp
+                  ? {
+                    $sum: {
+                      $cond: [
+                        {
+                          $eq: ["$garsanKhaalga", req.body.garakhKhaalgaIp],
+                        },
+                        "$niitDun",
+                        0,
+                      ],
+                    },
+                  }
+                  : { $sum: 0 },
+              niitDun: {
+                $sum: { $ifNull: ["$niitDun", 0] },
+              },
+            },
+          },
+        ];
+        const khariu = await Uilchluulegch(
+            req.body.tukhainBaaziinKholbolt
+        ).aggregate(query);
+        res.send(khariu);
+      } catch (err) {
+        next(err);
+      }
+    }
+);
 
 module.exports = router;
