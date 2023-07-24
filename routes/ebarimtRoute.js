@@ -441,7 +441,10 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
           await TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(
               { _id: butsaakhBarimt.togloomiinId },
-              { ebarimtAvsanEsekh: false }
+              {
+                ebarimtAvsanEsekh: false,
+                ebarimtAvakhDun: butsaakhBarimt.amount,
+              }
             )
             .catch((err) => {
               next(err);
