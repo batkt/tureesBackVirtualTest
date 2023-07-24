@@ -31,24 +31,21 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
     tuukh.bairshilUls = ipTuukh.bairshilUls;
     tuukh.bairshilKhot = ipTuukh.bairshilKhot;
   } else if (tuukh.ip) {
-    var axiosKhariu = {};
     try {
-      axiosKhariu = await axios.get(
+      var axiosKhariu = await axios.get(
         "https://api.ipgeolocation.io/ipgeo?apiKey=8ee349f1c7304c379fdb6b855d1e9df4&ip=" +
           tuukh.ip.toString()
       );
-    } catch (err) {
-      axiosKhariu = {};
-    }
-    ipTuukh = new IpTuukh(tukhainBaaziinKholbolt)();
-    ipTuukh.ognoo = new Date();
-    ipTuukh.medeelel = axiosKhariu.data;
-    ipTuukh.bairshilUls = axiosKhariu.data.country_name;
-    ipTuukh.bairshilKhot = axiosKhariu.data.city;
-    ipTuukh.ip = tuukh.ip;
-    tuukh.bairshilUls = ipTuukh.bairshilUls;
-    tuukh.bairshilKhot = ipTuukh.bairshilKhot;
-    await ipTuukh.save();
+      ipTuukh = new IpTuukh(tukhainBaaziinKholbolt)();
+      ipTuukh.ognoo = new Date();
+      ipTuukh.medeelel = axiosKhariu.data;
+      ipTuukh.bairshilUls = axiosKhariu.data.country_name;
+      ipTuukh.bairshilKhot = axiosKhariu.data.city;
+      ipTuukh.ip = tuukh.ip;
+      tuukh.bairshilUls = ipTuukh.bairshilUls;
+      tuukh.bairshilKhot = ipTuukh.bairshilKhot;
+      await ipTuukh.save();
+    } catch (err) {}
   }
   await tuukh.save();
 }
