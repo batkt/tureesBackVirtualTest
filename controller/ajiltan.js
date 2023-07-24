@@ -31,10 +31,15 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
     tuukh.bairshilUls = ipTuukh.bairshilUls;
     tuukh.bairshilKhot = ipTuukh.bairshilKhot;
   } else if (tuukh.ip) {
-    var axiosKhariu = await axios.get(
-      "https://api.ipgeolocation.io/ipgeo?apiKey=8ee349f1c7304c379fdb6b855d1e9df4&ip=" +
-        tuukh.ip.toString()
-    );
+    var axiosKhariu = {};
+    try {
+      axiosKhariu = await axios.get(
+        "https://api.ipgeolocation.io/ipgeo?apiKey=8ee349f1c7304c379fdb6b855d1e9df4&ip=" +
+          tuukh.ip.toString()
+      );
+    } catch (err) {
+      axiosKhariu = {};
+    }
     ipTuukh = new IpTuukh(tukhainBaaziinKholbolt)();
     ipTuukh.ognoo = new Date();
     ipTuukh.medeelel = axiosKhariu.data;
@@ -98,7 +103,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           tuukh.browser = ua.browser;
           tuukh.useragent = ua;
           tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
-          //await nevtreltiinTuukhKhadgalya(tuukh, db.erunkhiiKholbolt);
+          await nevtreltiinTuukhKhadgalya(tuukh, db.erunkhiiKholbolt);
           res.status(200).json(butsaakhObject);
         } else throw new Error(khariu.msg);
       } catch (err) {

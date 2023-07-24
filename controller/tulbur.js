@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const QpayObject = require("../models/qpayObject");
+const { QuickQpayObject } = require("quickqpaypackv2");
 const Baiguullaga = require("../models/baiguullaga");
 const Talbai = require("../models/talbai");
 const { UstsanBarimt } = require("zevbackv2");
@@ -1204,7 +1205,9 @@ exports.aldaataiBankniiGuilgeeZasya = asyncHandler(async (req, res, next) => {
 
 exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
   try {
-    var guilgeenuud = await QpayObject(req.body.tukhainBaaziinKholbolt).find({
+    var guilgeenuud = await QuickQpayObject(
+      req.body.tukhainBaaziinKholbolt
+    ).find({
       payment_id: {
         $exists: true,
       },
