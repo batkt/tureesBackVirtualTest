@@ -7,6 +7,7 @@ const Ajiltan = require("../models/ajiltan");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const axios = require("axios");
+const request = require("request");
 
 crud(router, "baiguullaga", Baiguullaga, UstsanBarimt);
 router.post("/baiguullagaBurtgekh", async (req, res, next) => {
@@ -101,5 +102,15 @@ router.post(
     }
   }
 );
+
+router.get("/tatvaraasBaiguullagaAvya/:regno", (req, res, next) => {
+  var url = encodeURI(
+    "http://info.ebarimt.mn/rest/merchant/info?regno=" + req.params.regno
+  );
+  request(url, { json: true }, (err, res1, body) => {
+    if (err) next(err);
+    else res.send(body);
+  });
+});
 
 module.exports = router;
