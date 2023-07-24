@@ -3,6 +3,7 @@ const router = express.Router();
 const { tokenShalgakh, khuudaslalt, crud, UstsanBarimt } = require("zevbackv2");
 const {
   Parking,
+  Mashin,
   Uilchluulegch,
   ZogsooliinTulbur,
   zogsoolUusgey,
@@ -15,6 +16,7 @@ const lodash = require("lodash");
     console.log('parking --- ', req.body);
 });*/
 crud(router, "parking", Parking, UstsanBarimt);
+crud(router, "mashin", Mashin, UstsanBarimt);
 crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
 /*
 crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
@@ -188,7 +190,7 @@ router.post(
 );
 
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
-  console.log("zogsoolSdkService--- ", req?.body);
+  console.log("zogsoolSdkService--- ", req?.body?.mashiniiDugaar);
   try {
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
