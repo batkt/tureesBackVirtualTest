@@ -199,8 +199,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   }
 });
 
-router
-  .route("/zogsooliinTulburTulye")
+router.route("/zogsooliinTulburTulye")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       var guilgeenuud = req.body.tulbur;
@@ -272,8 +271,9 @@ router
 
 router.get("/zogsooliinIpAvaya/:barilgiinId", async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     if (req.params.barilgiinId) {
-      ZogsooliinIp(req.body.tukhainBaaziinKholbolt)
+      ZogsooliinIp(db.erunkhiiKholbolt)
         .findOne({
           barilgiinId: req.params.barilgiinId,
         })
