@@ -6,7 +6,7 @@ const {
   Mashin,
   Uilchluulegch,
   ZogsooliinTulbur,
-  uilchluulegchdiinТоо,
+  uilchluulegchdiinToo,
   sdkData,
 } = require("parking-v1");
 const ZogsooliinIp = require("../models/zogsooliinIp");
@@ -224,13 +224,9 @@ router.post(
     tokenShalgakh,
     async (req, res, next) => {
       try {
-        uilchluulegchdiinТоо(req.body).then(result=>{
-          console.log('/zogsoolUilchluulegchdiinToo', result);
-              if(!!result){
-                res.send(result);
-              }
-            }
-        );
+        const result = await uilchluulegchdiinToo(req.body);
+        console.log('/zogsoolUilchluulegchdiinToo', result);
+        res.send(result);
       } catch (err) {
         next(err);
       }
