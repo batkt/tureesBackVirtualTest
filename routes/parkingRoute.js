@@ -225,6 +225,7 @@ router.post(
     async (req, res, next) => {
       try {
         uilchluulegchdiinТоо(req.body).then(result=>{
+          console.log('/zogsoolUilchluulegchdiinToo', result);
               if(!!result){
                 res.send(result);
               }
