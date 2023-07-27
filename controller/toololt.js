@@ -270,9 +270,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           uldegdel: {
             $gte: 0,
           },
-          uldegdel: {
-            $gte: 0,
-          },
         },
       },
       {
@@ -541,7 +538,6 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
           TxDt: {
             $gte: new Date(req.body.ekhlekhOgnoo),
             $lte: new Date(req.body.duusakhOgnoo),
-            $lte: new Date(req.body.duusakhOgnoo),
           },
           Amt: {
             $gte: 0,
@@ -628,7 +624,6 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
           dansniiDugaar: req.body.dansniiDugaar,
           tranDate: {
             $gte: new Date(req.body.ekhlekhOgnoo),
-            $lte: new Date(req.body.duusakhOgnoo),
             $lte: new Date(req.body.duusakhOgnoo),
           },
           amount: {
