@@ -39,7 +39,7 @@ function aldaagIlgeeye(aldaa, req) {
 const aldaaBarigch = (err, req, res, next) => {
   console.log("end irsen", req.body);
   if (req.body && req.body.nevtersenAjiltniiToken) aldaagIlgeeye(err, req);
-  if (err.message.includes("indexTalbar_1 dup key"))
+  if (err.message & err.message.includes("indexTalbar_1 dup key"))
     err.message = "Нэвтрэх нэр давхардаж байна!";
   else if (err.message.includes("connect ECONNREFUSED 103.143.40.43:8282")) {
     err.message = " Лицензийн хэсэгтэй холбогдоход алдаа гарлаа!";
