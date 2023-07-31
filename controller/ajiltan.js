@@ -359,10 +359,10 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
       text = text.slice(0, -2);
       text = text + " tus tus orlogo orson baina.";
       console.log("text", text);
-      /*msgIlgeeye(
+      msgIlgeeye(
         [
           {
-            to: utas,
+            to: "88043808",
             text,
           },
         ],
@@ -373,7 +373,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
         null,
         null,
         null
-      );*/
+      );
     }
   } catch (error) {
     next(error);
