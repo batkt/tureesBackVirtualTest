@@ -5,7 +5,6 @@ const BankniiGuilgee = require("../models/bankniiGuilgee");
 const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 const IpTuukh = require("../models/ipTuukh");
 const BackTuukh = require("../models/backTuukh");
-const { msgIlgeeye } = require("../controller/khariltsagch");
 const aldaa = require("../components/aldaa");
 const jwt = require("jsonwebtoken");
 const request = require("request");
@@ -267,6 +266,73 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
   }
 });
 
+function msgIlgeeye(
+  jagsaalt,
+  key,
+  dugaar,
+  khariu,
+  index,
+  tukhainBaaziinKholbolt,
+  baiguullagiinId
+) {
+  try {
+    url =
+      process.env.MSG_SERVER +
+      "/send" +
+      "?key=" +
+      key +
+      "&from=" +
+      dugaar +
+      "&to=" +
+      jagsaalt[index].to.toString() +
+      "&text=" +
+      jagsaalt[index].text.toString();
+    url =
+      process.env.MSG_SERVER +
+      "/send" +
+      "?key=" +
+      key +
+      "&from=" +
+      dugaar +
+      "&to=" +
+      jagsaalt[index].to.toString() +
+      "&text=" +
+      jagsaalt[index].text.toString();
+    url = encodeURI(url);
+    request(url, { json: true }, (err1, res1, body) => {
+      if (err1) {
+        console.log("url", url);
+        next(err1);
+      } else {
+        var msg = new MsgTuukh(tukhainBaaziinKholbolt)();
+        msg.baiguullagiinId = baiguullagiinId;
+        msg.dugaar = jagsaalt[index].to;
+        msg.gereeniiId = jagsaalt[index].gereeniiId;
+        msg.msg = jagsaalt[index].text;
+        msg.save();
+        if (jagsaalt.length > index + 1) {
+          console.log("url", url);
+          console.log("body", body);
+          khariu.push(body[0]);
+          msgIlgeeye(
+            jagsaalt,
+            key,
+            dugaar,
+            khariu,
+            index + 1,
+            tukhainBaaziinKholbolt,
+            baiguullagiinId
+          );
+        } else {
+          console.log("url", url);
+          khariu.push(body[0]);
+        }
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+}
 exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
   try {
     const { db } = require("zevbackv2");
@@ -370,9 +436,8 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
         msgIlgeekhDugaar,
         [],
         0,
-        null,
-        null,
-        null
+        kholbolt,
+        baiguullaga._id
       );
     }
   } catch (error) {

@@ -244,4 +244,3 @@ exports.tokenoorKhariltsagchAvya = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
-exports.msgIlgeeye = msgIlgeeye;
