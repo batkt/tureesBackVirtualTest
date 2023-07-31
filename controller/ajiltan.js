@@ -276,14 +276,14 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
     duusakhOgnoo.setHours(23, 59, 59, 999);
     console.log("ekhlekhOgnoo", ekhlekhOgnoo);
     console.log("duusakhOgnoo", duusakhOgnoo);
-    var kholbolt = db.kholboltuud.find(
+    var kholboltuud = db.kholboltuud;
+    var kholbolt = kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullaga._id
     );
     console.log("kholbolt", kholbolt);
     let query = [
       {
         $match: {
-          baiguullagiinId: baiguullaga._id,
           $or: [
             {
               $and: [
@@ -333,6 +333,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
         },
       },
     ];
+    console.log("query", query);
     var result = await BankniiGuilgee(kholbolt).aggregate(query);
     console.log("result", result);
   } catch (error) {
