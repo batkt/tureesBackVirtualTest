@@ -269,13 +269,13 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
       register: "6481523",
     });
-    console.log("orlogiinMsgIlgeeye", baiguullaga);
     var ekhlekhOgnoo = new Date();
     var duusakhOgnoo = new Date();
     var kholboltuud = db.kholboltuud;
     var kholbolt = kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullaga._id
     );
+    console.log("orlogiinMsgIlgeeye", kholbolt);
     let query = [
       {
         $match: {
