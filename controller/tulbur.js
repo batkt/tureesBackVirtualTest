@@ -1208,9 +1208,10 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
     var guilgeenuud = await QuickQpayObject(
       req.body.tukhainBaaziinKholbolt
     ).find({
-      payment_id: {
+      legacy_id: {
         $exists: true,
       },
+      tulsunEsekh: true,
     });
     for await (const guilgee of guilgeenuud) {
       var oldsonGuilgee = await BankniiGuilgee(
@@ -1221,7 +1222,7 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
             kholbosonGereeniiId: [],
           },
           { TxAddInf: { $regex: "qpay", $options: "i" } },
-          { TxAddInf: { $regex: ", " + guilgee.qpay.sender_invoice_no } },
+          { TxAddInf: { $regex: guilgee.legacy_id } },
         ],
       });
       if (oldsonGuilgee) {
