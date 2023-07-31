@@ -10,6 +10,9 @@ const {
   sdkData,
 } = require("parking-v1");
 const ZogsooliinIp = require("../models/zogsooliinIp");
+const Khariltsagch = require("../models/khariltsagch");
+const Sonorduulga = require("../models/sonorduulga");
+const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 const lodash = require("lodash");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
@@ -122,7 +125,43 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try {
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
-    const khariu = await sdkData(req);
+    const medegdel = async (uilchluulegch, khariltsagchiinId) => {
+      /**
+       * Web.с машин бүртгэсэн тохиолдолд khariltsagchiinId байхгүй байгаа тул
+       * зарим машин дээр khariltsagchiinId undefined ирж болно.
+       * */
+      console.log('medegdel callback: ', uilchluulegch);
+      var firebaseToken = req.body.firebaseToken;
+      var kharilltsagch = await Khariltsagch(
+          req.body.tukhainBaaziinKholbolt
+      ).findOne({_id: khariltsagchiinId});
+      if (kharilltsagch) {
+        const medeelel = {title: "Зогсоол", body: 'Машин: '+uilchluulegch.mashiniiDugaar+' Орсон: '+uilchluulegch.tuukh[0].tsagiinTuukh[0].orsonTsag+' Гарсан: '+uilchluulegch.tuukh[0].tsagiinTuukh[0].garsanTsag+' Хугацаа: '+uilchluulegch.tuukh[0].niitKhugatsaa+' Дүн: '+uilchluulegch.tuukh[0].tulukhDun};
+        firebaseToken = kharilltsagch.firebaseToken;
+        sonorduulgaIlgeeye(
+            firebaseToken,
+            medeelel,
+            (r) => {
+              var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+              sonorduulga.khariltsagchiinId = khariltsagchiinId;
+              sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+              sonorduulga.barilgiinId = req.body.barilgiinId;
+              sonorduulga.zurgiinId = req.body.zurgiinId;
+              if (khariltsagchiinId)
+                sonorduulga.khuleenAvagchiinId = khariltsagchiinId;
+              if (!req.body.turul) sonorduulga.turul = "medegdel";
+              sonorduulga.title = medeelel.title;
+              sonorduulga.message = medeelel.body;
+              sonorduulga.kharsanEsekh = false;
+              sonorduulga.save();
+              var io = req.app.get("socketio");
+              if (io)
+                io.emit("khariltsagch" + khariltsagchiinId, sonorduulga);
+            },
+        )
+      }
+    };
+    const khariu = await sdkData(req, medegdel);
     res.send(khariu);
   } catch (err) {
     next(err);
