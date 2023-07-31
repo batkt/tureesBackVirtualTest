@@ -327,7 +327,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
         },
       },
     ];
-    console.log("query", query);
+    console.log("query", JSON.stringify(query, null, 4));
     var result = await BankniiGuilgee(kholbolt).aggregate(query);
     console.log("result", result);
   } catch (error) {
