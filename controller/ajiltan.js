@@ -275,7 +275,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
     var kholbolt = kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullaga._id
     );
-    console.log("orlogiinMsgIlgeeye", kholbolt);
     let query = [
       {
         $match: {
@@ -328,6 +327,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
         },
       },
     ];
+    console.log("query", query);
     var result = await BankniiGuilgee(kholbolt).aggregate(query);
     console.log("result", result);
   } catch (error) {
