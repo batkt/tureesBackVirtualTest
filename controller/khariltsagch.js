@@ -37,7 +37,16 @@ async function kodUusgey() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
+export function msgIlgeeye(
+  jagsaalt,
+  key,
+  dugaar,
+  khariu,
+  index,
+  next,
+  req,
+  res
+) {
   try {
     url =
       process.env.MSG_SERVER +

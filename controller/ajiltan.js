@@ -5,13 +5,17 @@ const BankniiGuilgee = require("../models/bankniiGuilgee");
 const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 const IpTuukh = require("../models/ipTuukh");
 const BackTuukh = require("../models/backTuukh");
+const { msgIlgeeye } = require("../controller/khariltsagch");
 const aldaa = require("../components/aldaa");
 const jwt = require("jsonwebtoken");
 const request = require("request");
 const axios = require("axios");
 const fs = require("fs");
+const moment = require("moment");
 const useragent = require("express-useragent");
 const http = require("http");
+const lodash = require("lodash");
+const { formatNumber } = require("zevbackv2");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get(
@@ -330,7 +334,47 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
       },
     ];
     var result = await BankniiGuilgee(kholbolt).aggregate(query);
-    console.log("result", result);
+    if (result && result.length > 0) {
+      var msgIlgeekhKey;
+      var msgIlgeekhDugaar;
+      try {
+        msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
+        msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
+      } catch (error) {
+        console.log("msg tokhirgoo bxgui");
+      }
+      var niitDun = lodash.sumBy(result, function (object) {
+        return object.dun;
+      });
+      var text =
+        "Rently systemd " +
+        moment(ekhlekhOgnoo).format("MM/DD") +
+        " udur " +
+        (await formatNumber(niitDun)) +
+        "₮ orlogo burtgegdej ";
+
+      for await (const a of result) {
+        text = text + a._id + " - " + (await formatNumber(a.dun)) + ", ";
+      }
+      text = text.slice(0, -2);
+      text = text + " tus tus orlogo orson baina.";
+      console.log("text", text);
+      /*msgIlgeeye(
+        [
+          {
+            to: utas,
+            text,
+          },
+        ],
+        msgIlgeekhKey,
+        msgIlgeekhDugaar,
+        [],
+        0,
+        null,
+        null,
+        null
+      );*/
+    }
   } catch (error) {
     next(error);
   }
