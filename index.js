@@ -113,7 +113,6 @@ cron.schedule(
 cron.schedule(
   "10 * * * * * ",
   function () {
-    console.log("orlogiinMsgIlgeeye");
     ajiltanController.orlogiinMsgIlgeeye();
   },
   {
