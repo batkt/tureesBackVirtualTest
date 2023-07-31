@@ -126,6 +126,10 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
     const medegdel = async (uilchluulegch, khariltsagchiinId) => {
+      /**
+       * Web.с машин бүртгэсэн тохиолдолд khariltsagchiinId байхгүй байгаа тул
+       * зарим машин дээр khariltsagchiinId undefined ирж болно.
+       * */
       console.log('medegdel callback: ', uilchluulegch);
       var firebaseToken = req.body.firebaseToken;
       var kharilltsagch = await Khariltsagch(
