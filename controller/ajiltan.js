@@ -420,7 +420,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
         "₮ orlogo burtgegdej ";
 
       for await (const a of result) {
-        text = text + a._id + " - " + (await formatNumber(a.dun)) + ", ";
+        text = text + a._id + " - " + (await formatNumber(a.dun)) + "₮, ";
       }
       text = text.slice(0, -2);
       text = text + " tus tus orlogo orson baina.";
