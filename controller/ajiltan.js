@@ -271,6 +271,8 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
     });
     var ekhlekhOgnoo = new Date();
     var duusakhOgnoo = new Date();
+    ekhlekhOgnoo.setHours(0, 0, 0, 0);
+    duusakhOgnoo.setHours(23, 59, 59, 999);
     var kholboltuud = db.kholboltuud;
     var kholbolt = kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullaga._id
@@ -327,7 +329,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
         },
       },
     ];
-    console.log("query", JSON.stringify(query, null, 4));
     var result = await BankniiGuilgee(kholbolt).aggregate(query);
     console.log("result", result);
   } catch (error) {
