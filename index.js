@@ -34,6 +34,7 @@ const daalgavarRoute = require("./routes/daalgavarRoute");
 const zogsool = require("./controller/zogsool");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
+const ajiltanController = require("./controller/ajiltan");
 const apiRoute = require("./routes/apiRoute");
 const qpayRoute = require("./routes/qpayRoute");
 const parkingRoute = require("./routes/parkingRoute");
@@ -102,6 +103,18 @@ cron.schedule(
   function () {
     console.log("xuulga tatlaa", new Date());
     cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
+  "10 * * * * * ",
+  function () {
+    console.log("orlogiinMsgIlgeeye");
+    ajiltanController.orlogiinMsgIlgeeye();
   },
   {
     scheduled: true,

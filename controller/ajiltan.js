@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Ajiltan = require("../models/ajiltan");
 const Baiguullaga = require("../models/baiguullaga");
+const BankniiGuilgee = require("../models/bankniiGuilgee");
 const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 const IpTuukh = require("../models/ipTuukh");
 const BackTuukh = require("../models/backTuukh");
@@ -257,6 +258,80 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
         }
       }
     );
+  } catch (error) {
+    next(error);
+  }
+});
+
+exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
+  try {
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).find({
+      register: "6481523",
+    });
+    console.log("orlogiinMsgIlgeeye");
+    var ekhlekhOgnoo = new Date();
+    var duusakhOgnoo = new Date();
+    ekhlekhOgnoo.setHours(0, 0, 0, 0);
+    duusakhOgnoo.setHours(23, 59, 59, 999);
+    var kholbolt = db.kholboltuud.find(
+      (a) => a.baiguullagiinId == baiguullaga._id
+    );
+    let query = [
+      {
+        $match: {
+          baiguullagiinId: baiguullaga._id,
+          $or: [
+            {
+              $and: [
+                {
+                  TxDt: {
+                    $gte: ekhlekhOgnoo,
+                    $lte: duusakhOgnoo,
+                  },
+                },
+                {
+                  Amt: {
+                    $gt: 0,
+                  },
+                },
+              ],
+            },
+            {
+              $and: [
+                {
+                  tranDate: {
+                    $gte: ekhlekhOgnoo,
+                    $lte: duusakhOgnoo,
+                  },
+                },
+                {
+                  amount: {
+                    $gt: 0,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          dansniiDugaar: "$dansniiDugaar",
+          dun: { $ifNull: ["$Amt", "$amount"] },
+        },
+      },
+      {
+        $group: {
+          _id: "$dansniiDugaar",
+          dun: {
+            $sum: "$dun",
+          },
+        },
+      },
+    ];
+    var result = await BankniiGuilgee(kholbolt).aggregate(query);
+    console.log("result", result);
   } catch (error) {
     next(error);
   }
