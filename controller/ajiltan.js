@@ -3,6 +3,7 @@ const Ajiltan = require("../models/ajiltan");
 const Baiguullaga = require("../models/baiguullaga");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
+const MsgTuukh = require("../models/msgTuukh");
 const IpTuukh = require("../models/ipTuukh");
 const BackTuukh = require("../models/backTuukh");
 const aldaa = require("../components/aldaa");
@@ -428,7 +429,11 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
       msgIlgeeye(
         [
           {
-            to: "88043808",
+            to: "88880140",
+            text,
+          },
+          {
+            to: "88889501",
             text,
           },
         ],
