@@ -266,21 +266,16 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
 exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
   try {
     const { db } = require("zevbackv2");
-    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).find({
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
       register: "6481523",
     });
     console.log("orlogiinMsgIlgeeye", baiguullaga);
     var ekhlekhOgnoo = new Date();
     var duusakhOgnoo = new Date();
-    ekhlekhOgnoo.setHours(0, 0, 0, 0);
-    duusakhOgnoo.setHours(23, 59, 59, 999);
-    console.log("ekhlekhOgnoo", ekhlekhOgnoo);
-    console.log("duusakhOgnoo", duusakhOgnoo);
     var kholboltuud = db.kholboltuud;
     var kholbolt = kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullaga._id
     );
-    console.log("kholbolt", kholbolt);
     let query = [
       {
         $match: {
@@ -333,7 +328,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
         },
       },
     ];
-    console.log("query", query);
     var result = await BankniiGuilgee(kholbolt).aggregate(query);
     console.log("result", result);
   } catch (error) {
