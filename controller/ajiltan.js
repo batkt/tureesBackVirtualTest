@@ -340,8 +340,8 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
       register: "6481523",
     });
-    var ekhlekhOgnoo = new Date();
-    var duusakhOgnoo = new Date();
+    var ekhlekhOgnoo = new Date(Date.now() - 86400000);
+    var duusakhOgnoo = new Date(Date.now() - 86400000);
     ekhlekhOgnoo.setHours(0, 0, 0, 0);
     duusakhOgnoo.setHours(23, 59, 59, 999);
     var kholboltuud = db.kholboltuud;
@@ -434,6 +434,10 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
           },
           {
             to: "88889501",
+            text,
+          },
+          {
+            to: "88043808",
             text,
           },
         ],
