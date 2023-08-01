@@ -139,21 +139,38 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
       if (kharilltsagch) {
         const medeelel = {
           title: "Зогсоол",
-          body:
-            "Машин: " +
-            uilchluulegch.mashiniiDugaar +
-            "\n Орсон: " +
-            moment(uilchluulegch.tuukh[0].tsagiinTuukh[0].orsonTsag).format(
-              "YYYY/MM/DD HH:mm:ss"
-            ) +
-            "\n Гарсан: " +
-            moment(uilchluulegch.tuukh[0].tsagiinTuukh[0].garsanTsag).format(
-              "YYYY/MM/DD HH:mm:ss"
-            ) +
-            "\n Хугацаа: " +
-            uilchluulegch.tuukh[0].niitKhugatsaa +
-            "\n Дүн: " +
-            uilchluulegch.tuukh[0].tulukhDun,
+          body: `<div>
+          <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <p style="width:maxContent; text-align:left">Машин:</p>
+            <p style="width:maxContent; text-align:right">${
+              uilchluulegch.mashiniiDugaar
+            }</p>
+          </div>
+          <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <p style="width:maxContent; text-align:left">Орсон:</p>
+            <p style="width:maxContent; text-align:right">${moment(
+              uilchluulegch.tuukh[0].tsagiinTuukh[0].orsonTsag
+            ).format("YYYY/MM/DD HH:mm:ss")}</p>
+          </div>
+          <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <p style="width:maxContent; text-align:left">Гарсан:</p>
+            <p style="width:maxContent; text-align:right">${moment(
+              uilchluulegch.tuukh[0].tsagiinTuukh[0].garsanTsag
+            ).format("YYYY/MM/DD HH:mm:ss")}</p>
+          </div>
+          <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <p style="width:maxContent; text-align:left">Хугацаа:</p>
+            <p style="width:maxContent; text-align:right">${
+              uilchluulegch.tuukh[0].niitKhugatsaa
+            }</p>
+          </div>
+          <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <p style="width:maxContent; text-align:left">Дүн:</p>
+            <p style="width:maxContent; text-align:right">${
+              uilchluulegch.tuukh[0].tulukhDun
+            }</p>
+          </div>
+          </div>`,
         };
         firebaseToken = kharilltsagch.firebaseToken;
         sonorduulgaIlgeeye(firebaseToken, medeelel, (r) => {
