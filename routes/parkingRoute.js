@@ -141,17 +141,17 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
           body:
             "Машин: " +
             uilchluulegch.mashiniiDugaar +
-            "\xa0 Орсон: " +
+            "\n Орсон: " +
             moment(uilchluulegch.tuukh[0].tsagiinTuukh[0].orsonTsag).format(
               "YYYY/MM/DD HH:mm:ss"
             ) +
-            "\xa0 Гарсан: " +
+            "\n Гарсан: " +
             moment(uilchluulegch.tuukh[0].tsagiinTuukh[0].garsanTsag).format(
               "YYYY/MM/DD HH:mm:ss"
             ) +
-            "\xa0 Хугацаа: " +
+            "\n Хугацаа: " +
             uilchluulegch.tuukh[0].niitKhugatsaa +
-            "\xa0 Дүн: " +
+            "\n Дүн: " +
             uilchluulegch.tuukh[0].tulukhDun,
         };
         firebaseToken = kharilltsagch.firebaseToken;
