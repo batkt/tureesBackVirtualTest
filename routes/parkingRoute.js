@@ -142,33 +142,33 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
           body: `<div>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
             <p style="width:maxContent; text-align:left">Машин:</p>
-            <p style="width:maxContent; text-align:right">${
+            <p style="width:maxContent; text-align:right; color: #C0C0C0">${
               uilchluulegch.mashiniiDugaar
             }</p>
           </div>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
             <p style="width:maxContent; text-align:left">Орсон:</p>
-            <p style="width:maxContent; text-align:right">${moment(
+            <p style="width:maxContent; text-align:right; color: #C0C0C0">${moment(
               uilchluulegch.tuukh[0].tsagiinTuukh[0].orsonTsag
             ).format("YYYY/MM/DD HH:mm:ss")}</p>
           </div>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
             <p style="width:maxContent; text-align:left">Гарсан:</p>
-            <p style="width:maxContent; text-align:right">${moment(
+            <p style="width:maxContent; text-align:right; color: #C0C0C0">${moment(
               uilchluulegch.tuukh[0].tsagiinTuukh[0].garsanTsag
             ).format("YYYY/MM/DD HH:mm:ss")}</p>
           </div>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
             <p style="width:maxContent; text-align:left">Хугацаа:</p>
-            <p style="width:maxContent; text-align:right">${
+            <p style="width:maxContent; text-align:right; color: #C0C0C0">${
               uilchluulegch.tuukh[0].niitKhugatsaa
-            }</p>
+            } мин</p>
           </div>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
             <p style="width:maxContent; text-align:left">Дүн:</p>
-            <p style="width:maxContent; text-align:right">${
+            <p style="width:maxContent; text-align:right; color: #C0C0C0; font-weigth: bold">${
               uilchluulegch.tuukh[0].tulukhDun
-            }</p>
+            } ₮</p>
           </div>
           </div>`,
         };
