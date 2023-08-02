@@ -139,7 +139,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
       if (kharilltsagch) {
         const medeelel = {
           title: "Зогсоол",
-          body: `<div>
+          body: `<span>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
             <p style="width:maxContent; text-align:left">Машин:</p>
             <p style="width:maxContent; text-align:right; color: #999999">${
@@ -170,7 +170,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
               uilchluulegch.tuukh[0].tulukhDun
             } ₮</p>
           </div>
-          </div>`,
+          </span>`,
         };
         firebaseToken = kharilltsagch.firebaseToken;
         sonorduulgaIlgeeye(firebaseToken, medeelel, (r) => {
