@@ -31,4 +31,7 @@ router
 router.route("/zardaliinTailanAvya").post(tokenShalgakh, zardaliinTailanAvya);
 router.route("/ashigiinTailanAvya").post(tokenShalgakh, ashigiinTailanAvya);
 router.route("/analitikTailanAvya").post(tokenShalgakh, analitikTailanAvya);
+router.get("/ognooAvya", tokenShalgakh, async (req, res, next) => {
+  res.send(new Date());
+});
 module.exports = router;
