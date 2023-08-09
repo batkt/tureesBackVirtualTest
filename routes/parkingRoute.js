@@ -314,7 +314,8 @@ router.post(
           $gte: new Date(req.body.ekhlekhOgnoo),
           $lte: new Date(req.body.duusakhOgnoo),
         },
-        "tuukh.zogsooliinId": req.body.zogsooliinId,
+        "tuukh.zogsooliinId": { $exists: true },
+        //"tuukh.zogsooliinId": req.body.zogsooliinId,
         // "tuukh.tuluv": 1,
       };
       if (!!req.body.barilgiinId) match.barilgiinId = req.body.barilgiinId;
