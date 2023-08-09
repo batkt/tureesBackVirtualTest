@@ -176,10 +176,13 @@ router
           },
         },
         {
+          $unwind: "$niitTulbur",
+        },
+        {
           $group: {
-            _id: "id",
-            dun: {
-              $sum: "$niitDun",
+            _id: "$niitTulbur.turul",
+            niitDun: {
+              $sum: "$niitTulbur.dun",
             },
           },
         },
