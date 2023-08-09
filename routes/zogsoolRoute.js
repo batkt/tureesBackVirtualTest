@@ -154,30 +154,4 @@ router.post("/zogsooliinTooAvya", tokenShalgakh, async (req, res, next) => {
     });
 });
 
-router.post("/mashiniiTooAvya", tokenShalgakh, async (req, res, next) => {
-  var query = [
-    {
-      $match: {
-        baiguullagiinId: req.body.baiguullagiinId,
-      },
-    },
-    {
-      $group: {
-        _id: "$turul",
-        too: {
-          $sum: 1,
-        },
-      },
-    },
-  ];
-  Mashin(req.body.tukhainBaaziinKholbolt)
-    .aggregate(query)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      next(err);
-    });
-});
-
 module.exports = router;
