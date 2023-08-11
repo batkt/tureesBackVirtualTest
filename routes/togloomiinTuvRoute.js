@@ -196,7 +196,7 @@ router
   .route("/togloomiinDunBoduulya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      var minut = Number(req.body.minut);
+      var minut = Number(req.body.niitMinut);
       var asragchiinToo = Number(req.body.asragchiinToo);
       var dun = 0;
       var unuudur = new Date().getDay();
@@ -230,6 +230,7 @@ router
             dun = dun + asragchiinDun;
           }
         }
+        dun = dun - (req.body?.tulugdsunDun || 0);
       }
 
       res.send({
