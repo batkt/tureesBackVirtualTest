@@ -122,7 +122,6 @@ router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
 });
 
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
-  console.log("zogsoolSdkService--- ", req?.body?.mashiniiDugaar);
   try {
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
@@ -131,12 +130,11 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
        * Web.с машин бүртгэсэн тохиолдолд khariltsagchiinId байхгүй байгаа тул
        * зарим машин дээр khariltsagchiinId undefined ирж болно.
        * */
-      console.log("medegdel callback: ", uilchluulegch);
       var firebaseToken = req.body.firebaseToken;
       var kharilltsagch = await Khariltsagch(
         req.body.tukhainBaaziinKholbolt
       ).findOne({ _id: khariltsagchiinId });
-      if (kharilltsagch) {
+      if (!!kharilltsagch) {
         const medeelel = {
           title: "Зогсоол",
           body: `<span>
@@ -192,6 +190,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
       }
     };
     const khariu = await sdkData(req, medegdel);
+    console.log("zogsoolSdkService--- khariu ", khariu);
     res.send(khariu);
   } catch (err) {
     next(err);
@@ -217,10 +216,8 @@ router
           req.body.id,
           {
             $set: {
-              "tuukh.$[t].burtgesenAjiltaniiId":
-                guilgeenuud[0].burtgesenAjiltaniiId,
-              "tuukh.$[t].burtgesenAjiltaniiNer":
-                guilgeenuud[0].burtgesenAjiltaniiNer,
+              "tuukh.$[t].burtgesenAjiltaniiId": guilgeenuud[0].burtgesenAjiltaniiId,
+              "tuukh.$[t].burtgesenAjiltaniiNer": guilgeenuud[0].burtgesenAjiltaniiNer,
               "tuukh.$[t].tulbur": tulbur,
               "tuukh.$[t].tuluv": 1,
             },
