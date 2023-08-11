@@ -220,7 +220,7 @@ router
               "tuukh.$[t].burtgesenAjiltaniiId":
                 guilgeenuud[0].burtgesenAjiltaniiId,
               "tuukh.$[t].burtgesenAjiltaniiNer":
-                guilgeenuud[0].burtgesenAjiltaniiId,
+                guilgeenuud[0].burtgesenAjiltaniiNer,
               "tuukh.$[t].tulbur": tulbur,
               "tuukh.$[t].tuluv": 1,
             },
