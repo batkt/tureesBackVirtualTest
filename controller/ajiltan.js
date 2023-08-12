@@ -440,7 +440,15 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
       msgIlgeeye(
         [
           {
-            to: "95230516",
+            to: "88880140",
+            text,
+          },
+          {
+            to: "88889501",
+            text,
+          },
+          {
+            to: "88043808",
             text,
           },
         ],
