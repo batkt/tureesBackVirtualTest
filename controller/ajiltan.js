@@ -387,13 +387,13 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
       },
       {
         $project: {
-          dansniiDugaar: "$dansniiDugaar",
+          barilgiinId: "$barilgiinId",
           dun: { $ifNull: ["$Amt", "$amount"] },
         },
       },
       {
         $group: {
-          _id: "$dansniiDugaar",
+          _id: "$barilgiinId",
           dun: {
             $sum: "$dun",
           },
@@ -421,7 +421,18 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
         "₮ orlogo burtgegdej ";
 
       for await (const a of result) {
-        text = text + a._id + " - " + (await formatNumber(a.dun)) + "₮, ";
+        var barilgiinNer = "";
+        try {
+          barilgiinNer = baiguullaga.barilguud.find((x) => x._id == a._id).ner;
+        } catch (aldaa) {}
+        if (barilgiinNer == "Их наяд плаза") barilgiinNer = "Ikhnayd plaza";
+        else if (barilgiinNer == "Цэцэг Төв") barilgiinNer = "Tsetseg tuv";
+        else if (barilgiinNer == "Шинэ тэрэг плаза")
+          barilgiinNer = "Shine tereg plaza";
+        else if (barilgiinNer == "Их наяд Tower")
+          barilgiinNer = "Ikhnayd zuun undur";
+        text =
+          text + barilgiinNer + " - " + (await formatNumber(a.dun)) + "₮, ";
       }
       text = text.slice(0, -2);
       text = text + " tus tus orlogo orson baina.";
@@ -429,15 +440,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
       msgIlgeeye(
         [
           {
-            to: "88880140",
-            text,
-          },
-          {
-            to: "88889501",
-            text,
-          },
-          {
-            to: "88043808",
+            to: "95230516",
             text,
           },
         ],
