@@ -216,8 +216,10 @@ router
           req.body.id,
           {
             $set: {
-              "tuukh.$[t].burtgesenAjiltaniiId": guilgeenuud[0].burtgesenAjiltaniiId,
-              "tuukh.$[t].burtgesenAjiltaniiNer": guilgeenuud[0].burtgesenAjiltaniiNer,
+              "tuukh.$[t].burtgesenAjiltaniiId":
+                guilgeenuud[0].burtgesenAjiltaniiId,
+              "tuukh.$[t].burtgesenAjiltaniiNer":
+                guilgeenuud[0].burtgesenAjiltaniiNer,
               "tuukh.$[t].tulbur": tulbur,
               "tuukh.$[t].tuluv": 1,
             },
@@ -378,6 +380,7 @@ router.post("/mashiniiTooAvya", tokenShalgakh, async (req, res, next) => {
     {
       $match: {
         baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
       },
     },
     {
