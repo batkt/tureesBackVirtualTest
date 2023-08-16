@@ -10,7 +10,7 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "update": "git pull && pm2 reload tureesapi",
-    "addpack": "npm install --registry http://103.143.40.90:4873 zevback"
+    "addpack": "npm install --registry http://103.143.40.90:4873 zevbackv2"
   },
   "author": "",
   "license": "ISC",
@@ -18,11 +18,11 @@
     "bcrypt": "^5.0.1",
     "daalgavar": "^1.0.44",
     "express-useragent": "^1.0.15",
-    "parking-v1": "^1.1.62",
+    "parking-v1": "^1.1.65",
     "quickqpaypackv2": "^1.0.20",
     "sharp": "^0.30.7",
     "zevbackv2": "^1.1.10",
-    "zuragpack": "^1.0.11"
+    "zuragpack": "^1.0.17"
   },
   "devDependencies": {
     "nodemon": "^2.0.12"
