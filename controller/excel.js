@@ -5,7 +5,7 @@ const Khariltsagch = require("../models/khariltsagch");
 const Baiguullaga = require("../models/baiguullaga");
 const Geree = require("../models/geree");
 const Talbai = require("../models/talbai");
-const Mashin = require("../models/mashin");
+// const Mashin = require("../models/mashin");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const { Segment } = require("zevbackv2");
 const aldaa = require("../components/aldaa");
@@ -13,6 +13,14 @@ const xlsx = require("xlsx");
 const moment = require("moment");
 const excel = require("exceljs");
 const mongoose = require("mongoose");
+const {
+  Parking,
+  Mashin,
+  Uilchluulegch,
+  ZogsooliinTulbur,
+  uilchluulegchdiinToo,
+  sdkData,
+} = require("parking-v1");
 
 function usegTooruuKhurvuulekh(useg) {
   if (!!useg) return useg.charCodeAt() - 65;
@@ -42,16 +50,17 @@ async function gereeBaivalBugluy(
   baiguullagiinId,
   tukhainBaaziinKholbolt
 ) {
+  var match = {
+    utas: { $in: utasnuud },
+    baiguullagiinId: baiguullagiinId,
+  };
+
   var utasnuud = [];
   mashiniiJagsaalt.forEach((a) => {
     utasnuud.push(a.ezemshigchiinUtas);
   });
   console.log("utasnuud", utasnuud);
-  var gereeniiJagsaalt = await Geree(tukhainBaaziinKholbolt).find({
-    utas: { $in: utasnuud },
-    baiguullagiinId: baiguullagiinId,
-  });
-  console.log("gereeniiJagsaalt", gereeniiJagsaalt);
+  var gereeniiJagsaalt = await Geree(tukhainBaaziinKholbolt).find(match);
   if (gereeniiJagsaalt.length !== 0) {
     var tukhainMashin;
     gereeniiJagsaalt.forEach((x) => {
@@ -1347,7 +1356,9 @@ function ExcelDateToJSDate(date) {
 
 exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
-  let worksheet = workbook.addWorksheet("Машины мэдээлэл");
+  let worksheet = workbook.addWorksheet("Бусад");
+  let worksheet1 = workbook.addWorksheet("Гэрээт");
+  let worksheet2 = workbook.addWorksheet("Онцгой үйлчлүүлэгч");
   console.log("here");
   worksheet.columns = [
     {
@@ -1374,6 +1385,84 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       headerRow: true,
       width: 20,
     },
+    {
+      header: "Тайлбар",
+      key: "Тайлбар",
+      headerRow: true,
+      width: 30,
+    },
+  ];
+  worksheet1.columns = [
+    {
+      header: "Машины дугаар",
+      key: "Машины дугаар",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Эзэмшигчийн нэр",
+      key: "Эзэмшигчийн нэр",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Эзэмшигчийн утас",
+      key: "Эзэмшигчийн утас",
+      headerRow: true,
+      width: 20,
+    },
+    {
+      header: "Эхлэх огноо",
+      key: "Эхлэх огноо",
+      headerRow: true,
+      style: { numFmt: "yyyy/mm/dd" },
+      width: 20,
+    },
+    {
+      header: "Дуусах огноо",
+      key: "Дуусах огноо",
+      headerRow: true,
+      style: { numFmt: "yyyy/mm/dd" },
+      width: 20,
+    },
+    {
+      header: "Тайлбар",
+      key: "Тайлбар",
+      headerRow: true,
+      width: 30,
+    },
+  ];
+  worksheet2.columns = [
+    {
+      header: "Машины дугаар",
+      key: "Машины дугаар",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Эзэмшигчийн нэр",
+      key: "Эзэмшигчийн нэр",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Эзэмшигчийн утас",
+      key: "Эзэмшигчийн утас",
+      headerRow: true,
+      width: 20,
+    },
+    {
+      header: "Гэрээний дугаар",
+      key: "Гэрээний дугаар",
+      headerRow: true,
+      width: 20,
+    },
+    {
+      header: "Тайлбар",
+      key: "Тайлбар",
+      headerRow: true,
+      width: 30,
+    },
   ];
   /*['A1', 'B1', 'C1', 'D1'].map(key => {
     worksheet.getCell(key).fill = {
@@ -1382,10 +1471,11 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       bgColor: { argb: 'FF008000' }
     };
   });*/
+
   worksheet.dataValidations.add("D2:D9999", {
     type: "list",
     allowBlank: false,
-    formulae: ['"Гэрээт,Түрээслэгч,Дотоод"'],
+    formulae: ['"Түрээслэгч,Дотоод,Үнэгүй"'],
     showErrorMessage: true,
     errorStyle: "error",
     error: "Тохирох утгыг сонгоно уу!",
@@ -1407,16 +1497,45 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
 exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
   try {
     const workbook = xlsx.read(req.file.buffer);
-    if (workbook.SheetNames[0] !== "Машины мэдээлэл")
+    if (
+      workbook.SheetNames[0] !== "Бусад" ||
+      workbook.SheetNames[1] !== "Гэрээт" ||
+      workbook.SheetNames[2] !== "Онцгой үйлчлүүлэгч"
+    )
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const mashinSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const mashinSheetGereet = workbook.Sheets[workbook.SheetNames[1]];
+    const mashinSheetOntsgoiUilchiluulegch =
+      workbook.Sheets[workbook.SheetNames[2]];
     var jagsaalt = [];
     var tolgoinObject = {};
+    var tolgoinObject1 = {};
+    var tolgoinObject2 = {};
     if (
       !mashinSheet["A1"].v.includes("Машины дугаар") ||
       !mashinSheet["C1"].v.includes("Эзэмшигчийн утас") ||
       !mashinSheet["B1"].v.includes("Эзэмшигчийн нэр") ||
-      !mashinSheet["D1"].v.includes("Төрөл")
+      !mashinSheet["D1"].v.includes("Төрөл") ||
+      !mashinSheet["E1"].v.includes("Тайлбар")
+    ) {
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    }
+    if (
+      !mashinSheetGereet["A1"].v.includes("Машины дугаар") ||
+      !mashinSheetGereet["C1"].v.includes("Эзэмшигчийн утас") ||
+      !mashinSheetGereet["B1"].v.includes("Эзэмшигчийн нэр") ||
+      !mashinSheetGereet["D1"].v.includes("Эхлэх огноо") ||
+      !mashinSheetGereet["E1"].v.includes("Дуусах огноо") ||
+      !mashinSheetGereet["F1"].v.includes("Тайлбар")
+    ) {
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    }
+    if (
+      !mashinSheetOntsgoiUilchiluulegch["A1"].v.includes("Машины дугаар") ||
+      !mashinSheetOntsgoiUilchiluulegch["C1"].v.includes("Эзэмшигчийн утас") ||
+      !mashinSheetOntsgoiUilchiluulegch["B1"].v.includes("Эзэмшигчийн нэр") ||
+      !mashinSheetOntsgoiUilchiluulegch["D1"].v.includes("Гэрээний дугаар") ||
+      !mashinSheetOntsgoiUilchiluulegch["E1"].v.includes("Тайлбар")
     ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
@@ -1433,17 +1552,90 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject.ner = cellAsString[0];
         else if (mashinSheet[cellAsString].v.includes("Эзэмшигчийн утас"))
           tolgoinObject.utas = cellAsString[0];
+        else if (mashinSheet[cellAsString].v.includes("Тайлбар"))
+          tolgoinObject.temdeglel = cellAsString[0];
         else if (mashinSheet[cellAsString].v.includes("Төрөл"))
           tolgoinObject.turul = cellAsString[0];
+      }
+    }
+    for (let cell in mashinSheetOntsgoiUilchiluulegch) {
+      var cellAsString = cell.toString();
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!mashinSheetOntsgoiUilchiluulegch[cellAsString].v
+      ) {
+        if (
+          mashinSheetOntsgoiUilchiluulegch[cellAsString].v.includes(
+            "Машины дугаар"
+          )
+        )
+          tolgoinObject2.dugaar = cellAsString[0];
+        else if (
+          mashinSheetOntsgoiUilchiluulegch[cellAsString].v.includes(
+            "Эзэмшигчийн нэр"
+          )
+        )
+          tolgoinObject2.ner = cellAsString[0];
+        else if (
+          mashinSheetOntsgoiUilchiluulegch[cellAsString].v.includes(
+            "Эзэмшигчийн утас"
+          )
+        )
+          tolgoinObject2.utas = cellAsString[0];
+        else if (
+          mashinSheetOntsgoiUilchiluulegch[cellAsString].v.includes("Тайлбар")
+        )
+          tolgoinObject2.temdeglel = cellAsString[0];
+        else if (
+          mashinSheetOntsgoiUilchiluulegch[cellAsString].v.includes(
+            "Гэрээний дугаар"
+          )
+        )
+          tolgoinObject2.gereeniiDugaar = cellAsString[0];
+      }
+    }
+    for (let cell in mashinSheetGereet) {
+      var cellAsString = cell.toString();
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!mashinSheetGereet[cellAsString].v
+      ) {
+        if (mashinSheetGereet[cellAsString].v.includes("Машины дугаар"))
+          tolgoinObject1.dugaar = cellAsString[0];
+        else if (mashinSheetGereet[cellAsString].v.includes("Эзэмшигчийн нэр"))
+          tolgoinObject1.ner = cellAsString[0];
+        else if (mashinSheetGereet[cellAsString].v.includes("Эзэмшигчийн утас"))
+          tolgoinObject1.utas = cellAsString[0];
+        else if (mashinSheetGereet[cellAsString].v.includes("Тайлбар"))
+          tolgoinObject1.temdeglel = cellAsString[0];
+        else if (mashinSheetGereet[cellAsString].v.includes("Эхлэх огноо"))
+          tolgoinObject1.ekhlekhOgnoo = cellAsString[0];
+        else if (mashinSheetGereet[cellAsString].v.includes("Дуусах огноо"))
+          tolgoinObject1.duusakhOgnoo = cellAsString[0];
       }
     }
     var data = xlsx.utils.sheet_to_json(mashinSheet, {
       header: 1,
       range: 1,
     });
+
+    var dataOntsgoiUilchiluulegch = xlsx.utils.sheet_to_json(
+      mashinSheetOntsgoiUilchiluulegch,
+      {
+        header: 1,
+        range: 1,
+      }
+    );
+
+    var dataGereet = xlsx.utils.sheet_to_json(mashinSheetGereet, {
+      header: 1,
+      range: 1,
+    });
+
     var aldaaniiMsg = "";
     var muriinDugaar = 1;
-    console.log(tolgoinObject);
     data.forEach((mur) => {
       muriinDugaar++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
@@ -1451,19 +1643,241 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ezemshigchiinUtas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
       object.turul = [mur[usegTooruuKhurvuulekh(tolgoinObject.turul)]][0];
+      object.temdeglel = mur[usegTooruuKhurvuulekh(tolgoinObject.temdeglel)];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      if (!object.dugaar || !object.turul || !object.ezemshigchiinUtas) {
+      if (
+        !object.dugaar ||
+        !object.turul ||
+        !object.ezemshigchiinUtas ||
+        !object.ezemshigchiinNer
+      ) {
         aldaaniiMsg =
-          aldaaniiMsg + "Алдаа! " + muriinDugaar + " дугаар мөрөнд ";
+          aldaaniiMsg +
+          "Алдаа! " +
+          `(${workbook.SheetNames[0]})` +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
         if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
         if (!object.turul) aldaaniiMsg = aldaaniiMsg + "'Төрөл', ";
+        if (!object.ezemshigchiinUtas) aldaaniiMsg = aldaaniiMsg + "'Утас', ";
+        if (!object.ezemshigchiinNer) aldaaniiMsg = aldaaniiMsg + "'Нэр', ";
+        aldaaniiMsg = aldaaniiMsg.slice(0, -2);
+        aldaaniiMsg = aldaaniiMsg + " ";
+        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
+      } else if (!/[0-9]{4}[А-Я|а-я|ө|Ө|ү|Ү]{3}/.test(object.dugaar)) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          workbook.SheetNames[0] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
+        aldaaniiMsg =
+          aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
+      } else if (!/[0-9]{8}/.test(object.ezemshigchiinUtas)) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          workbook.SheetNames[0] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
+        aldaaniiMsg =
+          aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
+      } else {
+        object.dugaar = String(object.dugaar).toUpperCase();
+        jagsaalt.push(object);
+      }
+    });
+
+    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
+    dataGereet.forEach((mur) => {
+      muriinDugaar++;
+      let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
+      object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject1.dugaar)];
+      object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject1.ner)];
+      object.ezemshigchiinUtas =
+        mur[usegTooruuKhurvuulekh(tolgoinObject1.utas)];
+      object.turul = "Гэрээт";
+      object.ekhlekhOgnoo = new ExcelDateToJSDate(
+        mur[usegTooruuKhurvuulekh(tolgoinObject1.ekhlekhOgnoo)]
+      );
+      object.duusakhOgnoo = new ExcelDateToJSDate(
+        mur[usegTooruuKhurvuulekh(tolgoinObject1.duusakhOgnoo)]
+      );
+      object.temdeglel = mur[usegTooruuKhurvuulekh(tolgoinObject1.temdeglel)];
+      object.baiguullagiinId = req.body.baiguullagiinId;
+      object.barilgiinId = req.body.barilgiinId;
+      if (
+        !object.dugaar ||
+        !object.ezemshigchiinNer ||
+        !object.ezemshigchiinUtas ||
+        !object.ekhlekhOgnoo ||
+        !object.duusakhOgnoo
+      ) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          workbook.SheetNames[1] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
+        if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
+        if (!object.ezemshigchiinNer)
+          aldaaniiMsg = aldaaniiMsg + "'Эзэмшигчийн нэр', ";
+        if (!object.ezemshigchiinUtas) aldaaniiMsg = aldaaniiMsg + "'Утас', ";
+        if (!object.ekhlekhOgnoo || !object.duusakhOgnoo)
+          aldaaniiMsg = aldaaniiMsg + "'Огноо', ";
+        aldaaniiMsg = aldaaniiMsg.slice(0, -2);
+        aldaaniiMsg = aldaaniiMsg + " ";
+        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
+      } else if (!/[0-9]{4}[А-Я|а-я|ө|Ө|ү|Ү]{3}/.test(object.dugaar)) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          workbook.SheetNames[1] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
+        aldaaniiMsg =
+          aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
+      } else if (!/[0-9]{8}/.test(object.ezemshigchiinUtas)) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          workbook.SheetNames[1] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
+        aldaaniiMsg =
+          aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
+      } else if (
+        Number(moment(object.duusakhOgnoo).diff(object.ekhlekhOgnoo, "d")) < 1
+      ) {
+        aldaaniiMsg =
+          "Алдаа! " +
+          workbook.SheetNames[1] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд байгаа ";
+        aldaaniiMsg = aldaaniiMsg + "дуусах огноог шалгана уу, ";
+      } else if (
+        Number(moment(new Date()).diff(object.ekhlekhOgnoo, "month")) > 12
+      ) {
+        aldaaniiMsg =
+          "Алдаа! " +
+          workbook.SheetNames[1] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд байгаа ";
+        aldaaniiMsg = aldaaniiMsg + "эхлэх огноог шалгана уу, ";
+      } else {
+        object.dugaar = String(object.dugaar).toUpperCase();
+        jagsaalt.push(object);
+      }
+    });
+
+    var gereeniiDugaaruud = [];
+    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
+    dataOntsgoiUilchiluulegch.forEach((mur) => {
+      muriinDugaar++;
+      let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
+      object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject2.dugaar)];
+      object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject2.ner)];
+      object.ezemshigchiinUtas =
+        mur[usegTooruuKhurvuulekh(tolgoinObject2.utas)];
+      object.turul = "Онцгой үйлчлүүлэгч";
+      object.temdeglel = mur[usegTooruuKhurvuulekh(tolgoinObject2.temdeglel)];
+      object.gereeniiDugaar =
+        mur[usegTooruuKhurvuulekh(tolgoinObject2.gereeniiDugaar)];
+      object.baiguullagiinId = req.body.baiguullagiinId;
+      object.barilgiinId = req.body.barilgiinId;
+      if (
+        !object.dugaar ||
+        !object.turul ||
+        !object.ezemshigchiinUtas ||
+        !object.gereeniiDugaar
+      ) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          workbook.SheetNames[2] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
+        if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
+        if (!object.gereeniiDugaar)
+          aldaaniiMsg = aldaaniiMsg + "'Гэрээний дугаар', ";
         if (!object.ezemshigchiinUtas) aldaaniiMsg = aldaaniiMsg + "'Утас', ";
         aldaaniiMsg = aldaaniiMsg.slice(0, -2);
         aldaaniiMsg = aldaaniiMsg + " ";
         aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
-      } else jagsaalt.push(object);
+      } else if (!/[0-9]{4}[А-Я|а-я|ө|Ө|ү|Ү]{3}/.test(object.dugaar)) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          workbook.SheetNames[2] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
+        aldaaniiMsg =
+          aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
+      } else if (!/[0-9]{8}/.test(object.ezemshigchiinUtas)) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          workbook.SheetNames[2] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
+        aldaaniiMsg =
+          aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
+      } else {
+        object.dugaar = String(object.dugaar).toUpperCase();
+        jagsaalt.push(object);
+        gereeniiDugaaruud.push(object.gereeniiDugaar);
+      }
     });
+    if (gereeniiDugaaruud?.length > 0) {
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
+        gereeniiDugaaruud: { $in: gereeniiDugaaruud },
+      });
+      var oldooguiGeree = [];
+      jagsaalt.forEach((a) => {
+        if (!!a?.gereeniiDugaar) {
+          var oldsonGeree = gereenuud.find(
+            (b) => b.gereeniiDugaar === a.gereeniiDugaar
+          );
+          if (!!oldsonGeree) {
+            a.gereeniiId = oldsonGeree?._id;
+            a.khariltsagchiinNer = oldsonGeree?.ner;
+          } else oldooguiGeree.push(a.gereeniiDugaar);
+        }
+      });
+    }
+    if (oldooguiGeree?.length > 0) {
+      throw new aldaa(
+        `${oldooguiGeree.map((a, i) => {
+          return `${a}${oldooguiGeree.length - 1 > i ? ", " : ""}`;
+        })} дугаартай ${
+          oldooguiGeree.length > 1 ? "гэрээнүүд" : "гэрээ"
+        } олдсонгүй`
+      );
+    }
+    var oldsonMashin = await Mashin(req.body.tukhainBaaziinKholbolt).find({
+      dugaar: { $in: jagsaalt.map((a) => a.dugaar) },
+    });
+    if (!!oldsonMashin && oldsonMashin.length > 0) {
+      throw new aldaa(
+        `${oldsonMashin?.map((a, i) => {
+          return `${a.dugaar}${oldsonMashin.length - 1 > i ? ", " : ""}`;
+        })} дугаартай ${
+          oldsonMashin?.length > 0 ? "машинууд" : "машин"
+        } бүртгэлтэй байна!`
+      );
+    }
     if (jagsaalt)
       jagsaalt = await gereeBaivalBugluy(
         jagsaalt,
@@ -1471,7 +1885,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         req.body.tukhainBaaziinKholbolt
       );
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
-    Mashin(req.body.tukhainBaaziinKholbolt).insertMany(
+    await Mashin(req.body.tukhainBaaziinKholbolt).insertMany(
       jagsaalt,
       function (err) {
         if (err) {

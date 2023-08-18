@@ -38,6 +38,7 @@ const ajiltanController = require("./controller/ajiltan");
 const apiRoute = require("./routes/apiRoute");
 const qpayRoute = require("./routes/qpayRoute");
 const parkingRoute = require("./routes/parkingRoute");
+const eventRoute = require("./routes/eventRoute");
 const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
@@ -94,6 +95,7 @@ app.use(togloomiinTuvRoute);
 app.use(apiRoute);
 app.use(qpayRoute);
 app.use(parkingRoute);
+app.use(eventRoute);
 zuragPack(app);
 
 app.use(aldaaBarigch);
