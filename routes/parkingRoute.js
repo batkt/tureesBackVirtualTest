@@ -280,11 +280,6 @@ router.post(
           $match: {
             baiguullagiinId: req.body.baiguullagiinId,
             barilgiinId: req.body.barilgiinId,
-            "tuukh.tsagiinTuukh.garsanTsag": {
-              $gte: req.body.ekhlekhOgnoo,
-              $lte: req.body.duusakhOgnoo,
-            },
-            "tuukh.tuluv": 1,
           },
         },
         {
@@ -292,6 +287,15 @@ router.post(
         },
         {
           $unwind: "$tuukh.tulbur",
+        },
+        {
+          $match: {
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+            "tuukh.tuluv": 1,
+          },
         },
         {
           $group: {
