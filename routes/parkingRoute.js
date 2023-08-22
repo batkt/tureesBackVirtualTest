@@ -303,6 +303,7 @@ router.post(
             niitDun: {
               $sum: "$tuukh.tulbur.dun",
             },
+            niitToo: { $sum: 1 },
           },
         },
       ]);
