@@ -268,6 +268,47 @@ router
     }
   });
 
+router.post(
+  "/zogsooliinUdriinTailanAvya",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const udriinTailan = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              $gte: req.body.ekhlekhOgnoo,
+              $lte: req.body.duusakhOgnoo,
+            },
+            "tuukh.tuluv": 1,
+          },
+        },
+        {
+          $unwind: "$tuukh",
+        },
+        {
+          $unwind: "$tuukh.tulbur",
+        },
+        {
+          $group: {
+            _id: "$tuukh.tulbur.turul",
+            niitDun: {
+              $sum: "$tuukh.tulbur.dun",
+            },
+          },
+        },
+      ]);
+      res.status(200).send(udriinTailan);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 router.get("/zogsooliinIpAvaya/:barilgiinId", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
