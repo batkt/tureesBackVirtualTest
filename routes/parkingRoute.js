@@ -290,6 +290,7 @@ router.post(
         },
         {
           $match: {
+            "tuukh.garsanKhaalga": req.body.garsanKhaalga,
             "tuukh.tsagiinTuukh.garsanTsag": {
               $gte: new Date(req.body.ekhlekhOgnoo),
               $lte: new Date(req.body.duusakhOgnoo),
