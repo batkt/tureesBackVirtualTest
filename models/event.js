@@ -9,8 +9,18 @@ const eventSchema = new Schema(
       type: Number,
       default: 0,
     },
+    bodogsonDunDelegrengui: [
+      {
+        ner: String,
+        dun: Number,
+        too: Number,
+        turul: String,
+      },
+    ],
     khuniiToo: Number,
     utas: [String],
+    tariffiinId: String,
+    zakhialagchiinNer: String,
     niitDun: Number,
     baiguullagiinId: String,
     barilgiinId: String,
@@ -22,7 +32,7 @@ const eventSchema = new Schema(
     ekhlekhOgnoo: Date,
     duusakhOgnoo: Date,
     khugatsaa: Number, //minutaar
-    khool: [{ id: String, ner: String }],
+    khool: [{ id: String, ner: String, une: Number }],
     tulbur: [
       {
         turul: String,
