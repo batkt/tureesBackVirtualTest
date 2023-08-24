@@ -8,6 +8,7 @@ const Khariltsagch = require("../models/khariltsagch");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
+const { db } = require("zevbackv2");
 const {
   sanalKhadgalya,
   sanalKharlaa,
@@ -27,9 +28,9 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     const { medeelel } = req.body;
     var firebaseToken = req.body.firebaseToken;
-    var kharilltsagch = await Khariltsagch(
-      req.body.tukhainBaaziinKholbolt
-    ).findOne({ _id: req.body.khariltsagchiinId });
+    var kharilltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+      _id: req.body.khariltsagchiinId,
+    });
     if (kharilltsagch) firebaseToken = kharilltsagch.firebaseToken;
     sonorduulgaIlgeeye(
       firebaseToken,

@@ -113,6 +113,18 @@ cron.schedule(
 );
 
 cron.schedule(
+  "1,11,21,31,41,51 * * * * * ",
+  function () {
+    console.log("xuulga tatlaa", new Date());
+    cgw.bankniiKhuulgaTatyaOirkhon();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
   "0 7 * * * ",
   function () {
     ajiltanController.orlogiinMsgIlgeeye();
