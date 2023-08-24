@@ -86,16 +86,6 @@ router
   .route("/khariltsagchTatya")
   .post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);
 router
-  .route("/bankniiKhuulgaTatajKhadgalya")
-  .post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
-router
-  .route("/khariltsagchZagvarAvya")
-  .get(tokenShalgakh, khariltsagchZagvarAvya);
-router
-  .route("/khariltsagchTatya")
-  .post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);
-
-router
   .route("/khariltsagchUstgaya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
