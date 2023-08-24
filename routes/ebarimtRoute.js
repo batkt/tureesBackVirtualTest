@@ -156,7 +156,7 @@ async function zogsooloosEbarimtUusgye(
   var stocks = [];
   var stock = {
     code: "6743000",
-    name: "Автомашины зогсоолын үйлчилгээ",
+    name: "Авто зогсоолын үйлчилгээ",
     measureUnit: "шир",
     qty: "1.00",
     unitPrice: tulukhDun.toFixed(2).toString(),
