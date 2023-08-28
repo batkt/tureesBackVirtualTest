@@ -601,16 +601,16 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
     var dansnuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        if (!req)
-          dansnuud = await Dans(kholbolt)
-            .find({
-              corporateAshiglakhEsekh: true,
-              oirkhonTatakhEsekh: true,
-            })
-            .lean();
+        dansnuud = await Dans(kholbolt)
+          .find({
+            corporateAshiglakhEsekh: true,
+            oirkhonTatakhEsekh: true,
+          })
+          .lean();
         if (dansnuud)
           for await (const dans of dansnuud) {
             try {
+              console.log("dans baina --------------------------");
               if (dans.bank == "khanbank") {
                 var tokenObject = await Token(kholbolt).findOne({
                   turul: "khaanCorporate",
@@ -622,7 +622,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   tokenObject = await tokenAvya(
                     dans.corporateNevtrekhNer,
                     dans.corporateNuutsUg,
-                    next,
+                    null,
                     dans.baiguullagiinId,
                     kholbolt
                   );
@@ -746,7 +746,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 );
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
-                    msgId: "ZTA" + (await pad(maxKhuseltiinDugaar, 12)),
+                    msgId: "ZT" + (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
                     AnyBIC: dans.AnyBIC,
                     RoleID: dans.RoleID,
@@ -767,7 +767,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       lastDay.getDate(),
                     jurnaliinDugaar: await pad(maxDugaar, 18),
                   },
-                  next,
+                  null,
                   async (khariu) => {
                     console.log("khariu", new Date(), khariu);
                     if (
@@ -800,10 +800,12 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         x.baiguullagiinId = dans.baiguullagiinId;
                         x.barilgiinId = dans.barilgiinId;
                       });
+                      if (guilgeenuud) {
+                      }
                       BankniiGuilgee(kholbolt)
                         .insertMany(guilgeenuud)
                         .then((result) => {
-                          if (res) res.send("Amjilttai");
+                          console.log("amjilttai");
                         })
                         .catch((err) => {
                           console.log(err);
@@ -821,7 +823,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
       }
     }
   } catch (err) {
-    if (next) next(err);
+    console.log("oirxon xuulga tatya ==>", err);
   }
 });
 
