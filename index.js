@@ -113,7 +113,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "1,11,21,31,41,51 * * * * * ",
+  "*/2 * * * * * ",
   function () {
     console.log("xuulga tatlaa", new Date());
     cgw.bankniiKhuulgaTatyaOirkhon();
