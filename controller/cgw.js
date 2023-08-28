@@ -815,7 +815,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                           );
                         }
                       }
-                      BankniiGuilgee(kholbolt)
+                      await BankniiGuilgee(kholbolt)
                         .insertMany(guilgeenuud)
                         .then((result) => {
                           console.log("amjilttai");
