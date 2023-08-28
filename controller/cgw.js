@@ -801,6 +801,19 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         x.barilgiinId = dans.barilgiinId;
                       });
                       if (guilgeenuud) {
+                        var ustgakhJagsaalt = [];
+                        for await (const item of guilgeenuud) {
+                          var guilgee = await BankniiGuilgee(kholbolt).findOne({
+                            NtryRef: item.NtryRef,
+                            barilgiinId: dans.barilgiinId,
+                          });
+                          if (guilgee) ustgakhJagsaalt.push(item);
+                        }
+                        if (ustgakhJagsaalt) {
+                          guilgeenuud = guilgeenuud.filter(
+                            (el) => !ustgakhJagsaalt.includes(el)
+                          );
+                        }
                       }
                       BankniiGuilgee(kholbolt)
                         .insertMany(guilgeenuud)
