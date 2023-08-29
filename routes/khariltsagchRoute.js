@@ -178,8 +178,8 @@ router
       if (req.body.query) matchQuery = req.body.query;
       if (davkhar) {
         matchQuery["geree.davkhar"] = davkhar;
-        matchQuery["geree.tuluv"] = { $nin: [-1] };
       }
+      matchQuery["geree.tuluv"] = { $nin: [-1] };
       if (matchQuery)
         query.push({
           $match: matchQuery,
