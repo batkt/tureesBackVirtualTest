@@ -186,6 +186,7 @@ router
         });
       query.push({
         $project: {
+          talbainDugaar: "$geree.talbainDugaar",
           geree: 0,
         },
       });
