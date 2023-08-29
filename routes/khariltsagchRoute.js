@@ -185,7 +185,7 @@ router
           $match: matchQuery,
         });
       query.push({
-        $project: {
+        $addFields: {
           talbainDugaar: "$geree.0.talbainDugaar",
         },
       });
