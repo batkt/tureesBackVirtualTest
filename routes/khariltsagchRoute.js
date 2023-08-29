@@ -187,8 +187,10 @@ router
       query.push({
         $project: {
           talbainDugaar: "$geree.talbainDugaar",
-          geree: 0,
         },
+      });
+      query.push({
+        $unset: ["geree"],
       });
       var result = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
       res.send(result);
