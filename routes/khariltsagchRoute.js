@@ -187,6 +187,10 @@ router
       query.push({
         $project: {
           talbainDugaar: "$geree.0.talbainDugaar",
+        },
+      });
+      query.push({
+        $project: {
           geree: 0,
         },
       });
