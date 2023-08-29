@@ -185,9 +185,6 @@ router
           $match: matchQuery,
         });
       query.push({
-        $match: matchQuery,
-      });
-      query.push({
         $project: {
           geree: 0,
         },
