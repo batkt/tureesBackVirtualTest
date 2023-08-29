@@ -186,7 +186,7 @@ router
         });
       query.push({
         $addFields: {
-          talbainDugaar: "$geree.0.talbainDugaar",
+          talbainDugaar: "$geree.talbainDugaar",
         },
       });
       query.push({
