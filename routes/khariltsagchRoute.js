@@ -179,7 +179,7 @@ router
       if (davkhar) {
         matchQuery["geree.davkhar"] = davkhar;
       }
-      matchQuery["geree"] = { $exists: true };
+      matchQuery["geree.gereeniiDugaar"] = { $exists: true };
       matchQuery["geree.tuluv"] = { $nin: [-1] };
       if (matchQuery)
         query.push({
