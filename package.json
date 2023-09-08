@@ -18,7 +18,7 @@
     "bcrypt": "^5.0.1",
     "daalgavar": "^1.0.44",
     "express-useragent": "^1.0.15",
-    "parking-v1": "^1.1.95",
+    "parking-v1": "^1.1.96",
     "quickqpaypackv2": "^1.0.20",
     "sharp": "^0.30.7",
     "zevbackv2": "^1.1.11",
