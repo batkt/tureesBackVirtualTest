@@ -515,16 +515,24 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
 });
 router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
   try {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      dateOgnoo: {
+        $gte: new Date(req.body.ekhlekhOgnoo),
+        $lte: new Date(req.body.duusakhOgnoo),
+      },
+    };
+    if(req.body.barimtTurul === 'mashiniiDugaar')
+      match.mashiniiDugaar = { $exists: true };
+    else if(req.body.barimtTurul === 'gereeniiDugaar')
+      match.gereeniiDugaar = { $exists: true };
+    else if(req.body.barimtTurul === 'togloomiinId')
+      match.togloomiinId = { $exists: true };
+
     var query = [
       {
-        $match: {
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-          dateOgnoo: {
-            $gte: new Date(req.body.ekhlekhOgnoo),
-            $lte: new Date(req.body.duusakhOgnoo),
-          },
-        },
+        $match: match
       },
       {
         $facet: {
