@@ -356,7 +356,7 @@ router.post(
     async (req, res, next) => {
       try {
         const result = await zogsoolTusBurUilchluulegchdiinToo(req.body);
-        console.log("/zogsoolTusBurUilchluulegchdiinToo", result);
+        // console.log("/zogsoolTusBurUilchluulegchdiinToo", result);
         res.send(result);
       } catch (err) {
         next(err);
