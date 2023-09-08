@@ -1042,6 +1042,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     ).find({
       baiguullagiinId: req.body.baiguullagiinId,
     });
+    const { db } = require("zevbackv2");
     console.log("zardluud", zardluud);
     if (req.body.ognoo) ognoo = req.body.ognoo;
     else throw new aldaa("Огноо сонгоно уу!");
@@ -1266,7 +1267,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       aldaaniiMsg,
       req.body.baiguullagiinId,
       req.body.barilgiinId,
-      req.body.tukhainBaaziinKholbolt
+      db.erunkhiiKholbolt
     );
     aldaaniiMsg = await talbaiBaigaaEskhiigShalgaya(
       jagsaalt,
