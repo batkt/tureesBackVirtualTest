@@ -45,7 +45,7 @@ const aldaaBarigch = require("./middlewares/aldaaBarigch");
 const dbUrl = process.env.BAAZ;
 //process.setMaxListeners(0);
 //require("events").EventEmitter.prototype._maxListeners = 15;
-require("events").EventEmitter.defaultMaxListeners = 0;
+//require("events").EventEmitter.defaultMaxListeners = 0;
 server.listen(8081);
 
 /*mongoose
