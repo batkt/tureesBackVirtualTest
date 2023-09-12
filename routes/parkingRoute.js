@@ -191,7 +191,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
         });
       }
     };
-    const khariu = await sdkData(req, medegdel);
+    const khariu = await sdkData(req, body);
     console.log("zogsoolSdkService--- khariu ", khariu);
     res.send(khariu);
   } catch (err) {
