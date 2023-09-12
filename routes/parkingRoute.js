@@ -124,6 +124,7 @@ router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
 
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try {
+    console.log("zogsoolSdkService body", body);
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
     const medegdel = async (uilchluulegch, khariltsagchiinId) => {
@@ -351,17 +352,17 @@ router.post(
 );
 
 router.post(
-    "/zogsoolTusBurUilchluulegchdiinToo",
-    tokenShalgakh,
-    async (req, res, next) => {
-      try {
-        const result = await zogsoolTusBurUilchluulegchdiinToo(req.body);
-        console.log("/zogsoolTusBurUilchluulegchdiinToo", result);
-        res.send(result);
-      } catch (err) {
-        next(err);
-      }
+  "/zogsoolTusBurUilchluulegchdiinToo",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const result = await zogsoolTusBurUilchluulegchdiinToo(req.body);
+      console.log("/zogsoolTusBurUilchluulegchdiinToo", result);
+      res.send(result);
+    } catch (err) {
+      next(err);
     }
+  }
 );
 
 router.post(
