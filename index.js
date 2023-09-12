@@ -43,7 +43,8 @@ const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
 const dbUrl = process.env.BAAZ;
-require("events").EventEmitter.prototype._maxListeners = 100;
+process.setMaxListeners(0);
+//require("events").EventEmitter.prototype._maxListeners = 100;
 server.listen(8081);
 
 /*mongoose
