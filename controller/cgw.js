@@ -146,7 +146,6 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish) {
       rootName: "Document",
     });
     var xmlObject = builder.buildObject(xmlObject);
-    console.log("xmlObject", xmlObject);
     var xml = {
       xml: xmlObject,
     };
@@ -154,7 +153,6 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish) {
     const objectString = JSON.stringify(xml);
     var url = new URL(process.env.ZEV_TEST_SERVER + ":5000/");
     const response = await instanceJson.post(url, { body: objectString });
-    console.log("response.body", response.body);
     var parseString = xml2js.parseString;
     parseString(response.body, async function (err, result) {
       onFinish(result);
@@ -201,7 +199,6 @@ async function tdbDansniiUldegdelAvya(khuselt, next, onFinish) {
       rootName: "Document",
     });
     var xmlObject = builder.buildObject(xmlObject);
-    console.log("xmlObject", xmlObject);
     var xml = {
       xml: xmlObject,
     };
@@ -209,7 +206,6 @@ async function tdbDansniiUldegdelAvya(khuselt, next, onFinish) {
     const objectString = JSON.stringify(xml);
     var url = new URL(process.env.ZEV_TEST_SERVER + ":5000/");
     const response = await instanceJson.post(url, { body: objectString });
-    console.log("response.body", response.body);
     var parseString = xml2js.parseString;
     parseString(response.body, async function (err, result) {
       onFinish(result);
@@ -243,11 +239,9 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         token = tokenObject.access_token;
       } else token = tokenObject.token;
       var khariu = await dansniiJagsaaltAvya(token, next);
-      console.log("khariu", khariu);
       khariu = khariu.accounts.filter(
         (a) => a.number == req.body.dansniiDugaar
       );
-      console.log("khariu", khariu);
       if (khariu && khariu.length > 0) uldegdel = khariu[0].avalaibleBalance;
       res.send({ uldegdel });
     } else if (dans && dans.bank == "tdb") {
@@ -522,7 +516,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   },
                   next,
                   async (khariu) => {
-                    console.log("khariu", new Date(), khariu);
                     if (
                       khariu &&
                       khariu.Document &&
@@ -530,7 +523,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       khariu.Document.GrpHdr[0].RspCd &&
                       khariu.Document.GrpHdr[0].RspCd[0] == "10"
                     ) {
-                      console.log("khariu", khariu);
                       var guilgeenuud = [];
                       khariu.Document.EnqRsp[0].Ntry.forEach((mur) => {
                         //mur = await tdbKhuulgaKhurvuulekh(mur);
@@ -565,24 +557,12 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                           console.log(err);
                         });
                     } else {
-                      console.log("khariu", khariu);
                       console.log("khariu.Document", khariu["Document"]);
-                      console.log(
-                        "khariu.Document.GrpHdr",
-                        khariu.Document.GrpHdr
-                      );
-                      console.log(
-                        "khariu.Document.GrpHdr",
-                        khariu.Document.GrpHdr[0]
-                      );
-                      console.log("khariu", khariu.Document.GrpHdr[0].RspCd);
-                      console.log("khariu", khariu.Document.GrpHdr[0].RspCd[0]);
                     }
                   }
                 );
               }
             } catch (aldaaa) {
-              console.log("tatax ued aldaa garlaa ==> ", aldaaa);
               continue;
             }
           }
