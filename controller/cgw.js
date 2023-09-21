@@ -326,7 +326,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         {
           msgId:
             "ZT" +
-            (dans.baiguullagiinId == "631595e9957b7d5ec013c076" ? "A" : "U") +
+            (dans.baiguullagiinId == "631595e9957b7d5ec013c076" ? "U" : "A") +
             (await pad(maxKhuseltiinDugaar, 12)),
           loginId: dans.corporateNevtrekhNer,
           AnyBIC: dans.AnyBIC,
@@ -518,8 +518,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     msgId:
                       "ZT" +
                       (dans.baiguullagiinId == "631595e9957b7d5ec013c076"
-                        ? "A"
-                        : "U") +
+                        ? "U"
+                        : "A") +
                       (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
                     AnyBIC: dans.AnyBIC,
@@ -771,7 +771,12 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 );
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
-                    msgId: "ZT" + (await pad(maxKhuseltiinDugaar, 12)),
+                    msgId:
+                      "ZT" +
+                      (dans.baiguullagiinId == "631595e9957b7d5ec013c076"
+                        ? "U"
+                        : "A") +
+                      (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
                     AnyBIC: dans.AnyBIC,
                     RoleID: dans.RoleID,
