@@ -105,7 +105,7 @@ app.use(aldaaBarigch);
 cron.schedule(
   "*/5 * * * * ",
   function () {
-    console.log("xuulga tatlaa", new Date());
+    // console.log("xuulga tatlaa", new Date());
     cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
   },
   {
@@ -117,7 +117,7 @@ cron.schedule(
 cron.schedule(
   "*/2 * * * * * ",
   function () {
-    console.log("xuulga tatlaa", new Date());
+    // console.log("xuulga tatlaa", new Date());
     cgw.bankniiKhuulgaTatyaOirkhon();
   },
   {
