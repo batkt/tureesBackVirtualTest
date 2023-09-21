@@ -324,7 +324,10 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         .catch((err) => console.log(err));
       tdbDansniiUldegdelAvya(
         {
-          msgId: "ZTA" + (await pad(maxKhuseltiinDugaar, 12)),
+          msgId:
+            "ZT" +
+            (dans.baiguullagiinId == "631595e9957b7d5ec013c076" ? "A" : "U") +
+            (await pad(maxKhuseltiinDugaar, 12)),
           loginId: dans.corporateNevtrekhNer,
           AnyBIC: dans.AnyBIC,
           RoleID: dans.RoleID,
@@ -512,7 +515,12 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 }
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
-                    msgId: "ZTA" + (await pad(maxKhuseltiinDugaar, 12)),
+                    msgId:
+                      "ZT" +
+                      (dans.baiguullagiinId == "631595e9957b7d5ec013c076"
+                        ? "A"
+                        : "U") +
+                      (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
                     AnyBIC: dans.AnyBIC,
                     RoleID: dans.RoleID,
