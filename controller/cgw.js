@@ -218,11 +218,12 @@ async function tdbDansniiUldegdelAvya(
     };
 
     const objectString = JSON.stringify(xml);
-    var url = new URL(
+    var url =
       process.env.ZEV_TEST_SERVER +
-        ":5000/" +
-        (baiguullagiinId == "631595e9957b7d5ec013c076" ? "uguumur" : "")
-    );
+      ":5000/" +
+      (baiguullagiinId == "631595e9957b7d5ec013c076" ? "uguumur" : "");
+    console.log("url", url);
+    var url = new URL(url);
     const response = await instanceJson.post(url, { body: objectString });
     console.log("response.body", response.body);
     var parseString = xml2js.parseString;
