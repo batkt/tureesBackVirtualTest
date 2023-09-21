@@ -220,10 +220,8 @@ async function tdbDansniiUldegdelAvya(
     const objectString = JSON.stringify(xml);
     var url = new URL(
       process.env.ZEV_TEST_SERVER +
-      ":5000/" +
-      (baiguullagiinId == "631595e9957b7d5ec013c076")
-        ? "uguumur"
-        : ""
+        ":5000/" +
+        (baiguullagiinId == "631595e9957b7d5ec013c076" ? "uguumur" : "")
     );
     const response = await instanceJson.post(url, { body: objectString });
     console.log("response.body", response.body);
