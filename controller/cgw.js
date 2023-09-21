@@ -108,7 +108,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
   }
 }
 
-async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish) {
+async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
   try {
     var CreDtTm = new Date().toISOString().replace(/\..+/, "");
     var xmlObject = {
@@ -151,7 +151,13 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish) {
     };
 
     const objectString = JSON.stringify(xml);
-    var url = new URL(process.env.ZEV_TEST_SERVER + ":5000/");
+    var url = new URL(
+      process.env.ZEV_TEST_SERVER +
+      ":5000/" +
+      (baiguullagiinId == "631595e9957b7d5ec013c076")
+        ? "uguumur"
+        : ""
+    );
     const response = await instanceJson.post(url, { body: objectString });
     var parseString = xml2js.parseString;
     parseString(response.body, async function (err, result) {
@@ -559,7 +565,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     } else {
                       console.log("khariu.Document", khariu["Document"]);
                     }
-                  }
+                  },
+                  dans.baiguullagiinId
                 );
               }
             } catch (aldaaa) {
@@ -804,7 +811,8 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                           console.log(err);
                         });
                     }
-                  }
+                  },
+                  dans.baiguullagiinId
                 );
               }
             } catch (aldaaa) {
