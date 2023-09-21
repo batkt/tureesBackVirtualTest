@@ -172,7 +172,12 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
   }
 }
 
-async function tdbDansniiUldegdelAvya(khuselt, next, onFinish) {
+async function tdbDansniiUldegdelAvya(
+  khuselt,
+  next,
+  onFinish,
+  baiguullagiinId
+) {
   try {
     var CreDtTm = new Date().toISOString().replace(/\..+/, "");
     var xmlObject = {
@@ -213,7 +218,13 @@ async function tdbDansniiUldegdelAvya(khuselt, next, onFinish) {
     };
 
     const objectString = JSON.stringify(xml);
-    var url = new URL(process.env.ZEV_TEST_SERVER + ":5000/");
+    var url = new URL(
+      process.env.ZEV_TEST_SERVER +
+      ":5000/" +
+      (baiguullagiinId == "631595e9957b7d5ec013c076")
+        ? "uguumur"
+        : ""
+    );
     const response = await instanceJson.post(url, { body: objectString });
     console.log("response.body", response.body);
     var parseString = xml2js.parseString;
@@ -335,7 +346,8 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           ) {
             res.send({ uldegdel: khariu.Document.EnqRsp[0].ABal[0] });
           } else res.send({ uldegdel: 0 });
-        }
+        },
+        dans.baiguullagiinId
       );
     }
   } catch (err) {
