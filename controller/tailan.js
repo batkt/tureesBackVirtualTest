@@ -1396,6 +1396,7 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
       {
         $match: {
           baiguullagiinId: req.body.baiguullagiinId,
+          tuluv: { $ne: -1 },
         },
       },
       {

@@ -7,6 +7,7 @@ const {
   Uilchluulegch,
   ZogsooliinTulbur,
   uilchluulegchdiinToo,
+  zogsoolTusBurUilchluulegchdiinToo,
   sdkData,
 } = require("parking-v1");
 const ZogsooliinIp = require("../models/zogsooliinIp");
@@ -123,6 +124,7 @@ router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
 
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try {
+    console.log("zogsoolSdkService body", req.body);
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
     const medegdel = async (uilchluulegch, khariltsagchiinId) => {
@@ -342,6 +344,20 @@ router.post(
     try {
       const result = await uilchluulegchdiinToo(req.body);
       console.log("/zogsoolUilchluulegchdiinToo", result);
+      res.send(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.post(
+  "/zogsoolTusBurUilchluulegchdiinToo",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const result = await zogsoolTusBurUilchluulegchdiinToo(req.body);
+      console.log("/zogsoolTusBurUilchluulegchdiinToo", result);
       res.send(result);
     } catch (err) {
       next(err);

@@ -43,7 +43,9 @@ const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
 const dbUrl = process.env.BAAZ;
-
+//process.setMaxListeners(0);
+//require("events").EventEmitter.prototype._maxListeners = 15;
+//require("events").EventEmitter.defaultMaxListeners = 0;
 server.listen(8081);
 
 /*mongoose
@@ -103,7 +105,7 @@ app.use(aldaaBarigch);
 cron.schedule(
   "*/5 * * * * ",
   function () {
-    console.log("xuulga tatlaa", new Date());
+    // console.log("xuulga tatlaa", new Date());
     cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
   },
   {
@@ -113,9 +115,9 @@ cron.schedule(
 );
 
 cron.schedule(
-  "1,11,21,31,41,51 * * * * * ",
+  "*/2 * * * * * ",
   function () {
-    console.log("xuulga tatlaa", new Date());
+    // console.log("xuulga tatlaa", new Date());
     cgw.bankniiKhuulgaTatyaOirkhon();
   },
   {

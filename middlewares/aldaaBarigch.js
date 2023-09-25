@@ -37,7 +37,7 @@ function aldaagIlgeeye(aldaa, req) {
   request.end();
 }
 const aldaaBarigch = (err, req, res, next) => {
-  console.log("end irsen", req.body);
+  console.log("aldaa garsan ", err.message);
   if (req.body && req.body.nevtersenAjiltniiToken) aldaagIlgeeye(err, req);
   if (err.message & err.message.includes("indexTalbar_1 dup key"))
     err.message = "Нэвтрэх нэр давхардаж байна!";

@@ -6,7 +6,6 @@ const ebarimtSchema = new Schema(
   {
     baiguullagiinId: String,
     barilgiinId: String,
-    gereeniiDugaar: String,
     guilgeeniiId: String,
     togloomiinId: String,
     zogsooliinId: String,

@@ -108,7 +108,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
   }
 }
 
-async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish) {
+async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
   try {
     var CreDtTm = new Date().toISOString().replace(/\..+/, "");
     var xmlObject = {
@@ -152,7 +152,12 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish) {
     };
 
     const objectString = JSON.stringify(xml);
-    var url = new URL(process.env.ZEV_TEST_SERVER + ":5000/");
+    var urlString =
+      process.env.ZEV_TEST_SERVER +
+      ":5000/" +
+      (baiguullagiinId == "631595e9957b7d5ec013c076" ? "uguumur" : "");
+    console.log("url", urlString);
+    var url = new URL(urlString);
     const response = await instanceJson.post(url, { body: objectString });
     console.log("response.body", response.body);
     var parseString = xml2js.parseString;
@@ -166,7 +171,12 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish) {
   }
 }
 
-async function tdbDansniiUldegdelAvya(khuselt, next, onFinish) {
+async function tdbDansniiUldegdelAvya(
+  khuselt,
+  next,
+  onFinish,
+  baiguullagiinId
+) {
   try {
     var CreDtTm = new Date().toISOString().replace(/\..+/, "");
     var xmlObject = {
@@ -207,7 +217,12 @@ async function tdbDansniiUldegdelAvya(khuselt, next, onFinish) {
     };
 
     const objectString = JSON.stringify(xml);
-    var url = new URL(process.env.ZEV_TEST_SERVER + ":5000/");
+    var urlString =
+      process.env.ZEV_TEST_SERVER +
+      ":5000/" +
+      (baiguullagiinId == "631595e9957b7d5ec013c076" ? "uguumur" : "");
+    console.log("url", urlString);
+    var url = new URL(urlString);
     const response = await instanceJson.post(url, { body: objectString });
     console.log("response.body", response.body);
     var parseString = xml2js.parseString;
@@ -309,7 +324,10 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         .catch((err) => console.log(err));
       tdbDansniiUldegdelAvya(
         {
-          msgId: "ZTA" + (await pad(maxKhuseltiinDugaar, 12)),
+          msgId:
+            "ZT" +
+            (dans.baiguullagiinId == "631595e9957b7d5ec013c076" ? "U" : "A") +
+            (await pad(maxKhuseltiinDugaar, 12)),
           loginId: dans.corporateNevtrekhNer,
           AnyBIC: dans.AnyBIC,
           RoleID: dans.RoleID,
@@ -329,7 +347,8 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           ) {
             res.send({ uldegdel: khariu.Document.EnqRsp[0].ABal[0] });
           } else res.send({ uldegdel: 0 });
-        }
+        },
+        dans.baiguullagiinId
       );
     }
   } catch (err) {
@@ -496,7 +515,12 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 }
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
-                    msgId: "ZTA" + (await pad(maxKhuseltiinDugaar, 12)),
+                    msgId:
+                      "ZT" +
+                      (dans.baiguullagiinId == "631595e9957b7d5ec013c076"
+                        ? "U"
+                        : "A") +
+                      (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
                     AnyBIC: dans.AnyBIC,
                     RoleID: dans.RoleID,
@@ -578,7 +602,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       console.log("khariu", khariu.Document.GrpHdr[0].RspCd);
                       console.log("khariu", khariu.Document.GrpHdr[0].RspCd[0]);
                     }
-                  }
+                  },
+                  dans.baiguullagiinId
                 );
               }
             } catch (aldaaa) {
@@ -601,16 +626,16 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
     var dansnuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        if (!req)
-          dansnuud = await Dans(kholbolt)
-            .find({
-              corporateAshiglakhEsekh: true,
-              oirkhonTatakhEsekh: true,
-            })
-            .lean();
+        dansnuud = await Dans(kholbolt)
+          .find({
+            corporateAshiglakhEsekh: true,
+            oirkhonTatakhEsekh: true,
+          })
+          .lean();
         if (dansnuud)
           for await (const dans of dansnuud) {
             try {
+              console.log("dans baina --------------------------");
               if (dans.bank == "khanbank") {
                 var tokenObject = await Token(kholbolt).findOne({
                   turul: "khaanCorporate",
@@ -622,7 +647,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   tokenObject = await tokenAvya(
                     dans.corporateNevtrekhNer,
                     dans.corporateNuutsUg,
-                    next,
+                    null,
                     dans.baiguullagiinId,
                     kholbolt
                   );
@@ -746,7 +771,12 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 );
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
-                    msgId: "ZTA" + (await pad(maxKhuseltiinDugaar, 12)),
+                    msgId:
+                      "ZT" +
+                      (dans.baiguullagiinId == "631595e9957b7d5ec013c076"
+                        ? "U"
+                        : "A") +
+                      (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
                     AnyBIC: dans.AnyBIC,
                     RoleID: dans.RoleID,
@@ -767,7 +797,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       lastDay.getDate(),
                     jurnaliinDugaar: await pad(maxDugaar, 18),
                   },
-                  next,
+                  null,
                   async (khariu) => {
                     console.log("khariu", new Date(), khariu);
                     if (
@@ -800,16 +830,32 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         x.baiguullagiinId = dans.baiguullagiinId;
                         x.barilgiinId = dans.barilgiinId;
                       });
-                      BankniiGuilgee(kholbolt)
+                      if (guilgeenuud) {
+                        var ustgakhJagsaalt = [];
+                        for await (const item of guilgeenuud) {
+                          var guilgee = await BankniiGuilgee(kholbolt).findOne({
+                            NtryRef: item.NtryRef,
+                            barilgiinId: dans.barilgiinId,
+                          });
+                          if (guilgee) ustgakhJagsaalt.push(item);
+                        }
+                        if (ustgakhJagsaalt) {
+                          guilgeenuud = guilgeenuud.filter(
+                            (el) => !ustgakhJagsaalt.includes(el)
+                          );
+                        }
+                      }
+                      await BankniiGuilgee(kholbolt)
                         .insertMany(guilgeenuud)
                         .then((result) => {
-                          if (res) res.send("Amjilttai");
+                          console.log("amjilttai");
                         })
                         .catch((err) => {
                           console.log(err);
                         });
                     }
-                  }
+                  },
+                  dans.baiguullagiinId
                 );
               }
             } catch (aldaaa) {
@@ -821,7 +867,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
       }
     }
   } catch (err) {
-    if (next) next(err);
+    console.log("oirxon xuulga tatya ==>", err);
   }
 });
 
