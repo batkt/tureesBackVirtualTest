@@ -140,7 +140,7 @@ async function zogsooloosEbarimtUusgye(
   console.log("guilgee", guilgee);
   console.log("guilgee22", guilgee.tuukh);
   // var undsenUne = guilgee.tuukh[0].undsenUne;
-  var tulukhDun = guilgee.tuukh[0].tulukhDun;
+  var tulukhDun = guilgee.niitDun;
 
   ebarimt.zogsooliinId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
