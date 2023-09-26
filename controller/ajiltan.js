@@ -56,6 +56,7 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
+  const io = req.app.get('socketio');
   const { db } = require("zevbackv2");
   const ajiltan = await Ajiltan(db.erunkhiiKholbolt)
     .findOne()
@@ -75,6 +76,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     result: ajiltan,
     success: true,
   };
+  io.emit(`ajiltan${ajiltan._id}`, 'logout');
   duusakhOgnooAvya(
     { register: baiguullaga.register },
     async (khariu) => {
