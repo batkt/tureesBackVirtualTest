@@ -16,6 +16,7 @@ const Sonorduulga = require("../models/sonorduulga");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 const lodash = require("lodash");
 const moment = require("moment");
+const { uilchluulegchTseverliy } = require("parking-v1/lib/serivice/uilchluulegchService");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
     console.log('parking --- ', req.body);
@@ -269,6 +270,19 @@ router
       next(err);
     }
   });
+
+router.post(
+  "/uilchluulegchTseverliy",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const result = await uilchluulegchTseverliy(req.body);
+      res.send(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.post(
   "/zogsooliinUdriinTailanAvya",
