@@ -9,6 +9,7 @@ const {
   uilchluulegchdiinToo,
   zogsoolTusBurUilchluulegchdiinToo,
   sdkData,
+  uilchluulegchTseverliy,
 } = require("parking-v1");
 const ZogsooliinIp = require("../models/zogsooliinIp");
 const Khariltsagch = require("../models/khariltsagch");
@@ -16,7 +17,6 @@ const Sonorduulga = require("../models/sonorduulga");
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 const lodash = require("lodash");
 const moment = require("moment");
-const { uilchluulegchTseverliy } = require("parking-v1/lib/serivice/uilchluulegchService");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
     console.log('parking --- ', req.body);
