@@ -1338,10 +1338,10 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
     var nariivchlal = req.body.nariivchlal ? req.body.nariivchlal : "month";
     var ekhlekhOgnoo = req.body.ekhlekhOgnoo
       ? req.body.ekhlekhOgnoo
-      : "2022-01-01 00:00:00";
+      : "2023-01-01 00:00:00";
     var duusakhOgnoo = req.body.duusakhOgnoo
       ? req.body.duusakhOgnoo
-      : "2022-12-31 23:59:59";
+      : "2023-12-31 23:59:59";
     ekhlekhOgnoo = new Date(ekhlekhOgnoo);
     duusakhOgnoo = new Date(duusakhOgnoo);
     var group = {
