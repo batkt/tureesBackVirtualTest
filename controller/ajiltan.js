@@ -6,6 +6,7 @@ const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 const MsgTuukh = require("../models/msgTuukh");
 const IpTuukh = require("../models/ipTuukh");
 const BackTuukh = require("../models/backTuukh");
+const Geree = require("../models/geree");
 const aldaa = require("../components/aldaa");
 const jwt = require("jsonwebtoken");
 const request = require("request");
@@ -13,9 +14,11 @@ const axios = require("axios");
 const fs = require("fs");
 const moment = require("moment");
 const useragent = require("express-useragent");
+const { Uilchluulegch } = require("parking-v1");
 const http = require("http");
 const lodash = require("lodash");
 const { formatNumber } = require("zevbackv2");
+const TogloomiinTuv = require("../models/togloomiinTuv");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get(
@@ -56,7 +59,7 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
 }
 
 exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
-  const io = req.app.get('socketio');
+  const io = req.app.get("socketio");
   const { db } = require("zevbackv2");
   const ajiltan = await Ajiltan(db.erunkhiiKholbolt)
     .findOne()
@@ -76,7 +79,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     result: ajiltan,
     success: true,
   };
-  io.emit(`ajiltan${ajiltan._id}`, 'logout');
+  io.emit(`ajiltan${ajiltan._id}`, "logout");
   duusakhOgnooAvya(
     { register: baiguullaga.register },
     async (khariu) => {
@@ -336,112 +339,249 @@ function msgIlgeeye(
     next(err);
   }
 }
+
+async function orchuulya(text) {
+  text = text.toString();
+  while (text.length < size) num = "0" + num;
+  return num;
+}
+
 exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
   try {
     const { db } = require("zevbackv2");
-    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
-      register: "6481523",
+    var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
+    var msgIlgeekhDugaar = "72002002";
+    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
+      "tokhirgoo.msgAvakhTurul": {
+        $exists: true,
+      },
+      "tokhirgoo.msgAvakhDugaar.0": {
+        $exists: true,
+      },
     });
     var ekhlekhOgnoo = new Date(Date.now() - 86400000);
     var duusakhOgnoo = new Date(Date.now() - 86400000);
     ekhlekhOgnoo.setHours(0, 0, 0, 0);
     duusakhOgnoo.setHours(23, 59, 59, 999);
-    var kholboltuud = db.kholboltuud;
-    var kholbolt = kholboltuud.find(
-      (a) => a.baiguullagiinId == baiguullaga._id
-    );
-    let query = [
-      {
-        $match: {
-          $or: [
-            {
-              $and: [
-                {
-                  TxDt: {
-                    $gte: ekhlekhOgnoo,
-                    $lte: duusakhOgnoo,
-                  },
-                },
-                {
-                  Amt: {
-                    $gt: 0,
-                  },
-                },
-              ],
-            },
-            {
-              $and: [
-                {
-                  tranDate: {
-                    $gte: ekhlekhOgnoo,
-                    $lte: duusakhOgnoo,
-                  },
-                },
-                {
-                  amount: {
-                    $gt: 0,
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      },
-      {
-        $project: {
-          barilgiinId: "$barilgiinId",
-          dun: { $ifNull: ["$Amt", "$amount"] },
-        },
-      },
-      {
-        $group: {
-          _id: "$barilgiinId",
-          dun: {
-            $sum: "$dun",
-          },
-        },
-      },
-    ];
-    var result = await BankniiGuilgee(kholbolt).aggregate(query);
-    if (result && result.length > 0) {
-      var msgIlgeekhKey;
-      var msgIlgeekhDugaar;
-      try {
-        msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
-        msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
-      } catch (error) {
-        console.log("msg tokhirgoo bxgui");
-      }
-      var niitDun = lodash.sumBy(result, function (object) {
-        return object.dun;
-      });
-      var text =
-        "Rently systemd " +
-        moment(ekhlekhOgnoo).format("MM/DD") +
-        " udur " +
-        (await formatNumber(niitDun)) +
-        "₮ orlogo burtgegdej ";
-
-      for await (const a of result) {
-        var barilgiinNer = "";
-        try {
-          barilgiinNer = baiguullaga.barilguud.find((x) => x._id == a._id).ner;
-        } catch (aldaa) {}
-        if (barilgiinNer == "Их наяд плаза") barilgiinNer = "Ikhnayd plaza";
-        else if (barilgiinNer == "Цэцэг Төв") barilgiinNer = "Tsetseg tuv";
-        else if (barilgiinNer == "Шинэ тэрэг плаза")
-          barilgiinNer = "Shine tereg plaza";
-        else if (barilgiinNer == "Их наяд Tower")
-          barilgiinNer = "Ikhnayd zuun undur";
-        text =
-          text + barilgiinNer + " - " + (await formatNumber(a.dun)) + "₮, ";
-      }
-      text = text.slice(0, -2);
-      text = text + " tus tus orlogo orson baina.";
-      console.log("text", text);
-      msgIlgeeye(
-        [
+    for await (const baiguullaga of baiguullaguud) {
+      var kholboltuud = db.kholboltuud;
+      var kholbolt = kholboltuud.find(
+        (a) => a.baiguullagiinId == baiguullaga._id
+      );
+      var text = "";
+      if (baiguullaga.tokhirgoo.msgAvakhTurul == "dans") {
+        let query = [
           {
+            $match: {
+              $or: [
+                {
+                  $and: [
+                    {
+                      TxDt: {
+                        $gte: ekhlekhOgnoo,
+                        $lte: duusakhOgnoo,
+                      },
+                    },
+                    {
+                      Amt: {
+                        $gt: 0,
+                      },
+                    },
+                  ],
+                },
+                {
+                  $and: [
+                    {
+                      tranDate: {
+                        $gte: ekhlekhOgnoo,
+                        $lte: duusakhOgnoo,
+                      },
+                    },
+                    {
+                      amount: {
+                        $gt: 0,
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
+              barilgiinId: "$barilgiinId",
+              dun: { $ifNull: ["$Amt", "$amount"] },
+            },
+          },
+          {
+            $group: {
+              _id: "$barilgiinId",
+              dun: {
+                $sum: "$dun",
+              },
+            },
+          },
+        ];
+        var result = await BankniiGuilgee(kholbolt).aggregate(query);
+        if (result && result.length > 0) {
+          var niitDun = lodash.sumBy(result, function (object) {
+            return object.dun;
+          });
+          var text =
+            "Rently systemd " +
+            moment(ekhlekhOgnoo).format("MM/DD") +
+            " udur " +
+            (await formatNumber(niitDun)) +
+            "₮ orlogo burtgegdej ";
+
+          for await (const a of result) {
+            var barilgiinNer = "";
+            try {
+              barilgiinNer = baiguullaga.barilguud.find(
+                (x) => x._id == a._id
+              ).ner;
+            } catch (aldaa) {}
+            if (barilgiinNer == "Их наяд плаза") barilgiinNer = "Ikhnayd plaza";
+            else if (barilgiinNer == "Цэцэг Төв") barilgiinNer = "Tsetseg tuv";
+            else if (barilgiinNer == "Шинэ тэрэг плаза")
+              barilgiinNer = "Shine tereg plaza";
+            else if (barilgiinNer == "Их наяд Tower")
+              barilgiinNer = "Ikhnayd zuun undur";
+            text =
+              text + barilgiinNer + " - " + (await formatNumber(a.dun)) + "₮, ";
+          }
+          text = text.slice(0, -2);
+          text = text + " tus tus orlogo orson baina.";
+          console.log("text", text);
+        }
+      } else if (baiguullaga.tokhirgoo.msgAvakhTurul == "system") {
+        console.log("kholbolt", kholbolt);
+        console.log("ekhlekhOgnoo", ekhlekhOgnoo);
+        console.log("duusakhOgnoo", duusakhOgnoo);
+        var togloom = await TogloomiinTuv(kholbolt).aggregate([
+          {
+            $match: {
+              baiguullagiinId: baiguullaga._id.toString(),
+              ognoo: {
+                $gte: ekhlekhOgnoo,
+                $lte: duusakhOgnoo,
+              },
+              tuluv: {
+                $ne: -1,
+              },
+            },
+          },
+          {
+            $unwind: "$niitTulbur",
+          },
+          {
+            $group: {
+              _id: "niit",
+              niitDun: {
+                $sum: "$niitTulbur.dun",
+              },
+            },
+          },
+        ]);
+        var zogsool = await Uilchluulegch(kholbolt).aggregate([
+          {
+            $match: {
+              baiguullagiinId: baiguullaga._id.toString(),
+              "tuukh.tsagiinTuukh.garsanTsag": {
+                $gte: ekhlekhOgnoo,
+                $lte: duusakhOgnoo,
+              },
+            },
+          },
+          {
+            $unwind: "$tuukh",
+          },
+          {
+            $unwind: "$tuukh.tulbur",
+          },
+          {
+            $group: {
+              _id: "niit",
+              niitDun: {
+                $sum: "$tuukh.tulbur.dun",
+              },
+            },
+          },
+        ]);
+        var turees = await Geree(kholbolt).aggregate([
+          {
+            $match: {
+              baiguullagiinId: baiguullaga._id.toString(),
+              tuluv: {
+                $ne: -1,
+              },
+            },
+          },
+          {
+            $unwind: {
+              path: "$avlaga.guilgeenuud",
+            },
+          },
+          {
+            $match: {
+              "avlaga.guilgeenuud.ognoo": {
+                $gte: new Date(ekhlekhOgnoo),
+                $lte: new Date(duusakhOgnoo),
+              },
+              "avlaga.guilgeenuud.turul": {
+                $in: ["bank", "qpay"],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: "niit",
+              niitDun: {
+                $sum: "$avlaga.guilgeenuud.tulsunDun",
+              },
+            },
+          },
+        ]);
+
+        console.log("togloom", togloom);
+        console.log("zogsool", zogsool);
+        console.log("turees", turees);
+        if (
+          (togloom && togloom.length > 0) ||
+          (zogsool && zogsool.length > 0) ||
+          (turees && turees.length > 0)
+        ) {
+          text =
+            "Rently systemd " + moment(ekhlekhOgnoo).format("MM/DD") + " udur ";
+          if (togloom && togloom.length > 0) {
+            text =
+              text +
+              "Zogsool- " +
+              (await formatNumber(togloom[0].niitDun)) +
+              "₮,";
+          }
+          if (zogsool && zogsool.length > 0) {
+            text =
+              text +
+              "Togloom- " +
+              (await formatNumber(zogsool[0].niitDun)) +
+              "₮,";
+          }
+          if (turees && turees.length > 0) {
+            text =
+              text +
+              "Turees- " +
+              (await formatNumber(turees[0].niitDun)) +
+              "₮,";
+          }
+          text = text + " tus tus orlogo orson baina.";
+        }
+      }
+      if (text.length > 0) {
+        var ilgeexList = [];
+        for await (const dugaar of baiguullaga.tokhirgoo.msgAvakhDugaar)
+          ilgeexList.push({ to: dugaar, text });
+        /*[{
             to: "88880140",
             text,
           },
@@ -452,17 +592,19 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
           {
             to: "88043808",
             text,
-          },
-        ],
-        msgIlgeekhKey,
-        msgIlgeekhDugaar,
-        [],
-        0,
-        kholbolt,
-        baiguullaga._id
-      );
+          }];*/
+        msgIlgeeye(
+          ilgeexList,
+          msgIlgeekhKey,
+          msgIlgeekhDugaar,
+          [],
+          0,
+          db.erunkhiiKholbolt,
+          baiguullaga._id
+        );
+      }
     }
   } catch (error) {
-    next(error);
+    console.log(error);
   }
 });
