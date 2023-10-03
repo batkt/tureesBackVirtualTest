@@ -75,6 +75,8 @@ const baiguullagaSchema = new Schema(
       eBarimtAutomataarShivikh: Boolean,
       msgIlgeekhKey: String,
       msgIlgeekhDugaar: String,
+      msgAvakhTurul: String,
+      msgAvakhDugaar: [String],
       mailNevtrekhNer: String,
       mailPassword: String,
       mailHost: String,
