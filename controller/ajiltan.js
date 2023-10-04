@@ -752,14 +752,14 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
           if (togloom && togloom.length > 0) {
             text =
               text +
-              "Zogsool- " +
+              "Togloom- " +
               (await formatNumber(togloom[0].niitDun)) +
               "₮,";
           }
           if (zogsool && zogsool.length > 0) {
             text =
               text +
-              "Togloom- " +
+              "Zogsool- " +
               (await formatNumber(zogsool[0].niitDun)) +
               "₮,";
           }
