@@ -327,12 +327,12 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         )
         .then((resa) => console.log(resa))
         .catch((err) => console.log(err));
+      var textUseg = "A";
+      if (dans.baiguullagiinId == "631595e9957b7d5ec013c076") textUseg = "U";
+      if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac") textUseg = "K";
       tdbDansniiUldegdelAvya(
         {
-          msgId:
-            "ZT" +
-            (dans.baiguullagiinId == "631595e9957b7d5ec013c076" ? "U" : "A") +
-            (await pad(maxKhuseltiinDugaar, 12)),
+          msgId: "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
           loginId: dans.corporateNevtrekhNer,
           AnyBIC: dans.AnyBIC,
           RoleID: dans.RoleID,
@@ -518,14 +518,15 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     0
                   );
                 }
+                var textUseg = "A";
+                if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")
+                  textUseg = "U";
+                if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac")
+                  textUseg = "K";
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
                     msgId:
-                      "ZT" +
-                      (dans.baiguullagiinId == "631595e9957b7d5ec013c076"
-                        ? "U"
-                        : "A") +
-                      (await pad(maxKhuseltiinDugaar, 12)),
+                      "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
                     AnyBIC: dans.AnyBIC,
                     RoleID: dans.RoleID,
@@ -774,14 +775,15 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   new Date().getMonth() + 1,
                   0
                 );
+                var textUseg = "A";
+                if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")
+                  textUseg = "U";
+                if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac")
+                  textUseg = "K";
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
                     msgId:
-                      "ZT" +
-                      (dans.baiguullagiinId == "631595e9957b7d5ec013c076"
-                        ? "U"
-                        : "A") +
-                      (await pad(maxKhuseltiinDugaar, 12)),
+                      "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
                     AnyBIC: dans.AnyBIC,
                     RoleID: dans.RoleID,
