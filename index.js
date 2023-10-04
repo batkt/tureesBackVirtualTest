@@ -170,6 +170,17 @@ cron.schedule(
     timezone: "Asia/Ulaanbaatar",
   }
 );
+
+cron.schedule(
+  "0 0 * * *",
+  function () {
+    zogsool.khungulultKhugatsaaShinechlya();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 /*
 cron.schedule(
   "02 09 * * * ",
