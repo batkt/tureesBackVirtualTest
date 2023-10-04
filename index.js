@@ -127,7 +127,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "35 16 * * * ",
+  "38 16 * * * ",
   function () {
     ajiltanController.orlogiinMsgIlgeeye();
   },
