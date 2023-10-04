@@ -1,6 +1,8 @@
 const Zogsool = require("../models/zogsool");
 const Mashin = require("../models/mashin");
 const Baiguullaga = require("../models/baiguullaga");
+const { Mashin: ParkingMashin } = require("parking-v1");
+const moment = require("moment");
 
 module.exports.mashinTaniya = async function mashinTaniya() {
   const { db } = require("zevbackv2");
@@ -32,6 +34,65 @@ module.exports.mashinTaniya = async function mashinTaniya() {
     }
   }
 };
+
+module.exports.khungulultKhugatsaaShinechlya =
+  async function khungulultKhugatsaaShinechlya() {
+    const { db } = require("zevbackv2");
+    const kholboltuud = db.kholboltuud;
+    if (kholboltuud) {
+      for await (const kholbolt of kholboltuud) {
+        const mashinuud = await ParkingMashin(kholbolt).find();
+        const bulkOps = [];
+        mashinuud.forEach((mashin) => {
+          if (
+            mashin.turul === "Түрээслэгч" &&
+            (mashin.tuluv === "Хөнгөлөлттэй" ||
+              mashin.nemeltTuluv === "Хөнгөлөлттэй") &&
+            mashin.khungulultTurul === "togtmolTsag"
+          ) {
+            if (
+              mashin.khungulujEkhlesenOgnoo &&
+              mashin.tsagiinTurul === "Сараар"
+            ) {
+              if (
+                moment(new Date()).month !==
+                moment(mashin.khungulujEkhlesenOgnoo).month
+              ) {
+                mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
+                mashin.khungulujEkhlesenOgnoo = moment();
+              }
+            } else if (
+              mashin.khungulujEkhlesenOgnoo &&
+              mashin.tsagiinTurul === "Өдрөөр"
+            ) {
+              console.log("iishee orj irlee kk");
+              mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
+              mashin.khungulujEkhlesenOgnoo = moment();
+            }
+          }
+          const updateOperation = {
+            updateOne: {
+              filter: { _id: mashin._id },
+              update: {
+                $set: {
+                  uldegdelKhungulukhKhugatsaa: mashin.khungulukhKhugatsaa,
+                  khungulujEkhlesenOgnoo: mashin.khungulujEkhlesenOgnoo,
+                },
+              },
+            },
+          };
+          console.log(
+            "update khiikh operation:",
+            updateOperation.updateOne.update
+          );
+          bulkOps.push(updateOperation);
+        });
+        if (bulkOps.length > 0) {
+          await ParkingMashin(kholbolt).bulkWrite(bulkOps);
+        }
+      }
+    }
+  };
 
 module.exports.tulburZooyo = async function tulburZooyo() {
   const { db } = require("zevbackv2");
