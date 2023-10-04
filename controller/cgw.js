@@ -152,10 +152,12 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
     };
 
     const objectString = JSON.stringify(xml);
-    var urlString =
-      process.env.ZEV_TEST_SERVER +
-      ":5000/" +
-      (baiguullagiinId == "631595e9957b7d5ec013c076" ? "uguumur" : "");
+    var baiguullagiinZam = "";
+    if (baiguullagiinId == "631595e9957b7d5ec013c076")
+      baiguullagiinZam = "uguumur";
+    if (baiguullagiinId == "64fe8edc54a669717ad657ac")
+      baiguullagiinZam = "halmon";
+    var urlString = process.env.ZEV_TEST_SERVER + ":5000/" + baiguullagiinZam;
     console.log("url", urlString);
     var url = new URL(urlString);
     const response = await instanceJson.post(url, { body: objectString });
@@ -217,10 +219,13 @@ async function tdbDansniiUldegdelAvya(
     };
 
     const objectString = JSON.stringify(xml);
-    var urlString =
-      process.env.ZEV_TEST_SERVER +
-      ":5000/" +
-      (baiguullagiinId == "631595e9957b7d5ec013c076" ? "uguumur" : "");
+
+    var baiguullagiinZam = "";
+    if (baiguullagiinId == "631595e9957b7d5ec013c076")
+      baiguullagiinZam = "uguumur";
+    if (baiguullagiinId == "64fe8edc54a669717ad657ac")
+      baiguullagiinZam = "halmon";
+    var urlString = process.env.ZEV_TEST_SERVER + ":5000/" + baiguullagiinZam;
     console.log("url", urlString);
     var url = new URL(urlString);
     const response = await instanceJson.post(url, { body: objectString });
