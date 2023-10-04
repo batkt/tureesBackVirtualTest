@@ -342,8 +342,203 @@ function msgIlgeeye(
 
 async function orchuulya(text) {
   text = text.toString();
-  while (text.length < size) num = "0" + num;
-  return num;
+  var butsaakhText = "";
+  for (let i = 0; I < text.length; i++) {
+    switch (text[i]) {
+      case "А":
+        butsaakhText = butsaakhText + "A";
+        break;
+      case "Б":
+        butsaakhText = butsaakhText + "B";
+        break;
+      case "В":
+        butsaakhText = butsaakhText + "V";
+        break;
+      case "Г":
+        butsaakhText = butsaakhText + "G";
+        break;
+      case "Д":
+        butsaakhText = butsaakhText + "D";
+        break;
+      case "Е":
+        butsaakhText = butsaakhText + "Ye";
+        break;
+      case "Ё":
+        butsaakhText = butsaakhText + "Yo";
+        break;
+      case "Ж":
+        butsaakhText = butsaakhText + "J";
+        break;
+      case "З":
+        butsaakhText = butsaakhText + "Z";
+        break;
+      case "И":
+      case "Й":
+        butsaakhText = butsaakhText + "I";
+        break;
+      case "К":
+        butsaakhText = butsaakhText + "K";
+        break;
+      case "Л":
+        butsaakhText = butsaakhText + "L";
+        break;
+      case "М":
+        butsaakhText = butsaakhText + "M";
+        break;
+      case "Н":
+        butsaakhText = butsaakhText + "N";
+        break;
+      case "О":
+        butsaakhText = butsaakhText + "O";
+        break;
+      case "Ө":
+        butsaakhText = butsaakhText + "U";
+        break;
+      case "П":
+        butsaakhText = butsaakhText + "P";
+        break;
+      case "Р":
+        butsaakhText = butsaakhText + "R";
+        break;
+      case "С":
+        butsaakhText = butsaakhText + "S";
+        break;
+      case "​Т":
+        butsaakhText = butsaakhText + "T";
+        break;
+      case "У":
+      case "Ү":
+        butsaakhText = butsaakhText + "U";
+        break;
+      case "Ф":
+        butsaakhText = butsaakhText + "F";
+        break;
+      case "Х":
+        butsaakhText = butsaakhText + "H";
+        break;
+      case "Ц":
+        butsaakhText = butsaakhText + "Ts";
+        break;
+      case "Ч":
+        butsaakhText = butsaakhText + "Ch";
+        break;
+      case "Ш":
+        butsaakhText = butsaakhText + "Sh";
+        break;
+      case "Ь":
+        butsaakhText = butsaakhText + "i";
+        break;
+      case "Ы":
+        butsaakhText = butsaakhText + "ii";
+        break;
+      case "Э":
+        butsaakhText = butsaakhText + "E";
+        break;
+      case "Ю":
+        butsaakhText = butsaakhText + "Yu";
+      case "Я":
+        butsaakhText = butsaakhText + "Ya";
+        break;
+      case "а":
+        butsaakhText = butsaakhText + "a";
+        break;
+      case "б":
+        butsaakhText = butsaakhText + "b";
+        break;
+      case "в":
+        butsaakhText = butsaakhText + "v";
+        break;
+      case "г":
+        butsaakhText = butsaakhText + "g";
+        break;
+      case "д":
+        butsaakhText = butsaakhText + "d";
+        break;
+      case "е":
+        butsaakhText = butsaakhText + "ye";
+        break;
+      case "ё":
+        butsaakhText = butsaakhText + "yo";
+        break;
+      case "ж":
+        butsaakhText = butsaakhText + "j";
+        break;
+      case "з":
+        butsaakhText = butsaakhText + "z";
+        break;
+      case "и":
+      case "й":
+        butsaakhText = butsaakhText + "i";
+        break;
+      case "к":
+        butsaakhText = butsaakhText + "k";
+        break;
+      case "л":
+        butsaakhText = butsaakhText + "l";
+        break;
+      case "м":
+        butsaakhText = butsaakhText + "m";
+        break;
+      case "н":
+        butsaakhText = butsaakhText + "n";
+        break;
+      case "о":
+        butsaakhText = butsaakhText + "o";
+        break;
+      case "ө":
+        butsaakhText = butsaakhText + "u";
+        break;
+      case "п":
+        butsaakhText = butsaakhText + "p";
+        break;
+      case "р":
+        butsaakhText = butsaakhText + "r";
+        break;
+      case "с":
+        butsaakhText = butsaakhText + "s";
+        break;
+      case "т":
+        butsaakhText = butsaakhText + "t";
+        break;
+      case "у":
+      case "ү":
+        butsaakhText = butsaakhText + "u";
+        break;
+      case "ф":
+        butsaakhText = butsaakhText + "f";
+        break;
+      case "х":
+        butsaakhText = butsaakhText + "kh";
+        break;
+      case "ц":
+        butsaakhText = butsaakhText + "ts";
+        break;
+      case "ч":
+        butsaakhText = butsaakhText + "ch";
+        break;
+      case "ш":
+        butsaakhText = butsaakhText + "sh";
+        break;
+      case "ь":
+        butsaakhText = butsaakhText + "i";
+        break;
+      case "ы":
+        butsaakhText = butsaakhText + "ii";
+        break;
+      case "э":
+        butsaakhText = butsaakhText + "e";
+        break;
+      case "ю":
+        butsaakhText = butsaakhText + "yu";
+      case "я":
+        butsaakhText = butsaakhText + "ya";
+        break;
+      default:
+        butsaakhText = butsaakhText + text[i];
+        break;
+    }
+  }
+  return butsaakhText;
 }
 
 exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
@@ -441,12 +636,13 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
                 (x) => x._id == a._id
               ).ner;
             } catch (aldaa) {}
-            if (barilgiinNer == "Их наяд плаза") barilgiinNer = "Ikhnayd plaza";
+            barilgiinNer = orchuulya(barilgiinNer);
+            /*if (barilgiinNer == "Их наяд плаза") barilgiinNer = "Ikhnayd plaza";
             else if (barilgiinNer == "Цэцэг Төв") barilgiinNer = "Tsetseg tuv";
             else if (barilgiinNer == "Шинэ тэрэг плаза")
               barilgiinNer = "Shine tereg plaza";
             else if (barilgiinNer == "Их наяд Tower")
-              barilgiinNer = "Ikhnayd zuun undur";
+              barilgiinNer = "Ikhnayd zuun undur";*/
             text =
               text + barilgiinNer + " - " + (await formatNumber(a.dun)) + "₮, ";
           }
