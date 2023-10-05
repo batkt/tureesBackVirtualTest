@@ -343,7 +343,7 @@ function msgIlgeeye(
 async function orchuulya(text) {
   text = text.toString();
   var butsaakhText = "";
-  for (let i = 0; I < text.length; i++) {
+  for (let i = 0; i < text.length; i++) {
     switch (text[i]) {
       case "А":
         butsaakhText = butsaakhText + "A";
