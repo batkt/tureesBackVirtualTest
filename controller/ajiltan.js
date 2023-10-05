@@ -636,7 +636,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
                 (x) => x._id == a._id
               ).ner;
             } catch (aldaa) {}
-            barilgiinNer = orchuulya(barilgiinNer);
+            barilgiinNer = await orchuulya(barilgiinNer);
             /*if (barilgiinNer == "Их наяд плаза") barilgiinNer = "Ikhnayd plaza";
             else if (barilgiinNer == "Цэцэг Төв") barilgiinNer = "Tsetseg tuv";
             else if (barilgiinNer == "Шинэ тэрэг плаза")
