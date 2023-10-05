@@ -289,6 +289,20 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
+      const match = req.body.garsanKhaalga !== null ? {
+        "tuukh.garsanKhaalga": req.body.garsanKhaalga,
+        "tuukh.tsagiinTuukh.garsanTsag": {
+          $gte: new Date(req.body.ekhlekhOgnoo),
+          $lte: new Date(req.body.duusakhOgnoo),
+        },
+        "tuukh.tuluv": 1,
+      } : {
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+            "tuukh.tuluv": 1,
+          };
       const udriinTailan = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
       ).aggregate([
@@ -305,14 +319,7 @@ router.post(
           $unwind: "$tuukh.tulbur",
         },
         {
-          $match: {
-            "tuukh.garsanKhaalga": req.body.garsanKhaalga,
-            "tuukh.tsagiinTuukh.garsanTsag": {
-              $gte: new Date(req.body.ekhlekhOgnoo),
-              $lte: new Date(req.body.duusakhOgnoo),
-            },
-            "tuukh.tuluv": 1,
-          },
+          $match: match
         },
         {
           $group: {
