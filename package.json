@@ -21,7 +21,7 @@
     "parking-v1": "^1.2.68",
     "quickqpaypackv2": "^1.0.20",
     "sharp": "^0.30.7",
-    "zevbackv2": "^1.1.11",
+    "zevbackv2": "^1.1.12",
     "zuragpack": "^1.0.17"
   },
   "devDependencies": {

@@ -3,7 +3,9 @@ const aldaa = require("../components/aldaa");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 //const Dugaarlalt = require("../models/dugaarlalt");
 const { Dugaarlalt, Token, Dans } = require("zevbackv2");
+const { Uilchluulegch } = require("parking-v1");
 const xml2js = require("xml2js");
+const axios = require("axios");
 const got = require("got");
 const { URL } = require("url");
 const instance = got.extend({
@@ -840,6 +842,21 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       if (guilgeenuud) {
                         var ustgakhJagsaalt = [];
                         for await (const item of guilgeenuud) {
+                          if (!!dans.zogsooliinId) {
+                            var url =
+                              "http://" +
+                              process.env.UNDSEN_IP +
+                              ":" +
+                              process.env.PORT +
+                              "/zogsooliinTulburOrjIrlee";
+                            axios
+                              .post(url, {
+                                baiguullagiinId: dans.baiguullagiinId,
+                                tulsunDun: item.Amt,
+                                zogsooliinId: dans.zogsooliinId,
+                              })
+                              .catch(function (error) {});
+                          }
                           var guilgee = await BankniiGuilgee(kholbolt).findOne({
                             NtryRef: item.NtryRef,
                             barilgiinId: dans.barilgiinId,

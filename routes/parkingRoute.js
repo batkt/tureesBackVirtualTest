@@ -271,6 +271,65 @@ router
     }
   });
 
+router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
+  try {
+    var baiguullagiinId = req.body.baiguullagiinId;
+    var zogsooliinId = req.body.zogsooliinId;
+    var tulsunDun = Number(req.body.tulsunDun);
+    const { db } = require("zevbackv2");
+    var kholbolt = db.kholboltuud.find(
+      (a) => a.baiguullagiinId == baiguullagiinId
+    );
+    var shuukhKhugatsaa = new Date(
+      Date.now() - 900000 //15 * 60 * 1000
+    );
+    var oldsonData = await Uilchluulegch(kholbolt).findOne({
+      niitDun: tulsunDun,
+      "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+        $gt: shuukhKhugatsaa,
+      },
+      "tuukh.0.tuluv": 0,
+    });
+    if (oldsonData) {
+      await Uilchluulegch(kholbolt).findByIdAndUpdate(
+        oldsonData._id,
+        {
+          $set: {
+            "tuukh.$[t].burtgesenAjiltaniiId": "system",
+            "tuukh.$[t].burtgesenAjiltaniiNer": "system",
+            "tuukh.$[t].tulbur": [
+              {
+                ognoo: new Date(),
+                turul: "khariltsakh",
+                dun: tulsunDun,
+              },
+            ],
+            "tuukh.$[t].tuluv": 1,
+          },
+        },
+        {
+          arrayFilters: [
+            {
+              "t.zogsooliinId": zogsooliinId,
+            },
+          ],
+        }
+      );
+      const io = req.app.get("socketio");
+      if (io) {
+        io.emit(`zogsool${baiguullagiinId}`, {
+          khaalgaTurul: "oroh",
+          cameraIP: oldsonData.tuukh[0].garsanKhaalga,
+        });
+      }
+    }
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+});
+
 router.post(
   "/uilchluulegchTseverliy",
   tokenShalgakh,
@@ -289,20 +348,23 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      const match = req.body.garsanKhaalga !== null ? {
-        "tuukh.garsanKhaalga": req.body.garsanKhaalga,
-        "tuukh.tsagiinTuukh.garsanTsag": {
-          $gte: new Date(req.body.ekhlekhOgnoo),
-          $lte: new Date(req.body.duusakhOgnoo),
-        },
-        "tuukh.tuluv": 1,
-      } : {
-            "tuukh.tsagiinTuukh.garsanTsag": {
-              $gte: new Date(req.body.ekhlekhOgnoo),
-              $lte: new Date(req.body.duusakhOgnoo),
-            },
-            "tuukh.tuluv": 1,
-          };
+      const match =
+        req.body.garsanKhaalga !== null
+          ? {
+              "tuukh.garsanKhaalga": req.body.garsanKhaalga,
+              "tuukh.tsagiinTuukh.garsanTsag": {
+                $gte: new Date(req.body.ekhlekhOgnoo),
+                $lte: new Date(req.body.duusakhOgnoo),
+              },
+              "tuukh.tuluv": 1,
+            }
+          : {
+              "tuukh.tsagiinTuukh.garsanTsag": {
+                $gte: new Date(req.body.ekhlekhOgnoo),
+                $lte: new Date(req.body.duusakhOgnoo),
+              },
+              "tuukh.tuluv": 1,
+            };
       const udriinTailan = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
       ).aggregate([
@@ -319,7 +381,7 @@ router.post(
           $unwind: "$tuukh.tulbur",
         },
         {
-          $match: match
+          $match: match,
         },
         {
           $group: {
