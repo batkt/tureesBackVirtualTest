@@ -3,7 +3,9 @@ const aldaa = require("../components/aldaa");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 //const Dugaarlalt = require("../models/dugaarlalt");
 const { Dugaarlalt, Token, Dans } = require("zevbackv2");
+const { Uilchluulegch } = require("parking-v1");
 const xml2js = require("xml2js");
+const axios = require("axios");
 const got = require("got");
 const { URL } = require("url");
 const instance = got.extend({
@@ -152,10 +154,12 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
     };
 
     const objectString = JSON.stringify(xml);
-    var urlString =
-      process.env.ZEV_TEST_SERVER +
-      ":5000/" +
-      (baiguullagiinId == "631595e9957b7d5ec013c076" ? "uguumur" : "");
+    var baiguullagiinZam = "";
+    if (baiguullagiinId == "631595e9957b7d5ec013c076")
+      baiguullagiinZam = "uguumur";
+    if (baiguullagiinId == "64fe8edc54a669717ad657ac")
+      baiguullagiinZam = "halmon";
+    var urlString = process.env.ZEV_TEST_SERVER + ":5000/" + baiguullagiinZam;
     console.log("url", urlString);
     var url = new URL(urlString);
     const response = await instanceJson.post(url, { body: objectString });
@@ -217,10 +221,13 @@ async function tdbDansniiUldegdelAvya(
     };
 
     const objectString = JSON.stringify(xml);
-    var urlString =
-      process.env.ZEV_TEST_SERVER +
-      ":5000/" +
-      (baiguullagiinId == "631595e9957b7d5ec013c076" ? "uguumur" : "");
+
+    var baiguullagiinZam = "";
+    if (baiguullagiinId == "631595e9957b7d5ec013c076")
+      baiguullagiinZam = "uguumur";
+    if (baiguullagiinId == "64fe8edc54a669717ad657ac")
+      baiguullagiinZam = "halmon";
+    var urlString = process.env.ZEV_TEST_SERVER + ":5000/" + baiguullagiinZam;
     console.log("url", urlString);
     var url = new URL(urlString);
     const response = await instanceJson.post(url, { body: objectString });
@@ -322,12 +329,12 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         )
         .then((resa) => console.log(resa))
         .catch((err) => console.log(err));
+      var textUseg = "A";
+      if (dans.baiguullagiinId == "631595e9957b7d5ec013c076") textUseg = "U";
+      if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac") textUseg = "K";
       tdbDansniiUldegdelAvya(
         {
-          msgId:
-            "ZT" +
-            (dans.baiguullagiinId == "631595e9957b7d5ec013c076" ? "U" : "A") +
-            (await pad(maxKhuseltiinDugaar, 12)),
+          msgId: "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
           loginId: dans.corporateNevtrekhNer,
           AnyBIC: dans.AnyBIC,
           RoleID: dans.RoleID,
@@ -513,14 +520,15 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     0
                   );
                 }
+                var textUseg = "A";
+                if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")
+                  textUseg = "U";
+                if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac")
+                  textUseg = "K";
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
                     msgId:
-                      "ZT" +
-                      (dans.baiguullagiinId == "631595e9957b7d5ec013c076"
-                        ? "U"
-                        : "A") +
-                      (await pad(maxKhuseltiinDugaar, 12)),
+                      "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
                     AnyBIC: dans.AnyBIC,
                     RoleID: dans.RoleID,
@@ -769,14 +777,15 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   new Date().getMonth() + 1,
                   0
                 );
+                var textUseg = "A";
+                if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")
+                  textUseg = "U";
+                if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac")
+                  textUseg = "K";
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
                     msgId:
-                      "ZT" +
-                      (dans.baiguullagiinId == "631595e9957b7d5ec013c076"
-                        ? "U"
-                        : "A") +
-                      (await pad(maxKhuseltiinDugaar, 12)),
+                      "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
                     AnyBIC: dans.AnyBIC,
                     RoleID: dans.RoleID,
@@ -833,6 +842,21 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       if (guilgeenuud) {
                         var ustgakhJagsaalt = [];
                         for await (const item of guilgeenuud) {
+                          if (!!dans.zogsooliinId) {
+                            var url =
+                              "http://" +
+                              process.env.UNDSEN_IP +
+                              ":" +
+                              process.env.PORT +
+                              "/zogsooliinTulburOrjIrlee";
+                            axios
+                              .post(url, {
+                                baiguullagiinId: dans.baiguullagiinId,
+                                tulsunDun: item.Amt,
+                                zogsooliinId: dans.zogsooliinId,
+                              })
+                              .catch(function (error) {});
+                          }
                           var guilgee = await BankniiGuilgee(kholbolt).findOne({
                             NtryRef: item.NtryRef,
                             barilgiinId: dans.barilgiinId,
