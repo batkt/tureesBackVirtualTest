@@ -55,8 +55,8 @@ module.exports.khungulultKhugatsaaShinechlya =
               mashin.tsagiinTurul === "Сараар"
             ) {
               if (
-                moment(new Date()).month !==
-                moment(mashin.khungulujEkhlesenOgnoo).month
+                moment(new Date()).month() !==
+                moment(mashin.khungulujEkhlesenOgnoo).month()
               ) {
                 mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
                 mashin.khungulujEkhlesenOgnoo = moment();
@@ -65,7 +65,6 @@ module.exports.khungulultKhugatsaaShinechlya =
               mashin.khungulujEkhlesenOgnoo &&
               mashin.tsagiinTurul === "Өдрөөр"
             ) {
-              console.log("iishee orj irlee kk");
               mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
               mashin.khungulujEkhlesenOgnoo = moment();
             }
