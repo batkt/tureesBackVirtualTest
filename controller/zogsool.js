@@ -42,8 +42,7 @@ module.exports.khungulultKhugatsaaShinechlya =
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
         const mashinuud = await ParkingMashin(kholbolt).find();
-        const bulkOps = [];
-        var updateOperation = {};
+        var bulkOps = [];
         mashinuud.forEach((mashin) => {
           if (
             mashin.turul === "Түрээслэгч" &&
@@ -61,7 +60,7 @@ module.exports.khungulultKhugatsaaShinechlya =
               ) {
                 mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
                 mashin.khungulujEkhlesenOgnoo = moment();
-                updateOperation = {
+                var updateOperation = {
                   updateOne: {
                     filter: { _id: mashin._id },
                     update: {
@@ -72,6 +71,7 @@ module.exports.khungulultKhugatsaaShinechlya =
                     },
                   },
                 };
+                bulkOps.push(updateOperation);
               }
             } else if (
               mashin.khungulujEkhlesenOgnoo &&
@@ -79,7 +79,7 @@ module.exports.khungulultKhugatsaaShinechlya =
             ) {
               mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
               mashin.khungulujEkhlesenOgnoo = moment();
-              updateOperation = {
+              var updateOperation = {
                 updateOne: {
                   filter: { _id: mashin._id },
                   update: {
@@ -90,9 +90,9 @@ module.exports.khungulultKhugatsaaShinechlya =
                   },
                 },
               };
+              bulkOps.push(updateOperation);
             }
           }
-          bulkOps.push(updateOperation);
         });
         if (bulkOps.length > 0) {
           await ParkingMashin(kholbolt).bulkWrite(bulkOps);
