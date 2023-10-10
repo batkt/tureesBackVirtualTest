@@ -10,6 +10,7 @@ const {
   zogsoolTusBurUilchluulegchdiinToo,
   sdkData,
   uilchluulegchTseverliy,
+  zogsooliinDunAvya,
 } = require("parking-v1");
 const ZogsooliinIp = require("../models/zogsooliinIp");
 const Khariltsagch = require("../models/khariltsagch");
@@ -547,4 +548,212 @@ router.post("/mashiniiTooAvya", tokenShalgakh, async (req, res, next) => {
       next(err);
     });
 });
+
+router.get("/v1/parking", async (req, res, next) => {
+  var jagsaalt = [];
+  const { db } = require("zevbackv2");
+  var kholboltuud = db.kholboltuud;
+  var ekhlekhOgnoo = new Date(Date.now() - 86400000);
+  var duusakhOgnoo = new Date(Date.now() - 86400000);
+  ekhlekhOgnoo.setHours(0, 0, 0, 0);
+  duusakhOgnoo.setHours(23, 59, 59, 999);
+  if (kholboltuud) {
+    for await (const kholbolt of kholboltuud) {
+      var zogsooluud = await Parking(kholbolt).find({
+        tokiNer: { $exists: true },
+      });
+      console.log(zogsooluud.length);
+      for await (const zogsool of zogsooluud) {
+        console.log(zogsool);
+        if (!!zogsool) {
+          var xariu = await Uilchluulegch(kholbolt).aggregate([
+            {
+              $match: {
+                createdAt: {
+                  $gte: ekhlekhOgnoo,
+                  $lte: duusakhOgnoo,
+                },
+                baiguullagiinId: zogsool.baiguullagiinId,
+              },
+            },
+            {
+              $unwind: { path: "$tuukh" },
+            },
+            {
+              $match: {
+                "tuukh.garsanKhaalga": {
+                  $exists: false,
+                },
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  id: "aa",
+                  zogsool: "$tuukh.zogsooliinId",
+                },
+                too: {
+                  $sum: 1,
+                },
+              },
+            },
+          ]);
+          var parked = 0;
+          if (xariu && xariu.length > 0) parked = xariu[0].too;
+          jagsaalt.push({
+            id: zogsool._id.toString(),
+            name: zogsool.ner,
+            slot: {
+              outside: {
+                total: zogsool.too,
+                parked,
+              },
+            },
+          });
+        }
+      }
+    }
+  }
+  var butsaakhKhariu = {
+    success: true,
+    message: "Amjilttai",
+  };
+  /*data: [
+    {
+      id: "62bd5b52a9708728807b20a4",
+      name: "Shangri-la",
+      slot: {
+        inside: {
+          total: 200,
+          parked: 100,
+        },
+        outside: {
+          total: 200,
+          parked: 100,
+        },
+      },
+    },
+  ],*/
+  if (jagsaalt && jagsaalt.length > 0) butsaakhKhariu.data = jagsaalt;
+  res.send(butsaakhKhariu);
+});
+
+router.get("/v1/search_car/:plate_number", async (req, res, next) => {
+  const { db } = require("zevbackv2");
+  var kholboltuud = db.kholboltuud;
+  var bodsonDun = 0;
+  var data;
+  var message = "Amjilttai";
+  var success = true;
+  if (kholboltuud) {
+    for await (const kholbolt of kholboltuud) {
+      var zogsooluud = await Parking(kholbolt).find({
+        tokiNer: { $exists: true },
+      });
+      for await (const zogsool of zogsooluud) {
+        console.log(zogsool);
+        if (!!zogsool) {
+          var oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+            mashiniiDugaar: req.params.plate_number,
+            "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+              $exists: false,
+            },
+            "tuukh.0.tuluv": {
+              $ne: -2,
+            },
+            tuukh: {
+              $size: 1,
+            },
+          });
+          console.log("oldsonMashin", oldsonMashin);
+          if (!oldsonMashin) {
+            message = "Машины мэдээлэл олдсонгүй!";
+            success = false;
+          }
+          if (!!oldsonMashin)
+            bodsonDun = await zogsooliinDunAvya(
+              zogsool,
+              oldsonMashin,
+              kholbolt
+            );
+        }
+        if (bodsonDun > 0) {
+          data = {
+            plate_number: req.params.plate_number,
+            enter_date: moment(
+              oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
+            ).format("YYYY/MM/DD HH:mm:ss"),
+            pay_amount: bodsonDun,
+            parking_id: zogsool._id,
+            session_id: oldsonMashin._id,
+          };
+          continue;
+        }
+      }
+      if (bodsonDun > 0) continue;
+    }
+  }
+  var butsaakhKhariu = {
+    success,
+    message,
+    data,
+  };
+  res.send(butsaakhKhariu);
+});
+
+router.get("/v1/car/:session_id", async (req, res, next) => {
+  const { db } = require("zevbackv2");
+  var kholboltuud = db.kholboltuud;
+  var data;
+  var message = "Amjilttai";
+  var oldsonMashin;
+  var success = true;
+  if (kholboltuud) {
+    for await (const kholbolt of kholboltuud) {
+      var zogsooluud = await Parking(kholbolt).find({
+        tokiNer: { $exists: true },
+      });
+      for await (const zogsool of zogsooluud) {
+        console.log(zogsool);
+        if (!!zogsool) {
+          oldsonMashin = await Uilchluulegch(kholbolt).findById(
+            req.params.session_id
+          );
+          if (!oldsonMashin) {
+            message = "Мэдээлэл олдсонгүй!";
+            success = false;
+          }
+          if (!!oldsonMashin) {
+            data = {
+              plate_number: req.params.plate_number,
+              enter_date: moment(
+                oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
+              ).format("YYYY/MM/DD HH:mm:ss"),
+              out_date: moment(
+                oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+              ).format("YYYY/MM/DD HH:mm:ss"),
+              pay_amount: oldsonMashin.niitDun,
+              paid_amount:
+                (oldsonMashin.tuukh[0].tulbur &&
+                  oldsonMashin.tuukh[0].tulbur.length) > 0
+                  ? oldsonMashin.niitDun
+                  : 0,
+              parking_id: zogsool._id,
+              session_id: oldsonMashin._id,
+            };
+            continue;
+          }
+        }
+      }
+      if (!!oldsonMashin) continue;
+    }
+  }
+  var butsaakhKhariu = {
+    success,
+    message,
+    data,
+  };
+  res.send(butsaakhKhariu);
+});
+
 module.exports = router;
