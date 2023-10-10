@@ -455,11 +455,11 @@ router.post(
     try {
       const match = {
         baiguullagiinId: req.body.baiguullagiinId,
-        createdAt: {
+        "tuukh.tsagiinTuukh.garsanTsag": {
           $gte: new Date(req.body.ekhlekhOgnoo),
           $lte: new Date(req.body.duusakhOgnoo),
         },
-        "tuukh.zogsooliinId": { $exists: true },
+        // "tuukh.zogsooliinId": { $exists: true },
         //"tuukh.zogsooliinId": req.body.zogsooliinId,
         // "tuukh.tuluv": 1,
       };
