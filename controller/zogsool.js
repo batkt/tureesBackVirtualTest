@@ -43,6 +43,7 @@ module.exports.khungulultKhugatsaaShinechlya =
       for await (const kholbolt of kholboltuud) {
         const mashinuud = await ParkingMashin(kholbolt).find();
         const bulkOps = [];
+        var updateOperation = {};
         mashinuud.forEach((mashin) => {
           if (
             mashin.turul === "Түрээслэгч" &&
@@ -60,6 +61,17 @@ module.exports.khungulultKhugatsaaShinechlya =
               ) {
                 mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
                 mashin.khungulujEkhlesenOgnoo = moment();
+                updateOperation = {
+                  updateOne: {
+                    filter: { _id: mashin._id },
+                    update: {
+                      $set: {
+                        uldegdelKhungulukhKhugatsaa: mashin.khungulukhKhugatsaa,
+                        khungulujEkhlesenOgnoo: mashin.khungulujEkhlesenOgnoo,
+                      },
+                    },
+                  },
+                };
               }
             } else if (
               mashin.khungulujEkhlesenOgnoo &&
@@ -67,23 +79,19 @@ module.exports.khungulultKhugatsaaShinechlya =
             ) {
               mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
               mashin.khungulujEkhlesenOgnoo = moment();
+              updateOperation = {
+                updateOne: {
+                  filter: { _id: mashin._id },
+                  update: {
+                    $set: {
+                      uldegdelKhungulukhKhugatsaa: mashin.khungulukhKhugatsaa,
+                      khungulujEkhlesenOgnoo: mashin.khungulujEkhlesenOgnoo,
+                    },
+                  },
+                },
+              };
             }
           }
-          const updateOperation = {
-            updateOne: {
-              filter: { _id: mashin._id },
-              update: {
-                $set: {
-                  uldegdelKhungulukhKhugatsaa: mashin.khungulukhKhugatsaa,
-                  khungulujEkhlesenOgnoo: mashin.khungulujEkhlesenOgnoo,
-                },
-              },
-            },
-          };
-          console.log(
-            "update khiikh operation:",
-            updateOperation.updateOne.update
-          );
           bulkOps.push(updateOperation);
         });
         if (bulkOps.length > 0) {
