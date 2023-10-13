@@ -679,12 +679,19 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             );
         }
         if (bodsonDun > 0) {
+          var tulburuud = oldsonMashin.tuukh[0].tulbur;
+          var niitTulsunDun = 0;
+          if (tulburuud) {
+            niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
+              return object.dun;
+            });
+          }
           data = {
             plate_number: req.params.plate_number,
             enter_date: moment(
               oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
             ).format("YYYY/MM/DD HH:mm:ss"),
-            pay_amount: bodsonDun,
+            pay_amount: bodsonDun - niitTulsunDun,
             parking_id: zogsool._id,
             session_id: oldsonMashin._id,
           };
