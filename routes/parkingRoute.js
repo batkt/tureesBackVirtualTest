@@ -803,28 +803,25 @@ router.route("/v1/pay").post(async (req, res, next) => {
     var success = true;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
+        console.log("1");
         var zogsooluud = await Parking(kholbolt).find({
           tokiNer: { $exists: true },
         });
+        console.log("2");
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
             oldsonMashin = await Uilchluulegch(kholbolt).findOne({
               mashiniiDugaar: req.body.plate_number,
             });
-            if (!oldsonMashin) {
+            if (!!oldsonMashin) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
               tukhainObject = oldsonMashin;
-              message = "Мэдээлэл олдсонгүй!";
-              success = false;
-            }
-            if (!!oldsonMashin) {
-              data = {};
-              continue;
+              break;
             }
           }
         }
-        if (!!oldsonMashin) continue;
+        if (!!oldsonMashin) break;
       }
     }
     var butsaakhKhariu = {
@@ -832,6 +829,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
       message,
       data,
     };
+    console.log("oldsonMashin", oldsonMashin);
     await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
       tukhainObject._id,
       {
