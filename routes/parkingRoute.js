@@ -774,7 +774,7 @@ router.post("/v1/car_add", async (req, res, next) => {
   res.send(butsaakhKhariu);
 });
 
-router.route("/v1/pay").post(tokenShalgakh, async (req, res, next) => {
+router.route("/v1/pay").post(async (req, res, next) => {
   try {
     /*{
       "session_id":"",
