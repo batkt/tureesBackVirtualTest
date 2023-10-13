@@ -869,7 +869,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
           khyamdral = {
             tulukhDun: 0,
             ognoo: ognoo,
-            khyamdral: (geree.sariinTurees * khungulult.khungulukhKhuvi) / 100,
+            khyamdral: khungulult?.khungulultiinDun,
             tailbar: khungulult.shaltgaan,
             khyamdraliinId: khariu._id,
             guilgeeKhiisenOgnoo: new Date(),
