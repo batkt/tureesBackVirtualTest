@@ -803,11 +803,9 @@ router.route("/v1/pay").post(async (req, res, next) => {
     var success = true;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        console.log("1");
         var zogsooluud = await Parking(kholbolt).find({
           tokiNer: { $exists: true },
         });
-        console.log("2");
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
             oldsonMashin = await Uilchluulegch(kholbolt).findOne({
@@ -829,7 +827,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
       message,
       data,
     };
-    console.log("oldsonMashin", oldsonMashin);
     await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
       tukhainObject._id,
       {
