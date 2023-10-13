@@ -810,9 +810,33 @@ router.route("/v1/pay").post(async (req, res, next) => {
         console.log("2");
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
-              mashiniiDugaar: req.body.plate_number,
-            });
+            if (!!req.body.manually_open) {
+              oldsonMashin = await Uilchluulegch(kholbolt).find({
+                mashiniiDugaar: req.body.plate_number,
+                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                  $exists: true,
+                },
+                "tuukh.0.tuluv": {
+                  $ne: -2,
+                },
+                updatedAt: {
+                  $gt: new Date(Date.now() - 900000), //15min dotor
+                },
+              });
+              if (oldsonMashin && oldsonMashin.length > 0)
+                oldsonMashin = oldsonMashin[0];
+            } else {
+              oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+                mashiniiDugaar: req.body.plate_number,
+                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                  $exists: false,
+                },
+                "tuukh.0.tuluv": {
+                  $ne: -2,
+                },
+              });
+            }
+
             if (!!oldsonMashin) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
@@ -820,8 +844,8 @@ router.route("/v1/pay").post(async (req, res, next) => {
               break;
             }
           }
+          if (!!oldsonMashin) break;
         }
-        if (!!oldsonMashin) break;
       }
     }
     var butsaakhKhariu = {
@@ -849,7 +873,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
         ],
       }
     );
-    if (req.body.manually_open) {
+    if (!!req.body.manually_open) {
       const io = req.app.get("socketio");
       io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
         khaalgaTurul: "oroh",
