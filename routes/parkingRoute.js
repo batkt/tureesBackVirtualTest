@@ -682,7 +682,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
           var tulburuud = oldsonMashin.tuukh[0].tulbur;
           var niitTulsunDun = 0;
           if (tulburuud) {
-            niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
+            niitTulsunDun = lodash.sumBy(tulburuud, function (object) {
               return object.dun;
             });
           }
