@@ -11,6 +11,7 @@ const {
   sdkData,
   uilchluulegchTseverliy,
   zogsooliinDunAvya,
+  TokiMashin,
 } = require("parking-v1");
 const ZogsooliinIp = require("../models/zogsooliinIp");
 const Khariltsagch = require("../models/khariltsagch");
@@ -754,6 +755,115 @@ router.get("/v1/car/:session_id", async (req, res, next) => {
     data,
   };
   res.send(butsaakhKhariu);
+});
+
+router.post("/v1/car_add", async (req, res, next) => {
+  const { db } = require("zevbackv2");
+  var erunkhiiKholbolt = db.erunkhiiKholbolt;
+  var message = "Amjilttai";
+  await TokiMashin(erunkhiiKholbolt).insertMany([
+    {
+      mashiniiDugaar: req.body.plate_number,
+    },
+  ]);
+  var success = true;
+  var butsaakhKhariu = {
+    success,
+    message,
+  };
+  res.send(butsaakhKhariu);
+});
+
+router.route("/v1/pay").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    /*{
+      "session_id":"",
+      "paid_amount": 1622.0,
+      "plate_number": "7120СЭА",
+      "individual": true,
+      "customer_no": "",
+      "door_id": "",
+      "manually_open": true
+     }*/
+    let tulbur = [
+      {
+        ognoo: new Date(),
+        turul: "toki",
+        dun: req.body.paid_amount,
+      },
+    ];
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+    var data;
+    var message = "Amjilttai";
+    var oldsonMashin;
+    var tukhainKholbolt;
+    var tukhainObject;
+    var tukhainZogsool;
+    var success = true;
+    if (kholboltuud) {
+      for await (const kholbolt of kholboltuud) {
+        var zogsooluud = await Parking(kholbolt).find({
+          tokiNer: { $exists: true },
+        });
+        for await (const zogsool of zogsooluud) {
+          if (!!zogsool) {
+            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+              mashiniiDugaar: req.body.plate_number,
+            });
+            if (!oldsonMashin) {
+              tukhainKholbolt = kholbolt;
+              tukhainZogsool = zogsool;
+              tukhainObject = oldsonMashin;
+              message = "Мэдээлэл олдсонгүй!";
+              success = false;
+            }
+            if (!!oldsonMashin) {
+              data = {};
+              continue;
+            }
+          }
+        }
+        if (!!oldsonMashin) continue;
+      }
+    }
+    var butsaakhKhariu = {
+      success,
+      message,
+      data,
+    };
+    await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
+      tukhainObject._id,
+      {
+        $set: {
+          "tuukh.$[t].burtgesenAjiltaniiId": "toki",
+          "tuukh.$[t].burtgesenAjiltaniiNer": "toki",
+          "tuukh.$[t].tulbur": tulbur,
+          "tuukh.$[t].tuluv": 1,
+          tokiId: "toki",
+        },
+      },
+      {
+        arrayFilters: [
+          {
+            "t.zogsooliinId": tukhainZogsool._id,
+          },
+        ],
+      }
+    );
+    if (req.body.manually_open) {
+      const io = req.app.get("socketio");
+      io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
+        khaalgaTurul: "oroh",
+        turul: "toki",
+        mashiniiDugaar: req.body.plate_number,
+        cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
+      });
+    }
+    res.send(butsaakhKhariu);
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
