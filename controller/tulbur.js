@@ -315,9 +315,12 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               });
             if (zardluud && zardluud.length > 0) {
               zardluud.forEach((zardal) => {
+                console.log('zardal ---------', zardal);
                 if (zardal) {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
+                  if (zardal.turul == "1м3/талбай")
+                    zardal.dun = tooZasyaSync(zardal.tariff * body.metrKube);
                   if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                   butsaakhJagsaalt.push({
                     turul: "avlaga",
@@ -959,6 +962,10 @@ exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
                 if (zardal.turul == "1м2")
                   zardal.dun = tooZasyaSync(
                     zardal.tariff * geree.talbainKhemjee
+                  );
+                if (zardal.turul == "1м3/талбай")
+                  zardal.dun = tooZasyaSync(
+                      zardal.tariff * geree.talbainKhemjeeMetrKube
                   );
                 if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                 butsaakhJagsaalt.push({
