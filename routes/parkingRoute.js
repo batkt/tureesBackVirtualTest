@@ -861,18 +861,18 @@ router.route("/v1/pay").post(async (req, res, next) => {
       data,
     };
     console.log("oldsonMashin", oldsonMashin);
-    if (oldsonMashin && oldsonMashin.tuukh && oldsonMashin.tuukh.length > 0)
+    if (tukhainObject && tukhainObject.tuukh && tukhainObject.tuukh.length > 0)
       if (
-        oldsonMashin.tuukh[0].tulbur &&
-        oldsonMashin.tuukh[0].tulbur.length > 0
+        tukhainObject.tuukh[0].tulbur &&
+        tukhainObject.tuukh[0].tulbur.length > 0
       )
-        oldsonMashin.tuukh[0].tulbur.push(...tulbur);
-      else oldsonMashin.tuukh[0].tulbur = tulbur;
+        tukhainObject.tuukh[0].tulbur.push(...tulbur);
+      else tukhainObject.tuukh[0].tulbur = tulbur;
     await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
       tukhainObject._id,
       {
         $set: {
-          "tuukh.$[t].tulbur": tulbur,
+          "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
           "tuukh.$[t].tuluv": 1,
           tokiId: "toki",
         },
