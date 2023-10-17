@@ -115,6 +115,18 @@ cron.schedule(
 );
 
 cron.schedule(
+  "59 23 * * *",
+  function () {
+    console.log("ebarimt ilgeelee", new Date());
+    ebarimtRoute.ebarimtIlgeeye("6115f350b35689cdbf1b9da3");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
   "*/2 * * * * * ",
   function () {
     // console.log("xuulga tatlaa", new Date());

@@ -689,6 +689,36 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
     next(error);
   }
 });
+
+async function ebarimtIlgeeye(baiguullagiinId) {
+  try {
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      baiguullagiinId
+    );
+    if (!!baiguullaga) {
+      for await (const barilga of baiguullaga.barilguud) {
+        var url = process.env.EBARIMT_IP + "/sendData";
+        try {
+          url = url + "?lib=" + barilga._id.toString();
+          request.get(url, { json: true }, (err, res1, body) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("ebarimt amjilttai ilgeelee");
+            }
+          });
+        } catch (aldaa) {
+          continue;
+        }
+      }
+    }
+  } catch (error) {
+    console.log("ebarimt error", error);
+  }
+}
+
 module.exports = router;
 module.exports.ebarimtDuudya = ebarimtDuudya;
+module.exports.ebarimtIlgeeye = ebarimtIlgeeye;
 module.exports.zogsooloosEbarimtUusgye = zogsooloosEbarimtUusgye;
