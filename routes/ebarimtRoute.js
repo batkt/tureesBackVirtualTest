@@ -523,16 +523,16 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
         $lte: new Date(req.body.duusakhOgnoo),
       },
     };
-    if(req.body.barimtTurul === 'mashiniiDugaar')
+    if (req.body.barimtTurul === "mashiniiDugaar")
       match.mashiniiDugaar = { $exists: true };
-    else if(req.body.barimtTurul === 'gereeniiDugaar')
+    else if (req.body.barimtTurul === "gereeniiDugaar")
       match.gereeniiDugaar = { $exists: true };
-    else if(req.body.barimtTurul === 'togloomiinId')
+    else if (req.body.barimtTurul === "togloomiinId")
       match.togloomiinId = { $exists: true };
 
     var query = [
       {
-        $match: match
+        $match: match,
       },
       {
         $facet: {
@@ -689,5 +689,6 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
     next(error);
   }
 });
-
 module.exports = router;
+module.exports.ebarimtDuudya = ebarimtDuudya;
+module.exports.zogsooloosEbarimtUusgye = zogsooloosEbarimtUusgye;
