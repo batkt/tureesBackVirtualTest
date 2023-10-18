@@ -106,6 +106,7 @@ const gereeSchema = new Schema(
         turul: String,
         tariff: Number,
         dun: Number, //dung n zuwxun munguur tootsoj awax togtmol ued buglunu
+        suuriKhuraamj: String,
       },
     ],
     segmentuud: [
