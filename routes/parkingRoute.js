@@ -662,9 +662,18 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
         if (!!zogsool) {
           var oldsonMashin = await Uilchluulegch(kholbolt).findOne({
             mashiniiDugaar: req.params.plate_number,
-            "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-              $gt: new Date(Date.now() - 100000), //1.30sec in dotor
-            },
+            $or: [
+              {
+                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                  $gt: new Date(Date.now() - 100000), //1.30sec in dotor
+                },
+              },
+              {
+                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                  $exists: false,
+                },
+              },
+            ],
             "tuukh.0.tuluv": {
               $ne: -2,
             },
