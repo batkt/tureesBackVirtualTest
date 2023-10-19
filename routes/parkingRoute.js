@@ -702,6 +702,16 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             session_id: oldsonMashin._id,
           };
           continue;
+        } else if (oldsonMashin) {
+          data = {
+            plate_number: req.params.plate_number,
+            enter_date: moment(
+              oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
+            ).format("YYYY/MM/DD HH:mm:ss"),
+            pay_amount: 0,
+            parking_id: zogsool._id,
+            session_id: oldsonMashin._id,
+          };
         }
       }
       if (bodsonDun > 0) continue;
