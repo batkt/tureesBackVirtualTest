@@ -9,6 +9,8 @@ const khungulultiinTuukhSchema = new Schema(
     ognoonuud: [Date],
     shaltgaan: String,
     turul: String,
+    zardliinId: String,
+    khungulukhTurul: String,
     khungulukhKhuvi: Number,
     tulukhDun: Number,
     khungulsunDun: Number,
