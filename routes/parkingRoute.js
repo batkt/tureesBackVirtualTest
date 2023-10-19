@@ -774,11 +774,11 @@ router.get("/v1/car/:session_id", async (req, res, next) => {
               parking_id: zogsool._id,
               session_id: oldsonMashin._id,
             };
-            continue;
+            break;
           }
         }
       }
-      if (!!oldsonMashin) continue;
+      if (!!oldsonMashin) break;
     }
   }
   var butsaakhKhariu = {
