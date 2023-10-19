@@ -710,7 +710,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             parking_id: zogsool._id,
             session_id: oldsonMashin._id,
           };
-          continue;
+          break;
         } else if (oldsonMashin) {
           data = {
             plate_number: req.params.plate_number,
@@ -721,9 +721,10 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             parking_id: zogsool._id,
             session_id: oldsonMashin._id,
           };
+          break;
         }
       }
-      if (bodsonDun > 0) continue;
+      if (bodsonDun > 0) break;
     }
   }
   var butsaakhKhariu = {
