@@ -901,7 +901,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
             "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
             "tuukh.$[t].tuluv": 1,
             tokiId: "toki",
-            garakhTsag: new Date(new Date().getTime() + 15 * 60000),
+            garakhTsag: new Date(new Date().getTime() + 30 * 60000),
           },
         },
         {
