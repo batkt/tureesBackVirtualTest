@@ -663,7 +663,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
           var oldsonMashin = await Uilchluulegch(kholbolt).findOne({
             mashiniiDugaar: req.params.plate_number,
             "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-              $exists: false,
+              $gt: new Date(Date.now() - 100000), //1.30sec in dotor
             },
             "tuukh.0.tuluv": {
               $ne: -2,
