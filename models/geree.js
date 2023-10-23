@@ -27,6 +27,8 @@ var avlagiinTurul = new Schema({
       guilgeeKhiisenOgnoo: Date,
       guilgeeKhiisenAjiltniiNer: String,
       guilgeeKhiisenAjiltniiId: String,
+      zaaltTog: Number,
+      zaaltUs: Number,
     },
   ],
   baritsaa: [
@@ -71,6 +73,7 @@ const gereeSchema = new Schema(
     talbainNegjUne: Number,
     talbainNiitUne: Number,
     talbainKhemjee: Number,
+    talbainKhemjeeMetrKube: Number,
     davkhar: String,
     baritsaaAvakhDun: Number,
     baritsaaniiUldegdel: {
@@ -103,6 +106,7 @@ const gereeSchema = new Schema(
         turul: String,
         tariff: Number,
         dun: Number, //dung n zuwxun munguur tootsoj awax togtmol ued buglunu
+        suuriKhuraamj: String,
       },
     ],
     segmentuud: [

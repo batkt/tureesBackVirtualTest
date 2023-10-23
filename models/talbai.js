@@ -10,6 +10,7 @@ const talbaiSchema = new Schema(
     id: String,
     davkhar: String,
     talbainKhemjee: Number,
+    talbainKhemjeeMetrKube: Number,
     sulKhemjee: Number,
     kod: String,
     tailbar: String,

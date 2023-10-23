@@ -523,16 +523,16 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
         $lte: new Date(req.body.duusakhOgnoo),
       },
     };
-    if(req.body.barimtTurul === 'mashiniiDugaar')
+    if (req.body.barimtTurul === "mashiniiDugaar")
       match.mashiniiDugaar = { $exists: true };
-    else if(req.body.barimtTurul === 'gereeniiDugaar')
+    else if (req.body.barimtTurul === "gereeniiDugaar")
       match.gereeniiDugaar = { $exists: true };
-    else if(req.body.barimtTurul === 'togloomiinId')
+    else if (req.body.barimtTurul === "togloomiinId")
       match.togloomiinId = { $exists: true };
 
     var query = [
       {
-        $match: match
+        $match: match,
       },
       {
         $facet: {
@@ -690,4 +690,35 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
   }
 });
 
+async function ebarimtIlgeeye(baiguullagiinId) {
+  try {
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      baiguullagiinId
+    );
+    if (!!baiguullaga) {
+      for await (const barilga of baiguullaga.barilguud) {
+        var url = process.env.EBARIMT_IP + "/sendData";
+        try {
+          url = url + "?lib=" + barilga._id.toString();
+          request.get(url, { json: true }, (err, res1, body) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log("ebarimt amjilttai ilgeelee");
+            }
+          });
+        } catch (aldaa) {
+          continue;
+        }
+      }
+    }
+  } catch (error) {
+    console.log("ebarimt error", error);
+  }
+}
+
 module.exports = router;
+module.exports.ebarimtDuudya = ebarimtDuudya;
+module.exports.ebarimtIlgeeye = ebarimtIlgeeye;
+module.exports.zogsooloosEbarimtUusgye = zogsooloosEbarimtUusgye;
