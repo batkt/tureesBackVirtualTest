@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
 const http = require("http");
 const cors = require("cors");
 const server = http.Server(app);
@@ -42,8 +41,8 @@ const eventRoute = require("./routes/eventRoute");
 const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
-const dbUrl = process.env.BAAZ;
-//process.setMaxListeners(0);
+process.setMaxListeners(0);
+process.env.UV_THREADPOOL_SIZE = 10;
 //require("events").EventEmitter.prototype._maxListeners = 15;
 //require("events").EventEmitter.defaultMaxListeners = 0;
 server.listen(8081);
