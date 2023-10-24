@@ -42,7 +42,7 @@ const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
 process.setMaxListeners(0);
-process.env.UV_THREADPOOL_SIZE = 10;
+process.env.UV_THREADPOOL_SIZE = 12;
 //require("events").EventEmitter.prototype._maxListeners = 15;
 //require("events").EventEmitter.defaultMaxListeners = 0;
 server.listen(8081);
