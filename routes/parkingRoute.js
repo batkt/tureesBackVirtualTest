@@ -868,7 +868,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
                 },
               });
             }
-
             if (!!oldsonMashin) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
@@ -878,6 +877,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
           }
           if (!!oldsonMashin) break;
         }
+        if (!!oldsonMashin) break;
       }
     }
     var butsaakhKhariu = {
@@ -885,7 +885,14 @@ router.route("/v1/pay").post(async (req, res, next) => {
       message,
     };
     console.log("oldsonMashin", oldsonMashin);
-    if (tukhainObject) {
+    if (!oldsonMashin) {
+      res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
+    }
+    if (
+      tukhainObject &&
+      tukhainObject.tuukh &&
+      tukhainObject.tuukh.length > 0
+    ) {
       if (tukhainObject.tuukh && tukhainObject.tuukh.length > 0)
         if (
           tukhainObject.tuukh[0].tulbur &&
@@ -926,11 +933,11 @@ router.route("/v1/pay").post(async (req, res, next) => {
           ebarimt.save().catch((err) => {
             next(err);
           });
-          var update = { "tuukh.0.ebarimtAvsanEsekh": true };
+          var update = { ebarimtAvsanEsekh: true };
           if (ebarimt.customerNo)
             update = {
               ...update,
-              "tuukh.0.ebarimtRegister": ebarimt.customerNo,
+              ebarimtRegister: ebarimt.customerNo,
             };
           Uilchluulegch(tukhainKholbolt)
             .findByIdAndUpdate(tukhainObject._id, update)
@@ -954,13 +961,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
 
       ebarimtDuudya(ebarimt, butsaakhMethod, next);
     }
-    if (!oldsonMashin) {
-      res.send({
-        success: false,
-        message: "Машины мэдээлэл олдсонгүй!",
-      });
-    }
-    if (!!req.body.manually_open && oldsonMashin) {
+    if (!!req.body.manually_open && tukhainObject && tukhainObject.tuukh) {
       const io = req.app.get("socketio");
       io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
         khaalgaTurul: "oroh",
