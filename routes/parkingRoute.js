@@ -662,6 +662,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
         console.log(zogsool);
         if (!!zogsool) {
           oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+            "tuukh.0.zogsooliinId": zogsool._id,
             mashiniiDugaar: req.params.plate_number,
             $or: [
               {
@@ -845,6 +846,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
           if (!!zogsool) {
             if (!!req.body.manually_open) {
               oldsonMashin = await Uilchluulegch(kholbolt).find({
+                "tuukh.0.zogsooliinId": zogsool._id,
                 mashiniiDugaar: req.body.plate_number,
                 "tuukh.0.tsagiinTuukh.0.garsanTsag": {
                   $exists: true,
@@ -860,6 +862,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
                 oldsonMashin = oldsonMashin[0];
             } else {
               oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+                "tuukh.0.zogsooliinId": zogsool._id,
                 mashiniiDugaar: req.body.plate_number,
                 "tuukh.0.tsagiinTuukh.0.garsanTsag": {
                   $exists: false,
