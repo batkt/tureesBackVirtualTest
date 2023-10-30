@@ -652,6 +652,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
   var data;
   var message = "Amjilttai";
   var success = true;
+  var oldsonMashin;
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {
       var zogsooluud = await Parking(kholbolt).find({
@@ -660,7 +661,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
       for await (const zogsool of zogsooluud) {
         console.log(zogsool);
         if (!!zogsool) {
-          var oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+          oldsonMashin = await Uilchluulegch(kholbolt).findOne({
             mashiniiDugaar: req.params.plate_number,
             $or: [
               {
@@ -681,11 +682,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               $size: 1,
             },
           });
-          console.log("oldsonMashin", oldsonMashin);
-          if (!oldsonMashin) {
-            message = "Машины мэдээлэл олдсонгүй!";
-            success = false;
-          }
           if (!!oldsonMashin)
             bodsonDun = await zogsooliinDunAvya(
               zogsool,
@@ -726,6 +722,11 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
       }
       if (bodsonDun > 0) break;
     }
+  }
+
+  if (!oldsonMashin) {
+    message = "Машины мэдээлэл олдсонгүй!";
+    success = false;
   }
   var butsaakhKhariu = {
     success,
