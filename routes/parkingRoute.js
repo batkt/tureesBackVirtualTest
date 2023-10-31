@@ -879,7 +879,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
       message,
     };
     console.log("oldsonMashin pay", oldsonMashin);
-    if (!oldsonMashin) {
+    if (!oldsonMashin || !oldsonMashin.mashiniiDugaar) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
     }
     if (
