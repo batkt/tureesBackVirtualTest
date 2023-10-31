@@ -878,7 +878,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
       success,
       message,
     };
-    console.log("oldsonMashin", oldsonMashin);
+    console.log("oldsonMashin pay", oldsonMashin);
     if (!oldsonMashin) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
     }
