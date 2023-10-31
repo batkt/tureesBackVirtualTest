@@ -667,7 +667,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               },
             ],
             "tuukh.0.tuluv": {
-              $ne: -2,
+              $nin: [-2, -3],
             },
             tuukh: {
               $size: 1,
@@ -843,7 +843,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
                   $exists: true,
                 },
                 "tuukh.0.tuluv": {
-                  $ne: -2,
+                  $nin: [-2, -3],
                 },
                 updatedAt: {
                   $gt: new Date(Date.now() - 900000), //15min dotor
@@ -859,7 +859,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
                   $exists: false,
                 },
                 "tuukh.0.tuluv": {
-                  $ne: -2,
+                  $nin: [-2, -3],
                 },
               });
             }
