@@ -834,7 +834,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
             console.log("2");
-            console.log("kholbolt ", kholbolt.baaziinNer);
+            console.log("kholbolt  ", kholbolt.baaziinNer);
             if (!!req.body.manually_open) {
               oldsonMashin = await Uilchluulegch(kholbolt).find({
                 "tuukh.0.zogsooliinId": zogsool._id,
@@ -863,16 +863,16 @@ router.route("/v1/pay").post(async (req, res, next) => {
                 },
               });
             }
-            if (!!oldsonMashin) {
+            if (!!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
               tukhainObject = oldsonMashin;
               break;
             }
           }
-          if (!!oldsonMashin) break;
+          if (!!oldsonMashin.mashiniiDugaar) break;
         }
-        if (!!oldsonMashin) break;
+        if (!!oldsonMashin.mashiniiDugaar) break;
       }
     }
     var butsaakhKhariu = {
