@@ -673,7 +673,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               $size: 1,
             },
           });
-          if (!!oldsonMashin)
+          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar)
             bodsonDun = await zogsooliinDunAvya(
               zogsool,
               oldsonMashin,
@@ -698,7 +698,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             session_id: oldsonMashin._id,
           };
           break;
-        } else if (oldsonMashin) {
+        } else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
           data = {
             plate_number: req.params.plate_number,
             enter_date: moment(
@@ -749,7 +749,7 @@ router.get("/v1/car/:session_id", async (req, res, next) => {
             message = "Мэдээлэл олдсонгүй!";
             success = false;
           }
-          if (!!oldsonMashin) {
+          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
             data = {
               plate_number: req.params.plate_number,
               enter_date: moment(
@@ -771,7 +771,7 @@ router.get("/v1/car/:session_id", async (req, res, next) => {
           }
         }
       }
-      if (!!oldsonMashin) break;
+      if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
     }
   }
   var butsaakhKhariu = {
