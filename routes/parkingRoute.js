@@ -477,25 +477,15 @@ router.post(
           $match: match,
         },
         {
-          $project: {
-            tuluv: {
-              $first: "$tuukh.tuluv",
-            },
-            niitDun: {
-              $sum: { $ifNull: ["$tuukh.tulukhDun", 0] },
-            },
-          },
-        },
-        {
           $group: {
             _id: "id",
             dun: {
               $sum: {
                 $cond: [
                   {
-                    $eq: ["$tuluv", 1],
+                    $eq: ["$tuukh.0.tuluv", 1],
                   },
-                  "$niitDun",
+                  { $ifNull: ["$tuukh.tulukhDun", 0] },
                   0,
                 ],
               },
@@ -507,14 +497,14 @@ router.post(
                       {
                         $eq: ["$garsanKhaalga", req.body.garakhKhaalgaIp],
                       },
-                      "$niitDun",
+                      { $ifNull: ["$tuukh.tulukhDun", 0] },
                       0,
                     ],
                   },
                 }
               : { $sum: 0 },
             niitDun: {
-              $sum: { $ifNull: ["$niitDun", 0] },
+              $sum: { $ifNull: ["$tuukh.tulukhDun", 0] },
             },
           },
         },
