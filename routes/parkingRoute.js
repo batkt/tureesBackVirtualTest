@@ -863,16 +863,16 @@ router.route("/v1/pay").post(async (req, res, next) => {
                 },
               });
             }
-            if (!!oldsonMashin.mashiniiDugaar) {
+            if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
               tukhainObject = oldsonMashin;
               break;
             }
           }
-          if (!!oldsonMashin.mashiniiDugaar) break;
+          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
         }
-        if (!!oldsonMashin.mashiniiDugaar) break;
+        if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
       }
     }
     var butsaakhKhariu = {
