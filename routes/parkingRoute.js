@@ -711,7 +711,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
           break;
         }
       }
-      if (bodsonDun > 0) break;
+      if (data.plate_number) break;
     }
   }
 
