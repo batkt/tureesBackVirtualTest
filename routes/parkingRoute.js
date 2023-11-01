@@ -477,6 +477,16 @@ router.post(
           $match: match,
         },
         {
+          $project: {
+            tuluv: {
+              $first: "$tuukh.tuluv",
+            },
+            niitDun: {
+              $sum: { $ifNull: ["$tuukh.tulukhDun", 0] },
+            },
+          },
+        },
+        {
           $group: {
             _id: "id",
             dun: {
@@ -504,7 +514,7 @@ router.post(
                 }
               : { $sum: 0 },
             niitDun: {
-              $sum: { $ifNull: ["$tuukh.tulukhDun", 0] },
+              $sum: { $ifNull: ["$niitDun", 0] },
             },
           },
         },
