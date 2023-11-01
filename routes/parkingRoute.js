@@ -371,6 +371,8 @@ router.post(
               },
               "tuukh.tuluv": 1,
             };
+      if (!!req.body.ajiltniiId)
+        match["tuukh.burtgesenAjiltaniiId"] = req.body.ajiltniiId;
       console.log("match", JSON.stringify(match, null, 4));
       const udriinTailan = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
