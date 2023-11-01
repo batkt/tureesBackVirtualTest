@@ -354,16 +354,24 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      var match = {
-        "tuukh.tsagiinTuukh.garsanTsag": {
-          $gte: new Date(req.body.ekhlekhOgnoo),
-          $lte: new Date(req.body.duusakhOgnoo),
-        },
-        "tuukh.tuluv": 1,
-      };
+      var match =
+        req.body.garsanKhaalga !== null
+          ? {
+              "tuukh.garsanKhaalga": req.body.garsanKhaalga,
+              "tuukh.tsagiinTuukh.garsanTsag": {
+                $gte: new Date(req.body.ekhlekhOgnoo),
+                $lte: new Date(req.body.duusakhOgnoo),
+              },
+              "tuukh.tuluv": 1,
+            }
+          : {
+              "tuukh.tsagiinTuukh.garsanTsag": {
+                $gte: new Date(req.body.ekhlekhOgnoo),
+                $lte: new Date(req.body.duusakhOgnoo),
+              },
+              "tuukh.tuluv": 1,
+            };
 
-      if (req.body.garsanKhaalga !== null)
-        match["tuukh.garsanKhaalga"] = req.body.garsanKhaalga;
       if (req.body.ajiltniiId !== null)
         match["tuukh.burtgesenAjiltaniiId"] = req.body.ajiltniiId;
       console.log("match", JSON.stringify(match, null, 4));
