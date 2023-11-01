@@ -373,6 +373,7 @@ router.post(
         }),
         ...ognooTuluvQuery,
       };
+      console.log("match", JSON.stringify(match, null, 4));
       const udriinTailan = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
       ).aggregate([
