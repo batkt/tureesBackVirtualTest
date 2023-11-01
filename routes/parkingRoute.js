@@ -485,7 +485,7 @@ router.post(
                   {
                     $eq: ["$tuukh.0.tuluv", 1],
                   },
-                  { $ifNull: ["$tuukh.tulukhDun", 0] },
+                  { $ifNull: ["$niitDun", 0] },
                   0,
                 ],
               },
