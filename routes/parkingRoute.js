@@ -354,7 +354,7 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      var match =
+      const match =
         req.body.garsanKhaalga !== null
           ? {
               "tuukh.garsanKhaalga": req.body.garsanKhaalga,
@@ -371,9 +371,6 @@ router.post(
               },
               "tuukh.tuluv": 1,
             };
-
-      if (req.body.ajiltniiId !== null)
-        match["tuukh.burtgesenAjiltaniiId"] = req.body.ajiltniiId;
       console.log("match", JSON.stringify(match, null, 4));
       const udriinTailan = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
