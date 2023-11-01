@@ -148,7 +148,6 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
       rootName: "Document",
     });
     var xmlObject = builder.buildObject(xmlObject);
-    console.log("xmlObject", xmlObject);
     var xml = {
       xml: xmlObject,
     };
@@ -163,7 +162,6 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
     console.log("url", urlString);
     var url = new URL(urlString);
     const response = await instanceJson.post(url, { body: objectString });
-    console.log("response.body", response.body);
     var parseString = xml2js.parseString;
     parseString(response.body, async function (err, result) {
       onFinish(result);
@@ -265,11 +263,9 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         token = tokenObject.access_token;
       } else token = tokenObject.token;
       var khariu = await dansniiJagsaaltAvya(token, next);
-      console.log("khariu", khariu);
       khariu = khariu.accounts.filter(
         (a) => a.number == req.body.dansniiDugaar
       );
-      console.log("khariu", khariu);
       if (khariu && khariu.length > 0) uldegdel = khariu[0].avalaibleBalance;
       res.send({ uldegdel });
     } else if (dans && dans.bank == "tdb") {
@@ -554,7 +550,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   },
                   next,
                   async (khariu) => {
-                    console.log("khariu", new Date(), khariu);
                     if (
                       khariu &&
                       khariu.Document &&
@@ -597,18 +592,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                           console.log(err);
                         });
                     } else {
-                      console.log("khariu", khariu);
-                      console.log("khariu.Document", khariu["Document"]);
                       console.log(
                         "khariu.Document.GrpHdr",
                         khariu.Document.GrpHdr
                       );
-                      console.log(
-                        "khariu.Document.GrpHdr",
-                        khariu.Document.GrpHdr[0]
-                      );
-                      console.log("khariu", khariu.Document.GrpHdr[0].RspCd);
-                      console.log("khariu", khariu.Document.GrpHdr[0].RspCd[0]);
                     }
                   },
                   dans.baiguullagiinId

@@ -133,7 +133,6 @@ router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
 
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try {
-    console.log("zogsoolSdkService body", req.body);
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
     const medegdel = async (uilchluulegch, khariltsagchiinId) => {
@@ -201,7 +200,6 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
       }
     };
     const khariu = await sdkData(req, medegdel);
-    console.log("zogsoolSdkService--- khariu ", khariu);
     res.send(khariu);
   } catch (err) {
     next(err);
@@ -368,6 +366,7 @@ router.post(
         match["tuukh.garsanKhaalga"] = req.body.garsanKhaalga;
       if (req.body.ajiltniiId !== null)
         match["tuukh.burtgesenAjiltaniiId"] = req.body.ajiltniiId;
+      console.log("match", JSON.stringify(match, null, 4));
       const udriinTailan = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
       ).aggregate([
