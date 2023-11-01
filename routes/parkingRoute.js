@@ -496,7 +496,7 @@ router.post(
                   {
                     $eq: ["$tuluv", 1],
                   },
-                  "$niitDun",
+                  { $ifNull: ["$niitDun", 0] },
                   0,
                 ],
               },
@@ -508,7 +508,7 @@ router.post(
                       {
                         $eq: ["$garsanKhaalga", req.body.garakhKhaalgaIp],
                       },
-                      "$niitDun",
+                      { $ifNull: ["$niitDun", 0] },
                       0,
                     ],
                   },
