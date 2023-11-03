@@ -128,9 +128,9 @@ const talbainiiTalbaruud = [
 ];
 
 const baritsaaniiTalbaruud = [
-  { ner: t("Барьцаа авах дүн"), talbar: "<baritsaaAvakhDun>" },
+  { ner: "Барьцаа авах дүн", talbar: "<baritsaaAvakhDun>" },
   {
-    ner: t("Барьцаа байршуулах хугацаа"),
+    ner: "Барьцаа байршуулах хугацаа",
     talbar: "baritsaaBairshuulakhKhugatsaa",
   },
 ];
