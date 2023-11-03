@@ -79,7 +79,10 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     result: ajiltan,
     success: true,
   };
-  io.emit(`ajiltan${ajiltan._id}`, {ip: req.headers["x-real-ip"], type:"logout"});
+  io.emit(`ajiltan${ajiltan._id}`, {
+    ip: req.headers["x-real-ip"],
+    type: "logout",
+  });
   duusakhOgnooAvya(
     { register: baiguullaga.register },
     async (khariu) => {
@@ -239,6 +242,33 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
         var urdunJson = urDun.toJSON();
         urdunJson.duusakhOgnoo = tokenObject.duusakhOgnoo;
         res.send(urdunJson);
+      })
+      .catch((err) => {
+        console.log("aldaa");
+        next(err);
+      });
+  } catch (error) {
+    next(error);
+  }
+});
+
+exports.khugatsaaguiTokenAvya = asyncHandler(async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    if (!req.headers.authorization) {
+      throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
+    }
+    const token = req.headers.authorization.split(" ")[1];
+    const tokenObject = jwt.verify(token, process.env.APP_SECRET, 401);
+    console.log(tokenObject);
+    if (tokenObject.id == "zochin")
+      throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
+    console.log("tokenObject", tokenObject);
+    Ajiltan(db.erunkhiiKholbolt)
+      .findById(tokenObject.id)
+      .then(async (urDun) => {
+        const jwt = await urDun.khugatsaaguiTokenUusgeye(khariu.duusakhOgnoo);
+        res.send(jwt);
       })
       .catch((err) => {
         console.log("aldaa");

@@ -73,6 +73,20 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo) {
   return token;
 };
 
+ajiltanSchema.methods.khugatsaaguiTokenUusgeye = function (duusakhOgnoo) {
+  const token = jwt.sign(
+    {
+      id: this._id,
+      ner: this.ner,
+      baiguullagiinId: this.baiguullagiinId,
+      duusakhOgnoo: duusakhOgnoo,
+    },
+    process.env.APP_SECRET,
+    {}
+  );
+  return token;
+};
+
 ajiltanSchema.pre("save", async function () {
   this.indexTalbar = this.register + this.nevtrekhNer;
   const salt = await bcrypt.genSalt(12);
