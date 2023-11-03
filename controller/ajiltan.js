@@ -267,7 +267,7 @@ exports.khugatsaaguiTokenAvya = asyncHandler(async (req, res, next) => {
     Ajiltan(db.erunkhiiKholbolt)
       .findById(tokenObject.id)
       .then(async (urDun) => {
-        const jwt = await urDun.khugatsaaguiTokenUusgeye(khariu.duusakhOgnoo);
+        const jwt = await urDun.khugatsaaguiTokenUusgeye();
         res.send(jwt);
       })
       .catch((err) => {

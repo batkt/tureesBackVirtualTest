@@ -73,13 +73,12 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo) {
   return token;
 };
 
-ajiltanSchema.methods.khugatsaaguiTokenUusgeye = function (duusakhOgnoo) {
+ajiltanSchema.methods.khugatsaaguiTokenUusgeye = function () {
   const token = jwt.sign(
     {
       id: this._id,
       ner: this.ner,
       baiguullagiinId: this.baiguullagiinId,
-      duusakhOgnoo: duusakhOgnoo,
     },
     process.env.APP_SECRET,
     {}
