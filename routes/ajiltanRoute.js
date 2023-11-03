@@ -18,6 +18,7 @@ const {
   backAvya,
   tokenoorAjiltanAvya,
   erkhiinMedeelelAvya,
+  khugatsaaguiTokenAvya,
 } = require("../controller/ajiltan");
 const aldaa = require("../components/aldaa");
 
