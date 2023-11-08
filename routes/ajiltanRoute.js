@@ -134,7 +134,7 @@ router.post(
       const { db } = require("zevbackv2");
       if (req.body.erkhuud && req.body.erkhuud.length > 0)
         var moduluud = req.body.erkhuud;
-      var baiguullaga = await Baiguullaga.findOne({
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
         register: req.body.register,
       });
       for await (const element of moduluud) {
