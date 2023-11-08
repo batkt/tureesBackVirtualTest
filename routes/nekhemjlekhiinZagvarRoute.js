@@ -5,6 +5,7 @@ const { crud, UstsanBarimt, tokenShalgakh } = require("zevbackv2");
 const fs = require("fs");
 const ExcelJS = require("exceljs");
 const { toWords } = require("mon_num");
+const XLSX = require("xlsx");
 
 crud(router, "nekhemjlekhiinZagvar", nekhemjlekhiinZagvar, UstsanBarimt);
 
@@ -18,23 +19,16 @@ router
     try {
       const turul = req.body.turul;
       const baiguullagiinId = req.body.baiguullagiinId;
-
       if (!req.file) {
         throw new aldaa("Excel файл дахин оруулна уу.");
       }
-
       const excelFile = req.file;
-
       const savePath = `./excel/${turul}/${baiguullagiinId}/`;
-
       if (!fs.existsSync(savePath)) {
         fs.mkdirSync(savePath, { recursive: true });
       }
-
       const garaasNershil = req.body.excelNer;
-
       const excelFileName = `${turul}${baiguullagiinId}_${garaasNershil}.xlsx1`;
-
       fs.writeFile(`${savePath}${excelFileName}`, excelFile.buffer, (err) => {
         if (err) {
           throw new aldaa(err);
@@ -45,6 +39,26 @@ router
       next(err);
     }
   });
+
+router.route("/excelZagvarUstgaya").post(tokenShalgakh, (req, res, next) => {
+  try {
+    const turul = req.body.turul;
+    const baiguullagiinId = req.body.baiguullagiinId;
+    const excelNer = req.body.excelNer;
+
+    const filePath = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${excelNer}.xlsx1`;
+
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        next(err);
+      } else {
+        res.send("Amjilttai");
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 function textSolyo(text, body) {
   var butsaakh = "";
@@ -167,6 +181,24 @@ const nekhemjlekhiinNemelt = [
 ];
 
 router
+  .route("/excelZagvarKharya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    const baiguullagiinId = req.body.baiguullagiinId;
+    const turul = "nekhemjlel";
+    const fileNer = req.body.excelNer;
+    const zam = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${fileNer}.xlsx`;
+    try {
+      const workbook = XLSX.readFile(zam);
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const htmlContent = XLSX.utils.sheet_to_html(sheet);
+      res.status(200).send(htmlContent);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+router
   .route("/excelZagvarTatya")
   .post(tokenShalgakh, async (req, res, next) => {
     const baiguullagiinId = req.body.baiguullagiinId;
@@ -175,15 +207,11 @@ router
       : req.body.nekhemjlekhiinJagsaalt;
     const turul = "nekhemjlel";
     const garaasNershil = req.body.excelNer;
-
     const savePath = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${garaasNershil}.xlsx`;
-
     const workbook = new ExcelJS.Workbook();
-
     try {
       await workbook.xlsx.readFile(savePath);
       const worksheet = workbook.getWorksheet("Sheet1");
-
       const solikhTextArray = undsenTalbaruud.concat(
         khugatsaaniiTalbaruud,
         talbainiiTalbaruud,
