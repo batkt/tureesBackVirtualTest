@@ -28,7 +28,7 @@ router
         fs.mkdirSync(savePath, { recursive: true });
       }
       const garaasNershil = req.body.excelNer;
-      const excelFileName = `${turul}${baiguullagiinId}_${garaasNershil}.xlsx1`;
+      const excelFileName = `${turul}${baiguullagiinId}_${garaasNershil}.xlsx`;
       fs.writeFile(`${savePath}${excelFileName}`, excelFile.buffer, (err) => {
         if (err) {
           throw new aldaa(err);
@@ -46,7 +46,7 @@ router.route("/excelZagvarUstgaya").post(tokenShalgakh, (req, res, next) => {
     const baiguullagiinId = req.body.baiguullagiinId;
     const excelNer = req.body.excelNer;
 
-    const filePath = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${excelNer}.xlsx1`;
+    const filePath = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${excelNer}.xlsx`;
 
     fs.unlink(filePath, (err) => {
       if (err) {
