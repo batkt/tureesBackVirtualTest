@@ -192,7 +192,7 @@ router
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const htmlContent = XLSX.utils.sheet_to_html(sheet);
-      res.status(200).send(htmlContent);
+      res.send(htmlContent);
     } catch (err) {
       next(err);
     }
