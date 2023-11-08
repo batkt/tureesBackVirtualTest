@@ -134,10 +134,13 @@ router.post(
       const { db } = require("zevbackv2");
       if (req.body.erkhuud && req.body.erkhuud.length > 0)
         var moduluud = req.body.erkhuud;
+      var baiguullaga = await Baiguullaga.findOne({
+        register: req.body.register,
+      });
       for await (const element of moduluud) {
         var queryAjiltan = {
           tsonkhniiErkhuud: element.zam,
-          baiguullagiinId: req.body.baiguullagiinId,
+          baiguullagiinId: baiguullaga._id,
         };
         var ajiltanErkhiinToo = await Ajiltan(
           db.erunkhiiKholbolt
