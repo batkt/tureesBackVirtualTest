@@ -29,6 +29,8 @@ var avlagiinTurul = new Schema({
       guilgeeKhiisenAjiltniiId: String,
       zaaltTog: Number,
       zaaltUs: Number,
+      suuliinZaalt: Number,
+      umnukhZaalt: Number,
     },
   ],
   baritsaa: [
