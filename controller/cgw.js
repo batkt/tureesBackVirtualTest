@@ -862,7 +862,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                           });
                           if (guilgee) ustgakhJagsaalt.push(item);
                         }
-                        if (ustgakhJagsaalt) {
+                        if (!!ustgakhJagsaalt) {
                           guilgeenuud = guilgeenuud.filter(
                             (el) => !ustgakhJagsaalt.includes(el)
                           );
