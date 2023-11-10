@@ -289,7 +289,10 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
     if (!baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     request.post(
       "http://103.143.40.43:8282/erkhiinMedeelelAvya",
-      { json: true, body: { register: baiguullaga.register } },
+      {
+        json: true,
+        body: { system: "turees", register: baiguullaga.register },
+      },
       (err, res1, body) => {
         if (err) next(err);
         else {
