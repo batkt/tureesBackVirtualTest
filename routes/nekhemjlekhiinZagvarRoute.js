@@ -202,7 +202,7 @@ router
   .route("/excelZagvarTatya")
   .post(tokenShalgakh, async (req, res, next) => {
     const baiguullagiinId = req.body.baiguullagiinId;
-    const tulugch = Array.isArray
+    const tulugch = Array.isArray(req.body.nekhemjlekhiinJagsaalt)
       ? req.body.nekhemjlekhiinJagsaalt[0]
       : req.body.nekhemjlekhiinJagsaalt;
     const turul = "nekhemjlel";
