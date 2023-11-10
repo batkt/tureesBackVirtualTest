@@ -156,8 +156,10 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
     var baiguullagiinZam = "";
     if (baiguullagiinId == "631595e9957b7d5ec013c076")
       baiguullagiinZam = "uguumur";
-    if (baiguullagiinId == "64fe8edc54a669717ad657ac")
+    else if (baiguullagiinId == "64fe8edc54a669717ad657ac")
       baiguullagiinZam = "halmon";
+    else if (baiguullagiinId == "65435cdff2f5358696c61454")
+      baiguullagiinZam = "tt";
     var urlString = process.env.ZEV_TEST_SERVER + ":5000/" + baiguullagiinZam;
     console.log("url", urlString);
     var url = new URL(urlString);
@@ -223,8 +225,10 @@ async function tdbDansniiUldegdelAvya(
     var baiguullagiinZam = "";
     if (baiguullagiinId == "631595e9957b7d5ec013c076")
       baiguullagiinZam = "uguumur";
-    if (baiguullagiinId == "64fe8edc54a669717ad657ac")
+    else if (baiguullagiinId == "64fe8edc54a669717ad657ac")
       baiguullagiinZam = "halmon";
+    else if (baiguullagiinId == "65435cdff2f5358696c61454")
+      baiguullagiinZam = "tt";
     var urlString = process.env.ZEV_TEST_SERVER + ":5000/" + baiguullagiinZam;
     console.log("url", urlString);
     var url = new URL(urlString);
@@ -327,7 +331,10 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         .catch((err) => console.log(err));
       var textUseg = "A";
       if (dans.baiguullagiinId == "631595e9957b7d5ec013c076") textUseg = "U";
-      if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac") textUseg = "K";
+      else if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac")
+        textUseg = "K";
+      else if (dans.baiguullagiinId == "65435cdff2f5358696c61454")
+        textUseg = "T";
       tdbDansniiUldegdelAvya(
         {
           msgId: "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
@@ -519,8 +526,11 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 var textUseg = "A";
                 if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")
                   textUseg = "U";
-                if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac")
+                else if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac")
                   textUseg = "K";
+                else if (dans.baiguullagiinId == "65435cdff2f5358696c61454")
+                  textUseg = "T";
+
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
                     msgId:
@@ -767,8 +777,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 var textUseg = "A";
                 if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")
                   textUseg = "U";
-                if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac")
+                else if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac")
                   textUseg = "K";
+                else if (dans.baiguullagiinId == "65435cdff2f5358696c61454")
+                  textUseg = "T";
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
                     msgId:
