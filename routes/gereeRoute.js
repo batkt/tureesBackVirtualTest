@@ -1101,7 +1101,7 @@ router
                     (a) => a._id == x.gereeniiDugaar
                   )?.guilgeenuud || [];
                 x.zardluud = gereenuud[0].zardluud.find(
-                  (a) => a._id == x.gereeniiDugaar
+                  (a) => a._id.gereeniiDugaar == x.gereeniiDugaar
                 );
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
