@@ -181,28 +181,10 @@ const nekhemjlekhiinNemelt = [
 ];
 
 router
-  .route("/excelZagvarKharya")
-  .post(tokenShalgakh, async (req, res, next) => {
-    const baiguullagiinId = req.body.baiguullagiinId;
-    const turul = "nekhemjlel";
-    const fileNer = req.body.excelNer;
-    const zam = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${fileNer}.xlsx`;
-    try {
-      const workbook = XLSX.readFile(zam);
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const htmlContent = XLSX.utils.sheet_to_html(sheet);
-      res.send(htmlContent);
-    } catch (err) {
-      next(err);
-    }
-  });
-
-router
   .route("/excelZagvarTatya")
   .post(tokenShalgakh, async (req, res, next) => {
     const baiguullagiinId = req.body.baiguullagiinId;
-    const tulugch = Array.isArray
+    const tulugch = Array.isArray(req.body.nekhemjlekhiinJagsaalt)
       ? req.body.nekhemjlekhiinJagsaalt[0]
       : req.body.nekhemjlekhiinJagsaalt;
     const turul = "nekhemjlel";
@@ -212,7 +194,7 @@ router
     try {
       await workbook.xlsx.readFile(savePath);
       const worksheet = workbook.getWorksheet("Sheet1");
-      const solikhTextArray = undsenTalbaruud.concat(
+      const solikhTextArray = await undsenTalbaruud.concat(
         khugatsaaniiTalbaruud,
         talbainiiTalbaruud,
         baritsaaniiTalbaruud,
@@ -220,15 +202,15 @@ router
         nekhemjlekhiinTalbaruud,
         nekhemjlekhiinNemelt
       );
-      await worksheet.eachRow((row, rowNumber) => {
-        row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-          solikhTextArray.forEach(async (solikhText) => {
+      await worksheet.eachRow(async (row, rowNumber) => {
+        await row.eachCell({ includeEmpty: true }, async (cell, colNumber) => {
+          await solikhTextArray.forEach(async (solikhText) => {
             const shineText = await textSolyo(solikhText.talbar, tulugch);
             if (
               typeof cell.value === "string" &&
-              cell.value.includes(solikhText)
+              cell.value.includes(solikhText.talbar)
             ) {
-              cell.value = cell.value.replace(solikhText, shineText);
+              cell.value = cell.value.replace(solikhText.talbar, shineText);
             }
           });
         });
@@ -244,6 +226,24 @@ router
       });
     } catch (error) {
       next(error);
+    }
+  });
+
+router
+  .route("/excelZagvarKharya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    const baiguullagiinId = req.body.baiguullagiinId;
+    const turul = "nekhemjlel";
+    const fileNer = req.body.excelNer;
+    const zam = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${fileNer}.xlsx`;
+    try {
+      const workbook = XLSX.readFile(zam);
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const htmlContent = XLSX.utils.sheet_to_html(sheet);
+      res.send(htmlContent);
+    } catch (err) {
+      next(err);
     }
   });
 
