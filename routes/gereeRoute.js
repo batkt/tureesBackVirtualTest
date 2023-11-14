@@ -1100,7 +1100,7 @@ router
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.guilgeenuud || [];
-                x.zardluud = gereenuud[0].zardluud.find(
+                x.zardluud = gereenuud[0].zardluud.filter(
                   (a) => a._id.gereeniiDugaar == x.gereeniiDugaar
                 );
                 if (!!x.zardluud && x.zardluud.length > 0) {
