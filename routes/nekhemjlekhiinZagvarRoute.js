@@ -97,6 +97,41 @@ function textSolyo(text, body) {
     const khasakh = (Number(body[shineKey]) / 1.1) * 0.1;
     butsaakh = (body[shineKey] - khasakh).toFixed(2);
   }
+  if (body.zardluud.length > 0) {
+    const niitZardliinDun = body.zardluud.reduce((a, b) => a + b.tulukhDun, 0);
+    if (text === "<niitZardliinDun>") {
+      butsaakh = niitZardliinDun;
+    }
+    if (text === "<niitZardliinNuatguiDun>") {
+      butsaakh = (niitZardliinDun - (niitZardliinDun / 1.1) * 0.1).toFixed(2);
+    }
+    if (text === "<niitZardliinNuatiinDun>") {
+      butsaakh = ((niitZardliinDun / 1.1) * 0.1).toFixed(2);
+    }
+    body.zardluud.forEach((a) => {
+      if (text === `<${a.tailbar}.khemjikhNegj>`) {
+        butsaakh = a.khemjikhNegj;
+      }
+      if (text === `<${a.tailbar}.tulukhDun>`) {
+        butsaakh = a.tulukhDun;
+      }
+      if (text === `<${a.tailbar}.tariff>`) {
+        butsaakh = a.tariff;
+      }
+      if (text === `<${a.tailbar}.negj>`) {
+        butsaakh = a.negj;
+      }
+      if (text === `<${a.tailbar}.suuliinZaalt>`) {
+        butsaakh = a.suuliinZaalt;
+      }
+      if (text === `<${a.tailbar}.umnukhZaalt>`) {
+        butsaakh = a.umnukhZaalt;
+      }
+      if (text === `<${a.tailbar}.khungulult>`) {
+        butsaakh = a.khungulult;
+      }
+    });
+  }
 
   return butsaakh;
 }
@@ -173,6 +208,7 @@ const tulburiinTalbaruud = [
   { ner: "Нийт үлдэгдэл/Нөатгүй/", talbar: "<niitUldegdelNuatgui>" },
   { ner: "Нийт үлдэгдэл/Нөат/", talbar: "<niitUldegdelNuat>" },
   { ner: "Алдангын үлдэгдэл", talbar: "<aldangiinUldegdel>" },
+  { ner: "Түрээсийн хөнгөлөлт", talbar: "<khungulult>" },
 ];
 
 const nekhemjlekhiinTalbaruud = [
@@ -203,6 +239,7 @@ router
       ? req.body.nekhemjlekhiinJagsaalt[0]
       : req.body.nekhemjlekhiinJagsaalt;
     const turul = "nekhemjlel";
+    const ashiglaltiinZardluud = req.body.ashiglaltiinZardluud;
     const garaasNershil = req.body.excelNer;
     const savePath = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${garaasNershil}.xlsx`;
     const workbook = new ExcelJS.Workbook();
@@ -217,6 +254,57 @@ router
         nekhemjlekhiinTalbaruud,
         nekhemjlekhiinNemelt
       );
+      if (!!ashiglaltiinZardluud && ashiglaltiinZardluud.length > 0) {
+        var oruulakhTalbar = [];
+        ashiglaltiinZardluud.map((a) => {
+          oruulakhTalbar.push({
+            ner: `${a.ner}.Дүн`,
+            talbar: `<${a.ner}.tulukhDun>`,
+          });
+          oruulakhTalbar.push({
+            ner: `${a.ner}.Хэмжих нэгж`,
+            talbar: `<${a.ner}.khemjikhNegj>`,
+          });
+          oruulakhTalbar.push({
+            ner: `${a.ner}.Тариф`,
+            talbar: `<${a.ner}.tariff>`,
+          });
+          oruulakhTalbar.push({
+            ner: `${a.ner}.Нэгж`,
+            talbar: `<${a.ner}.negj>`,
+          });
+          if (a.turul == "кВт" || a.turul == "1м3") {
+            oruulakhTalbar.push({
+              ner: `${a.ner}.Өмнөх заалт`,
+              talbar: `<${a.ner}.umnukhZaalt>`,
+            });
+            oruulakhTalbar.push({
+              ner: `${a.ner}.Сүүлийн заалт`,
+              talbar: `<${a.ner}.suuliinZaalt>`,
+            });
+          } else {
+            oruulakhTalbar.push({
+              ner: `${a.ner}.Хөнгөлөлт`,
+              talbar: `<${a.ner}.khungulult>`,
+            });
+          }
+        });
+        oruulakhTalbar.push({
+          ner: `Нийт ашиглалтын зардал`,
+          talbar: `<niitZardliinDun>`,
+        });
+
+        oruulakhTalbar.push({
+          ner: `Нийт ашиглалтын зардал/Нөатгүй/`,
+          talbar: `<niitZardliinNuatguiDun>`,
+        });
+
+        oruulakhTalbar.push({
+          ner: `Нөат (10%)`,
+          talbar: `<niitZardliinNuatiinDun>`,
+        });
+        solikhTextArray.concat(oruulakhTalbar);
+      }
       await worksheet.eachRow(async (row, rowNumber) => {
         await row.eachCell({ includeEmpty: true }, async (cell, colNumber) => {
           await solikhTextArray.forEach(async (solikhText) => {
