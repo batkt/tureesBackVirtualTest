@@ -1033,7 +1033,9 @@ router
                           $lte: new Date(req.body.duusakhOgnoo),
                           $gte: new Date(req.body.ekhlekhOgnoo),
                         },
-                        "avlaga.guilgeenuud.turul": "avlaga",
+                        "avlaga.guilgeenuud.turul": {
+                          $in: ["avlaga", "khungulult"],
+                        },
                       },
                     },
                     {
@@ -1044,9 +1046,28 @@ router
                     },
                     {
                       $group: {
-                        _id: "$gereeniiDugaar",
-                        guilgeenuud: {
-                          $push: "$avlaga",
+                        _id: {
+                          gereeniiDugaar: "$gereeniiDugaar",
+                          tailbar: "$avlaga.tailbar",
+                        },
+                        khemjikhNegj: { $max: "$avlaga.khemjikhNegj" },
+                        negj: {
+                          $max: "$avlaga.negj",
+                        },
+                        tariff: {
+                          $max: "$avlaga.tariff",
+                        },
+                        tulukhDun: {
+                          $sum: "$avlaga.tulukhDun",
+                        },
+                        khungulult: {
+                          $sum: "$avlaga.khyamdral",
+                        },
+                        umnukhZaalt: {
+                          $min: "$avlaga.umnukhZaalt",
+                        },
+                        suuliinZaalt: {
+                          $max: "$avlaga.suuliinZaalt",
                         },
                       },
                     },
@@ -1073,15 +1094,20 @@ router
                   )?.uldegdel || 0;
                 x.niitUldegdel =
                   gereenuud[0].niitUldegdel.find(
-                    (a) => a._id == x.gereeniiDugaar
+                    (a) => a._id.gereeniiDugaar == x.gereeniiDugaar
                   )?.uldegdel || 0;
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.guilgeenuud || [];
-                x.zardluud =
-                  gereenuud[0].zardluud.find((a) => a._id == x.gereeniiDugaar)
-                    ?.guilgeenuud || [];
+                x.zardluud = gereenuud[0].zardluud.find(
+                  (a) => a._id == x.gereeniiDugaar
+                );
+                if (!!x.zardluud && x.zardluud.length > 0) {
+                  x.zardluud.forEach((zardal) => {
+                    zardal.tailbar = zardal._id.tailbar;
+                  });
+                }
                 x.khariltsagchiinId = gereenuud[0].khariltsagch.find(
                   (a) => a.register == x.register
                 )?.khariltsagchiinId;

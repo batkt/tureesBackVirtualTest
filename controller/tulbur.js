@@ -872,7 +872,8 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
             tulukhDun: 0,
             ognoo: ognoo,
             khyamdral: khungulult?.khungulultiinDun,
-            tailbar: khungulult.shaltgaan,
+            nemeltTailbar: khungulult.shaltgaan,
+            tailbar: khungulult.tailbar,
             khyamdraliinId: khariu._id,
             guilgeeKhiisenOgnoo: new Date(),
             guilgeeKhiisenAjiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
@@ -964,7 +965,7 @@ exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
                   );
                 if (zardal.turul == "1м3/талбай")
                   zardal.dun = tooZasyaSync(
-                      zardal.tariff * geree.talbainKhemjeeMetrKube
+                    zardal.tariff * geree.talbainKhemjeeMetrKube
                   );
                 if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                 butsaakhJagsaalt.push({
