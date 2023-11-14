@@ -18,6 +18,7 @@ var avlagiinTurul = new Schema({
       khemjikhNegj: String,
       tariff: Number,
       tailbar: String,
+      nemeltTailbar: String,
       turul: String,
       nekhemjlekhDeerKharagdakh: Boolean,
       khyamdraliinId: String,
