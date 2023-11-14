@@ -63,26 +63,41 @@ router.route("/excelZagvarUstgaya").post(tokenShalgakh, (req, res, next) => {
 function textSolyo(text, body) {
   var butsaakh = "";
 
-  Object.keys(body).forEach(function (key) {
+  Object.keys(body).forEach(async function (key) {
     if (text === `<${key}>`) {
-      if (
-        key === "eneSardTulukhUsgeer" ||
-        key === "niitUldegdelUsgeer" ||
-        key === "talbainNiitUneUsgeer" ||
-        key === "mungunDunUsgeer"
-      ) {
-        const shineKey = key.replace("Usgeer", "");
-        butsaakh = numberToWords(
-          Math.abs(body[shineKey]),
-          { fixed: 2, suffix: "n" },
-          "төгрөг",
-          "мөнгө"
-        );
-      } else {
-        butsaakh = body[key];
-      }
+      butsaakh = body[key];
     }
   });
+  if (
+    text === "<eneSardTulukhUsgeer>" ||
+    text === "<niitUldegdelUsgeer>" ||
+    text === "<talbainNiitUneUsgeer>" ||
+    text === "<mungunDunUsgeer>"
+  ) {
+    const shineKey = text
+      .replace("Usgeer", "")
+      .replace("<", "")
+      .replace(">", "");
+    butsaakh = numberToWords(
+      Math.abs(body[shineKey]),
+      { fixed: 2, suffix: "n" },
+      "төгрөг",
+      "мөнгө"
+    );
+  }
+  if (text === "<talbainNiitUneNuat>" || text === "<niitUldegdelNuat>") {
+    const shineKey = text.replace("Nuat", "").replace("<", "").replace(">", "");
+    butsaakh = ((Number(body[shineKey]) / 1.1) * 0.1).toFixed(2);
+  }
+  if (text === "<talbainNiitUneNuatgui>" || text === "<niitUldegdelNuatgui>") {
+    const shineKey = text
+      .replace("Nuatgui", "")
+      .replace("<", "")
+      .replace(">", "");
+    const khasakh = (Number(body[shineKey]) / 1.1) * 0.1;
+    butsaakh = (body[shineKey] - khasakh).toFixed(2);
+  }
+
   return butsaakh;
 }
 
