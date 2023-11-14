@@ -1078,6 +1078,7 @@ router
             var gereenuud = await Geree(
               req.body.tukhainBaaziinKholbolt
             ).aggregate(query);
+            console.log("gereenuud", JSON.stringify(gereenuud, null, 4));
             if (result && result.jagsaalt && result.jagsaalt.length > 0) {
               result.jagsaalt = result.jagsaalt.filter((a) =>
                 gereenuud[0].niitUldegdel.find((b) => b._id == a.gereeniiDugaar)
@@ -1100,12 +1101,14 @@ router
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.guilgeenuud || [];
-                x.zardluud = gereenuud[0].zardluud.find(
-                  (a) => a._id == x.gereeniiDugaar
+                x.zardluud = gereenuud[0].zardluud.filter(
+                  (a) => a._id.gereeniiDugaar == x.gereeniiDugaar
                 );
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
                     zardal.tailbar = zardal._id.tailbar;
+                    if (zardal.tailbar == "Түрээс")
+                      x.khungulult = zardal.khungulult;
                   });
                 }
                 x.khariltsagchiinId = gereenuud[0].khariltsagch.find(

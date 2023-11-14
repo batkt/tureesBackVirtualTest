@@ -871,9 +871,10 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
           khyamdral = {
             tulukhDun: 0,
             ognoo: ognoo,
+            turul: "khungulult",
             khyamdral: khungulult?.khungulultiinDun,
             nemeltTailbar: khungulult.shaltgaan,
-            tailbar: khungulult.tailbar,
+            tailbar: req.body.tailbar,
             khyamdraliinId: khariu._id,
             guilgeeKhiisenOgnoo: new Date(),
             guilgeeKhiisenAjiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
