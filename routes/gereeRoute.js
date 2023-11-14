@@ -1107,6 +1107,8 @@ router
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
                     zardal.tailbar = zardal._id.tailbar;
+                    if (zardal.tailbar == "Түрээс")
+                      x.khungulult = zardal.khungulult;
                   });
                 }
                 x.khariltsagchiinId = gereenuud[0].khariltsagch.find(
