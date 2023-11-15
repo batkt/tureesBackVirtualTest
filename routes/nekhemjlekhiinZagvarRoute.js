@@ -24,7 +24,7 @@ router
         throw new aldaa("Excel файл дахин оруулна уу.");
       }
       const excelFile = req.file;
-      const savePath = `./excel/${turul}/${baiguullagiinId}/${barilgiinId}`;
+      const savePath = `./excel/${turul}/${baiguullagiinId}/${barilgiinId}/`;
       if (!fs.existsSync(savePath)) {
         fs.mkdirSync(savePath, { recursive: true });
       }
