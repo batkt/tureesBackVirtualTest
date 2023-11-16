@@ -19,16 +19,17 @@ router
     try {
       const turul = req.body.turul;
       const baiguullagiinId = req.body.baiguullagiinId;
+      const barilgiinId = req.body.barilgiinId;
       if (!req.file) {
         throw new aldaa("Excel файл дахин оруулна уу.");
       }
       const excelFile = req.file;
-      const savePath = `./excel/${turul}/${baiguullagiinId}/`;
+      const savePath = `./excel/${turul}/${baiguullagiinId}/${barilgiinId}/`;
       if (!fs.existsSync(savePath)) {
         fs.mkdirSync(savePath, { recursive: true });
       }
       const garaasNershil = req.body.excelNer;
-      const excelFileName = `${turul}${baiguullagiinId}_${garaasNershil}.xlsx`;
+      const excelFileName = `${turul}${barilgiinId}_${garaasNershil}.xlsx`;
       fs.writeFile(`${savePath}${excelFileName}`, excelFile.buffer, (err) => {
         if (err) {
           throw new aldaa(err);
@@ -39,82 +40,6 @@ router
       next(err);
     }
   });
-
-router.route("/excelZagvarUstgaya").post(tokenShalgakh, (req, res, next) => {
-  try {
-    const turul = req.body.turul;
-    const baiguullagiinId = req.body.baiguullagiinId;
-    const excelNer = req.body.excelNer;
-
-    const filePath = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${excelNer}.xlsx`;
-
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        next(err);
-      } else {
-        res.send("Amjilttai");
-      }
-    });
-  } catch (err) {
-    next(err);
-  }
-});
-
-function textSolyo(text, body) {
-  var butsaakh = "";
-
-  Object.keys(body).forEach(async function (key) {
-    if (text === `<${key}>`) {
-      butsaakh = body[key];
-    }
-  });
-  if (
-    text === "<eneSardTulukhUsgeer>" ||
-    text === "<niitUldegdelUsgeer>" ||
-    text === "<talbainNiitUneUsgeer>" ||
-    text === "<mungunDunUsgeer>"
-  ) {
-    const shineKey = text
-      .replace("Usgeer", "")
-      .replace("<", "")
-      .replace(">", "");
-    butsaakh = numberToWords(
-      Math.abs(body[shineKey]),
-      { fixed: 2, suffix: "n" },
-      "төгрөг",
-      "мөнгө"
-    );
-  }
-  if (text === "<talbainNiitUneNuat>" || text === "<niitUldegdelNuat>") {
-    const shineKey = text.replace("Nuat", "").replace("<", "").replace(">", "");
-    butsaakh = ((Number(body[shineKey]) / 1.1) * 0.1).toFixed(2);
-  }
-  if (text === "<talbainNiitUneNuatgui>" || text === "<niitUldegdelNuatgui>") {
-    const shineKey = text
-      .replace("Nuatgui", "")
-      .replace("<", "")
-      .replace(">", "");
-    const khasakh = (Number(body[shineKey]) / 1.1) * 0.1;
-    butsaakh = (body[shineKey] - khasakh).toFixed(2);
-  }
-
-  return butsaakh;
-}
-
-function numberToWords(number, option, bukhel, butarhai) {
-  const { fixed, suffix } = option;
-  let resValue = "";
-  const value = number?.toFixed(fixed)?.toString();
-  if (value?.includes(".")) {
-    resValue = toWords(Number(value.split(".")[0]), { suffix });
-    if (!!bukhel) resValue += ` ${bukhel}`;
-    if (Number(value.split(".")[1]) > 0) {
-      resValue += ` ${toWords(Number(value.split(".")[1]), { suffix })}`;
-      if (!!butarhai) resValue += ` ${butarhai}`;
-    }
-  }
-  return resValue;
-}
 
 const undsenTalbaruud = [
   { ner: "Овог", talbar: "<ovog>" },
@@ -173,8 +98,8 @@ const tulburiinTalbaruud = [
   { ner: "Нийт үлдэгдэл/Нөатгүй/", talbar: "<niitUldegdelNuatgui>" },
   { ner: "Нийт үлдэгдэл/Нөат/", talbar: "<niitUldegdelNuat>" },
   { ner: "Алдангын үлдэгдэл", talbar: "<aldangiinUldegdel>" },
+  { ner: "Түрээсийн хөнгөлөлт", talbar: "<khungulult>" },
 ];
-
 const nekhemjlekhiinTalbaruud = [
   { ner: "Нэхэмжлэхийн сар", talbar: "<sar>" },
   { ner: "Данс", talbar: "<dans>" },
@@ -195,62 +120,246 @@ const nekhemjlekhiinNemelt = [
   { ner: "Бусад авлагын мөр", talbar: "<nemeltNekhemjlekh>" },
 ];
 
+router.route("/excelZagvarUstgaya").post(tokenShalgakh, (req, res, next) => {
+  try {
+    const turul = req.body.turul;
+    const baiguullagiinId = req.body.baiguullagiinId;
+    const barilgiinId = req.body.barilgiinId;
+    const excelNer = req.body.excelNer;
+    const filePath = `./excel/${turul}/${baiguullagiinId}/${barilgiinId}/${turul}${barilgiinId}_${excelNer}.xlsx`;
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        next(err);
+      } else {
+        res.send("Amjilttai");
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+function textSolyo(text, body) {
+  var butsaakh = "";
+  Object.keys(body).forEach(async function (key) {
+    if (text === `<${key}>`) {
+      butsaakh = body[key];
+    }
+  });
+  if (
+    text === "<eneSardTulukhUsgeer>" ||
+    text === "<niitUldegdelUsgeer>" ||
+    text === "<talbainNiitUneUsgeer>" ||
+    text === "<mungunDunUsgeer>"
+  ) {
+    const shineKey = text
+      .replace("Usgeer", "")
+      .replace("<", "")
+      .replace(">", "");
+    butsaakh = numberToWords(
+      Math.abs(body[shineKey]),
+      { fixed: 2, suffix: "n" },
+      "төгрөг",
+      "мөнгө"
+    );
+  }
+  if (text === "<talbainNiitUneNuat>" || text === "<niitUldegdelNuat>") {
+    const shineKey = text.replace("Nuat", "").replace("<", "").replace(">", "");
+    butsaakh = ((Number(body[shineKey]) / 1.1) * 0.1).toFixed(2);
+  }
+  if (text === "<talbainNiitUneNuatgui>" || text === "<niitUldegdelNuatgui>") {
+    const shineKey = text
+      .replace("Nuatgui", "")
+      .replace("<", "")
+      .replace(">", "");
+    const khasakh = (Number(body[shineKey]) / 1.1) * 0.1;
+    butsaakh = (body[shineKey] - khasakh).toFixed(2);
+  }
+  if (body.zardluud.length > 0) {
+    const niitZardliinDun = body.zardluud.reduce((a, b) => a + b.tulukhDun, 0);
+    if (text === "<niitZardliinDun>") {
+      butsaakh = niitZardliinDun;
+    }
+    if (text === "<niitZardliinNuatguiDun>") {
+      butsaakh = (niitZardliinDun - (niitZardliinDun / 1.1) * 0.1).toFixed(2);
+    }
+    if (text === "<niitZardliinNuatiinDun>") {
+      butsaakh = ((niitZardliinDun / 1.1) * 0.1).toFixed(2);
+    }
+    body.zardluud.forEach((a) => {
+      if (text === `<${a.tailbar}.khemjikhNegj>`) {
+        butsaakh = a.khemjikhNegj;
+      }
+      if (text === `<${a.tailbar}.tulukhDun>`) {
+        butsaakh = a.tulukhDun;
+      }
+      if (text === `<${a.tailbar}.tariff>`) {
+        butsaakh = a.tariff;
+      }
+      if (text === `<${a.tailbar}.negj>`) {
+        butsaakh = a.negj;
+      }
+      if (text === `<${a.tailbar}.suuliinZaalt>`) {
+        butsaakh = a.suuliinZaalt;
+      }
+      if (text === `<${a.tailbar}.umnukhZaalt>`) {
+        butsaakh = a.umnukhZaalt;
+      }
+      if (text === `<${a.tailbar}.khungulult>`) {
+        butsaakh = a.khungulult;
+      }
+    });
+  }
+  return butsaakh;
+}
+
+function numberToWords(number, option, bukhel, butarhai) {
+  const { fixed, suffix } = option;
+  let resValue = "";
+  const value = number?.toFixed(fixed)?.toString();
+  if (value?.includes(".")) {
+    resValue = toWords(Number(value.split(".")[0]), { suffix });
+    if (!!bukhel) resValue += ` ${bukhel}`;
+    if (Number(value.split(".")[1]) > 0) {
+      resValue += ` ${toWords(Number(value.split(".")[1]), { suffix })}`;
+      if (!!butarhai) resValue += ` ${butarhai}`;
+    }
+  }
+  return resValue;
+}
+
 router
   .route("/excelZagvarTatya")
   .post(tokenShalgakh, async (req, res, next) => {
     const baiguullagiinId = req.body.baiguullagiinId;
-    const tulugch = Array.isArray(req.body.nekhemjlekhiinJagsaalt)
-      ? req.body.nekhemjlekhiinJagsaalt[0]
-      : req.body.nekhemjlekhiinJagsaalt;
+    const tulugchid = req.body.nekhemjlekhiinJagsaalt;
+    console.log("tukhain tulugchid: ", tulugchid);
+    const barilgiinId = req.body.barilgiinId;
     const turul = "nekhemjlel";
+    const ashiglaltiinZardluud = req.body.ashiglaltiinZardluud;
     const garaasNershil = req.body.excelNer;
-    const savePath = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${garaasNershil}.xlsx`;
-    const workbook = new ExcelJS.Workbook();
+    const savePath = `./excel/${turul}/${baiguullagiinId}/${barilgiinId}/${turul}${barilgiinId}_${garaasNershil}.xlsx`;
+    var butsaakhArray = [];
     try {
-      await workbook.xlsx.readFile(savePath);
-      const worksheet = workbook.getWorksheet("Sheet1");
-      const solikhTextArray = await undsenTalbaruud.concat(
-        khugatsaaniiTalbaruud,
-        talbainiiTalbaruud,
-        baritsaaniiTalbaruud,
-        tulburiinTalbaruud,
-        nekhemjlekhiinTalbaruud,
-        nekhemjlekhiinNemelt
-      );
-      await worksheet.eachRow(async (row, rowNumber) => {
-        await row.eachCell({ includeEmpty: true }, async (cell, colNumber) => {
-          await solikhTextArray.forEach(async (solikhText) => {
-            const shineText = await textSolyo(solikhText.talbar, tulugch);
-            if (
-              typeof cell.value === "string" &&
-              cell.value.includes(solikhText.talbar)
-            ) {
-              cell.value = cell.value.replace(solikhText.talbar, shineText);
-            }
-          });
-        });
-      });
+      for (const tulugch of tulugchid) {
+        const workbook = new ExcelJS.Workbook();
+        try {
+          await workbook.xlsx.readFile(savePath);
+          const worksheet = workbook.getWorksheet("Sheet1");
+          const solikhTextArray = await undsenTalbaruud.concat(
+            khugatsaaniiTalbaruud,
+            talbainiiTalbaruud,
+            baritsaaniiTalbaruud,
+            tulburiinTalbaruud,
+            nekhemjlekhiinTalbaruud,
+            nekhemjlekhiinNemelt
+          );
+          if (!!ashiglaltiinZardluud && ashiglaltiinZardluud.length > 0) {
+            var oruulakhTalbar = [];
+            ashiglaltiinZardluud.map((a) => {
+              oruulakhTalbar.push({
+                ner: `${a.ner}.Дүн`,
+                talbar: `<${a.ner}.tulukhDun>`,
+              });
+              oruulakhTalbar.push({
+                ner: `${a.ner}.Хэмжих нэгж`,
+                talbar: `<${a.ner}.khemjikhNegj>`,
+              });
+              oruulakhTalbar.push({
+                ner: `${a.ner}.Тариф`,
+                talbar: `<${a.ner}.tariff>`,
+              });
+              oruulakhTalbar.push({
+                ner: `${a.ner}.Нэгж`,
+                talbar: `<${a.ner}.negj>`,
+              });
+              if (a.turul == "кВт" || a.turul == "1м3") {
+                oruulakhTalbar.push({
+                  ner: `${a.ner}.Өмнөх заалт`,
+                  talbar: `<${a.ner}.umnukhZaalt>`,
+                });
+                oruulakhTalbar.push({
+                  ner: `${a.ner}.Сүүлийн заалт`,
+                  talbar: `<${a.ner}.suuliinZaalt>`,
+                });
+              } else {
+                oruulakhTalbar.push({
+                  ner: `${a.ner}.Хөнгөлөлт`,
+                  talbar: `<${a.ner}.khungulult>`,
+                });
+              }
+            });
+            oruulakhTalbar.push({
+              ner: `Нийт ашиглалтын зардал`,
+              talbar: `<niitZardliinDun>`,
+            });
 
-      res.setHeader(
-        "Content-Type",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      );
-      res.attachment("Нэхэмжлэл.xlsx");
-      return workbook.xlsx.write(res).then(function () {
-        res.status(200).end();
-      });
-    } catch (error) {
-      next(error);
+            oruulakhTalbar.push({
+              ner: `Нийт ашиглалтын зардал/Нөатгүй/`,
+              talbar: `<niitZardliinNuatguiDun>`,
+            });
+
+            oruulakhTalbar.push({
+              ner: `Нөат (10%)`,
+              talbar: `<niitZardliinNuatiinDun>`,
+            });
+            solikhTextArray.concat(oruulakhTalbar);
+          }
+          await worksheet.eachRow(async (row, rowNumber) => {
+            await row.eachCell(
+              { includeEmpty: true },
+              async (cell, colNumber) => {
+                await solikhTextArray.forEach(async (solikhText) => {
+                  const shineText = await textSolyo(solikhText.talbar, tulugch);
+                  if (
+                    typeof cell.value === "string" &&
+                    cell.value.includes(solikhText.talbar)
+                  ) {
+                    cell.value = cell.value.replace(
+                      solikhText.talbar,
+                      shineText
+                    );
+                  }
+                });
+              }
+            );
+          });
+          const htmlContent = exceleesHtmlAvya(worksheet);
+          butsaakhArray.push(htmlContent);
+        } catch (error) {
+          next(error);
+        }
+      }
+      res.setHeader("Content-Type", "text/plain");
+      res.send(butsaakhArray);
+    } catch (err) {
+      next(err);
     }
   });
+
+function exceleesHtmlAvya(worksheet) {
+  let htmlContent = '<table border="1">';
+
+  worksheet.eachRow((row, rowNumber) => {
+    htmlContent += "<tr>";
+    row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+      htmlContent += `<td>${cell.text}</td>`;
+    });
+    htmlContent += "</tr>";
+  });
+
+  htmlContent += "</table>";
+  return htmlContent;
+}
 
 router
   .route("/excelZagvarKharya")
   .post(tokenShalgakh, async (req, res, next) => {
     const baiguullagiinId = req.body.baiguullagiinId;
+    const barilgiinId = req.body.barilgiinId;
     const turul = "nekhemjlel";
     const fileNer = req.body.excelNer;
-    const zam = `./excel/${turul}/${baiguullagiinId}/${turul}${baiguullagiinId}_${fileNer}.xlsx`;
+    const zam = `./excel/${turul}/${baiguullagiinId}/${barilgiinId}/${turul}${barilgiinId}_${fileNer}.xlsx`;
     try {
       const workbook = XLSX.readFile(zam);
       const sheetName = workbook.SheetNames[0];
