@@ -258,7 +258,10 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
               });
             if (!!geree.zardluud && geree.zardluud) {
               geree.zardluud.forEach((zardal) => {
-                if (zardal.turul == "1м3/талбай") {
+                if (
+                  zardal.turul == "1м3/талбай" &&
+                  !!talbai.talbainKhemjeeMetrKube
+                ) {
                   khuvaariud.push({
                     ognoo: moment(unuudur)
                       .add(index, "month")
@@ -266,9 +269,11 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                     khyamdral: 0,
                     turul: "avlaga",
                     tailbar: zardal.ner,
-                    tulukhDun: tooZasyaSync(zardal.tariff * body.metrKube),
+                    tulukhDun: tooZasyaSync(
+                      zardal.tariff * talbai.talbainKhemjeeMetrKube
+                    ),
                   });
-                } else if (zardal.turul == "1м2") {
+                } else if (zardal.turul == "1м2" && talbai.talbainKhemjee) {
                   khuvaariud.push({
                     ognoo: moment(unuudur)
                       .add(index, "month")
@@ -276,7 +281,9 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                     khyamdral: 0,
                     turul: "avlaga",
                     tailbar: zardal.ner,
-                    tulukhDun: tooZasyaSync(zardal.tariff * body.mk),
+                    tulukhDun: tooZasyaSync(
+                      zardal.tariff * talbai.talbainKhemjee
+                    ),
                   });
                 } else if (zardal.turul == "Тогтмол") {
                   khuvaariud.push({
