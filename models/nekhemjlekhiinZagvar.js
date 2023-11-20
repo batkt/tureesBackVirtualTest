@@ -11,6 +11,7 @@ const nekhemjlekhiinZagvarSchema = new Schema(
     burtgesenAjiltan: String,
     baiguullagiinId: String,
     barilgiinId: String,
+    khatuuZagvarEsekh: Boolean,
     khuudasniiKhemjee: String,
     chiglel: String,
   },
