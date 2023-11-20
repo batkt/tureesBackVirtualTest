@@ -189,6 +189,11 @@ router.route("/talbaiUstgaya").post(tokenShalgakh, async (req, res, next) => {
   }
 });
 
+function tooZasyaSync(too) {
+  var zassanToo = Math.round((too + Number.EPSILON) * 100) / 100;
+  return +zassanToo.toFixed(2);
+}
+
 router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
   var talbai = new Talbai(req.body.tukhainBaaziinKholbolt)(req.body);
   var khuuchinTalbai = await Talbai(req.body.tukhainBaaziinKholbolt).findById(
@@ -223,7 +228,10 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
           geree.gereeniiTuukhuud.push(tuukh);
         else geree.gereeniiTuukhuud = [tuukh];
         var khuvaariud = geree.avlaga.guilgeenuud;
-        khuvaariud = khuvaariud.filter((x) => x.ognoo <= new Date());
+        khuvaariud = khuvaariud.filter(
+          (x) =>
+            x.ognoo <= new Date() || x.turul == "khyamdral" || x.khyamdral > 0
+        );
         var today = new Date();
         var unuudur = new Date(
           today.getFullYear(),
@@ -241,12 +249,47 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
               moment(unuudur).add(index, "month").set("date", udur) >
                 moment(new Date())
             )
+              //undsen tulultiin xuwaari
               khuvaariud.push({
                 ognoo: moment(unuudur).add(index, "month").set("date", udur),
                 khyamdral: 0,
                 undsenDun: talbai.talbainNiitUne,
                 tulukhDun: talbai.talbainNiitUne,
               });
+            if (!!geree.zardluud && geree.zardluud) {
+              geree.zardluud.forEach((zardal) => {
+                if (zardal.turul == "1м3/талбай") {
+                  khuvaariud.push({
+                    ognoo: moment(unuudur)
+                      .add(index, "month")
+                      .set("date", udur),
+                    khyamdral: 0,
+                    turul: "avlaga",
+                    tailbar: zardal.ner,
+                    tulukhDun: tooZasyaSync(zardal.tariff * body.metrKube),
+                  });
+                } else if (zardal.turul == "1м2") {
+                  khuvaariud.push({
+                    ognoo: moment(unuudur)
+                      .add(index, "month")
+                      .set("date", udur),
+                    khyamdral: 0,
+                    turul: "avlaga",
+                    tailbar: zardal.ner,
+                    tulukhDun: tooZasyaSync(zardal.tariff * body.mk),
+                  });
+                } else if (zardal.turul == "Тогтмол") {
+                  khuvaariud.push({
+                    ognoo: moment(unuudur)
+                      .add(index, "month")
+                      .set("date", udur),
+                    khyamdral: 0,
+                    tailbar: zardal.ner,
+                    tulukhDun: zardal.tariff,
+                  });
+                }
+              });
+            }
           });
         });
         await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
