@@ -321,6 +321,16 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
           ],
         }
       );
+      Uilchluulegch(kholbolt).deleteOne({
+        mashiniiDugaar: oldsonData.mashiniiDugaar,
+        "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+          $exists: false,
+        },
+        "tuukh.0.tuluv": {
+          $ne: -2,
+        },
+        "tuukh.zogsooliinId": { $ne: zogsooliinId },
+      });
       const io = req.app.get("socketio");
       if (io) {
         io.emit(`zogsool${baiguullagiinId}`, {
