@@ -84,7 +84,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     type: "logout",
   });
   duusakhOgnooAvya(
-    { register: baiguullaga.register },
+    { register: baiguullaga.register, system: "Turees" },
     async (khariu) => {
       try {
         console.log("nevtrekhXariu Irlee");
