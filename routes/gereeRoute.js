@@ -1095,7 +1095,7 @@ router
                   )?.uldegdel || 0;
                 x.niitUldegdel =
                   gereenuud[0].niitUldegdel.find(
-                    (a) => a._id.gereeniiDugaar == x.gereeniiDugaar
+                    (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
