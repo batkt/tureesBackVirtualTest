@@ -665,6 +665,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
   var success = true;
   var oldsonMashin;
   var freeze = req.query.freeze;
+  var tukhainKholbolt;
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {
       var zogsooluud = await Parking(kholbolt).find({
@@ -719,8 +720,10 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             parking_id: zogsool._id,
             session_id: oldsonMashin._id,
           };
+          tukhainKholbolt = kholbolt;
           break;
         } else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+          tukhainKholbolt = kholbolt;
           data = {
             plate_number: req.params.plate_number,
             enter_date: moment(
@@ -742,7 +745,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
     success = false;
   }
   if (!!freeze && !!oldsonMashin) {
-    await Uilchluulegch.updateOne(
+    await Uilchluulegch(tukhainKholbolt).updateOne(
       { _id: oldsonMashin._id },
       {
         freezeOgnoo: new Date(),
