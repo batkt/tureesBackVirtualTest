@@ -664,6 +664,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
   var message = "Amjilttai";
   var success = true;
   var oldsonMashin;
+  var freeze = req.query.freeze;
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {
       var zogsooluud = await Parking(kholbolt).find({
@@ -739,6 +740,11 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
   if (!oldsonMashin) {
     message = "Машины мэдээлэл олдсонгүй!";
     success = false;
+  }
+  if (!!freeze) {
+    await Uilchluulegch.findByIdAndUpdate(oldsonMashin._id, {
+      freezeOgnoo: new Date(),
+    });
   }
   var butsaakhKhariu = {
     success,
@@ -846,16 +852,19 @@ router.route("/v1/pay").post(async (req, res, next) => {
     var tukhainObject;
     var tukhainZogsool;
     var success = true;
+    var bodsonDun = 0;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        console.log("1");
         var zogsooluud = await Parking(kholbolt).find({
           tokiNer: { $exists: true },
         });
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            console.log("2");
-            console.log("kholbolt  ", kholbolt.baaziinNer);
+            bodsonDun = await zogsooliinDunAvya(
+              zogsool,
+              oldsonMashin,
+              kholbolt
+            );
             if (!!req.body.manually_open) {
               oldsonMashin = await Uilchluulegch(kholbolt).find({
                 "tuukh.0.zogsooliinId": zogsool._id,
@@ -916,16 +925,20 @@ router.route("/v1/pay").post(async (req, res, next) => {
         )
           tukhainObject.tuukh[0].tulbur.push(...tulbur);
         else tukhainObject.tuukh[0].tulbur = tulbur;
-
+      var set = {
+        "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
+        tokiId: "toki",
+      };
+      if (bodsonDun > 0) {
+        if (bodsonDun > req.body.paid_amount) {
+          set["tuukh.$[t].tuluv"] = 1;
+          set["garakhTsag"] = new Date(new Date().getTime() + 30 * 60000);
+        }
+      }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
         tukhainObject._id,
         {
-          $set: {
-            "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
-            "tuukh.$[t].tuluv": 1,
-            tokiId: "toki",
-            garakhTsag: new Date(new Date().getTime() + 30 * 60000),
-          },
+          $set: set,
         },
         {
           arrayFilters: [
