@@ -742,9 +742,12 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
     success = false;
   }
   if (!!freeze) {
-    await Uilchluulegch.findByIdAndUpdate(oldsonMashin._id, {
-      freezeOgnoo: new Date(),
-    });
+    await Uilchluulegch.updateOne(
+      { _id: oldsonMashin._id },
+      {
+        freezeOgnoo: new Date(),
+      }
+    );
   }
   var butsaakhKhariu = {
     success,
