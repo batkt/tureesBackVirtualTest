@@ -73,6 +73,7 @@ const baiguullagaSchema = new Schema(
       /**Системд И Баримт ашиглах эсэх */
       eBarimtAshiglakhEsekh: Boolean,
       eBarimtAutomataarShivikh: Boolean,
+      eBarimtAutomataarIlgeekh: Boolean,
       msgIlgeekhKey: String,
       msgIlgeekhDugaar: String,
       msgAvakhTurul: String,

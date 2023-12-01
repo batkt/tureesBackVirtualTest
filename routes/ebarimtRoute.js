@@ -691,12 +691,13 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
 });
 
 async function ebarimtIlgeeye(baiguullagiinId) {
+  //olnoor xaij ilgeedeg bolgoj uurchluw
   try {
     const { db } = require("zevbackv2");
-    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      baiguullagiinId
-    );
-    if (!!baiguullaga) {
+    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
+      "tokhirgoo.eBarimtAutomataarIlgeekh": true,
+    });
+    for await (const baiguullaga of baiguullaguud) {
       for await (const barilga of baiguullaga.barilguud) {
         var url = process.env.EBARIMT_IP + "/sendData";
         try {
