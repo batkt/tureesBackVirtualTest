@@ -866,11 +866,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
         });
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            bodsonDun = await zogsooliinDunAvya(
-              zogsool,
-              oldsonMashin,
-              kholbolt
-            );
             if (!!req.body.manually_open) {
               oldsonMashin = await Uilchluulegch(kholbolt).find({
                 "tuukh.0.zogsooliinId": zogsool._id,
@@ -906,9 +901,19 @@ router.route("/v1/pay").post(async (req, res, next) => {
               break;
             }
           }
-          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
+          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+            bodsonDun = await zogsooliinDunAvya(
+              zogsool,
+              oldsonMashin,
+              kholbolt
+            );
+            break;
+          }
         }
-        if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
+        if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+          bodsonDun = await zogsooliinDunAvya(zogsool, oldsonMashin, kholbolt);
+          break;
+        }
       }
     }
     var butsaakhKhariu = {
