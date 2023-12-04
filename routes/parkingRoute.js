@@ -901,25 +901,20 @@ router.route("/v1/pay").post(async (req, res, next) => {
               break;
             }
           }
-          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-            bodsonDun = await zogsooliinDunAvya(
-              zogsool,
-              oldsonMashin,
-              kholbolt
-            );
-            break;
-          }
+          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
         }
-        if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-          bodsonDun = await zogsooliinDunAvya(zogsool, oldsonMashin, kholbolt);
-          break;
-        }
+        if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
       }
     }
     var butsaakhKhariu = {
       success,
       message,
     };
+    bodsonDun = await zogsooliinDunAvya(
+      tukhainZogsool,
+      tukhainObject,
+      tukhainKholbolt
+    );
     console.log("oldsonMashin pay", tukhainObject);
     if (!tukhainObject) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
