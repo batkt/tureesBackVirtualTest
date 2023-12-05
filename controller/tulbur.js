@@ -302,10 +302,11 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
             console.log("else ruu orson => ", turOgnoo);
           }
           if (turOgnoo >= ekhlekhOgnoo) {
-            if (turOgnoo.getMonth() == duusakhOgnoo.getMonth()) {
-              turOgnoo = new Date(duusakhOgnoo);
+            if (
+              turOgnoo.getMonth() == duusakhOgnoo.getMonth() &&
+              turOgnoo.getFullYear() == duusakhOgnoo.getFullYear()
+            )
               duussanEsekh = true;
-            }
             if (dun > 0)
               butsaakhJagsaalt.push({
                 turul: "khuvaari",
