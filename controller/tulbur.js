@@ -302,7 +302,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
             console.log("else ruu orson => ", turOgnoo);
           }
           if (turOgnoo >= ekhlekhOgnoo) {
-            if (turOgnoo > moment(duusakhOgnoo)) {
+            if (turOgnoo.getMonth() == duusakhOgnoo.getMonth()) {
               turOgnoo = new Date(duusakhOgnoo);
               duussanEsekh = true;
             }
