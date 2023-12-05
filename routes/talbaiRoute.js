@@ -291,6 +291,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                       .add(index, "month")
                       .set("date", udur),
                     khyamdral: 0,
+                    turul: "avlaga",
                     tailbar: zardal.ner,
                     tulukhDun: zardal.tariff,
                   });
