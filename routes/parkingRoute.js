@@ -12,6 +12,7 @@ const {
   uilchluulegchTseverliy,
   zogsooliinDunAvya,
   TokiMashin,
+  uilchluulegchGaraasBurtgey,
 } = require("parking-v1");
 const {
   zogsooloosEbarimtUusgye,
@@ -205,6 +206,32 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
     next(err);
   }
 });
+
+router
+  .route("/zogsoolOrlogoGaraas")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      const utguud = req.body;
+      if (!utguud.mashiniiDugaar) {
+        throw new Error("Машиний дугаар оруулна уу");
+      }
+      if (!utguud.tulukhDun) {
+        throw new Error("Төлөх дүн оруулна уу");
+      }
+      if (!utguud.orsonCamera) {
+        throw new Error("Орох камер бүртгэгдээгүй байна");
+      }
+      if (!utguud.garsanCamera) {
+        throw new Error("Гарах камер бүртгэгдээгүй байна");
+      }
+      const response = await uilchluulegchGaraasBurtgey({ body: utguud });
+      if (response) {
+        res.status(200).send(response);
+      }
+    } catch (error) {
+      next(error);
+    }
+  });
 
 router
   .route("/zogsooliinTulburTulye")
