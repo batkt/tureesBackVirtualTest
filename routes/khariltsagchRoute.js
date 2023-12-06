@@ -168,6 +168,9 @@ router
                       { $eq: ["$barilgiinId", "$$barilgiinId"] },
                     ],
                   },
+                  tuluv: {
+                    $ne: -1,
+                  },
                 },
               },
             ],
