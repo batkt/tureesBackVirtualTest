@@ -778,7 +778,10 @@ router
         if (!body.query) body.query = { barilgiinId: req.body.barilgiinId };
         else body.query["barilgiinId"] = req.body.barilgiinId;
       }
-
+      if (body.query)
+        body.query["tuluv"] = {
+          $ne: -1,
+        };
       body.lean = true;
       khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
         .then(async (result) => {
