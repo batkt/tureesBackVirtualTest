@@ -20,7 +20,7 @@
     "express-useragent": "^1.0.15",
     "mon_num": "^1.0.3",
     "parking-v1": "^1.3.63",
-    "quickqpaypackv2": "^1.0.21",
+    "quickqpaypackv2": "^1.0.22",
     "sharp": "^0.30.7",
     "zevbackv2": "^1.1.18",
     "zuragpack": "^1.0.17"
