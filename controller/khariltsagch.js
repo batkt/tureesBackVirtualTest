@@ -343,20 +343,20 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
               Talbai(kholbolt)
                 .bulkWrite(talbainBulk)
                 .then((bulkWriteOpResult) => {
-                  console.log("BULK update OK", bulkWriteOpResult);
+                  console.log("Talbai BULK update OK", bulkWriteOpResult);
                 })
                 .catch((err) => {
-                  console.log("BULK update error", err);
+                  console.log("Talbai BULK update error", err);
                 });
 
             if (khariltsagchiinBulk)
               Khariltsagch(db.erunkhiiKholbolt)
                 .bulkWrite(khariltsagchiinBulk)
                 .then((bulkWriteOpResult) => {
-                  console.log("BULK update OK", bulkWriteOpResult);
+                  console.log("Khariltsagch BULK update OK", bulkWriteOpResult);
                 })
                 .catch((err) => {
-                  console.log("BULK update error", err);
+                  console.log("Khariltsagch BULK update error", err);
                 });
           }
         }

@@ -79,10 +79,12 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     result: ajiltan,
     success: true,
   };
-  io.emit(`ajiltan${ajiltan._id}`, {
-    ip: req.headers["x-real-ip"],
-    type: "logout",
-  });
+  if (ajiltan._id !== "612f457d185280db676d0b53") {
+    io.emit(`ajiltan${ajiltan._id}`, {
+      ip: req.headers["x-real-ip"],
+      type: "logout",
+    });
+  }
   duusakhOgnooAvya(
     { register: baiguullaga.register, system: "Turees" },
     async (khariu) => {
