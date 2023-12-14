@@ -248,24 +248,22 @@ router
             dun: guilgee.dun,
           });
         });
-        await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-          req.body.id,
+        await Uilchluulegch(req.body.tukhainBaaziinKholbolt).updateOne(
           {
-            $set: {
-              "tuukh.$[t].burtgesenAjiltaniiId":
-                guilgeenuud[0].burtgesenAjiltaniiId,
-              "tuukh.$[t].burtgesenAjiltaniiNer":
-                guilgeenuud[0].burtgesenAjiltaniiNer,
-              "tuukh.$[t].tulbur": tulbur,
-              "tuukh.$[t].tuluv": 1,
+            _id: req.body.id,
+            tuukh: {
+              $elemMatch: { zogsooliinId: guilgeenuud[0].zogsooliinId },
             },
           },
           {
-            arrayFilters: [
-              {
-                "t.zogsooliinId": guilgeenuud[0].zogsooliinId,
-              },
-            ],
+            $set: {
+              "tuukh.$.burtgesenAjiltaniiId":
+                guilgeenuud[0].burtgesenAjiltaniiId,
+              "tuukh.$.burtgesenAjiltaniiNer":
+                guilgeenuud[0].burtgesenAjiltaniiNer,
+              "tuukh.$.tulbur": tulbur,
+              "tuukh.$.tuluv": 1,
+            },
           }
         );
       }
@@ -897,9 +895,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
               oldsonMashin = await Uilchluulegch(kholbolt).find({
                 "tuukh.0.zogsooliinId": zogsool._id,
                 mashiniiDugaar: req.body.plate_number,
-                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-                  $exists: true,
-                },
                 "tuukh.0.tuluv": {
                   $nin: [-2, -3],
                 },
@@ -963,7 +958,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
         tokiId: "toki",
       };
       if (bodsonDun > 0) {
-        if (bodsonDun > req.body.paid_amount) {
+        if (bodsonDun == req.body.paid_amount) {
           set["tuukh.$[t].tuluv"] = 1;
           set["garakhTsag"] = new Date(new Date().getTime() + 30 * 60000);
         }
