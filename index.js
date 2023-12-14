@@ -218,7 +218,7 @@ cron.schedule(
   }
 );
 cron.schedule(
-  "31 2 * * *",
+  "32 2 * * *",
   function () {
     talbainKhariltsagchiinTuluvUurchilyu();
   },
