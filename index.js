@@ -41,6 +41,9 @@ const eventRoute = require("./routes/eventRoute");
 const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
+const {
+  talbainKhariltsagchiinTuluvUurchilyu,
+} = require("./controller/khariltsagch");
 process.setMaxListeners(0);
 process.env.UV_THREADPOOL_SIZE = 20;
 //require("events").EventEmitter.prototype._maxListeners = 15;
@@ -208,6 +211,16 @@ cron.schedule(
   "02 00 * * * ",
   function () {
     tulbur.gereeAutomataarSungaya();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+cron.schedule(
+  "31 2 * * *",
+  function () {
+    talbainKhariltsagchiinTuluvUurchilyu();
   },
   {
     scheduled: true,

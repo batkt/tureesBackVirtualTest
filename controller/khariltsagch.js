@@ -5,6 +5,8 @@ const Baiguullaga = require("../models/baiguullaga");
 const jwt = require("jsonwebtoken");
 const MsgTuukh = require("../models/msgTuukh");
 const request = require("request");
+const Geree = require("../models/geree");
+const Talbai = require("../models/talbai");
 const { formatNumber } = require("zevbackv2");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
@@ -244,3 +246,123 @@ exports.tokenoorKhariltsagchAvya = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
+
+exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
+  async (_req, _res, next) => {
+    try {
+      const { db } = require("zevbackv2");
+      var kholboltuud = db.kholboltuud;
+      if (kholboltuud) {
+        for await (const kholbolt of kholboltuud) {
+          let gereeniiIdnuud = await Geree(kholbolt).aggregate([
+            {
+              $project: {
+                _id: "$_id",
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                ids: {
+                  $push: "$_id",
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                ids: 1,
+              },
+            },
+          ]);
+          if (gereeniiIdnuud && gereeniiIdnuud.length > 0) {
+            var talbainBulk = [];
+            var khariltsagchiinBulk = [];
+            for await (const id of gereeniiIdnuud) {
+              let geree = await Geree(kholbolt).findById(id);
+              let busadGereenuud = await Geree(kholbolt).findOne({
+                register: geree.register,
+                barilgiinId: geree.barilgiinId,
+                tuluv: { $ne: -1 },
+              });
+              var talbainuud = await Talbai(kholbolt).find({
+                _id: { $in: geree.talbainIdnuud },
+              });
+              for await (const talbai of talbainuud) {
+                if (talbai.niitiinTalbaiEsekh) {
+                  let tukhainTalbainGereenuud = await Geree(kholbolt).find({
+                    barilgiinId: geree.barilgiinId,
+                    tuluv: { $ne: -1 },
+                    talbainIdnuud: talbai._id,
+                  });
+                  var niitIdevkhiteiTalbai = lodash.sumBy(
+                    tukhainTalbainGereenuud,
+                    function (object) {
+                      return object.talbainKhemjee;
+                    }
+                  );
+                  var sulKhemjee = talbai.talbainKhemjee - niitIdevkhiteiTalbai;
+                  if (sulKhemjee < 0) sulKhemjee = 0;
+                  let upsertTalbai = {
+                    updateOne: {
+                      filter: { _id: talbai._id },
+                      update: {
+                        idevkhiteiEsekh: geree.tuluv == 1,
+                        sulKhemjee: sulKhemjee,
+                      },
+                    },
+                  };
+                  talbainBulk.push(upsertTalbai);
+                } else {
+                  let upsertTalbai = {
+                    updateOne: {
+                      filter: { _id: talbai._id },
+                      update: {
+                        idevkhiteiEsekh: geree.tuluv == 1,
+                      },
+                    },
+                  };
+                  talbainBulk.push(upsertTalbai);
+                }
+
+                let upsertKhariltsagch = {
+                  updateOne: {
+                    filter: {
+                      register: geree.register,
+                      barilgiinId: geree.barilgiinId,
+                    },
+                    update: {
+                      idevkhiteiEsekh: busadGereenuud ? true : false,
+                    },
+                  },
+                };
+                khariltsagchiinBulk.push(upsertKhariltsagch);
+              }
+            }
+            if (talbainBulk)
+              Talbai(kholbolt)
+                .bulkWrite(talbainBulk)
+                .then((bulkWriteOpResult) => {
+                  console.log("Talbai BULK update OK", bulkWriteOpResult);
+                })
+                .catch((err) => {
+                  console.log("Talbai BULK update error", err);
+                });
+
+            if (khariltsagchiinBulk)
+              Khariltsagch(db.erunkhiiKholbolt)
+                .bulkWrite(khariltsagchiinBulk)
+                .then((bulkWriteOpResult) => {
+                  console.log("Khariltsagch BULK update OK", bulkWriteOpResult);
+                })
+                .catch((err) => {
+                  console.log("Khariltsagch BULK update error", err);
+                });
+          }
+        }
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+);
