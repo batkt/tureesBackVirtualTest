@@ -891,31 +891,16 @@ router.route("/v1/pay").post(async (req, res, next) => {
         });
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            if (!!req.body.manually_open) {
-              oldsonMashin = await Uilchluulegch(kholbolt).find({
-                "tuukh.0.zogsooliinId": zogsool._id,
-                mashiniiDugaar: req.body.plate_number,
-                "tuukh.0.tuluv": {
-                  $nin: [-2, -3],
-                },
-                updatedAt: {
-                  $gt: new Date(Date.now() - 900000), //15min dotor
-                },
-              });
-              if (oldsonMashin && oldsonMashin.length > 0)
-                oldsonMashin = oldsonMashin[0];
-            } else {
-              oldsonMashin = await Uilchluulegch(kholbolt).findOne({
-                "tuukh.0.zogsooliinId": zogsool._id,
-                mashiniiDugaar: req.body.plate_number,
-                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-                  $exists: false,
-                },
-                "tuukh.0.tuluv": {
-                  $nin: [-2, -3],
-                },
-              });
-            }
+            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+              "tuukh.0.zogsooliinId": zogsool._id,
+              mashiniiDugaar: req.body.plate_number,
+              "tuukh.0.tuluv": {
+                $nin: [-2, -3],
+              },
+              updatedAt: {
+                $gt: new Date(Date.now() - 300000), //5min dotor
+              },
+            });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
@@ -1018,7 +1003,13 @@ router.route("/v1/pay").post(async (req, res, next) => {
 
       ebarimtDuudya(ebarimt, butsaakhMethod, next);
     }
-    if (!!req.body.manually_open && tukhainObject && tukhainObject.tuukh) {
+    if (
+      !!req.body.manually_open &&
+      tukhainObject &&
+      tukhainObject.tuukh &&
+      tukhainObject.tuukh[0] &&
+      !tukhainObject.tuukh[0].garakhTsag
+    ) {
       const io = req.app.get("socketio");
       io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
         khaalgaTurul: "oroh",
