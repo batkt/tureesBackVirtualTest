@@ -327,7 +327,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
           niitDun: tulsunDun,
         },
         {
-          niitDun: shineDun,
+          niitDun: shineDun > 0 ? shineDun : tulsunDun,
         },
       ],
       "tuukh.0.tsagiinTuukh.0.garsanTsag": {
