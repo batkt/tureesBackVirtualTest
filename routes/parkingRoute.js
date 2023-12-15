@@ -307,6 +307,13 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var baiguullagiinId = req.body.baiguullagiinId;
     var zogsooliinId = req.body.zogsooliinId;
     var tulsunDun = Number(req.body.tulsunDun);
+    var shineDun = 0;
+    if (baiguullagiinId == "65435cdff2f5358696c61454") {
+      shineDun =
+        (await Math.round(
+          (tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100
+        )) / 100;
+    }
     const { db } = require("zevbackv2");
     var kholbolt = db.kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullagiinId
@@ -315,7 +322,14 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
       Date.now() - 900000 //15 * 60 * 1000
     );
     var oldsonData = await Uilchluulegch(kholbolt).findOne({
-      niitDun: tulsunDun,
+      $or: [
+        {
+          niitDun: tulsunDun,
+        },
+        {
+          niitDun: shineDun,
+        },
+      ],
       "tuukh.0.tsagiinTuukh.0.garsanTsag": {
         $gt: shuukhKhugatsaa,
       },
