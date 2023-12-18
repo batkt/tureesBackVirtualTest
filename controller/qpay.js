@@ -231,24 +231,59 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
     qpayBarimt.payment_id = req.query.qpay_payment_id;
   qpayBarimt.tulsunEsekh = true;
   qpayBarimt.isNew = false;
-  var tulbur = {
-    turul: "qpay",
-    tulsunDun: qpayBarimt.qpay.amount,
-    ognoo: qpayBarimt.ognoo,
-    guilgeeKhiisenOgnoo: new Date(),
-  };
-  Geree(tukhainBaaziinKholbolt)
-    .findByIdAndUpdate(
-      { _id: qpayBarimt.gereeniiId },
-      {
-        $push: {
-          [`avlaga.guilgeenuud`]: tulbur,
+  var tulbur = [];
+  var updateQuery = {};
+  var geree = await Geree.findOne({ _id: qpayBarimt.gereeniiId });
+  if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
+    tulbur.push({
+      tailbar: "qpay",
+      turul: "aldangi",
+      tulsunDun: qpayBarimt.qpay.amount,
+      ognoo: qpayBarimt.ognoo,
+      guilgeeKhiisenOgnoo: new Date(),
+    });
+    if (geree.aldangiinUldegdel >= qpayBarimt.qpay.amount) {
+      geree.aldangiinUldegdel =
+        geree.aldangiinUldegdel - qpayBarimt.qpay.amount;
+    } else {
+      geree.aldangiinUldegdel = 0;
+      var iluuDun = qpayBarimt.qpay.amount - geree.aldangiinUldegdel;
+      tulbur.push({
+        turul: "qpay",
+        tulsunDun: iluuDun,
+        ognoo: qpayBarimt.ognoo,
+        guilgeeKhiisenOgnoo: new Date(),
+      });
+    }
+    updateQuery = {
+      $push: {
+        [`avlaga.guilgeenuud`]: {
+          $each: tulbur,
         },
       },
-      {
-        new: true,
-      }
-    )
+      $set: {
+        aldangiinUldegdel: geree.aldangiinUldegdel,
+      },
+    };
+  } else {
+    tulbur.push({
+      turul: "qpay",
+      tulsunDun: qpayBarimt.qpay.amount,
+      ognoo: qpayBarimt.ognoo,
+      guilgeeKhiisenOgnoo: new Date(),
+    });
+    updateQuery = {
+      $push: {
+        [`avlaga.guilgeenuud`]: {
+          $each: tulbur,
+        },
+      },
+    };
+  }
+  Geree(tukhainBaaziinKholbolt)
+    .findByIdAndUpdate({ _id: qpayBarimt.gereeniiId }, updateQuery, {
+      new: true,
+    })
     .then(async (result) => {
       qpayBarimt.save();
       console.log("qpay tuluv:", result);
