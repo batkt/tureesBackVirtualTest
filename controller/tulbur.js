@@ -1825,27 +1825,25 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
           register: element.register,
         });
         if (geree) {
-          if (zoruu !== 0) {
-            object = {
-              tulukhDun: element.dun,
-              tulsunDun: element.dun,
-              ognoo: oruulakhOgnoo,
-              turul: "khuvaari",
-            };
-            await Geree(req.body.tukhainBaaziinKholbolt)
-              .updateOne(
-                { gereeniiDugaar: geree.gereeniiDugaar },
-                {
-                  $push: {
-                    ["avlaga.guilgeenuud"]: object,
-                  },
-                }
-              )
-              .then(async (result) => {
-                console.log("result", result);
-                khariu.push(result);
-              });
-          }
+          object = {
+            tulukhDun: element.dun,
+            tulsunDun: element.dun,
+            ognoo: oruulakhOgnoo,
+            turul: "khuvaari",
+          };
+          await Geree(req.body.tukhainBaaziinKholbolt)
+            .updateOne(
+              { gereeniiDugaar: geree.gereeniiDugaar },
+              {
+                $push: {
+                  ["avlaga.guilgeenuud"]: object,
+                },
+              }
+            )
+            .then(async (result) => {
+              console.log("result", result);
+              khariu.push(result);
+            });
         }
       }
     res.send(khariu);
