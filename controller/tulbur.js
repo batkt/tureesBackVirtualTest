@@ -1827,7 +1827,6 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
         if (geree) {
           object = {
             tulukhDun: element.dun,
-            tulsunDun: element.dun,
             ognoo: oruulakhOgnoo,
             turul: "khuvaari",
           };
