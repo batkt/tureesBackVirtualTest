@@ -1810,3 +1810,46 @@ exports.tulukhOgnooZasya = asyncHandler(async (req, res, next) => {
     if (next) next(err);
   }
 });
+
+exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
+  try {
+    var oruulakhOgnoo = new Date(req.body.oruulakhOgnoo);
+    objectuud = req.body.objectuud;
+    var khariu = [];
+    var object;
+    if (!req.body.oruulakhOgnoo || !req.body.objectuud)
+      throw new Error("Талбар дутуу!");
+    if (objectuud)
+      for await (const element of objectuud) {
+        var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
+          register: element.register,
+        });
+        if (geree) {
+          if (zoruu !== 0) {
+            object = {
+              tulukhDun: element.dun,
+              tulsunDun: element.dun,
+              ognoo: oruulakhOgnoo,
+              turul: "khuvaari",
+            };
+            await Geree(req.body.tukhainBaaziinKholbolt)
+              .updateOne(
+                { gereeniiDugaar: geree.gereeniiDugaar },
+                {
+                  $push: {
+                    ["avlaga.guilgeenuud"]: object,
+                  },
+                }
+              )
+              .then(async (result) => {
+                console.log("result", result);
+                khariu.push(result);
+              });
+          }
+        }
+      }
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+});

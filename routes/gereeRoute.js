@@ -56,6 +56,7 @@ const {
   testiinBankniiGuilgee,
   testiinBankniiGuilgeeOruulya,
   tulukhOgnooZasya,
+  gereenuudedAvlagaOruulya,
 } = require("../controller/tulbur");
 router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require("lodash");
@@ -116,6 +117,9 @@ router
 router
   .route("/gereenuudedZalruulgaOruulya")
   .post(tokenShalgakh, gereenuudedZalruulgaOruulya);
+router
+  .route("/gereenuudedAvlagaOruulya")
+  .post(tokenShalgakh, gereenuudedAvlagaOruulya);
 router
   .route("/tsutsalgdanGuilgeeZasya")
   .post(tokenShalgakh, tsutsalgdanGuilgeeZasya);
