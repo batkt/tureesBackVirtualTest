@@ -513,6 +513,7 @@ router.post(
     try {
       const match = {
         baiguullagiinId: req.body.baiguullagiinId,
+        mashiniiDugaar: { $regex: "[a-z\u0400-\u04FF]" },
         "tuukh.tsagiinTuukh.garsanTsag": {
           $gte: new Date(req.body.ekhlekhOgnoo),
           $lte: new Date(req.body.duusakhOgnoo),
