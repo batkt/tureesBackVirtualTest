@@ -1823,6 +1823,7 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
       for await (const element of objectuud) {
         var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
           register: element.register,
+          tuluv: 1,
         });
         if (geree) {
           object = {
@@ -1832,7 +1833,7 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
           };
           await Geree(req.body.tukhainBaaziinKholbolt)
             .updateOne(
-              { gereeniiDugaar: geree.gereeniiDugaar },
+              { gereeniiDugaar: geree.gereeniiDugaar, tuluv: 1 },
               {
                 $push: {
                   ["avlaga.guilgeenuud"]: object,
