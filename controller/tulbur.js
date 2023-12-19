@@ -1859,3 +1859,58 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
+  try {
+    var khariu = [];
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
+      tuluv: 1,
+      "avlaga.guilgeenuud": {
+        ognoo: new Date(2024, 0, 1),
+        khyamdral: { $gt: 0 },
+      },
+    });
+    if (gereenuud)
+      for await (const geree of gereenuud) {
+        if (geree) {
+          var objectuud = [];
+          if (geree?.avlaga?.guilgeenuud) {
+            var guilgeenuud = geree.avlaga.guilgeenuud.filter((x) => {
+              return x.ognoo == new Date(2024, 0, 1) && x.khyamdral > 0;
+            });
+            if (!guilgeenuud) {
+              for await (const mur of guilgeenuud) {
+                objectuud.push({
+                  ognoo: new Date(2023, 11, 1),
+                  khyamdral: mur.khyamdral,
+                  tailbar: mur.tailbar,
+                  nemeltTailbar: mur.nemeltTailbar,
+                  turul: "khungulult",
+                });
+              }
+            }
+          }
+          if (objectuud && objectuud.length > 0) {
+            await Geree(req.body.tukhainBaaziinKholbolt)
+              .updateOne(
+                { gereeniiDugaar: geree.gereeniiDugaar, tuluv: 1 },
+                {
+                  $push: {
+                    ["avlaga.guilgeenuud"]: {
+                      $each: objectuud,
+                    },
+                  },
+                }
+              )
+              .then(async (result) => {
+                console.log("result", result);
+                khariu.push(result);
+              });
+          }
+        }
+      }
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+});
