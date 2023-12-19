@@ -1876,9 +1876,9 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
         if (geree) {
           var objectuud = [];
           if (geree?.avlaga?.guilgeenuud) {
-            var guilgeenuud = geree.avlaga.guilgeenuud.filter((x) => {
-              return x.ognoo < new Date(2024, 0, 2) && x.khyamdral > 0;
-            });
+            var guilgeenuud = geree.avlaga.guilgeenuud.filter(
+              (x) => x.ognoo < new Date(2024, 0, 2) && x.khyamdral > 0
+            );
             if (!guilgeenuud) {
               for await (const mur of guilgeenuud) {
                 objectuud.push({
