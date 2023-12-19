@@ -1869,6 +1869,7 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
         ognoo: new Date(2024, 0, 1),
       },
     });
+    console.log("khungulultNukhujOruulya", gereenuud);
     if (gereenuud)
       for await (const geree of gereenuud) {
         if (geree) {
