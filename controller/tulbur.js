@@ -1863,10 +1863,12 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
 exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
   try {
     var khariu = [];
-    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
-      tuluv: 1,
-      "avlaga.guilgeenuud.khyamdral": { $gt: 0 },
-    });
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      .find({
+        tuluv: 1,
+        "avlaga.guilgeenuud.khyamdral": { $gt: 0 },
+      })
+      .select("+avlaga");
     console.log("khungulultNukhujOruulya", gereenuud);
     if (gereenuud)
       for await (const geree of gereenuud) {
