@@ -1817,7 +1817,6 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
     var oruulakhOgnoo = new Date(req.body.oruulakhOgnoo);
     var objectuud = req.body.objectuud;
     var turul = req.body.turul ? req.body.turul : "khuvaari";
-    var zardal = await AshiglaltiinZardluud.findById(req.body.zardliinId);
     var khariu = [];
     var object;
     if (!req.body.oruulakhOgnoo || !req.body.objectuud)
