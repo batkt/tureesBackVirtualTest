@@ -1879,7 +1879,7 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
               (x) => x.ognoo < new Date(2024, 0, 2) && x.khyamdral > 0
             );
             console.log("guilgeenuud", guilgeenuud);
-            if (!guilgeenuud) {
+            if (!!guilgeenuud) {
               for await (const mur of guilgeenuud) {
                 objectuud.push({
                   ognoo: new Date(2023, 11, 1),
