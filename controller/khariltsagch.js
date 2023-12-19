@@ -362,7 +362,7 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
         }
       }
     } catch (err) {
-      next(err);
+      if (next) next(err);
     }
   }
 );
