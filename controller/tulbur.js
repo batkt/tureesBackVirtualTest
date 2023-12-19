@@ -1870,7 +1870,6 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
       })
       .select("+avlaga")
       .lean();
-    console.log("khungulultNukhujOruulya", gereenuud);
     if (gereenuud)
       for await (const geree of gereenuud) {
         if (geree) {
@@ -1879,6 +1878,7 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
             var guilgeenuud = geree.avlaga.guilgeenuud.filter(
               (x) => x.ognoo < new Date(2024, 0, 2) && x.khyamdral > 0
             );
+            console.log("guilgeenuud", guilgeenuud);
             if (!guilgeenuud) {
               for await (const mur of guilgeenuud) {
                 objectuud.push({
