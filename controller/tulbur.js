@@ -1867,7 +1867,6 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
       tuluv: 1,
       "avlaga.guilgeenuud": {
         ognoo: new Date(2024, 0, 1),
-        khyamdral: { $gt: 0 },
       },
     });
     if (gereenuud)
