@@ -5,6 +5,7 @@ const QpayObject = require("../models/qpayObject");
 const { QuickQpayObject } = require("quickqpaypackv2");
 const Baiguullaga = require("../models/baiguullaga");
 const Talbai = require("../models/talbai");
+const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const { UstsanBarimt } = require("zevbackv2");
 const lodash = require("lodash");
 const moment = require("moment");
@@ -1814,7 +1815,9 @@ exports.tulukhOgnooZasya = asyncHandler(async (req, res, next) => {
 exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
   try {
     var oruulakhOgnoo = new Date(req.body.oruulakhOgnoo);
-    objectuud = req.body.objectuud;
+    var objectuud = req.body.objectuud;
+    var turul = req.body.turul ? req.body.turul : "khuvaari";
+    var zardal = await AshiglaltiinZardluud.findById(req.body.zardliinId);
     var khariu = [];
     var object;
     if (!req.body.oruulakhOgnoo || !req.body.objectuud)
@@ -1829,7 +1832,12 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
           object = {
             tulukhDun: element.dun,
             ognoo: oruulakhOgnoo,
-            turul: "khuvaari",
+            negj: element.negj,
+            khemjikhNegj: element?.khemjikhNegj,
+            tariff: element?.tariff,
+            suuliinZaalt: element.suuliinZaalt ? element.suuliinZaalt : 0,
+            umnukhZaalt: element.umnukhZaalt ? element.umnukhZaalt : 0,
+            turul,
           };
           await Geree(req.body.tukhainBaaziinKholbolt)
             .updateOne(
