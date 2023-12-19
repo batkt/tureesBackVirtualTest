@@ -1868,7 +1868,8 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
         tuluv: 1,
         "avlaga.guilgeenuud.khyamdral": { $gt: 0 },
       })
-      .select("+avlaga");
+      .select("+avlaga")
+      .lean();
     console.log("khungulultNukhujOruulya", gereenuud);
     if (gereenuud)
       for await (const geree of gereenuud) {
