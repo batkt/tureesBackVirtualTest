@@ -1865,9 +1865,7 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
     var khariu = [];
     var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
       tuluv: 1,
-      "avlaga.guilgeenuud": {
-        ognoo: new Date(2024, 0, 1),
-      },
+      "avlaga.guilgeenuud.khyamdral": { $gt: 0 },
     });
     console.log("khungulultNukhujOruulya", gereenuud);
     if (gereenuud)
