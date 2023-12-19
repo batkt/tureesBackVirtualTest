@@ -1863,7 +1863,7 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
 exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
   try {
     var khariu = [];
-    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
       tuluv: 1,
       "avlaga.guilgeenuud": {
         ognoo: new Date(2024, 0, 1),
