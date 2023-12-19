@@ -1837,6 +1837,7 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
             tariff: element?.tariff,
             suuliinZaalt: element.suuliinZaalt ? element.suuliinZaalt : 0,
             umnukhZaalt: element.umnukhZaalt ? element.umnukhZaalt : 0,
+            tailbar: element.tailbar,
             turul,
           };
           await Geree(req.body.tukhainBaaziinKholbolt)
