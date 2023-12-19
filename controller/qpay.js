@@ -233,7 +233,9 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
   qpayBarimt.isNew = false;
   var tulbur = [];
   var updateQuery = {};
-  var geree = await Geree.findOne({ _id: qpayBarimt.gereeniiId });
+  var geree = await Geree(tukhainBaaziinKholbolt).findOne({
+    _id: qpayBarimt.gereeniiId,
+  });
   if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
     tulbur.push({
       tailbar: "qpay",
