@@ -9,7 +9,7 @@ const baiguullagaSchema = new Schema(
     khayag: String,
     mail: [String],
     register: String,
-    utas: String,
+    utas: [String],
     zurgiinNer: String,
     barilguud: [
       {
