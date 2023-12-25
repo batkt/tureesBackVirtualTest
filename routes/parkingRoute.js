@@ -679,7 +679,7 @@ router.get("/v1/parking", async (req, res, next) => {
             if (!!dotorZogsool) {
               inside.total = dotorZogsool.too;
               inside.parked = xariu.find(
-                (x) => x._id.zogsool == zogsool.dotorZogsooliinId
+                (x) => x._id.zogsool == dotorZogsool._id.toString()
               ).too;
               parked = xariu.find(
                 (x) => x._id.zogsool == zogsool._id.toString()
