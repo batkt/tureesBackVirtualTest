@@ -633,10 +633,14 @@ router.get("/v1/parking", async (req, res, next) => {
       var zogsooluud = await Parking(kholbolt).find({
         tokiNer: { $exists: true },
       });
-      console.log(zogsooluud.length);
       for await (const zogsool of zogsooluud) {
-        console.log(zogsool);
         if (!!zogsool) {
+          var dotorZogsool;
+          if (!!zogsool.dotorZogsooliinId) {
+            dotorZogsool = await Parking(kholbolt).findById(
+              zogsool.dotorZogsooliinId
+            );
+          }
           var xariu = await Uilchluulegch(kholbolt).aggregate([
             {
               $match: {
@@ -670,16 +674,32 @@ router.get("/v1/parking", async (req, res, next) => {
             },
           ]);
           var parked = 0;
-          if (xariu && xariu.length > 0) parked = xariu[0].too;
+          var inside = {
+            total: dotorZogsool.too,
+          };
+          if (xariu && xariu.length > 0) {
+            if (!!dotorZogsool) {
+              inside.parked = xariu.find(
+                (x) => x._id.zogsool == zogsool.dotorZogsooliinId
+              ).too;
+              parked = xariu.find(
+                (x) => x._id.zogsool == zogsool._id.toString()
+              ).too;
+            } else {
+              parked = xariu[0].too;
+            }
+          }
+          var slot = {
+            outside: {
+              total: zogsool.too,
+              parked,
+            },
+          };
+          if (!!dotorZogsool) slot.inside = inside;
           jagsaalt.push({
             id: zogsool._id.toString(),
             name: zogsool.ner,
-            slot: {
-              outside: {
-                total: zogsool.too,
-                parked,
-              },
-            },
+            slot,
           });
         }
       }
