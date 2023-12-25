@@ -747,7 +747,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
         : {
             tokiNer: { $exists: true },
           };
-      var zogsooluud = await Parking(kholbolt).find();
+      var zogsooluud = await Parking(kholbolt).find(query);
       for await (const zogsool of zogsooluud) {
         console.log(zogsool);
         if (!!zogsool) {
