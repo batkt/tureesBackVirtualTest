@@ -745,9 +745,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             "tuukh.0.tuluv": {
               $nin: [-2, -3],
             },
-            tuukh: {
-              $size: 1,
-            },
           });
           if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar)
             bodsonDun = await zogsooliinDunAvya(
