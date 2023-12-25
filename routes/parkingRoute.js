@@ -673,7 +673,7 @@ router.get("/v1/parking", async (req, res, next) => {
           var parked = 0;
           var inside = {};
           if (xariu && xariu.length > 0) {
-            if (!!dotorZogsool) {
+            if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
               inside.total = dotorZogsool.too;
               inside.parked = xariu.find(
                 (x) => x._id == dotorZogsool._id.toString()
@@ -690,7 +690,8 @@ router.get("/v1/parking", async (req, res, next) => {
               parked,
             },
           };
-          if (!!dotorZogsool) slot.inside = inside;
+          if (!!dotorZogsool && !!zogsool.dotorZogsooliinId)
+            slot.inside = inside;
           jagsaalt.push({
             id: zogsool._id.toString(),
             name: zogsool.ner,
