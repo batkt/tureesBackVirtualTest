@@ -663,10 +663,7 @@ router.get("/v1/parking", async (req, res, next) => {
             },
             {
               $group: {
-                _id: {
-                  id: "aa",
-                  zogsool: "$tuukh.zogsooliinId",
-                },
+                _id: "$tuukh.zogsooliinId",
                 too: {
                   $sum: 1,
                 },
@@ -679,11 +676,9 @@ router.get("/v1/parking", async (req, res, next) => {
             if (!!dotorZogsool) {
               inside.total = dotorZogsool.too;
               inside.parked = xariu.find(
-                (x) => x._id.zogsool == dotorZogsool._id.toString()
+                (x) => x._id == dotorZogsool._id.toString()
               ).too;
-              parked = xariu.find(
-                (x) => x._id.zogsool == zogsool._id.toString()
-              ).too;
+              parked = xariu.find((x) => x._id == zogsool._id.toString()).too;
             } else {
               parked = xariu[0].too;
             }
