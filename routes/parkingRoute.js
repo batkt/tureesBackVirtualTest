@@ -735,11 +735,19 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
   var oldsonMashin;
   var freeze = req.query.freeze;
   var tukhainKholbolt;
+  var localEsekh = !!req.body.baiguullagiinId;
+  if (localEsekh)
+    kholboltuud = kholboltuud.filter(
+      (a) => a.baiguullagiinId == req.body.baiguullagiinId
+    );
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {
-      var zogsooluud = await Parking(kholbolt).find({
-        tokiNer: { $exists: true },
-      });
+      var query = localEsekh
+        ? { baiguullagiinId: req.body.baiguullagiinId }
+        : {
+            tokiNer: { $exists: true },
+          };
+      var zogsooluud = await Parking(kholbolt).find();
       for await (const zogsool of zogsooluud) {
         console.log(zogsool);
         if (!!zogsool) {
