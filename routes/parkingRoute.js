@@ -674,11 +674,10 @@ router.get("/v1/parking", async (req, res, next) => {
             },
           ]);
           var parked = 0;
-          var inside = {
-            total: dotorZogsool.too,
-          };
+          var inside = {};
           if (xariu && xariu.length > 0) {
             if (!!dotorZogsool) {
+              inside.total = dotorZogsool.too;
               inside.parked = xariu.find(
                 (x) => x._id.zogsool == zogsool.dotorZogsooliinId
               ).too;
