@@ -735,15 +735,16 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
   var oldsonMashin;
   var freeze = req.query.freeze;
   var tukhainKholbolt;
-  var localEsekh = !!req.body.baiguullagiinId;
-  if (localEsekh)
+  var localEsekh = !!req.query.baiguullagiinId;
+  if (localEsekh) {
     kholboltuud = kholboltuud.filter(
-      (a) => a.baiguullagiinId == req.body.baiguullagiinId
+      (a) => a.baiguullagiinId == req.query.baiguullagiinId
     );
+  }
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {
       var query = localEsekh
-        ? { baiguullagiinId: req.body.baiguullagiinId }
+        ? { baiguullagiinId: req.query.baiguullagiinId }
         : {
             tokiNer: { $exists: true },
           };
@@ -812,6 +813,8 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
       }
       if (data && data.plate_number) break;
     }
+  } else {
+    console.log("kholbolt alga");
   }
 
   if (!oldsonMashin) {
@@ -1071,5 +1074,140 @@ router.route("/v1/pay").post(async (req, res, next) => {
     next(err);
   }
 });
+
+router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    let tulbur = [
+      {
+        ognoo: new Date(),
+        turul: req.body.turul,
+        dun: req.body.paid_amount,
+      },
+    ];
+    var oldsonMashin;
+    var tukhainKholbolt;
+    var tukhainObject;
+    var tukhainZogsool;
+    var bodsonDun = 0;
+    const zogsool = await Parking(req.body.tukhainBaaziinKholbolt).findOne({
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      "khaalga.ajiltnuud.id": req.body.ajiltniiId,
+    });
+    if (!!zogsool) {
+      oldsonMashin = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt
+      ).findOne({
+        _id: req.body.uilchluulegchiinId,
+      });
+      if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+        tukhainKholbolt = req.body.tukhainBaaziinKholbolt;
+        tukhainZogsool = zogsool;
+        tukhainObject = oldsonMashin;
+      }
+    }
+    bodsonDun = await zogsooliinDunAvya(
+      tukhainZogsool,
+      tukhainObject,
+      tukhainKholbolt
+    );
+    if (!tukhainObject) {
+      res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
+    }
+    if (
+      tukhainObject &&
+      tukhainObject.tuukh &&
+      tukhainObject.tuukh.length > 0
+    ) {
+      if (tukhainObject.tuukh && tukhainObject.tuukh.length > 0)
+        if (
+          tukhainObject.tuukh[0].tulbur &&
+          tukhainObject.tuukh[0].tulbur.length > 0
+        )
+          tukhainObject.tuukh[0].tulbur.push(...tulbur);
+        else tukhainObject.tuukh[0].tulbur = tulbur;
+      var set = {
+        "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
+      };
+      if (bodsonDun > 0) {
+        if (bodsonDun == req.body.paid_amount) {
+          set["tuukh.$[t].tuluv"] = 1;
+          set["tuukh.$[t].burtgesenAjiltaniiId"] = req.body.ajiltniiId;
+          set["tuukh.$[t].burtgesenAjiltaniiNer"] = req.body.ajiltniiNer;
+          set["garakhTsag"] = new Date(new Date().getTime() + 30 * 60000);
+        }
+      }
+      await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
+        tukhainObject._id,
+        {
+          $set: set,
+        },
+        {
+          arrayFilters: [
+            {
+              "t.zogsooliinId": tukhainZogsool._id,
+            },
+          ],
+        }
+      );
+      res.send("Amjilttai");
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router
+  .route("/v1/kioskEbarimtAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    var tukhainKholbolt = req.body.tukhainBaaziinKholbolt;
+    var tukhainObject = await Uilchluulegch(tukhainKholbolt).findOne({
+      _id: req.body.uilchluulegchiinId,
+    });
+    tukhainObject.niitDun = req.body.paid_amount;
+    var ebarimt = await zogsooloosEbarimtUusgye(
+      tukhainObject,
+      req.body.customer_no,
+      req.body.individual ? null : "3",
+      tukhainKholbolt
+    );
+    butsaakhMethod = function (d) {
+      try {
+        if (!d.success) throw new Error(d.message);
+        var ebarimt = new Ebarimt(tukhainKholbolt)(d);
+        ebarimt.save().catch((err) => {
+          next(err);
+        });
+        var update = { ebarimtAvsanEsekh: true };
+        if (ebarimt.customerNo)
+          update = {
+            ...update,
+            ebarimtRegister: ebarimt.customerNo,
+          };
+        Uilchluulegch(tukhainKholbolt)
+          .findByIdAndUpdate(tukhainObject._id, update)
+          .then((xariu) => {
+            console.log("xariu", xariu);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        delete d.baiguullagiinId;
+        delete d.zogsooliinId;
+        delete d.barilgiinId;
+        delete d._id;
+        console.log("ebarimt duuslaa");
+        var butsaakhKhariu = {
+          success: true,
+          message: "Amjilttai",
+        };
+        butsaakhKhariu.data = d;
+        res.send(butsaakhKhariu);
+      } catch (err) {
+        next(err);
+      }
+    };
+    ebarimtDuudya(ebarimt, butsaakhMethod, next);
+  });
 
 module.exports = router;
