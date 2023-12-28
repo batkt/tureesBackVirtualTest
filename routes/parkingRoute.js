@@ -136,23 +136,19 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try {
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
-    if (
-      req.body.mashiniiDugaar &&
-      /\p{Script_Extensions=Cyrillic}/u.test(req.body.mashiniiDugaar)
-    ) {
-      const medegdel = async (uilchluulegch, khariltsagchiinId) => {
-        /**
-         * Web.с машин бүртгэсэн тохиолдолд khariltsagchiinId байхгүй байгаа тул
-         * зарим машин дээр khariltsagchiinId undefined ирж болно.
-         * */
-        var firebaseToken = req.body.firebaseToken;
-        var kharilltsagch = await Khariltsagch(
-          req.body.tukhainBaaziinKholbolt
-        ).findOne({ _id: khariltsagchiinId });
-        if (!!kharilltsagch) {
-          const medeelel = {
-            title: "Зогсоол",
-            body: `<span>
+    const medegdel = async (uilchluulegch, khariltsagchiinId) => {
+      /**
+       * Web.с машин бүртгэсэн тохиолдолд khariltsagchiinId байхгүй байгаа тул
+       * зарим машин дээр khariltsagchiinId undefined ирж болно.
+       * */
+      var firebaseToken = req.body.firebaseToken;
+      var kharilltsagch = await Khariltsagch(
+        req.body.tukhainBaaziinKholbolt
+      ).findOne({ _id: khariltsagchiinId });
+      if (!!kharilltsagch) {
+        const medeelel = {
+          title: "Зогсоол",
+          body: `<span>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
             <p style="width:maxContent; text-align:left">Машин:</p>
             <p style="width:maxContent; text-align:right; color: #999999">${
@@ -184,35 +180,28 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
             } ₮</p>
           </div>
           </span>`,
-          };
-          firebaseToken = kharilltsagch.firebaseToken;
-          sonorduulgaIlgeeye(firebaseToken, medeelel, (r) => {
-            var sonorduulga = new Sonorduulga(
-              req.body.tukhainBaaziinKholbolt
-            )();
-            sonorduulga.khariltsagchiinId = khariltsagchiinId;
-            sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
-            sonorduulga.barilgiinId = req.body.barilgiinId;
-            sonorduulga.zurgiinId = req.body.zurgiinId;
-            if (khariltsagchiinId)
-              sonorduulga.khuleenAvagchiinId = khariltsagchiinId;
-            if (!req.body.turul) sonorduulga.turul = "medegdel";
-            sonorduulga.title = medeelel.title;
-            sonorduulga.message = medeelel.body;
-            sonorduulga.kharsanEsekh = false;
-            sonorduulga.save();
-            var io = req.app.get("socketio");
-            if (io) io.emit("khariltsagch" + khariltsagchiinId, sonorduulga);
-          });
-        }
-      };
-      const khariu = await sdkData(req, medegdel);
-      res.send(khariu);
-    } else {
-      res.send({
-        aldaa: "Машины дугаар буруу байна!",
-      });
-    }
+        };
+        firebaseToken = kharilltsagch.firebaseToken;
+        sonorduulgaIlgeeye(firebaseToken, medeelel, (r) => {
+          var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+          sonorduulga.khariltsagchiinId = khariltsagchiinId;
+          sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+          sonorduulga.barilgiinId = req.body.barilgiinId;
+          sonorduulga.zurgiinId = req.body.zurgiinId;
+          if (khariltsagchiinId)
+            sonorduulga.khuleenAvagchiinId = khariltsagchiinId;
+          if (!req.body.turul) sonorduulga.turul = "medegdel";
+          sonorduulga.title = medeelel.title;
+          sonorduulga.message = medeelel.body;
+          sonorduulga.kharsanEsekh = false;
+          sonorduulga.save();
+          var io = req.app.get("socketio");
+          if (io) io.emit("khariltsagch" + khariltsagchiinId, sonorduulga);
+        });
+      }
+    };
+    const khariu = await sdkData(req, medegdel);
+    res.send(khariu);
   } catch (err) {
     next(err);
   }
