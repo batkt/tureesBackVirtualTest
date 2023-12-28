@@ -14,6 +14,7 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     const baiguullaga = new Baiguullaga(db.erunkhiiKholbolt)(req.body);
+    console.log("baiguullagaBurtgekh", req.body);
     baiguullaga.isNew = !baiguullaga.zasakhEsekh;
     baiguullaga
       .save()
