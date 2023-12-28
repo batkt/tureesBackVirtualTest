@@ -2346,4 +2346,13 @@ router
     }
   });
 
+router.route("/testKhiie").post(async (req, res, next) => {
+  console.log("testKhiie");
+  console.log("req.body", req.body);
+  console.log("req.params", req.params);
+  console.log("req.query", req.query);
+  console.log("req.headers", req.headers);
+  res.sendStatus(200);
+});
+
 module.exports = router;
