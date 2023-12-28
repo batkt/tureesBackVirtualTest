@@ -1161,9 +1161,9 @@ router
   .route("/v1/kioskEbarimtAvya")
   .post(tokenShalgakh, async (req, res, next) => {
     var tukhainKholbolt = req.body.tukhainBaaziinKholbolt;
-    var tukhainObject = await Uilchluulegch(tukhainKholbolt).findOne({
-      _id: req.body.uilchluulegchiinId,
-    });
+    var tukhainObject = await Uilchluulegch(tukhainKholbolt).findById(
+      req.body.uilchluulegchiinId
+    );
     tukhainObject.niitDun = req.body.paid_amount;
     var ebarimt = await zogsooloosEbarimtUusgye(
       tukhainObject,
