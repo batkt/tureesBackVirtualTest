@@ -1770,10 +1770,12 @@ async function daraagiinTulukhOgnooZasya(gereeniiId, tukhainBaaziinKholbolt) {
   }
   jagsaalt = lodash.filter(jagsaalt, (a) => a.turul != "baritsaa");
   var niitTulsunDun = lodash.sumBy(jagsaalt, function (object) {
-    return object.tulsunDun;
+    if (object.ognoo < new Date()) return object.tulsunDun;
+    else return 0;
   });
   var niitKhyamdral = lodash.sumBy(jagsaalt, function (object) {
-    return object.khyamdral;
+    if (object.ognoo < new Date()) return object.khyamdral;
+    else return 0;
   });
   niitTulsunDun = niitTulsunDun + niitKhyamdral;
   jagsaalt = lodash.filter(jagsaalt, (a) => a.tulukhDun != null);
