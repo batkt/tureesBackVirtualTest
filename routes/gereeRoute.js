@@ -58,6 +58,7 @@ const {
   tulukhOgnooZasya,
   gereenuudedAvlagaOruulya,
   khungulultNukhujOruulya,
+  aldangiBodyo,
 } = require("../controller/tulbur");
 router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require("lodash");
@@ -144,6 +145,7 @@ router
   .route("/gereeniiGuilgeeKhadgalya")
   .post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
 router.route("/khuvaariUusgey").post(tokenShalgakh, khuvaariUusgey);
+router.route("/aldangiBodyo").post(tokenShalgakh, aldangiBodyo);
 router
   .route("/gereeniiTulultAvya/:gereeniiId")
   .get(tokenShalgakh, (req, res, next) => {
