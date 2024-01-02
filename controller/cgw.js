@@ -624,7 +624,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.tdbUldegdelShalgay = asyncHandler(async () => {
+exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
   var dans = req.body;
   var query = [
     {
