@@ -145,7 +145,10 @@ router
   .route("/gereeniiGuilgeeKhadgalya")
   .post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
 router.route("/khuvaariUusgey").post(tokenShalgakh, khuvaariUusgey);
-router.route("/aldangiBodyo").post(tokenShalgakh, aldangiBodyo);
+router.route("/aldangiBodyo").post(tokenShalgakh, async (req, res, next) => {
+  await aldangiBodyo(req.body.baiguullagiinId);
+  res.send("Amjilttai");
+});
 router
   .route("/gereeniiTulultAvya/:gereeniiId")
   .get(tokenShalgakh, (req, res, next) => {

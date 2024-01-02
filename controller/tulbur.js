@@ -441,15 +441,22 @@ module.exports.tulultTaniya = async function tulultTaniya() {
   }
 };
 
-module.exports.aldangiBodyo = async function aldangiBodyo() {
+module.exports.aldangiBodyo = async function aldangiBodyo(
+  baiguullagiinId = null
+) {
   try {
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     if (kholboltuud) {
+      var query = {
+        "barilguud.tokhirgoo.aldangiinKhuvi": { $gt: 0 },
+      };
+      if (!!baiguullagiinId) {
+        var ObjectId = require("mongodb").ObjectId;
+        query["_id"] = new ObjectId(baiguullagiinId);
+      }
       var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt)
-        .find({
-          "barilguud.tokhirgoo.aldangiinKhuvi": { $gt: 0 },
-        })
+        .find(query)
         .lean();
       if (baiguullaguud && baiguullaguud.length > 0) {
         for await (const baiguullaga of baiguullaguud) {
