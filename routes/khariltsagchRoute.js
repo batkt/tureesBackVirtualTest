@@ -12,6 +12,7 @@ const uploadFile = multer({ storage: storage });
 const {
   dansniiUldegdelAvya,
   bankniiKhuulgaTatajKhadgalya,
+  tdbUldegdelShalgay,
 } = require("../controller/cgw");
 
 const { qpayGargaya, qpayTulye } = require("../controller/qpay");
@@ -79,6 +80,7 @@ router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").get(qpayTulye);
 router
   .route("/bankniiKhuulgaTatajKhadgalya")
   .post(tokenShalgakh, bankniiKhuulgaTatajKhadgalya);
+router.route("/tdbUldegdelShalgay").post(tokenShalgakh, tdbUldegdelShalgay);
 router
   .route("/khariltsagchZagvarAvya")
   .get(tokenShalgakh, khariltsagchZagvarAvya);

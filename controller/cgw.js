@@ -624,6 +624,94 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.tdbUldegdelShalgay = asyncHandler(async () => {
+  var dans = req.body;
+  var query = [
+    {
+      $match: {
+        dansniiDugaar: dans.dugaar,
+        baiguullagiinId: dans.baiguullagiinId,
+      },
+    },
+    {
+      $group: {
+        _id: "$dansniiDugaar",
+        max: {
+          $max: {
+            $toDouble: "$NtryRef",
+          },
+        },
+      },
+    },
+  ];
+  var max = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).aggregate(
+    query
+  );
+  var maxDugaar = 100;
+  if (max && max.length !== 0) maxDugaar = max[0].max;
+  var khuseltiinDugaar = await Dugaarlalt(
+    req.body.tukhainBaaziinKholbolt
+  ).aggregate([
+    {
+      $match: {
+        turul: "tdbKhuselt",
+      },
+    },
+    {
+      $group: {
+        _id: "aaa",
+        max: {
+          $max: {
+            $toDouble: "$dugaar",
+          },
+        },
+      },
+    },
+  ]);
+  var maxKhuseltiinDugaar = 107;
+  if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
+    maxKhuseltiinDugaar = khuseltiinDugaar[0].max;
+  Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+    .findOneAndUpdate(
+      { turul: "tdbKhuselt" },
+      { $set: { dugaar: maxKhuseltiinDugaar + 1 } },
+      {
+        new: true,
+        upsert: true,
+      }
+    )
+    .then((resa) => console.log(resa))
+    .catch((err) => console.log(err));
+  var textUseg = "A";
+  if (dans.baiguullagiinId == "631595e9957b7d5ec013c076") textUseg = "U";
+  else if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac") textUseg = "K";
+  else if (dans.baiguullagiinId == "65435cdff2f5358696c61454") textUseg = "T";
+  tdbDansniiUldegdelAvya(
+    {
+      msgId: "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
+      loginId: dans.corporateNevtrekhNer,
+      AnyBIC: dans.AnyBIC,
+      RoleID: dans.RoleID,
+      pwd: dans.corporateNuutsUg,
+      dansniiDugaar: dans.dugaar,
+      valyut: dans.valyut,
+    },
+    next,
+    async (khariu) => {
+      console.log("khariu", new Date(), khariu);
+      if (
+        khariu &&
+        khariu.Document &&
+        khariu.Document.GrpHdr &&
+        khariu.Document.GrpHdr[0].RspDesc
+      )
+        res.send({ msg: khariu.Document.GrpHdr[0].RspDesc[0] });
+      else res.send({ msg: "Банктай холбогдох үед алдаа гарлаа!" });
+    },
+    dans.baiguullagiinId
+  );
+});
+
 exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
   try {
     const { db } = require("zevbackv2");
