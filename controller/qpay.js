@@ -242,14 +242,42 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
 
 exports.qpayGuilgeeUtgaAvya = asyncHandler(async (req, res, next) => {
   try {
+    var dans = await Dans(req.body.tukhainBaaziinKholbolt).findOne({
+      dugaar: req.body.dansniiDugaar,
+    });
     var guilgeenuud = await QuickQpayObject(
       req.body.tukhainBaaziinKholbolt
     ).find({
       tulsunEsekh: true,
       ognoo: { $gt: new Date("2023-12-02") },
     });
+    var tokenObject = await Token(req.body.tukhainBaaziinKholbolt).findOne({
+      turul: "qpay",
+      baiguullagiinId: req.body.baiguullagiinId,
+      ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
+    });
+    var token;
+    if (!tokenObject) {
+      console.log("token bxgu");
+      tokenObject = await tokenAvya(
+        dans.qpayUsername,
+        dans.qpayPassword,
+        next,
+        req.body.baiguullagiinId,
+        req.body.tukhainBaaziinKholbolt
+      );
+      token = tokenObject.access_token;
+    } else {
+      var tokenO = await tokenSungaya(tokenObject.refreshToken, next);
+      console.log("tokenO", tokenO);
+      token = tokenO.access_token;
+    }
     for await (const guilgee of guilgeenuud) {
-      var khariu = await qpayMedeelelAvya(guilgee.invoice_id);
+      var khariu = await qpayMedeelelAvya(
+        token,
+        { invoice_id: guilgee.invoice_id },
+        next
+      );
       if (
         !!khariu &&
         !!khariu.payments &&
