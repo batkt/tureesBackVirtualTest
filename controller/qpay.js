@@ -30,7 +30,7 @@ async function tokenAvya(
   tukhainBaaziinKholbolt
 ) {
   try {
-    var url = new URL(process.env.QPAY_SERVER + "v2/auth/token/");
+    var url = new URL(process.env.QPAY_MERCHANT_SERVER + "v2/auth/token/");
     url.username = username;
     url.password = password;
     const response = await instance.post(url);
@@ -260,8 +260,8 @@ exports.qpayGuilgeeUtgaAvya = asyncHandler(async (req, res, next) => {
     if (!tokenObject) {
       console.log("token bxgu");
       tokenObject = await tokenAvya(
-        dans.qpayUsername,
-        dans.qpayPassword,
+        "ZEV_TABS",
+        "IZljztNr",
         next,
         req.body.baiguullagiinId,
         req.body.tukhainBaaziinKholbolt
