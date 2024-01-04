@@ -1,9 +1,8 @@
 const express = require("express");
 const Baiguullaga = require("../models/baiguullaga");
 const { tokenShalgakh, Dugaarlalt } = require("zevbackv2");
-
+const { qpayGuilgeeUtgaAvya } = require("../controller/qpay");
 const router = express.Router();
-
 const {
   qpayKhariltsagchUusgey,
   qpayGargaya,
@@ -97,6 +96,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
     next(err);
   }
 });
+router.post("/qpayGuilgeeUtgaAvya", tokenShalgakh, qpayGuilgeeUtgaAvya);
 
 router.post(
   "/qpayKhariltsagchUusgey",

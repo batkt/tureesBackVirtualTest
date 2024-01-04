@@ -58,6 +58,30 @@ async function tokenAvya(
   }
 }
 
+async function qpayMedeelelAvya(token, qpayObject, next) {
+  try {
+    var url = process.env.QPAY_SERVER + "v2/payment/check/";
+    url = new URL(url);
+    const context = {
+      token: "Bearer " + token,
+    };
+    const qpayObjectString = JSON.stringify(qpayObject);
+    const response = await instance.post(url, {
+      context,
+      body: qpayObjectString,
+    });
+    if (!response.body) {
+      if (next) {
+        next(new aldaa("Алдаа гарлаа!"));
+        console.log("response =>", response);
+      } else return null;
+    }
+    return JSON.parse(response.body);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function tokenSungaya(token, next) {
   try {
     var url = process.env.QPAY_SERVER + "v2/auth/refresh";
@@ -214,6 +238,38 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
   khadgalakhQpay.tulsunEsekh = false;
   khadgalakhQpay.save();
   res.send(khariu);
+});
+
+exports.qpayGuilgeeUtgaAvya = asyncHandler(async (req, res, next) => {
+  try {
+    var guilgeenuud = await QuickQpayObject(
+      req.body.tukhainBaaziinKholbolt
+    ).find({
+      tulsunEsekh: true,
+      ognoo: { $gt: new Date("2023-12-02") },
+    });
+    for await (const guilgee of guilgeenuud) {
+      var khariu = await qpayMedeelelAvya(guilgee.invoice_id);
+      if (
+        !!khariu &&
+        !!khariu.payments &&
+        !!khariu.payments[0].transactions &&
+        !!khariu.payments[0].transactions[0].id
+      ) {
+        await QuickQpayObject(req.body.tukhainBaaziinKholbolt).updateOne(
+          {
+            invoice_id: guilgee.invoice_id,
+          },
+          {
+            legacy_id: khariu.payments[0].transactions[0].id,
+          }
+        );
+      }
+    }
+    res.send("Amjilttai");
+  } catch (err) {
+    next(err);
+  }
 });
 
 exports.qpayTulye = asyncHandler(async (req, res, next) => {
