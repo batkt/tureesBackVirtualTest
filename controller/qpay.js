@@ -61,7 +61,7 @@ async function tokenAvya(
 
 async function qpayMedeelelAvya(token, qpayObject, next) {
   try {
-    var url = process.env.QPAY_SERVER + "v2/payment/check/";
+    var url = process.env.QPAY_MERCHANT_SERVER + "v2/payment/check/";
     url = new URL(url);
     const context = {
       token: "Bearer " + token,
