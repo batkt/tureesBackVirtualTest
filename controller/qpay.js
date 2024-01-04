@@ -194,7 +194,7 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
     throw new aldaa("Qpay тохиргоо хийгдээгүй байна!");
 
   var tokenObject = await Token(req.body.tukhainBaaziinKholbolt).findOne({
-    turul: "qpay",
+    turul: "quickqpay",
     baiguullagiinId: req.body.baiguullagiinId,
     ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
   });
