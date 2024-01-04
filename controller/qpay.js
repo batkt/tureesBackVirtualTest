@@ -194,7 +194,7 @@ exports.qpayGargaya = asyncHandler(async (req, res, next) => {
     throw new aldaa("Qpay тохиргоо хийгдээгүй байна!");
 
   var tokenObject = await Token(req.body.tukhainBaaziinKholbolt).findOne({
-    turul: "quickqpay",
+    turul: "qpay",
     baiguullagiinId: req.body.baiguullagiinId,
     ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
   });
@@ -253,7 +253,7 @@ exports.qpayGuilgeeUtgaAvya = asyncHandler(async (req, res, next) => {
       ognoo: { $gt: new Date("2023-12-02") },
     });
     var tokenObject = await Token(req.body.tukhainBaaziinKholbolt).findOne({
-      turul: "qpay",
+      turul: "quickQpay",
       baiguullagiinId: req.body.baiguullagiinId,
       ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
     });
@@ -261,8 +261,8 @@ exports.qpayGuilgeeUtgaAvya = asyncHandler(async (req, res, next) => {
     if (!tokenObject) {
       console.log("token bxgu");
       tokenObject = await tokenAvya(
-        "ZEV_TABS",
-        "IZljztNr",
+        "ZEV_TABS1",
+        "PB5RcI2g",
         next,
         req.body.baiguullagiinId,
         req.body.tukhainBaaziinKholbolt
