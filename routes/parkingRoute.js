@@ -1051,7 +1051,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
             _id: { $ne: tukhainZogsool._id },
           });
           var garsanObject = await Uilchluulegch(tukhainKholbolt).findOne({
-            mashiniiDugaar: req.body.mashiniiDugaar,
+            mashiniiDugaar: req.body.plate_number,
             "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
             "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
               $exists: true,
