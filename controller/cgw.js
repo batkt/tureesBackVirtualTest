@@ -154,7 +154,8 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
 
     const objectString = JSON.stringify(xml);
     var baiguullagiinZam = "";
-    if (baiguullagiinId == "631595e9957b7d5ec013c076")
+    if (baiguullagiinId == "6115f350b35689cdbf1b9da3") baiguullagiinZam = "ikh";
+    else if (baiguullagiinId == "631595e9957b7d5ec013c076")
       baiguullagiinZam = "uguumur";
     else if (baiguullagiinId == "64fe8edc54a669717ad657ac")
       baiguullagiinZam = "halmon";
@@ -226,7 +227,9 @@ async function tdbDansniiUldegdelAvya(
     const objectString = JSON.stringify(xml);
 
     var baiguullagiinZam = "";
-    if (baiguullagiinId == "631595e9957b7d5ec013c076")
+
+    if (baiguullagiinId == "6115f350b35689cdbf1b9da3") baiguullagiinZam = "ikh";
+    else if (baiguullagiinId == "631595e9957b7d5ec013c076")
       baiguullagiinZam = "uguumur";
     else if (baiguullagiinId == "64fe8edc54a669717ad657ac")
       baiguullagiinZam = "halmon";
