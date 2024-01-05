@@ -986,7 +986,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
       if (bodsonDun > 0) {
         if (bodsonDun == req.body.paid_amount) {
           set["tuukh.$[t].tuluv"] = 1;
-          if (!!req.body.manually_open)
+          if (!req.body.manually_open)
             set["garakhTsag"] = new Date(new Date().getTime() + 30 * 60000);
         }
       }
@@ -1049,8 +1049,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
       !!req.body.manually_open &&
       tukhainObject &&
       tukhainObject.tuukh &&
-      tukhainObject.tuukh[0] &&
-      !tukhainObject.tuukh[0].garakhTsag
+      tukhainObject.tuukh[0]
     ) {
       const io = req.app.get("socketio");
       io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
