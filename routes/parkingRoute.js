@@ -1042,22 +1042,16 @@ router.route("/v1/pay").post(async (req, res, next) => {
           next(err);
         }
       };
-
+      if (!!req.body.manually_open) {
+        const io = req.app.get("socketio");
+        io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
+          khaalgaTurul: "oroh",
+          turul: "toki",
+          mashiniiDugaar: req.body.plate_number,
+          cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
+        });
+      }
       ebarimtDuudya(ebarimt, butsaakhMethod, next);
-    }
-    if (
-      !!req.body.manually_open &&
-      tukhainObject &&
-      tukhainObject.tuukh &&
-      tukhainObject.tuukh[0]
-    ) {
-      const io = req.app.get("socketio");
-      io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
-        khaalgaTurul: "oroh",
-        turul: "toki",
-        mashiniiDugaar: req.body.plate_number,
-        cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
-      });
     }
   } catch (err) {
     next(err);
