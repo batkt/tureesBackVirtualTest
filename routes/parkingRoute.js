@@ -986,7 +986,8 @@ router.route("/v1/pay").post(async (req, res, next) => {
       if (bodsonDun > 0) {
         if (bodsonDun == req.body.paid_amount) {
           set["tuukh.$[t].tuluv"] = 1;
-          set["garakhTsag"] = new Date(new Date().getTime() + 30 * 60000);
+          if (!!req.body.manually_open)
+            set["garakhTsag"] = new Date(new Date().getTime() + 30 * 60000);
         }
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
