@@ -1047,14 +1047,10 @@ router.route("/v1/pay").post(async (req, res, next) => {
           !!tukhainZogsool.kamerDavkharAshiglakh &&
           !tukhainObject?.tuukh[0]?.garsanKhaalga
         ) {
-          var nemeltZogsool = await Parking(
-            req.body.tukhainBaaziinKholbolt
-          ).findOne({
+          var nemeltZogsool = await Parking(tukhainKholbolt).findOne({
             _id: { $ne: tukhainZogsool._id },
           });
-          var garsanObject = await Uilchluulegch(
-            req.body.tukhainBaaziinKholbolt
-          ).findOne({
+          var garsanObject = await Uilchluulegch(tukhainKholbolt).findOne({
             mashiniiDugaar: req.body.mashiniiDugaar,
             "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
             "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
