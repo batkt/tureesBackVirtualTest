@@ -69,13 +69,15 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
         console.log("url", url);
         next(err1);
       } else {
-        var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
-        msg.baiguullagiinId = req.body.baiguullagiinId;
-        msg.barilgiinId = req.body.barilgiinId;
-        msg.dugaar = jagsaalt[index].to;
-        msg.gereeniiId = jagsaalt[index].gereeniiId;
-        msg.msg = jagsaalt[index].text;
-        msg.save();
+        if (!!req && !!req.body) {
+          var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
+          msg.baiguullagiinId = req.body.baiguullagiinId;
+          msg.barilgiinId = req.body.barilgiinId;
+          msg.dugaar = jagsaalt[index].to;
+          msg.gereeniiId = jagsaalt[index].gereeniiId;
+          msg.msg = jagsaalt[index].text;
+          msg.save();
+        }
         if (jagsaalt.length > index + 1) {
           console.log("url", url);
           console.log("body", body);
