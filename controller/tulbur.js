@@ -482,6 +482,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 barilga.tokhirgoo && barilga.tokhirgoo.aldangiChuluulukhKhonog
                   ? barilga.tokhirgoo.aldangiChuluulukhKhonog
                   : 0;
+              if (aldangiChuluulukhKhonog > 0)
+                ognoo =
+                  new Date().getTime() - 86400000 * aldangiChuluulukhKhonog;
               var gereenuud = await Geree(kholbolt).aggregate([
                 {
                   $match: {
