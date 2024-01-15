@@ -6,7 +6,6 @@ const baiguullagaSchema = new Schema(
   {
     id: String,
     ner: String,
-    zogsoolNer: String,
     khayag: String,
     mail: [String],
     register: String,
@@ -109,6 +108,7 @@ const baiguullagaSchema = new Schema(
       apiZogsoolDans: String,
       apiTogloomiinTuvDans: String,
       aktAshiglakhEsekh: Boolean,
+      zogsoolNer: String,
     },
     erkhuud: [
       {
