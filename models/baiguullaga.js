@@ -6,6 +6,7 @@ const baiguullagaSchema = new Schema(
   {
     id: String,
     ner: String,
+    zogsoolNer: String,
     khayag: String,
     mail: [String],
     register: String,
@@ -37,6 +38,12 @@ const baiguullagaSchema = new Schema(
 
           /**Алданги авалгүйгээр хүлээх хоног */
           aldangiChuluulukhKhonog: Number,
+
+          /**Алданги бодож эхлэх огноо */
+          aldangiBodojEkhlekhOgnoo: Date,
+
+          /**Алданги бодож эхлэх огноо */
+          ebarimtRegister: Date,
 
           /**Алданги бодож эхлэх огноо */
           aldangiBodojEkhlekhOgnoo: Date,
