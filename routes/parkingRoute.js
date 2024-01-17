@@ -538,7 +538,7 @@ router.post(
                     input: "$tuukh.tulburuud",
                     as: "el",
                     cond: {
-                      $eq: ["khungulult", "$el.turul"],
+                      $eq: ["$$el.turul", "khungulult"],
                     },
                   },
                 },
@@ -590,7 +590,7 @@ router.post(
               $sum: { $ifNull: ["$niitDun", 0] },
             },
             khungulsun: {
-              $sum: { $cond: [{ $ifNull: ["$khungulult", 0] }] },
+              $sum: { $ifNull: ["$khungulult", 0] },
             },
           },
         },
