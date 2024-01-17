@@ -538,7 +538,7 @@ router.post(
                     input: "$tuukh.tulburuud",
                     as: "el",
                     cond: {
-                      $eq: ["khungulult", "tuukh.tulburuud.turul"],
+                      $eq: ["khungulult", "$el.turul"],
                     },
                   },
                 },
