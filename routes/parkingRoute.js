@@ -237,6 +237,7 @@ router
   .route("/zogsooliinTulburTulye")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
+      var uurchlukhTuluv = 1;
       var guilgeenuud = req.body.tulbur;
       console.log("zogsooliinTulburTulye: ", guilgeenuud);
       if (Array.isArray(guilgeenuud)) {
@@ -248,6 +249,9 @@ router
             dun: guilgee.dun,
           });
         });
+        if (!!req.body.urdchilsan) {
+          uurchlukhTuluv = 0;
+        }
         await Uilchluulegch(req.body.tukhainBaaziinKholbolt).updateOne(
           {
             _id: req.body.id,
@@ -262,7 +266,7 @@ router
               "tuukh.$.burtgesenAjiltaniiNer":
                 guilgeenuud[0].burtgesenAjiltaniiNer,
               "tuukh.$.tulbur": tulbur,
-              "tuukh.$.tuluv": 1,
+              "tuukh.$.tuluv": uurchlukhTuluv,
             },
           }
         );
