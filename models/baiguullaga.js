@@ -40,6 +40,12 @@ const baiguullagaSchema = new Schema(
 
           /**Алданги бодож эхлэх огноо */
           aldangiBodojEkhlekhOgnoo: Date,
+
+          /**Алданги бодож эхлэх огноо */
+          ebarimtRegister: Date,
+
+          /**Алданги бодож эхлэх огноо */
+          aldangiBodojEkhlekhOgnoo: Date,
         },
         davkharuud: [
           {
@@ -102,6 +108,7 @@ const baiguullagaSchema = new Schema(
       apiZogsoolDans: String,
       apiTogloomiinTuvDans: String,
       aktAshiglakhEsekh: Boolean,
+      zogsoolNer: String,
     },
     erkhuud: [
       {
