@@ -533,34 +533,26 @@ router.post(
         {
           $match: match,
         },
+        { $unwind: "$tuukh" },
         {
-          $addFields: {
-            khungulult: {
-              $reduce: {
-                input: {
-                  $filter: {
-                    input: "$tuukh.tulburuud",
-                    as: "el",
-                    cond: {
-                      $eq: ["$$el.turul", "khungulult"],
-                    },
-                  },
-                },
-                initialValue: 0,
-                in: { $add: ["$$value", "$$this.dun"] },
-              },
-            },
-          },
+          $unwind: { path: "$tuukh.tulbur", preserveNullAndEmptyArrays: true },
         },
         {
-          $project: {
-            tuluv: {
-              $first: "$tuukh.tuluv",
+          $group: {
+            _id: {
+              id: "$tuukh._id",
+              tuluv: "$tuukh.tuluv",
+              tulukhDun: "$tuukh.tulukhDun",
             },
-            niitDun: {
-              $sum: { $ifNull: ["$tuukh.tulukhDun", 0] },
+            khungulult: {
+              $sum: {
+                $cond: [
+                  { $eq: ["$tuukh.tulbur.turul", "khungulult"] },
+                  { $ifNull: ["$tuukh.tulbur.dun", 0] },
+                  0,
+                ],
+              },
             },
-            khungulult: "$khungulult",
           },
         },
         {
@@ -570,9 +562,9 @@ router.post(
               $sum: {
                 $cond: [
                   {
-                    $eq: ["$tuluv", 1],
+                    $eq: ["$_id.tuluv", 1],
                   },
-                  { $ifNull: ["$niitDun", 0] },
+                  { $ifNull: ["$_id.tulukhDun", 0] },
                   0,
                 ],
               },
@@ -584,14 +576,14 @@ router.post(
                       {
                         $eq: ["$garsanKhaalga", req.body.garakhKhaalgaIp],
                       },
-                      { $ifNull: ["$niitDun", 0] },
+                      { $ifNull: ["$_id.tulukhDun", 0] },
                       0,
                     ],
                   },
                 }
               : { $sum: 0 },
             niitDun: {
-              $sum: { $ifNull: ["$niitDun", 0] },
+              $sum: { $ifNull: ["$_id.tulukhDun", 0] },
             },
             khungulsun: {
               $sum: { $ifNull: ["$khungulult", 0] },
