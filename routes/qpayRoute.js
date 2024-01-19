@@ -53,7 +53,9 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       });
     var tailbar = "Төлбөр";
     if (!!req.body.gereeniiId) {
-      var geree = await Geree.findById(req.body.gereeniiId);
+      var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
+        req.body.gereeniiId
+      );
       tailbar = "Түрээсийн төлбөр " + geree.gereeniiDugaar;
     }
     req.body.tailbar = tailbar;
