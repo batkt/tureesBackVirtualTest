@@ -50,7 +50,12 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       .then((result) => {
         if (result != 0) maxDugaar = result[0].dugaar + 1;
       });
-    req.body.tailbar = req.body.gereeniiId ? "Түрээсийн төлбөр" : "Төлбөр";
+    var tailbar = "Төлбөр";
+    if (!!req.body.gereeniiId) {
+      var geree = await Geree.findById(req.body.gereeniiId);
+      tailbar = "Түрээсийн төлбөр " + geree.gereeniiDugaar;
+    }
+    req.body.tailbar = tailbar;
     /*Төлбөр callback url*/
     var callback_url =
       "http://" +
