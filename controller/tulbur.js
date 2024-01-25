@@ -1835,11 +1835,20 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
       throw new Error("Талбар дутуу!");
     if (objectuud)
       for await (const element of objectuud) {
-        var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
-          register: element.register,
-          tuluv: 1,
+        var geree = await Geree(req.body.tukhainBaaziinKholbolt)
+          .findOne({
+            register: element.register,
+            tuluv: 1,
+          })
+          .select("+avlaga");
+        var baigaa = geree?.avlaga?.guilgeenuud?.find((a) => {
+          return (
+            a.turul == turul &&
+            a.tulukhDun == element.dun &&
+            a.ognoo == oruulakhOgnoo
+          );
         });
-        if (geree) {
+        if (geree && !baigaa) {
           object = {
             tulukhDun: element.dun,
             ognoo: oruulakhOgnoo,
