@@ -1050,7 +1050,7 @@ router
                           $gte: new Date(req.body.ekhlekhOgnoo),
                         },
                         "avlaga.guilgeenuud.turul": {
-                          $in: ["avlaga", "khungulult"],
+                          $in: ["avlaga", "khungulult", "zalruulga"],
                         },
                       },
                     },
