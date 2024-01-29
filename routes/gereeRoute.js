@@ -1074,7 +1074,14 @@ router
                           $max: "$avlaga.tariff",
                         },
                         tulukhDun: {
-                          $sum: "$avlaga.tulukhDun",
+                          $subtract: [
+                            {
+                              $sum: { $ifNull: ["$avlaga.tulukhDun", 0] },
+                            },
+                            {
+                              $sum: { $ifNull: ["$avlaga.tulsunDun", 0] },
+                            },
+                          ],
                         },
                         khungulult: {
                           $sum: "$avlaga.khyamdral",
