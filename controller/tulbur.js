@@ -362,37 +362,27 @@ module.exports.tulultTaniya = async function tulultTaniya() {
       });
       var khaikhNukhtsul;
       var tailbar = [];
-      var qpaynuud = await QpayObject(kholbolt).find({
-        payment_id: { $exists: true },
-        updatedAt: { $gte: new Date(new Date().getTime() - 30 * 60000) },
-      });
       if (guilgeenuud != null && guilgeenuud.length > 0) {
         try {
           guilgeenuud.forEach(async (x) => {
             if (
-              ((x.description &&
-                x.description.toLowerCase().includes("qpay")) ||
-                (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay"))) &&
-              qpaynuud &&
-              qpaynuud.length > 0
+              (x.description && x.description.toLowerCase().includes("qpay")) ||
+              (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay"))
             ) {
-              for await (const qpay of qpaynuud) {
-                if (x.description && x.description.includes(qpay.payment_id)) {
-                  var geree = await Geree(kholbolt).findById(qpay.gereeniiId);
-                  x.kholbosonGereeniiId = [qpay.gereeniiId];
-                  x.kholbosonDun = x.amount;
-                  x.kholbosonTalbainId = [geree.talbainDugaar];
-                  x.isNew = false;
-                  x.save();
-                } else if (x.TxAddInf && x.TxAddInf.includes(qpay.payment_id)) {
-                  var geree = await Geree(kholbolt).findById(qpay.gereeniiId);
-                  x.kholbosonGereeniiId = [qpay.gereeniiId];
-                  x.kholbosonDun = x.Amt;
-                  x.kholbosonTalbainId = [geree.talbainDugaar];
-                  x.isNew = false;
-                  x.save();
-                }
-                continue;
+              khaikhNukhtsul = [];
+              if (x.description) tailbar = x.description.split(" ");
+              else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
+              tailbar.forEach((y) => {
+                khaikhNukhtsul.push({ gereeniiDugaar: y });
+              });
+              var oldsonGereenuud = await Geree(kholbolt).find({
+                $or: khaikhNukhtsul,
+                barilgiinId: guilgeenuud.barilgiinId,
+              });
+              if (oldsonGereenuud != null && oldsonGereenuud.length == 1) {
+                x.kholbosonGereeniiId = [oldsonGereenuud[0]._id];
+                x.isNew = false;
+                x.save();
               }
             } else {
               khaikhNukhtsul = [];
@@ -1236,37 +1226,33 @@ exports.aldaataiBankniiGuilgeeZasya = asyncHandler(async (req, res, next) => {
 
 exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
   try {
-    var guilgeenuud = await QuickQpayObject(
+    var qpayGuilgeenuud = await BankniiGuilgee(
       req.body.tukhainBaaziinKholbolt
     ).find({
-      legacy_id: {
-        $exists: true,
-      },
-      tulsunEsekh: true,
+      $and: [
+        {
+          kholbosonGereeniiId: [],
+        },
+        { TxAddInf: { $regex: "qpay", $options: "i" } },
+      ],
     });
-    for await (const guilgee of guilgeenuud) {
-      var oldsonGuilgee = await BankniiGuilgee(
-        req.body.tukhainBaaziinKholbolt
-      ).findOne({
-        $and: [
-          {
-            kholbosonGereeniiId: [],
-          },
-          { TxAddInf: { $regex: "qpay", $options: "i" } },
-          { TxAddInf: { $regex: guilgee.legacy_id } },
-        ],
+    qpayGuilgeenuud.forEach(async (x) => {
+      khaikhNukhtsul = [];
+      if (x.description) tailbar = x.description.split(" ");
+      else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
+      tailbar.forEach((y) => {
+        khaikhNukhtsul.push({ gereeniiDugaar: y });
       });
-      if (oldsonGuilgee) {
-        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).updateOne(
-          { _id: oldsonGuilgee._id },
-          {
-            $set: {
-              kholbosonGereeniiId: [guilgee.gereeniiId],
-            },
-          }
-        );
+      var oldsonGereenuud = await Geree(kholbolt).find({
+        $or: khaikhNukhtsul,
+        barilgiinId: guilgeenuud.barilgiinId,
+      });
+      if (oldsonGereenuud != null && oldsonGereenuud.length == 1) {
+        x.kholbosonGereeniiId = [oldsonGereenuud[0]._id];
+        x.isNew = false;
+        x.save();
       }
-    }
+    });
     res.send("Amjilttai");
   } catch (err) {
     next(err);
