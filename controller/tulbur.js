@@ -1265,7 +1265,7 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
       });
       var oldsonGereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
         $or: khaikhNukhtsul,
-        barilgiinId: guilgeenuud.barilgiinId,
+        barilgiinId: x.barilgiinId,
       });
       if (oldsonGereenuud != null && oldsonGereenuud.length == 1) {
         x.kholbosonGereeniiId = [oldsonGereenuud[0]._id];
