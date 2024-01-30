@@ -1263,7 +1263,7 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
       tailbar.forEach((y) => {
         khaikhNukhtsul.push({ gereeniiDugaar: y });
       });
-      var oldsonGereenuud = await Geree(kholbolt).find({
+      var oldsonGereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
         $or: khaikhNukhtsul,
         barilgiinId: guilgeenuud.barilgiinId,
       });
