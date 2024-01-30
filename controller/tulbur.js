@@ -492,9 +492,27 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 },
                 {
                   $match: {
-                    "avlaga.guilgeenuud.ognoo": {
-                      $lte: ognoo,
-                    },
+                    $or: [
+                      {
+                        $and: [
+                          {
+                            "avlaga.guilgeenuud.ognoo": {
+                              $lte: new Date(),
+                            },
+                          },
+                          {
+                            "avlaga.guilgeenuud.tulsunDun": {
+                              $gt: 0,
+                            },
+                          },
+                        ],
+                      },
+                      {
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lte: ognoo,
+                        },
+                      },
+                    ],
                     "avlaga.guilgeenuud.turul": {
                       $nin: ["baritsaa"],
                     },
@@ -1236,8 +1254,10 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
         { TxAddInf: { $regex: "qpay", $options: "i" } },
       ],
     });
-    qpayGuilgeenuud.forEach(async (x) => {
+    var khaikhNukhtsul;
+    for await (const x of qpayGuilgeenuud) {
       khaikhNukhtsul = [];
+      var tailbar;
       if (x.description) tailbar = x.description.split(" ");
       else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
       tailbar.forEach((y) => {
@@ -1252,7 +1272,7 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
         x.isNew = false;
         x.save();
       }
-    });
+    }
     res.send("Amjilttai");
   } catch (err) {
     next(err);
