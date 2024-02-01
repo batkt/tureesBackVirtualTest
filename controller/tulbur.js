@@ -1039,40 +1039,51 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
   async (req, res, next) => {
     try {
       var gereeniiDugaar = req.body.gereeniiDugaar;
-      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
-        gereeniiDugaar: {
-          $in: gereeniiDugaar,
-        },
-      });
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+        .find({
+          gereeniiDugaar: {
+            $in: gereeniiDugaar,
+          },
+        })
+        .select("+avlaga");
       var khariu = [];
       console.log("gereenuud", gereenuud);
       var object;
       if (gereenuud)
         for await (const element of gereenuud) {
+          var oruulakhOgnoo = moment(req.body.duusakhOgnoo).set(
+            "date",
+            element.tulukhUdur[0]
+          );
           object = {
             tulukhDun: element.sariinTurees,
             undsenDun: element.sariinTurees,
             turul: "khuvaari",
-            ognoo: moment(req.body.duusakhOgnoo).set(
-              "date",
-              element.tulukhUdur[0]
-            ),
+            ognoo: oruulakhOgnoo,
             khyamdral: 0,
           };
           console.log("object", object);
-          Geree(req.body.tukhainBaaziinKholbolt)
-            .updateOne(
-              { _id: element._id },
-              {
-                $push: {
-                  ["avlaga.guilgeenuud"]: object,
-                },
-              }
-            )
-            .then(async (result) => {
-              console.log("result", result);
-              khariu.push(result);
-            });
+          var baigaa = element?.avlaga?.guilgeenuud?.find((a) => {
+            return (
+              a.turul == "khuvaari" &&
+              a.tulukhDun == element.sariinTurees &&
+              a.ognoo == oruulakhOgnoo
+            );
+          });
+          if (!baigaa)
+            Geree(req.body.tukhainBaaziinKholbolt)
+              .updateOne(
+                { _id: element._id },
+                {
+                  $push: {
+                    ["avlaga.guilgeenuud"]: object,
+                  },
+                }
+              )
+              .then(async (result) => {
+                console.log("result", result);
+                khariu.push(result);
+              });
         }
       res.send(khariu);
     } catch (err) {
