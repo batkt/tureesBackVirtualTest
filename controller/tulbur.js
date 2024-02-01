@@ -1065,9 +1065,7 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
           console.log("object", object);
           var baigaa = element?.avlaga?.guilgeenuud?.find((a) => {
             return (
-              a.turul == "khuvaari" &&
-              a.tulukhDun == element.sariinTurees &&
-              a.ognoo == oruulakhOgnoo
+              a.tulukhDun == element.sariinTurees && a.ognoo == oruulakhOgnoo
             );
           });
           if (!baigaa)
