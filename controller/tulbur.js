@@ -1070,20 +1070,17 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
               a.ognoo == oruulakhOgnoo
             );
           });
-          if (!baigaa)
-            Geree(req.body.tukhainBaaziinKholbolt)
-              .updateOne(
-                { _id: element._id },
-                {
-                  $push: {
-                    ["avlaga.guilgeenuud"]: object,
-                  },
-                }
-              )
-              .then(async (result) => {
-                console.log("result", result);
-                khariu.push(result);
-              });
+          if (!baigaa) {
+            var result = await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
+              { _id: element._id },
+              {
+                $push: {
+                  ["avlaga.guilgeenuud"]: object,
+                },
+              }
+            );
+            khariu.push(result);
+          }
         }
       res.send(khariu);
     } catch (err) {
