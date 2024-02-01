@@ -1047,7 +1047,6 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
         })
         .select("+avlaga");
       var khariu = [];
-      console.log("gereenuud", gereenuud);
       var object;
       if (gereenuud)
         for await (const element of gereenuud) {
@@ -1067,7 +1066,7 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
             return (
               (a.turul == "khuvaari" || a.undsenDun == element.sariinTurees) &&
               a.tulukhDun == element.sariinTurees &&
-              a.ognoo == oruulakhOgnoo
+              a.ognoo == new Date(oruulakhOgnoo)
             );
           });
           if (!baigaa) {
