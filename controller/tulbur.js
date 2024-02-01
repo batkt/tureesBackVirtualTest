@@ -1066,7 +1066,7 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
             return (
               a.undsenDun == element.sariinTurees &&
               a.tulukhDun == element.sariinTurees &&
-              new Date(a.ognoo) == new Date(oruulakhOgnoo)
+              moment(a.ognoo).isSame(oruulakhOgnoo, "day")
             );
           });
           if (!baigaa) {
