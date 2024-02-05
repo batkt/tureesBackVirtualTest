@@ -550,6 +550,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   textUseg = "T";
                 else if (dans.baiguullagiinId == "656f1719f28cde7f62bc5280")
                   textUseg = "P";
+                else if (dans.baiguullagiinId == "6115f350b35689cdbf1b9da3")
+                  textUseg = "I";
 
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
@@ -722,6 +724,7 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
   else if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac") textUseg = "K";
   else if (dans.baiguullagiinId == "65435cdff2f5358696c61454") textUseg = "T";
   else if (dans.baiguullagiinId == "656f1719f28cde7f62bc5280") textUseg = "P";
+  else if (dans.baiguullagiinId == "6115f350b35689cdbf1b9da3") textUseg = "I";
   tdbDansniiUldegdelAvya(
     {
       msgId: "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
@@ -907,6 +910,8 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   textUseg = "T";
                 else if (dans.baiguullagiinId == "656f1719f28cde7f62bc5280")
                   textUseg = "P";
+                else if (dans.baiguullagiinId == "6115f350b35689cdbf1b9da3")
+                  textUseg = "I";
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
                     msgId:
