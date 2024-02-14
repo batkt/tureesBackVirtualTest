@@ -886,7 +886,13 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
         req.body
       );
       gereeniiDugaaruud = [];
-      khungulult.khamaataiGereenuud.forEach((x) => gereeniiDugaaruud.push(x));
+      khungulult.khamaataiGereenuud.forEach((x) => {
+        if (typeof x === "object") {
+          gereeniiDugaaruud.push(x.gereeniiId);
+        } else {
+          gereeniiDugaaruud.push(x);
+        }
+      });
       khungulult.guilgeeKhiisenOgnoo = new Date();
       khungulult.guilgeeKhiisenAjiltniiNer =
         req.body.nevtersenAjiltniiToken?.ner;
@@ -941,7 +947,13 @@ exports.khungulultUstgaya = asyncHandler(async (req, res, next) => {
         req.body.tukhainBaaziinKholbolt
       ).findOne({ _id: req.body.id });
       gereeniiDugaaruud = [];
-      khungulult.khamaataiGereenuud.forEach((x) => gereeniiDugaaruud.push(x));
+      khungulult.khamaataiGereenuud.forEach((x) => {
+        if (typeof x === "object") {
+          gereeniiDugaaruud.push(x.gereeniiId);
+        } else {
+          gereeniiDugaaruud.push(x);
+        }
+      });
       for await (const gereeniiDugaar of gereeniiDugaaruud) {
         khyamdraluud = [];
         await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
