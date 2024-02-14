@@ -15,7 +15,7 @@ const khungulultiinTuukhSchema = new Schema(
     tulukhDun: Number,
     khungulsunDun: Number,
     khungulultiinDun: Number,
-    khamaataiGereenuud: [String],
+    khamaataiGereenuud: [Schema.Types.Mixed],
     guilgeeKhiisenOgnoo: Date,
     guilgeeKhiisenAjiltniiNer: String,
     guilgeeKhiisenAjiltniiId: String,
