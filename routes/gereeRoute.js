@@ -164,6 +164,16 @@ router
                 a.ognoo < new Date(req.query.duusakhOgnoo) &&
                 a.turul != "baritsaa"
             );
+          if (!!req.query.shineOgnoo) {
+            const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
+            if (endOgnoo && startOgnoo) {
+              a = a.filter(
+                (data) =>
+                  data.ognoo < new Date(endOgnoo) &&
+                  data.ognoo >= new Date(startOgnoo)
+              );
+            }
+          }
           a = lodash.orderBy(a, ["ognoo"], ["asc"]);
           var uldegdel = 0;
           a.forEach((x) => {
