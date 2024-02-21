@@ -163,8 +163,9 @@ cron.schedule(
 );
 
 cron.schedule(
-  "37 * * * * ",
+  "39 * * * * ",
   function () {
+    console.log("zogsoolMsgIlgeeye");
     zogsool.zogsoolMsgIlgeeye();
   },
   {
