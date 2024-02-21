@@ -102,13 +102,14 @@ module.exports.zogsoolMsgIlgeeye = async function zogsoolMsgIlgeeye() {
           ezemshigchiinUtas: { $exists: true },
         });
         if (!!mashinuud && mashinuud.length > 0) {
-          for await (const mashin of mashinuud)
+          for await (const mashin of mashinuud) {
             var text =
               "Tanii zogsooliin geree " +
               moment(mashin.duusakhOgnoo).format("MM/DD") +
               "nii udur duusna." +
               barilga.ner;
-          msgnuud.push({ to: mashin.ezemshigchiinUtas, text });
+            msgnuud.push({ to: mashin.ezemshigchiinUtas, text });
+          }
         }
       }
       if (msgnuud.length > 0) {
