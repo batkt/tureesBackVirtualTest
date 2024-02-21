@@ -88,9 +88,9 @@ module.exports.zogsoolMsgIlgeeye = async function zogsoolMsgIlgeeye() {
     var daraagiinUdur = new Date();
     daraagiinUdur.setDate(unuudur.getDate() + 3);
     for await (const baiguullaga of baiguullaguud) {
-      var tukhainKholbolt = kholboltuud.find({
-        baiguullagiinId: baiguullaga._id.toString(),
-      });
+      var tukhainKholbolt = kholboltuud.find(
+        (x) => x.baiguullagiinId == baiguullaga._id.toString()
+      );
       var msgnuud = [];
       for await (const barilga of baiguullaga.barilguud) {
         var mashinuud = await ParkingMashin(tukhainKholbolt).find({
