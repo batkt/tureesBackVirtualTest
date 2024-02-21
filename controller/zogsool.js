@@ -1,39 +1,7 @@
-const Zogsool = require("../models/zogsool");
-const Mashin = require("../models/mashin");
 const Baiguullaga = require("../models/baiguullaga");
+const { msgIlgeeye } = require("./khariltsagch");
 const { Mashin: ParkingMashin } = require("parking-v1");
 const moment = require("moment");
-
-module.exports.mashinTaniya = async function mashinTaniya() {
-  const { db } = require("zevbackv2");
-  var kholboltuud = db.kholboltuud;
-  if (kholboltuud) {
-    for await (const kholbolt of kholboltuud) {
-      var mashinuud = await Mashin(kholbolt).find();
-      var bulkOps = [];
-      mashinuud.forEach((mashin) => {
-        let upsertDoc = {
-          updateOne: {
-            filter: { car_number: mashin.dugaar, turul: { $exists: false } },
-            update: {
-              mashin: mashin,
-              turul: mashin.turul,
-            },
-          },
-        };
-        bulkOps.push(upsertDoc);
-      });
-      Zogsool(kholbolt)
-        .bulkWrite(bulkOps)
-        .then((bulkWriteOpResult) => {
-          console.log("BULK update OK", bulkWriteOpResult);
-        })
-        .catch((err) => {
-          console.log("BULK update error", err);
-        });
-    }
-  }
-};
 
 module.exports.khungulultKhugatsaaShinechlya =
   async function khungulultKhugatsaaShinechlya() {
@@ -101,61 +69,59 @@ module.exports.khungulultKhugatsaaShinechlya =
     }
   };
 
-module.exports.tulburZooyo = async function tulburZooyo() {
+module.exports.zogsoolMsgIlgeeye = async function zogsoolMsgIlgeeye() {
   const { db } = require("zevbackv2");
-  var kholboltuud = db.kholboltuud;
-  if (kholboltuud) {
-    for await (const kholbolt of kholboltuud) {
-      var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
-        "tokhirgoo.zogsooliinMinut": { $exists: true },
-        "tokhirgoo.zogsooliinDun": { $exists: true },
+  var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
+    "barilguud.tokhirgoo.zogsoolMsgIlgeekh": true,
+  });
+  if (!!baiguullaguud) {
+    var kholboltuud = db.kholboltuud;
+    var unuudur = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      0,
+      0,
+      0
+    );
+    var daraagiinUdur = new Date();
+    daraagiinUdur.setDate(unuudur.getDate() + 3);
+    for await (const baiguullaga of baiguullaguud) {
+      var tukhainKholbolt = kholboltuud.find({
+        baiguullagiinId: baiguullaga._id.toString(),
       });
-      if (baiguullaguud) {
-        baiguullaguud.forEach((baiguullaga) => {
-          var bulkOps = [];
-          let upsertDoc = {
-            updateMany: {
-              filter: {
-                tulbur: { $exists: false },
-                turul: {
-                  $nin: ["Гэрээт", "Түрээслэгч", "Дотоод"],
-                },
-                khugatsaa: {
-                  $gt: baiguullaga.tokhirgoo.zogsooliinKhungulukhMinut,
-                },
-                baiguullagiinId: baiguullaga._id,
-              },
-              update: [
-                {
-                  $set: {
-                    tulbur: {
-                      $multiply: [
-                        {
-                          $ceil: {
-                            $divide: [
-                              "$khugatsaa",
-                              baiguullaga.tokhirgoo.zogsooliinMinut,
-                            ],
-                          },
-                        },
-                        baiguullaga.tokhirgoo.zogsooliinDun,
-                      ],
-                    },
-                  },
-                },
-              ],
-            },
-          };
-          bulkOps.push(upsertDoc);
-          Zogsool(kholbolt)
-            .bulkWrite(bulkOps)
-            .then((bulkWriteOpResult) => {
-              console.log("BULK update OK", bulkWriteOpResult);
-            })
-            .catch((err) => {
-              console.log("BULK update error", err);
-            });
+      var msgnuud = [];
+      for await (const barilga of baiguullaga.barilguud) {
+        var mashinuud = await ParkingMashin(tukhainKholbolt).find({
+          barilgiinId: barilga._id.toString(),
+          duusakhOgnoo: {
+            $gte: unuudur,
+            $lte: daraagiinUdur,
+          },
+          ezemshigchiinUtas: { $exists: true },
         });
+        if (!!mashinuud && mashinuud.length > 0) {
+          for await (const mashin of mashinuud)
+            var text =
+              "Tanii zogsooliin geree " +
+              moment(mashin.duusakhOgnoo).format("MM/DD") +
+              "nii udur duusna." +
+              barilga.ner;
+          msgnuud.push({ to: mashin.ezemshigchiinUtas, text });
+        }
+      }
+      if (msgnuud.length > 0) {
+        var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
+        var msgIlgeekhDugaar = "72002002";
+        msgIlgeeye(
+          msgnuud,
+          msgIlgeekhKey,
+          msgIlgeekhDugaar,
+          [],
+          0,
+          tukhainKholbolt,
+          baiguullaga._id
+        );
       }
     }
   }
