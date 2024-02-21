@@ -76,10 +76,11 @@ module.exports.zogsoolMsgIlgeeye = async function zogsoolMsgIlgeeye() {
   });
   if (!!baiguullaguud) {
     var kholboltuud = db.kholboltuud;
-    var unuudur = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
+    var unuudur = new Date();
+    unuudur = new Date(
+      unuudur.getFullYear(),
+      unuudur.getMonth(),
+      unuudur.getDate(),
       0,
       0,
       0
