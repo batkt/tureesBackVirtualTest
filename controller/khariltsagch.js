@@ -140,6 +140,7 @@ async function tulultiinMsgIlgeeye(baiguullagiinId, gereeniiDugaar, utas, dun) {
 }
 
 exports.tulultiinMsgIlgeeye = tulultiinMsgIlgeeye;
+exports.msgIlgeeye = msgIlgeeye;
 
 exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
   try {
