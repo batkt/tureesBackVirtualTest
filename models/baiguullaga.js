@@ -46,6 +46,8 @@ const baiguullagaSchema = new Schema(
 
           /**Алданги бодож эхлэх огноо */
           aldangiBodojEkhlekhOgnoo: Date,
+
+          zogsoolMsgIlgeekh: Boolean,
         },
         davkharuud: [
           {
