@@ -482,6 +482,59 @@ router.get("/zogsooliinIpAvaya/:barilgiinId", async (req, res, next) => {
   }
 });
 
+router.post("/tsenegleltKhiiy", tokenShalgakh, async (req, res, next) => {
+  try {
+    const baiguullagiinId = req.body.baiguullagiinId;
+    const barilgiinId = req.body.barilgiinId;
+    const mashiniiId = req.body.mashiniiId;
+    const tseneglekhDun = req.body.dun;
+    if (!mashiniiId) {
+      throw new Error("Дахин оролдоно уу");
+    }
+    if (!tseneglekhDun || tseneglekhDun == 0) {
+      throw new Error("Цэнэглэлтийн дүн хоосон болон 0 байж болохгүй");
+    }
+    const tukhainMashin = await Mashin(req.body.tukhainBaaziinKholbolt).findOne(
+      {
+        _id: mashiniiId,
+        baiguullagiinId: baiguullagiinId,
+        barilgiinId: barilgiinId,
+      }
+    );
+    if (!tukhainMashin) {
+      throw new Error("Машин олдсонгүй. Та дахин оролдоно уу");
+    }
+    const umnukhUldegdel = tukhainMashin.tsenegleltUldegdel
+      ? tukhainMashin.tsenegleltUldegdel
+      : 0;
+    tukhainMashin.tsenegleltUldegdel = umnukhUldegdel + tseneglekhDun;
+    if (
+      tukhainMashin.tsenegleltTuukh &&
+      tukhainMashin.tsenegleltTuukh.length > 0
+    ) {
+      tukhainMashin.tsenegleltTuukh.push({
+        ognoo: new Date(),
+        turul: "orlogo",
+        dun: tseneglekhDun,
+        uldegdel: tukhainMashin.tsenegleltUldegdel,
+      });
+    } else {
+      tukhainMashin.tsenegleltTuukh = [
+        {
+          ognoo: new Date(),
+          turul: "orlogo",
+          dun: tseneglekhDun,
+          uldegdel: tukhainMashin.tsenegleltUldegdel,
+        },
+      ];
+    }
+    await tukhainMashin.save();
+    res.status(200).send("Amjilttai");
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post(
   "/zogsoolUilchluulegchdiinToo",
   tokenShalgakh,
