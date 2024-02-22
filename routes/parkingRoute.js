@@ -462,25 +462,43 @@ router.post(
   }
 );
 
-router.get("/zogsooliinIpAvaya/:barilgiinId", async (req, res, next) => {
-  try {
-    const { db } = require("zevbackv2");
-    if (req.params.barilgiinId) {
-      ZogsooliinIp(db.erunkhiiKholbolt)
-        .findOne({
-          barilgiinId: req.params.barilgiinId,
-        })
-        .then((result) => {
-          res.send(result);
-        })
-        .catch((err1) => {
-          next(err1);
-        });
-    } else res.send("BarilgiinId baihgui bn");
-  } catch (err) {
-    next(err);
+router.get(
+  "/zogsooliinIpAvaya/:barilgiinId",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const { db } = require("zevbackv2");
+      if (req.params.barilgiinId) {
+        Parking(db.erunkhiiKholbolt)
+          .find({
+            barilgiinId: req.params.barilgiinId,
+          })
+          .then((result) => {
+            let yavuulakhIp = [];
+            let yavuulakhData = {};
+            if (result.length > 0) {
+              for (const zogsool of result) {
+                for (const khaalga of zogsool.khaalga) {
+                  for (const cameraIp of khaalga.camera) {
+                    yavuulakhIp.push(cameraIp.cameraIP);
+                  }
+                }
+              }
+            }
+            yavuulakhData.ip = yavuulakhIp;
+            yavuulakhData.baiguullagiinId = req.body.baiguullagiinId;
+            yavuulakhData.barilgiinId = req.params.barilgiinId;
+            res.send(yavuulakhData);
+          })
+          .catch((err1) => {
+            next(err1);
+          });
+      } else res.send("BarilgiinId baihgui bn");
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 router.post("/tsenegleltKhiiy", tokenShalgakh, async (req, res, next) => {
   try {
