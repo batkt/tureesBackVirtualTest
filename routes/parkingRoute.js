@@ -468,9 +468,9 @@ router.get(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      const { db } = require("zevbackv2");
+      //const { db } = require("zevbackv2");
       if (req.params.barilgiinId) {
-        Parking(db.erunkhiiKholbolt)
+        Parking(req.body.tukhainBaaziinKholbolt)
           .find({
             barilgiinId: req.params.barilgiinId,
           })
