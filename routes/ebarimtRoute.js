@@ -129,7 +129,8 @@ async function zogsooloosEbarimtUusgye(
   guilgee,
   register,
   turul,
-  tukhainBaaziinKholbolt
+  tukhainBaaziinKholbolt,
+  nuatTulukhEsekh = true
 ) {
   var ebarimt = new Ebarimt(tukhainBaaziinKholbolt)();
   if (register) {
@@ -147,7 +148,8 @@ async function zogsooloosEbarimtUusgye(
   ebarimt.barilgiinId = guilgee.barilgiinId;
   ebarimt.mashiniiDugaar = guilgee.mashiniiDugaar;
   ebarimt.amount = tulukhDun.toFixed(2).toString();
-  ebarimt.vat = nuatBodyo(tulukhDun);
+  if (!!nuatTulukhEsekh) ebarimt.vat = nuatBodyo(tulukhDun);
+  else ebarimt.vat = "0.00";
   ebarimt.cashAmount = tulukhDun.toFixed(2).toString();
   ebarimt.nonCashAmount = "0.00";
   ebarimt.cityTax = "0.00";
@@ -162,7 +164,7 @@ async function zogsooloosEbarimtUusgye(
     unitPrice: tulukhDun.toFixed(2).toString(),
     totalAmount: tulukhDun.toFixed(2).toString(),
     cityTax: "0.00",
-    vat: nuatBodyo(tulukhDun),
+    vat: !!nuatTulukhEsekh ? nuatBodyo(tulukhDun) : "0.00",
     barCode: "6743000",
   };
   stocks.push(stock);
@@ -287,11 +289,16 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
       console.log("guilgee", guilgee);
       if (guilgee.tuukh?.length > 0 && guilgee.tuukh[0].ebarimtAvsanEsekh)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
+      var nuatTulukhEsekh = baiguullaga.barilguud.find(
+        (x) => x._id.toString() == guilgee.barilgiinId
+      )?.tokhirgoo?.nuatTulukhEsekh;
+      if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
       ebarimt = await zogsooloosEbarimtUusgye(
         guilgee,
         req.body.register,
         req.body.turul,
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
+        nuatTulukhEsekh
       );
       butsaakhMethod = function (d) {
         try {
@@ -300,7 +307,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           ebarimt.save().catch((err) => {
             next(err);
           });
-          var update = { "tuukh.0.ebarimtAvsanEsekh": true };
+          var update = { ebarimtAvsanEsekh: true };
           if (ebarimt.customerNo)
             update = {
               ...update,

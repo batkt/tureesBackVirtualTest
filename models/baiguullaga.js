@@ -34,19 +34,12 @@ const baiguullagaSchema = new Schema(
         tokhirgoo: {
           /**Хоногт бодох алдангийн хувь дээд тал 0.5 байна */
           aldangiinKhuvi: Number,
-
           /**Алданги авалгүйгээр хүлээх хоног */
           aldangiChuluulukhKhonog: Number,
-
           /**Алданги бодож эхлэх огноо */
           aldangiBodojEkhlekhOgnoo: Date,
-
-          /**Алданги бодож эхлэх огноо */
-          ebarimtRegister: Date,
-
-          /**Алданги бодож эхлэх огноо */
-          aldangiBodojEkhlekhOgnoo: Date,
-
+          ebarimtAshiglakhEsekh: Boolean,
+          nuatTulukhEsekh: Boolean,
           zogsoolMsgIlgeekh: Boolean,
         },
         davkharuud: [
