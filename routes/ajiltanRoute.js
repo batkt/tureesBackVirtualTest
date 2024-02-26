@@ -17,6 +17,7 @@ const {
   ajiltanNevtrey,
   backAvya,
   tokenoorAjiltanAvya,
+  zochiniiTokenAvya,
   erkhiinMedeelelAvya,
   khugatsaaguiTokenAvya,
 } = require("../controller/ajiltan");
@@ -61,6 +62,7 @@ crud(router, "backTuukh", BackTuukh, UstsanBarimt);
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);
+router.route("/zochiniiTokenAvya/:baiguullagiinId").get(zochiniiTokenAvya);
 router.route("/khugatsaaguiTokenAvya").post(khugatsaaguiTokenAvya);
 router.route("/erkhiinMedeelelAvya").post(tokenShalgakh, erkhiinMedeelelAvya);
 router.get("/ajiltniiZuragAvya/:baiguullaga/:ner", (req, res, next) => {

@@ -87,6 +87,19 @@ ajiltanSchema.methods.khugatsaaguiTokenUusgeye = function () {
   return token;
 };
 
+ajiltanSchema.methods.zochinTokenUusgye = function (baiguullagiinId) {
+  const token = jwt.sign(
+    {
+      id: "zochin",
+      baiguullagiinId,
+    },
+    process.env.APP_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
+  return token;
+};
 ajiltanSchema.pre("save", async function () {
   this.indexTalbar = this.register + this.nevtrekhNer;
   const salt = await bcrypt.genSalt(12);
