@@ -257,7 +257,7 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
 exports.zochiniiTokenAvya = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
-    var zochin = new Ajiltan(db.erunkhiiKholbolt);
+    var zochin = new Ajiltan(db.erunkhiiKholbolt)();
     res.send(zochin.zochinTokenUusgye(req.params.baiguullagiinId));
   } catch (error) {
     next(error);
