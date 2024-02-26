@@ -1196,8 +1196,8 @@ router.route("/v1/pay").post(async (req, res, next) => {
         }
       );
       tukhainObject.niitDun = req.body.paid_amount;
-      var baiguullaga = await Baiguullaga.findById(
-        tukhainObject.baiguullagiinId
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+       tukhainObject.baiguullagiinId
       );
       // var ebarimtAshiglakhEsekh = false;
       // if (!!baiguullaga)
