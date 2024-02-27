@@ -1179,7 +1179,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
         if (bodsonDun == req.body.paid_amount) {
           set["tuukh.$[t].tuluv"] = 1;
           if (!req.body.manually_open)
-            set["garakhTsag"] = new Date(new Date().getTime() + 30 * 60000);
+            set["garakhTsag"] = new Date(new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000);
         }
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
@@ -1420,7 +1420,7 @@ router.route("/pass/pay").post(async (req, res, next) => {
         if (bodsonDun == req.body.paid_amount) {
           set["tuukh.$[t].tuluv"] = 1;
           if (!req.body.manually_open)
-            set["garakhTsag"] = new Date(new Date().getTime() + 30 * 60000);
+            set["garakhTsag"] = new Date(new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000);
         }
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
@@ -1583,7 +1583,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           set["tuukh.$[t].tuluv"] = 1;
           set["tuukh.$[t].burtgesenAjiltaniiId"] = req.body.ajiltniiId;
           set["tuukh.$[t].burtgesenAjiltaniiNer"] = req.body.ajiltniiNer;
-          set["garakhTsag"] = new Date(new Date().getTime() + 30 * 60000);
+          set["garakhTsag"] = new Date(new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000);
         }
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
