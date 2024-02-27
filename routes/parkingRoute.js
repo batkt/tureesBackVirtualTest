@@ -1197,7 +1197,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
       );
       tukhainObject.niitDun = req.body.paid_amount;
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-       tukhainObject.baiguullagiinId
+        tukhainObject.baiguullagiinId
       );
       // var ebarimtAshiglakhEsekh = false;
       // if (!!baiguullaga)
@@ -1614,6 +1614,10 @@ router
       req.body.uilchluulegchiinId
     );
     tukhainObject.niitDun = req.body.paid_amount;
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      tukhainObject.baiguullagiinId
+    );
     var nuatTulukhEsekh = baiguullaga.barilguud.find(
       (x) => x._id.toString() == tukhainObject.barilgiinId
     )?.tokhirgoo?.nuatTulukhEsekh;
