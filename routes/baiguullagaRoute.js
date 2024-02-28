@@ -122,6 +122,7 @@ router.post("/nevtreltiinTuukhAvya", tokenShalgakh, async (req, res, next) => {
         );
         if (!!baiguullaga) element.register = baiguullaga.register;
       }
+      khariu = khariu.filter((x) => !!x.register);
     }
     res.send(khariu);
   } catch (error) {
