@@ -885,7 +885,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
     message = "Машины мэдээлэл олдсонгүй!";
     success = false;
   }
-  if (!!freeze && !!oldsonMashin) {
+  if ((!!freeze || localEsekh) && !!oldsonMashin) {
     await Uilchluulegch(tukhainKholbolt).updateOne(
       { _id: oldsonMashin._id },
       {
@@ -1177,9 +1177,11 @@ router.route("/v1/pay").post(async (req, res, next) => {
       };
       if (bodsonDun > 0) {
         if (bodsonDun == req.body.paid_amount) {
-          set["tuukh.$[t].tuluv"] = 1;
           if (!req.body.manually_open)
-            set["garakhTsag"] = new Date(new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000);
+            set["garakhTsag"] = new Date(
+              new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000
+            );
+          else set["tuukh.$[t].tuluv"] = 1;
         }
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
@@ -1420,7 +1422,9 @@ router.route("/pass/pay").post(async (req, res, next) => {
         if (bodsonDun == req.body.paid_amount) {
           set["tuukh.$[t].tuluv"] = 1;
           if (!req.body.manually_open)
-            set["garakhTsag"] = new Date(new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000);
+            set["garakhTsag"] = new Date(
+              new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000
+            );
         }
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
@@ -1583,7 +1587,9 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           set["tuukh.$[t].tuluv"] = 1;
           set["tuukh.$[t].burtgesenAjiltaniiId"] = req.body.ajiltniiId;
           set["tuukh.$[t].burtgesenAjiltaniiNer"] = req.body.ajiltniiNer;
-          set["garakhTsag"] = new Date(new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000);
+          set["garakhTsag"] = new Date(
+            new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000
+          );
         }
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(

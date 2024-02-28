@@ -609,8 +609,12 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
       var kholbolt = kholboltuud.find(
         (a) => a.baiguullagiinId == baiguullaga._id
       );
-      var text = "";
-      if (baiguullaga.tokhirgoo.msgAvakhTurul == "dans") {
+      var textuud = [];
+      if (
+        baiguullaga.tokhirgoo.msgAvakhTurul == "dans" ||
+        baiguullaga.tokhirgoo.msgAvakhTurul == "bugd"
+      ) {
+        var text = "";
         let query = [
           {
             $match: {
@@ -694,9 +698,15 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
           }
           text = text.slice(0, -2);
           text = text + " tus tus orlogo orson baina.";
+          textuud.push(text);
           console.log("text", text);
         }
-      } else if (baiguullaga.tokhirgoo.msgAvakhTurul == "system") {
+      }
+      if (
+        baiguullaga.tokhirgoo.msgAvakhTurul == "system" ||
+        baiguullaga.tokhirgoo.msgAvakhTurul == "bugd"
+      ) {
+        var text = "";
         console.log("kholbolt", kholbolt);
         console.log("ekhlekhOgnoo", ekhlekhOgnoo);
         console.log("duusakhOgnoo", duusakhOgnoo);
@@ -817,12 +827,14 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
               "₮,";
           }
           text = text + " tus tus orlogo orson baina.";
+          textuud.push(text);
         }
       }
-      if (text.length > 0) {
+      if (textuud.length > 0) {
         var ilgeexList = [];
         for await (const dugaar of baiguullaga.tokhirgoo.msgAvakhDugaar)
-          ilgeexList.push({ to: dugaar, text });
+          for await (const text of textuud)
+            ilgeexList.push({ to: dugaar, text });
         /*[{
             to: "88880140",
             text,
