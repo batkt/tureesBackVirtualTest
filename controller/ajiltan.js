@@ -118,6 +118,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           tuukh.browser = ua.browser;
           tuukh.useragent = ua;
           tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
+          tuukh.baiguullagiinRegister = baiguullaga.register;
           await nevtreltiinTuukhKhadgalya(tuukh, db.erunkhiiKholbolt);
           res.status(200).json(butsaakhObject);
         } else throw new Error(khariu.msg);
