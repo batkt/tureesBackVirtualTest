@@ -9,6 +9,7 @@ const {
   qpayGargaya,
   QuickQpayObject,
   QpayKhariltsagch,
+  qpayShalgay,
 } = require("quickqpaypackv2");
 
 router.get(
@@ -99,6 +100,15 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
     dugaarlalt.turul = "qpay";
     dugaarlalt.dugaar = maxDugaar;
     dugaarlalt.save();
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/qpayShalgay", tokenShalgakh, async (req, res, next) => {
+  try {
+    const khariu = await qpayShalgay(req.body, req.body.tukhainBaaziinKholbolt);
     res.send(khariu);
   } catch (err) {
     next(err);
