@@ -13,6 +13,7 @@ const nevtreltiinTuukhSchema = new Schema(
     ip: String,
     browser: String,
     baiguullagiinId: String,
+    baiguullagiinRegister: String,
     barilgiinId: String,
     useragent: Schema.Types.Mixed,
   },
