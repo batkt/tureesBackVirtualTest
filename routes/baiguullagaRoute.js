@@ -8,6 +8,7 @@ const Ajiltan = require("../models/ajiltan");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const axios = require("axios");
 const request = require("request");
+const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 
 crud(router, "baiguullaga", Baiguullaga, UstsanBarimt);
 router.post("/baiguullagaBurtgekh", async (req, res, next) => {
@@ -103,6 +104,30 @@ router.post(
     }
   }
 );
+router.post("/nevtreltiinTuukhAvya", tokenShalgakh, async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    var khariu = await NevtreltiinTuukh(db.erunkhiiKholbolt).aggregate([
+      {
+        $group: { _id: "$baiguullagiinId", nevtersenOgnoo: { $max: "$ognoo" } },
+      },
+    ]);
+    if (!!khariu && khariu.length > 0) {
+      var baiguullaguud = await Baiguullaga.find({
+        "barilguud.0": { $exists: true },
+      });
+      for await (const element of khariu) {
+        var baiguullaga = baiguullaguud.find(
+          (x) => x._id.toString() == element._id
+        );
+        if (!!baiguullaga) element.register = baiguullaga.register;
+      }
+    }
+    res.send(khariu);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get("/tatvaraasBaiguullagaAvya/:regno", (req, res, next) => {
   var url = encodeURI(
