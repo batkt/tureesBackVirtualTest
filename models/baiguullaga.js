@@ -22,6 +22,7 @@ const baiguullagaSchema = new Schema(
             type: [Number],
           },
         },
+        licenseRegister: String,
         logo: String,
         gariinUseg: String,
         tamga: String,
