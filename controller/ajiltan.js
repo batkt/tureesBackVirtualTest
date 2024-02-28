@@ -93,6 +93,9 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
         if (khariu.success) {
           if (khariu.duusakhOgnoo && new Date(khariu.duusakhOgnoo) < new Date())
             throw new aldaa("Лицензийн хугацаа дууссан байна!");
+          if (!!khariu.salbaruud) {
+            butsaakhObject.token = salbaruud;
+          }
           const jwt = await ajiltan.tokenUusgeye(khariu.duusakhOgnoo);
           butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
           butsaakhObject.token = jwt;
