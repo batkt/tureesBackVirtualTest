@@ -113,7 +113,7 @@ router.post("/nevtreltiinTuukhAvya", tokenShalgakh, async (req, res, next) => {
       },
     ]);
     if (!!khariu && khariu.length > 0) {
-      var baiguullaguud = await Baiguullaga.find({
+      var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
         "barilguud.0": { $exists: true },
       });
       for await (const element of khariu) {
