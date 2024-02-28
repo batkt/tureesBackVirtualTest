@@ -94,7 +94,15 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           if (khariu.duusakhOgnoo && new Date(khariu.duusakhOgnoo) < new Date())
             throw new aldaa("Лицензийн хугацаа дууссан байна!");
           if (!!khariu.salbaruud) {
-            butsaakhObject.token = salbaruud;
+            var butsaakhSalbaruud = [];
+            for await (const salbar of khariu.salbaruud) {
+              var tukhainSalbar = baiguullaga.salbaruud.find(
+                (x) => x.licenseRegister == salbar.register
+              );
+              if (!!tukhainSalbar)
+                tukhainSalbar.duusakhOgnoo = salbar.duusakhOgnoo;
+            }
+            butsaakhObject.salbaruud = butsaakhSalbaruud;
           }
           const jwt = await ajiltan.tokenUusgeye(khariu.duusakhOgnoo);
           butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
