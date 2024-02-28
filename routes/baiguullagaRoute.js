@@ -44,6 +44,32 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
   }
 });
 
+router.post("/salbarBurtgey", async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt)({
+      register: req.body.tolgoiCompany,
+    });
+    console.log("baiguullagaBurtgekh", req.body);
+    baiguullaga.isNew = false;
+    baiguullaga.barilguud = baiguullaga.barilguud.push({
+      licenseRegister: req.body.register,
+      ner: req.body.ner,
+      khayag: String,
+    });
+    baiguullaga
+      .save()
+      .then((result) => {
+        res.send("Amjilttai");
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post(
   "/khyanakhSambariinUgugdulAvya",
   tokenShalgakh,
