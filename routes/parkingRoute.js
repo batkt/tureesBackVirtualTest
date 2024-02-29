@@ -1542,11 +1542,15 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
     var tukhainObject;
     var tukhainZogsool;
     var bodsonDun = 0;
-    const zogsool = await Parking(req.body.tukhainBaaziinKholbolt).findOne({
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      "khaalga.ajiltnuud.id": req.body.ajiltniiId,
-    });
+    const zogsool = req.body.zogsooliinId
+      ? await Parking(req.body.tukhainBaaziinKholbolt).findOne({
+          _id: req.body.zogsooliinId,
+        })
+      : await Parking(req.body.tukhainBaaziinKholbolt).findOne({
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          "khaalga.ajiltnuud.id": req.body.ajiltniiId,
+        });
     if (!!zogsool) {
       oldsonMashin = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
@@ -1584,7 +1588,6 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       };
       if (bodsonDun > 0) {
         if (bodsonDun == req.body.paid_amount) {
-          set["tuukh.$[t].tuluv"] = 1;
           set["tuukh.$[t].burtgesenAjiltaniiId"] = req.body.ajiltniiId;
           set["tuukh.$[t].burtgesenAjiltaniiNer"] = req.body.ajiltniiNer;
           set["garakhTsag"] = new Date(

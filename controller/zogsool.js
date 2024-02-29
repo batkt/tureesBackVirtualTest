@@ -1,6 +1,6 @@
 const Baiguullaga = require("../models/baiguullaga");
 const { msgIlgeeye } = require("./khariltsagch");
-const { Mashin: ParkingMashin } = require("parking-v1");
+const { Mashin: ParkingMashin, Parking, Uilchluulegch, zogsooliinDunAvya } = require("parking-v1");
 const moment = require("moment");
 
 module.exports.khungulultKhugatsaaShinechlya =
@@ -126,5 +126,92 @@ module.exports.zogsoolMsgIlgeeye = async function zogsoolMsgIlgeeye() {
         );
       }
     }
+  }
+};
+
+module.exports.tulburUridchiljTulukh = async (body, res, next) => {
+  try {
+    let tulbur = [
+      {
+        ognoo: new Date(),
+        turul: body.turul,
+        dun: body.paid_amount,
+      },
+    ];
+    var oldsonMashin;
+    var tukhainKholbolt;
+    var tukhainObject;
+    var tukhainZogsool;
+    var bodsonDun = 0;
+    const zogsool = body.zogsooliinId
+      ? await Parking(body.tukhainBaaziinKholbolt).findOne({
+          _id: body.zogsooliinId,
+        })
+      : await Parking(body.tukhainBaaziinKholbolt).findOne({
+          baiguullagiinId: body.baiguullagiinId,
+          barilgiinId: body.barilgiinId,
+          "khaalga.ajiltnuud.id": body.ajiltniiId,
+        });
+    if (!!zogsool) {
+      oldsonMashin = await Uilchluulegch(
+        body.tukhainBaaziinKholbolt
+      ).findOne({
+        _id: body.uilchluulegchiinId,
+      });
+      if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+        tukhainKholbolt = body.tukhainBaaziinKholbolt;
+        tukhainZogsool = zogsool;
+        tukhainObject = oldsonMashin;
+      }
+    }
+    bodsonDun = await zogsooliinDunAvya(
+      tukhainZogsool,
+      tukhainObject,
+      tukhainKholbolt
+    );
+    if (!tukhainObject) {
+      res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
+    }
+    if (
+      tukhainObject &&
+      tukhainObject.tuukh &&
+      tukhainObject.tuukh.length > 0
+    ) {
+      if (tukhainObject.tuukh && tukhainObject.tuukh.length > 0)
+        if (
+          tukhainObject.tuukh[0].tulbur &&
+          tukhainObject.tuukh[0].tulbur.length > 0
+        )
+          tukhainObject.tuukh[0].tulbur.push(...tulbur);
+        else tukhainObject.tuukh[0].tulbur = tulbur;
+      var set = {
+        "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
+      };
+      if (bodsonDun > 0) {
+        if (bodsonDun == body.paid_amount) {
+          set["tuukh.$[t].burtgesenAjiltaniiId"] = body.ajiltniiId;
+          set["tuukh.$[t].burtgesenAjiltaniiNer"] = body.ajiltniiNer;
+          set["garakhTsag"] = new Date(
+            new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000
+          );
+        }
+      }
+      await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
+        tukhainObject._id,
+        {
+          $set: set,
+        },
+        {
+          arrayFilters: [
+            {
+              "t.zogsooliinId": tukhainZogsool._id,
+            },
+          ],
+        }
+      );
+      res.send("Amjilttai");
+    }
+  } catch (err) {
+    next(err);
   }
 };
