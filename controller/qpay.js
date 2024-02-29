@@ -8,6 +8,7 @@ const { tulultiinMsgIlgeeye } = require("../controller/khariltsagch");
 const Geree = require("../models/geree");
 const got = require("got");
 const { QuickQpayObject } = require("quickqpaypackv2");
+const { tulburUridchiljTulukh } = require("../controller/zogsool");
 const { URL } = require("url");
 const instance = got.extend({
   hooks: {
@@ -314,6 +315,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
   console.log("qpayBarimt", qpayBarimt);
   if (!!qpayBarimt.zogsooliinId) {
     const body = {
+      tukhainBaaziinKholbolt,
       turul: "qpayUridchilsan",
       uilchluulegchiinId: qpayBarimt.zogsoolUilchluulegch.uId,
       paid_amount: qpayBarimt.zogsoolUilchluulegch.pay_amount,
