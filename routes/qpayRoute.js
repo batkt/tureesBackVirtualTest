@@ -50,6 +50,18 @@ router.get(
     }
   }
 );
+router.get("/qpayObjectAvya", tokenShalgakh, async (req, res, next) => {
+  try {
+    const qpayObject = await QuickQpayObject(
+      req.body.tukhainBaaziinKholbolt
+    ).findOne({
+      invoice_id: req.query.invoice_id,
+    });
+    res.send(qpayObject);
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
   try {
