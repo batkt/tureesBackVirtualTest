@@ -624,7 +624,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
     for await (const baiguullaga of baiguullaguud) {
       var kholboltuud = db.kholboltuud;
       var kholbolt = kholboltuud.find(
-        (a) => a.baiguullagiinId == baiguullaga._id
+        (a) => a.baiguullagiinId == baiguullaga._id.toString()
       );
       var textuud = [];
       if (

@@ -452,7 +452,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         for await (const baiguullaga of baiguullaguud) {
           console.log("aldangiBodyo -> baiguullaguud ->");
           var kholbolt = kholboltuud.find(
-            (a) => a.baiguullagiinId == baiguullaga._id
+            (a) => a.baiguullagiinId == baiguullaga._id.toString()
           );
           for await (const barilga of baiguullaga.barilguud) {
             console.log("aldangiBodyo -> barilguud ->");
