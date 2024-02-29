@@ -269,6 +269,13 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
         var urdunJson = urDun.toJSON();
         urdunJson.duusakhOgnoo = tokenObject.duusakhOgnoo;
         urdunJson.salbaruud = tokenObject.salbaruud;
+        if (!!tokenObject && tokenObject.salbaruud.length > 0) {
+          var duusaaguiSalbar = tokenObject.salbaruud.find(
+            (x) => x.duusakhOgnoo > new Date()
+          );
+          if (!duusaaguiSalbar)
+            throw new Error("Лицензийн хугацаа дууссан байна!");
+        }
         res.send(urdunJson);
       })
       .catch((err) => {
