@@ -1726,7 +1726,7 @@ exports.gereeAutomataarSungaya = asyncHandler(async (req, res, next) => {
         if (baiguullaguud)
           for await (const baiguullaga of baiguullaguud) {
             console.log("baiguullaga", baiguullaga);
-            var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
+            var gereenuud = await Geree(kholbolt).find({
               tuluv: {
                 $ne: -1,
               },
