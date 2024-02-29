@@ -134,7 +134,7 @@ module.exports.zogsoolMsgIlgeeye = async function zogsoolMsgIlgeeye() {
   }
 };
 
-module.exports.tulburUridchiljTulukh = async (body, res, next) => {
+module.exports.tulburUridchiljTulukh = async (body, next) => {
   try {
     let tulbur = [
       {
@@ -173,7 +173,7 @@ module.exports.tulburUridchiljTulukh = async (body, res, next) => {
       tukhainKholbolt
     );
     if (!tukhainObject) {
-      res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
+      return "Машины мэдээлэл олдсонгүй!";
     }
     if (
       tukhainObject &&
@@ -212,7 +212,6 @@ module.exports.tulburUridchiljTulukh = async (body, res, next) => {
           ],
         }
       );
-      res.send("Amjilttai");
       return "Amjilttai";
     }
   } catch (err) {

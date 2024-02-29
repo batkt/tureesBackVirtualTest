@@ -325,7 +325,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       ajiltniiId: "zochin",
       zogsooliinId: qpayBarimt.zogsooliinId,
     };
-    const tulburTulsun = await tulburUridchiljTulukh(body, res, next);
+    const tulburTulsun = await tulburUridchiljTulukh(body, next);
     if (tulburTulsun === "Amjilttai") {
       qpayBarimt.tulsunEsekh = true;
       qpayBarimt.isNew = false;
