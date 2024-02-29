@@ -33,6 +33,7 @@ router.get(
       req.app.get("socketio").emit(`qpay/${b}/${qpayObject.zakhialgiinDugaar}`);
       if (qpayObject.zogsooliinId) {
         const body = {
+          tukhainBaaziinKholbolt: kholbolt,
           turul: "qpayUridchilsan",
           uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
           paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
