@@ -1,6 +1,11 @@
 const Baiguullaga = require("../models/baiguullaga");
 const { msgIlgeeye } = require("./khariltsagch");
-const { Mashin: ParkingMashin, Parking, Uilchluulegch, zogsooliinDunAvya } = require("parking-v1");
+const {
+  Mashin: ParkingMashin,
+  Parking,
+  Uilchluulegch,
+  zogsooliinDunAvya,
+} = require("parking-v1");
 const moment = require("moment");
 
 module.exports.khungulultKhugatsaaShinechlya =
@@ -153,9 +158,7 @@ module.exports.tulburUridchiljTulukh = async (body, res, next) => {
           "khaalga.ajiltnuud.id": body.ajiltniiId,
         });
     if (!!zogsool) {
-      oldsonMashin = await Uilchluulegch(
-        body.tukhainBaaziinKholbolt
-      ).findOne({
+      oldsonMashin = await Uilchluulegch(body.tukhainBaaziinKholbolt).findOne({
         _id: body.uilchluulegchiinId,
       });
       if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
@@ -210,6 +213,7 @@ module.exports.tulburUridchiljTulukh = async (body, res, next) => {
         }
       );
       res.send("Amjilttai");
+      return "Amjilttai";
     }
   } catch (err) {
     next(err);
