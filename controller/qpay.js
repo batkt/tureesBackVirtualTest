@@ -325,11 +325,9 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       ajiltniiId: "zochin",
       zogsooliinId: qpayBarimt.zogsooliinId,
     };
-    const tulburTulsun = await tulburUridchiljTulukh(body, next);
-    if (tulburTulsun === "Amjilttai") {
-      qpayBarimt.tulsunEsekh = true;
-      qpayBarimt.isNew = false;
-    }
+    await tulburUridchiljTulukh(body, next);
+    qpayBarimt.tulsunEsekh = true;
+    qpayBarimt.isNew = false;
     res.sendStatus(200);
   } else if (!!qpayBarimt.gereeniiId) {
     if (req.query && req.query.qpay_payment_id)
