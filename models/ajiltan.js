@@ -57,12 +57,13 @@ ajiltanSchema.index({
   $nevtrekhNer: "text",
   mail: 1,
 });
-ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo) {
+ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo, salbaruud = null) {
   const token = jwt.sign(
     {
       id: this._id,
       ner: this.ner,
       baiguullagiinId: this.baiguullagiinId,
+      salbaruud,
       duusakhOgnoo: duusakhOgnoo,
     },
     process.env.APP_SECRET,
