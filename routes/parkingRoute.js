@@ -1542,11 +1542,15 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
     var tukhainObject;
     var tukhainZogsool;
     var bodsonDun = 0;
-    const zogsool = await Parking(req.body.tukhainBaaziinKholbolt).findOne({
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      "khaalga.ajiltnuud.id": req.body.ajiltniiId,
-    });
+    const zogsool = req.body.zogsooliinId
+      ? await Parking(req.body.tukhainBaaziinKholbolt).findOne({
+          _id: req.body.zogsooliinId,
+        })
+      : await Parking(req.body.tukhainBaaziinKholbolt).findOne({
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          "khaalga.ajiltnuud.id": req.body.ajiltniiId,
+        });
     if (!!zogsool) {
       oldsonMashin = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt

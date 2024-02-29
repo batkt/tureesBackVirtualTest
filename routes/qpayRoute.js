@@ -11,6 +11,7 @@ const {
   QpayKhariltsagch,
   qpayShalgay,
 } = require("quickqpaypackv2");
+const { tulburUridchiljTulukh } = require("../controller/zogsool");
 
 router.get(
   "/qpaycallback/:baiguullagiinId/:zakhialgiinDugaar",
@@ -25,10 +26,24 @@ router.get(
         zakhialgiinDugaar: req.params.zakhialgiinDugaar,
       });
       console.log("qpayObject ", qpayObject);
+
       qpayObject.tulsunEsekh = true;
       qpayObject.isNew = false;
       await qpayObject.save();
       req.app.get("socketio").emit(`qpay/${b}/${qpayObject.zakhialgiinDugaar}`);
+      if (qpayObject.zogsooliinId) {
+        const body = {
+          turul: "qpayUridchilsan",
+          uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
+          paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
+          plate_number: qpayObject.zogsoolUilchluulegch.plate_number,
+          barilgiinId: qpayObject.salbariinId,
+          ajiltniiNer: "zochin",
+          ajiltniiId: "zochin",
+          zogsooliinId: qpayObject.zogsooliinId,
+        };
+        await tulburUridchiljTulukh(body, res, next);
+      }
       res.sendStatus(200);
     } catch (err) {
       next(err);
