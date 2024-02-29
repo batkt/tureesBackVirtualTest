@@ -450,10 +450,10 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         .lean();
       if (baiguullaguud && baiguullaguud.length > 0) {
         for await (const baiguullaga of baiguullaguud) {
-          console.log("aldangiBodyo -> baiguullaguud ->");
           var kholbolt = kholboltuud.find(
             (a) => a.baiguullagiinId == baiguullaga._id.toString()
           );
+          console.log("kholbolt -> ", kholbolt);
           for await (const barilga of baiguullaga.barilguud) {
             console.log("aldangiBodyo -> barilguud ->");
             if (
