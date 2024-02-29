@@ -95,6 +95,10 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
             throw new aldaa("Лицензийн хугацаа дууссан байна!");
           if (!!khariu.salbaruud) {
             var butsaakhSalbaruud = [];
+            butsaakhSalbaruud.push({
+              salbariinId: baiguullaga?.barilguud?.[0]._id,
+              duusakhOgnoo: khariu.duusakhOgnoo,
+            });
             for await (const salbar of khariu.salbaruud) {
               var tukhainSalbar = baiguullaga?.barilguud?.find((x) => {
                 return (
