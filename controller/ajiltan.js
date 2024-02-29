@@ -264,6 +264,7 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
       .then((urDun) => {
         var urdunJson = urDun.toJSON();
         urdunJson.duusakhOgnoo = tokenObject.duusakhOgnoo;
+        urdunJson.salbaruud = tokenObject.salbaruud;
         res.send(urdunJson);
       })
       .catch((err) => {
