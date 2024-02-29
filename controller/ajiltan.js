@@ -96,11 +96,17 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           if (!!khariu.salbaruud) {
             var butsaakhSalbaruud = [];
             for await (const salbar of khariu.salbaruud) {
-              var tukhainSalbar = baiguullaga.salbaruud.find(
-                (x) => x.licenseRegister == salbar.register
-              );
-              if (!!tukhainSalbar)
-                tukhainSalbar.duusakhOgnoo = salbar.duusakhOgnoo;
+              var tukhainSalbar = baiguullaga?.barilguud?.find((x) => {
+                return (
+                  !!x.licenseRegister && x.licenseRegister == salbar.register
+                );
+              });
+              if (!!tukhainSalbar) {
+                butsaakhSalbaruud.push({
+                  salbariinId: tukhainSalbar._id,
+                  duusakhOgnoo: salbar.license?.duusakhOgnoo,
+                });
+              }
             }
             butsaakhObject.salbaruud = butsaakhSalbaruud;
           }
