@@ -328,6 +328,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
     await tulburUridchiljTulukh(body, next);
     qpayBarimt.tulsunEsekh = true;
     qpayBarimt.isNew = false;
+    qpayBarimt.save();
     res.sendStatus(200);
   } else if (!!qpayBarimt.gereeniiId) {
     if (req.query && req.query.qpay_payment_id)
