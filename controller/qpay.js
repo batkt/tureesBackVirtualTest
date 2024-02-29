@@ -312,86 +312,101 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
     salbariinId: req.params.barilgiinId,
   });
   console.log("qpayBarimt", qpayBarimt);
-  if (req.query && req.query.qpay_payment_id)
-    qpayBarimt.payment_id = req.query.qpay_payment_id;
-  qpayBarimt.tulsunEsekh = true;
-  qpayBarimt.isNew = false;
-  var tulbur = [];
-  var updateQuery = {};
-  var geree = await Geree(tukhainBaaziinKholbolt).findOne({
-    _id: qpayBarimt.gereeniiId,
-  });
-  if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
-    tulbur.push({
-      tailbar: "qpay",
-      turul: "aldangi",
-      tulsunDun: qpayBarimt.qpay.amount,
-      ognoo: qpayBarimt.ognoo,
-      guilgeeKhiisenOgnoo: new Date(),
+  if (!!qpayBarimt.zogsooliinId) {
+    const body = {
+      turul: "qpayUridchilsan",
+      uilchluulegchiinId: qpayBarimt.zogsoolUilchluulegch.uId,
+      paid_amount: qpayBarimt.zogsoolUilchluulegch.pay_amount,
+      plate_number: qpayBarimt.zogsoolUilchluulegch.plate_number,
+      barilgiinId: qpayBarimt.salbariinId,
+      ajiltniiNer: "zochin",
+      ajiltniiId: "zochin",
+      zogsooliinId: qpayBarimt.zogsooliinId,
+    };
+    await tulburUridchiljTulukh(body, res, next);
+    res.sendStatus(200);
+  } else if (!!qpayBarimt.gereeniiId) {
+    if (req.query && req.query.qpay_payment_id)
+      qpayBarimt.payment_id = req.query.qpay_payment_id;
+    qpayBarimt.tulsunEsekh = true;
+    qpayBarimt.isNew = false;
+    var tulbur = [];
+    var updateQuery = {};
+    var geree = await Geree(tukhainBaaziinKholbolt).findOne({
+      _id: qpayBarimt.gereeniiId,
     });
-    if (geree.aldangiinUldegdel >= qpayBarimt.qpay.amount) {
-      geree.aldangiinUldegdel =
-        geree.aldangiinUldegdel - qpayBarimt.qpay.amount;
-    } else {
-      geree.aldangiinUldegdel = 0;
-      var iluuDun = qpayBarimt.qpay.amount - geree.aldangiinUldegdel;
+    if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
       tulbur.push({
-        turul: "qpay",
-        tulsunDun: iluuDun,
+        tailbar: "qpay",
+        turul: "aldangi",
+        tulsunDun: qpayBarimt.qpay.amount,
         ognoo: qpayBarimt.ognoo,
         guilgeeKhiisenOgnoo: new Date(),
       });
-    }
-    updateQuery = {
-      $push: {
-        [`avlaga.guilgeenuud`]: {
-          $each: tulbur,
-        },
-      },
-      $set: {
-        aldangiinUldegdel: geree.aldangiinUldegdel,
-      },
-    };
-  } else {
-    tulbur.push({
-      turul: "qpay",
-      tulsunDun: qpayBarimt.qpay.amount,
-      ognoo: qpayBarimt.ognoo,
-      guilgeeKhiisenOgnoo: new Date(),
-    });
-    updateQuery = {
-      $push: {
-        [`avlaga.guilgeenuud`]: {
-          $each: tulbur,
-        },
-      },
-    };
-  }
-  Geree(tukhainBaaziinKholbolt)
-    .findByIdAndUpdate({ _id: qpayBarimt.gereeniiId }, updateQuery, {
-      new: true,
-    })
-    .then(async (result) => {
-      qpayBarimt.save();
-      console.log("qpay tuluv:", result);
-      try {
-        console.log("baina ilgeeye");
-        tulultiinMsgIlgeeye(
-          req.params.baiguullagiinId,
-          result.gereeniiDugaar,
-          result.utas[0],
-          tulbur.tulsunDun
-        );
-      } catch (aldaa) {
-        console.log("aldaa garchlooo ", aldaa);
+      if (geree.aldangiinUldegdel >= qpayBarimt.qpay.amount) {
+        geree.aldangiinUldegdel =
+          geree.aldangiinUldegdel - qpayBarimt.qpay.amount;
+      } else {
+        geree.aldangiinUldegdel = 0;
+        var iluuDun = qpayBarimt.qpay.amount - geree.aldangiinUldegdel;
+        tulbur.push({
+          turul: "qpay",
+          tulsunDun: iluuDun,
+          ognoo: qpayBarimt.ognoo,
+          guilgeeKhiisenOgnoo: new Date(),
+        });
       }
-      Tulbur.daraagiinTulukhOgnooZasya(
-        qpayBarimt.gereeniiId,
-        tukhainBaaziinKholbolt
-      );
-      res.sendStatus(200);
-    })
-    .catch((err) => {
-      res.sendStatus(200);
-    });
+      updateQuery = {
+        $push: {
+          [`avlaga.guilgeenuud`]: {
+            $each: tulbur,
+          },
+        },
+        $set: {
+          aldangiinUldegdel: geree.aldangiinUldegdel,
+        },
+      };
+    } else {
+      tulbur.push({
+        turul: "qpay",
+        tulsunDun: qpayBarimt.qpay.amount,
+        ognoo: qpayBarimt.ognoo,
+        guilgeeKhiisenOgnoo: new Date(),
+      });
+      updateQuery = {
+        $push: {
+          [`avlaga.guilgeenuud`]: {
+            $each: tulbur,
+          },
+        },
+      };
+    }
+    Geree(tukhainBaaziinKholbolt)
+      .findByIdAndUpdate({ _id: qpayBarimt.gereeniiId }, updateQuery, {
+        new: true,
+      })
+      .then(async (result) => {
+        qpayBarimt.save();
+        console.log("qpay tuluv:", result);
+        try {
+          console.log("baina ilgeeye");
+          tulultiinMsgIlgeeye(
+            req.params.baiguullagiinId,
+            result.gereeniiDugaar,
+            result.utas[0],
+            tulbur.tulsunDun
+          );
+        } catch (aldaa) {
+          console.log("aldaa garchlooo ", aldaa);
+        }
+        Tulbur.daraagiinTulukhOgnooZasya(
+          qpayBarimt.gereeniiId,
+          tukhainBaaziinKholbolt
+        );
+        res.sendStatus(200);
+      })
+      .catch((err) => {
+        res.sendStatus(200);
+      });
+  }
 });
