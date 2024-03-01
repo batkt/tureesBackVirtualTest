@@ -116,9 +116,10 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           }
           const jwt = await ajiltan.tokenUusgeye(
             khariu.duusakhOgnoo,
-            butsaakhObject.salbaruud
+            butsaakhObject?.result?.salbaruud
           );
           butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
+          butsaakhObject?.result?.duusakhOgnoo = khariu.duusakhOgnoo;
           butsaakhObject.token = jwt;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
