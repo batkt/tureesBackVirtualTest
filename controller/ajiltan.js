@@ -120,6 +120,9 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           );
           butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
           if (!!butsaakhObject.result) {
+            butsaakhObject.result = JSON.parse(
+              JSON.stringify(butsaakhObject.result)
+            );
             butsaakhObject.result.salbaruud = butsaakhObject.salbaruud;
             butsaakhObject.result.duusakhOgnoo = khariu.duusakhOgnoo;
           }
