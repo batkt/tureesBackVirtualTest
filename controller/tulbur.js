@@ -478,7 +478,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               var gereenuud = await Geree(kholbolt).aggregate([
                 {
                   $match: {
-                    baiguullagiinId: baiguullaga._id.toString(),
                     barilgiinId: barilga._id.toString(),
                     daraagiinTulukhOgnoo: {
                       $lte: ognoo,
