@@ -9,6 +9,23 @@ const lodash = require("lodash");
 crud(router, "togloomiinTariff", TogloomiinTariff, UstsanBarimt);
 crud(router, "togloomiinTuv", TogloomiinTuv, UstsanBarimt);
 
+router.post(
+  "/suuldUilchluulsenTuukhAvya",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const suuldUilchluulsenTuukh = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).findOne({
+        utas: { $in: [req.body.dugaar] },
+      });
+      res.send(suuldUilchluulsenTuukh);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 router
   .route("/togloomiinToololtAvya")
   .post(tokenShalgakh, async (req, res, next) => {
