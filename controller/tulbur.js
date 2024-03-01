@@ -475,7 +475,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               if (aldangiChuluulukhKhonog > 0)
                 ognoo =
                   new Date().getTime() - 86400000 * aldangiChuluulukhKhonog;
-              var gereenuud = await Geree(kholbolt).aggregate([
+              var query = [
                 {
                   $match: {
                     barilgiinId: barilga._id.toString(),
@@ -546,7 +546,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                     },
                   },
                 },
-              ]);
+              ];
+              console.log("query", JSON.stringify(query, null, 4));
+              var gereenuud = await Geree(kholbolt).aggregate(query);
               console.log("gereenuud", gereenuud.length);
               if (gereenuud && gereenuud.length > 0) {
                 var bulkOps = [];
