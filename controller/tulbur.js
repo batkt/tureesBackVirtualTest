@@ -1050,12 +1050,10 @@ exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
 exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
   async (req, res, next) => {
     try {
-      var gereeniiDugaar = req.body.gereeniiDugaar;
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
         .find({
-          gereeniiDugaar: {
-            $in: gereeniiDugaar,
-          },
+          tuluv: 1,
+          baiguullagiinId: req.body.baiguullagiinId,
         })
         .select("+avlaga");
       var khariu = [];
