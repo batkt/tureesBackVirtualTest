@@ -91,8 +91,6 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
       try {
         console.log("nevtrekhXariu Irlee");
         if (khariu.success) {
-          if (khariu.duusakhOgnoo && new Date(khariu.duusakhOgnoo) < new Date())
-            throw new aldaa("Лицензийн хугацаа дууссан байна!");
           if (!!khariu.salbaruud) {
             var butsaakhSalbaruud = [];
             butsaakhSalbaruud.push({
