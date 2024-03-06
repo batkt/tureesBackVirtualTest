@@ -269,7 +269,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                   undsenDun: talbai.talbainNiitUne,
                   tulukhDun: talbai.talbainNiitUne,
                 });
-              if (!!geree.zardluud && geree.zardluud) {
+              if (!!geree.zardluud && geree.zardluud.length > 0) {
                 geree.zardluud.forEach((zardal) => {
                   if (
                     zardal.turul == "1м3/талбай" &&
