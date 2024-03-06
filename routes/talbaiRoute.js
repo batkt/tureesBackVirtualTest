@@ -208,6 +208,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
         talbainDugaar: khuuchinTalbai.kod,
         barilgiinId: khuuchinTalbai.barilgiinId,
         baiguullagiinId: khuuchinTalbai.baiguullagiinId,
+        tuluv: 1,
       })
       .select("+avlaga +gereeniiTuukhuud");
     if (gereenuud)
