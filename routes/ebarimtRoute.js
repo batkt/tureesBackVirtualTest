@@ -351,6 +351,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
       }
       butsaakhMethod = function (d) {
         try {
+          console.log("ebarimt butsaax", d);
           if (!d.success) throw new Error(d.message);
           var ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
           ebarimt.save().catch((err) => {
