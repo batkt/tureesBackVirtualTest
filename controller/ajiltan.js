@@ -94,7 +94,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           if (!!khariu.salbaruud) {
             var butsaakhSalbaruud = [];
             butsaakhSalbaruud.push({
-              salbariinId: baiguullaga?.barilguud?.[0]._id,
+              salbariinId: baiguullaga?.barilguud?.[0]?._id,
               duusakhOgnoo: khariu.duusakhOgnoo,
             });
             for await (const salbar of khariu.salbaruud) {
