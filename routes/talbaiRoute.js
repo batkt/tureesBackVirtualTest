@@ -262,7 +262,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                   moment(a.ognoo).isSame(tukhainUdur, "day")
                 );
               });
-              if (!baigaa)
+              if (!baigaa && talbai.talbainNiitUne > 0)
                 khuvaariud.push({
                   ognoo: tukhainUdur,
                   khyamdral: 0,
@@ -276,7 +276,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                   console.log("zardal", zardal);
                   if (
                     zardal.turul == "1м3/талбай" &&
-                    !!talbai.talbainKhemjeeMetrKube
+                    talbai.talbainKhemjeeMetrKube > 0
                   ) {
                     baigaa = geree?.avlaga?.guilgeenuud?.find((a) => {
                       return (
@@ -300,7 +300,10 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                           zardal.tariff * talbai.talbainKhemjeeMetrKube
                         ),
                       });
-                  } else if (zardal.turul == "1м2" && talbai.talbainKhemjee) {
+                  } else if (
+                    zardal.turul == "1м2" &&
+                    talbai.talbainKhemjee > 0
+                  ) {
                     baigaa = geree?.avlaga?.guilgeenuud?.find((a) => {
                       return (
                         a.turul == "avlaga" &&
