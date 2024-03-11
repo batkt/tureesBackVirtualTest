@@ -183,8 +183,9 @@ async function ebarimtDuudya(ugugdul, onFinish, next) {
       url,
       { json: true, body: { data: ugugdul } },
       (err, res1, body) => {
-        if (err) next(err);
-        else {
+        if (err) {
+          next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+        } else {
           console.log("ebarimt body", body);
           onFinish(body);
         }
