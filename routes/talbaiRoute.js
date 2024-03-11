@@ -270,10 +270,8 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                   undsenDun: talbai.talbainNiitUne,
                   tulukhDun: talbai.talbainNiitUne,
                 });
-              console.log("geree.zardluud.length", geree.zardluud.length);
               if (!!geree.zardluud && geree.zardluud.length > 0) {
                 geree.zardluud.forEach((zardal) => {
-                  console.log("zardal", zardal);
                   if (
                     zardal.turul == "1м3/талбай" &&
                     talbai.talbainKhemjeeMetrKube > 0
@@ -289,7 +287,6 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                         a.tailbar == zardal.ner
                       );
                     });
-                    console.log("baigaa1", baigaa);
                     if (!baigaa)
                       khuvaariud.push({
                         ognoo: tukhainUdur,
@@ -313,7 +310,6 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                         a.tailbar == zardal.ner
                       );
                     });
-                    console.log("baigaa2", baigaa);
                     if (!baigaa)
                       khuvaariud.push({
                         ognoo: tukhainUdur,
@@ -333,7 +329,6 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                         a.tailbar == zardal.ner
                       );
                     });
-                    console.log("baigaa3", baigaa);
                     if (!baigaa)
                       khuvaariud.push({
                         ognoo: tukhainUdur,

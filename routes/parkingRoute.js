@@ -560,7 +560,6 @@ router.post(
   async (req, res, next) => {
     try {
       const result = await uilchluulegchdiinToo(req.body);
-      console.log("/zogsoolUilchluulegchdiinToo", result);
       res.send(result);
     } catch (err) {
       next(err);
@@ -574,7 +573,6 @@ router.post(
   async (req, res, next) => {
     try {
       const result = await zogsoolTusBurUilchluulegchdiinToo(req.body);
-      console.log("/zogsoolTusBurUilchluulegchdiinToo", result);
       res.send(result);
     } catch (err) {
       next(err);
@@ -814,7 +812,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
           };
       var zogsooluud = await Parking(kholbolt).find(query);
       for await (const zogsool of zogsooluud) {
-        console.log(zogsool);
         if (!!zogsool) {
           oldsonMashin = await Uilchluulegch(kholbolt).findOne({
             "tuukh.0.zogsooliinId": zogsool._id,
@@ -877,8 +874,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
       }
       if (data && data.plate_number) break;
     }
-  } else {
-    console.log("kholbolt alga");
   }
 
   if (!oldsonMashin) {
@@ -931,7 +926,6 @@ router.get("/pass/search_car/:plate_number", async (req, res, next) => {
           };
       var zogsooluud = await Parking(kholbolt).find(query);
       for await (const zogsool of zogsooluud) {
-        console.log(zogsool);
         if (!!zogsool) {
           oldsonMashin = await Uilchluulegch(kholbolt).findOne({
             "tuukh.0.zogsooliinId": zogsool._id,
@@ -995,7 +989,6 @@ router.get("/pass/search_car/:plate_number", async (req, res, next) => {
       if (data && data.plate_number) break;
     }
   } else {
-    console.log("kholbolt alga");
   }
 
   if (!oldsonMashin) {
@@ -1031,7 +1024,6 @@ router.get("/v1/car/:session_id", async (req, res, next) => {
         tokiNer: { $exists: true },
       });
       for await (const zogsool of zogsooluud) {
-        console.log(zogsool);
         if (!!zogsool) {
           oldsonMashin = await Uilchluulegch(kholbolt).findById(
             req.params.session_id
@@ -1155,7 +1147,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
       tukhainObject,
       tukhainKholbolt
     );
-    console.log("oldsonMashin pay", tukhainObject);
     if (!tukhainObject) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
     }
@@ -1398,7 +1389,6 @@ router.route("/pass/pay").post(async (req, res, next) => {
       tukhainObject,
       tukhainKholbolt
     );
-    console.log("oldsonMashin pay", tukhainObject);
     if (!tukhainObject) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
     }
