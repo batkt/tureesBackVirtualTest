@@ -255,7 +255,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                 .add(index, "month")
                 .set("date", udur);
               //undsen tulultiin xuwaari)
-              var baigaa = geree?.avlaga?.guilgeenuud?.find((a) => {
+              var baigaa = khuvaariud.find((a) => {
                 return (
                   a.turul == "khuvaari" &&
                   a.tulukhDun == talbai.talbainNiitUne &&
@@ -278,7 +278,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                     zardal.turul == "1м3/талбай" &&
                     talbai.talbainKhemjeeMetrKube > 0
                   ) {
-                    baigaa = geree?.avlaga?.guilgeenuud?.find((a) => {
+                    baigaa = khuvaariud.find((a) => {
                       return (
                         a.turul == "avlaga" &&
                         a.tulukhDun ==
@@ -304,7 +304,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                     zardal.turul == "1м2" &&
                     talbai.talbainKhemjee > 0
                   ) {
-                    baigaa = geree?.avlaga?.guilgeenuud?.find((a) => {
+                    baigaa = khuvaariud.find((a) => {
                       return (
                         a.turul == "avlaga" &&
                         a.tulukhDun ==
@@ -325,7 +325,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                         ),
                       });
                   } else if (zardal.turul == "Тогтмол") {
-                    baigaa = geree?.avlaga?.guilgeenuud?.find((a) => {
+                    baigaa = khuvaariud.find((a) => {
                       return (
                         a.turul == "avlaga" &&
                         a.tulukhDun == zardal.tariff &&
