@@ -247,7 +247,7 @@ async function tdbDansniiUldegdelAvya(
       onFinish(result);
     });
   } catch (error) {
-    if (next) next("Дансны үлдэгдэл авахад алдаа гарлаа!");
+    if (next) next(new Error("Дансны үлдэгдэл авахад алдаа гарлаа!"));
   }
 }
 
