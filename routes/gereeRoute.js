@@ -808,7 +808,6 @@ router
       body.lean = true;
       khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
         .then(async (result) => {
-          console.log("result", result);
           if (result && result.jagsaalt && result.jagsaalt.length > 0) {
             var idnuud = [];
             result.jagsaalt.forEach((a) => idnuud.push(a._id));
@@ -1426,7 +1425,6 @@ router
         console.log("body", body);
         khuudaslalt(Geree, body)
           .then((result) => {
-            console.log("result", result);
             if (result && result.jagsaalt && result.jagsaalt.length > 0)
               result.jagsaalt.forEach(x => {
               });
@@ -2289,7 +2287,6 @@ router
         console.log("body", body);
         khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
           .then((result) => {
-            console.log("result", result);
             if (result && result.jagsaalt && result.jagsaalt.length > 0)
               result.jagsaalt.forEach((x) => {
                 x.tuluvluguut =
