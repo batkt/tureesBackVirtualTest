@@ -191,7 +191,7 @@ async function ebarimtDuudya(ugugdul, onFinish, next) {
       }
     );
   } catch (aldaa) {
-    next(aldaa);
+    next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
   }
 }
 
