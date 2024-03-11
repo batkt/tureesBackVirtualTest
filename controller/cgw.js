@@ -272,8 +272,13 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           dans.baiguullagiinId,
           req.body.tukhainBaaziinKholbolt
         );
-        token = tokenObject.access_token;
+        token = tokenObject?.access_token;
       } else token = tokenObject.token;
+      if (!token) {
+        throw new Error(
+          "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
+        );
+      }
       var khariu = await dansniiJagsaaltAvya(token, next);
       khariu = khariu.accounts.filter(
         (a) => a.number == req.body.dansniiDugaar
