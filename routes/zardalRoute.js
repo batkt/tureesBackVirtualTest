@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Zardal = require("../models/zardal");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const { backAvya } = require("../controller/backup");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 
@@ -83,6 +84,10 @@ router.post("/zardalTsutslaya", tokenShalgakh, async (req, res, next) => {
     .then((err) => {
       next(err);
     });
+});
+router.post("/backTest", tokenShalgakh, async (req, res, next) => {
+  backAvya();
+  res.send("Amjilttai");
 });
 
 module.exports = router;
