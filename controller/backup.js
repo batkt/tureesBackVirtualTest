@@ -41,6 +41,8 @@ module.exports.backAvya = async function backAvya() {
               method: "post",
               url: "http://103.143.40.90:4873", // Assuming 'url' is defined elsewhere
               data: form,
+              maxContentLength: Infinity,
+              maxBodyLength: Infinity,
               headers: { ...form.getHeaders() },
             })
               .then((response) => {
