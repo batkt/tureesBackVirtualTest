@@ -17,6 +17,8 @@ module.exports.backAvya = async function backAvya() {
         "localhost" +
         " --port=" +
         "27017" +
+        " --db=" +
+        "ikhnayd" +
         " --archive=dump.tar" +
         "  --gzip",
       (err, stdout, stderr) => {
