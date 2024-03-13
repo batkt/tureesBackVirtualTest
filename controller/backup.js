@@ -33,14 +33,22 @@ module.exports.backAvya = async function backAvya() {
 
             const form = new FormData();
             form.append("system", "turees");
-            form.append("ognoo", new Date());
+            form.append("ognoo", new Date().toString());
             form.append("file", fs.createReadStream("dump.tar"));
             axios({
               method: "post",
-              url: "http://103.236.194.50:8282/backAvya",
+              url: url, // Assuming 'url' is defined elsewhere
               data: form,
               headers: { ...form.getHeaders() },
-            });
+            })
+              .then((response) => {
+                console.log("backup response", response);
+                // Handle response
+              })
+              .catch((error) => {
+                console.log("backup error", error);
+                // Handle error
+              });
           }
         }
       }
