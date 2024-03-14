@@ -19,6 +19,10 @@ router.post(
       ).findOne({
         utas: { $in: [req.body.dugaar] },
       });
+      var too = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).countDocuments({ utas: { $in: [req.body.dugaar] } });
+      if (!!suuldUilchluulsenTuukh) suuldUilchluulsenTuukh.togolsonToo = too;
       res.send(suuldUilchluulsenTuukh);
     } catch (err) {
       next(err);
@@ -47,6 +51,9 @@ router
         {
           $group: {
             _id: "aaa",
+            khuukhdiinToo: {
+              $sum: { $ifNull: ["$khuukhdiinToo", 0] },
+            },
             ekhlesen: {
               $sum: {
                 $cond: [
