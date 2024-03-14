@@ -107,7 +107,6 @@ router
                     ],
                   },
                   { $ifNull: ["$khuukhdiinToo", 0] },
-                  ,
                   0,
                 ],
               },
