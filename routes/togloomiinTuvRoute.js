@@ -22,8 +22,7 @@ router.post(
       var too = await TogloomiinTuv(
         req.body.tukhainBaaziinKholbolt
       ).countDocuments({ utas: { $in: [req.body.dugaar] } });
-      if (!!suuldUilchluulsenTuukh) suuldUilchluulsenTuukh.togolsonToo = too;
-      res.send(suuldUilchluulsenTuukh);
+      res.send({ ...suuldUilchluulsenTuukh, togolsonToo: too });
     } catch (err) {
       next(err);
     }
