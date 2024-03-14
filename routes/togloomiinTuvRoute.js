@@ -22,7 +22,8 @@ router.post(
       var too = await TogloomiinTuv(
         req.body.tukhainBaaziinKholbolt
       ).countDocuments({ utas: { $in: [req.body.dugaar] } });
-      res.send({ ...suuldUilchluulsenTuukh, togolsonToo: too });
+      var butsaakhUtga = { ...suuldUilchluulsenTuukh?._doc, togolsonToo: too };
+      res.send(butsaakhUtga);
     } catch (err) {
       next(err);
     }
@@ -50,8 +51,26 @@ router
         {
           $group: {
             _id: "aaa",
-            khuukhdiinToo: {
-              $sum: { $ifNull: ["$khuukhdiinToo", 0] },
+            ekhelsenKhuukhdiinToo: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      {
+                        $ne: ["$tuluv", -1],
+                      },
+                      {
+                        $lte: ["$ekhlekhTsag", new Date()],
+                      },
+                      {
+                        $gt: ["$duusakhTsag", new Date()],
+                      },
+                    ],
+                  },
+                  { $ifNull: ["$khuukhdiinToo", 0] },
+                  0,
+                ],
+              },
             },
             ekhlesen: {
               $sum: {
@@ -74,6 +93,25 @@ router
                 ],
               },
             },
+            tulsunKhuukhed: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      {
+                        $lte: ["$duusakhTsag", new Date()],
+                      },
+                      {
+                        $eq: ["$tulburTulsunEsekh", true],
+                      },
+                    ],
+                  },
+                  { $ifNull: ["$khuukhdiinToo", 0] },
+                  ,
+                  0,
+                ],
+              },
+            },
             tulsun: {
               $sum: {
                 $cond: [
@@ -84,6 +122,34 @@ router
                       },
                       {
                         $eq: ["$tulburTulsunEsekh", true],
+                      },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+            tuluuguKhuukhed: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      {
+                        $ne: ["$tuluv", -1],
+                      },
+                      {
+                        $lte: ["$duusakhTsag", new Date()],
+                      },
+                      {
+                        $or: [
+                          {
+                            $eq: ["$tulburTulsunEsekh", false],
+                          },
+                          {
+                            $not: ["$tulburTulsunEsekh"],
+                          },
+                        ],
                       },
                     ],
                   },
@@ -115,7 +181,18 @@ router
                       },
                     ],
                   },
-                  1,
+                  { $ifNull: ["$khuukhdiinToo", 0] },
+                  0,
+                ],
+              },
+            },
+            tsutsalsanKhuukhed: {
+              $sum: {
+                $cond: [
+                  {
+                    $eq: ["$tuluv", -1],
+                  },
+                  { $ifNull: ["$khuukhdiinToo", 0] },
                   0,
                 ],
               },
@@ -149,6 +226,24 @@ router
                 ],
               },
             },
+            khungulsunKhuukhed: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      {
+                        $ne: ["$tuluv", -1],
+                      },
+                      {
+                        $eq: ["$khungulsunEsekh", true],
+                      },
+                    ],
+                  },
+                  { $ifNull: ["$khuukhdiinToo", 0] },
+                  0,
+                ],
+              },
+            },
             garsan: {
               $sum: {
                 $cond: [
@@ -164,9 +259,29 @@ router
                 ],
               },
             },
+            garsanKhuukhed: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      {
+                        $eq: ["$tuluv", 3],
+                      },
+                    ],
+                  },
+                  { $ifNull: ["$khuukhdiinToo", 0] },
+                  0,
+                ],
+              },
+            },
             sungasan: {
               $sum: {
                 $cond: ["$sungalt.0", 1, 0],
+              },
+            },
+            sungasanKhuukhed: {
+              $sum: {
+                $cond: ["$sungalt.0", { $ifNull: ["$khuukhdiinToo", 0] }, 0],
               },
             },
           },
