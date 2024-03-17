@@ -62,7 +62,7 @@ crud(router, "nevtreltiinTuukh", NevtreltiinTuukh, UstsanBarimt);
 crud(router, "backTuukh", BackTuukh, UstsanBarimt);
 crud(router, "session", session, UstsanBarimt);
 
-router.get("/session/:sessionId", async (req, res, next) => {
+router.get("/sessionAvya/:sessionId", async (req, res, next) => {
   try {
     const sessionId = req.params.sessionId;
     const { db } = require("zevbackv2");
