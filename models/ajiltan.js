@@ -88,16 +88,23 @@ ajiltanSchema.methods.khugatsaaguiTokenUusgeye = function () {
   return token;
 };
 
-ajiltanSchema.methods.zochinTokenUusgye = function (baiguullagiinId) {
+ajiltanSchema.methods.zochinTokenUusgye = function (
+  baiguullagiinId,
+  gishuunEsekh
+) {
   const token = jwt.sign(
     {
       id: "zochin",
       baiguullagiinId,
     },
     process.env.APP_SECRET,
-    {
-      expiresIn: "1h",
-    }
+    gishuunEsekh
+      ? {
+          expiresIn: "12h",
+        }
+      : {
+          expiresIn: "1h",
+        }
   );
   return token;
 };

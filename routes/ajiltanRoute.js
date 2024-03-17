@@ -22,6 +22,7 @@ const {
   khugatsaaguiTokenAvya,
 } = require("../controller/ajiltan");
 const aldaa = require("../components/aldaa");
+const session = require("../models/session");
 
 crudWithFile(
   router,
@@ -59,6 +60,7 @@ crudWithFile(
 );
 crud(router, "nevtreltiinTuukh", NevtreltiinTuukh, UstsanBarimt);
 crud(router, "backTuukh", BackTuukh, UstsanBarimt);
+crud(router, "session", session, UstsanBarimt);
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);

@@ -19,6 +19,7 @@ const http = require("http");
 const lodash = require("lodash");
 const { formatNumber } = require("zevbackv2");
 const TogloomiinTuv = require("../models/togloomiinTuv");
+const session = require("../models/session");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get(
@@ -857,6 +858,23 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
               "₮,";
           }
           text = text + " tus tus orlogo orson baina.";
+          if (zogsool && zogsool.length > 0) {
+            const shineSession = new session(kholbolt)();
+            const gishuun = new Ajiltan(kholbolt)();
+            shineSession.sessionToken = await gishuun.zochinTokenUusgye(
+              baiguullaga._id.toString(),
+              true
+            );
+            await shineSession
+              .save()
+              .then((khadgalsanSession) => {
+                const dynamicUrl = `https://turees.zevtabs.mn/khyanalt/zogsooliinDelgerenguiTailan/${khadgalsanSession._id}`;
+                text += `Ta zogsooliin dung delgerengui harahiig husvel doorh holboosoor orno uu: ${dynamicUrl}`;
+              })
+              .catch((error) => {
+                console.error("session error:", error);
+              });
+          }
           textuud.push(text);
         }
       }
