@@ -859,7 +859,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
           }
           text = text + " tus tus orlogo orson baina.";
           if (zogsool && zogsool.length > 0) {
-            const shineSession = new session(kholbolt)();
+            const shineSession = new session(db.erunkhiiKholbolt)();
             const gishuun = new Ajiltan(kholbolt)();
             shineSession.sessionToken = await gishuun.zochinTokenUusgye(
               baiguullaga._id.toString(),

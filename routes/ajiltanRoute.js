@@ -62,6 +62,21 @@ crud(router, "nevtreltiinTuukh", NevtreltiinTuukh, UstsanBarimt);
 crud(router, "backTuukh", BackTuukh, UstsanBarimt);
 crud(router, "session", session, UstsanBarimt);
 
+router.get("/session/:sessionId", async (req, res, next) => {
+  try {
+    const sessionId = req.params.sessionId;
+    const { db } = require("zevbackv2");
+    const sessionData = await session(db.erunkhiiKholbolt).findById(sessionId);
+
+    if (!sessionData) {
+      throw new aldaa("Session олдсонгүй");
+    }
+    res.send(sessionData);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);
 router.route("/zochiniiTokenAvya/:baiguullagiinId").get(zochiniiTokenAvya);
