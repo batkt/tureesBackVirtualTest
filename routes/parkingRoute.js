@@ -434,7 +434,9 @@ router.post(
         {
           $match: {
             baiguullagiinId: req.body.baiguullagiinId,
-            barilgiinId: req.body.barilgiinId,
+            barilgiinId: !!req.body.barilgiinId
+              ? req.body.barilgiinId
+              : { $exists: true },
           },
         },
         {
