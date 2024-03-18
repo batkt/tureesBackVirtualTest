@@ -411,7 +411,9 @@ router.post(
       const match =
         req.body.garsanKhaalga !== null
           ? {
-              "tuukh.garsanKhaalga": req.body.garsanKhaalga,
+              "tuukh.garsanKhaalga": !!req.body.garsanKhaalga
+                ? req.body.garsanKhaalga
+                : { $exists: true },
               "tuukh.tsagiinTuukh.garsanTsag": {
                 $gte: new Date(req.body.ekhlekhOgnoo),
                 $lte: new Date(req.body.duusakhOgnoo),
