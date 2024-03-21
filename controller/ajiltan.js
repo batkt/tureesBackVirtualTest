@@ -630,7 +630,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async (tsag) => {
       "tokhirgoo.msgAvakhDugaar.0": {
         $exists: true,
       },
-      "tokhirgoo.msgIlgeekhTsag": tsag,
+      "tokhirgoo.msgAvakhTsag": tsag,
     });
     var ekhlekhOgnoo = new Date(
       Date.now() - (tsag == "20:00" || tsag == "22:00" ? 0 : 86400000)
