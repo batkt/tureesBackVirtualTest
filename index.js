@@ -143,7 +143,38 @@ cron.schedule(
 cron.schedule(
   "30 9 * * * ",
   function () {
-    ajiltanController.orlogiinMsgIlgeeye();
+    ajiltanController.orlogiinMsgIlgeeye("09:30");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
+  "1 7 * * * ",
+  function () {
+    ajiltanController.orlogiinMsgIlgeeye("07:00");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+cron.schedule(
+  "1 20 * * * ",
+  function () {
+    ajiltanController.orlogiinMsgIlgeeye("20:00");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+cron.schedule(
+  "1 22 * * * ",
+  function () {
+    ajiltanController.orlogiinMsgIlgeeye("22:00");
   },
   {
     scheduled: true,

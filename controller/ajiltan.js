@@ -618,7 +618,7 @@ async function orchuulya(text) {
   return butsaakhText;
 }
 
-exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
+exports.orlogiinMsgIlgeeye = asyncHandler(async (tsag) => {
   try {
     const { db } = require("zevbackv2");
     var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
@@ -630,9 +630,14 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async () => {
       "tokhirgoo.msgAvakhDugaar.0": {
         $exists: true,
       },
+      "tokhirgoo.msgIlgeekhTsag": tsag,
     });
-    var ekhlekhOgnoo = new Date(Date.now() - 86400000);
-    var duusakhOgnoo = new Date(Date.now() - 86400000);
+    var ekhlekhOgnoo = new Date(
+      Date.now() - (tsag == "20:00" || tsag == "22:00" ? 0 : 86400000)
+    );
+    var duusakhOgnoo = new Date(
+      Date.now() - (tsag == "20:00" || tsag == "22:00" ? 0 : 86400000)
+    );
     ekhlekhOgnoo.setHours(0, 0, 0, 0);
     duusakhOgnoo.setHours(23, 59, 59, 999);
     for await (const baiguullaga of baiguullaguud) {
