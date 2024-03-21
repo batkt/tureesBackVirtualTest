@@ -91,7 +91,7 @@ const baiguullagaSchema = new Schema(
       msgIlgeekhDugaar: String,
       msgAvakhTurul: String,
       msgAvakhDugaar: [String],
-      msgIlgeekhTsag: String,
+      msgAvakhTsag: String,
       zogsoolMsgZagvar: String,
       mailNevtrekhNer: String,
       mailPassword: String,
