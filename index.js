@@ -253,4 +253,8 @@ io.once("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("disconnected");
   });
+  socket.on("error", function (err) {
+    console.log("Socket.IO Error");
+    console.log(err.stack);
+  });
 });
