@@ -129,7 +129,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "15,35,55 * * * * * ",
+  "*/4 * * * * * ",
   function () {
     // console.log("xuulga tatlaa", new Date());
     cgw.bankniiKhuulgaTatyaOirkhon();
