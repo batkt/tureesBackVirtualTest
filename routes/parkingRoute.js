@@ -325,7 +325,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
       (a) => a.baiguullagiinId == baiguullagiinId
     );
     var shuukhKhugatsaa = new Date(
-      Date.now() - 900000 //15 * 60 * 1000
+      Date.now() - 300000 //5 * 60 * 1000
     );
     var oldsonData = await Uilchluulegch(kholbolt).findOne({
       $or: [
@@ -336,6 +336,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
           niitDun: shineDun > 0 ? shineDun : tulsunDun,
         },
       ],
+      tokiId: { $exists: false },
       "tuukh.0.tsagiinTuukh.0.garsanTsag": {
         $gt: shuukhKhugatsaa,
       },
