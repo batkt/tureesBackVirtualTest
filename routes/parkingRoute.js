@@ -312,6 +312,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var baiguullagiinId = req.body.baiguullagiinId;
     var zogsooliinId = req.body.zogsooliinId;
     var tulsunDun = Number(req.body.tulsunDun);
+    console.log("zogsooliinTulburOrjIrlee", tulsunDun);
     var shineDun = 0;
     if (baiguullagiinId == "65435cdff2f5358696c61454") {
       shineDun =
@@ -340,6 +341,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
       },
       "tuukh.0.tuluv": 0,
     });
+    console.log("zogsooliinTulburOrjIrlee oldsonData", oldsonData);
     if (oldsonData) {
       await Uilchluulegch(kholbolt).findByIdAndUpdate(
         oldsonData._id,
