@@ -370,8 +370,8 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay"))
             ) {
               khaikhNukhtsul = [];
-              if (x.description) tailbar = x.description.split(" ");
-              else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
+              if (x.description) tailbar = x.description.split(/,| /);
+              else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
               tailbar.forEach((y) => {
                 khaikhNukhtsul.push({ gereeniiDugaar: y });
               });
@@ -1276,8 +1276,8 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
     for await (const x of qpayGuilgeenuud) {
       khaikhNukhtsul = [];
       var tailbar;
-      if (x.description) tailbar = x.description.split(" ");
-      else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
+      if (x.description) tailbar = x.description.split(/,| /);
+      else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
       tailbar.forEach((y) => {
         khaikhNukhtsul.push({ gereeniiDugaar: y });
       });
