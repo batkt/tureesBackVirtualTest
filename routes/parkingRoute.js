@@ -1586,7 +1586,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       if (bodsonDun > 0) {
         if (bodsonDun == req.body.paid_amount) {
           if (!!tukhainObject.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag) {
-            set["tuluv"] = 1;
+            set["tuukh.$[t].tuluv"] = 1;
           }
           set["tuukh.$[t].burtgesenAjiltaniiId"] = req.body.ajiltniiId;
           set["tuukh.$[t].burtgesenAjiltaniiNer"] = req.body.ajiltniiNer;
