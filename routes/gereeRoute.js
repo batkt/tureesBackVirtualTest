@@ -2408,7 +2408,7 @@ router
               sariinTulbur: "$sariinTurees",
               zoriulalt: "$zoriulalt",
               davkhar: "$davkhar",
-              talbai: "$talbainKhemjee:",
+              talbai: "$talbainKhemjee",
             },
             tulukh: {
               $sum: "$avlaga.guilgeenuud.tulukhDun",
@@ -2423,7 +2423,6 @@ router
         },
         {
           $project: {
-            _id: -1,
             barilgiinId: "$_id.barilgiinId",
             ner: "$_id.ner",
             register: "$_id.register",
