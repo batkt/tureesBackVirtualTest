@@ -2377,6 +2377,7 @@ router
         {
           $match: {
             baiguullagiinId: req.body.baiguullagiinId,
+            tuluv: 1,
           },
         },
         {
