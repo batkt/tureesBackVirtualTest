@@ -2449,6 +2449,7 @@ router
       ]);
       for await (const a of gereenuud) {
         try {
+          delete a._id;
           a.barilgiinNer = baiguullaga.barilguud.find(
             (x) => x._id == a._id
           ).ner;
