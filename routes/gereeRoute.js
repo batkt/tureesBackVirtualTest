@@ -2423,13 +2423,14 @@ router
         },
         {
           $project: {
+            _id: -1,
             barilgiinId: "$_id.barilgiinId",
             ner: "$_id.ner",
             register: "$_id.register",
-            sariinTulbur: "$_id.sariinTurees",
+            sariinTulbur: "$_id.sariinTulbur",
             zoriulalt: "$_id.zoriulalt",
             davkhar: "$_id.davkhar",
-            talbai: "$_id.talbainKhemjee",
+            talbai: "$_id.talbai",
             uldegdel: {
               $subtract: [
                 "$tulukh",
@@ -2438,6 +2439,11 @@ router
                 },
               ],
             },
+          },
+        },
+        {
+          $match: {
+            uldegdel: { $gt: 0 },
           },
         },
       ]);
