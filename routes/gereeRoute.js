@@ -2440,17 +2440,12 @@ router
             },
           },
         },
-        {
-          $match: {
-            uldegdel: { $gt: 0 },
-          },
-        },
       ]);
       for await (const a of gereenuud) {
         try {
           delete a._id;
           a.barilgiinNer = baiguullaga.barilguud.find(
-            (x) => x._id == a._id
+            (x) => x._id == a.barilgiinId
           ).ner;
         } catch (aldaa) {}
       }
