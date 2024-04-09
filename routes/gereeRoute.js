@@ -2409,6 +2409,7 @@ router
               zoriulalt: "$zoriulalt",
               davkhar: "$davkhar",
               talbai: "$talbainKhemjee",
+              talbainDugaar: "$talbainDugaar",
             },
             tulukh: {
               $sum: "$avlaga.guilgeenuud.tulukhDun",
@@ -2430,6 +2431,7 @@ router
             zoriulalt: "$_id.zoriulalt",
             davkhar: "$_id.davkhar",
             talbai: "$_id.talbai",
+            talbainDugaar: "$_id.talbainDugaar",
             uldegdel: {
               $subtract: [
                 "$tulukh",
