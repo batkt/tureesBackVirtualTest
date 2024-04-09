@@ -2372,7 +2372,10 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       var ognoo = new Date(req.body.ognoo);
-      var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+      const { db } = require("zevbackv2");
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+        req.body.baiguullagiinId
+      );
       var gereenuud = await Geree(kholbolt).aggregate([
         {
           $match: {
