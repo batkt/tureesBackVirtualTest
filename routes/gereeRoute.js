@@ -2376,7 +2376,7 @@ router
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
         req.body.baiguullagiinId
       );
-      var gereenuud = await Geree(kholbolt).aggregate([
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
         {
           $match: {
             baiguullagiinId: req.body.baiguullagiinId,
