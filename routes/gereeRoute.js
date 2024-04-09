@@ -2367,6 +2367,89 @@ router
     }
   });
 
+router
+  .route("/zoloodDataGargajUgye")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var ognoo = new Date(req.body.ognoo);
+      var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+      var gereenuud = await Geree(kholbolt).aggregate([
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+          },
+        },
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $match: {
+            "avlaga.guilgeenuud.ognoo": {
+              $lte: ognoo,
+            },
+            "avlaga.guilgeenuud.turul": {
+              $nin: ["baritsaa"],
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              _id: "$_id",
+              barilgiinId: "$barilgiinId",
+              ner: "$ner",
+              register: "$register",
+              sariinTulbur: "$sariinTurees",
+              zoriulalt: "$zoriulalt",
+              davkhar: "$davkhar",
+              talbai: "$talbainKhemjee:",
+            },
+            tulukh: {
+              $sum: "$avlaga.guilgeenuud.tulukhDun",
+            },
+            khyamdral: {
+              $sum: "$avlaga.guilgeenuud.khyamdral",
+            },
+            tulsun: {
+              $sum: "$avlaga.guilgeenuud.tulsunDun",
+            },
+          },
+        },
+        {
+          $project: {
+            barilgiinId: "$_id.barilgiinId",
+            ner: "$_id.ner",
+            register: "$_id.register",
+            sariinTulbur: "$_id.sariinTurees",
+            zoriulalt: "$_id.zoriulalt",
+            davkhar: "$_id.davkhar",
+            talbai: "$_id.talbainKhemjee",
+            uldegdel: {
+              $subtract: [
+                "$tulukh",
+                {
+                  $sum: ["$tulsun", "$khyamdral"],
+                },
+              ],
+            },
+          },
+        },
+      ]);
+      for await (const a of gereenuud) {
+        try {
+          a.barilgiinNer = baiguullaga.barilguud.find(
+            (x) => x._id == a._id
+          ).ner;
+        } catch (aldaa) {}
+      }
+      res.send(gereenuud);
+    } catch (error) {
+      console.log("zoloo aldaa garlaa ==> ", error);
+    }
+  });
+
 router.route("/testKhiie").post(async (req, res, next) => {
   console.log("testKhiie");
   console.log("req.body", req.body);
