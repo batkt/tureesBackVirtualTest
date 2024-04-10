@@ -1587,12 +1587,11 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         if (bodsonDun == req.body.paid_amount) {
           if (!!tukhainObject.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag) {
             set["tuukh.$[t].tuluv"] = 1;
-            if (!!tukhainObject.tuukh[0]?.tsagiinTuukh[0]?.garsanKhaalga) {
+            if (!!tukhainObject.tuukh[0]?.garsanKhaalga) {
               const io = req.app.get("socketio");
               io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
                 khaalgaTurul: "oroh",
-                cameraIP:
-                  tukhainObject.tuukh[0]?.tsagiinTuukh[0]?.garsanKhaalga,
+                cameraIP: tukhainObject.tuukh[0]?.garsanKhaalga,
               });
             }
           }
