@@ -361,6 +361,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         textUseg = "P";
       tdbDansniiUldegdelAvya(
         {
+          corporateBaiguullaga: dans.corporateBaiguullaga,
           msgId: "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
           loginId: dans.corporateNevtrekhNer,
           AnyBIC: dans.AnyBIC,
@@ -742,6 +743,7 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
   else if (dans.baiguullagiinId == "6115f350b35689cdbf1b9da3") textUseg = "I";
   tdbDansniiUldegdelAvya(
     {
+      corporateBaiguullaga: dans.corporateBaiguullaga,
       msgId: "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
       loginId: dans.corporateNevtrekhNer,
       AnyBIC: dans.AnyBIC,
