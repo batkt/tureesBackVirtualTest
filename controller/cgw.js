@@ -154,16 +154,20 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
 
     const objectString = JSON.stringify(xml);
     var baiguullagiinZam = "";
-    if (baiguullagiinId == "6115f350b35689cdbf1b9da3") baiguullagiinZam = "ikh";
-    else if (baiguullagiinId == "631595e9957b7d5ec013c076")
-      baiguullagiinZam = "uguumur";
-    else if (baiguullagiinId == "64fe8edc54a669717ad657ac")
-      baiguullagiinZam = "halmon";
-    else if (baiguullagiinId == "65435cdff2f5358696c61454")
-      baiguullagiinZam = "tt";
-    else if (baiguullagiinId == "656f1719f28cde7f62bc5280")
-      baiguullagiinZam = "polaris";
-
+    if (!!khuselt.corporateBaiguullaga) {
+      baiguullagiinZam = khuselt.corporateBaiguullaga;
+    } else {
+      if (baiguullagiinId == "6115f350b35689cdbf1b9da3")
+        baiguullagiinZam = "ikh";
+      else if (baiguullagiinId == "631595e9957b7d5ec013c076")
+        baiguullagiinZam = "uguumur";
+      else if (baiguullagiinId == "64fe8edc54a669717ad657ac")
+        baiguullagiinZam = "halmon";
+      else if (baiguullagiinId == "65435cdff2f5358696c61454")
+        baiguullagiinZam = "tt";
+      else if (baiguullagiinId == "656f1719f28cde7f62bc5280")
+        baiguullagiinZam = "polaris";
+    }
     var urlString = process.env.ZEV_TEST_SERVER + ":5000/" + baiguullagiinZam;
     console.log("url", urlString);
     var url = new URL(urlString);
@@ -560,6 +564,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
 
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
+                    corporateBaiguullaga: dans.corporateBaiguullaga,
                     msgId:
                       "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
@@ -919,6 +924,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   textUseg = "I";
                 khariu = await tdbDansniiKhuulgaAvya(
                   {
+                    corporateBaiguullaga: dans.corporateBaiguullaga,
                     msgId:
                       "ZT" + textUseg + (await pad(maxKhuseltiinDugaar, 12)),
                     loginId: dans.corporateNevtrekhNer,
