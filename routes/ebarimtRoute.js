@@ -1,5 +1,6 @@
 const express = require("express");
 const Ebarimt = require("../models/ebarimt");
+const EbarimtShine = require("../models/ebarimtShine");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Baiguullaga = require("../models/baiguullaga");
 const TogloomiinTuv = require("../models/togloomiinTuv");
@@ -83,6 +84,91 @@ async function guilgeeneesEbarimtUusgye(
   ebarimt.stocks = stocks;
   return ebarimt;
 }
+async function guilgeeneesEbarimtShineUusgye(
+  guilgee,
+  geree,
+  customerNo,
+  customerTin,
+  merchantTin,
+  districtCode,
+  tukhainBaaziinKholbolt
+) {
+  var dun = guilgee.amount ? guilgee.amount : guilgee.Amt;
+  var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
+  var ebarimt = new EbarimtShine(tukhainBaaziinKholbolt)();
+  if (!!customerTin) {
+    ebarimt.type = "B2B_RECEIPT";
+    ebarimt.customerTin = customerTin;
+  } else {
+    ebarimt.type = "B2C_RECEIPT";
+  }
+  var today = new Date();
+  var guilgeeniiSar = new Date(ognoo).getMonth();
+  //ene xesegt getMonth 0-11 gsn too butsaadag uchir shuud xiilee
+  console.log("date", today.getDate());
+  console.log("guilgeeniiSar", guilgeeniiSar);
+  console.log("aaaa", today.getMonth());
+  if (
+    today.getDate() < 8 &&
+    (guilgeeniiSar < today.getMonth() ||
+      (guilgeeniiSar == 11 && today.getMonth() == 0))
+  ) {
+    ebarimt.reportMonth =
+      today.getFullYear().toString() +
+      "-" +
+      ("0" + today.getMonth()).slice(-2).toString();
+    console.log("orj irlee", ebarimt.reportMonth);
+  }
+  ebarimt.guilgeeniiId = guilgee._id;
+  ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
+  ebarimt.barilgiinId = guilgee.barilgiinId;
+  ebarimt.gereeniiDugaar = geree.gereeniiDugaar;
+  ebarimt.talbainDugaar = geree.talbainDugaar;
+  ebarimt.utas = geree.utas;
+
+  ebarimt.totalAmount = dun.toFixed(2);
+  ebarimt.totalVAT = nuatBodyo(dun);
+  ebarimt.totalCityTax = "0.00";
+  ebarimt.branchNo = "001";
+  ebarimt.districtCode = districtCode;
+  ebarimt.posNo = "0001";
+  ebarimt.merchantTin = merchantTin;
+  ebarimt.customerNo = customerNo;
+
+  ebarimt.receipts = [
+    {
+      totalAmount: dun.toFixed(2),
+      totalVAT: nuatBodyo(dun),
+      totalCityTax: "0.00",
+      taxType: "VAT_ABLE",
+      merchantTin: merchantTin,
+      items: [
+        {
+          name: "Үл хөдлөх хөрөнгийг түрээслэх, худалдаалах үйлчилгээ",
+          barCode: "7211200",
+          barCodeType: "UNDEFINED",
+          classificationCode: "7211200",
+          //taxProductCode
+          measureUnit: "шир",
+          qty: "1.00",
+          unitPrice: dun.toFixed(2),
+          totalVat: nuatBodyo(dun),
+          totalCityTax: "0.00",
+          totalAmount: dun.toFixed(2),
+        },
+      ],
+    },
+  ];
+
+  ebarimt.payments = [
+    {
+      code: "PAYMENT_CARD",
+      paidAmount: dun.toFixed(2),
+      status: "PAID",
+    },
+  ];
+  return ebarimt;
+}
 
 async function togloomoosEbarimtUusgye(
   guilgee,
@@ -124,6 +210,70 @@ async function togloomoosEbarimtUusgye(
   ebarimt.stocks = stocks;
   return ebarimt;
 }
+async function togloomoosEbarimtShineUusgye(
+  guilgee,
+  customerNo,
+  customerTin,
+  merchantTin,
+  districtCode,
+  tukhainBaaziinKholbolt
+) {
+  var ebarimt = new EbarimtShine(tukhainBaaziinKholbolt)();
+  if (!!customerTin) {
+    ebarimt.type = "B2B_RECEIPT";
+    ebarimt.customerTin = customerTin;
+  } else {
+    ebarimt.type = "B2C_RECEIPT";
+  }
+  var unuudur = new Date().getDay();
+  var amraltiinUdur = unuudur == 0 || unuudur == 6;
+  ebarimt.togloomiinId = guilgee._id;
+  ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
+  ebarimt.barilgiinId = guilgee.barilgiinId;
+  ebarimt.utas = guilgee.utas[0];
+  ebarimt.totalAmount = guilgee.ebarimtAvakhDun.toFixed(2);
+  ebarimt.totalVAT = nuatBodyo(guilgee.ebarimtAvakhDun);
+  ebarimt.totalCityTax = "0.00";
+  ebarimt.branchNo = "001";
+  ebarimt.districtCode = districtCode;
+  ebarimt.posNo = "0001";
+  ebarimt.merchantTin = merchantTin;
+  ebarimt.customerNo = customerNo;
+
+  ebarimt.receipts = [
+    {
+      totalAmount: guilgee.ebarimtAvakhDun.toFixed(2),
+      totalVAT: nuatBodyo(guilgee.ebarimtAvakhDun),
+      totalCityTax: "0.00",
+      taxType: "VAT_ABLE",
+      merchantTin: merchantTin,
+      items: [
+        {
+          name: amraltiinUdur ? "Амралтын өдөр 1 цаг" : "Ажлын өдөр 1 цаг",
+          barCode: amraltiinUdur ? "201" : "100",
+          barCodeType: "UNDEFINED",
+          classificationCode: "5312909",
+          //taxProductCode
+          measureUnit: "шир",
+          qty: "1.00",
+          unitPrice: guilgee.ebarimtAvakhDun.toFixed(2).toString(),
+          totalVat: nuatBodyo(guilgee.ebarimtAvakhDun),
+          totalCityTax: "0.00",
+          totalAmount: guilgee.ebarimtAvakhDun.toFixed(2).toString(),
+        },
+      ],
+    },
+  ];
+
+  ebarimt.payments = [
+    {
+      code: "CASH",
+      paidAmount: guilgee.ebarimtAvakhDun.toFixed(2),
+      status: "PAID",
+    },
+  ];
+  return ebarimt;
+}
 
 async function zogsooloosEbarimtUusgye(
   guilgee,
@@ -137,10 +287,6 @@ async function zogsooloosEbarimtUusgye(
     if (turul) ebarimt.billType = turul;
     ebarimt.customerNo = register;
   }
-
-  console.log("guilgee", guilgee);
-  console.log("guilgee22", guilgee.tuukh);
-  // var undsenUne = guilgee.tuukh[0].undsenUne;
   var tulukhDun = guilgee.niitDun;
 
   ebarimt.zogsooliinId = guilgee._id;
@@ -171,26 +317,107 @@ async function zogsooloosEbarimtUusgye(
   ebarimt.stocks = stocks;
   return ebarimt;
 }
+async function zogsooloosEbarimtShineUusgye(
+  guilgee,
+  customerNo,
+  customerTin,
+  merchantTin,
+  districtCode,
+  tukhainBaaziinKholbolt,
+  nuatTulukhEsekh = true
+) {
+  var ebarimt = new EbarimtShine(tukhainBaaziinKholbolt)();
+  if (!!customerTin) {
+    ebarimt.type = "B2B_RECEIPT";
+    ebarimt.customerTin = customerTin;
+  } else {
+    ebarimt.type = "B2C_RECEIPT";
+  }
 
-async function ebarimtDuudya(ugugdul, onFinish, next) {
+  var tulukhDun = guilgee.niitDun;
+
+  ebarimt.zogsooliinId = guilgee._id;
+  ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
+  ebarimt.barilgiinId = guilgee.barilgiinId;
+  ebarimt.mashiniiDugaar = guilgee.mashiniiDugaar;
+  ebarimt.amount = tulukhDun.toFixed(2);
+
+  ebarimt.branchNo = "001";
+  ebarimt.totalAmount = tulukhDun.toFixed(2);
+  ebarimt.totalVAT = nuatBodyo(tulukhDun);
+  ebarimt.totalCityTax = "0.00";
+  ebarimt.districtCode = districtCode;
+  ebarimt.posNo = "0001";
+  ebarimt.merchantTin = merchantTin;
+  ebarimt.customerNo = customerNo;
+
+  ebarimt.receipts = [
+    {
+      totalAmount: tulukhDun.toFixed(2),
+      totalVAT: nuatBodyo(tulukhDun),
+      totalCityTax: "0.00",
+      taxType: "VAT_ABLE",
+      merchantTin: merchantTin,
+      items: [
+        {
+          barCode: "6743000",
+          name: "Авто зогсоолын үйлчилгээ",
+          barCodeType: "UNDEFINED",
+          classificationCode: "6743000",
+          //taxProductCode
+          measureUnit: "шир",
+          qty: "1.00",
+          unitPrice: tulukhDun.toFixed(2),
+          totalVat: !!nuatTulukhEsekh ? nuatBodyo(tulukhDun) : "0.00",
+          totalCityTax: "0.00",
+          totalAmount: tulukhDun.toFixed(2),
+        },
+      ],
+    },
+  ];
+  ebarimt.payments = [
+    {
+      code: "CASH",
+      paidAmount: tulukhDun.toFixed(2),
+      status: "PAID",
+    },
+  ];
+  //ebarimt.receipts = receipts;
+  console.log("eeeebarimt", JSON.stringify(ebarimt, null, 4));
+  return ebarimt;
+}
+async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
   try {
     const data = new TextEncoder().encode(JSON.stringify(ugugdul));
-    var url = process.env.EBARIMT_IP + "/put";
-    if (ugugdul.barilgiinId)
-      url = url + "?lib=" + ugugdul.barilgiinId.toString();
-    console.log("url", url);
-    request.post(
-      url,
-      { json: true, body: { data: ugugdul } },
-      (err, res1, body) => {
+    if (!!shine) {
+      var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
+      console.log("url", url);
+      request.post(url, { json: true, body: ugugdul }, (err, res1, body) => {
         if (err) {
-          next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+          next(err);
         } else {
           console.log("ebarimt body", body);
           onFinish(body);
         }
-      }
-    );
+      });
+    } else {
+      var url = process.env.EBARIMT_IP + "/put";
+      if (ugugdul.barilgiinId)
+        url = url + "?lib=" + ugugdul.barilgiinId.toString();
+      console.log("url", url);
+      request.post(
+        url,
+        { json: true, body: { data: ugugdul } },
+        (err, res1, body) => {
+          if (err) {
+            next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+          } else {
+            console.log("ebarimt body", body);
+            onFinish(body);
+          }
+        }
+      );
+    }
   } catch (aldaa) {
     next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
   }
@@ -248,22 +475,39 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
     );
     var butsaakhMethod;
     var ebarimt;
+    var tuxainSalbar;
     if (ebarimtiinTurul == "togloom") {
       var guilgee = await TogloomiinTuv(
         req.body.tukhainBaaziinKholbolt
       ).findById(req.body.id);
       if (guilgee.ebarimtAvsanEsekh)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
-      ebarimt = await togloomoosEbarimtUusgye(
-        guilgee,
-        req.body.register,
-        req.body.turul,
-        req.body.tukhainBaaziinKholbolt
-      );
+      tuxainSalbar = baiguullaga?.barilguud?.find(
+        (e) => e._id.toString() == guilgee.barilgiinId
+      )?.tokhirgoo;
+      if (!!tuxainSalbar.eBarimtShine)
+        req.body.customerTin = ebarimt = await togloomoosEbarimtShineUusgye(
+          guilgee,
+          req.body.customerNo,
+          req.body.customerTin,
+          tuxainSalbar.merchantTin,
+          tuxainSalbar.districtCode,
+          req.body.tukhainBaaziinKholbolt
+        );
+      else
+        ebarimt = await togloomoosEbarimtUusgye(
+          guilgee,
+          req.body.register,
+          req.body.turul,
+          req.body.tukhainBaaziinKholbolt
+        );
       butsaakhMethod = function (d) {
         try {
-          if (!d.success) throw new Error(d.message);
-          var ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
+          var ebarimt;
+          if (!!tuxainSalbar.eBarimtShine)
+            ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
+          else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -287,24 +531,40 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
       var guilgee = await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
         .findById(req.body.id)
         .lean();
-      console.log("guilgee", guilgee);
       if (guilgee.tuukh?.length > 0 && guilgee.tuukh[0].ebarimtAvsanEsekh)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
+      tuxainSalbar = baiguullaga?.barilguud?.find(
+        (e) => e._id.toString() == guilgee.barilgiinId
+      )?.tokhirgoo;
       var nuatTulukhEsekh = baiguullaga.barilguud.find(
         (x) => x._id.toString() == guilgee.barilgiinId
       )?.tokhirgoo?.nuatTulukhEsekh;
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-      ebarimt = await zogsooloosEbarimtUusgye(
-        guilgee,
-        req.body.register,
-        req.body.turul,
-        req.body.tukhainBaaziinKholbolt,
-        nuatTulukhEsekh
-      );
+      if (!!tuxainSalbar?.eBarimtShine)
+        ebarimt = await zogsooloosEbarimtShineUusgye(
+          guilgee,
+          req.body.customerNo,
+          req.body.customerTin,
+          tuxainSalbar.merchantTin, //"37900846788",
+          tuxainSalbar.districtCode, //,"0023"
+          req.body.tukhainBaaziinKholbolt,
+          nuatTulukhEsekh
+        );
+      else
+        ebarimt = await zogsooloosEbarimtUusgye(
+          guilgee,
+          req.body.register,
+          req.body.turul,
+          req.body.tukhainBaaziinKholbolt,
+          nuatTulukhEsekh
+        );
       butsaakhMethod = function (d) {
         try {
-          if (!d.success) throw new Error(d.message);
-          var ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
+          var ebarimt;
+          if (!!tuxainSalbar.eBarimtShine)
+            ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          else ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -313,6 +573,11 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
             update = {
               ...update,
               "tuukh.0.ebarimtRegister": ebarimt.customerNo,
+            };
+          else if (ebarimt.customerTin)
+            update = {
+              ...update,
+              "tuukh.0.ebarimtRegister": ebarimt.customerTin,
             };
           Uilchluulegch(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(req.body.id, update)
@@ -349,11 +614,15 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         req.body.register = geree.register;
         req.body.turul = "3";
       }
+      tuxainSalbar = baiguullaga?.barilguud?.find(
+        (e) => e._id.toString() == guilgee.barilgiinId
+      )?.tokhirgoo;
       butsaakhMethod = function (d) {
         try {
-          console.log("ebarimt butsaax", d);
-          if (!d.success) throw new Error(d.message);
-          var ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
+          if (!!tuxainSalbar.eBarimtShine)
+            ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          else ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -374,16 +643,30 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           next(err);
         }
       };
-      ebarimt = await guilgeeneesEbarimtUusgye(
-        guilgee,
-        geree,
-        req.body.register,
-        req.body.turul,
-        req.body.tukhainBaaziinKholbolt
-      );
+      console.log("tuxainSalbar", tuxainSalbar);
+      if (!!tuxainSalbar.eBarimtShine)
+        ebarimt = await guilgeeneesEbarimtShineUusgye(
+          guilgee,
+          geree,
+          req.body.customerNo,
+          req.body.customerTin,
+          tuxainSalbar.merchantTin, //"37900846788",
+          tuxainSalbar.districtCode, //,"0023"
+          req.body.tukhainBaaziinKholbolt,
+          nuatTulukhEsekh
+        );
+      else
+        ebarimt = await guilgeeneesEbarimtUusgye(
+          guilgee,
+          geree,
+          req.body.register,
+          req.body.turul,
+          req.body.tukhainBaaziinKholbolt
+        );
     }
     console.log("ebarimt", ebarimt);
-    ebarimtDuudya(ebarimt, butsaakhMethod, next);
+    console.log("ebarimt", !!tuxainSalbar.eBarimtShine);
+    ebarimtDuudya(ebarimt, butsaakhMethod, next, !!tuxainSalbar.eBarimtShine);
   } catch (error) {
     next(error);
   }

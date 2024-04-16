@@ -158,11 +158,20 @@ router.post("/nevtreltiinTuukhAvya", tokenShalgakh, async (req, res, next) => {
 
 router.get("/tatvaraasBaiguullagaAvya/:regno", (req, res, next) => {
   var url = encodeURI(
-    "http://info.ebarimt.mn/rest/merchant/info?regno=" + req.params.regno
+    "https://api.ebarimt.mn/api/info/check/getTinInfo?regNo=" + req.params.regno
   );
   request(url, { json: true }, (err, res1, body) => {
     if (err) next(err);
-    else res.send(body);
+    else {
+      url = encodeURI(
+        "https://api.ebarimt.mn/api/info/check/getInfo?tin=" + body.data
+      );
+      console.log("aaa", url);
+      request(url, { json: true }, (err2, res2, body2) => {
+        if (err2) next(err2);
+        else res.send({ ...body2.data, tin: body.data });
+      });
+    }
   });
 });
 
