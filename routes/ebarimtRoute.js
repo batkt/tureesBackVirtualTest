@@ -9,7 +9,7 @@ const router = express.Router();
 const aldaa = require("../components/aldaa");
 //const khuudaslalt = require("../components/khuudaslalt");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
-const { tokenShalgakh, khuudaslalt } = require("zevbackv2");
+const { tokenShalgakh, khuudaslalt, crud, UstsanBarimt } = require("zevbackv2");
 const request = require("request");
 const {
   Parking,
@@ -23,6 +23,7 @@ function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
   return (bodokhDun - nuatguiDun).toFixed(2).toString();
 }
+crud(router, "ebarimtShine", EbarimtShine, UstsanBarimt);
 
 async function guilgeeneesEbarimtUusgye(
   guilgee,
