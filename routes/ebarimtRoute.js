@@ -813,7 +813,7 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
       if (!!tuxainSalbar.eBarimtShine) shine = true;
     }
     if (!!shine) {
-      var url = process.env.EBARIMTSHINE_IP + "rest/send";
+      var url = process.env.EBARIMTSHINE_IP + "rest/sendData";
       console.log("url", url);
       request.get(url, { json: true }, (err, res1, body) => {
         if (err) {
