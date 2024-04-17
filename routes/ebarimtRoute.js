@@ -398,7 +398,7 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
           next(err);
         } else {
           console.log("ebarimt body", body);
-          onFinish(body);
+          onFinish(body, ugugdul);
         }
       });
     } else {
@@ -414,7 +414,7 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
             next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
           } else {
             console.log("ebarimt body", body);
-            onFinish(body);
+            onFinish(body, ugugdul);
           }
         }
       );
@@ -520,16 +520,16 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           req.body.turul,
           req.body.tukhainBaaziinKholbolt
         );
-      butsaakhMethod = function (d) {
+      butsaakhMethod = function (d, khariuObject) {
         try {
           if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
           var ebarimt;
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
           else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
-          ebarimt.barilgiinId = guilgee.barilgiinId;
-          ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
-          ebarimt.togloomiinId = guilgee._id;
+          ebarimt.barilgiinId = khariuObject.barilgiinId;
+          ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
+          ebarimt.togloomiinId = khariuObject._id;
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -580,17 +580,17 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           req.body.tukhainBaaziinKholbolt,
           nuatTulukhEsekh
         );
-      butsaakhMethod = function (d) {
+      butsaakhMethod = function (d, khariuObject) {
         try {
           if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
           var ebarimt;
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
           else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
-          ebarimt.zogsooliinId = guilgee._id;
-          ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
-          ebarimt.barilgiinId = guilgee.barilgiinId;
-          ebarimt.mashiniiDugaar = guilgee.mashiniiDugaar;
+          ebarimt.zogsooliinId = khariuObject._id;
+          ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
+          ebarimt.barilgiinId = khariuObject.barilgiinId;
+          ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -643,18 +643,18 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
       tuxainSalbar = baiguullaga?.barilguud?.find(
         (e) => e._id.toString() == guilgee.barilgiinId
       )?.tokhirgoo;
-      butsaakhMethod = function (d) {
+      butsaakhMethod = function (d, khariuObject) {
         try {
           if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
           else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
-          ebarimt.guilgeeniiId = guilgee._id;
-          ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
-          ebarimt.barilgiinId = guilgee.barilgiinId;
-          ebarimt.gereeniiDugaar = geree.gereeniiDugaar;
-          ebarimt.talbainDugaar = geree.talbainDugaar;
-          ebarimt.utas = geree.utas;
+          ebarimt.guilgeeniiId = khariuObject._id;
+          ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
+          ebarimt.barilgiinId = khariuObject.barilgiinId;
+          ebarimt.gereeniiDugaar = khariuObject.gereeniiDugaar;
+          ebarimt.talbainDugaar = khariuObject.talbainDugaar;
+          ebarimt.utas = khariuObject.utas;
           ebarimt.save().catch((err) => {
             next(err);
           });
