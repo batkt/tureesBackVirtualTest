@@ -727,8 +727,13 @@ router.post("/ebarimtZasya", tokenShalgakh, async (req, res, next) => {
 
 router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
   try {
-    var ebarimtShine = req.body.ebarimtShine;
     var butsaakhBarimt;
+    var ebarimtShine = false;
+    var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+    var tuxainSalbar = baiguullaga?.barilguud?.find(
+      (e) => e._id.toString() == body?.query?.barilgiinId
+    )?.tokhirgoo;
+    if (!!tuxainSalbar.eBarimtShine) ebarimtShine = true;
     if (!!ebarimtShine)
       butsaakhBarimt = await EbarimtShine(
         req.body.tukhainBaaziinKholbolt
