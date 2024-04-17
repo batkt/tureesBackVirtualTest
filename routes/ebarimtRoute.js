@@ -801,18 +801,42 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
 
 router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
   try {
-    var url = process.env.EBARIMT_IP + "/sendData";
-    if (req.body.barilgiinId)
-      url = url + "?lib=" + req.body.barilgiinId.toString();
-    console.log("url", url);
-    request.get(url, { json: true }, (err, res1, body) => {
-      if (err) {
-        console.log(err);
-        next(err);
-      } else {
-        res.send(body);
-      }
-    });
+    var shine = false;
+    if (req.body.barilgiinId) {
+      const { db } = require("zevbackv2");
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+        req.body.baiguullagiinId
+      );
+      var tuxainSalbar = baiguullaga?.barilguud?.find(
+        (e) => e._id.toString() == body?.body?.barilgiinId
+      )?.tokhirgoo;
+      if (!!tuxainSalbar.eBarimtShine) shine = true;
+    }
+    if (!!shine) {
+      var url = process.env.EBARIMTSHINE_IP + "rest/send";
+      console.log("url", url);
+      request.get(url, { json: true }, (err, res1, body) => {
+        if (err) {
+          console.log(err);
+          next(err);
+        } else {
+          res.send(body);
+        }
+      });
+    } else {
+      var url = process.env.EBARIMT_IP + "/sendData";
+      if (req.body.barilgiinId)
+        url = url + "?lib=" + req.body.barilgiinId.toString();
+      console.log("url", url);
+      request.get(url, { json: true }, (err, res1, body) => {
+        if (err) {
+          console.log(err);
+          next(err);
+        } else {
+          res.send(body);
+        }
+      });
+    }
   } catch (error) {
     next(error);
   }
