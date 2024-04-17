@@ -505,7 +505,7 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         (e) => e._id.toString() == guilgee.barilgiinId
       )?.tokhirgoo;
       if (!!tuxainSalbar.eBarimtShine)
-        req.body.customerTin = ebarimt = await togloomoosEbarimtShineUusgye(
+        ebarimt = await togloomoosEbarimtShineUusgye(
           guilgee,
           req.body.customerNo,
           req.body.customerTin,
@@ -582,8 +582,8 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
           var ebarimt;
           if (!!tuxainSalbar.eBarimtShine)
-            ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
-          else ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
+            ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
+          else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -640,8 +640,8 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         try {
           if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
           if (!!tuxainSalbar.eBarimtShine)
-            ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
-          else ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
+            ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
+          else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
           ebarimt.save().catch((err) => {
             next(err);
           });
