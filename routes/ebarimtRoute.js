@@ -527,6 +527,9 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
           else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          ebarimt.barilgiinId = guilgee.barilgiinId;
+          ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
+          ebarimt.togloomiinId = guilgee._id;
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -584,6 +587,10 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
           else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          ebarimt.zogsooliinId = guilgee._id;
+          ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
+          ebarimt.barilgiinId = guilgee.barilgiinId;
+          ebarimt.mashiniiDugaar = guilgee.mashiniiDugaar;
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -642,6 +649,12 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
           else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          ebarimt.guilgeeniiId = guilgee._id;
+          ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
+          ebarimt.barilgiinId = guilgee.barilgiinId;
+          ebarimt.gereeniiDugaar = geree.gereeniiDugaar;
+          ebarimt.talbainDugaar = geree.talbainDugaar;
+          ebarimt.utas = geree.utas;
           ebarimt.save().catch((err) => {
             next(err);
           });
