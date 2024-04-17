@@ -729,7 +729,10 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
   try {
     var butsaakhBarimt;
     var ebarimtShine = false;
-    var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      req.body.baiguullagiinId
+    );
     var tuxainSalbar = baiguullaga?.barilguud?.find(
       (e) => e._id.toString() == body?.query?.barilgiinId
     )?.tokhirgoo;
@@ -828,7 +831,10 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
     body.query && (body.query["baiguullagiinId"] = req.body.baiguullagiinId);
     var shine = false;
     if (body?.query?.barilgiinId) {
-      var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+      const { db } = require("zevbackv2");
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+        req.body.baiguullagiinId
+      );
       var tuxainSalbar = baiguullaga?.barilguud?.find(
         (e) => e._id.toString() == body?.query?.barilgiinId
       )?.tokhirgoo;
