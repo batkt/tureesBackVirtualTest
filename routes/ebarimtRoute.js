@@ -753,7 +753,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
     if (!!ebarimtShine)
       butsaakhBarimt = await EbarimtShine(
         req.body.tukhainBaaziinKholbolt
-      ).findById(req.body.id);
+      ).findById(req.body._id);
     else {
       butsaakhBarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(req.body);
       butsaakhBarimt.returnBillId = butsaakhBarimt.billId;
