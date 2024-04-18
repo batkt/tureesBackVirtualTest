@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 mongoose.pluralize(null);
 const ebarimtSchema = new Schema(
   {
+    id: String,
     baiguullagiinId: String,
     barilgiinId: String,
     guilgeeniiId: String,
