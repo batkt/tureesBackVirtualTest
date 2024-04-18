@@ -30,7 +30,8 @@ async function guilgeeneesEbarimtUusgye(
   geree,
   register,
   turul,
-  tukhainBaaziinKholbolt
+  tukhainBaaziinKholbolt,
+  nuatTulukhEsekh
 ) {
   var dun = guilgee.amount ? guilgee.amount : guilgee.Amt;
   var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
@@ -63,7 +64,7 @@ async function guilgeeneesEbarimtUusgye(
   ebarimt.talbainDugaar = geree.talbainDugaar;
   ebarimt.utas = geree.utas;
   ebarimt.amount = dun.toFixed(2).toString();
-  ebarimt.vat = nuatBodyo(dun);
+  ebarimt.vat = !!nuatTulukhEsekh ? nuatBodyo(dun) : "0.00";
   ebarimt.cashAmount = dun.toFixed(2).toString();
   ebarimt.nonCashAmount = "0.00";
   ebarimt.cityTax = "0.00";
@@ -78,7 +79,7 @@ async function guilgeeneesEbarimtUusgye(
     unitPrice: dun.toFixed(2).toString(),
     totalAmount: dun.toFixed(2).toString(),
     cityTax: "0.00",
-    vat: nuatBodyo(dun),
+    vat: !!nuatTulukhEsekh ? nuatBodyo(dun) : "0.00",
     barCode: "721",
   };
   stocks.push(stock);
@@ -92,7 +93,8 @@ async function guilgeeneesEbarimtShineUusgye(
   customerTin,
   merchantTin,
   districtCode,
-  tukhainBaaziinKholbolt
+  tukhainBaaziinKholbolt,
+  nuatTulukhEsekh
 ) {
   var dun = guilgee.amount ? guilgee.amount : guilgee.Amt;
   var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
@@ -128,7 +130,7 @@ async function guilgeeneesEbarimtShineUusgye(
   ebarimt.utas = geree.utas;
 
   ebarimt.totalAmount = dun.toFixed(2);
-  ebarimt.totalVAT = nuatBodyo(dun);
+  ebarimt.totalVAT = !!nuatTulukhEsekh ? nuatBodyo(dun) : 0;
   ebarimt.totalCityTax = "0.00";
   ebarimt.branchNo = "001";
   ebarimt.districtCode = districtCode;
@@ -139,7 +141,7 @@ async function guilgeeneesEbarimtShineUusgye(
   ebarimt.receipts = [
     {
       totalAmount: dun.toFixed(2),
-      totalVAT: nuatBodyo(dun),
+      totalVAT: !!nuatTulukhEsekh ? nuatBodyo(dun) : 0,
       totalCityTax: "0.00",
       taxType: "VAT_ABLE",
       merchantTin: merchantTin,
@@ -153,7 +155,7 @@ async function guilgeeneesEbarimtShineUusgye(
           measureUnit: "шир",
           qty: "1.00",
           unitPrice: dun.toFixed(2),
-          totalVat: nuatBodyo(dun),
+          totalVat: !!nuatTulukhEsekh ? nuatBodyo(dun) : 0,
           totalCityTax: "0.00",
           totalAmount: dun.toFixed(2),
         },
@@ -175,7 +177,8 @@ async function togloomoosEbarimtUusgye(
   guilgee,
   register,
   turul,
-  tukhainBaaziinKholbolt
+  tukhainBaaziinKholbolt,
+  nuatTulukhEsekh
 ) {
   var ebarimt = new Ebarimt(tukhainBaaziinKholbolt)();
   if (register) {
@@ -189,7 +192,7 @@ async function togloomoosEbarimtUusgye(
   ebarimt.barilgiinId = guilgee.barilgiinId;
   ebarimt.utas = guilgee.utas[0];
   ebarimt.amount = guilgee.ebarimtAvakhDun.toFixed(2).toString();
-  ebarimt.vat = nuatBodyo(guilgee.ebarimtAvakhDun);
+  ebarimt.vat = !!nuatTulukhEsekh ? nuatBodyo(guilgee.ebarimtAvakhDun) : "0.00";
   ebarimt.cashAmount = guilgee.ebarimtAvakhDun.toFixed(2).toString();
   ebarimt.nonCashAmount = "0.00";
   ebarimt.cityTax = "0.00";
@@ -204,7 +207,7 @@ async function togloomoosEbarimtUusgye(
     unitPrice: guilgee.ebarimtAvakhDun.toFixed(2).toString(),
     totalAmount: guilgee.ebarimtAvakhDun.toFixed(2).toString(),
     cityTax: "0.00",
-    vat: nuatBodyo(guilgee.ebarimtAvakhDun),
+    vat: !!nuatTulukhEsekh ? nuatBodyo(guilgee.ebarimtAvakhDun) : "0.00",
     barCode: amraltiinUdur ? "201" : "100",
   };
   stocks.push(stock);
@@ -217,7 +220,8 @@ async function togloomoosEbarimtShineUusgye(
   customerTin,
   merchantTin,
   districtCode,
-  tukhainBaaziinKholbolt
+  tukhainBaaziinKholbolt,
+  nuatTulukhEsekh
 ) {
   var ebarimt = new EbarimtShine(tukhainBaaziinKholbolt)();
   if (!!customerTin) {
@@ -233,7 +237,7 @@ async function togloomoosEbarimtShineUusgye(
   ebarimt.barilgiinId = guilgee.barilgiinId;
   ebarimt.utas = guilgee.utas[0];
   ebarimt.totalAmount = guilgee.ebarimtAvakhDun.toFixed(2);
-  ebarimt.totalVAT = nuatBodyo(guilgee.ebarimtAvakhDun);
+  ebarimt.totalVAT = !!nuatTulukhEsekh ? nuatBodyo(guilgee.ebarimtAvakhDun) : 0;
   ebarimt.totalCityTax = "0.00";
   ebarimt.branchNo = "001";
   ebarimt.districtCode = districtCode;
@@ -244,7 +248,7 @@ async function togloomoosEbarimtShineUusgye(
   ebarimt.receipts = [
     {
       totalAmount: guilgee.ebarimtAvakhDun.toFixed(2),
-      totalVAT: nuatBodyo(guilgee.ebarimtAvakhDun),
+      totalVAT: !!nuatTulukhEsekh ? nuatBodyo(guilgee.ebarimtAvakhDun) : 0,
       totalCityTax: "0.00",
       taxType: "VAT_ABLE",
       merchantTin: merchantTin,
@@ -258,7 +262,7 @@ async function togloomoosEbarimtShineUusgye(
           measureUnit: "шир",
           qty: "1.00",
           unitPrice: guilgee.ebarimtAvakhDun.toFixed(2).toString(),
-          totalVat: nuatBodyo(guilgee.ebarimtAvakhDun),
+          totalVat: !!nuatTulukhEsekh ? nuatBodyo(guilgee.ebarimtAvakhDun) : 0,
           totalCityTax: "0.00",
           totalAmount: guilgee.ebarimtAvakhDun.toFixed(2).toString(),
         },
@@ -345,7 +349,7 @@ async function zogsooloosEbarimtShineUusgye(
 
   ebarimt.branchNo = "001";
   ebarimt.totalAmount = tulukhDun.toFixed(2);
-  ebarimt.totalVAT = nuatBodyo(tulukhDun);
+  ebarimt.totalVAT = !!nuatTulukhEsekh ? nuatBodyo(tulukhDun) : "0.00";
   ebarimt.totalCityTax = "0.00";
   ebarimt.districtCode = districtCode;
   ebarimt.posNo = "0001";
@@ -355,7 +359,7 @@ async function zogsooloosEbarimtShineUusgye(
   ebarimt.receipts = [
     {
       totalAmount: tulukhDun.toFixed(2),
-      totalVAT: nuatBodyo(tulukhDun),
+      totalVAT: !!nuatTulukhEsekh ? nuatBodyo(tulukhDun) : "0.00",
       totalCityTax: "0.00",
       taxType: "VAT_ABLE",
       merchantTin: merchantTin,
@@ -503,6 +507,9 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
       tuxainSalbar = baiguullaga?.barilguud?.find(
         (e) => e._id.toString() == guilgee.barilgiinId
       )?.tokhirgoo;
+      var nuatTulukhEsekh = false;
+      nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
+      if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
       if (!!tuxainSalbar.eBarimtShine)
         ebarimt = await togloomoosEbarimtShineUusgye(
           guilgee,
@@ -510,14 +517,16 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           req.body.customerTin,
           tuxainSalbar.merchantTin,
           tuxainSalbar.districtCode,
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt,
+          nuatTulukhEsekh
         );
       else
         ebarimt = await togloomoosEbarimtUusgye(
           guilgee,
           req.body.register,
           req.body.turul,
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt,
+          nuatTulukhEsekh
         );
       butsaakhMethod = function (d, khariuObject) {
         try {
@@ -675,6 +684,10 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
         }
       };
       console.log("tuxainSalbar", tuxainSalbar);
+
+      var nuatTulukhEsekh = false;
+      nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
+      if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
       if (!!tuxainSalbar.eBarimtShine)
         ebarimt = await guilgeeneesEbarimtShineUusgye(
           guilgee,
@@ -692,7 +705,8 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
           geree,
           req.body.register,
           req.body.turul,
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt,
+          nuatTulukhEsekh
         );
     }
     console.log("ebarimt", ebarimt);
