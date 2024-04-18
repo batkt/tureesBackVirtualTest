@@ -747,7 +747,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
       req.body.baiguullagiinId
     );
     var tuxainSalbar = baiguullaga?.barilguud?.find(
-      (e) => e._id.toString() == body?.query?.barilgiinId
+      (e) => e._id.toString() == req.body?.barilgiinId
     )?.tokhirgoo;
     if (!!tuxainSalbar.eBarimtShine) ebarimtShine = true;
     if (!!ebarimtShine)
