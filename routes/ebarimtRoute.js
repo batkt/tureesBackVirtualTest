@@ -452,7 +452,6 @@ router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
 });
 
 async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
-  const data = new TextEncoder().encode(JSON.stringify(ugugdul));
   if (!!ebarimtShine) {
     var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
     console.log("url", url);
@@ -761,6 +760,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
     ebarimtButsaaya(
       butsaakhBarimt,
       async (d) => {
+        console.log("ebarimtButsaaya khariu irlee", butsaakhBarimt);
         butsaakhBarimt.ustgasanOgnoo = new Date();
         butsaakhBarimt.isNew = false;
         await butsaakhBarimt.save().catch((err) => {
