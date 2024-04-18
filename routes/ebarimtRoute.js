@@ -802,7 +802,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
             });
         }
         console.log("duuslaa", d);
-        res.json(d);
+        res.send(d);
       },
       next,
       ebarimtShine
