@@ -458,7 +458,7 @@ async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
     console.log("url", url);
     request.delete(
       url,
-      { json: true, body: { id: ugugdul.billId, date: ugugdul.date } },
+      { json: true, body: { id: ugugdul.id, date: ugugdul.date } },
       (err, res1, body) => {
         if (err) {
           next(err);
