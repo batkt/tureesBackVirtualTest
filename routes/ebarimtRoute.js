@@ -5,11 +5,18 @@ const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Baiguullaga = require("../models/baiguullaga");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const Geree = require("../models/geree");
+const TatvariinAlba = require("../models/tatvariinAlba");
 const router = express.Router();
 const aldaa = require("../components/aldaa");
 //const khuudaslalt = require("../components/khuudaslalt");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
-const { tokenShalgakh, khuudaslalt, crud, UstsanBarimt } = require("zevbackv2");
+const {
+  tokenShalgakh,
+  khuudaslalt,
+  crud,
+  UstsanBarimt,
+  db,
+} = require("zevbackv2");
 const request = require("request");
 const {
   Parking,
@@ -31,7 +38,7 @@ async function guilgeeneesEbarimtUusgye(
   register,
   turul,
   tukhainBaaziinKholbolt,
-  nuatTulukhEsekh
+  nuatTulukhEsekh = true
 ) {
   var dun = guilgee.amount ? guilgee.amount : guilgee.Amt;
   var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
@@ -94,7 +101,7 @@ async function guilgeeneesEbarimtShineUusgye(
   merchantTin,
   districtCode,
   tukhainBaaziinKholbolt,
-  nuatTulukhEsekh
+  nuatTulukhEsekh = true
 ) {
   var dun = guilgee.amount ? guilgee.amount : guilgee.Amt;
   var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
@@ -178,7 +185,7 @@ async function togloomoosEbarimtUusgye(
   register,
   turul,
   tukhainBaaziinKholbolt,
-  nuatTulukhEsekh
+  nuatTulukhEsekh = true
 ) {
   var ebarimt = new Ebarimt(tukhainBaaziinKholbolt)();
   if (register) {
@@ -221,7 +228,7 @@ async function togloomoosEbarimtShineUusgye(
   merchantTin,
   districtCode,
   tukhainBaaziinKholbolt,
-  nuatTulukhEsekh
+  nuatTulukhEsekh = true
 ) {
   var ebarimt = new EbarimtShine(tukhainBaaziinKholbolt)();
   if (!!customerTin) {
@@ -490,7 +497,6 @@ async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
 
 router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
   try {
-    const { db } = require("zevbackv2");
     var ebarimtiinTurul = req.body.ebarimtiinTurul;
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       req.body.baiguullagiinId
@@ -755,7 +761,6 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
   try {
     var butsaakhBarimt;
     var ebarimtShine = false;
-    const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       req.body.baiguullagiinId
     );
@@ -830,7 +835,6 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
   try {
     var shine = false;
     if (req.body.barilgiinId) {
-      const { db } = require("zevbackv2");
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
         req.body.baiguullagiinId
       );
@@ -882,7 +886,6 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
     body.query && (body.query["baiguullagiinId"] = req.body.baiguullagiinId);
     var shine = false;
     if (body?.query?.barilgiinId) {
-      const { db } = require("zevbackv2");
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
         req.body.baiguullagiinId
       );
@@ -1087,7 +1090,6 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
 async function ebarimtIlgeeye(baiguullagiinId) {
   //olnoor xaij ilgeedeg bolgoj uurchluw
   try {
-    const { db } = require("zevbackv2");
     var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
       "tokhirgoo.eBarimtAutomataarIlgeekh": true,
     });
@@ -1113,7 +1115,30 @@ async function ebarimtIlgeeye(baiguullagiinId) {
   }
 }
 
+router.get("/tatvariinAlba", tokenShalgakh, async (req, res, next) => {
+  try {
+    const body = req.query;
+    if (!!body?.query) body.query = JSON.parse(body.query);
+    if (!!body?.order) body.order = JSON.parse(body.order);
+    if (!!body?.khuudasniiDugaar)
+      body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+    if (!!body?.khuudasniiKhemjee)
+      body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+    if (!!body?.search) body.search = String(body.search);
+    khuudaslalt(TatvariinAlba(db.erunkhiiKholbolt), body)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;
 module.exports.ebarimtDuudya = ebarimtDuudya;
 module.exports.ebarimtIlgeeye = ebarimtIlgeeye;
 module.exports.zogsooloosEbarimtUusgye = zogsooloosEbarimtUusgye;
+module.exports.zogsooloosEbarimtShineUusgye = zogsooloosEbarimtShineUusgye;
