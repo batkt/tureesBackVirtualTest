@@ -16,6 +16,7 @@ const {
 } = require("parking-v1");
 const {
   zogsooloosEbarimtUusgye,
+  zogsooloosEbarimtShineUusgye,
   ebarimtDuudya,
 } = require("../routes/ebarimtRoute");
 const ZogsooliinIp = require("../models/zogsooliinIp");
@@ -245,6 +246,7 @@ router
         let tulbur = [];
         guilgeenuud.map((guilgee) => {
           tulbur.push({
+            khariu: guilgee.kharu,
             ognoo: guilgee.ognoo,
             turul: guilgee.turul,
             dun: guilgee.dun,
@@ -1203,17 +1205,31 @@ router.route("/v1/pay").post(async (req, res, next) => {
       // if (!!baiguullaga)
       //   ebarimtAshiglakhEsekh = baiguullaga?.tokhirgoo?.ebarimtAshiglakhEsekh;
       // if (!!ebarimtAshiglakhEsekh) {
+      var tuxainSalbar = baiguullaga?.barilguud?.find(
+        (e) => e._id.toString() == tukhainObject.barilgiinId
+      )?.tokhirgoo;
       var nuatTulukhEsekh = baiguullaga.barilguud.find(
         (x) => x._id.toString() == tukhainObject.barilgiinId
       )?.tokhirgoo?.nuatTulukhEsekh;
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-      var ebarimt = await zogsooloosEbarimtUusgye(
-        tukhainObject,
-        req.body.customer_no,
-        req.body.individual ? null : "3",
-        tukhainKholbolt,
-        nuatTulukhEsekh
-      );
+      if (!!tuxainSalbar?.eBarimtShine)
+        ebarimt = await zogsooloosEbarimtShineUusgye(
+          guilgee,
+          req.body.customerNo,
+          req.body.customerTin,
+          tuxainSalbar.merchantTin, //"37900846788",
+          tuxainSalbar.districtCode, //,"0023"
+          tukhainKholbolt,
+          nuatTulukhEsekh
+        );
+      else
+        var ebarimt = await zogsooloosEbarimtUusgye(
+          tukhainObject,
+          req.body.customer_no,
+          req.body.individual ? null : "3",
+          tukhainKholbolt,
+          nuatTulukhEsekh
+        );
       butsaakhMethod = function (d) {
         try {
           if (!d.success) throw new Error(d.message);
@@ -1438,16 +1454,32 @@ router.route("/pass/pay").post(async (req, res, next) => {
         }
       );
       tukhainObject.niitDun = req.body.paid_amount;
-      var nuatTulukhEsekh = baiguullaga.barilguud.find(
-        (x) => x._id.toString() == tukhainObject.barilgiinId
-      )?.tokhirgoo?.nuatTulukhEsekh;
+      var tuxainSalbar = baiguullaga?.barilguud?.find(
+        (e) => e._id.toString() == tukhainObject.barilgiinId
+      )?.tokhirgoo;
+
+      var nuatTulukhEsekh = false;
+      nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-      var ebarimt = await zogsooloosEbarimtUusgye(
-        tukhainObject,
-        req.body.customer_no,
-        req.body.individual ? null : "3",
-        tukhainKholbolt
-      );
+      if (!!tuxainSalbar?.eBarimtShine) {
+        ebarimt = await zogsooloosEbarimtShineUusgye(
+          tukhainObject,
+          req.body.customerNo,
+          req.body.customerTin,
+          tuxainSalbar.merchantTin, //"37900846788",
+          tuxainSalbar.districtCode, //,"0023"
+          tukhainKholbolt,
+          nuatTulukhEsekh
+        );
+      } else {
+        var ebarimt = await zogsooloosEbarimtUusgye(
+          tukhainObject,
+          req.body.customer_no,
+          req.body.individual ? null : "3",
+          tukhainKholbolt,
+          nuatTulukhEsekh
+        );
+      }
       butsaakhMethod = function (d) {
         try {
           if (!d.success) throw new Error(d.message);
@@ -1634,16 +1666,31 @@ router
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       tukhainObject.baiguullagiinId
     );
+    tuxainSalbar = baiguullaga?.barilguud?.find(
+      (e) => e._id.toString() == tukhainObject.barilgiinId
+    )?.tokhirgoo;
     var nuatTulukhEsekh = baiguullaga.barilguud.find(
       (x) => x._id.toString() == tukhainObject.barilgiinId
     )?.tokhirgoo?.nuatTulukhEsekh;
     if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-    var ebarimt = await zogsooloosEbarimtUusgye(
-      tukhainObject,
-      req.body.customer_no,
-      req.body.individual ? null : "3",
-      tukhainKholbolt
-    );
+    if (!!tuxainSalbar?.eBarimtShine)
+      ebarimt = await zogsooloosEbarimtShineUusgye(
+        guilgee,
+        req.body.customerNo,
+        req.body.customerTin,
+        tuxainSalbar.merchantTin, //"37900846788",
+        tuxainSalbar.districtCode, //,"0023"
+        tukhainKholbolt,
+        nuatTulukhEsekh
+      );
+    else
+      var ebarimt = await zogsooloosEbarimtUusgye(
+        tukhainObject,
+        req.body.customer_no,
+        req.body.individual ? null : "3",
+        tukhainKholbolt,
+        nuatTulukhEsekh
+      );
     butsaakhMethod = function (d) {
       try {
         if (!d.success) throw new Error(d.message);
