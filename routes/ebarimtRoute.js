@@ -1137,6 +1137,27 @@ router.get("/tatvariinAlba", tokenShalgakh, async (req, res, next) => {
   }
 });
 
+router.post(
+  "/tatvariinAlbaOlnoorNemye",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const jagsaalt = req.body.jagsaalt;
+      TatvariinAlba(db.erunkhiiKholbolt)
+        .insertMany(jagsaalt)
+        .then((x) => {
+          res.send(x);
+        })
+        .catch((a) => {
+          console.log(a);
+          res.send("Aldaa");
+        });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 module.exports = router;
 module.exports.ebarimtDuudya = ebarimtDuudya;
 module.exports.ebarimtIlgeeye = ebarimtIlgeeye;
