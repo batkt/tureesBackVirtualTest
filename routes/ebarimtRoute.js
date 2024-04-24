@@ -155,7 +155,7 @@ async function guilgeeneesEbarimtShineUusgye(
       items: [
         {
           name: "Үл хөдлөх хөрөнгийг түрээслэх, худалдаалах үйлчилгээ",
-          barCode: "7211200",
+          //barCode: "7211200",
           barCodeType: "UNDEFINED",
           classificationCode: "7211200",
           //taxProductCode
@@ -262,7 +262,7 @@ async function togloomoosEbarimtShineUusgye(
       items: [
         {
           name: amraltiinUdur ? "Амралтын өдөр 1 цаг" : "Ажлын өдөр 1 цаг",
-          barCode: amraltiinUdur ? "201" : "100",
+          //barCode: amraltiinUdur ? "201" : "100",
           barCodeType: "UNDEFINED",
           classificationCode: "5312909",
           //taxProductCode
@@ -372,7 +372,7 @@ async function zogsooloosEbarimtShineUusgye(
       merchantTin: merchantTin,
       items: [
         {
-          barCode: "6743000",
+          //barCode: "6743000",
           name: "Авто зогсоолын үйлчилгээ",
           barCodeType: "UNDEFINED",
           classificationCode: "6743000",
