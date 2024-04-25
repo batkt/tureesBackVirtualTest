@@ -760,13 +760,10 @@ exports.orlogiinMsgIlgeeye = asyncHandler(async (tsag) => {
             },
           },
           {
-            $unwind: "$niitTulbur",
-          },
-          {
             $group: {
               _id: "niit",
               niitDun: {
-                $sum: "$niitTulbur.dun",
+                $sum: "$niitDun",
               },
             },
           },
