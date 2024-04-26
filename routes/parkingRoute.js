@@ -1487,10 +1487,17 @@ router.route("/pass/pay").post(async (req, res, next) => {
           nuatTulukhEsekh
         );
       }
-      butsaakhMethod = function (d) {
+      butsaakhMethod = function (d, khariuObject) {
         try {
-          if (!d.success) throw new Error(d.message);
-          var ebarimt = new Ebarimt(tukhainKholbolt)(d);
+          if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
+          var ebarimt;
+          if (!!tuxainSalbar.eBarimtShine)
+            ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
+          else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          ebarimt.zogsooliinId = khariuObject._id;
+          ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
+          ebarimt.barilgiinId = khariuObject.barilgiinId;
+          ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -1698,7 +1705,7 @@ router
         tukhainKholbolt,
         nuatTulukhEsekh
       );
-    butsaakhMethod = function (d) {
+    butsaakhMethod = function (d, khariuObject) {
       try {
         if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
         var ebarimt;
