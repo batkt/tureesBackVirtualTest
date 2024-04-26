@@ -1214,7 +1214,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
       if (!!tuxainSalbar?.eBarimtShine)
         ebarimt = await zogsooloosEbarimtShineUusgye(
-          guilgee,
+          tukhainObject,
           req.body.customerNo,
           req.body.customerTin,
           tuxainSalbar.merchantTin, //"37900846788",
@@ -1675,7 +1675,7 @@ router
     if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
     if (!!tuxainSalbar?.eBarimtShine)
       ebarimt = await zogsooloosEbarimtShineUusgye(
-        guilgee,
+        tukhainObject,
         req.body.customerNo,
         req.body.customerTin,
         tuxainSalbar.merchantTin, //"37900846788",
