@@ -16,7 +16,6 @@ const {
 } = require("parking-v1");
 const {
   zogsooloosEbarimtUusgye,
-  zogsooloosEbarimtShineUusgye,
   ebarimtDuudya,
 } = require("../routes/ebarimtRoute");
 const ZogsooliinIp = require("../models/zogsooliinIp");
@@ -153,8 +152,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
           body: `<span>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
             <p style="width:maxContent; text-align:left">Машин:</p>
-            <p style="width:maxContent; text-align:right; color: #999999">${
-              uilchluulegch.mashiniiDugaar
+            <p style="width:maxContent; text-align:right; color: #999999">${uilchluulegch.mashiniiDugaar
             }</p>
           </div>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
@@ -171,14 +169,12 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
           </div>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
             <p style="width:maxContent; text-align:left">Хугацаа:</p>
-            <p style="width:maxContent; text-align:right; color: #999999">${
-              uilchluulegch.tuukh[0].niitKhugatsaa
+            <p style="width:maxContent; text-align:right; color: #999999">${uilchluulegch.tuukh[0].niitKhugatsaa
             } мин</p>
           </div>
           <div style="display:flex; flex-direction:row; justify-content:space-between">
             <p style="width:maxContent; text-align:left">Дүн:</p>
-            <p style="width:maxContent; text-align:right; color: #999999; font-weight: bold">${
-              uilchluulegch.tuukh[0].tulukhDun
+            <p style="width:maxContent; text-align:right; color: #999999; font-weight: bold">${uilchluulegch.tuukh[0].tulukhDun
             } ₮</p>
           </div>
           </span>`,
@@ -246,7 +242,6 @@ router
         let tulbur = [];
         guilgeenuud.map((guilgee) => {
           tulbur.push({
-            khariu: guilgee.kharu,
             ognoo: guilgee.ognoo,
             turul: guilgee.turul,
             dun: guilgee.dun,
@@ -416,22 +411,22 @@ router.post(
       const match =
         req.body.garsanKhaalga !== null
           ? {
-              "tuukh.garsanKhaalga": !!req.body.garsanKhaalga
-                ? req.body.garsanKhaalga
-                : { $exists: true },
-              "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: new Date(req.body.ekhlekhOgnoo),
-                $lte: new Date(req.body.duusakhOgnoo),
-              },
-              "tuukh.tuluv": 1,
-            }
+            "tuukh.garsanKhaalga": !!req.body.garsanKhaalga
+              ? req.body.garsanKhaalga
+              : { $exists: true },
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+            "tuukh.tuluv": 1,
+          }
           : {
-              "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: new Date(req.body.ekhlekhOgnoo),
-                $lte: new Date(req.body.duusakhOgnoo),
-              },
-              "tuukh.tuluv": 1,
-            };
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+            "tuukh.tuluv": 1,
+          };
       if (!!req.body.burtgesenAjiltaniiId)
         match["tuukh.burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
       console.log("match", JSON.stringify(match, null, 4));
@@ -650,16 +645,16 @@ router.post(
             },
             garsanKhaalga: !!req.body.garakhKhaalgaIp
               ? {
-                  $sum: {
-                    $cond: [
-                      {
-                        $eq: ["$garsanKhaalga", req.body.garakhKhaalgaIp],
-                      },
-                      { $ifNull: ["$_id.tulukhDun", 0] },
-                      0,
-                    ],
-                  },
-                }
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: ["$garsanKhaalga", req.body.garakhKhaalgaIp],
+                    },
+                    { $ifNull: ["$_id.tulukhDun", 0] },
+                    0,
+                  ],
+                },
+              }
               : { $sum: 0 },
             niitDun: {
               $sum: { $ifNull: ["$_id.tulukhDun", 0] },
@@ -817,8 +812,8 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
       var query = localEsekh
         ? { baiguullagiinId: req.query.baiguullagiinId }
         : {
-            tokiNer: { $exists: true },
-          };
+          tokiNer: { $exists: true },
+        };
       var zogsooluud = await Parking(kholbolt).find(query);
       for await (const zogsool of zogsooluud) {
         if (!!zogsool) {
@@ -931,8 +926,8 @@ router.get("/pass/search_car/:plate_number", async (req, res, next) => {
       var query = localEsekh
         ? { baiguullagiinId: req.query.baiguullagiinId }
         : {
-            passNer: { $exists: true },
-          };
+          passNer: { $exists: true },
+        };
       var zogsooluud = await Parking(kholbolt).find(query);
       for await (const zogsool of zogsooluud) {
         if (!!zogsool) {
@@ -1205,42 +1200,21 @@ router.route("/v1/pay").post(async (req, res, next) => {
       // if (!!baiguullaga)
       //   ebarimtAshiglakhEsekh = baiguullaga?.tokhirgoo?.ebarimtAshiglakhEsekh;
       // if (!!ebarimtAshiglakhEsekh) {
-      var tuxainSalbar = baiguullaga?.barilguud?.find(
-        (e) => e._id.toString() == tukhainObject.barilgiinId
-      )?.tokhirgoo;
       var nuatTulukhEsekh = baiguullaga.barilguud.find(
         (x) => x._id.toString() == tukhainObject.barilgiinId
       )?.tokhirgoo?.nuatTulukhEsekh;
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-      if (!!tuxainSalbar?.eBarimtShine)
-        ebarimt = await zogsooloosEbarimtShineUusgye(
-          tukhainObject,
-          req.body.customerNo,
-          req.body.customerTin,
-          tuxainSalbar.merchantTin, //"37900846788",
-          tuxainSalbar.districtCode, //,"0023"
-          tukhainKholbolt,
-          nuatTulukhEsekh
-        );
-      else
-        var ebarimt = await zogsooloosEbarimtUusgye(
-          tukhainObject,
-          req.body.customer_no,
-          req.body.individual ? null : "3",
-          tukhainKholbolt,
-          nuatTulukhEsekh
-        );
+      var ebarimt = await zogsooloosEbarimtUusgye(
+        tukhainObject,
+        req.body.customer_no,
+        req.body.individual ? null : "3",
+        tukhainKholbolt,
+        nuatTulukhEsekh
+      );
       butsaakhMethod = function (d) {
         try {
-          if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
-          var ebarimt;
-          if (!!tuxainSalbar.eBarimtShine)
-            ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
-          else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
-          ebarimt.zogsooliinId = khariuObject._id;
-          ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
-          ebarimt.barilgiinId = khariuObject.barilgiinId;
-          ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
+          if (!d.success) throw new Error(d.message);
+          var ebarimt = new Ebarimt(tukhainKholbolt)(d);
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -1461,43 +1435,20 @@ router.route("/pass/pay").post(async (req, res, next) => {
         }
       );
       tukhainObject.niitDun = req.body.paid_amount;
-      var tuxainSalbar = baiguullaga?.barilguud?.find(
-        (e) => e._id.toString() == tukhainObject.barilgiinId
-      )?.tokhirgoo;
-
-      var nuatTulukhEsekh = false;
-      nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
+      var nuatTulukhEsekh = baiguullaga.barilguud.find(
+        (x) => x._id.toString() == tukhainObject.barilgiinId
+      )?.tokhirgoo?.nuatTulukhEsekh;
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-      if (!!tuxainSalbar?.eBarimtShine) {
-        ebarimt = await zogsooloosEbarimtShineUusgye(
-          tukhainObject,
-          req.body.customerNo,
-          req.body.customerTin,
-          tuxainSalbar.merchantTin, //"37900846788",
-          tuxainSalbar.districtCode, //,"0023"
-          tukhainKholbolt,
-          nuatTulukhEsekh
-        );
-      } else {
-        var ebarimt = await zogsooloosEbarimtUusgye(
-          tukhainObject,
-          req.body.customer_no,
-          req.body.individual ? null : "3",
-          tukhainKholbolt,
-          nuatTulukhEsekh
-        );
-      }
-      butsaakhMethod = function (d, khariuObject) {
+      var ebarimt = await zogsooloosEbarimtUusgye(
+        tukhainObject,
+        req.body.customer_no,
+        req.body.individual ? null : "3",
+        tukhainKholbolt
+      );
+      butsaakhMethod = function (d) {
         try {
-          if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
-          var ebarimt;
-          if (!!tuxainSalbar.eBarimtShine)
-            ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
-          else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
-          ebarimt.zogsooliinId = khariuObject._id;
-          ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
-          ebarimt.barilgiinId = khariuObject.barilgiinId;
-          ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
+          if (!d.success) throw new Error(d.message);
+          var ebarimt = new Ebarimt(tukhainKholbolt)(d);
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -1587,13 +1538,13 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
     var bodsonDun = 0;
     const zogsool = req.body.zogsooliinId
       ? await Parking(req.body.tukhainBaaziinKholbolt).findOne({
-          _id: req.body.zogsooliinId,
-        })
+        _id: req.body.zogsooliinId,
+      })
       : await Parking(req.body.tukhainBaaziinKholbolt).findOne({
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-          "khaalga.ajiltnuud.id": req.body.ajiltniiId,
-        });
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        "khaalga.ajiltnuud.id": req.body.ajiltniiId,
+      });
     if (!!zogsool) {
       oldsonMashin = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
@@ -1680,42 +1631,20 @@ router
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       tukhainObject.baiguullagiinId
     );
-    tuxainSalbar = baiguullaga?.barilguud?.find(
-      (e) => e._id.toString() == tukhainObject.barilgiinId
-    )?.tokhirgoo;
     var nuatTulukhEsekh = baiguullaga.barilguud.find(
       (x) => x._id.toString() == tukhainObject.barilgiinId
     )?.tokhirgoo?.nuatTulukhEsekh;
     if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-    if (!!tuxainSalbar?.eBarimtShine)
-      ebarimt = await zogsooloosEbarimtShineUusgye(
-        tukhainObject,
-        req.body.customerNo,
-        req.body.customerTin,
-        tuxainSalbar.merchantTin, //"37900846788",
-        tuxainSalbar.districtCode, //,"0023"
-        tukhainKholbolt,
-        nuatTulukhEsekh
-      );
-    else
-      var ebarimt = await zogsooloosEbarimtUusgye(
-        tukhainObject,
-        req.body.customer_no,
-        req.body.individual ? null : "3",
-        tukhainKholbolt,
-        nuatTulukhEsekh
-      );
-    butsaakhMethod = function (d, khariuObject) {
+    var ebarimt = await zogsooloosEbarimtUusgye(
+      tukhainObject,
+      req.body.customer_no,
+      req.body.individual ? null : "3",
+      tukhainKholbolt
+    );
+    butsaakhMethod = function (d) {
       try {
-        if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
-        var ebarimt;
-        if (!!tuxainSalbar.eBarimtShine)
-          ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
-        else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
-        ebarimt.zogsooliinId = khariuObject._id;
-        ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
-        ebarimt.barilgiinId = khariuObject.barilgiinId;
-        ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
+        if (!d.success) throw new Error(d.message);
+        var ebarimt = new Ebarimt(tukhainKholbolt)(d);
         ebarimt.save().catch((err) => {
           next(err);
         });
