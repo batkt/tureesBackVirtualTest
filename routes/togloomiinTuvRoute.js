@@ -426,7 +426,7 @@ router
       }
       guilgeeniiTuukh.forEach((mur) => {
         mur.ognoo = new Date();
-        if (mur.turul === "khunglukh") {
+        if (mur.turul === "khungulult") {
           update.khungulsunEsekh = true;
           update.khungulsunDun = mur.dun;
           update.niitDun = niitDun - mur.dun;
