@@ -17,6 +17,13 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
     const baiguullaga = new Baiguullaga(db.erunkhiiKholbolt)(req.body);
     console.log("baiguullagaBurtgekh", req.body);
     baiguullaga.isNew = !baiguullaga.zasakhEsekh;
+    baiguullaga.barilguud = [
+      {
+        ner: baiguullaga.ner,
+        khayag: baiguullaga.khayag,
+        register: baiguullaga.register,
+      },
+    ];
     baiguullaga
       .save()
       .then((result) => {
