@@ -1748,7 +1748,7 @@ router
         next(err);
       }
     };
-    ebarimtDuudya(ebarimt, butsaakhMethod, next);
+    ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
   });
 
 module.exports = router;
