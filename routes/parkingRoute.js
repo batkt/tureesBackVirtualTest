@@ -23,6 +23,7 @@ const ZogsooliinIp = require("../models/zogsooliinIp");
 const Khariltsagch = require("../models/khariltsagch");
 const Sonorduulga = require("../models/sonorduulga");
 const Ebarimt = require("../models/ebarimt");
+const EbarimtShine = require("../models/ebarimtShine");
 
 const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 const lodash = require("lodash");
