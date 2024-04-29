@@ -1307,7 +1307,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
           });
         }
       }
-      ebarimtDuudya(ebarimt, butsaakhMethod, next);
+      ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
       /*} else {
         if (!!req.body.manually_open) {
           if (
@@ -1564,7 +1564,7 @@ router.route("/pass/pay").post(async (req, res, next) => {
           });
         }
       }
-      ebarimtDuudya(ebarimt, butsaakhMethod, next);
+      ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
     }
   } catch (err) {
     next(err);
