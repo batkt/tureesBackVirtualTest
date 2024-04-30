@@ -377,6 +377,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               });
               var oldsonGereenuud = await Geree(kholbolt).find({
                 $or: khaikhNukhtsul,
+                tuluv: 1,
                 barilgiinId: guilgeenuud.barilgiinId,
               });
               if (oldsonGereenuud != null && oldsonGereenuud.length == 1) {
@@ -407,6 +408,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               console.log(khaikhNukhtsul);
               var oldsonGereenuud = await Geree(kholbolt).find({
                 $or: khaikhNukhtsul,
+                tuluv: 1,
                 barilgiinId: guilgeenuud.barilgiinId,
               });
               if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
