@@ -402,7 +402,7 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
   try {
     if (!!shine) {
       var url;
-      if (req.body.baiguullagiinId == "612f457d185280db676d0b51")
+      if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
         var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
       else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
       console.log("url", url);
@@ -468,7 +468,7 @@ router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
 async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
   if (!!ebarimtShine) {
     var url;
-    if (req.body.baiguullagiinId == "612f457d185280db676d0b51")
+    if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
       var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
     else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
     console.log("url", url);
