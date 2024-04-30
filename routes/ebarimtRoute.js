@@ -433,6 +433,7 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
       );
     }
   } catch (aldaa) {
+    console.log("aldaa", aldaa);
     next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
   }
 }
