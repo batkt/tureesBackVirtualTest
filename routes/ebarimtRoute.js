@@ -402,7 +402,10 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
   try {
     const data = new TextEncoder().encode(JSON.stringify(ugugdul));
     if (!!shine) {
-      var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
+      var url;
+      if (req.body.baiguullagiinId == "612f457d185280db676d0b51")
+        var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
+      else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
       console.log("url", url);
       request.post(url, { json: true, body: ugugdul }, (err, res1, body) => {
         if (err) {
@@ -464,7 +467,10 @@ router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
 
 async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
   if (!!ebarimtShine) {
-    var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
+    var url;
+    if (req.body.baiguullagiinId == "612f457d185280db676d0b51")
+      var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
+    else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
     console.log("url", url);
     request.delete(
       url,
@@ -844,7 +850,10 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
       if (!!tuxainSalbar.eBarimtShine) shine = true;
     }
     if (!!shine) {
-      var url = process.env.EBARIMTSHINE_IP + "rest/sendData";
+      var url;
+      if (req.body.baiguullagiinId == "612f457d185280db676d0b51")
+        url = process.env.EBARIMTSHINE_TEST + "rest/sendData";
+      else url = process.env.EBARIMTSHINE_IP + "rest/sendData";
       console.log("url", url);
       request.get(url, { json: true }, (err, res1, body) => {
         if (err) {
