@@ -1687,6 +1687,7 @@ router
     var nuatTulukhEsekh = baiguullaga.barilguud.find(
       (x) => x._id.toString() == tukhainObject.barilgiinId
     )?.tokhirgoo?.nuatTulukhEsekh;
+    console.log("tuxainSalbar", tuxainSalbar);
     if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
     if (!!tuxainSalbar?.eBarimtShine)
       ebarimt = await zogsooloosEbarimtShineUusgye(

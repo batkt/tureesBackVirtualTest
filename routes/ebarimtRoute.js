@@ -400,7 +400,6 @@ async function zogsooloosEbarimtShineUusgye(
 }
 async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
   try {
-    const data = new TextEncoder().encode(JSON.stringify(ugugdul));
     if (!!shine) {
       var url;
       if (req.body.baiguullagiinId == "612f457d185280db676d0b51")
