@@ -126,6 +126,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
             butsaakhObject.result.duusakhOgnoo = khariu.duusakhOgnoo;
           }
           butsaakhObject.token = jwt;
+          //doorxiig zogsooliinPos-d zoriulj oruulaw
           if (!!baiguullaga?.tokhirgoo?.zogsoolNer)
             butsaakhObject.baiguullagaNer = baiguullaga?.tokhirgoo?.zogsoolNer;
           else butsaakhObject.baiguullagaNer = baiguullaga.ner;
