@@ -126,6 +126,9 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
             butsaakhObject.result.duusakhOgnoo = khariu.duusakhOgnoo;
           }
           butsaakhObject.token = jwt;
+          if (!!baiguullaga?.tokhirgoo?.zogsoolNer)
+            butsaakhObject.baiguullagaNer = baiguullaga?.tokhirgoo?.zogsoolNer;
+          else butsaakhObject.baiguullagaNer = baiguullaga.ner;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
           var tuukh = new NevtreltiinTuukh(db.erunkhiiKholbolt)();
