@@ -1079,11 +1079,28 @@ router.post("/v1/car_add", async (req, res, next) => {
   const { db } = require("zevbackv2");
   var erunkhiiKholbolt = db.erunkhiiKholbolt;
   var message = "Amjilttai";
-  await TokiMashin(erunkhiiKholbolt).insertMany([
-    {
-      mashiniiDugaar: req.body.plate_number,
-    },
-  ]);
+  var mashiniiToo = await TokiMashin(erunkhiiKholbolt).countDocuments({
+    mashiniiDugaar: req.body.plate_number,
+  });
+  if (mashiniiToo == 0) {
+    await TokiMashin(erunkhiiKholbolt).insertMany([
+      {
+        mashiniiDugaar: req.body.plate_number,
+      },
+    ]);
+  } else if (mashiniiToo > 1) {
+    await TokiMashin(erunkhiiKholbolt).deleteMany([
+      {
+        mashiniiDugaar: req.body.plate_number,
+      },
+    ]);
+    await TokiMashin(erunkhiiKholbolt).insertMany([
+      {
+        mashiniiDugaar: req.body.plate_number,
+      },
+    ]);
+  }
+
   var success = true;
   var butsaakhKhariu = {
     success,
