@@ -87,6 +87,8 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       );
       tailbar = "Түрээсийн төлбөр " + geree.gereeniiDugaar;
     }
+    if (req.body?.nevtersenAjiltniiToken?.id == "66384a9061eeda747d01a320")
+      req.body.dansniiDugaar = "416075707";
     req.body.tailbar = tailbar;
     /*Төлбөр callback url*/
     var callback_url =
