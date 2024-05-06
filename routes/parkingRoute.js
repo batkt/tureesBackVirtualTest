@@ -1574,13 +1574,28 @@ router.route("/pass/pay").post(async (req, res, next) => {
 
 router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
   try {
-    let tulbur = [
-      {
-        ognoo: new Date(),
-        turul: req.body.turul,
-        dun: req.body.paid_amount,
-      },
-    ];
+    let tulbur = [];
+    if (req.body.ajiltniiId == "66384a9061eeda747d01a320") {
+      tulbur = [
+        {
+          ognoo: new Date(),
+          turul: "Fitness",
+          dun: 3000,
+        },
+        {
+          ognoo: new Date(),
+          turul: req.body.turul,
+          dun: req.body.paid_amount,
+        },
+      ];
+    } else
+      tulbur = [
+        {
+          ognoo: new Date(),
+          turul: req.body.turul,
+          dun: req.body.paid_amount,
+        },
+      ];
     var oldsonMashin;
     var tukhainKholbolt;
     var tukhainObject;
