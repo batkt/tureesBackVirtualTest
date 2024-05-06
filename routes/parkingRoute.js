@@ -1768,4 +1768,37 @@ router
     ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
   });
 
+router.route("/tokiMashinZasya").post(tokenShalgakh, async (req, res, next) => {
+  const { db } = require("zevbackv2");
+  var erunkhiiKholbolt = db.erunkhiiKholbolt;
+  var mashinuud = await TokiMashin(erunkhiiKholbolt).aggregate([
+    {
+      $group: {
+        _id: "$mashiniiDugaar",
+        too: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $match: {
+        too: {
+          $gt: 1,
+        },
+      },
+    },
+    {
+      $limit: 100,
+    },
+  ]);
+  if (!!mashinuud && mashinuud.length > 0) {
+    for await (const mashin of mashinuud) {
+      await TokiMashin(erunkhiiKholbolt).deleteMany({
+        mashiniiDugaar: mashin._id,
+      });
+      TokiMashin(erunkhiiKholbolt).insertMany([{ mashiniiDugaar: mashin._id }]);
+    }
+  }
+  res.send({ too: mashinuud.length });
+});
 module.exports = router;
