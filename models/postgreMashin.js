@@ -12,7 +12,6 @@ const find = async (mashiniiDugaar) => {
     "SELECT * FROM tokimashin WHERE mashiniiDugaar = $1",
     [mashiniiDugaar]
   );
-  console.log("khariu", khariu);
   return khariu.rows;
 };
 
