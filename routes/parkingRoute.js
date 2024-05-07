@@ -1111,28 +1111,31 @@ router.post("/v1/car_add", async (req, res, next) => {
 });
 
 router.post("/v1/car_add1", async (req, res, next) => {
-  var message = "Amjilttai";
-  var mashinuud = await PostgreMashin.find({
-    mashiniiDugaar: req.body.plate_number,
-  });
-  if (!mashinuud || mashinuud.length == 0) {
-    await PostgreMashin.insertOne({
-      mashiniiDugaar: req.body.plate_number,
-    });
-  } else if (mashinuud.length > 1) {
-    await PostgreMashin.deleteMany({
-      mashiniiDugaar: req.body.plate_number,
-    });
-    await PostgreMashin.insertOne({
-      mashiniiDugaar: req.body.plate_number,
-    });
+  try {
+    var message = "Amjilttai";
+    var mashinuud = await PostgreMashin.find(req.body.plate_number);
+    console.log("mashinuud", mashinuud);
+    if (!mashinuud || mashinuud.length == 0) {
+      await PostgreMashin.insertOne({
+        mashiniiDugaar: req.body.plate_number,
+      });
+    } else if (mashinuud.length > 1) {
+      await PostgreMashin.deleteMany({
+        mashiniiDugaar: req.body.plate_number,
+      });
+      await PostgreMashin.insertOne({
+        mashiniiDugaar: req.body.plate_number,
+      });
+    }
+    var success = true;
+    var butsaakhKhariu = {
+      success,
+      message,
+    };
+    res.send(butsaakhKhariu);
+  } catch (err) {
+    next(err);
   }
-  var success = true;
-  var butsaakhKhariu = {
-    success,
-    message,
-  };
-  res.send(butsaakhKhariu);
 });
 
 router.route("/v1/pay").post(async (req, res, next) => {

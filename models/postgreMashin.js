@@ -7,45 +7,28 @@ const pool = new Pool({
   port: 5432,
 });
 
-const find = (mashiniiDugaar) => {
-  pool.query(
-    "SELECT * FROM TokiMashin WHERE mashiniiDugaar = $1",
-    [mashiniiDugaar],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      return results.rows;
-    }
+const find = async (mashiniiDugaar) => {
+  var khariu = await pool.query(
+    "SELECT * FROM tokimashin WHERE mashiniiDugaar = $1",
+    [mashiniiDugaar]
   );
+  console.log("khariu", khariu);
+  return khariu.rows;
 };
 
-const insertOne = (body) => {
+const insertOne = async (body) => {
   const { mashiniiDugaar } = body;
-
-  pool.query(
-    "INSERT INTO TokiMashin (mashiniiDugaar) VALUES ($1)",
-    [mashiniiDugaar],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      return "Amjilttai";
-    }
-  );
+  await pool.query("INSERT INTO tokimashin (mashiniiDugaar) VALUES ($1)", [
+    mashiniiDugaar,
+  ]);
+  return "Amjilttai";
 };
-const deleteMany = (body) => {
+const deleteMany = async (body) => {
   const { mashiniiDugaar } = body;
-  pool.query(
-    "DELETE FROM TokiMashin mashiniiDugaar = $1",
-    [mashiniiDugaar],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      return "Amjilttai";
-    }
-  );
+  await pool.query("DELETE FROM tokimashin WHERE mashiniiDugaar = $1", [
+    mashiniiDugaar,
+  ]);
+  return "Amjilttai";
 };
 
 module.exports = {
