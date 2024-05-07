@@ -22,7 +22,6 @@ const {
 const ZogsooliinIp = require("../models/zogsooliinIp");
 const Khariltsagch = require("../models/khariltsagch");
 const Sonorduulga = require("../models/sonorduulga");
-const PostgreMashin = require("../models/postgreMashin");
 const Ebarimt = require("../models/ebarimt");
 const EbarimtShine = require("../models/ebarimtShine");
 
@@ -1076,54 +1075,54 @@ router.get("/v1/car/:session_id", async (req, res, next) => {
   res.send(butsaakhKhariu);
 });
 
+// router.post("/v1/car_add", async (req, res, next) => {
+//   const { db } = require("zevbackv2");
+//   var erunkhiiKholbolt = db.erunkhiiKholbolt;
+//   var message = "Amjilttai";
+//   var mashiniiToo = await TokiMashin(erunkhiiKholbolt).countDocuments({
+//     mashiniiDugaar: req.body.plate_number,
+//   });
+//   if (mashiniiToo == 0) {
+//     await TokiMashin(erunkhiiKholbolt).insertMany([
+//       {
+//         mashiniiDugaar: req.body.plate_number,
+//       },
+//     ]);
+//   } else if (mashiniiToo > 1) {
+//     await TokiMashin(erunkhiiKholbolt).deleteMany([
+//       {
+//         mashiniiDugaar: req.body.plate_number,
+//       },
+//     ]);
+//     await TokiMashin(erunkhiiKholbolt).insertMany([
+//       {
+//         mashiniiDugaar: req.body.plate_number,
+//       },
+//     ]);
+//   }
+
+//   var success = true;
+//   var butsaakhKhariu = {
+//     success,
+//     message,
+//   };
+//   res.send(butsaakhKhariu);
+// });
+
 router.post("/v1/car_add", async (req, res, next) => {
-  const { db } = require("zevbackv2");
-  var erunkhiiKholbolt = db.erunkhiiKholbolt;
-  var message = "Amjilttai";
-  var mashiniiToo = await TokiMashin(erunkhiiKholbolt).countDocuments({
-    mashiniiDugaar: req.body.plate_number,
-  });
-  if (mashiniiToo == 0) {
-    await TokiMashin(erunkhiiKholbolt).insertMany([
-      {
-        mashiniiDugaar: req.body.plate_number,
-      },
-    ]);
-  } else if (mashiniiToo > 1) {
-    await TokiMashin(erunkhiiKholbolt).deleteMany([
-      {
-        mashiniiDugaar: req.body.plate_number,
-      },
-    ]);
-    await TokiMashin(erunkhiiKholbolt).insertMany([
-      {
-        mashiniiDugaar: req.body.plate_number,
-      },
-    ]);
-  }
-
-  var success = true;
-  var butsaakhKhariu = {
-    success,
-    message,
-  };
-  res.send(butsaakhKhariu);
-});
-
-router.post("/v1/car_add1", async (req, res, next) => {
   try {
     var message = "Amjilttai";
-    var mashinuud = await PostgreMashin.find(req.body.plate_number);
+    var mashinuud = await TokiMashin.find(req.body.plate_number);
     console.log("mashinuud", mashinuud);
     if (!mashinuud || mashinuud.length == 0) {
-      await PostgreMashin.insertOne({
+      await TokiMashin.insertOne({
         mashiniiDugaar: req.body.plate_number,
       });
     } else if (mashinuud.length > 1) {
-      await PostgreMashin.deleteMany({
+      await TokiMashin.deleteMany({
         mashiniiDugaar: req.body.plate_number,
       });
-      await PostgreMashin.insertOne({
+      await TokiMashin.insertOne({
         mashiniiDugaar: req.body.plate_number,
       });
     }
@@ -1828,37 +1827,4 @@ router
     ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
   });
 
-router.route("/tokiMashinZasya").post(tokenShalgakh, async (req, res, next) => {
-  const { db } = require("zevbackv2");
-  var erunkhiiKholbolt = db.erunkhiiKholbolt;
-  var mashinuud = await TokiMashin(erunkhiiKholbolt).aggregate([
-    {
-      $group: {
-        _id: "$mashiniiDugaar",
-        too: {
-          $sum: 1,
-        },
-      },
-    },
-    {
-      $match: {
-        too: {
-          $gt: 1,
-        },
-      },
-    },
-    {
-      $limit: 1000,
-    },
-  ]);
-  if (!!mashinuud && mashinuud.length > 0) {
-    for await (const mashin of mashinuud) {
-      await TokiMashin(erunkhiiKholbolt).deleteMany({
-        mashiniiDugaar: mashin._id,
-      });
-      TokiMashin(erunkhiiKholbolt).insertMany([{ mashiniiDugaar: mashin._id }]);
-    }
-  }
-  res.send({ too: mashinuud.length });
-});
 module.exports = router;
