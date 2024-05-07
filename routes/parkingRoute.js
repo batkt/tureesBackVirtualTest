@@ -22,6 +22,7 @@ const {
 const ZogsooliinIp = require("../models/zogsooliinIp");
 const Khariltsagch = require("../models/khariltsagch");
 const Sonorduulga = require("../models/sonorduulga");
+//const PostgreMashin = require("../models/postgreMashin");
 const Ebarimt = require("../models/ebarimt");
 const EbarimtShine = require("../models/ebarimtShine");
 
@@ -1109,6 +1110,31 @@ router.post("/v1/car_add", async (req, res, next) => {
   res.send(butsaakhKhariu);
 });
 
+// router.post("/v1/car_add1", async (req, res, next) => {
+//   var message = "Amjilttai";
+//   var mashinuud = await PostgreMashin.find({
+//     mashiniiDugaar: req.body.plate_number,
+//   });
+//   if (!mashinuud || mashinuud.length == 0) {
+//     await PostgreMashin.insertOne({
+//       mashiniiDugaar: req.body.plate_number,
+//     });
+//   } else if (mashinuud.length > 1) {
+//     await PostgreMashin.deleteMany({
+//       mashiniiDugaar: req.body.plate_number,
+//     });
+//     await PostgreMashin.insertOne({
+//       mashiniiDugaar: req.body.plate_number,
+//     });
+//   }
+//   var success = true;
+//   var butsaakhKhariu = {
+//     success,
+//     message,
+//   };
+//   res.send(butsaakhKhariu);
+// });
+
 router.route("/v1/pay").post(async (req, res, next) => {
   try {
     /*{
@@ -1593,18 +1619,28 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
   try {
     let tulbur = [];
     if (req.body.ajiltniiId == "66384a9061eeda747d01a320") {
-      tulbur = [
-        {
-          ognoo: new Date(),
-          turul: "Fitness",
-          dun: 3000,
-        },
-        {
-          ognoo: new Date(),
-          turul: req.body.turul,
-          dun: req.body.paid_amount,
-        },
-      ];
+      if (req.body.paid_amount == 0) {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Fitness",
+            dun: 3000,
+          },
+        ];
+      } else {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Fitness",
+            dun: 3000,
+          },
+          {
+            ognoo: new Date(),
+            turul: req.body.turul,
+            dun: req.body.paid_amount,
+          },
+        ];
+      }
     } else
       tulbur = [
         {
@@ -1656,9 +1692,13 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         if (
           tukhainObject.tuukh[0].tulbur &&
           tukhainObject.tuukh[0].tulbur.length > 0
-        )
+        ) {
+          if (req.body.ajiltniiId == "66384a9061eeda747d01a320") {
+            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Fitness"))
+              throw new Error("Хөнгөлөлт оруулсан байна!");
+          }
           tukhainObject.tuukh[0].tulbur.push(...tulbur);
-        else tukhainObject.tuukh[0].tulbur = tulbur;
+        } else tukhainObject.tuukh[0].tulbur = tulbur;
       var set = {
         "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
       };
