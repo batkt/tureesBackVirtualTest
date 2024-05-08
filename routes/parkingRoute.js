@@ -247,7 +247,6 @@ router
         let tulbur = [];
         guilgeenuud.map((guilgee) => {
           tulbur.push({
-            khariu: guilgee.kharu,
             ognoo: guilgee.ognoo,
             turul: guilgee.turul,
             dun: guilgee.dun,
