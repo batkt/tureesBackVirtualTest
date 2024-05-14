@@ -35,7 +35,7 @@ router.get(
         const body = {
           tukhainBaaziinKholbolt: kholbolt,
           turul: "qpayUridchilsan",
-          uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
+          uilchluulegchiinId: qpayObject.zogsooliinId, // uId ene buruu bsn yum shig bna
           paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
           plate_number: qpayObject.zogsoolUilchluulegch.plate_number,
           barilgiinId: qpayObject.salbariinId,
