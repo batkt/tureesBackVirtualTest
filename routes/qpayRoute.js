@@ -35,7 +35,7 @@ router.get(
         const body = {
           tukhainBaaziinKholbolt: kholbolt,
           turul: "qpayUridchilsan",
-          uilchluulegchiinId: qpayObject.zogsooliinId, // uId ene buruu bsn yum shig bna
+          uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
           paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
           plate_number: qpayObject.zogsoolUilchluulegch.plate_number,
           barilgiinId: qpayObject.salbariinId,
@@ -107,7 +107,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       "/" +
       req.body?.zakhialgiinDugaar;
     /*Түрээсийн төлбөр callback url*/
-    if (req.body.gereeniiId || req.body.dansniiDugaar) {
+    if (req.body.gereeniiId && req.body.dansniiDugaar) {
       callback_url =
         "http://" +
         process.env.UNDSEN_IP +
