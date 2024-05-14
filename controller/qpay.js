@@ -317,7 +317,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
     const body = {
       tukhainBaaziinKholbolt,
       turul: "qpayUridchilsan",
-      uilchluulegchiinId: qpayBarimt.zogsoolUilchluulegch.uId, // uId ene buruu bsn yum shig bna
+      uilchluulegchiinId: qpayBarimt.zogsoolUilchluulegch.uId,
       paid_amount: qpayBarimt.zogsoolUilchluulegch.pay_amount,
       plate_number: qpayBarimt.zogsoolUilchluulegch.plate_number,
       barilgiinId: qpayBarimt.salbariinId,
