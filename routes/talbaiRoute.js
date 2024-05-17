@@ -243,7 +243,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
           0,
           0
         );
-        new Array(geree.khugatsaa || 0).fill("").map((mur, index) => {
+        new Array((geree.khugatsaa || 0) + 12).fill("").map((mur, index) => {
           geree.tulukhUdur.forEach((udur) => {
             if (
               moment(unuudur).add(index, "month").set("date", udur) <=
