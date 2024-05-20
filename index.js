@@ -205,10 +205,21 @@ cron.schedule(
   }
 );
 cron.schedule(
-  "10 13 * * * * ",
+  "30 13 * * * * ",
   function () {
     console.log("zogsoolTseverlye");
     zogsool.zogsoolTseverlye();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+cron.schedule(
+  "40 1 1 * * * ",
+  function () {
+    console.log("zogsooloosUstgay");
+    zogsool.zogsooloosUstgay();
   },
   {
     scheduled: true,

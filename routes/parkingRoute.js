@@ -317,6 +317,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     console.log("zogsooliinTulburOrjIrlee", tulsunDun);
     var shineDun = 0;
     if (baiguullagiinId == "65435cdff2f5358696c61454") {
+      tulsunDun = tulsunDun + 50;
       shineDun =
         (await Math.round(
           (tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100
@@ -1142,7 +1143,7 @@ router.post("/v1/car_add", async (req, res, next) => {
 
 router.route("/v1/pay").post(async (req, res, next) => {
   try {
-    /*{
+    /*{nevtreltiinTuukhAvya
       "session_id":"",
       "paid_amount": 1622.0,
       "plate_number": "7120СЭА",

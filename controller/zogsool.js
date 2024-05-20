@@ -266,3 +266,35 @@ module.exports.zogsoolTseverlye = async (body, next) => {
     next(err);
   }
 };
+
+module.exports.zogsooloosUstgay = async (body, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    const kholboltuud = db.kholboltuud;
+    if (kholboltuud) {
+      for await (const kholbolt of kholboltuud) {
+        var zogsooluud = await Parking(kholbolt).find({
+          mashinUstgakhKhugatsaa: { $gt: 1 },
+          baiguullagiinId: kholbolt.baiguullagiinId,
+        });
+        if (!!zogsooluud) {
+          for await (const zogsool of zogsooluud) {
+            console.log("zogsool", zogsool);
+            var ognoo = new Date();
+            ognoo = new Date(
+              ognoo.getTime() - zogsool.mashinUstgakhKhugatsaa * 24 * 60 * 60000
+            );
+            console.log("ognoo", ognoo);
+            await Uilchluulegch(kholbolt).deleteMany({
+              createdAt: {
+                $lt: ognoo,
+              },
+            });
+          }
+        }
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
+};
