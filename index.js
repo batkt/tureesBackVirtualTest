@@ -204,6 +204,17 @@ cron.schedule(
     timezone: "Asia/Ulaanbaatar",
   }
 );
+cron.schedule(
+  "10 13 * * * * ",
+  function () {
+    console.log("zogsoolTseverlye");
+    zogsool.zogsoolTseverlye();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 cron.schedule(
   "0 0 * * *",

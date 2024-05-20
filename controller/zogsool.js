@@ -218,3 +218,51 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
     next(err);
   }
 };
+
+module.exports.zogsoolTseverlye = async (body, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    const kholboltuud = db.kholboltuud;
+    if (kholboltuud) {
+      for await (const kholbolt of kholboltuud) {
+        var zogsooluud = await Parking(kholbolt).find({
+          mashinGargakhKhugatsaa: { $gt: 0 },
+          baiguullagiinId: kholbolt.baiguullagiinId,
+        });
+        if (!!zogsooluud) {
+          for await (const zogsool of zogsooluud) {
+            console.log("zogsool", zogsool);
+            var ognoo = new Date();
+            ognoo = new Date(
+              ognoo.getTime() - zogsool.mashinGargakhKhugatsaa * 60 * 60000
+            );
+            console.log("ognoo", ognoo);
+            await Uilchluulegch(kholbolt).updateMany(
+              {
+                "tuukh.0.garsanKhaalga": {
+                  $exists: false,
+                },
+                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                  $exists: false,
+                },
+                createdAt: {
+                  $lt: ognoo,
+                },
+              },
+              {
+                $set: {
+                  "tuukh.0.garsanKhaalga": "tseverlesen",
+                  "tuukh.0.tsagiinTuukh.0.garsanTsag": new Date(),
+                  "tuukh.0.tuluv": -3, //Tseverlesen tuluv
+                  zurchil: "Гарсан цаг тодорхойгүй!",
+                },
+              }
+            );
+          }
+        }
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
+};
