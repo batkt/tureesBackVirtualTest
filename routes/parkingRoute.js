@@ -317,7 +317,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     console.log("zogsooliinTulburOrjIrlee", tulsunDun);
     var shineDun = 0;
     if (baiguullagiinId == "65435cdff2f5358696c61454") {
-      tulsunDun = tulsunDun + 50;
+      tulsunDun = tulsunDun + 50; //sms 50tug
       shineDun =
         (await Math.round(
           (tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100
