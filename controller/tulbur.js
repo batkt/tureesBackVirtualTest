@@ -907,12 +907,15 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
       });
       for await (const geree of gereenuud) {
         khyamdraluud = [];
+        var khungulultiinDun = khungulult.khamaataiGereenuud?.find(
+          (x) => x.gereeniiId == geree._id
+        )?.khymdarsanDun;
         for await (const ognoo of khungulult.ognoonuud) {
           khyamdral = {
             tulukhDun: 0,
             ognoo: ognoo,
             turul: "khungulult",
-            khyamdral: khungulult?.khungulultiinDun,
+            khyamdral: khungulultiinDun,
             nemeltTailbar: khungulult.shaltgaan,
             tailbar: req.body.tailbar,
             khyamdraliinId: khariu._id,
