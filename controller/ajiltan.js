@@ -272,7 +272,6 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
     console.log(tokenObject);
     if (tokenObject.id == "zochin")
       throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
-    console.log("tokenObject", tokenObject);
     Ajiltan(db.erunkhiiKholbolt)
       .findById(tokenObject.id)
       .then((urDun) => {
