@@ -1963,3 +1963,31 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+exports.talbainKubeOruulya = asyncHandler(async (req, res, next) => {
+  try {
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      .find({
+        tuluv: 1,
+        "zardluud.turul": "1м3/талбай",
+        talbainKhemjeeMetrKube: { $exists: false },
+      })
+      .lean();
+    if (gereenuud)
+      for await (const geree of gereenuud) {
+        var talbai = await Talbai(req.body.tukhainBaaziinKholbolt).findOne({
+          baiguullagiinId: geree.baiguullagiinId,
+          kod: geree.talbainDugaar,
+        });
+        if (!!talbai) {
+          await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
+            { _id: geree._id },
+            { talbainKhemjeeMetrKube: talbai.talbainKhemjeeMetrKube }
+          );
+        }
+      }
+    res.send({ too: gereenuud.length });
+  } catch (err) {
+    next(err);
+  }
+});
