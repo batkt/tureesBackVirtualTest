@@ -242,7 +242,6 @@ router
     try {
       var uurchlukhTuluv = 1;
       var guilgeenuud = req.body.tulbur;
-      console.log("zogsooliinTulburTulye: ", guilgeenuud);
       if (Array.isArray(guilgeenuud)) {
         let tulbur = [];
         guilgeenuud.map((guilgee) => {
