@@ -169,7 +169,6 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
         baiguullagiinZam = "polaris";
     }
     var urlString = process.env.ZEV_TEST_SERVER + ":5000/" + baiguullagiinZam;
-    console.log("url", urlString);
     var url = new URL(urlString);
     const response = await instanceJson.post(url, { body: objectString });
     var parseString = xml2js.parseString;
@@ -372,7 +371,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         },
         next,
         async (khariu) => {
-          console.log("khariu", new Date(), khariu);
           if (
             khariu &&
             khariu.Document &&
@@ -605,7 +603,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       khariu.Document.GrpHdr[0].RspCd &&
                       khariu.Document.GrpHdr[0].RspCd[0] == "10"
                     ) {
-                      console.log("khariu", khariu);
                       var guilgeenuud = [];
                       khariu.Document.EnqRsp[0].Ntry.forEach((mur) => {
                         //mur = await tdbKhuulgaKhurvuulekh(mur);
@@ -754,7 +751,6 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
     },
     next,
     async (khariu) => {
-      console.log("khariu", new Date(), khariu);
       if (
         khariu &&
         khariu.Document &&
@@ -956,7 +952,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   },
                   null,
                   async (khariu) => {
-                    console.log("khariu", new Date(), khariu);
                     if (
                       khariu &&
                       khariu.Document &&
