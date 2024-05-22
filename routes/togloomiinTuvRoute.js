@@ -591,4 +591,46 @@ router
       next(err);
     }
   });
+
+router.route("/togloomiinTuvUdriinTailanAvya").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    const match = {
+      "baiguullagiinId": req.body.baiguullagiinId, 
+      "barilgiinId": req.body.barilgiinId,
+      "ognoo": {
+          $gte: new Date(req.body.ekhlekhOgnoo),
+          $lte: new Date(req.body.duusakhOgnoo),
+        },
+      "tuluv": {
+          $ne: -1,
+        }, 
+      }
+    
+    if (!!req.body.burtgesenAjiltaniiId)
+      match["burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
+    var khariu = await TogloomiinTuv(
+      req.body.tukhainBaaziinKholbolt
+    ).aggregate([
+      {
+        $match: match,
+      },
+      {
+        $unwind: "$niitTulbur",
+      },
+      {
+        $group: {
+          _id: "$niitTulbur.turul",
+          niitDun: {
+            $sum: "$niitTulbur.dun",
+          },
+          niitToo: { $sum: 1 },
+        },
+      },
+    ]);
+    res.send(khariu);
+  } catch (err){
+    next(err);
+  }
+});
+
 module.exports = router;
