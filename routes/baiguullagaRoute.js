@@ -59,7 +59,7 @@ router.post("/salbarBurtgey", async (req, res, next) => {
     });
     console.log("baiguullagaBurtgekh", req.body);
     baiguullaga.isNew = false;
-    baiguullaga.barilguud = baiguullaga.barilguud.push({
+    baiguullaga.barilguud.push({
       licenseRegister: req.body.register,
       ner: req.body.ner,
       khayag: req.body.khayag,
