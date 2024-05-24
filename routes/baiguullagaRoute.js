@@ -54,13 +54,9 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
 router.post("/salbarBurtgey", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
-    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt)({
-      register: req.body.tolgoiCompany,
-    });
-    console.log("baiguullagaBurtgekh", req.body);
     Baiguullaga(db.erunkhiiKholbolt)
       .updateOne(
-        { _id: baiguullaga._id },
+        { register: req.body.tolgoiCompany },
         {
           $push: {
             barilguud: {
@@ -72,9 +68,11 @@ router.post("/salbarBurtgey", async (req, res, next) => {
         }
       )
       .then((result) => {
+        console.log("salbarBurtgey", result);
         res.send("Amjilttai");
       })
       .catch((err) => {
+        console.log("salbarBurtgey!", err);
         next(err);
       });
   } catch (error) {
