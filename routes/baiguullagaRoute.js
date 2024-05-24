@@ -58,7 +58,7 @@ router.post("/salbarBurtgey", async (req, res, next) => {
       register: req.body.tolgoiCompany,
     });
     console.log("baiguullagaBurtgekh", req.body);
-    baiguullaga
+    Baiguullaga(db.erunkhiiKholbolt)
       .updateOne(
         { _id: baiguullaga._id },
         {
