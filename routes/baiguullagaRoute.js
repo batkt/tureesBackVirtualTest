@@ -62,7 +62,7 @@ router.post("/salbarBurtgey", async (req, res, next) => {
     baiguullaga.barilguud = baiguullaga.barilguud.push({
       licenseRegister: req.body.register,
       ner: req.body.ner,
-      khayag: String,
+      khayag: req.body.khayag,
     });
     baiguullaga
       .save()
