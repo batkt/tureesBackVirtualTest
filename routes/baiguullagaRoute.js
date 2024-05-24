@@ -58,14 +58,19 @@ router.post("/salbarBurtgey", async (req, res, next) => {
       register: req.body.tolgoiCompany,
     });
     console.log("baiguullagaBurtgekh", req.body);
-    baiguullaga.isNew = false;
-    baiguullaga.barilguud.push({
-      licenseRegister: req.body.register,
-      ner: req.body.ner,
-      khayag: req.body.khayag,
-    });
     baiguullaga
-      .save()
+      .updateOne(
+        { _id: baiguullaga._id },
+        {
+          $push: {
+            barilguud: {
+              licenseRegister: req.body.register,
+              ner: req.body.ner,
+              khayag: req.body.khayag,
+            },
+          },
+        }
+      )
       .then((result) => {
         res.send("Amjilttai");
       })
