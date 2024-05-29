@@ -22,7 +22,7 @@
     "mon_num": "^1.0.3",
     "parking-v1": "^1.4.23",
     "pg": "^8.11.5",
-    "quickqpaypackv2": "^1.0.36",
+    "quickqpaypackv2": "^1.0.37",
     "sharp": "^0.30.7",
     "zevbackv2": "^1.1.22",
     "zuragpack": "^1.0.17"
