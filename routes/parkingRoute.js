@@ -893,7 +893,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
     message = "Машины мэдээлэл олдсонгүй!";
     success = false;
   }
-  if ((freeze == true || !!localEsekh) && !!oldsonMashin) {
+  if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
     await Uilchluulegch(tukhainKholbolt).updateOne(
       { _id: oldsonMashin._id },
       {
