@@ -852,23 +852,13 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               kholbolt
             );
         }
-        console.log("search car bodsonDun", bodsonDun);
         if (bodsonDun > 0) {
-          var tulburuud = oldsonMashin.tuukh[0].tulbur;
-          var niitTulsunDun = 0;
-          if (tulburuud) {
-            niitTulsunDun = lodash.sumBy(tulburuud, function (object) {
-              return object.dun;
-            });
-          }
-
-          console.log("search car niitTulsunDun", niitTulsunDun);
           data = {
             plate_number: req.params.plate_number,
             enter_date: moment(
               oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
             ).format("YYYY/MM/DD HH:mm:ss"),
-            pay_amount: bodsonDun - niitTulsunDun,
+            pay_amount: bodsonDun,
             parking_id: zogsool._id,
             session_id: oldsonMashin._id,
           };
@@ -897,121 +887,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
     success = false;
   }
   if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
-    await Uilchluulegch(tukhainKholbolt).updateOne(
-      { _id: oldsonMashin._id },
-      {
-        freezeOgnoo: new Date(),
-      }
-    );
-  }
-  var butsaakhKhariu = {
-    success,
-    message,
-    data,
-  };
-  res.send(butsaakhKhariu);
-});
-
-router.get("/pass/search_car/:plate_number", async (req, res, next) => {
-  const { db } = require("zevbackv2");
-  var kholboltuud = db.kholboltuud;
-  var bodsonDun = 0;
-  var data;
-  var message = "Amjilttai";
-  var success = true;
-  var oldsonMashin;
-  var freeze = req.query.freeze;
-  var tukhainKholbolt;
-  var localEsekh = !!req.query.baiguullagiinId;
-  if (localEsekh) {
-    kholboltuud = kholboltuud.filter(
-      (a) => a.baiguullagiinId == req.query.baiguullagiinId
-    );
-  }
-  //tur pass testluulex zorilgoor
-  kholboltuud = kholboltuud.filter(
-    (a) => a.baiguullagiinId == "612f457d185280db676d0b51"
-  );
-
-  if (kholboltuud) {
-    for await (const kholbolt of kholboltuud) {
-      var query = localEsekh
-        ? { baiguullagiinId: req.query.baiguullagiinId }
-        : {
-            passNer: { $exists: true },
-          };
-      var zogsooluud = await Parking(kholbolt).find(query);
-      for await (const zogsool of zogsooluud) {
-        if (!!zogsool) {
-          oldsonMashin = await Uilchluulegch(kholbolt).findOne({
-            "tuukh.0.zogsooliinId": zogsool._id,
-            mashiniiDugaar: req.params.plate_number,
-            $or: [
-              {
-                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-                  $gt: new Date(Date.now() - 100000), //1.30sec in dotor
-                },
-              },
-              {
-                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-                  $exists: false,
-                },
-              },
-            ],
-            "tuukh.0.tuluv": {
-              $nin: [-2, -3],
-            },
-          });
-          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar)
-            bodsonDun = await zogsooliinDunAvya(
-              zogsool,
-              oldsonMashin,
-              kholbolt
-            );
-        }
-        if (bodsonDun > 0) {
-          var tulburuud = oldsonMashin.tuukh[0].tulbur;
-          var niitTulsunDun = 0;
-          if (tulburuud) {
-            niitTulsunDun = lodash.sumBy(tulburuud, function (object) {
-              return object.dun;
-            });
-          }
-          data = {
-            plate_number: req.params.plate_number,
-            enter_date: moment(
-              oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
-            ).format("YYYY/MM/DD HH:mm:ss"),
-            pay_amount: bodsonDun - niitTulsunDun,
-            parking_id: zogsool._id,
-            session_id: oldsonMashin._id,
-          };
-          tukhainKholbolt = kholbolt;
-          break;
-        } else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-          tukhainKholbolt = kholbolt;
-          data = {
-            plate_number: req.params.plate_number,
-            enter_date: moment(
-              oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
-            ).format("YYYY/MM/DD HH:mm:ss"),
-            pay_amount: 0,
-            parking_id: zogsool._id,
-            session_id: oldsonMashin._id,
-          };
-          break;
-        }
-      }
-      if (data && data.plate_number) break;
-    }
-  } else {
-  }
-
-  if (!oldsonMashin) {
-    message = "Машины мэдээлэл олдсонгүй!";
-    success = false;
-  }
-  if (!!freeze && !!oldsonMashin) {
     await Uilchluulegch(tukhainKholbolt).updateOne(
       { _id: oldsonMashin._id },
       {
