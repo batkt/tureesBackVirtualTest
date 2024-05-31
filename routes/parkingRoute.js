@@ -852,6 +852,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               kholbolt
             );
         }
+        console.log("search car bodsonDun", bodsonDun);
         if (bodsonDun > 0) {
           var tulburuud = oldsonMashin.tuukh[0].tulbur;
           var niitTulsunDun = 0;
@@ -860,6 +861,8 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               return object.dun;
             });
           }
+
+          console.log("search car niitTulsunDun", niitTulsunDun);
           data = {
             plate_number: req.params.plate_number,
             enter_date: moment(
