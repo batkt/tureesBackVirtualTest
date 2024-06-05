@@ -123,7 +123,6 @@ router.get("/ustsanBarimt", tokenShalgakh, async (req, res, next) => {
       .collation(body.collation ? body.collation : {})
       .skip((body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee)
       .limit(body.khuudasniiKhemjee);
-    console.log("jagsaalt", jagsaalt);
     let niitMur = await UstsanBarimt(
       req.body.tukhainBaaziinKholbolt
     ).countDocuments(body.query);

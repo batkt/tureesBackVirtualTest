@@ -1116,12 +1116,10 @@ router
             var gereenuud = await Geree(
               req.body.tukhainBaaziinKholbolt
             ).aggregate(query);
-            console.log("gereenuud", JSON.stringify(gereenuud, null, 4));
             if (result && result.jagsaalt && result.jagsaalt.length > 0) {
               result.jagsaalt = result.jagsaalt.filter((a) =>
                 gereenuud[0].niitUldegdel.find((b) => b._id == a.gereeniiDugaar)
               );
-              console.log("jagsaalt", result.jagsaalt);
               result.jagsaalt.forEach((x) => {
                 x.eneSardTulukhDun =
                   gereenuud[0].eneSardTulukhDun.find(
