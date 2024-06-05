@@ -1999,7 +1999,7 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
   try {
     var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
       .find({
-        tuluv: 1,
+        tuluv: { $ne: -1 },
       })
       .select("+avlaga +gereeniiTuukhuud");
     if (gereenuud) {
