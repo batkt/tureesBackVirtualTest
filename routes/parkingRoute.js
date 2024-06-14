@@ -317,11 +317,10 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var shineDun = 0;
     if (baiguullagiinId == "65435cdff2f5358696c61454") {
       tulsunDun = tulsunDun + 50; //sms 50tug
-      shineDun =
-        (await Math.round(
-          (tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100
-        )) / 100;
     }
+    shineDun =
+      (await Math.round((tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100)) /
+      100;
     const { db } = require("zevbackv2");
     var kholbolt = db.kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullagiinId
