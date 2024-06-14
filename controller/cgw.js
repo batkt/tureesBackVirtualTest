@@ -8,6 +8,7 @@ const xml2js = require("xml2js");
 const axios = require("axios");
 const got = require("got");
 const { URL } = require("url");
+var CryptoJS = require("crypto-js");
 const instance = got.extend({
   hooks: {
     beforeRequest: [
@@ -63,6 +64,220 @@ async function tokenAvya(
     return khariu;
   } catch (error) {
     console.log("tokenAvya -> error ", error);
+    if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!"));
+  }
+}
+exports.golomtDansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
+  try {
+    var body = req.body;
+    var { username, password, sessionKey, ivKey, dans, register } = body;
+    var yawuulaxBody = { registerNo: "3801683", accountId: "2205222174" };
+
+    var tokenObject = await Token(req.body.tukhainBaaziinKholbolt).findOne({
+      turul: "golomt",
+      baiguullagiinId: req.body.baiguullagiinId,
+      ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
+    });
+    //console.log("yawuulaxBodyS", yawuulaxBody);
+    var a = JSON.stringify(yawuulaxBody);
+    var hash = CryptoJS.SHA256(a.toString());
+    var hex = hash.toString(CryptoJS.enc.Hex);
+
+    // key-үүдийг parse хийж байгаа
+    var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
+    var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
+
+    var encrypted = CryptoJS.AES.encrypt(hex, sessionKey, {
+      mode: CryptoJS.mode.CBC,
+      iv: ivKey,
+      // padding: CryptoJS.pad.Pkcs5
+    });
+    var url = process.env.GOLOMT_SERVER + "/v1/account/balance/inq";
+    console.log("url", url);
+    console.log("encrypted", encrypted.toString());
+    const response = await got
+      .post(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + tokenObject.token,
+          "X-Golomt-Checksum": encrypted.toString(),
+          "X-Golomt-Service": "ACCTBALINQ",
+        },
+        json: yawuulaxBody,
+      })
+      .catch((err) => {
+        //console.log("error " + err.message);
+        console.log("aldaaaa ", JSON.stringify(err, null, 4));
+        throw err;
+      });
+    var stringKhariu = response?.body;
+    var khariu;
+    if (!!stringKhariu) {
+      var key = CryptoJS.enc.Latin1.parse("E8ces70tUuQCNf3N");
+      var iv = CryptoJS.enc.Latin1.parse("HvuaokEIeffrugyK");
+      var encrypt = CryptoJS.enc.Base64.parse(stringKhariu);
+      var decrypted = CryptoJS.AES.decrypt({ ciphertext: encrypt }, key, {
+        mode: CryptoJS.mode.CBC,
+        iv: iv,
+      });
+      console.log("decrypted", decrypted);
+      var plain = decrypted.toString(CryptoJS.enc.Utf8);
+      console.log("plain", plain);
+      var khariu = JSON.parse(plain);
+      console.log("khariu", khariu);
+    }
+    res.send(khariu);
+  } catch (error) {
+    console.log("tokenAvya -> error ", error);
+    if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!"));
+  }
+});
+
+async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
+  try {
+    var tokenObject = await Token(tukhainBaaziinKholbolt).findOne({
+      turul: "golomt",
+      baiguullagiinId: dans.baiguullagiinId,
+      ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
+    });
+    if (!tokenObject) {
+      var { username, password, sessionKey, ivKey } = dans;
+      var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
+      var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
+      var encryptedPass = await CryptoJS.AES.encrypt(password, sessionKey, {
+        mode: CryptoJS.mode.CBC,
+        iv: ivKey,
+      });
+      var url = process.env.GOLOMT_SERVER + "/v1/auth/login";
+      const response = await got
+        .post(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          json: { name: username, password: encryptedPass.toString() },
+        })
+        .catch((err) => {
+          console.log("error " + err.message);
+          throw err;
+        });
+      var khariu = JSON.parse(response.body);
+      Token(tukhainBaaziinKholbolt)
+        .updateOne(
+          { turul: "golomt", baiguullagiinId: dans.baiguullagiinId },
+          {
+            ognoo: new Date(),
+            token: khariu.token,
+            refreshToken: khariu.refreshToken,
+          },
+          { upsert: true }
+        )
+        .then((x) => {
+          console.log(x);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      tokenObject = khariu;
+    } else if (
+      tokenObject.ognoo < new Date(new Date().getTime() - 290000) //4min 50 sec-s umnu bwal sungax
+    ) {
+      console.log("sungaxruu orloo");
+      var url = process.env.GOLOMT_SERVER + "/v1/auth/refresh";
+      console.log("url", url);
+      console.log("tokenObject.refreshToken", tokenObject.refreshToken);
+      const response = await got
+        .get(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenObject.refreshToken,
+          },
+        })
+        .catch((err) => {
+          console.log("error " + err.message);
+          throw err;
+        });
+      console.log("response.body", response.body);
+      var khariu = JSON.parse(response.body);
+      Token(tukhainBaaziinKholbolt)
+        .updateOne(
+          { turul: "golomt", baiguullagiinId: dans.baiguullagiinId },
+          {
+            ognoo: new Date(),
+            token: khariu.token,
+            refreshToken: khariu.refreshToken,
+          },
+          { upsert: true }
+        )
+        .then((x) => {
+          console.log(x);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      tokenObject = khariu;
+    }
+    return tokenObject;
+  } catch (error) {
+    console.log("tokenAvya -> error ", error);
+    new Error("Банктай холбогдоход алдаа гарлаа!");
+  }
+}
+
+async function golomtServiceDuudya(
+  dans,
+  yawuulaxBody,
+  url,
+  serviceNer,
+  next,
+  tukhainBaaziinKholbolt
+) {
+  try {
+    var { sessionKey, ivKey } = dans;
+    var tokenObject = await golomtTokenAvya(dans, tukhainBaaziinKholbolt);
+    console.log("tokenObject", tokenObject);
+    var a = JSON.stringify(yawuulaxBody);
+    var hash = CryptoJS.SHA256(a.toString());
+    var hex = hash.toString(CryptoJS.enc.Hex);
+    var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
+    var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
+    var encrypted = CryptoJS.AES.encrypt(hex, sessionKey, {
+      mode: CryptoJS.mode.CBC,
+      iv: ivKey,
+    });
+    var url = process.env.GOLOMT_SERVER + url; //"/v1/account/balance/inq";
+    const response = await got
+      .post(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + tokenObject.token,
+          "X-Golomt-Checksum": encrypted.toString(),
+          "X-Golomt-Service": serviceNer, //"ACCTBALINQ",
+        },
+        json: yawuulaxBody,
+      })
+      .catch((err) => {
+        console.log("aldaaaa ", JSON.stringify(err, null, 4));
+        throw err;
+      });
+    var stringKhariu = response?.body;
+    var khariu;
+    if (!!stringKhariu) {
+      console.log("stringKhariu ", stringKhariu);
+      var encrypt = CryptoJS.enc.Base64.parse(stringKhariu);
+      var decrypted = CryptoJS.AES.decrypt(
+        { ciphertext: encrypt },
+        sessionKey,
+        {
+          mode: CryptoJS.mode.CBC,
+          iv: ivKey,
+        }
+      );
+      var plain = decrypted.toString(CryptoJS.enc.Utf8);
+      var khariu = JSON.parse(plain);
+    }
+    return khariu;
+  } catch (error) {
+    console.log("golomt service aldaa -> error ", error);
     if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!"));
   }
 }
@@ -383,6 +598,18 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         },
         dans.baiguullagiinId
       );
+    } else if (dans && dans.bank == "golomt") {
+      var yawuulaxBody = { registerNo: dans.register, accountId: dans.dugaar };
+      var khariu = await golomtServiceDuudya(
+        dans,
+        yawuulaxBody,
+        "/v1/account/balance/inq",
+        "ACCTBALINQ",
+        next,
+        req.body.tukhainBaaziinKholbolt
+      );
+      console.log("khariu", khariu);
+      res.send(khariu);
     }
   } catch (err) {
     next(err);
@@ -394,6 +621,20 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     var dansnuud;
+    var firstDay;
+    var lastDay;
+    if (req && req.body && req.body.ognoo) {
+      var ognoo = new Date(req.body.ognoo);
+      firstDay = new Date(ognoo.getFullYear(), ognoo.getMonth(), 1);
+      lastDay = new Date(ognoo.getFullYear(), ognoo.getMonth() + 1, 0);
+    } else {
+      firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+      lastDay = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth() + 1,
+        0
+      );
+    }
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
         if (!req)
@@ -408,6 +649,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
             })
             .lean();
         }
+        console.log("dansnuud", dansnuud);
         if (dansnuud)
           for await (const dans of dansnuud) {
             try {
@@ -532,28 +774,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   )
                   .then((resa) => console.log(resa))
                   .catch((err) => console.log(err));
-                var firstDay;
-                var lastDay;
-                if (req && req.body && req.body.ognoo) {
-                  var ognoo = new Date(req.body.ognoo);
-                  firstDay = new Date(ognoo.getFullYear(), ognoo.getMonth(), 1);
-                  lastDay = new Date(
-                    ognoo.getFullYear(),
-                    ognoo.getMonth() + 1,
-                    0
-                  );
-                } else {
-                  firstDay = new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth(),
-                    1
-                  );
-                  lastDay = new Date(
-                    new Date().getFullYear(),
-                    new Date().getMonth() + 1,
-                    0
-                  );
-                }
                 var textUseg = "A";
                 if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")
                   textUseg = "U";
@@ -660,6 +880,103 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   },
                   dans.baiguullagiinId
                 );
+              } else if (dans.bank == "golomt") {
+                var max = await BankniiGuilgee(kholbolt)
+                  .findOne({
+                    barilgiinId: dans.barilgiinId,
+                    dansniiDugaar: dans.dugaar,
+                  })
+                  .sort({ createdAt: -1 })
+                  .limit(1);
+                if (!!max) {
+                  console.log("max baina", max);
+                  console.log("max.tranDate", max.tranDate);
+                  firstDay = new Date(max.tranDate);
+                }
+                var yawuulaxBody = {
+                  registerNo: dans.register,
+                  accountId: dans.dugaar,
+                  startDate:
+                    firstDay.getFullYear() +
+                    "-" +
+                    (firstDay.getMonth() < 9 ? "0" : "") +
+                    (firstDay.getMonth() + 1) +
+                    "-" +
+                    (firstDay.getDate() < 10 ? "0" : "") +
+                    firstDay.getDate(),
+                  endDate:
+                    lastDay.getFullYear() +
+                    "-" +
+                    (lastDay.getMonth() < 9 ? "0" : "") +
+                    (lastDay.getMonth() + 1) +
+                    "-" +
+                    (lastDay.getDate() < 10 ? "0" : "") +
+                    lastDay.getDate(),
+                };
+                console.log("yawuulaxBody", yawuulaxBody);
+                var khariu = await golomtServiceDuudya(
+                  dans,
+                  yawuulaxBody,
+                  "/v1/account/operative/statement",
+                  "OPERACCTSTA",
+                  next,
+                  req.body.tukhainBaaziinKholbolt
+                );
+                console.log("khariu", khariu);
+                if (
+                  !!khariu &&
+                  !!khariu.statements &&
+                  khariu.statements.length > 0
+                ) {
+                  var guilgeenuud = [];
+                  khariu.statements.forEach((mur) => {
+                    guilgeenuud.push(
+                      new BankniiGuilgee(kholbolt)({
+                        requestId: mur?.requestId,
+                        recNum: mur?.recNum,
+                        tranId: mur?.tranId,
+                        tranDate: mur?.tranDate,
+                        drOrCr: mur?.drOrCr,
+                        tranAmount: mur?.tranAmount,
+                        tranDesc: mur?.tranDesc,
+                        tranPostedDate: mur?.tranPostedDate,
+                        tranCrnCode: mur?.tranCrnCode,
+                        exchRate: mur?.exchRate,
+                        balance: mur?.balance,
+                        accName: mur?.accName,
+                        accNum: mur?.accNum,
+                      })
+                    );
+                  });
+                  guilgeenuud.forEach((x) => {
+                    x.dansniiDugaar = dans.dugaar;
+                    x.baiguullagiinId = dans.baiguullagiinId;
+                    x.barilgiinId = dans.barilgiinId;
+                  });
+                  if (guilgeenuud) {
+                    var ustgakhJagsaalt = [];
+                    for await (const item of guilgeenuud) {
+                      var guilgee = await BankniiGuilgee(kholbolt).findOne({
+                        tranId: item.tranId,
+                        barilgiinId: dans.barilgiinId,
+                      });
+                      if (guilgee) ustgakhJagsaalt.push(item);
+                    }
+                    if (!!ustgakhJagsaalt) {
+                      guilgeenuud = guilgeenuud.filter(
+                        (el) => !ustgakhJagsaalt.includes(el)
+                      );
+                    }
+                  }
+                  BankniiGuilgee(kholbolt)
+                    .insertMany(guilgeenuud)
+                    .then((result) => {
+                      if (res) res.send("Amjilttai");
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
+                }
               }
             } catch (aldaaa) {
               console.log("tatax ued aldaa garlaa ==> ", aldaaa);
@@ -771,6 +1088,14 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
     var dansnuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
+        var firstDay;
+        var lastDay;
+        firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        lastDay = new Date(
+          new Date().getFullYear(),
+          new Date().getMonth() + 1,
+          0
+        );
         dansnuud = await Dans(kholbolt)
           .find({
             corporateAshiglakhEsekh: true,
@@ -902,18 +1227,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   )
                   .then((resa) => console.log(resa))
                   .catch((err) => console.log(err));
-                var firstDay;
-                var lastDay;
-                firstDay = new Date(
-                  new Date().getFullYear(),
-                  new Date().getMonth(),
-                  1
-                );
-                lastDay = new Date(
-                  new Date().getFullYear(),
-                  new Date().getMonth() + 1,
-                  0
-                );
                 var textUseg = "A";
                 if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")
                   textUseg = "U";
@@ -1024,6 +1337,117 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   },
                   dans.baiguullagiinId
                 );
+              } else if (dans.bank == "golomt") {
+                var max = await BankniiGuilgee(kholbolt)
+                  .findOne({
+                    barilgiinId: dans.barilgiinId,
+                    dansniiDugaar: dans.dugaar,
+                  })
+                  .sort({ createdAt: -1 })
+                  .limit(1);
+                if (!!max) {
+                  firstDay = new Date(max.tranDate);
+                }
+                var yawuulaxBody = {
+                  registerNo: dans.register,
+                  accountId: dans.dugaar,
+                  startDate:
+                    firstDay.getFullYear() +
+                    "-" +
+                    (firstDay.getMonth() < 9 ? "0" : "") +
+                    (firstDay.getMonth() + 1) +
+                    "-" +
+                    (firstDay.getDate() < 10 ? "0" : "") +
+                    firstDay.getDate(),
+                  endDate:
+                    lastDay.getFullYear() +
+                    "-" +
+                    (lastDay.getMonth() < 9 ? "0" : "") +
+                    (lastDay.getMonth() + 1) +
+                    "-" +
+                    (lastDay.getDate() < 10 ? "0" : "") +
+                    lastDay.getDate(),
+                };
+                var khariu = await golomtServiceDuudya(
+                  dans,
+                  yawuulaxBody,
+                  "/v1/account/operative/statement",
+                  "OPERACCTSTA",
+                  null,
+                  kholbolt
+                );
+                console.log("khariu", khariu);
+                if (
+                  !!khariu &&
+                  !!khariu.statements &&
+                  khariu.statements.length > 0
+                ) {
+                  var guilgeenuud = [];
+                  khariu.statements.forEach((mur) => {
+                    guilgeenuud.push(
+                      new BankniiGuilgee(kholbolt)({
+                        requestId: mur?.requestId,
+                        recNum: mur?.recNum,
+                        tranId: mur?.tranId,
+                        tranDate: mur?.tranDate,
+                        drOrCr: mur?.drOrCr,
+                        tranAmount: mur?.tranAmount,
+                        tranDesc: mur?.tranDesc,
+                        tranPostedDate: mur?.tranPostedDate,
+                        tranCrnCode: mur?.tranCrnCode,
+                        exchRate: mur?.exchRate,
+                        balance: mur?.balance,
+                        accName: mur?.accName,
+                        accNum: mur?.accNum,
+                      })
+                    );
+                  });
+                  guilgeenuud.forEach((x) => {
+                    x.dansniiDugaar = dans.dugaar;
+                    x.baiguullagiinId = dans.baiguullagiinId;
+                    x.barilgiinId = dans.barilgiinId;
+                  });
+                  if (guilgeenuud) {
+                    var ustgakhJagsaalt = [];
+                    for await (const item of guilgeenuud) {
+                      var guilgee = await BankniiGuilgee(kholbolt).findOne({
+                        tranId: item.tranId,
+                        barilgiinId: dans.barilgiinId,
+                      });
+                      if (guilgee) ustgakhJagsaalt.push(item);
+                    }
+                    if (!!ustgakhJagsaalt) {
+                      guilgeenuud = guilgeenuud.filter(
+                        (el) => !ustgakhJagsaalt.includes(el)
+                      );
+                    }
+                  }
+                  for await (const item of guilgeenuud) {
+                    if (!!dans.zogsooliinId) {
+                      var url =
+                        "http://" +
+                        process.env.UNDSEN_IP +
+                        ":" +
+                        process.env.PORT +
+                        "/zogsooliinTulburOrjIrlee";
+                      axios
+                        .post(url, {
+                          baiguullagiinId: dans.baiguullagiinId,
+                          tulsunDun: item.tranAmount,
+                          zogsooliinId: dans.zogsooliinId,
+                        })
+                        .catch(function (error) {});
+                    }
+                  }
+                  BankniiGuilgee(kholbolt)
+                    .insertMany(guilgeenuud)
+                    .then((result) => {
+                      console.log("golomt xuulga tatsan");
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
+                }
               }
             } catch (aldaaa) {
               console.log("tatax ued aldaa garlaa ==> ", aldaaa);

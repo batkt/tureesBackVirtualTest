@@ -13,6 +13,7 @@ const {
   dansniiUldegdelAvya,
   bankniiKhuulgaTatajKhadgalya,
   tdbUldegdelShalgay,
+  golomtDansniiUldegdelAvya,
 } = require("../controller/cgw");
 
 const { qpayGargaya, qpayTulye } = require("../controller/qpay");
@@ -66,7 +67,6 @@ router.route("/khariltsagchNevtrey").post(khariltsagchNevtrey);
 router.route("/sergeekhKodAvya").post(sergeekhKodAvya);
 router.route("/nuutsUgSergeeye").post(nuutsUgSergeeye);
 router.route("/tokenoorKhariltsagchAvya").post(tokenoorKhariltsagchAvya);
-router.route("/tokenoorKhariltsagchAvya").post(tokenoorKhariltsagchAvya);
 router.route("/khariltsagchidTokenOnooyo").post(khariltsagchidTokenOnooyo);
 router
   .route("/khariltsagchiinTooAvya/:barilgiinId")
@@ -75,6 +75,9 @@ router
   .route("/khyanakhSambariinUgugdul")
   .post(tokenShalgakh, khyanakhSambariinUgugdul);
 router.route("/dansniiUldegdelAvya").post(tokenShalgakh, dansniiUldegdelAvya);
+router
+  .route("/golomtDansniiUldegdelAvya")
+  .post(tokenShalgakh, golomtDansniiUldegdelAvya);
 // router.route("/qpayGargaya").post(tokenShalgakh, qpayGargaya);
 router.route("/qpayTulye/:baiguullagiinId/:barilgiinId/:dugaar").get(qpayTulye);
 router
