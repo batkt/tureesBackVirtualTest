@@ -8,6 +8,13 @@ const ashiglaltiinZardluudSchema = new Schema(
     barilgiinId: String,
     ner: String,
     turul: String,
+    bodokhArga: String, //togtmol tomyotoi baidag arguud
+    tseverUsDun: Number, // xaluun xuiten ustei ued xatuu bodno
+    bokhirUsDun: Number, // xaluun xuiten ustei ued xatuu bodno
+    usKhalaasniiDun: Number, // xaluun us ued xatuu bodno
+    tsakhilgaanUrjver: Number, //tsakhilgaanii coefficent
+    tsakhilgaanChadal: Number,
+    tsakhilgaanDemjikh: Number,
     tariff: String,
     suuriKhuraamj: String,
     nuatNemekhEsekh: Boolean,
