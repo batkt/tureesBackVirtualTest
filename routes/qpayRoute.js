@@ -24,6 +24,7 @@ router.get(
       var kholbolt = db.kholboltuud.find((a) => a.baiguullagiinId == b);
       const qpayObject = await QuickQpayObject(kholbolt).findOne({
         zakhialgiinDugaar: req.params.zakhialgiinDugaar,
+        tulsunEsekh: false,
       });
       console.log("qpayObject ", qpayObject);
 
