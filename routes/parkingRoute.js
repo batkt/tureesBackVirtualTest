@@ -1565,6 +1565,9 @@ router.route("/pass/pay").post(async (req, res, next) => {
         }
       );
       tukhainObject.niitDun = req.body.tulukhDun;
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+        tukhainObject.baiguullagiinId
+      );
       var tuxainSalbar = baiguullaga?.barilguud?.find(
         (e) => e._id.toString() == tukhainObject.barilgiinId
       )?.tokhirgoo;
