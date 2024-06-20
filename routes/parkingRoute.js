@@ -1267,14 +1267,14 @@ router.route("/v1/pay").post(async (req, res, next) => {
       success,
       message,
     };
+    if (!tukhainObject) {
+      res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
+    }
     bodsonDun = await zogsooliinDunAvya(
       tukhainZogsool,
       tukhainObject,
       tukhainKholbolt
     );
-    if (!tukhainObject) {
-      res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
-    }
     if (
       tukhainObject &&
       tukhainObject.tuukh &&
@@ -1501,9 +1501,6 @@ router.route("/pass/pay").post(async (req, res, next) => {
               "tuukh.0.tuluv": {
                 $nin: [-2, -3],
               },
-              updatedAt: {
-                $gt: new Date(Date.now() - 300000), //5min dotor
-              },
             });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
@@ -1521,14 +1518,14 @@ router.route("/pass/pay").post(async (req, res, next) => {
       success,
       message,
     };
+    if (!tukhainObject) {
+      res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
+    }
     bodsonDun = await zogsooliinDunAvya(
       tukhainZogsool,
       tukhainObject,
       tukhainKholbolt
     );
-    if (!tukhainObject) {
-      res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
-    }
     if (
       tukhainObject &&
       tukhainObject.tuukh &&
