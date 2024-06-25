@@ -545,7 +545,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       );
       console.log("khariu", khariu);
       if (!!khariu && !!khariu.balanceLL && !!khariu.balanceLL.length > 0)
-        khariu = khariu?.balanceLL[0].amount?.value?.toString();
+        khariu = { uldegdel: khariu?.balanceLL[0].amount?.value };
       res.send(khariu);
     }
   } catch (err) {
