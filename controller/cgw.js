@@ -73,7 +73,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     var tokenObject = await Token(tukhainBaaziinKholbolt).findOne({
       turul: "golomt",
       baiguullagiinId: dans.baiguullagiinId,
-      ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
+      ognoo: { $gte: new Date(new Date().getTime() - 290000) }, //29 * 60000) }, 30min aldaa zaagad baina golomt deer
     });
     if (!tokenObject) {
       var { username, password, sessionKey, ivKey } = dans;
