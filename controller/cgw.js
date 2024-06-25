@@ -125,6 +125,8 @@ exports.golomtDansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       console.log("plain", plain);
       var khariu = JSON.parse(plain);
       console.log("khariu", khariu);
+      if (!!khariu && !!khariu.balanceLL && !!khariu.balanceLL.length > 0)
+        khariu = khariu?.balanceLL[0].amount?.value;
     }
     res.send(khariu);
   } catch (error) {
