@@ -67,73 +67,6 @@ async function tokenAvya(
     if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!"));
   }
 }
-exports.golomtDansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
-  try {
-    var body = req.body;
-    var { username, password, sessionKey, ivKey, dans, register } = body;
-    var yawuulaxBody = { registerNo: "3801683", accountId: "2205222174" };
-
-    var tokenObject = await Token(req.body.tukhainBaaziinKholbolt).findOne({
-      turul: "golomt",
-      baiguullagiinId: req.body.baiguullagiinId,
-      ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
-    });
-    //console.log("yawuulaxBodyS", yawuulaxBody);
-    var a = JSON.stringify(yawuulaxBody);
-    var hash = CryptoJS.SHA256(a.toString());
-    var hex = hash.toString(CryptoJS.enc.Hex);
-
-    // key-үүдийг parse хийж байгаа
-    var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
-    var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
-
-    var encrypted = CryptoJS.AES.encrypt(hex, sessionKey, {
-      mode: CryptoJS.mode.CBC,
-      iv: ivKey,
-      // padding: CryptoJS.pad.Pkcs5
-    });
-    var url = process.env.GOLOMT_SERVER + "/v1/account/balance/inq";
-    console.log("url", url);
-    console.log("encrypted", encrypted.toString());
-    const response = await got
-      .post(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + tokenObject.token,
-          "X-Golomt-Checksum": encrypted.toString(),
-          "X-Golomt-Service": "ACCTBALINQ",
-        },
-        json: yawuulaxBody,
-      })
-      .catch((err) => {
-        //console.log("error " + err.message);
-        console.log("aldaaaa ", JSON.stringify(err, null, 4));
-        throw err;
-      });
-    var stringKhariu = response?.body;
-    var khariu;
-    if (!!stringKhariu) {
-      var key = CryptoJS.enc.Latin1.parse("E8ces70tUuQCNf3N");
-      var iv = CryptoJS.enc.Latin1.parse("HvuaokEIeffrugyK");
-      var encrypt = CryptoJS.enc.Base64.parse(stringKhariu);
-      var decrypted = CryptoJS.AES.decrypt({ ciphertext: encrypt }, key, {
-        mode: CryptoJS.mode.CBC,
-        iv: iv,
-      });
-      console.log("decrypted", decrypted);
-      var plain = decrypted.toString(CryptoJS.enc.Utf8);
-      console.log("plain", plain);
-      var khariu = JSON.parse(plain);
-      console.log("khariu", khariu);
-      if (!!khariu && !!khariu.balanceLL && !!khariu.balanceLL.length > 0)
-        khariu = khariu?.balanceLL[0].amount?.value;
-    }
-    res.send(khariu);
-  } catch (error) {
-    console.log("tokenAvya -> error ", error);
-    if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!"));
-  }
-});
 
 async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
   try {
@@ -611,6 +544,8 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         req.body.tukhainBaaziinKholbolt
       );
       console.log("khariu", khariu);
+      if (!!khariu && !!khariu.balanceLL && !!khariu.balanceLL.length > 0)
+        khariu = khariu?.balanceLL[0].amount?.value;
       res.send(khariu);
     }
   } catch (err) {
