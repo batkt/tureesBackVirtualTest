@@ -1070,7 +1070,7 @@ router.get(
       message = "Машины мэдээлэл олдсонгүй!";
       success = false;
     }
-    if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
+    if (!!freeze && !!oldsonMashin) {
       await Uilchluulegch(tukhainKholbolt).updateOne(
         { _id: oldsonMashin._id },
         {
