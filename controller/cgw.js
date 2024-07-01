@@ -207,14 +207,13 @@ async function transTokenAvya(req, res, next) {
   }
 }
 
-async function transDansAvya(req, res, next) {
+async function transDansUldegdelAvya(req, res, next) {
   try {
     var tokenObject = await transTokenAvya(req, res, next);
     var token = tokenObject.token;
     var baiguullagiinId = req.body.baiguullagiinId;
     var tukhainBaaziinKholbolt = req.body.tukhainBaaziinKholbolt;
-
-    var url = process.env.TRANS_SERVER + "/getAccountList?apikey=p{2PbG";
+    var url = process.env.TRANS_SERVER + "/getAccountBalance?apikey=p{2PbG";
     const response = await got
       .post(url, {
         headers: {
@@ -222,8 +221,7 @@ async function transDansAvya(req, res, next) {
           Authorization: "Bearer " + tokenObject.token,
         },
         json: {
-          username: "9900022424",
-          password: "9900022424",
+          acnt_code: "MN660019009090003918",
         },
       })
       .catch((err) => {
@@ -234,11 +232,12 @@ async function transDansAvya(req, res, next) {
     tokenObject = khariu;
     return res.send(tokenObject);
   } catch (error) {
-    console.log("transDansAvya -> error ", error);
+    console.log("transDansUldegdelAvya -> error ", error);
     new Error("Банктай холбогдоход алдаа гарлаа!");
   }
 }
-exports.transTokenAvya = transDansAvya;
+
+exports.transTokenAvya = transDansUldegdelAvya;
 
 async function golomtServiceDuudya(
   dans,
