@@ -169,9 +169,13 @@ async function transTokenAvya(req, res, next) {
     if (!tokenObject) {
       var url = process.env.TRANS_SERVER + "/getToken?apikey=p{2PbG";
       const response = await got
-        .post(url, {
+        .get(url, {
           headers: {
             "Content-Type": "application/json",
+          },
+          json: {
+            username: "9900022424",
+            password: "9900022424",
           },
         })
         .catch((err) => {
