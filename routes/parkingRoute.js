@@ -1584,8 +1584,8 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
       } else {
         var ebarimt = await zogsooloosEbarimtUusgye(
           tukhainObject,
-          req.body.customer_no,
-          req.body.individual ? null : "3",
+          req.body.register,
+          req.body.register ? "3" : null,
           tukhainKholbolt,
           nuatTulukhEsekh
         );
