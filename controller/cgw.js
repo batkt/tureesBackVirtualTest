@@ -200,13 +200,47 @@ async function transTokenAvya(req, res, next) {
         });
       tokenObject = khariu;
     }
-    return res.send(tokenObject);
+    return tokenObject;
   } catch (error) {
     console.log("tokenAvya -> error ", error);
     new Error("Банктай холбогдоход алдаа гарлаа!");
   }
 }
-exports.transTokenAvya = transTokenAvya;
+
+async function transDansAvya(req, res, next) {
+  try {
+    var tokenObject = await transTokenAvya(req, res, next);
+    var token = tokenObject.token;
+    var baiguullagiinId = req.body.baiguullagiinId;
+    var tukhainBaaziinKholbolt = req.body.tukhainBaaziinKholbolt;
+
+    if (!tokenObject) {
+      var url = process.env.TRANS_SERVER + "/getAccountList?apikey=p{2PbG";
+      const response = await got
+        .post(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenObject.token,
+          },
+          json: {
+            username: "9900022424",
+            password: "9900022424",
+          },
+        })
+        .catch((err) => {
+          console.log("error " + err.message);
+          throw err;
+        });
+      var khariu = JSON.parse(response.body);
+      tokenObject = khariu;
+    }
+    return res.send(tokenObject);
+  } catch (error) {
+    console.log("transDansAvya -> error ", error);
+    new Error("Банктай холбогдоход алдаа гарлаа!");
+  }
+}
+exports.transTokenAvya = transDansAvya;
 
 async function golomtServiceDuudya(
   dans,
