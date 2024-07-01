@@ -236,8 +236,41 @@ async function transDansUldegdelAvya(req, res, next) {
     new Error("Банктай холбогдоход алдаа гарлаа!");
   }
 }
+async function transKhuulgaAvya(req, res, next) {
+  try {
+    var tokenObject = await transTokenAvya(req, res, next);
+    var token = tokenObject.token;
+    var baiguullagiinId = req.body.baiguullagiinId;
+    var tukhainBaaziinKholbolt = req.body.tukhainBaaziinKholbolt;
+    var url = process.env.TRANS_SERVER + "/getStatement?apikey=p{2PbG";
+    const response = await got
+      .post(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + tokenObject.token,
+        },
+        json: {
+          acnt_code: "MN660019009090003918",
+          start_date: "2024-06-01",
+          end_date: "2024-06-30",
+          start_paging_position: 0,
+          page_row_count: 10,
+        },
+      })
+      .catch((err) => {
+        console.log("error " + err.message);
+        throw err;
+      });
+    var khariu = JSON.parse(response.body);
+    tokenObject = khariu;
+    return res.send(tokenObject);
+  } catch (error) {
+    console.log("transDansUldegdelAvya -> error ", error);
+    new Error("Банктай холбогдоход алдаа гарлаа!");
+  }
+}
 
-exports.transTokenAvya = transDansUldegdelAvya;
+exports.transTokenAvya = transKhuulgaAvya;
 
 async function golomtServiceDuudya(
   dans,
