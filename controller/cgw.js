@@ -169,7 +169,7 @@ async function transTokenAvya(req, res, next) {
     if (!tokenObject) {
       var url = process.env.TRANS_SERVER + "/getToken?apikey=p{2PbG";
       const response = await got
-        .get(url, {
+        .post(url, {
           headers: {
             "Content-Type": "application/json",
           },
