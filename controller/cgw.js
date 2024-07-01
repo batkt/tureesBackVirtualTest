@@ -181,7 +181,7 @@ async function transTokenAvya(req, res, next) {
       var khariu = JSON.parse(response.body);
       Token(tukhainBaaziinKholbolt)
         .updateOne(
-          { turul: "golomt", baiguullagiinId },
+          { turul: "trans", baiguullagiinId },
           {
             ognoo: new Date(),
             token: khariu.result,
