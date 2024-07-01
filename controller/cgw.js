@@ -157,6 +157,52 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     new Error("Банктай холбогдоход алдаа гарлаа!");
   }
 }
+async function transTokenAvya(req, res, next) {
+  try {
+    var baiguullagiinId = req.body.baiguullagiinId;
+    var tukhainBaaziinKholbolt = req.body.tukhainBaaziinKholbolt;
+    var tokenObject = await Token(tukhainBaaziinKholbolt).findOne({
+      turul: "trans",
+      baiguullagiinId: baiguullagiinId,
+      ognoo: { $gte: new Date(new Date().getTime() - 590000) }, //59 * 60000) },
+    });
+    if (!tokenObject) {
+      var url = process.env.TRANS_SERVER + "/getToken?apikey=p{2PbG";
+      const response = await got
+        .post(url, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .catch((err) => {
+          console.log("error " + err.message);
+          throw err;
+        });
+      var khariu = JSON.parse(response.body);
+      Token(tukhainBaaziinKholbolt)
+        .updateOne(
+          { turul: "golomt", baiguullagiinId },
+          {
+            ognoo: new Date(),
+            token: khariu.result,
+          },
+          { upsert: true }
+        )
+        .then((x) => {
+          console.log(x);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      tokenObject = khariu;
+    }
+    return res.send(tokenObject);
+  } catch (error) {
+    console.log("tokenAvya -> error ", error);
+    new Error("Банктай холбогдоход алдаа гарлаа!");
+  }
+}
+exports.transTokenAvya = transTokenAvya;
 
 async function golomtServiceDuudya(
   dans,
