@@ -1547,6 +1547,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
             );
         }
       }
+      console.log("pass pay", set);
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
         tukhainObject._id,
         {
