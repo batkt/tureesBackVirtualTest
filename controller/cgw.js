@@ -1021,14 +1021,18 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       start_date:
                         firstDay.getFullYear() +
                         "-" +
+                        (firstDay.getMonth() < 9 ? "0" : "") +
                         (firstDay.getMonth() + 1) +
                         "-" +
+                        (firstDay.getDate() < 10 ? "0" : "") +
                         firstDay.getDate(),
                       end_date:
                         lastDay.getFullYear() +
                         "-" +
+                        (lastDay.getMonth() < 9 ? "0" : "") +
                         (lastDay.getMonth() + 1) +
                         "-" +
+                        (lastDay.getDate() < 10 ? "0" : "") +
                         lastDay.getDate(),
                       start_paging_position: 0,
                       page_row_count: 10,
