@@ -1031,7 +1031,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         "-" +
                         lastDay.getDate(),
                       start_paging_position: 0,
-                      page_row_count: 100,
+                      page_row_count: 10,
                     },
                   })
                   .catch((err) => {
