@@ -66,7 +66,7 @@ const bankniiGuilgeeSchema = new Schema(
     contAcntCode: String,
     contBankAcntCode: String,
     contBankAcntName: String,
-    txnDesc: Number,
+    txnDesc: String,
     txnDate: String,
 
     ebarimtAvsanEsekh: Boolean,
