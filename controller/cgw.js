@@ -157,25 +157,22 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     new Error("Банктай холбогдоход алдаа гарлаа!");
   }
 }
-async function transTokenAvya(req, res, next) {
+async function transTokenAvya(dans, tukhainBaaziinKholbolt) {
   try {
-    var baiguullagiinId = req.body.baiguullagiinId;
-    var tukhainBaaziinKholbolt = req.body.tukhainBaaziinKholbolt;
     var tokenObject = await Token(tukhainBaaziinKholbolt).findOne({
       turul: "trans",
-      baiguullagiinId: baiguullagiinId,
       ognoo: { $gte: new Date(new Date().getTime() - 590000) }, //59 * 60000) },
     });
     if (!tokenObject) {
-      var url = process.env.TRANS_SERVER + "/getToken?apikey=p{2PbG";
+      var url = process.env.TRANS_SERVER + "/getToken?" + dans.apikey; //=p{2PbG
       const response = await got
         .post(url, {
           headers: {
             "Content-Type": "application/json",
           },
           json: {
-            username: "9900022424",
-            password: "9900022424",
+            username: dans.corporateNevtrekhNer,
+            password: dans.corporateNuutsUg, //"9900022424"
           },
         })
         .catch((err) => {
@@ -183,9 +180,10 @@ async function transTokenAvya(req, res, next) {
           throw err;
         });
       var khariu = JSON.parse(response.body);
+      tokenObject = khariu;
       Token(tukhainBaaziinKholbolt)
         .updateOne(
-          { turul: "trans", baiguullagiinId },
+          { turul: "trans" },
           {
             ognoo: new Date(),
             token: khariu.result,
@@ -198,7 +196,6 @@ async function transTokenAvya(req, res, next) {
         .catch((e) => {
           console.log(e);
         });
-      tokenObject = khariu;
     }
     return tokenObject;
   } catch (error) {
@@ -238,10 +235,10 @@ async function transDansUldegdelAvya(req, res, next) {
 }
 async function transKhuulgaAvya(req, res, next) {
   try {
-    var tokenObject = await transTokenAvya(req, res, next);
-    var token = tokenObject.token;
-    var baiguullagiinId = req.body.baiguullagiinId;
-    var tukhainBaaziinKholbolt = req.body.tukhainBaaziinKholbolt;
+    var tokenObject = await transTokenAvya(
+      dans,
+      req.body.tukhainBaaziinKholbolt
+    );
     var url = process.env.TRANS_SERVER + "/getStatement?apikey=p{2PbG";
     const response = await got
       .post(url, {
@@ -252,7 +249,7 @@ async function transKhuulgaAvya(req, res, next) {
         json: {
           acnt_code: "MN660019009090003918",
           start_date: "2024-06-01",
-          end_date: "2024-06-30",
+          end_date: "2024-07-02",
           start_paging_position: 0,
           page_row_count: 10,
         },
@@ -270,7 +267,7 @@ async function transKhuulgaAvya(req, res, next) {
   }
 }
 
-exports.transTokenAvya = transDansUldegdelAvya;
+exports.transTokenAvya = transKhuulgaAvya;
 
 async function golomtServiceDuudya(
   dans,
@@ -661,6 +658,29 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       if (!!khariu && !!khariu.balanceLL && !!khariu.balanceLL.length > 0)
         khariu = { uldegdel: khariu?.balanceLL[0].amount?.value };
       res.send(khariu);
+    } else if (dans && dans.bank == "trans") {
+      var tokenObject = await transTokenAvya(
+        dans,
+        req.body.tukhainBaaziinKholbolt
+      );
+      var url = process.env.TRANS_SERVER + "/getAccountBalance?" + dans.apikey;
+      const response = await got
+        .post(url, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + tokenObject.token,
+          },
+          json: {
+            acnt_code: dans.acnt_code, //"MN660019009090003918"
+          },
+        })
+        .catch((err) => {
+          console.log("error " + err.message);
+          throw err;
+        });
+      var khariu = JSON.parse(response.body);
+      tokenObject = khariu;
+      return res.send(tokenObject);
     }
   } catch (err) {
     next(err);
@@ -1028,6 +1048,32 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       console.log(err);
                     });
                 }
+              } else if (dans.bank == "trans") {
+                var tokenObject = await transTokenAvya(
+                  dans,
+                  req.body.tukhainBaaziinKholbolt
+                );
+                var url =
+                  process.env.TRANS_SERVER +
+                  "/getAccountBalance?" +
+                  dans.apikey;
+                const response = await got
+                  .post(url, {
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: "Bearer " + tokenObject.token,
+                    },
+                    json: {
+                      acnt_code: dans.acnt_code, //"MN660019009090003918"
+                    },
+                  })
+                  .catch((err) => {
+                    console.log("error " + err.message);
+                    throw err;
+                  });
+                var khariu = JSON.parse(response.body);
+                tokenObject = khariu;
+                return res.send(tokenObject);
               }
             } catch (aldaaa) {
               console.log("tatax ued aldaa garlaa ==> ", aldaaa);
