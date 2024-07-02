@@ -13,7 +13,6 @@ const {
   dansniiUldegdelAvya,
   bankniiKhuulgaTatajKhadgalya,
   tdbUldegdelShalgay,
-  transTokenAvya,
 } = require("../controller/cgw");
 
 const { qpayGargaya, qpayTulye } = require("../controller/qpay");
@@ -84,7 +83,6 @@ router.route("/tdbUldegdelShalgay").post(tokenShalgakh, tdbUldegdelShalgay);
 router
   .route("/khariltsagchZagvarAvya")
   .get(tokenShalgakh, khariltsagchZagvarAvya);
-router.route("/transTokenAvya").get(tokenShalgakh, transTokenAvya);
 router
   .route("/khariltsagchTatya")
   .post(uploadFile.single("file"), tokenShalgakh, khariltsagchTatya);
