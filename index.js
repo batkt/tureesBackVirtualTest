@@ -104,17 +104,17 @@ zuragPack(app);
 
 app.use(aldaaBarigch);
 
-// cron.schedule(
-//   "*/5 * * * * ",
-//   function () {
-//     // console.log("xuulga tatlaa", new Date());
-//     cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "*/5 * * * * ",
+  function () {
+    // console.log("xuulga tatlaa", new Date());
+    cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 cron.schedule(
   "59 23 * * *",
@@ -140,103 +140,103 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "30 9 * * * ",
-//   function () {
-//     ajiltanController.orlogiinMsgIlgeeye("09:30");
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "30 9 * * * ",
+  function () {
+    ajiltanController.orlogiinMsgIlgeeye("09:30");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
-// cron.schedule(
-//   "1 7 * * * ",
-//   function () {
-//     ajiltanController.orlogiinMsgIlgeeye("07:00");
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
-// cron.schedule(
-//   "1 20 * * * ",
-//   function () {
-//     ajiltanController.orlogiinMsgIlgeeye("20:00");
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
-// cron.schedule(
-//   "1 22 * * * ",
-//   function () {
-//     ajiltanController.orlogiinMsgIlgeeye("22:00");
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "1 7 * * * ",
+  function () {
+    ajiltanController.orlogiinMsgIlgeeye("07:00");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+cron.schedule(
+  "1 20 * * * ",
+  function () {
+    ajiltanController.orlogiinMsgIlgeeye("20:00");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+cron.schedule(
+  "1 22 * * * ",
+  function () {
+    ajiltanController.orlogiinMsgIlgeeye("22:00");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
-// cron.schedule(
-//   "30 0 0 * * * ",
-//   async function () {
-//     tulbur.aldangiBodyo();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "30 0 0 * * * ",
+  async function () {
+    tulbur.aldangiBodyo();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
-// cron.schedule(
-//   "02 10 * * * ",
-//   function () {
-//     console.log("zogsoolMsgIlgeeye");
-//     zogsool.zogsoolMsgIlgeeye();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
-// cron.schedule(
-//   "30 13 * * * * ",
-//   function () {
-//     console.log("zogsoolTseverlye");
-//     zogsool.zogsoolTseverlye();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
-// cron.schedule(
-//   "40 1 1 * * * ",
-//   function () {
-//     console.log("zogsooloosUstgay");
-//     zogsool.zogsooloosUstgay();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "02 10 * * * ",
+  function () {
+    console.log("zogsoolMsgIlgeeye");
+    zogsool.zogsoolMsgIlgeeye();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+cron.schedule(
+  "30 13 * * * * ",
+  function () {
+    console.log("zogsoolTseverlye");
+    zogsool.zogsoolTseverlye();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+cron.schedule(
+  "40 1 1 * * * ",
+  function () {
+    console.log("zogsooloosUstgay");
+    zogsool.zogsooloosUstgay();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
-// cron.schedule(
-//   "0 0 * * *",
-//   function () {
-//     zogsool.khungulultKhugatsaaShinechlya();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "0 0 * * *",
+  function () {
+    zogsool.khungulultKhugatsaaShinechlya();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 /*
 cron.schedule(
   "02 09 * * * ",
