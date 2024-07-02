@@ -270,7 +270,7 @@ async function transKhuulgaAvya(req, res, next) {
   }
 }
 
-exports.transTokenAvya = transKhuulgaAvya;
+exports.transTokenAvya = transDansUldegdelAvya;
 
 async function golomtServiceDuudya(
   dans,
