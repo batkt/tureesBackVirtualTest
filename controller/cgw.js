@@ -236,7 +236,11 @@ async function transDansUldegdelAvya(req, res, next) {
 async function transKhuulgaAvya(req, res, next) {
   try {
     var tokenObject = await transTokenAvya(
-      dans,
+      {
+        apikey: "p{2PbG",
+        corporateNevtrekhNer: "9900022424",
+        corporateNuutsUg: "9900022424",
+      },
       req.body.tukhainBaaziinKholbolt
     );
     var url = process.env.TRANS_SERVER + "/getStatement?apikey=p{2PbG";
