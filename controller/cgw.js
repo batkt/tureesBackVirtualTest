@@ -164,7 +164,7 @@ async function transTokenAvya(dans, tukhainBaaziinKholbolt) {
       ognoo: { $gte: new Date(new Date().getTime() - 590000) }, //59 * 60000) },
     });
     if (!tokenObject) {
-      var url = process.env.TRANS_SERVER + "/getToken?" + dans.apikey; //=p{2PbG
+      var url = process.env.TRANS_SERVER + "/getToken?apikey=" + dans.apikey; //=p{2PbG
       const response = await got
         .post(url, {
           headers: {
