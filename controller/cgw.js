@@ -237,7 +237,7 @@ async function transKhuulgaAvya(req, res, next) {
   try {
     var tokenObject = await transTokenAvya(
       {
-        apikey: "p{2PbG",
+        apikey: "=p{2PbG",
         corporateNevtrekhNer: "9900022424",
         corporateNuutsUg: "9900022424",
       },
