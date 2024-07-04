@@ -2206,12 +2206,11 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainDugaar)];
       object.umnukhZaalt =
         mur[usegTooruuKhurvuulekh(tolgoinObject.umnukhZaalt)];
-      object.suuliinZaalt = [
-        mur[usegTooruuKhurvuulekh(tolgoinObject.suuliinZaalt)],
-      ];
+      object.suuliinZaalt =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.suuliinZaalt)];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      object.ognoo = new Date(req.body.ognoo);
+      object.ognoo = new Date();
       object.zardliinId = ashiglaltiinZardal._id;
       object.zardliinNer = ashiglaltiinZardal.ner;
       object.tariff = ashiglaltiinZardal.tariff;
@@ -2381,11 +2380,14 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           if (!!tukhainZardal.gereeniiDugaar) {
             aldaaniiMsg =
               aldaaniiMsg +
-              tukhainZardal.talbainDugaar +
+              tukhainZardal.gereeniiDugaar +
               " дугаартай гэрээний сүүлийн заалт өмнөх заалтаас бага байж болохгүй! ";
           }
         }
         var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
+        console.log("zoruuDun", zoruuDun);
+        console.log("umnukhZaalt", umnukhZaalt);
+        console.log("tukhainZardal.suuliinZaalt", tukhainZardal);
         var tempDun =
           (ashiglaltiinZardal.ner === "Хүйтэн ус" ||
             ashiglaltiinZardal.ner === "Халуун ус") &&
@@ -2419,7 +2421,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
               : 0,
           suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj || 0,
           tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver || 1,
-          ognoo: moment(tukhainZardal.ognoo).format("YYYY-MM-DD 00:00:00"),
+          ognoo: tukhainZardal.ognoo,
           gereeniiId: geree._id,
           tailbar: ashiglaltiinZardal.ner,
         };
