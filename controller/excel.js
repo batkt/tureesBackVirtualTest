@@ -2241,6 +2241,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         .find({
           register: { $in: registeruud },
           barilgiinId: req.body.barilgiinId,
+          tuluv: 1,
         })
         .select("+avlaga");
       if (!!gereenuud) {
@@ -2253,7 +2254,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             aldaaniiMsg +
             " Дараах регистрын дугаартай гэрээнүүд олдсонгүй! " +
             oldooguiGeree.toString();
-        } else niitGereenuud.push(gereenuud);
+        } else niitGereenuud.push(...gereenuud);
       }
     }
     if (talbainDugaaruud.length > 0) {
@@ -2261,6 +2262,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         .find({
           talbainDugaar: { $in: talbainDugaaruud },
           barilgiinId: req.body.barilgiinId,
+          tuluv: 1,
         })
         .select("+avlaga");
       if (!!gereenuud) {
@@ -2274,7 +2276,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             aldaaniiMsg +
             " Дараах талбайн дугаартай гэрээнүүд олдсонгүй! " +
             oldooguiGeree.toString();
-        } else niitGereenuud.push(gereenuud);
+        } else niitGereenuud.push(...gereenuud);
       }
     }
     if (gereeniiDugaaruud.length > 0) {
@@ -2282,6 +2284,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         .find({
           gereeniiDugaar: { $in: gereeniiDugaaruud },
           barilgiinId: req.body.barilgiinId,
+          tuluv: 1,
         })
         .select("+avlaga");
       if (!!gereenuud) {
@@ -2295,7 +2298,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             aldaaniiMsg +
             " Дараах гэрээний дугаартай гэрээнүүд олдсонгүй! " +
             oldooguiGeree.toString();
-        } else niitGereenuud.push(gereenuud);
+        } else niitGereenuud.push(...gereenuud);
       }
     }
     var bulkOps = [];
@@ -2324,16 +2327,6 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           if (!!suuliinGuilgee?.suuliinZaalt) {
             umnukhZaalt = suuliinGuilgee.suuliinZaalt;
           }
-          // dun,
-          // turul,
-          // tailbar,
-          // nekhemjlekhDeerKharagdakh,
-          // busadTurul,
-          // negjUne,
-          // ognoo,
-          // suuliinZaalt,
-          // umnukhZaalt,
-          // nuatBodokhEsekh,
         }
         var tukhainZardal = jagsaalt.find((x) => {
           x.register == geree.register ||
