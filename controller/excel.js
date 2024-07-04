@@ -2403,19 +2403,23 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           turul: "avlaga",
           tulsunDun: 0,
           tulukhDun: req.body.nuatBodokhEsekh
-            ? (ashiglaltiinZardal.suuriKhuraamj + tempDun) * 1.1
-            : ashiglaltiinZardal.suuriKhuraamj + tempDun,
+            ? (ashiglaltiinZardal.suuriKhuraamj
+                ? ashiglaltiinZardal.suuriKhuraamj
+                : 0 + tempDun) * 1.1
+            : (ashiglaltiinZardal.suuriKhuraamj
+                ? ashiglaltiinZardal.suuriKhuraamj
+                : 0) + tempDun,
           negj: zoruuDun && zoruuDun,
-          khemjikhNegj: ashiglaltiinZardal.khemjikhNegj,
-          tariff: ashiglaltiinZardal.negjUne,
-          tseverUsDun: ashiglaltiinZardal.tseverUsDun * zoruuDun,
-          bokhirUsDun: ashiglaltiinZardal.bokhirUsDun * zoruuDun,
+          khemjikhNegj: ashiglaltiinZardal.turul,
+          tariff: ashiglaltiinZardal.tariff,
+          tseverUsDun: ashiglaltiinZardal.tseverUsDun * zoruuDun || 0,
+          bokhirUsDun: ashiglaltiinZardal.bokhirUsDun * zoruuDun || 0,
           usKhalaasanDun:
             ashiglaltiinZardal.ner === "Халуун ус"
               ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
               : 0,
-          suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj,
-          tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver,
+          suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj || 0,
+          tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver || 1,
           ognoo: moment(tukhainZardal.ognoo).format("YYYY-MM-DD 00:00:00"),
           gereeniiId: geree._id,
           tailbar: ashiglaltiinZardal.ner,
