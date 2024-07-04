@@ -2396,7 +2396,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
                 ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
                 : 0)
             : ashiglaltiinZardal.tariff *
-              (tsakhilgaanUrjver || 1) *
+              (ashiglaltiinZardal.tsakhilgaanUrjver || 1) *
               (zoruuDun || 0);
         updateObject = {
           turul: "avlaga",
