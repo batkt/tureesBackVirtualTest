@@ -2248,10 +2248,9 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           var oldsonGeree = gereenuud.find((b) => b.register === a);
           if (!oldsonGeree) oldooguiGeree.push(a);
         });
-        if (oldooguiGeree) {
+        if (oldooguiGeree.length > 0) {
           aldaaniiMsg =
             aldaaniiMsg +
-            muriinDugaar +
             " Дараах регистрын дугаартай гэрээнүүд олдсонгүй! " +
             oldooguiGeree.toString();
         } else niitGereenuud.push(gereenuud);
@@ -2270,10 +2269,9 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           var oldsonGeree = gereenuud.find((b) => b.talbainDugaar === a);
           if (!oldsonGeree) oldooguiGeree.push(a);
         });
-        if (oldooguiGeree) {
+        if (oldooguiGeree.length > 0) {
           aldaaniiMsg =
             aldaaniiMsg +
-            muriinDugaar +
             " Дараах талбайн дугаартай гэрээнүүд олдсонгүй! " +
             oldooguiGeree.toString();
         } else niitGereenuud.push(gereenuud);
@@ -2292,10 +2290,9 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           var oldsonGeree = gereenuud.find((b) => b.gereeniiDugaar === a);
           if (!oldsonGeree) oldooguiGeree.push(a);
         });
-        if (oldooguiGeree) {
+        if (oldooguiGeree.length > 0) {
           aldaaniiMsg =
             aldaaniiMsg +
-            muriinDugaar +
             " Дараах гэрээний дугаартай гэрээнүүд олдсонгүй! " +
             oldooguiGeree.toString();
         } else niitGereenuud.push(gereenuud);
