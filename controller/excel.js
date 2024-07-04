@@ -2318,11 +2318,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             );
           });
           if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
-            suuliinGuilgee = lodash.orderBy(
-              suuliinGuilgee,
-              ["ognoo"],
-              ["desc"]
-            );
+            suuliinGuilgee = lodash.orderBy(suuliinGuilgee, ["ognoo"], ["asc"]);
             suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
           }
           if (!!suuliinGuilgee?.suuliinZaalt) {
