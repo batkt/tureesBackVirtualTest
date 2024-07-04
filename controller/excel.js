@@ -2311,11 +2311,12 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           ashiglaltiinZardal.turul == "1м3"
         ) {
           var umnukhZaalt = 0;
-          var suuliinGuilgee = geree.avlaga.guilgeenuud.filter(
-            (x) =>
+          var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
+            return (
               x.khemjikhNegj == ashiglaltiinZardal.turul &&
               x.tailbar == ashiglaltiinZardal.ner
-          );
+            );
+          });
           if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
             suuliinGuilgee = lodash.orderBy(
               suuliinGuilgee,
@@ -2432,7 +2433,11 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         let upsertDoc = {
           updateOne: {
             filter: { _id: geree._id },
-            update: updateObject,
+            update: {
+              $push: {
+                "avlaga.guilgeenuud": updateObject,
+              },
+            },
           },
         };
         bulkOps.push(upsertDoc);
