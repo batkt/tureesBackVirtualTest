@@ -1704,7 +1704,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
-                      if (res) res.send("Amjilttai");
+                      console.log("trans xuulga tatsan");
                     })
                     .catch((err) => {
                       console.log(err);
