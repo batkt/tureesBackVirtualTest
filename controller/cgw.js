@@ -167,7 +167,7 @@ async function transTokenAvya(dans, tukhainBaaziinKholbolt) {
       var url =
         process.env.TRANS_SERVER +
         "/getToken?apikey=" +
-        (dans.apikey ? dans.apikey : "p{2PbG"); //=p{2PbG
+        (dans.apikey ? dans.apikey : "p_uZ6A"); //=p_uZ6A
       const response = await got
         .post(url, {
           headers: {
@@ -604,7 +604,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       var url =
         process.env.TRANS_SERVER +
         "/getAccountBalance?apikey=" +
-        (dans.apikey ? dans.apikey : "p{2PbG");
+        (dans.apikey ? dans.apikey : "p_uZ6A");
       const response = await got
         .post(url, {
           headers: {
@@ -997,7 +997,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 var url =
                   process.env.TRANS_SERVER +
                   "/getStatement?apikey=" +
-                  (dans.apikey ? dans.apikey : "p{2PbG");
+                  (dans.apikey ? dans.apikey : "p_uZ6A");
                 var max = await BankniiGuilgee(kholbolt)
                   .findOne({
                     barilgiinId: dans.barilgiinId,
@@ -1586,7 +1586,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 var url =
                   process.env.TRANS_SERVER +
                   "/getStatement?apikey=" +
-                  (dans.apikey ? dans.apikey : "p{2PbG");
+                  (dans.apikey ? dans.apikey : "p_uZ6A");
                 var max = await BankniiGuilgee(kholbolt)
                   .findOne({
                     barilgiinId: dans.barilgiinId,
