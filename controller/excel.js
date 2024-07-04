@@ -2362,7 +2362,10 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         } else if (umnukhZaalt == 0 && tukhainZardal.umnukhZaalt > 0) {
           umnukhZaalt = tukhainZardal.umnukhZaalt;
         }
-        if (tukhainZardal.suuliinZaalt < umnukhZaalt) {
+        if (
+          tukhainZardal.suuliinZaalt < umnukhZaalt ||
+          tukhainZardal.suuliinZaalt < tukhainZardal.umnukhZaalt
+        ) {
           if (!!tukhainZardal.register) {
             aldaaniiMsg =
               aldaaniiMsg +
