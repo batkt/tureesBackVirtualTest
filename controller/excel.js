@@ -2335,6 +2335,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             x.talbainDugaar == geree.talbainDugaar ||
             x.gereeniiDugaar == geree.gereeniiDugaar;
         });
+        console.log("tukhainZardal", tukhainZardal);
         if (
           umnukhZaalt > 0 &&
           (umnukhZaalt - tukhainZardal.umnukhZaalt > 0.1 ||
