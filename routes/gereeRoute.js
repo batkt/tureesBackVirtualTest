@@ -68,6 +68,8 @@ const lodash = require("lodash");
 const {
   gereeniiExcelAvya,
   gereeniiExcelTatya,
+  tooluurZaaltZagvarAvya,
+  tooluurZaaltOruulya,
 } = require("../controller/excel");
 const Baiguullaga = require("../models/baiguullaga");
 
@@ -80,6 +82,12 @@ router.route("/gereeniiExcelAvya").get(tokenShalgakh, gereeniiExcelAvya);
 router
   .route("/gereeniiExcelTatya")
   .post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
+router
+  .route("/tooluurZaaltZagvarAvya")
+  .get(tokenShalgakh, tooluurZaaltZagvarAvya);
+router
+  .route("/tooluurZaaltOruulya")
+  .post(uploadFile.single("file"), tokenShalgakh, tooluurZaaltOruulya);
 router
   .route("/tulultOlnoorKhadgalya")
   .post(tokenShalgakh, tulultOlnoorKhadgalya);

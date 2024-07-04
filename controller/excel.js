@@ -7,10 +7,12 @@ const Geree = require("../models/geree");
 const Talbai = require("../models/talbai");
 // const Mashin = require("../models/mashin");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
+const AshiglaltiinExcel = require("../models/ashiglaltiinExcel");
 const { Segment } = require("zevbackv2");
 const aldaa = require("../components/aldaa");
 const xlsx = require("xlsx");
 const moment = require("moment");
+const lodash = require("lodash");
 const excel = require("exceljs");
 const mongoose = require("mongoose");
 const {
@@ -21,6 +23,7 @@ const {
   uilchluulegchdiinToo,
   sdkData,
 } = require("parking-v1");
+const ashiglaltiinExcel = require("../models/ashiglaltiinExcel");
 
 function usegTooruuKhurvuulekh(useg) {
   if (!!useg) return useg.charCodeAt() - 65;
@@ -2145,4 +2148,363 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
+  try {
+    const workbook = xlsx.read(req.file.buffer);
+    if (workbook.SheetNames[0] !== "Тоолуур")
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const { db } = require("zevbackv2");
+    var ashiglaltiinZardal = await AshiglaltiinZardluud(
+      req.body.tukhainBaaziinKholbolt
+    ).findById(req.body.ashiglaltiinId);
+    const jagsaalt = [];
+    var tolgoinObject = {};
+    var muriinDugaar = 1;
+    if (
+      !sheet["A1"].v.includes("Регистр") ||
+      !sheet["B1"].v.includes("Гэрээний дугаар") ||
+      !sheet["C1"].v.includes("Талбайн дугаар") ||
+      !sheet["D1"].v.includes("Өмнөх заалт") ||
+      !sheet["E1"].v.includes("Одоогийн заалт")
+    ) {
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    }
+    for (let cell in sheet) {
+      var cellAsString = cell.toString();
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!sheet[cellAsString].v
+      ) {
+        if (sheet[cellAsString].v.includes("Регистр"))
+          tolgoinObject.register = cellAsString[0];
+        else if (sheet[cellAsString].v.includes("Гэрээний дугаар"))
+          tolgoinObject.gereeniiDugaar = cellAsString[0];
+        else if (sheet[cellAsString].v.includes("Талбайн дугаар"))
+          tolgoinObject.talbainDugaar = cellAsString[0];
+        else if (sheet[cellAsString].v.includes("Өмнөх заалт"))
+          tolgoinObject.umnukhZaalt = cellAsString[0];
+        else if (sheet[cellAsString].v.includes("Одоогийн заалт"))
+          tolgoinObject.suuliinZaalt = cellAsString[0];
+      }
+    }
+    var data = xlsx.utils.sheet_to_json(sheet, {
+      header: 1,
+      range: 1,
+    });
+    var aldaaniiMsg = "";
+    data.forEach((mur) => {
+      muriinDugaar++;
+      let object = new AshiglaltiinExcel(req.body.tukhainBaaziinKholbolt)();
+      object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
+      object.gereeniiDugaar =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiDugaar)];
+      object.talbainDugaar =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.talbainDugaar)];
+      object.umnukhZaalt =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.umnukhZaalt)];
+      object.suuliinZaalt = [
+        mur[usegTooruuKhurvuulekh(tolgoinObject.suuliinZaalt)],
+      ];
+      object.baiguullagiinId = req.body.baiguullagiinId;
+      object.barilgiinId = req.body.barilgiinId;
+      object.ognoo = new Date(req.body.ognoo);
+      object.zardliinId = ashiglaltiinZardal._id;
+      object.zardliinNer = ashiglaltiinZardal.ner;
+      object.tariff = ashiglaltiinZardal.tariff;
+      if (!object.register || !object.gereeniiDugaar || !object.talbainDugaar) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          muriinDugaar +
+          " дугаар мөрөнд регистр, гэрээний дугаар, талбайн дугаар талбарын аль нэгийг бөглөнө үү! ";
+      } else if (
+        !object.register ||
+        !object.gereeniiDugaar ||
+        !object.talbainDugaar
+      ) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          muriinDugaar +
+          " дугаар мөрөнд регистр, гэрээний дугаар, талбайн дугаар талбарын аль нэгийг бөглөнө үү! ";
+      } else jagsaalt.push(object);
+    });
+    var registeruud = [];
+    var talbainDugaaruud = [];
+    var gereeniiDugaaruud = [];
+    for await (const mur of jagsaalt) {
+      if (!!mur.register) {
+        registeruud.push(mur.register);
+      } else if (!!mur.talbainDugaar) {
+        talbainDugaaruud.push(mur.talbainDugaar);
+      } else if (!!mur.gereeniiDugaar) {
+        gereeniiDugaaruud.push(mur.gereeniiDugaar);
+      }
+    }
+    var niitGereenuud = [];
+    var oldooguiGeree = [];
+    if (registeruud.length > 0) {
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+        .find({
+          register: { $in: registeruud },
+          barilgiinId: req.body.barilgiinId,
+        })
+        .select("+avlaga");
+      if (!!gereenuud) {
+        registeruud.forEach((a) => {
+          var oldsonGeree = gereenuud.find((b) => b.register === a);
+          if (!oldsonGeree) oldooguiGeree.push(a);
+        });
+        if (oldooguiGeree) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            muriinDugaar +
+            " Дараах регистрын дугаартай гэрээнүүд олдсонгүй! " +
+            oldooguiGeree.toString();
+        } else niitGereenuud.push(gereenuud);
+      }
+    }
+    if (talbainDugaaruud.length > 0) {
+      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+        .find({
+          talbainDugaar: { $in: talbainDugaaruud },
+          barilgiinId: req.body.barilgiinId,
+        })
+        .select("+avlaga");
+      if (!!gereenuud) {
+        oldooguiGeree = [];
+        talbainDugaaruud.forEach((a) => {
+          var oldsonGeree = gereenuud.find((b) => b.talbainDugaar === a);
+          if (!oldsonGeree) oldooguiGeree.push(a);
+        });
+        if (oldooguiGeree) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            muriinDugaar +
+            " Дараах талбайн дугаартай гэрээнүүд олдсонгүй! " +
+            oldooguiGeree.toString();
+        } else niitGereenuud.push(gereenuud);
+      }
+    }
+    if (gereeniiDugaaruud.length > 0) {
+      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+        .find({
+          gereeniiDugaar: { $in: gereeniiDugaaruud },
+          barilgiinId: req.body.barilgiinId,
+        })
+        .select("+avlaga");
+      if (!!gereenuud) {
+        oldooguiGeree = [];
+        gereeniiDugaaruud.forEach((a) => {
+          var oldsonGeree = gereenuud.find((b) => b.gereeniiDugaar === a);
+          if (!oldsonGeree) oldooguiGeree.push(a);
+        });
+        if (oldooguiGeree) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            muriinDugaar +
+            " Дараах гэрээний дугаартай гэрээнүүд олдсонгүй! " +
+            oldooguiGeree.toString();
+        } else niitGereenuud.push(gereenuud);
+      }
+    }
+    var bulkOps = [];
+    var updateObject;
+    if (niitGereenuud.length > 0) {
+      for await (const geree of niitGereenuud) {
+        updateObject = {};
+        if (
+          ashiglaltiinZardal.turul == "кВт" ||
+          ashiglaltiinZardal.turul == "1м3"
+        ) {
+          var umnukhZaalt = 0;
+          var suuliinGuilgee = geree.avlaga.guilgeenuud.filter(
+            (x) =>
+              x.khemjikhNegj == ashiglaltiinZardal.turul &&
+              x.tailbar == ashiglaltiinZardal.ner
+          );
+          if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
+            suuliinGuilgee = lodash.orderBy(
+              suuliinGuilgee,
+              ["ognoo"],
+              ["desc"]
+            );
+            suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
+          }
+          if (!!suuliinGuilgee?.suuliinZaalt) {
+            umnukhZaalt = suuliinGuilgee.suuliinZaalt;
+          }
+          // dun,
+          // turul,
+          // tailbar,
+          // nekhemjlekhDeerKharagdakh,
+          // busadTurul,
+          // negjUne,
+          // ognoo,
+          // suuliinZaalt,
+          // umnukhZaalt,
+          // nuatBodokhEsekh,
+        }
+        var tukhainZardal = jagsaalt.find((x) => {
+          x.register == geree.register ||
+            x.talbainDugaar == geree.talbainDugaar ||
+            x.gereeniiDugaar == geree.gereeniiDugaar;
+        });
+        if (
+          umnukhZaalt > 0 &&
+          (umnukhZaalt - tukhainZardal.umnukhZaalt > 0.1 ||
+            umnukhZaalt - tukhainZardal.umnukhZaalt > 0.1)
+        ) {
+          if (!!tukhainZardal.register) {
+            aldaaniiMsg =
+              aldaaniiMsg +
+              tukhainZardal.register +
+              " регистртэй гэрээний өмнөх заалт буруу байна! ";
+          }
+          if (!!tukhainZardal.talbainDugaar) {
+            aldaaniiMsg =
+              aldaaniiMsg +
+              tukhainZardal.talbainDugaar +
+              " талбайн дугаартай гэрээний өмнөх заалт буруу байна! ";
+          }
+          if (!!tukhainZardal.gereeniiDugaar) {
+            aldaaniiMsg =
+              aldaaniiMsg +
+              tukhainZardal.talbainDugaar +
+              " дугаартай гэрээний өмнөх заалт буруу байна! ";
+          }
+        } else if (umnukhZaalt == 0 && tukhainZardal.umnukhZaalt > 0) {
+          umnukhZaalt = tukhainZardal.umnukhZaalt;
+        }
+        if (tukhainZardal.suuliinZaalt < umnukhZaalt) {
+          if (!!tukhainZardal.register) {
+            aldaaniiMsg =
+              aldaaniiMsg +
+              tukhainZardal.register +
+              " регистртэй гэрээний сүүлийн заалт өмнөх заалтаас бага байж болохгүй! ";
+          }
+          if (!!tukhainZardal.talbainDugaar) {
+            aldaaniiMsg =
+              aldaaniiMsg +
+              tukhainZardal.talbainDugaar +
+              " талбайн дугаартай гэрээний сүүлийн заалт өмнөх заалтаас бага байж болохгүй! ";
+          }
+          if (!!tukhainZardal.gereeniiDugaar) {
+            aldaaniiMsg =
+              aldaaniiMsg +
+              tukhainZardal.talbainDugaar +
+              " дугаартай гэрээний сүүлийн заалт өмнөх заалтаас бага байж болохгүй! ";
+          }
+        }
+        var zoruuDun = tukhainZardal - umnukhZaalt;
+        var tempDun =
+          (ashiglaltiinZardal.ner === "Хүйтэн ус" ||
+            ashiglaltiinZardal.ner === "Халуун ус") &&
+          ashiglaltiinZardal.bodokhArga === "Khatuu"
+            ? ashiglaltiinZardal.tseverUsDun * zoruuDun +
+              ashiglaltiinZardal.bokhirUsDun * zoruuDun +
+              (tailbar === "Халуун ус"
+                ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
+                : 0)
+            : ashiglaltiinZardal.tariff *
+              (tsakhilgaanUrjver || 1) *
+              (zoruuDun || 0);
+        updateObject = {
+          turul: "avlaga",
+          tulsunDun: 0,
+          tulukhDun: req.body.nuatBodokhEsekh
+            ? (ashiglaltiinZardal.suuriKhuraamj + tempDun) * 1.1
+            : ashiglaltiinZardal.suuriKhuraamj + tempDun,
+          negj: zoruuDun && zoruuDun,
+          khemjikhNegj: ashiglaltiinZardal.khemjikhNegj,
+          tariff: ashiglaltiinZardal.negjUne,
+          tseverUsDun: ashiglaltiinZardal.tseverUsDun * zoruuDun,
+          bokhirUsDun: ashiglaltiinZardal.bokhirUsDun * zoruuDun,
+          usKhalaasanDun:
+            ashiglaltiinZardal.ner === "Халуун ус"
+              ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
+              : 0,
+          suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj,
+          tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver,
+          ognoo: moment(tukhainZardal.ognoo).format("YYYY-MM-DD 00:00:00"),
+          gereeniiId: geree._id,
+          tailbar: ashiglaltiinZardal.ner,
+        };
+        if (khemjikhNegj === "кВт" || khemjikhNegj === "1м3") {
+          updateObject["suuliinZaalt"] = tukhainZardal.suuliinZaalt;
+          updateObject["umnukhZaalt"] = umnukhZaalt;
+        }
+        tukhainZardal.gereeniiId = geree._id;
+        tukhainZardal.zoruu = ashiglaltiinZardal.zoruuDun;
+        tukhainZardal.niitDun = tempDun;
+        let upsertDoc = {
+          updateOne: {
+            filter: { _id: geree._id },
+            update: updateObject,
+          },
+        };
+        bulkOps.push(upsertDoc);
+      }
+    }
+    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
+    if (bulkOps && bulkOps.length > 0)
+      await Geree(req.body.tukhainBaaziinKholbolt)
+        .bulkWrite(bulkOps)
+        .then((bulkWriteOpResult) => {
+          console.log("BULK update OK", bulkWriteOpResult);
+          AshiglaltiinExcel(req.body.tukhainBaaziinKholbolt).insertMany(
+            jagsaalt
+          );
+          res.status(200).send("Amjilttai");
+        })
+        .catch((err) => {
+          console.log("BULK update error", err);
+          next(err);
+        });
+  } catch (error) {
+    next(error);
+  }
+});
+
+exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
+  let workbook = new excel.Workbook();
+  let worksheet = workbook.addWorksheet("Тоолуур");
+  worksheet.columns = [
+    {
+      header: "Регистр",
+      key: "Регистр",
+      width: 20,
+    },
+    {
+      header: "Гэрээний дугаар",
+      key: "Гэрээний дугаар",
+      width: 20,
+    },
+    {
+      header: "Талбайн дугаар",
+      key: "Талбайн дугаар",
+      width: 30,
+    },
+    {
+      header: "Өмнөх заалт",
+      key: "Өмнөх заалт",
+      width: 30,
+    },
+    {
+      header: "Одоогийн заалт",
+      key: "Одоогийн заалт",
+      width: 30,
+    },
+  ];
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "attachment; filename=" + "Тоолуурын заалт"
+  );
+
+  return workbook.xlsx.write(res).then(function () {
+    res.status(200).end();
+  });
 });
