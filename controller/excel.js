@@ -2330,6 +2330,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         }
         console.log("umnukhZaalt", umnukhZaalt);
         console.log("jagsaalt", jagsaalt);
+        console.log("geree", geree);
         var tukhainZardal = jagsaalt.find((x) => {
           x.register == geree.register ||
             x.talbainDugaar == geree.talbainDugaar ||
