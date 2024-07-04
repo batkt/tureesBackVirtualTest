@@ -2324,9 +2324,6 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             umnukhZaalt = suuliinGuilgee.suuliinZaalt;
           }
         }
-        console.log("umnukhZaalt", umnukhZaalt);
-        console.log("jagsaalt", jagsaalt);
-        console.log("geree", geree);
         var tukhainZardal = jagsaalt.find((x) => {
           return (
             x.register === geree.register ||
@@ -2334,7 +2331,6 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             x.gereeniiDugaar === geree.gereeniiDugaar
           );
         });
-        console.log("tukhainZardal", tukhainZardal);
         if (
           umnukhZaalt > 0 &&
           (umnukhZaalt - tukhainZardal.umnukhZaalt > 0.1 ||
@@ -2385,9 +2381,6 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           }
         }
         var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
-        console.log("zoruuDun", zoruuDun);
-        console.log("umnukhZaalt", umnukhZaalt);
-        console.log("tukhainZardal.suuliinZaalt", tukhainZardal);
         var tempDun =
           (ashiglaltiinZardal.ner === "Хүйтэн ус" ||
             ashiglaltiinZardal.ner === "Халуун ус") &&
