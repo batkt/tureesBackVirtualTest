@@ -2385,7 +2385,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
               " дугаартай гэрээний сүүлийн заалт өмнөх заалтаас бага байж болохгүй! ";
           }
         }
-        var zoruuDun = tukhainZardal - umnukhZaalt;
+        var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
         var tempDun =
           (ashiglaltiinZardal.ner === "Хүйтэн ус" ||
             ashiglaltiinZardal.ner === "Халуун ус") &&
