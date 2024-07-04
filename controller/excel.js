@@ -2328,6 +2328,8 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             umnukhZaalt = suuliinGuilgee.suuliinZaalt;
           }
         }
+        console.log("umnukhZaalt", umnukhZaalt);
+        console.log("jagsaalt", jagsaalt);
         var tukhainZardal = jagsaalt.find((x) => {
           x.register == geree.register ||
             x.talbainDugaar == geree.talbainDugaar ||
