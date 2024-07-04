@@ -2419,7 +2419,10 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           gereeniiId: geree._id,
           tailbar: ashiglaltiinZardal.ner,
         };
-        if (khemjikhNegj === "кВт" || khemjikhNegj === "1м3") {
+        if (
+          ashiglaltiinZardal.turul === "кВт" ||
+          ashiglaltiinZardal.turul === "1м3"
+        ) {
           updateObject["suuliinZaalt"] = tukhainZardal.suuliinZaalt;
           updateObject["umnukhZaalt"] = umnukhZaalt;
         }
