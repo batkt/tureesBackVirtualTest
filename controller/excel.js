@@ -2215,16 +2215,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
       object.zardliinId = ashiglaltiinZardal._id;
       object.zardliinNer = ashiglaltiinZardal.ner;
       object.tariff = ashiglaltiinZardal.tariff;
-      if (!object.register || !object.gereeniiDugaar || !object.talbainDugaar) {
-        aldaaniiMsg =
-          aldaaniiMsg +
-          muriinDugaar +
-          " дугаар мөрөнд регистр, гэрээний дугаар, талбайн дугаар талбарын аль нэгийг бөглөнө үү! ";
-      } else if (
-        !object.register ||
-        !object.gereeniiDugaar ||
-        !object.talbainDugaar
-      ) {
+      if (!object.register && !object.gereeniiDugaar && !object.talbainDugaar) {
         aldaaniiMsg =
           aldaaniiMsg +
           muriinDugaar +
