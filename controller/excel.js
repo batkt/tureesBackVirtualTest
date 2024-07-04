@@ -2356,7 +2356,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           if (!!tukhainZardal.gereeniiDugaar) {
             aldaaniiMsg =
               aldaaniiMsg +
-              tukhainZardal.talbainDugaar +
+              tukhainZardal.gereeniiDugaar +
               " дугаартай гэрээний өмнөх заалт буруу байна! ";
           }
         } else if (umnukhZaalt == 0 && tukhainZardal.umnukhZaalt > 0) {
