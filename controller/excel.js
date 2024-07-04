@@ -2210,7 +2210,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         mur[usegTooruuKhurvuulekh(tolgoinObject.suuliinZaalt)];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      object.ognoo = new Date();
+      object.ognoo = new Date(req.body.ognoo);
       object.zardliinId = ashiglaltiinZardal._id;
       object.zardliinNer = ashiglaltiinZardal.ner;
       object.tariff = ashiglaltiinZardal.tariff;
