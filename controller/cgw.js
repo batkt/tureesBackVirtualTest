@@ -1579,10 +1579,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     });
                 }
               } else if (dans.bank == "trans") {
-                var tokenObject = await transTokenAvya(
-                  dans,
-                  req.body.tukhainBaaziinKholbolt
-                );
+                var tokenObject = await transTokenAvya(dans, kholbolt);
                 var url =
                   process.env.TRANS_SERVER +
                   "/getStatement?apikey=" +
