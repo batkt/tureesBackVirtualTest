@@ -1205,6 +1205,7 @@ router.post("/v1/car_add", async (req, res, next) => {
 
 router.post("/v1/tulburMedeelelAvya", async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     var { session_id, parking_id } = req.body;
     var kholboltuud = db.kholboltuud;
     var data;
