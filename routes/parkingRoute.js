@@ -1203,6 +1203,53 @@ router.post("/v1/car_add", async (req, res, next) => {
   }
 });
 
+router.post("/v1/tulburMedeelelAvya", async (req, res, next) => {
+  try {
+    var { session_id, parking_id } = req.body;
+    var kholboltuud = db.kholboltuud;
+    var data;
+    var message = "Amjilttai";
+    var oldsonMashin;
+    var success = true;
+    if (kholboltuud) {
+      for await (const kholbolt of kholboltuud) {
+        var zogsool = await Parking(kholbolt).findById(parking_id);
+        if (!!zogsool) {
+          oldsonMashin = await Uilchluulegch(kholbolt).findById(session_id);
+          if (!oldsonMashin) {
+            message = "Мэдээлэл олдсонгүй!";
+            success = false;
+          }
+          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+            data = {
+              plate_number: req.params.plate_number,
+              enter_date: moment(
+                oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
+              ).format("YYYY/MM/DD HH:mm:ss"),
+              out_date: moment(
+                oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+              ).format("YYYY/MM/DD HH:mm:ss"),
+              tulburuud: oldsonMashin.tuukh[0].tulbur,
+              parking_id,
+              session_id,
+            };
+            break;
+          }
+        }
+        if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
+      }
+    }
+    var butsaakhKhariu = {
+      success,
+      message,
+      data,
+    };
+    res.send(butsaakhKhariu);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.route("/v1/pay").post(async (req, res, next) => {
   try {
     /*{nevtreltiinTuukhAvya
