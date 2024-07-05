@@ -1392,7 +1392,15 @@ router.route("/v1/pay").post(async (req, res, next) => {
         );
       butsaakhMethod = function (d, khariuObject) {
         try {
-          if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
+          if (d?.status != "SUCCESS" && !d.success) {
+            delete d.baiguullagiinId;
+            delete d.zogsooliinId;
+            delete d.barilgiinId;
+            delete d._id;
+            console.log("ebarimt duuslaa");
+            butsaakhKhariu.data = d;
+            res.send(butsaakhKhariu);
+          }
           var ebarimt;
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(tukhainKholbolt)(d);
