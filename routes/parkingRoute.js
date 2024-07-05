@@ -1269,6 +1269,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
         dun: req.body.paid_amount,
       },
     ];
+    console.log("toki pay body", req.body);
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     var message = "Amjilttai";
