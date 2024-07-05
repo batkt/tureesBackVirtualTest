@@ -1397,7 +1397,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
             delete d.zogsooliinId;
             delete d.barilgiinId;
             delete d._id;
-            console.log("ebarimt duuslaa");
+            console.log("ebarimt aldaatai duuslaa");
             butsaakhKhariu.data = d;
             res.send(butsaakhKhariu);
           }
