@@ -1975,5 +1975,4 @@ router.route("/mashinUpdate").post(tokenShalgakh, async (req, res, next) => {
     next(error);
   }
 });
-ноцид;
 module.exports = router;
