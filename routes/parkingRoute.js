@@ -1975,4 +1975,14 @@ router.route("/mashinUpdate").post(tokenShalgakh, async (req, res, next) => {
     next(error);
   }
 });
+
+router.route("/mashinUpdate1").post(async (req, res, next) => {
+  try {
+    console.log("req.body", req.body);
+    console.log("req.headers", req.headers);
+    res.send("Amjilttai");
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;
