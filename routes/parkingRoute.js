@@ -1948,4 +1948,32 @@ router
     ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
   });
 
+router.route("/mashinUpdate").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    console.log(req.body);
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
+      register: req.body.register,
+    });
+    var tukhainKholbolt;
+    tukhainKholbolt = db.kholboltuud.find(
+      (a) => a.baiguullagiinId == baiguullaga._id
+    );
+    var orsonTsag = new Date(new Date.getTime() - 15 * 60000);
+    Uilchluulegch(tukhainKholbolt).updateOne(
+      {
+        mashiniiDugaar: req.body.mashiniiDugaar,
+        "tuukh.0.tuluv": { $ne: -2 },
+        "tuukh.0.tsagiinTuukh.garsanTsag": { $exists: false },
+      },
+      {
+        "tuukh.0.tsagiinTuukh.0.orsonTsag": orsonTsag,
+      }
+    );
+    res.send("Amjilttai");
+  } catch (error) {
+    next(error);
+  }
+});
+ноцид;
 module.exports = router;
