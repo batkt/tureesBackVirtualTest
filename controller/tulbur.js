@@ -1274,7 +1274,19 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
         {
           kholbosonGereeniiId: [],
         },
-        { TxAddInf: { $regex: "qpay", $options: "i" } },
+        {
+          $or: [
+            {
+              TxAddInf: { $regex: "qpay AND Түрээсийн төлбөр", $options: "i" },
+            },
+            {
+              description: {
+                $regex: "qpay AND Түрээсийн төлбөр",
+                $options: "i",
+              },
+            },
+          ],
+        },
       ],
     });
     var khaikhNukhtsul;
@@ -1316,7 +1328,22 @@ exports.qpayGuilgeeTalbainDugaarOnooyo = asyncHandler(
           {
             kholbosonTalbainId: [],
           },
-          { TxAddInf: { $regex: "qpay", $options: "i" } },
+          {
+            $or: [
+              {
+                TxAddInf: {
+                  $regex: "qpay AND Түрээсийн төлбөр",
+                  $options: "i",
+                },
+              },
+              {
+                description: {
+                  $regex: "qpay AND Түрээсийн төлбөр",
+                  $options: "i",
+                },
+              },
+            ],
+          },
         ],
       });
       for await (const guilgee of guilgeenuud) {
