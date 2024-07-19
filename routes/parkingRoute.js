@@ -315,7 +315,10 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var tulsunDun = Number(req.body.tulsunDun);
     console.log("zogsooliinTulburOrjIrlee", tulsunDun);
     var shineDun = 0;
-    if (baiguullagiinId == "65435cdff2f5358696c61454") {
+    if (
+      baiguullagiinId == "65435cdff2f5358696c61454" ||
+      baiguullagiinId == "663da696aa6bedd9ae0567f0"
+    ) {
       tulsunDun = tulsunDun + 50; //sms 50tug
     }
     shineDun =
