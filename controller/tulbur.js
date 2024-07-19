@@ -1277,13 +1277,24 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
         {
           $or: [
             {
-              TxAddInf: { $regex: "qpay AND Түрээсийн төлбөр", $options: "i" },
+              $and: [
+                {
+                  TxAddInf: { $regex: "qpay", $options: "i" },
+                },
+                {
+                  TxAddInf: { $regex: "Түрээсийн төлбөр", $options: "i" },
+                },
+              ],
             },
             {
-              description: {
-                $regex: "qpay AND Түрээсийн төлбөр",
-                $options: "i",
-              },
+              $and: [
+                {
+                  description: { $regex: "qpay", $options: "i" },
+                },
+                {
+                  description: { $regex: "Түрээсийн төлбөр", $options: "i" },
+                },
+              ],
             },
           ],
         },
@@ -1331,16 +1342,24 @@ exports.qpayGuilgeeTalbainDugaarOnooyo = asyncHandler(
           {
             $or: [
               {
-                TxAddInf: {
-                  $regex: "qpay AND Түрээсийн төлбөр",
-                  $options: "i",
-                },
+                $and: [
+                  {
+                    TxAddInf: { $regex: "qpay", $options: "i" },
+                  },
+                  {
+                    TxAddInf: { $regex: "Түрээсийн төлбөр", $options: "i" },
+                  },
+                ],
               },
               {
-                description: {
-                  $regex: "qpay AND Түрээсийн төлбөр",
-                  $options: "i",
-                },
+                $and: [
+                  {
+                    description: { $regex: "qpay", $options: "i" },
+                  },
+                  {
+                    description: { $regex: "Түрээсийн төлбөр", $options: "i" },
+                  },
+                ],
               },
             ],
           },
