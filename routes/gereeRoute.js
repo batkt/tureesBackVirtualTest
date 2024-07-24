@@ -6,6 +6,7 @@ const Khariltsagch = require("../models/khariltsagch");
 //const Dugaarlalt = require("../models/dugaarlalt");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
+const moment = require("moment");
 const {
   gereeZasakhShalguur,
   guilgeeUstgakhShalguur,
@@ -472,11 +473,7 @@ router
     try {
       var geree = await Geree(req.body.tukhainBaaziinKholbolt)
         .findById(req.body.gereeniiId)
-        .select({
-          avlaga: 1,
-          gereeniiTuukhuud: 1,
-          duusakhOgnoo: 1,
-        });
+        .select("+avlaga");
       var shineDuusakhOgnoo = new Date(req.body.duusakhOgnoo);
       if (shineDuusakhOgnoo < new Date())
         throw new Error("Сунгах огноо өнөөдрөөс хойш байх шаардлагатай!");
@@ -488,7 +485,6 @@ router
         ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
         ajiltniiId: req.body.nevtersenAjiltniiToken.id,
       };
-
       var ashiglaltiinZardluud = await AshiglaltiinZardluud(
         req.body.tukhainBaaziinKholbolt
       ).find({
@@ -528,7 +524,7 @@ router
         geree.tulukhUdur.forEach((udur) => {
           if (
             moment(unuudur).add(index, "month").set("date", udur) <=
-              moment(geree.duusakhOgnoo) &&
+              moment(new Date(req.body.duusakhOgnoo)) &&
             moment(unuudur).add(index, "month").set("date", udur) >
               moment(new Date())
           ) {
@@ -661,7 +657,9 @@ router
             next(err);
           });
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   });
 
 router
