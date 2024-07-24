@@ -415,10 +415,11 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       !worksheet["A1"].v.includes("Давхар") ||
       !worksheet["B1"].v.includes("Код") ||
       !worksheet["C1"].v.includes("Талбайн хэмжээ") ||
-      !worksheet["D1"].v.includes("Талбайн нэгж үнэ") ||
-      !worksheet["E1"].v.includes("Талбайн нийт үнэ") ||
-      !worksheet["F1"].v.includes("Тайлбар") ||
-      !worksheet["G1"].v.includes("Нийтийн талбай эсэх")
+      !worksheet["D1"].v.includes("Талбайн метркуб") ||
+      !worksheet["E1"].v.includes("Талбайн нэгж үнэ") ||
+      !worksheet["F1"].v.includes("Талбайн нийт үнэ") ||
+      !worksheet["G1"].v.includes("Тайлбар") ||
+      !worksheet["H1"].v.includes("Нийтийн талбай эсэх")
     ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
@@ -433,6 +434,8 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject.davkhar = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Талбайн хэмжээ"))
           tolgoinObject.talbainKhemjee = cellAsString[0];
+        else if (worksheet[cellAsString].v.includes("Талбайн метркуб"))
+          tolgoinObject.talbainKhemjeeMetrKube = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Код"))
           tolgoinObject.kod = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Талбайн нэгж үнэ"))
@@ -463,6 +466,9 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       object.davkhar = mur[usegTooruuKhurvuulekh(tolgoinObject.davkhar)];
       object.talbainKhemjee =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)];
+      object.talbainKhemjeeMetrKube =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjeeMetrKube)];
+
       object.kod = mur[usegTooruuKhurvuulekh(tolgoinObject.kod)];
       object.talbainNegjUne =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainNegjUne)];
@@ -668,6 +674,11 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
     {
       header: "Талбайн хэмжээ",
       key: "Талбайн хэмжээ",
+      width: 30,
+    },
+    {
+      header: "Талбайн метркуб",
+      key: "Талбайн метркуб",
       width: 30,
     },
     {
