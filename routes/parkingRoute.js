@@ -491,8 +491,7 @@ router.post(
               $gte: new Date(req.body.ekhlekhOgnoo),
               $lte: new Date(req.body.duusakhOgnoo),
             },
-            "tuukh.uneguiGarsan": { $exists: false },
-            "tuukh.tuluv": -1,
+            "tuukh.tuluv": -2,
           },
         },
         {
