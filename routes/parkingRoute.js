@@ -491,6 +491,7 @@ router.post(
               $gte: new Date(req.body.ekhlekhOgnoo),
               $lte: new Date(req.body.duusakhOgnoo),
             },
+            "tuukh.uneguiGarsan": { $exists: false },
             "tuukh.tuluv": -1,
           },
         },
@@ -504,13 +505,44 @@ router.post(
           },
         },
       ]);
-      if (
-        !!udriinTailan &&
-        udriinTailan.length > 0 &&
-        !!zurchiltei &&
-        zurchiltei.length > 0
-      ) {
-        udriinTailan.push(zurchiltei[0]);
+
+      var unegui = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: !!req.body.barilgiinId
+              ? req.body.barilgiinId
+              : { $exists: true },
+          },
+        },
+        {
+          $unwind: "$tuukh",
+        },
+        {
+          $match: {
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+            "tuukh.uneguiGarsan": { $exists: true },
+          },
+        },
+        {
+          $group: {
+            _id: "Зөрчилтэй",
+            niitDun: {
+              $sum: "$niitDun",
+            },
+            niitToo: { $sum: 1 },
+          },
+        },
+      ]);
+      if (!!udriinTailan && udriinTailan.length > 0) {
+        if (!!zurchiltei && zurchiltei.length > 0)
+          udriinTailan.push(zurchiltei[0]);
+        if (!!unegui && unegui.length > 0) udriinTailan.push(unegui[0]);
       }
       res.status(200).send(udriinTailan);
     } catch (error) {
