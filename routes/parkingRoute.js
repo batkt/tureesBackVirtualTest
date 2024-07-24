@@ -531,7 +531,7 @@ router.post(
         },
         {
           $group: {
-            _id: "Зөрчилтэй",
+            _id: "Үнэгүй",
             niitDun: {
               $sum: "$niitDun",
             },
