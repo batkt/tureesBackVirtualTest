@@ -441,7 +441,7 @@ router.post(
       if (!!req.body.burtgesenAjiltaniiId)
         match["tuukh.burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
       console.log("match", JSON.stringify(match, null, 4));
-      const udriinTailan = await Uilchluulegch(
+      var udriinTailan = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
       ).aggregate([
         {
@@ -471,6 +471,47 @@ router.post(
           },
         },
       ]);
+      var zurchiltei = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: !!req.body.barilgiinId
+              ? req.body.barilgiinId
+              : { $exists: true },
+          },
+        },
+        {
+          $unwind: "$tuukh",
+        },
+        {
+          $match: {
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+            "tuukh.tuluv": -1,
+          },
+        },
+        {
+          $group: {
+            _id: "zurchiltei",
+            niitDun: {
+              $sum: "$niitDun",
+            },
+            niitToo: { $sum: 1 },
+          },
+        },
+      ]);
+      if (
+        !!udriinTailan &&
+        udriinTailan.length > 0 &&
+        !!zurchiltei &&
+        zurchiltei.length > 0
+      ) {
+        udriinTailan.push(zurchiltei[0]);
+      }
       res.status(200).send(udriinTailan);
     } catch (error) {
       next(error);
