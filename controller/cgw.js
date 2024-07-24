@@ -246,7 +246,6 @@ async function golomtServiceDuudya(
     var stringKhariu = response?.body;
     var khariu;
     if (!!stringKhariu) {
-      console.log("stringKhariu ", stringKhariu);
       var encrypt = CryptoJS.enc.Base64.parse(stringKhariu);
       var decrypted = CryptoJS.AES.decrypt(
         { ciphertext: encrypt },
@@ -592,7 +591,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         next,
         req.body.tukhainBaaziinKholbolt
       );
-      console.log("khariu", khariu);
       if (!!khariu && !!khariu.balanceLL && !!khariu.balanceLL.length > 0)
         khariu = { uldegdel: khariu?.balanceLL[0].amount?.value };
       res.send(khariu);
@@ -934,7 +932,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   next,
                   req.body.tukhainBaaziinKholbolt
                 );
-                console.log("khariu", khariu);
                 if (
                   !!khariu &&
                   !!khariu.statements &&
