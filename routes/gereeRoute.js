@@ -2577,10 +2577,11 @@ router
             davkhar: "$_id.davkhar",
             talbai: "$_id.talbai",
             talbainDugaar: "$_id.talbainDugaar",
+            daraagiinTulukhOgnoo: "$_id.daraagiinTulukhOgnoo",
             khugatsaaKhetersen: {
               $dateDiff: {
-                startDate: "$_id.daraagiinTulukhOgnoo",
-                endDate: new Date(),
+                startDate: ognoo,
+                endDate: "$_id.daraagiinTulukhOgnoo",
                 unit: "day",
               },
             },
@@ -2593,6 +2594,9 @@ router
               ],
             },
           },
+        },
+        {
+          $match: { uldegdel: { $gt: 0 } },
         },
       ]);
       for await (const a of gereenuud) {
