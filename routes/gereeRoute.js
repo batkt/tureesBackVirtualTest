@@ -2580,8 +2580,8 @@ router
             daraagiinTulukhOgnoo: "$_id.daraagiinTulukhOgnoo",
             khugatsaaKhetersen: {
               $dateDiff: {
-                startDate: ognoo,
-                endDate: "$_id.daraagiinTulukhOgnoo",
+                startDate: "$_id.daraagiinTulukhOgnoo",
+                endDate: ognoo,
                 unit: "day",
               },
             },
