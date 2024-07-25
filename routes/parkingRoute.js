@@ -538,7 +538,11 @@ router.post(
           },
         },
       ]);
-      if (!!udriinTailan && udriinTailan.length > 0) {
+      if (
+        !!udriinTailan &&
+        udriinTailan.length > 0 &&
+        req.body.baiguullagiinId != "657915f5b7453f90155dce6b"
+      ) {
         if (!!zurchiltei && zurchiltei.length > 0)
           udriinTailan.push(zurchiltei[0]);
         if (!!unegui && unegui.length > 0) udriinTailan.push(unegui[0]);
