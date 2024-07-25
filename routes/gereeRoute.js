@@ -2554,6 +2554,7 @@ router
               davkhar: "$davkhar",
               talbai: "$talbainKhemjee",
               talbainDugaar: "$talbainDugaar",
+              daraagiinTulukhOgnoo: "$daraagiinTulukhOgnoo",
             },
             tulukh: {
               $sum: "$avlaga.guilgeenuud.tulukhDun",
@@ -2576,6 +2577,13 @@ router
             davkhar: "$_id.davkhar",
             talbai: "$_id.talbai",
             talbainDugaar: "$_id.talbainDugaar",
+            khugatsaaKhetersen: {
+              $dateDiff: {
+                startDate: "$_id.daraagiinTulukhOgnoo",
+                endDate: new Date(),
+                unit: "day",
+              },
+            },
             uldegdel: {
               $subtract: [
                 "$tulukh",
