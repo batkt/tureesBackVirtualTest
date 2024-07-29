@@ -2622,4 +2622,10 @@ router.route("/testKhiie").post(async (req, res, next) => {
   res.sendStatus(200);
 });
 
+router.route("/msgKhucheerIlgeeye").post(async (req, res, next) => {
+  const { orlogiinMsgIlgeeye } = require("../controller/ajiltan");
+  orlogiinMsgIlgeeye(req.body.tsag, req.body.id);
+  res.sendStatus(200);
+});
+
 module.exports = router;
