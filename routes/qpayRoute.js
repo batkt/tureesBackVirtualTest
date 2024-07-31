@@ -57,6 +57,7 @@ router.get(
   "/passcallback/:baiguullagiinId/:zakhialgiinDugaar",
   async (req, res, next) => {
     try {
+      console.log("passcallback", new Date());
       const passObject = await PassObject(kholbolt).findOne({
         zakhialgiinDugaar: req.params.zakhialgiinDugaar,
         tulsunEsekh: false,
