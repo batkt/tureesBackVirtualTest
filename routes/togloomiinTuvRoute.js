@@ -316,6 +316,11 @@ router
           $unwind: "$niitTulbur",
         },
         {
+          $match: {
+            "$niitTulbur.turul": { $ne: "khariult" },
+          },
+        },
+        {
           $group: {
             _id: "$niitTulbur.turul",
             niitDun: {
@@ -592,45 +597,52 @@ router
     }
   });
 
-router.route("/togloomiinTuvUdriinTailanAvya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    const match = {
-      "baiguullagiinId": req.body.baiguullagiinId, 
-      "barilgiinId": req.body.barilgiinId,
-      "ognoo": {
+router
+  .route("/togloomiinTuvUdriinTailanAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      const match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        ognoo: {
           $gte: new Date(req.body.ekhlekhOgnoo),
           $lte: new Date(req.body.duusakhOgnoo),
         },
-      "tuluv": {
+        tuluv: {
           $ne: -1,
-        }, 
-      }
-    
-    if (!!req.body.burtgesenAjiltaniiId)
-      match["burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
-    var khariu = await TogloomiinTuv(
-      req.body.tukhainBaaziinKholbolt
-    ).aggregate([
-      {
-        $match: match,
-      },
-      {
-        $unwind: "$niitTulbur",
-      },
-      {
-        $group: {
-          _id: "$niitTulbur.turul",
-          niitDun: {
-            $sum: "$niitTulbur.dun",
-          },
-          niitToo: { $sum: 1 },
         },
-      },
-    ]);
-    res.send(khariu);
-  } catch (err){
-    next(err);
-  }
-});
+      };
+
+      if (!!req.body.burtgesenAjiltaniiId)
+        match["burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
+      var khariu = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
+        {
+          $match: match,
+        },
+        {
+          $unwind: "$niitTulbur",
+        },
+        {
+          $match: {
+            "$niitTulbur.turul": { $ne: "khariult" },
+          },
+        },
+        {
+          $group: {
+            _id: "$niitTulbur.turul",
+            niitDun: {
+              $sum: "$niitTulbur.dun",
+            },
+            niitToo: { $sum: 1 },
+          },
+        },
+      ]);
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 module.exports = router;
