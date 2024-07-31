@@ -1,6 +1,5 @@
 const express = require("express");
-const Baiguullaga = require("../models/baiguullaga");
-const Geree = require("../models/geree");
+const PassObject = require("../models/passObject");
 const { tokenShalgakh, Dugaarlalt } = require("zevbackv2");
 const axios = require("axios");
 const router = express.Router();
@@ -9,7 +8,6 @@ router.post("/passGargaya", tokenShalgakh, async (req, res, next) => {
   try {
     const crypto = require("crypto");
     const querystring = require("querystring");
-
     function prepareUnsignedMessage(
       httpMethod,
       uri,
@@ -120,10 +118,20 @@ router.post("/passGargaya", tokenShalgakh, async (req, res, next) => {
     const clientId = "1FE605805D174392A721AB518"; // Provided by the pass system
     const requestTime = new Date().toISOString(); // Request time in ISO format
     var dun = req.body.dun;
+    var callback_url =
+      "http://" +
+      process.env.UNDSEN_IP +
+      ":" +
+      process.env.PORT +
+      "/passcallback/" +
+      req.body.baiguullagiinId +
+      "/" +
+      req.body?.zakhialgiinDugaar;
     const requestBody = {
       pos_id: "dtb_70210003",
       payment_request_id: requestTime,
       amount: (dun * 100).toString(),
+      callback_url,
       //db_ref_no: "asfas",
     };
     const bodyJson = JSON.stringify(requestBody);
@@ -185,6 +193,17 @@ router.post("/passGargaya", tokenShalgakh, async (req, res, next) => {
     //   headers["Request-Time"],
     //   decryptedMessage
     // );
+    console.log("butsaakhKhariu", butsaakhKhariu);
+    var passObject = new PassObject(req.body.tukhainBaaziinKholbolt)();
+    passObject.zakhialgiinDugaar = req.body.zakhialgiinDugaar;
+    passObject.amount = dun;
+    passObject.baiguullagiinId = req.body.baiguullagiinId;
+    passObject.barilgiinId = req.body.barilgiinId;
+    passObject.order_id = butsaakhKhariu?.ret?.order_id;
+    passObject.order_ttl = butsaakhKhariu?.ret?.order_ttl;
+    passObject.ognoo = new Date();
+    passObject.tulsunEsekh = false;
+    passObject.save();
     res.send({ qr_image: butsaakhKhariu?.ret?.order_id });
   } catch (err) {
     next(err);
