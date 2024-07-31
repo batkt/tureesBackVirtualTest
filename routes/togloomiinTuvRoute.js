@@ -626,7 +626,7 @@ router
         },
         {
           $match: {
-            "$niitTulbur.turul": { $ne: "khariult" },
+            "niitTulbur.turul": { $ne: "khariult" },
           },
         },
         {
