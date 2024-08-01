@@ -792,6 +792,9 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                   $gte: ekhlekhOgnoo,
                   $lte: duusakhOgnoo,
                 },
+                "tuukh.tuluv": {
+                  $in: [1, 2],
+                },
               },
             },
             {
