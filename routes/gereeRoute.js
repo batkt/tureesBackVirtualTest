@@ -2595,13 +2595,12 @@ router
             },
           },
         },
-        {
-          $match: { uldegdel: { $gt: 0 } },
-        },
       ]);
       for await (const a of gereenuud) {
         try {
           delete a._id;
+          if (a.khugatsaaKhetersen < 0) a.khugatsaaKhetersen = 0;
+          if (a.uldegdel < 0) a.uldegdel = 0;
           a.barilgiinNer = baiguullaga.barilguud.find(
             (x) => x._id == a.barilgiinId
           ).ner;
