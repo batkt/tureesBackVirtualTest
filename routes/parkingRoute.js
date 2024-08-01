@@ -425,9 +425,6 @@ router.post(
                 $gte: new Date(req.body.ekhlekhOgnoo),
                 $lte: new Date(req.body.duusakhOgnoo),
               },
-              "tuukh.tuluv": {
-                $in: [1, 2],
-              },
             }
           : {
               "tuukh.tsagiinTuukh.garsanTsag": {
