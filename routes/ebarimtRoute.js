@@ -122,9 +122,11 @@ async function guilgeeneesEbarimtShineUusgye(
     ebarimt.reportMonth =
       ognoo.getFullYear().toString() +
       "-" +
-      ("0" + (ognoo.getMonth() + 1)).slice(-2).toString();
-    "-" + (ognoo.getDate() < 10 ? "0" : "") + ognoo.getDate(),
-      console.log("orj irlee", ebarimt.reportMonth);
+      ("0" + (ognoo.getMonth() + 1)).slice(-2).toString() +
+      "-" +
+      (ognoo.getDate() < 10 ? "0" : "") +
+      ognoo.getDate();
+    console.log("orj irlee", ebarimt.reportMonth);
   }
   ebarimt.guilgeeniiId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
