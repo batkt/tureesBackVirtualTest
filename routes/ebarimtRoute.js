@@ -114,20 +114,17 @@ async function guilgeeneesEbarimtShineUusgye(
   }
   var today = new Date();
   var guilgeeniiSar = new Date(ognoo).getMonth();
-  //ene xesegt getMonth 0-11 gsn too butsaadag uchir shuud xiilee
-  console.log("date", today.getDate());
-  console.log("guilgeeniiSar", guilgeeniiSar);
-  console.log("aaaa", today.getMonth());
   if (
     today.getDate() < 8 &&
     (guilgeeniiSar < today.getMonth() ||
       (guilgeeniiSar == 11 && today.getMonth() == 0))
   ) {
     ebarimt.reportMonth =
-      today.getFullYear().toString() +
+      ognoo.getFullYear().toString() +
       "-" +
-      ("0" + today.getMonth()).slice(-2).toString();
-    console.log("orj irlee", ebarimt.reportMonth);
+      ("0" + (ognoo.getMonth() + 1)).slice(-2).toString();
+    "-" + (ognoo.getDate() < 10 ? "0" : "") + ognoo.getDate(),
+      console.log("orj irlee", ebarimt.reportMonth);
   }
   ebarimt.guilgeeniiId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
