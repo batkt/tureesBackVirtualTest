@@ -55,12 +55,15 @@ router
 
 router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
   try {
+    var barilgiinId= req.query.barilgiinId
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+    }
+    if(!!barilgiinId)
+      match["barilgiinId"] = barilgiinId
     let query = [
       {
-        $match: {
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.query.barilgiinId,
-        },
+        $match: match,
       },
       {
         $group: {
@@ -75,13 +78,15 @@ router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
       },
     ];
     var result = await Talbai(req.body.tukhainBaaziinKholbolt).aggregate(query);
+    match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      niitiinTalbaiEsekh: true,
+    }
+    if(!!barilgiinId)
+      match["barilgiinId"] = barilgiinId
     query = [
       {
-        $match: {
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.query.barilgiinId,
-          niitiinTalbaiEsekh: true,
-        },
+        $match: match,
       },
       {
         $group: {
