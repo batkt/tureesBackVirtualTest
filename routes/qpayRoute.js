@@ -112,6 +112,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
         if (result != 0) maxDugaar = result[0].dugaar + 1;
       });
     if (req.body.baiguullagiinId == "664ac9b28bfeed5bdce01388") {
+      req.body.dugaar = "5069538136";
       await qpayGargayaKhuuchin(req, res, next);
     } else {
       var tailbar = "Төлбөр";
