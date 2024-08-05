@@ -113,6 +113,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       });
     if (req.body.baiguullagiinId == "664ac9b28bfeed5bdce01388") {
       req.body.dansniiDugaar = "5069538136";
+      req.body.burtgeliinDugaar = "6078893";
       await qpayGargayaKhuuchin(req, res, next);
     } else {
       var tailbar = "Төлбөр";
