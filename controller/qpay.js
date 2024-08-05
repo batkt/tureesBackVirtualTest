@@ -180,8 +180,8 @@ async function qpayObjectUusgeye(
   }
 }
 
-exports.qpayGargaya = asyncHandler(async (req, res, next) => {
-  console.log("qpayGargaya", req.body);
+exports.qpayGargayaKhuuchin = asyncHandler(async (req, res, next) => {
+  console.log("qpayGargayaKhuuchin", req.body);
   var dans = await Dans(req.body.tukhainBaaziinKholbolt).findOne({
     dugaar: req.body.dansniiDugaar,
   });

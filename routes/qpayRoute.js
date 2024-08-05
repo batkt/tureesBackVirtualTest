@@ -3,7 +3,10 @@ const Baiguullaga = require("../models/baiguullaga");
 const Geree = require("../models/geree");
 const PassObject = require("../models/passObject");
 const { tokenShalgakh, Dugaarlalt } = require("zevbackv2");
-const { qpayGuilgeeUtgaAvya } = require("../controller/qpay");
+const {
+  qpayGuilgeeUtgaAvya,
+  qpayGargayaKhuuchin,
+} = require("../controller/qpay");
 const router = express.Router();
 const {
   qpayKhariltsagchUusgey,
@@ -57,6 +60,9 @@ router.get(
   "/passcallback/:baiguullagiinId/:zakhialgiinDugaar",
   async (req, res, next) => {
     try {
+      const { db } = require("zevbackv2");
+      const b = req.params.baiguullagiinId;
+      var kholbolt = db.kholboltuud.find((a) => a.baiguullagiinId == b);
       console.log("passcallback", new Date());
       const passObject = await PassObject(kholbolt).findOne({
         zakhialgiinDugaar: req.params.zakhialgiinDugaar,
@@ -105,63 +111,67 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       .then((result) => {
         if (result != 0) maxDugaar = result[0].dugaar + 1;
       });
-    var tailbar = "Төлбөр";
-    if (!!req.body.gereeniiId) {
-      var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
-        req.body.gereeniiId
-      );
-      tailbar = "Түрээсийн төлбөр " + geree.gereeniiDugaar;
-    }
-    if (req.body?.nevtersenAjiltniiToken?.id == "66384a9061eeda747d01a320")
-      req.body.dansniiDugaar = "416075707";
-    else if (
-      req.body.baiguullagiinId == "6115f350b35689cdbf1b9da3" &&
-      !req.body.gereeniiId &&
-      !req.body.dansniiDugaar
-    )
-      req.body.dansniiDugaar = "5129057717";
-    req.body.tailbar = tailbar;
-    /*Төлбөр callback url*/
-    var callback_url =
-      "http://" +
-      process.env.UNDSEN_IP +
-      ":" +
-      process.env.PORT +
-      "/qpaycallback/" +
-      req.body.baiguullagiinId +
-      "/" +
-      req.body?.zakhialgiinDugaar;
-    /*Түрээсийн төлбөр callback url*/
-    if (req.body.gereeniiId && req.body.dansniiDugaar) {
-      callback_url =
+    if (req.body.baiguullagiinId == "664ac9b28bfeed5bdce01381") {
+      qpayGargayaKhuuchin;
+    } else {
+      var tailbar = "Төлбөр";
+      if (!!req.body.gereeniiId) {
+        var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
+          req.body.gereeniiId
+        );
+        tailbar = "Түрээсийн төлбөр " + geree.gereeniiDugaar;
+      }
+      if (req.body?.nevtersenAjiltniiToken?.id == "66384a9061eeda747d01a320")
+        req.body.dansniiDugaar = "416075707";
+      else if (
+        req.body.baiguullagiinId == "6115f350b35689cdbf1b9da3" &&
+        !req.body.gereeniiId &&
+        !req.body.dansniiDugaar
+      )
+        req.body.dansniiDugaar = "5129057717";
+      req.body.tailbar = tailbar;
+      /*Төлбөр callback url*/
+      var callback_url =
         "http://" +
         process.env.UNDSEN_IP +
         ":" +
         process.env.PORT +
-        "/qpayTulye/" +
-        req.body.baiguullagiinId.toString() +
+        "/qpaycallback/" +
+        req.body.baiguullagiinId +
         "/" +
-        req.body.barilgiinId.toString() +
-        "/" +
-        maxDugaar.toString();
+        req.body?.zakhialgiinDugaar;
+      /*Түрээсийн төлбөр callback url*/
+      if (req.body.gereeniiId && req.body.dansniiDugaar) {
+        callback_url =
+          "http://" +
+          process.env.UNDSEN_IP +
+          ":" +
+          process.env.PORT +
+          "/qpayTulye/" +
+          req.body.baiguullagiinId.toString() +
+          "/" +
+          req.body.barilgiinId.toString() +
+          "/" +
+          maxDugaar.toString();
 
-      req.body.zakhialgiinDugaar = maxDugaar.toString();
+        req.body.zakhialgiinDugaar = maxDugaar.toString();
+      }
+
+      console.log("callback_url", callback_url);
+      const khariu = await qpayGargaya(
+        req.body,
+        callback_url,
+        req.body.tukhainBaaziinKholbolt
+      );
+      var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)();
+      dugaarlalt.baiguullagiinId = req.body.baiguullagiinId;
+      dugaarlalt.barilgiinId = req.body.barilgiinId;
+      dugaarlalt.ognoo = new Date();
+      dugaarlalt.turul = "qpay";
+      dugaarlalt.dugaar = maxDugaar;
+      dugaarlalt.save();
+      res.send(khariu);
     }
-
-    console.log("callback_url", callback_url);
-    const khariu = await qpayGargaya(
-      req.body,
-      callback_url,
-      req.body.tukhainBaaziinKholbolt
-    );
-    var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)();
-    dugaarlalt.baiguullagiinId = req.body.baiguullagiinId;
-    dugaarlalt.barilgiinId = req.body.barilgiinId;
-    dugaarlalt.ognoo = new Date();
-    dugaarlalt.turul = "qpay";
-    dugaarlalt.dugaar = maxDugaar;
-    dugaarlalt.save();
-    res.send(khariu);
   } catch (err) {
     next(err);
   }
