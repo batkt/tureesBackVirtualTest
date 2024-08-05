@@ -127,6 +127,7 @@ router.post("/passGargaya", tokenShalgakh, async (req, res, next) => {
       req.body.baiguullagiinId +
       "/" +
       req.body?.zakhialgiinDugaar;
+    console.log("passcallback", callback_url);
     const requestBody = {
       pos_id: "dtb_70210003",
       payment_request_id: requestTime,
