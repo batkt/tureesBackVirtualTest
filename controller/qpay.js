@@ -191,7 +191,7 @@ async function qpayObjectUusgeye(
       invoice_code: invoiceCode,
       sender_invoice_no: maxDugaar.toString(),
       invoice_receiver_code: body.burtgeliinDugaar,
-      invoice_description: "Түрээсийн төлбөр",
+      invoice_description: "Төлбөр", //xuuchnaar n zuwxun master yawj baigaa uchir...
       allow_partial: false,
       minimum_amount: null,
       allow_exceed: false,
