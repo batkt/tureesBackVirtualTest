@@ -355,7 +355,11 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       qpayBarimt.payment_id = req.query.qpay_payment_id;
     qpayBarimt.tulsunEsekh = true;
     qpayBarimt.isNew = false;
-    req.app.get("socketio").emit(`qpay/${b}/${qpayBarimt.zakhialgiinDugaar}`);
+    req.app
+      .get("socketio")
+      .emit(
+        `qpay/${req.params.baiguullagiinId}/${qpayBarimt.zakhialgiinDugaar}`
+      );
     qpayBarimt.save();
     res.sendStatus(200);
   } else {
