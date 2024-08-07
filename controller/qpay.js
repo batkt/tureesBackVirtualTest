@@ -354,47 +354,8 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       qpayBarimt.payment_id = req.query.qpay_payment_id;
     qpayBarimt.tulsunEsekh = true;
     qpayBarimt.isNew = false;
-    var tulbur = {
-      turul: "qpay",
-      tulsunDun: qpayBarimt.qpay.amount,
-      ognoo: qpayBarimt.ognoo,
-      guilgeeKhiisenOgnoo: new Date(),
-    };
-    Geree(tukhainBaaziinKholbolt)
-      .findByIdAndUpdate(
-        { _id: qpayBarimt.gereeniiId },
-        {
-          $push: {
-            [`avlaga.guilgeenuud`]: tulbur,
-          },
-        },
-        {
-          new: true,
-        }
-      )
-      .then(async (result) => {
-        qpayBarimt.save();
-        console.log("qpay tuluv:", result);
-        try {
-          console.log("baina ilgeeye");
-          tulultiinMsgIlgeeye(
-            req.params.baiguullagiinId,
-            result.gereeniiDugaar,
-            result.utas[0],
-            tulbur.tulsunDun
-          );
-        } catch (aldaa) {
-          console.log("aldaa garchlooo ", aldaa);
-        }
-        Tulbur.daraagiinTulukhOgnooZasya(
-          qpayBarimt.gereeniiId,
-          tukhainBaaziinKholbolt
-        );
-        res.sendStatus(200);
-      })
-      .catch((err) => {
-        res.sendStatus(200);
-      });
+    qpayBarimt.save();
+    res.sendStatus(200);
   } else {
     var qpayBarimt = await QuickQpayObject(tukhainBaaziinKholbolt).findOne({
       zakhialgiinDugaar: req.params.dugaar,
