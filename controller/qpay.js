@@ -268,6 +268,7 @@ exports.qpayGargayaKhuuchin = asyncHandler(async (req, res, next) => {
   dugaarlalt.dugaar = Number(qpayObject.sender_invoice_no) + 1;
   dugaarlalt.save();
   var khadgalakhQpay = new QpayObject(req.body.tukhainBaaziinKholbolt)();
+  khadgalakhQpay.zakhialgiinDugaar = req.body.zakhialgiinDugaar;
   khadgalakhQpay.qpay = qpayObject;
   khadgalakhQpay.baiguullagiinId = req.body.baiguullagiinId;
   khadgalakhQpay.barilgiinId = req.body.barilgiinId;
@@ -354,7 +355,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       qpayBarimt.payment_id = req.query.qpay_payment_id;
     qpayBarimt.tulsunEsekh = true;
     qpayBarimt.isNew = false;
-    req.app.get("socketio").emit(`qpay/${b}/${qpayObject.zakhialgiinDugaar}`);
+    req.app.get("socketio").emit(`qpay/${b}/${qpayBarimt.zakhialgiinDugaar}`);
     qpayBarimt.save();
     res.sendStatus(200);
   } else {

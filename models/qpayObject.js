@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 mongoose.pluralize(null);
 const qpayObjectSchema = new Schema(
   {
+    zakhialgiinDugaar: String,
     gereeniiId: String,
     baiguullagiinId: String,
     barilgiinId: String,
