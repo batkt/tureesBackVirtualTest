@@ -343,7 +343,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
   var tukhainBaaziinKholbolt = kholboltuud.find(
     (a) => a.baiguullagiinId == req.params.baiguullagiinId
   );
-  if (req.body.baiguullagiinId == "664ac9b28bfeed5bdce01388") {
+  if (req.params.baiguullagiinId == "664ac9b28bfeed5bdce01388") {
     var qpayBarimt = await QpayObject(tukhainBaaziinKholbolt).findOne({
       "qpay.sender_invoice_no": req.params.dugaar,
       baiguullagiinId: req.params.baiguullagiinId,
