@@ -1,7 +1,6 @@
 const express = require("express");
 const Baiguullaga = require("../models/baiguullaga");
 const Geree = require("../models/geree");
-const PassObject = require("../models/passObject");
 const { tokenShalgakh, Dugaarlalt } = require("zevbackv2");
 const {
   qpayGuilgeeUtgaAvya,
@@ -50,32 +49,6 @@ router.get(
         };
         await tulburUridchiljTulukh(body, res, next);
       }
-      res.sendStatus(200);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-router.get(
-  "/passcallback/:baiguullagiinId/:zakhialgiinDugaar",
-  async (req, res, next) => {
-    try {
-      const { db } = require("zevbackv2");
-      const b = req.params.baiguullagiinId;
-      var kholbolt = db.kholboltuud.find((a) => a.baiguullagiinId == b);
-      console.log("passcallback", new Date());
-      const passObject = await PassObject(kholbolt).findOne({
-        zakhialgiinDugaar: req.params.zakhialgiinDugaar,
-        tulsunEsekh: false,
-      });
-      passObject.tulsunEsekh = true;
-      passObject.isNew = false;
-      await passObject.save();
-      req.app
-        .get("socketio")
-        .emit(
-          `pass/${req.params.baiguullagiinId}/${req.params.zakhialgiinDugaar}`
-        );
       res.sendStatus(200);
     } catch (err) {
       next(err);

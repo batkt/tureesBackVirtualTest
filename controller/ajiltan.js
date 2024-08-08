@@ -735,12 +735,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 ).ner;
               } catch (aldaa) {}
               barilgiinNer = await orchuulya(barilgiinNer);
-              /*if (barilgiinNer == "Их наяд плаза") barilgiinNer = "Ikhnayd plaza";
-            else if (barilgiinNer == "Цэцэг Төв") barilgiinNer = "Tsetseg tuv";
-            else if (barilgiinNer == "Шинэ тэрэг плаза")
-              barilgiinNer = "Shine tereg plaza";
-            else if (barilgiinNer == "Их наяд Tower")
-              barilgiinNer = "Ikhnayd zuun undur";*/
               text =
                 text +
                 barilgiinNer +

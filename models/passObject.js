@@ -12,6 +12,12 @@ const passObjectSchema = new Schema(
     amount: Number,
     order_id: String,
     order_ttl: String,
+    payment_request_id: String,
+    pos_id: String,
+    is_success: Boolean,
+    operation: String,
+    extra_data: Schema.Types.Mixed,
+    customer_data: Schema.Types.Mixed,
   },
   {
     timestamps: true,

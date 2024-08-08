@@ -211,4 +211,36 @@ router.post("/passGargaya", tokenShalgakh, async (req, res, next) => {
   }
 });
 
+router.post(
+  "/passcallback/:baiguullagiinId/:zakhialgiinDugaar",
+  async (req, res, next) => {
+    try {
+      const { db } = require("zevbackv2");
+      const b = req.params.baiguullagiinId;
+      var kholbolt = db.kholboltuud.find((a) => a.baiguullagiinId == b);
+      console.log("passcallback", new Date());
+      const passObject = await PassObject(kholbolt).findOne({
+        zakhialgiinDugaar: req.params.zakhialgiinDugaar,
+        tulsunEsekh: false,
+      });
+      passObject.payment_request_id = req.body.payment_request_id;
+      passObject.pos_id = req.body.pos_id;
+      passObject.is_success = req.body.is_success;
+      passObject.operation = req.body.operation;
+      passObject.extra_data = req.body.extra_data;
+      passObject.customer_data = req.body.customer_data;
+      passObject.tulsunEsekh = true;
+      passObject.isNew = false;
+      await passObject.save();
+      req.app
+        .get("socketio")
+        .emit(
+          `pass/${req.params.baiguullagiinId}/${req.params.zakhialgiinDugaar}`
+        );
+      res.sendStatus(200);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 module.exports = router;
