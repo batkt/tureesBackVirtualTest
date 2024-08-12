@@ -712,13 +712,7 @@ router.post(
             _id: "id",
             dun: {
               $sum: {
-                $cond: [
-                  {
-                    $eq: ["$_id.tuluv", 1],
-                  },
-                  { $ifNull: ["$_id.tulukhDun", 0] },
-                  0,
-                ],
+                $ifNull: ["$_id.tulukhDun", 0],
               },
             },
             garsanKhaalga: !!req.body.garakhKhaalgaIp
