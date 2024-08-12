@@ -719,7 +719,7 @@ router.post(
         {
           $group: {
             _id: "id",
-            dun: tulsunDun,
+            dun: "$tulsunDun",
             garsanKhaalga: !!req.body.garakhKhaalgaIp
               ? {
                   $sum: {
