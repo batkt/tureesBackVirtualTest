@@ -696,6 +696,15 @@ router.post(
               tuluv: "$tuukh.tuluv",
               tulukhDun: "$tuukh.tulukhDun",
             },
+            tulsunDun: {
+              $sum: {
+                $cond: [
+                  { $ne: ["$tuukh.tulbur.turul", "khungulult"] },
+                  { $ifNull: ["$tuukh.tulbur.dun", 0] },
+                  0,
+                ],
+              },
+            },
             khungulult: {
               $sum: {
                 $cond: [
@@ -710,11 +719,7 @@ router.post(
         {
           $group: {
             _id: "id",
-            dun: {
-              $sum: {
-                $ifNull: ["$_id.tulukhDun", 0],
-              },
-            },
+            dun: tulsunDun,
             garsanKhaalga: !!req.body.garakhKhaalgaIp
               ? {
                   $sum: {
