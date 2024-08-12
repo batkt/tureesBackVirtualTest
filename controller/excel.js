@@ -2433,6 +2433,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           updateObject["suuliinZaalt"] = tukhainZardal.suuliinZaalt;
           updateObject["umnukhZaalt"] = umnukhZaalt;
         }
+        console.log("updateObject", updateObject);
         tukhainZardal.gereeniiId = geree._id;
         tukhainZardal.zoruu = ashiglaltiinZardal.zoruuDun;
         tukhainZardal.niitDun = tempDun;
