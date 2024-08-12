@@ -679,9 +679,6 @@ router.post(
         },
         // "tuukh.zogsooliinId": { $exists: true },
         //"tuukh.zogsooliinId": req.body.zogsooliinId,
-        "tuukh.tuluv": {
-          $in: [0, 1],
-        },
       };
       if (!!req.body.barilgiinId) match.barilgiinId = req.body.barilgiinId;
       const query = [
