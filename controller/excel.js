@@ -2408,13 +2408,9 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         updateObject = {
           turul: "avlaga",
           tulsunDun: 0,
-          tulukhDun: req.body.nuatBodokhEsekh
-            ? (ashiglaltiinZardal.suuriKhuraamj
-                ? ashiglaltiinZardal.suuriKhuraamj
-                : 0 + tempDun) * 1.1
-            : (ashiglaltiinZardal.suuriKhuraamj
-                ? ashiglaltiinZardal.suuriKhuraamj
-                : 0) + tempDun,
+          tulukhDun: !!req.body.nuatBodokhEsekh
+            ? (ashiglaltiinZardal.suuriKhuraamj || 0 + tempDun) * 1.1
+            : ashiglaltiinZardal.suuriKhuraamj || 0 + tempDun,
           negj: zoruuDun && zoruuDun,
           khemjikhNegj: ashiglaltiinZardal.turul,
           tariff: ashiglaltiinZardal.tariff,
