@@ -2248,7 +2248,7 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
         }
         if (!!khuuchinUnetei && !!geree?.avlaga?.guilgeenuud) {
           if (
-            !!geree.ashiglaltiinZardluud.find(
+            !!geree.ashiglaltiinZardluud?.find(
               (x) => x.ner == "Менежментийн төлбөр"
             )
           )
