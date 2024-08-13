@@ -2256,7 +2256,7 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
             update: [
               {
                 $set: {
-                  "avlaga.guilgeenuud": gere.avlaga.guilgeenuud,
+                  "avlaga.guilgeenuud": geree.avlaga.guilgeenuud,
                 },
               },
             ],
