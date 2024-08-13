@@ -2222,7 +2222,7 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
       .select("+avlaga");
     var bulkOps = [];
     if (gereenuud)
-      for await (const geree of ajillakhGereenuud) {
+      for await (const geree of gereenuud) {
         var khuuchinUnetei = true;
         for await (const guilgee of geree?.avlaga?.guilgeenuud) {
           if (
