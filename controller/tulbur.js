@@ -1913,7 +1913,7 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
       for await (const element of objectuud) {
         var geree = await Geree(req.body.tukhainBaaziinKholbolt)
           .findOne({
-            register: element.register,
+            gereeniiDugaar: element.gereeniiDugaar,
             tuluv: 1,
           })
           .select("+avlaga");
