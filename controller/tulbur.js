@@ -2232,22 +2232,32 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
             guilgee.tailbar == "Менежмент төлбөр шинэ"
           ) {
             khuuchinUnetei = false;
+            guilgee.negj = geree.talbainKhemjee;
             if (guilgee.tailbar == "Менежмент төлбөр хуучин") {
               guilgee.tariff = 5800;
-              guilgee.negj = geree.talbainKhemjee;
             } else if (guilgee.tailbar == "Менежмент төлбөр шинэ") {
               guilgee.tariff = 7300;
-              guilgee.negj = geree.talbainKhemjee;
+            } else if (
+              guilgee.tailbar == "Түрээс хуучин үнэ 8/01-8/15 хооронд"
+            ) {
+              guilgee.tariff = guilgee.tulukhDun / geree.talbainKhemjee;
+            } else if (guilgee.tailbar == "Түрээс шинэ үнэ 8/16-8/31 хооронд") {
+              guilgee.tariff = guilgee.tulukhDun / geree.talbainKhemjee;
             }
           }
         }
         if (!!khuuchinUnetei && !!geree?.avlaga?.guilgeenuud) {
-          geree?.avlaga?.guilgeenuud.push({
-            turul: "khuvaari",
-            ognoo: new Date(2024, 7, 1, 0, 0, 0),
-            tulukhDun: geree.sariinTurees,
-            undsenDun: geree.sariinTurees,
-          });
+          if (
+            !!geree.ashiglaltiinZardluud.find(
+              (x) => x.ner == "Менежментийн төлбөр"
+            )
+          )
+            geree?.avlaga?.guilgeenuud.push({
+              turul: "avlaga",
+              tailbar: "Менежментийн төлбөр",
+              ognoo: new Date(2024, 7, 1, 0, 0, 0),
+              tulukhDun: geree.talbainKhemjee * 5800,
+            });
         }
 
         let upsertDoc = {
