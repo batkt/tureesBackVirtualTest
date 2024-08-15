@@ -2247,11 +2247,7 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
           }
         }
         if (!!khuuchinUnetei && !!geree?.avlaga?.guilgeenuud) {
-          if (
-            !!geree.ashiglaltiinZardluud?.find(
-              (x) => x.ner == "Менежментийн төлбөр"
-            )
-          )
+          if (!!geree.zardluud?.find((x) => x.ner == "Менежментийн төлбөр"))
             geree?.avlaga?.guilgeenuud.push({
               turul: "avlaga",
               tailbar: "Менежментийн төлбөр",
