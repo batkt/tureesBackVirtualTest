@@ -416,17 +416,17 @@ router
       ) 
       {
         update.tulburTulsunEsekh = true;
+        niitTulbur = togloomiinTuvTulbur?.niitTulbur;
+        for await (const tulburShine of guilgeeniiTuukh) {
+          var index = niitTulbur.findIndex(
+            (a) => a.turul === tulburShine.turul
+          );
+          if (index > -1) {
+            niitTulbur[index].dun = niitTulbur[index].dun + tulburShine.dun;
+          } else niitTulbur.push(tulburShine);
+        }
+        update.niitTulbur = niitTulbur;
       }
-      niitTulbur = togloomiinTuvTulbur?.niitTulbur;
-      for await (const tulburShine of guilgeeniiTuukh) {
-        var index = niitTulbur.findIndex(
-          (a) => a.turul === tulburShine.turul
-        );
-        if (index > -1) {
-          niitTulbur[index].dun = niitTulbur[index].dun + tulburShine.dun;
-        } else niitTulbur.push(tulburShine);
-      }
-      update.niitTulbur = niitTulbur;
       
       if (togloomiinTuvTulbur?.dutuuDun) {
         update.dutuuDun = togloomiinTuvTulbur.dutuuDun;
