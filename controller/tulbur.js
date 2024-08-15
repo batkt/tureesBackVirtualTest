@@ -2206,3 +2206,79 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
+  try {
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      .find({
+        barilgiinId: req.body.barilgiinId,
+        "avlaga.guilgeenuud.0": {
+          $exists: true,
+        },
+        "tulukhUdur.0": {
+          $exists: true,
+        },
+      })
+      .select("+avlaga");
+    var bulkOps = [];
+    if (gereenuud)
+      for await (const geree of gereenuud) {
+        var khuuchinUnetei = true;
+        for await (const guilgee of geree?.avlaga?.guilgeenuud) {
+          if (
+            guilgee.tailbar == "Түрээс хуучин үнэ 8/01-8/15 хооронд" ||
+            guilgee.tailbar == "Түрээс шинэ үнэ 8/16-8/31 хооронд" ||
+            guilgee.tailbar == "Менежмент төлбөр хуучин" ||
+            guilgee.tailbar == "Менежмент төлбөр шинэ" ||
+            guilgee.tailbar == "Менежментийн төлбөр"
+          ) {
+            khuuchinUnetei = false;
+            guilgee.negj = geree.talbainKhemjee;
+            if (guilgee.tailbar == "Менежмент төлбөр хуучин") {
+              guilgee.tariff = 5800;
+            } else if (guilgee.tailbar == "Менежмент төлбөр шинэ") {
+              guilgee.tariff = 7300;
+            } else if (
+              guilgee.tailbar == "Түрээс хуучин үнэ 8/01-8/15 хооронд"
+            ) {
+              guilgee.tariff = (guilgee.tulukhDun / geree.talbainKhemjee) * 2;
+            } else if (guilgee.tailbar == "Түрээс шинэ үнэ 8/16-8/31 хооронд") {
+              guilgee.tariff = (guilgee.tulukhDun / geree.talbainKhemjee) * 2;
+            } else if (guilgee.tailbar == "Менежментийн төлбөр") {
+              guilgee.tariff = 5800;
+              guilgee.tulukhDun = guilgee.tulukhDun / 2;
+            }
+          }
+        }
+
+        let upsertDoc = {
+          updateOne: {
+            filter: { _id: geree._id },
+            update: [
+              {
+                $set: {
+                  "avlaga.guilgeenuud": geree.avlaga.guilgeenuud,
+                },
+              },
+            ],
+          },
+        };
+        bulkOps.push(upsertDoc);
+      }
+
+    if (bulkOps.length > 0)
+      await Geree(req.body.tukhainBaaziinKholbolt)
+        .bulkWrite(bulkOps)
+        .then((bulkWriteOpResult) => {
+          console.log("BULK ==>", bulkOps);
+          console.log("BULK update OK", bulkWriteOpResult);
+        })
+        .catch((err) => {
+          console.log("BULK ==>", bulkOps);
+          console.log("BULK update error", err);
+        });
+    res.send(bulkOps.length.toString());
+  } catch (err) {
+    next(err);
+  }
+});

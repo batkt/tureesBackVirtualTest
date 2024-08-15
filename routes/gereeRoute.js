@@ -62,6 +62,7 @@ const {
   aldangiBodyo,
   talbainKubeOruulya,
   gereenuudZasya,
+  fcZasvarKhiie,
 } = require("../controller/tulbur");
 router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require("lodash");
@@ -78,6 +79,7 @@ router.route("/gereeniiToololtAvya").post(tokenShalgakh, gereeniiToololtAvya);
 router
   .route("/guilgeeniiToololtAvya")
   .post(tokenShalgakh, guilgeeniiToololtAvya);
+router.route("/fcZasvarKhiie").post(tokenShalgakh, fcZasvarKhiie);
 
 router.route("/gereeniiExcelAvya").get(tokenShalgakh, gereeniiExcelAvya);
 router
