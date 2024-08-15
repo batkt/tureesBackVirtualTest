@@ -2240,9 +2240,9 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
             } else if (
               guilgee.tailbar == "Түрээс хуучин үнэ 8/01-8/15 хооронд"
             ) {
-              guilgee.tariff = guilgee.tulukhDun / geree.talbainKhemjee;
+              guilgee.tariff = (guilgee.tulukhDun / geree.talbainKhemjee) * 2;
             } else if (guilgee.tailbar == "Түрээс шинэ үнэ 8/16-8/31 хооронд") {
-              guilgee.tariff = guilgee.tulukhDun / geree.talbainKhemjee;
+              guilgee.tariff = (guilgee.tulukhDun / geree.talbainKhemjee) * 2;
             }
           }
         }
