@@ -397,10 +397,11 @@ router
       var niitDun = lodash.sumBy(guilgeeniiTuukh, function (object) {
         return object.dun;
       });
-      var niitTulbur = [];
+      // var niitTulbur = [];
       var update = {
         tulburTulsunEsekh: false,
         tuluv: 1,
+        niitTulbur: guilgeeniiTuukh,
         tulbur: guilgeeniiTuukh,
         dutuuDun: 0,
         ebarimtAvakhDun: 0,
@@ -416,16 +417,16 @@ router
       ) 
       {
         update.tulburTulsunEsekh = true;
-        niitTulbur = togloomiinTuvTulbur?.niitTulbur;
-        for await (const tulburShine of guilgeeniiTuukh) {
-          var index = niitTulbur.findIndex(
-            (a) => a.turul === tulburShine.turul
-          );
-          if (index > -1) {
-            niitTulbur[index].dun = niitTulbur[index].dun + tulburShine.dun;
-          } else niitTulbur.push(tulburShine);
-        }
-        update.niitTulbur = niitTulbur;
+        // niitTulbur = togloomiinTuvTulbur?.niitTulbur;
+        // for await (const tulburShine of guilgeeniiTuukh) {
+        //   var index = niitTulbur.findIndex(
+        //     (a) => a.turul === tulburShine.turul
+        //   );
+        //   if (index > -1) {
+        //     niitTulbur[index].dun = niitTulbur[index].dun + tulburShine.dun;
+        //   } else niitTulbur.push(tulburShine);
+        // }
+        // update.niitTulbur = niitTulbur;
       }
       
       if (togloomiinTuvTulbur?.dutuuDun) {
