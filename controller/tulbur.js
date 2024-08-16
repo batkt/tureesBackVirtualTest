@@ -2245,15 +2245,12 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
               guilgee.tariff = (guilgee.tulukhDun / geree.talbainKhemjee) * 2;
             }
           }
-        }
-        var oldson = geree?.avlaga?.guilgeenuud?.find(
-          (x) =>
-            x.ognoo == new Date(2024, 7, 1, 0, 0, 0) &&
-            x.turul != "khuvaari" &&
-            !x.tailbar
-        );
-        if (!!oldson) {
-          oldson.ognoo = new Date(2024, 6, 31, 0, 0, 0);
+          if (
+            guilgee.ognoo == new Date(2024, 7, 1, 0, 0, 0) &&
+            guilgee.turul != "khuvaari" &&
+            !guilgee.tailbar
+          )
+            guilgee.ognoo = new Date(2024, 6, 31, 0, 0, 0);
         }
 
         let upsertDoc = {
