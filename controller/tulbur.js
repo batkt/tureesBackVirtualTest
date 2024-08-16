@@ -2246,11 +2246,10 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
             }
           }
         }
-        var oldson = geree?.avlaga?.guilgeenuud?.find((x) => {
-          return (
+        var oldson = geree?.avlaga?.guilgeenuud?.find(
+          (x) =>
             x.ognoo == new Date(2024, 7, 1, 0, 0, 0) && x.turul != "khuvaari"
-          );
-        });
+        );
         if (!!oldson) {
           oldson.ognoo = new Date(2024, 6, 31, 0, 0, 0);
         }
