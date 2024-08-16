@@ -2246,8 +2246,8 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
             }
           }
           if (
-            guilgee.ognoo == new Date(2024, 7, 1, 0, 0, 0) &&
-            guilgee.turul != "khuvaari" &&
+            guilgee.ognoo < new Date(2024, 7, 1, 1, 0, 0) &&
+            (guilgee.turul != "khuvaari" || !guilgee.turul) &&
             !guilgee.tailbar
           )
             guilgee.ognoo = new Date(2024, 6, 31, 0, 0, 0);
