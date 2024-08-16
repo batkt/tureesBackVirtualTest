@@ -2246,15 +2246,13 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
             }
           }
         }
-        if (!!khuuchinUnetei && !!geree?.avlaga?.guilgeenuud) {
-          if (!!geree.zardluud?.find((x) => x.ner == "Менежментийн төлбөр"))
-            geree?.avlaga?.guilgeenuud.push({
-              turul: "avlaga",
-              tailbar: "Менежментийн төлбөр",
-              tariff: 5800,
-              ognoo: new Date(2024, 7, 1, 0, 0, 0),
-              tulukhDun: geree.talbainKhemjee * 5800,
-            });
+        var oldson = geree?.avlaga?.guilgeenuud?.find((x) => {
+          return (
+            x.ognoo == new Date(2024, 7, 1, 0, 0, 0) && x.turul != "khuvaari"
+          );
+        });
+        if (!!oldson) {
+          oldson.ognoo = new Date(2024, 6, 31, 0, 0, 0);
         }
 
         let upsertDoc = {
