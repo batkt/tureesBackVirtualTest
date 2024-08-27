@@ -39,6 +39,7 @@ const qpayRoute = require("./routes/qpayRoute");
 const passRoute = require("./routes/passRoute");
 const parkingRoute = require("./routes/parkingRoute");
 const eventRoute = require("./routes/eventRoute");
+const tasalbarRoute = require("./routes/tasalbarRoute");
 const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
@@ -102,6 +103,7 @@ app.use(qpayRoute);
 app.use(passRoute);
 app.use(parkingRoute);
 app.use(eventRoute);
+app.use(tasalbarRoute);
 zuragPack(app);
 
 app.use(aldaaBarigch);
