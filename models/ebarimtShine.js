@@ -11,7 +11,6 @@ const ebarimtSchema = new Schema(
     togloomiinId: String,
     zogsooliinId: String,
     tasalbariinGuilgeeniiId: String,
-    qpayDugaar: Number,
     tulultiinId: String,
     ustgasanOgnoo: Date,
     talbainDugaar: String,

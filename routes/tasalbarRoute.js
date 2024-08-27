@@ -33,7 +33,6 @@ async function tasalbarEbarimtUusgye(
   ebarimt.tasalbariinGuilgeeniiId = tasalbariinGuilgee._id;
   ebarimt.baiguullagiinId = tasalbariinGuilgee.baiguullagiinId;
   ebarimt.barilgiinId = tasalbariinGuilgee.barilgiinId;
-  ebarimt.qpayDugaar = tasalbariinGuilgee.qpayDugaar;
   ebarimt.amount = tulukhDun.toFixed(2).toString();
   if (!!nuatTulukhEsekh) ebarimt.vat = nuatBodyo(tulukhDun);
   else ebarimt.vat = "0.00";
@@ -81,7 +80,6 @@ async function tasalbarEbarimtShineUusgye(
   var tulukhDun = tasalbariinGuilgee.tasalbarDun;
 
   ebarimt.tasalbariinGuilgeeniiId = tasalbariinGuilgee._id;
-  ebarimt.qpayDugaar = tasalbariinGuilgee.qpayDugaar;
   ebarimt.baiguullagiinId = tasalbariinGuilgee.baiguullagiinId;
   ebarimt.barilgiinId = tasalbariinGuilgee.barilgiinId;
   ebarimt.amount = tulukhDun.toFixed(2);
@@ -140,7 +138,6 @@ router
       if(!!req.body.tulbur && req.body.tulbur?.length > 0)
       {
         const tulbur = req.body.tulbur[0];
-        var maxDugaar = await TasalbariinGuilgee(req.body.tukhainBaaziinKholbolt).find({ baiguullagiinId: tulbur.baiguullagiinId, barilgiinId: tulbur.barilgiinId}).sort({qpayDugaar:-1}).limit(1);
         const tempData = {
           baiguullagiinId: tulbur.baiguullagiinId,
           barilgiinId: tulbur.barilgiinId,
@@ -151,7 +148,6 @@ router
           tasalbarTariff: tulbur.tasalbarTariff, 
           tasalbarDun: tulbur.tasalbarDun, 
           tasalbarShirkheg: tulbur.tasalbarShirkheg, 
-          qpayDugaar: !!maxDugaar && maxDugaar > 0 ? maxDugaar : 1,
         }
         var tempGuilgee = new TasalbariinGuilgee(req.body.tukhainBaaziinKholbolt)(tempData);
         await tempGuilgee.save();
@@ -200,10 +196,9 @@ router
         if (!!tuxainSalbar.eBarimtShine)
           ebarimt = new EbarimtShine(tukhainKholbolt)(d);
         else ebarimt = new Ebarimt(tukhainKholbolt)(d);
-        ebarimt.tasalbariinGuilgeeniiId = khariuObject._id;
+        ebarimt.tasalbariinGuilgeeniiId = tukhainObject._id;
         ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
         ebarimt.barilgiinId = khariuObject.barilgiinId;
-        ebarimt.qpayDugaar = khariuObject.qpayDugaar;
         ebarimt.save().catch((err) => {
           next(err);
         });

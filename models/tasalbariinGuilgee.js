@@ -13,7 +13,6 @@ const tasalbariinGuilgeeSchema = new Schema(
     tasalbarTariff: Number, 
     tasalbarDun: Number, 
     tasalbarShirkheg: Number, 
-    qpayDugaar: Number,
     ebarimtAvsanEsekh: Boolean,
     ebarimtRegister: String,
   },
