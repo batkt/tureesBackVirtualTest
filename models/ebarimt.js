@@ -9,6 +9,8 @@ const ebarimtSchema = new Schema(
     guilgeeniiId: String,
     togloomiinId: String,
     zogsooliinId: String,
+    tasalbariinGuilgeeniiId: String,
+    qpayDugaar: Number,
     tulultiinId: String,
     ustgasanOgnoo: Date,
     amount: String,
