@@ -9,6 +9,7 @@ const tasalbariinGuilgeeSchema = new Schema(
     ognoo: Date,
     burtgesenAjiltaniiId: String,
     burtgesenAjiltaniiNer: String,
+    barCodes: [String],
     tasalbarTariff: Number, 
     tasalbarDun: Number, 
     tasalbarShirkheg: Number, 

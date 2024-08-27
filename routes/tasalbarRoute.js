@@ -128,21 +128,24 @@ router
   .route("/tasalbariinTulburTulye")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      const tulbur = req.body.tulbur
-      if(!!tulbur)
+      if(!!req.body.tulbur && req.body.tulbur?.length > 0)
       {
+        const tulbur = req.body.tulbur[0];
         var maxDugaar = await TasalbariinGuilgee(req.body.tukhainBaaziinKholbolt).find({ baiguullagiinId: tulbur.baiguullagiinId, barilgiinId: tulbur.barilgiinId}).sort({qpayDugaar:-1}).limit(1);
-        const tempGuilgee = await TasalbariinGuilgee(req.body.tukhainBaaziinKholbolt).insertOne({
+        const tempData = {
           baiguullagiinId: tulbur.baiguullagiinId,
           barilgiinId: tulbur.barilgiinId,
           ognoo: tulbur.ognoo,
           burtgesenAjiltaniiId: tulbur.burtgesenAjiltaniiId,
           burtgesenAjiltaniiNer: tulbur.burtgesenAjiltaniiNer,
+          barCodes: tulbur.barCodes,
           tasalbarTariff: tulbur.tasalbarTariff, 
           tasalbarDun: tulbur.tasalbarDun, 
           tasalbarShirkheg: tulbur.tasalbarShirkheg, 
           qpayDugaar: !!maxDugaar && maxDugaar > 0 ? maxDugaar : 1,
-        });
+        }
+        var tempGuilgee = new TasalbariinGuilgee(req.body.tukhainBaaziinKholbolt)(tempData);
+        await tempGuilgee.save();
         res.send(tempGuilgee._id);
       }
     } catch (err) {
