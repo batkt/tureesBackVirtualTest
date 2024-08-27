@@ -11,6 +11,11 @@ const {
 } = require("../routes/ebarimtRoute");
 crud(router, "tasalbar", Tasalbar, UstsanBarimt);
 
+function nuatBodyo(bodokhDun) {
+  var nuatguiDun = bodokhDun / 1.1;
+  return (bodokhDun - nuatguiDun).toFixed(2).toString();
+}
+
 async function tasalbarEbarimtUusgye(
   tasalbariinGuilgee,
   register,
@@ -158,6 +163,8 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     var tukhainKholbolt = req.body.tukhainBaaziinKholbolt;
     var tukhainObject = await TasalbariinGuilgee(tukhainKholbolt).findById(req.body.id);
+    if (tukhainObject.ebarimtAvsanEsekh)
+      throw new aldaa("Ибаримт хэвлэж авсан байна!");
     const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(tukhainObject.baiguullagiinId);
     var tuxainSalbar = baiguullaga?.barilguud?.find((e) => e._id.toString() == tukhainObject.barilgiinId)?.tokhirgoo;
