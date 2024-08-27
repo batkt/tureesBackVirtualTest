@@ -6,6 +6,7 @@ const TasalbariinGuilgee = require("../models/tasalbariinGuilgee");
 const Baiguullaga = require("../models/baiguullaga");
 const Ebarimt = require("../models/ebarimt");
 const EbarimtShine = require("../models/ebarimtShine");
+const aldaa = require("../components/aldaa");
 const {
   ebarimtDuudya,
 } = require("../routes/ebarimtRoute");
