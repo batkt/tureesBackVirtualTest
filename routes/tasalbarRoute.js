@@ -162,76 +162,81 @@ router
 router
   .route("/v1/tasalbarEbarimtAvya")
   .post(tokenShalgakh, async (req, res, next) => {
-    var tukhainKholbolt = req.body.tukhainBaaziinKholbolt;
-    var tukhainObject = await TasalbariinGuilgee(tukhainKholbolt).findById(req.body.id);
-    if (tukhainObject.ebarimtAvsanEsekh)
-      throw new aldaa("Ибаримт хэвлэж авсан байна!");
-    const { db } = require("zevbackv2");
-    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(tukhainObject.baiguullagiinId);
-    var tuxainSalbar = baiguullaga?.barilguud?.find((e) => e._id.toString() == tukhainObject.barilgiinId)?.tokhirgoo;
-    var nuatTulukhEsekh = baiguullaga.barilguud.find((x) => x._id.toString() == tukhainObject.barilgiinId)?.tokhirgoo?.nuatTulukhEsekh;
-    console.log("tuxainSalbar", tuxainSalbar);
-    if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-    if (!!tuxainSalbar?.eBarimtShine)
-      ebarimt = await tasalbarEbarimtShineUusgye(
-        tukhainObject,
-        req.body.customerNo,
-        req.body.customerTin,
-        tuxainSalbar.merchantTin, //"37900846788",
-        tuxainSalbar.districtCode, //,"0023"
-        tukhainKholbolt,
-        nuatTulukhEsekh
-      );
-    else
-      var ebarimt = await tasalbarEbarimtUusgye(
-        tukhainObject,
-        req.body.customer_no,
-        req.body.individual ? null : "3",
-        tukhainKholbolt,
-        nuatTulukhEsekh
-      );
-    butsaakhMethod = function (d, khariuObject) {
-      try {
-        if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
-        var ebarimt;
-        if (!!tuxainSalbar.eBarimtShine)
-          ebarimt = new EbarimtShine(tukhainKholbolt)(d);
-        else ebarimt = new Ebarimt(tukhainKholbolt)(d);
-        ebarimt.tasalbariinGuilgeeniiId = tukhainObject._id;
-        ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
-        ebarimt.barilgiinId = khariuObject.barilgiinId;
-        ebarimt.save().catch((err) => {
-          next(err);
-        });
-        var update = { ebarimtAvsanEsekh: true };
-        if (ebarimt.customerNo)
-          update = {
-            ...update,
-            ebarimtRegister: ebarimt.customerNo,
-          };
-        TasalbariinGuilgee(tukhainKholbolt)
-          .findByIdAndUpdate(tukhainObject._id, update)
-          .then((xariu) => {
-            console.log("xariu", xariu);
-          })
-          .catch((err) => {
-            console.log(err);
+    try
+    {
+      var tukhainKholbolt = req.body.tukhainBaaziinKholbolt;
+      var tukhainObject = await TasalbariinGuilgee(tukhainKholbolt).findById(req.body.id);
+      if (tukhainObject.ebarimtAvsanEsekh)
+        throw new aldaa("Ибаримт хэвлэж авсан байна!");
+      const { db } = require("zevbackv2");
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(tukhainObject.baiguullagiinId);
+      var tuxainSalbar = baiguullaga?.barilguud?.find((e) => e._id.toString() == tukhainObject.barilgiinId)?.tokhirgoo;
+      var nuatTulukhEsekh = baiguullaga.barilguud.find((x) => x._id.toString() == tukhainObject.barilgiinId)?.tokhirgoo?.nuatTulukhEsekh;
+      console.log("tuxainSalbar", tuxainSalbar);
+      if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
+      if (!!tuxainSalbar?.eBarimtShine)
+        ebarimt = await tasalbarEbarimtShineUusgye(
+          tukhainObject,
+          req.body.customerNo,
+          req.body.customerTin,
+          tuxainSalbar.merchantTin, //"37900846788",
+          tuxainSalbar.districtCode, //,"0023"
+          tukhainKholbolt,
+          nuatTulukhEsekh
+        );
+      else
+        var ebarimt = await tasalbarEbarimtUusgye(
+          tukhainObject,
+          req.body.customer_no,
+          req.body.individual ? null : "3",
+          tukhainKholbolt,
+          nuatTulukhEsekh
+        );
+      butsaakhMethod = function (d, khariuObject) {
+        try {
+          if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
+          var ebarimt;
+          if (!!tuxainSalbar.eBarimtShine)
+            ebarimt = new EbarimtShine(tukhainKholbolt)(d);
+          else ebarimt = new Ebarimt(tukhainKholbolt)(d);
+          ebarimt.tasalbariinGuilgeeniiId = tukhainObject._id;
+          ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
+          ebarimt.barilgiinId = khariuObject.barilgiinId;
+          ebarimt.save().catch((err) => {
+            next(err);
           });
-        delete d.baiguullagiinId;
-        delete d.barilgiinId;
-        delete d.tasalbariinGuilgeeniiId;
-        delete d._id;
-        console.log("ebarimt duuslaa");
-        var butsaakhKhariu = {
-          success: true,
-          message: "Amjilttai",
-        };
-        butsaakhKhariu.data = d;
-        res.send(butsaakhKhariu);
-      } catch (err) {
-        next(err);
-      }
-    };
-    ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
+          var update = { ebarimtAvsanEsekh: true };
+          if (ebarimt.customerNo)
+            update = {
+              ...update,
+              ebarimtRegister: ebarimt.customerNo,
+            };
+          TasalbariinGuilgee(tukhainKholbolt)
+            .findByIdAndUpdate(tukhainObject._id, update)
+            .then((xariu) => {
+              console.log("xariu", xariu);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+          delete d.baiguullagiinId;
+          delete d.barilgiinId;
+          delete d.tasalbariinGuilgeeniiId;
+          delete d._id;
+          console.log("ebarimt duuslaa");
+          var butsaakhKhariu = {
+            success: true,
+            message: "Amjilttai",
+          };
+          butsaakhKhariu.data = d;
+          res.send(butsaakhKhariu);
+        } catch (err) {
+          next(err);
+        }
+      };
+      ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
+    } catch (error) {
+      next(error);
+    }
   });  
 module.exports = router;
