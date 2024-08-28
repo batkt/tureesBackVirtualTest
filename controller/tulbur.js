@@ -2230,7 +2230,7 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
             guilgee.tailbar == "Хүйтэн ус"
           ) {
             if (guilgee.ognoo < new Date(2024, 7, 5, 1, 0, 0)) {
-              guilgee.tulukhDun = guilgee.tulukhDun * 1.1;
+              guilgee.tulukhDun = guilgee.tulukhDun / 1.1;
             }
           }
         }
