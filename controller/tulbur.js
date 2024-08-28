@@ -2226,31 +2226,13 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
         var khuuchinUnetei = true;
         for await (const guilgee of geree?.avlaga?.guilgeenuud) {
           if (
-            guilgee.tailbar == "Түрээс хуучин үнэ 8/01-8/15 хооронд" ||
-            guilgee.tailbar == "Түрээс шинэ үнэ 8/16-8/31 хооронд" ||
-            guilgee.tailbar == "Менежмент төлбөр хуучин" ||
-            guilgee.tailbar == "Менежмент төлбөр шинэ"
+            guilgee.tailbar == "Халуун ус" ||
+            guilgee.tailbar == "Хүйтэн ус"
           ) {
-            khuuchinUnetei = false;
-            guilgee.negj = geree.talbainKhemjee;
-            if (guilgee.tailbar == "Менежмент төлбөр хуучин") {
-              guilgee.tariff = 5800;
-            } else if (guilgee.tailbar == "Менежмент төлбөр шинэ") {
-              guilgee.tariff = 7300;
-            } else if (
-              guilgee.tailbar == "Түрээс хуучин үнэ 8/01-8/15 хооронд"
-            ) {
-              guilgee.tariff = (guilgee.tulukhDun / geree.talbainKhemjee) * 2;
-            } else if (guilgee.tailbar == "Түрээс шинэ үнэ 8/16-8/31 хооронд") {
-              guilgee.tariff = (guilgee.tulukhDun / geree.talbainKhemjee) * 2;
+            if (guilgee.ognoo < new Date(2024, 7, 5, 1, 0, 0)) {
+              guilgee.tulukhDun = guilgee.tulukhDun * 1.1;
             }
           }
-          if (
-            guilgee.ognoo < new Date(2024, 7, 1, 1, 0, 0) &&
-            (guilgee.turul != "khuvaari" || !guilgee.turul) &&
-            !guilgee.tailbar
-          )
-            guilgee.ognoo = new Date(2024, 6, 31, 0, 0, 0);
         }
 
         let upsertDoc = {
