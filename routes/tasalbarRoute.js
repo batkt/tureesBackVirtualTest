@@ -16,6 +16,7 @@ const pdfPrint = require('pdf-to-printer');
 const { jsPDF } = require("jspdf");
 const fs = require("fs");
 const path = require("path");
+const process = require('node:process');
 
 
 function nuatBodyo(bodokhDun) {
@@ -251,7 +252,7 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try
     {
-      var temPath  = __dirname.replace("routes", "file");
+      var temPath  = process.cwd() + "\\file";
       console.log("path --->" + temPath);
       console.log("Checking for directory" + path.join(temPath, "tasalbarKhevlekh"));
       
