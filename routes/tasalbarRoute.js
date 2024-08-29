@@ -266,12 +266,22 @@ router
 
       console.log("---------5-------------->>>>"+temPath);
 
+      fs.readFile(path.join(temPath + "/tasalbarKhevlekh", "khevlekh.pdf"), 'utf8', (err, data) => { 
+        if (err) { 
+          console.error('Error reading file:', err); 
+          return; 
+        } 
+       
+        const content = data; 
+        console.log("fffff---" + content);
+      }); 
+
       const options = {
         printer: "ZKP8008",
       };
       // pdfPrint.getDefaultPrinter().then(console.log);
       console.log("----------8------------->>>>"+temPath);
-      pdfPrint.print(temPath + "\\tasalbarKhevlekh\\khevlekh.pdf", options).then(console.log);
+      pdfPrint.print(temPath + "/tasalbarKhevlekh/khevlekh.pdf", options);
       console.log("----------9------------->>>>"+temPath);
       res.send("test");
     } catch (error) {
