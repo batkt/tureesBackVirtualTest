@@ -12,6 +12,9 @@ const {
 } = require("../routes/ebarimtRoute");
 crud(router, "tasalbar", Tasalbar, UstsanBarimt);
 
+const pdfPrint = require('pdf-to-printer');
+const { jsPDF } = require("jspdf");
+
 function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
   return (bodokhDun - nuatguiDun).toFixed(2).toString();
@@ -238,5 +241,27 @@ router
     } catch (error) {
       next(error);
     }
-  });  
+});  
+
+router
+  .route("/tasalbarKhevlekh")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try
+    {
+      const doc = new jsPDF();
+      doc.html(req.body.htmlData);
+      // doc.text("Hello world!", 10, 10);
+      doc.save("D:\\zevtabs\\khevlekh.pdf");
+
+      const options = {
+        printer: "ZKP8008",
+      };
+      pdfPrint.getDefaultPrinter().then(console.log);
+      pdfPrint.print("D:\\zevtabs\\khevlekh.pdf", options).then(console.log);
+      res.send("test");
+    } catch (error) {
+      next(error);
+    }
+});  
+
 module.exports = router;
