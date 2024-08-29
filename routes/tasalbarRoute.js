@@ -252,7 +252,8 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try
     {
-      var temPath  = process.cwd() + "/file";
+      // var temPath  = process.cwd() + "/file";
+      var temPath = __dirname;
       console.log("path --->" + temPath);
       console.log("Checking for directory" + path.join(temPath, "tasalbarKhevlekh"));
       
@@ -262,7 +263,7 @@ router
       const doc = new jsPDF();
       // doc.html(req.body.htmlData);
       doc.text("Hello world BATAA!", 10, 10);
-      doc.save(temPath + "\\tasalbarKhevlekh\\khevlekh.pdf");
+      doc.save(temPath + "/tasalbarKhevlekh/khevlekh.pdf");
 
       console.log("---------5-------------->>>>"+temPath);
 
@@ -276,13 +277,13 @@ router
         console.log("fffff---" + content);
       }); 
 
-      // const options = {
-      //   printer: "ZKP8008",
-      // };
-      // // pdfPrint.getDefaultPrinter().then(console.log);
-      // console.log("----------8------------->>>>"+temPath);
-      // pdfPrint.print(temPath + "/tasalbarKhevlekh/khevlekh.pdf", options);
-      // console.log("----------9------------->>>>"+temPath);
+      const options = {
+        printer: "ZKP8008",
+      };
+      // pdfPrint.getDefaultPrinter().then(console.log);
+      console.log("----------8------------->>>>"+temPath);
+      pdfPrint.print(temPath + "/tasalbarKhevlekh/khevlekh.pdf", options);
+      console.log("----------9------------->>>>"+temPath);
       res.send("test");
     } catch (error) {
       next(error);
