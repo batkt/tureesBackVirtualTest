@@ -252,7 +252,7 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try
     {
-      var temPath  = process.cwd() + "\\file";
+      var temPath  = process.cwd() + "/file";
       console.log("path --->" + temPath);
       console.log("Checking for directory" + path.join(temPath, "tasalbarKhevlekh"));
       
