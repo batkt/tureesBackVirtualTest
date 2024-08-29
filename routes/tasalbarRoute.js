@@ -14,6 +14,9 @@ crud(router, "tasalbar", Tasalbar, UstsanBarimt);
 
 const pdfPrint = require('pdf-to-printer');
 const { jsPDF } = require("jspdf");
+const fs = require("fs");
+const path = require("path");
+
 
 function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
@@ -248,16 +251,23 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try
     {
+      var temPath  = __dirname.replace("routes", "file");
+      console.log("path --->" + temPath);
+      console.log("Checking for directory" + path.join(temPath, "tasalbarKhevlekh"));
+      
+      if(!fs.existsSync(path.join(temPath, "tasalbarKhevlekh")))
+        fs.mkdirSync(path.join(temPath, "tasalbarKhevlekh"), true);
+      
       const doc = new jsPDF();
       doc.html(req.body.htmlData);
       // doc.text("Hello world!", 10, 10);
-      doc.save("D:\\zevtabs\\khevlekh.pdf");
+      doc.save(temPath + "\\tasalbarKhevlekh\\khevlekh.pdf");
 
       const options = {
         printer: "ZKP8008",
       };
       pdfPrint.getDefaultPrinter().then(console.log);
-      pdfPrint.print("D:\\zevtabs\\khevlekh.pdf", options).then(console.log);
+      pdfPrint.print(temPath + "\\tasalbarKhevlekh\\khevlekh.pdf", options).then(console.log);
       res.send("test");
     } catch (error) {
       next(error);
