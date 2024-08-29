@@ -266,11 +266,11 @@ router
 
       console.log("---------5-------------->>>>"+temPath);
 
-      // const options = {
-      //   printer: "ZKP8008",
-      // };
-      // pdfPrint.getDefaultPrinter().then(console.log);
-      // console.log("----------8------------->>>>"+temPath);
+      const options = {
+        printer: "ZKP8008",
+      };
+      pdfPrint.getDefaultPrinter().then(console.log);
+      console.log("----------8------------->>>>"+temPath);
       // pdfPrint.print(temPath + "\\tasalbarKhevlekh\\khevlekh.pdf", options).then(console.log);
       // console.log("----------9------------->>>>"+temPath);
       res.send("test");
