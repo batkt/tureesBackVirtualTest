@@ -259,8 +259,8 @@ router
         fs.mkdirSync(path.join(temPath, "tasalbarKhevlekh"), true);
       
       const doc = new jsPDF();
-      doc.html(req.body.htmlData);
-      // doc.text("Hello world!", 10, 10);
+      // doc.html(req.body.htmlData);
+      doc.text("Hello world BATAA!", 10, 10);
       doc.save(temPath + "\\tasalbarKhevlekh\\khevlekh.pdf");
 
       const options = {
