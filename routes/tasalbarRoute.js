@@ -259,10 +259,10 @@ router
       if(!fs.existsSync(path.join(temPath, "tasalbarKhevlekh")))
         fs.mkdirSync(path.join(temPath, "tasalbarKhevlekh"), true);
       
-      // const doc = new jsPDF();
-      // // doc.html(req.body.htmlData);
-      // doc.text("Hello world BATAA!", 10, 10);
-      // doc.save(temPath + "\\tasalbarKhevlekh\\khevlekh.pdf");
+      const doc = new jsPDF();
+      // doc.html(req.body.htmlData);
+      doc.text("Hello world BATAA!", 10, 10);
+      doc.save(temPath + "\\tasalbarKhevlekh\\khevlekh.pdf");
 
       // const options = {
       //   printer: "ZKP8008",
