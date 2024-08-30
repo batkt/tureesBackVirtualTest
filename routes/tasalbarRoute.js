@@ -12,6 +12,13 @@ const {
 } = require("../routes/ebarimtRoute");
 crud(router, "tasalbar", Tasalbar, UstsanBarimt);
 
+const pdfPrint = require('pdf-to-printer');
+const { jsPDF } = require("jspdf");
+const fs = require("fs");
+const path = require("path");
+const process = require('node:process');
+
+
 function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
   return (bodokhDun - nuatguiDun).toFixed(2).toString();
@@ -238,5 +245,49 @@ router
     } catch (error) {
       next(error);
     }
-  });  
+});  
+
+router
+  .route("/tasalbarKhevlekh")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try
+    {
+      // var temPath  = process.cwd() + "/file";
+      var temPath = __dirname;
+      console.log("path --->" + temPath);
+      console.log("Checking for directory" + path.join(temPath, "tasalbarKhevlekh"));
+      
+      if(!fs.existsSync(path.join(temPath, "tasalbarKhevlekh")))
+        fs.mkdirSync(path.join(temPath, "tasalbarKhevlekh"), true);
+      
+      const doc = new jsPDF();
+      // doc.html(req.body.htmlData);
+      doc.text("Hello world BATAA!", 10, 10);
+      doc.save(temPath + "/tasalbarKhevlekh/khevlekh.pdf");
+
+      console.log("---------5-------------->>>>"+temPath);
+
+      fs.readFile(path.join(temPath + "/tasalbarKhevlekh", "khevlekh.pdf"), 'utf8', (err, data) => { 
+        if (err) { 
+          console.error('Error reading file:', err); 
+          return; 
+        } 
+       
+        const content = data; 
+        console.log("fffff---" + content);
+      }); 
+
+      // const options = {
+      //   printer: "ZKP8008",
+      // };
+      // pdfPrint.getDefaultPrinter().then(console.log);
+      // console.log("----------8------------->>>>"+temPath);
+      // pdfPrint.print(temPath + "/tasalbarKhevlekh/khevlekh.pdf", options);
+      // console.log("----------9------------->>>>"+temPath);
+      res.send("test");
+    } catch (error) {
+      next(error);
+    }
+});  
+
 module.exports = router;
