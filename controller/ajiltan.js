@@ -770,10 +770,18 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
               },
             },
             {
+              $unwind: "$niitTulbur",
+            },
+            {
+              $match: {
+              "niitTulbur.turul": { $nin: ["khariult", "khungulult"] },
+              },
+            },
+            {
               $group: {
                 _id: "niit",
                 niitDun: {
-                  $sum: "$niitDun",
+                  $sum: "$niitTulbur.dun",
                 },
               },
             },
