@@ -629,7 +629,7 @@ router
         },
         {
           $match: {
-            "niitTulbur.turul": { $nin: ["khariult", "khungulult"] },
+            "niitTulbur.turul": { $nin: ["khariult"] },
           },
         },
         {
