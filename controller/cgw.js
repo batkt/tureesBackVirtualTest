@@ -883,8 +883,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         });
                     } else {
                       console.log(
-                        "khariu.Document.GrpHdr",
-                        khariu.Document.GrpHdr
+                        "khariu.Document.GrpHdr ",
+                        JSON.stringify(khariu.Document.GrpHdr, null, 4)
                       );
                     }
                   },
