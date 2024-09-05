@@ -649,20 +649,40 @@ router
   });
 
 router
-.route("/togloomiinTuvNiitDun")
-.get(tokenShalgakh, async (req, res, next) => {
-  try
-  {
-    var match = {
-      niitDun: 0,
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-    };
-    var togloomiinTuvJagsaalt = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).find(match);
-    res.send(togloomiinTuvJagsaalt);
-  } catch (err) {
-    next(err);
-  }
-});
+  .route("/togloomiinTuvNiitDun")
+  .get(tokenShalgakh, async (req, res, next) => {
+    try
+    {
+      const match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        niitDun: 0,
+      }      
+      var khariu = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $match: match,
+        },
+        {
+          $unwind: "$niitTulbur"
+        },
+        {
+          $match: { 
+            "$niitTulbur.turul": { $nin: ["khariult"] },
+          }
+        },
+        {
+          $group: {
+            _id: "$_id",
+            niitDun: {
+              $sum: "$niitTulbur.dun",
+            },
+          },
+        },
+      ]);
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 module.exports = router;
