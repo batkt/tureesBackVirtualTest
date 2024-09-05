@@ -656,7 +656,7 @@ router
       const match = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
-        niitDun: 0,
+        niitDun: {$eq: 0},
       }      
       var khariu = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate([
         {
