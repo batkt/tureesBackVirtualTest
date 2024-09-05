@@ -650,44 +650,16 @@ router
 
 router
 .route("/togloomiinTuvNiitDun")
-.post(tokenShalgakh, async (req, res, next) => {
+.get(tokenShalgakh, async (req, res, next) => {
   try
   {
     var match = {
       niitDun: 0,
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
-      id: req.body.id
     };
     var togloomiinTuvJagsaalt = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).find(match);
-    var bulkuud = [];
-    if (togloomiinTuvJagsaalt && togloomiinTuvJagsaalt.length > 0) {
-
-      togloomiinTuvJagsaalt.forEach((tempData) => {
-        tempData.niitDun += tempData.khungulsunDun;
-        var filter = {
-          niitDun: 0,
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-          id: tempData.id
-        };
-        var update = { niitDun: tempData.niitDun };
-        bulkuud.push({
-          updateOne: {
-            filter: filter,
-            update: update,
-          },
-        });
-      });
-
-      if (bulkuud && bulkuud.length > 0) {
-        await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).bulkWrite(bulkuud).catch((err) => {
-          console.log(err);
-          next(err);
-        });
-      }
-    }
-    res.send("Амжилттай");
+    res.send(togloomiinTuvJagsaalt);
   } catch (err) {
     next(err);
   }
