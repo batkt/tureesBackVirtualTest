@@ -657,7 +657,7 @@ router
       niitDun: 0,
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
-      _id: req.body.id
+      id: req.body.id
     };
     var togloomiinTuvJagsaalt = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).find(match);
     var bulkuud = [];
@@ -669,7 +669,7 @@ router
           niitDun: 0,
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
-          _id: tempData._id
+          id: tempData.id
         };
         var update = { niitDun: tempData.niitDun };
         bulkuud.push({
