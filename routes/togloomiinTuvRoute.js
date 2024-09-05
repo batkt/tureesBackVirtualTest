@@ -648,19 +648,19 @@ router
     }
   });
 
-router
-  .route("/togloomiinTuvNiitDun")
-  .get(tokenShalgakh, async (req, res, next) => {
+router.route("/togloomiinTuvNiitDun").post(tokenShalgakh, async (req, res, next) => {
     try
     {
-      const match = {
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        niitDun: {$eq: 0},
-      }      
-      var khariu = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate([
+      const khariu = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate([
         {
-          $match: match,
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+            niitDun: 0,
+            tuluv: {
+              $ne: -1,
+            },
+          },
         },
         {
           $unwind: "$niitTulbur"
@@ -679,10 +679,25 @@ router
           },
         },
       ]);
+      console.log("---------------->>>" + khariu);
+      
+      khariu.forEach((data) => {
+        console.log("------------>>" + data.niitDun);
+        TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
+          .findByIdAndUpdate({ _id: data._id }, [
+            {
+              $set: {
+                niitDun: data.niitDun,
+              },
+            },
+          ])
+        .catch((err) => {
+          next(err);
+        });
+      });
       res.send(khariu);
     } catch (err) {
       next(err);
     }
   });
-
 module.exports = router;
