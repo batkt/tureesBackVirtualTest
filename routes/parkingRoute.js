@@ -427,7 +427,7 @@ router.post(
               },
             }
           : {
-              "tuukh.tsagiinTuukh.garsanTsag": {
+              "tuukh.tulbur.ognoo": {
                 $gte: new Date(req.body.ekhlekhOgnoo),
                 $lte: new Date(req.body.duusakhOgnoo),
               },
@@ -673,10 +673,10 @@ router.post(
       const match = {
         baiguullagiinId: req.body.baiguullagiinId,
         mashiniiDugaar: { $regex: "[a-z\u0400-\u04FF]" },
-        "tuukh.tsagiinTuukh.garsanTsag": {
-          $gte: new Date(req.body.ekhlekhOgnoo),
-          $lte: new Date(req.body.duusakhOgnoo),
-        },
+        // "tuukh.tsagiinTuukh.garsanTsag": {
+        //   $gte: new Date(req.body.ekhlekhOgnoo),
+        //   $lte: new Date(req.body.duusakhOgnoo),
+        // },
         // "tuukh.zogsooliinId": { $exists: true },
         //"tuukh.zogsooliinId": req.body.zogsooliinId,
       };
@@ -688,6 +688,14 @@ router.post(
         { $unwind: "$tuukh" },
         {
           $unwind: { path: "$tuukh.tulbur", preserveNullAndEmptyArrays: true },
+        },
+        {
+          $match: {
+            "tuukh.tulbur.ognoo": {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+          },
         },
         {
           $group: {
