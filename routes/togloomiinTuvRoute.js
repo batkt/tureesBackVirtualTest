@@ -648,4 +648,56 @@ router
     }
   });
 
+router.route("/togloomiinTuvNiitDun").post(tokenShalgakh, async (req, res, next) => {
+    try
+    {
+      const khariu = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+            niitDun: 0,
+            tuluv: {
+              $ne: -1,
+            },
+          },
+        },
+        {
+          $unwind: "$niitTulbur"
+        },
+        {
+          $match: { 
+            "niitTulbur.turul": { $nin: ["khariult"] },
+          }
+        },
+        {
+          $group: {
+            _id: "$_id",
+            niitDun: {
+              $sum: "$niitTulbur.dun",
+            },
+          },
+        },
+      ]);
+      console.log("---------------->>>" + khariu);
+      
+      khariu.forEach((data) => {
+        console.log("------------>>" + data.niitDun);
+        TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
+          .findByIdAndUpdate({ _id: data._id }, [
+            {
+              $set: {
+                niitDun: data.niitDun,
+              },
+            },
+          ])
+        .catch((err) => {
+          next(err);
+        });
+      });
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  });
 module.exports = router;
