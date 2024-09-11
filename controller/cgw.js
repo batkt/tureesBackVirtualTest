@@ -628,8 +628,14 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
 
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
   try {
-    const { db } = require("zevbackv2");
-    var kholboltuud = db.kholboltuud;
+    var kholboltuud;
+
+    if (!!req.body.tukhainBaaziinKholbolt) {
+      kholboltuud = [req.body.tukhainBaaziinKholbolt];
+    } else {
+      const { db } = require("zevbackv2");
+      kholboltuud = db.kholboltuud;
+    }
     var dansnuud;
     var firstDay;
     var lastDay;
@@ -644,9 +650,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
         new Date().getMonth() + 1,
         0
       );
-    }
-    if (!!req.body.tukhainBaaziinKholbolt) {
-      kholboltuud = [req.body.tukhainBaaziinKholbolt];
     }
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
