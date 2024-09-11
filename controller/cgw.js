@@ -218,7 +218,6 @@ async function golomtServiceDuudya(
   try {
     var { sessionKey, ivKey } = dans;
     var tokenObject = await golomtTokenAvya(dans, tukhainBaaziinKholbolt);
-    console.log("tokenObject", tokenObject);
     var a = JSON.stringify(yawuulaxBody);
     var hash = CryptoJS.SHA256(a.toString());
     var hex = hash.toString(CryptoJS.enc.Hex);
@@ -905,8 +904,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   .sort({ createdAt: -1 })
                   .limit(1);
                 if (!!max) {
-                  console.log("max baina", max);
-                  console.log("max.tranDate", max.tranDate);
                   firstDay = new Date(max.tranDate);
                 }
                 var yawuulaxBody = {
@@ -929,7 +926,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate(),
                 };
-                console.log("yawuulaxBody", yawuulaxBody);
                 var khariu = await golomtServiceDuudya(
                   dans,
                   yawuulaxBody,
@@ -1009,8 +1005,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   .sort({ createdAt: -1 })
                   .limit(1);
                 if (!!max) {
-                  console.log("max baina", max);
-                  console.log("max.txnDate", max.txnDate);
                   firstDay = new Date(max.txnDate);
                 }
                 const response = await got
@@ -1047,7 +1041,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   });
                 var khariu = JSON.parse(response.body);
 
-                console.log("khariu", khariu);
                 if (
                   !!khariu &&
                   !!khariu.result &&
@@ -1509,7 +1502,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   null,
                   kholbolt
                 );
-                console.log("khariu", khariu);
                 if (
                   !!khariu &&
                   !!khariu.statements &&
@@ -1595,8 +1587,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   .sort({ createdAt: -1 })
                   .limit(1);
                 if (!!max) {
-                  console.log("max baina", max);
-                  console.log("max.txnDate", max.txnDate);
                   firstDay = new Date(max.txnDate);
                 }
                 const response = await got
@@ -1633,7 +1623,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   });
                 var khariu = JSON.parse(response.body);
 
-                console.log("khariu", khariu);
                 if (
                   !!khariu &&
                   !!khariu.result &&
@@ -1734,7 +1723,6 @@ async function pad(num, size) {
 }
 
 async function tdbKhuulgaKhurvuulekh(object) {
-  console.log("object", object);
   object.NtryRef = object?.NtryRef[0];
   object.TxDt = object?.TxDt[0];
   object.TxPostDate = object?.TxPostDate[0];
