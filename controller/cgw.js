@@ -645,6 +645,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
         0
       );
     }
+    if (!!req.body.tukhainBaaziinKholbolt) {
+      kholboltuud = [req.body.tukhainBaaziinKholbolt];
+    }
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
         if (!req)
@@ -1520,7 +1523,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         drOrCr: mur?.drOrCr,
                         tranAmount: mur?.tranAmount,
                         tranDesc: mur?.tranDesc,
-                        tranPostedDate: mur?.tranPostedDate,
+                        tranPostedDate: new Date(mur?.tranPostedDate),
                         tranCrnCode: mur?.tranCrnCode,
                         exchRate: mur?.exchRate,
                         balance: mur?.balance,
