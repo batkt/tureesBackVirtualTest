@@ -70,7 +70,10 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo, salbaruud = null) {
     process.env.APP_SECRET,
     {
       expiresIn:
-        this.baiguullagiinId == "656f165ef28cde7f62bc3604" ? "7d" : "12h",
+        this.baiguullagiinId == "656f165ef28cde7f62bc3604" ||
+        this.baiguullagiinId == "6698c657c26994f4e0f8de62"
+          ? "7d"
+          : "12h",
     }
   );
   return token;
