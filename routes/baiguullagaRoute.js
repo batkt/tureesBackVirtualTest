@@ -185,16 +185,4 @@ router.get("/tatvaraasBaiguullagaAvya/:regno", (req, res, next) => {
   });
 });
 
-router.post("/baiguullagaIdgaarAvya", (req, res, next) => {
-  const { db } = require("zevbackv2");
-  Baiguullaga(db.erunkhiiKholbolt)
-    .findById(req.body.baiguullagiinId)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      next(err);
-    });
-});
-
 module.exports = router;

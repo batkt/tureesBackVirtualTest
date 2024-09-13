@@ -20,6 +20,7 @@ const {
   zochiniiTokenAvya,
   erkhiinMedeelelAvya,
   khugatsaaguiTokenAvya,
+  baiguullagaIdgaarAvya,
 } = require("../controller/ajiltan");
 const aldaa = require("../components/aldaa");
 const session = require("../models/session");
@@ -82,6 +83,7 @@ router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);
 router.route("/zochiniiTokenAvya/:baiguullagiinId").get(zochiniiTokenAvya);
 router.route("/khugatsaaguiTokenAvya").post(khugatsaaguiTokenAvya);
 router.route("/erkhiinMedeelelAvya").post(tokenShalgakh, erkhiinMedeelelAvya);
+router.route("/baiguullagaIdgaarAvya").post(tokenShalgakh, baiguullagaIdgaarAvya);
 router.get("/ajiltniiZuragAvya/:baiguullaga/:ner", (req, res, next) => {
   const fileName = req.params.ner;
   const directoryPath = "zurag/ajiltan/" + req.params.baiguullaga + "/";

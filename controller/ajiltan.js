@@ -933,3 +933,15 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
     }
   }
 );
+
+exports.baiguullagaIdgaarAvya = asyncHandler(async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
+    console.log("baiguullaga", baiguullaga);
+    if (!baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
+    res.send(baiguullaga);
+  } catch (error) {
+    next(error);
+  }
+});
