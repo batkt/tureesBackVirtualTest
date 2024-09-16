@@ -1,4 +1,5 @@
 const Baiguullaga = require("../models/baiguullaga");
+const { ebarimtShivye } = require("../routes/ebarimtRoute");
 const { msgIlgeeye } = require("./khariltsagch");
 const {
   Mashin: ParkingMashin,
@@ -296,5 +297,51 @@ module.exports.zogsooloosUstgay = async (body, next) => {
     }
   } catch (err) {
     next(err);
+  }
+};
+
+module.exports.ebarimtDutuugShivye = async (body, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
+      "barilguud.tokhirgoo.eBarimtBugdShivikh": true,
+    });
+    if (!!baiguullaguud) {
+      const kholboltuud = db.kholboltuud;
+      if (kholboltuud) {
+        for await (const baiguullaga of baiguullaguud) {
+          var tukhainKholbolt = kholboltuud.find(
+            (x) => x.baiguullagiinId == baiguullaga._id.toString()
+          );
+          var shiveeguiTuukhuud = await Uilchluulegch(tukhainKholbolt).find({
+            niitDun: { $gt: 0 },
+            ebarimtAvsanEsekh: { $ne: false },
+            updatedAt: { $gt: new Date(moment(new Date()).add(-1, "day")) },
+          });
+          for await (const barimt of shiveeguiTuukhuud) {
+            await ebarimtShivye(
+              {
+                body: {
+                  tukhainBaaziinKholbolt: tukhainKholbolt,
+                  ebarimtiinTurul: "zogsool",
+                  baiguullagiinId: barimt.baiguullagiinId,
+                  id: barimt._id,
+                },
+              },
+              (khariu) => {
+                console.log("ebarimtDutuugShivye amjilttai ==>", khariu);
+              },
+              (err) => {
+                console.log("ebarimtDutuugShivye aldaa ==>", err);
+              }
+            );
+          }
+        }
+      }
+    }
+  } catch (err) {
+    if (!!next) {
+      next(err);
+    } else console.log("err", err);
   }
 };

@@ -7,17 +7,13 @@ const Baiguullaga = require("../models/baiguullaga");
 const Ebarimt = require("../models/ebarimt");
 const EbarimtShine = require("../models/ebarimtShine");
 const aldaa = require("../components/aldaa");
-const {
-  ebarimtDuudya,
-} = require("../routes/ebarimtRoute");
+const { ebarimtDuudya } = require("../routes/ebarimtRoute");
 crud(router, "tasalbar", Tasalbar, UstsanBarimt);
 
-const pdfPrint = require('pdf-to-printer');
 const { jsPDF } = require("jspdf");
 const fs = require("fs");
 const path = require("path");
-const process = require('node:process');
-
+const process = require("node:process");
 
 function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
@@ -143,8 +139,7 @@ router
   .route("/tasalbariinTulburTulye")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      if(!!req.body.tulbur && req.body.tulbur?.length > 0)
-      {
+      if (!!req.body.tulbur && req.body.tulbur?.length > 0) {
         const tulbur = req.body.tulbur[0];
         const tempData = {
           baiguullagiinId: tulbur.baiguullagiinId,
@@ -153,11 +148,13 @@ router
           burtgesenAjiltaniiId: tulbur.burtgesenAjiltaniiId,
           burtgesenAjiltaniiNer: tulbur.burtgesenAjiltaniiNer,
           barCodes: tulbur.barCodes,
-          tasalbarTariff: tulbur.tasalbarTariff, 
-          tasalbarDun: tulbur.tasalbarDun, 
-          tasalbarShirkheg: tulbur.tasalbarShirkheg, 
-        }
-        var tempGuilgee = new TasalbariinGuilgee(req.body.tukhainBaaziinKholbolt)(tempData);
+          tasalbarTariff: tulbur.tasalbarTariff,
+          tasalbarDun: tulbur.tasalbarDun,
+          tasalbarShirkheg: tulbur.tasalbarShirkheg,
+        };
+        var tempGuilgee = new TasalbariinGuilgee(
+          req.body.tukhainBaaziinKholbolt
+        )(tempData);
         await tempGuilgee.save();
         res.send(tempGuilgee._id);
       }
@@ -169,16 +166,23 @@ router
 router
   .route("/v1/tasalbarEbarimtAvya")
   .post(tokenShalgakh, async (req, res, next) => {
-    try
-    {
+    try {
       var tukhainKholbolt = req.body.tukhainBaaziinKholbolt;
-      var tukhainObject = await TasalbariinGuilgee(tukhainKholbolt).findById(req.body.id);
+      var tukhainObject = await TasalbariinGuilgee(tukhainKholbolt).findById(
+        req.body.id
+      );
       if (tukhainObject.ebarimtAvsanEsekh)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
       const { db } = require("zevbackv2");
-      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(tukhainObject.baiguullagiinId);
-      var tuxainSalbar = baiguullaga?.barilguud?.find((e) => e._id.toString() == tukhainObject.barilgiinId)?.tokhirgoo;
-      var nuatTulukhEsekh = baiguullaga.barilguud.find((x) => x._id.toString() == tukhainObject.barilgiinId)?.tokhirgoo?.nuatTulukhEsekh;
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+        tukhainObject.baiguullagiinId
+      );
+      var tuxainSalbar = baiguullaga?.barilguud?.find(
+        (e) => e._id.toString() == tukhainObject.barilgiinId
+      )?.tokhirgoo;
+      var nuatTulukhEsekh = baiguullaga.barilguud.find(
+        (x) => x._id.toString() == tukhainObject.barilgiinId
+      )?.tokhirgoo?.nuatTulukhEsekh;
       console.log("tuxainSalbar", tuxainSalbar);
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
       if (!!tuxainSalbar?.eBarimtShine)
@@ -245,49 +249,46 @@ router
     } catch (error) {
       next(error);
     }
-});  
+  });
 
 router
   .route("/tasalbarKhevlekh")
   .post(tokenShalgakh, async (req, res, next) => {
-    try
-    {
+    try {
       // var temPath  = process.cwd() + "/file";
       var temPath = __dirname;
       console.log("path --->" + temPath);
-      console.log("Checking for directory" + path.join(temPath, "tasalbarKhevlekh"));
-      
-      if(!fs.existsSync(path.join(temPath, "tasalbarKhevlekh")))
+      console.log(
+        "Checking for directory" + path.join(temPath, "tasalbarKhevlekh")
+      );
+
+      if (!fs.existsSync(path.join(temPath, "tasalbarKhevlekh")))
         fs.mkdirSync(path.join(temPath, "tasalbarKhevlekh"), true);
-      
+
       const doc = new jsPDF();
       // doc.html(req.body.htmlData);
       doc.text("Hello world BATAA!", 10, 10);
       doc.save(temPath + "/tasalbarKhevlekh/khevlekh.pdf");
 
-      console.log("---------5-------------->>>>"+temPath);
+      console.log("---------5-------------->>>>" + temPath);
 
-      fs.readFile(path.join(temPath + "/tasalbarKhevlekh", "khevlekh.pdf"), 'utf8', (err, data) => { 
-        if (err) { 
-          console.error('Error reading file:', err); 
-          return; 
-        } 
-       
-        const content = data; 
-        console.log("fffff---" + content);
-      }); 
+      fs.readFile(
+        path.join(temPath + "/tasalbarKhevlekh", "khevlekh.pdf"),
+        "utf8",
+        (err, data) => {
+          if (err) {
+            console.error("Error reading file:", err);
+            return;
+          }
 
-      // const options = {
-      //   printer: "ZKP8008",
-      // };
-      // pdfPrint.getDefaultPrinter().then(console.log);
-      // console.log("----------8------------->>>>"+temPath);
-      // pdfPrint.print(temPath + "/tasalbarKhevlekh/khevlekh.pdf", options);
-      // console.log("----------9------------->>>>"+temPath);
+          const content = data;
+          console.log("fffff---" + content);
+        }
+      );
       res.send("test");
     } catch (error) {
       next(error);
     }
-});  
+  });
 
 module.exports = router;

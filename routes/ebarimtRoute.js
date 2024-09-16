@@ -18,13 +18,7 @@ const {
   db,
 } = require("zevbackv2");
 const request = require("request");
-const {
-  Parking,
-  Uilchluulegch,
-  ZogsooliinTulbur,
-  zogsoolUusgey,
-  sdkData,
-} = require("parking-v1");
+const { Uilchluulegch } = require("parking-v1");
 
 function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
@@ -499,10 +493,10 @@ async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
     );
   }
 }
-
-router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
+async function ebarimtShivye(req, res, next) {
   try {
     var ebarimtiinTurul = req.body.ebarimtiinTurul;
+    console.log(req);
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       req.body.baiguullagiinId
     );
@@ -726,7 +720,9 @@ router.post("/ebarimtShivye", tokenShalgakh, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+}
+
+router.post("/ebarimtShivye", tokenShalgakh, ebarimtShivye);
 
 router.post("/ebarimtZasya", tokenShalgakh, async (req, res, next) => {
   try {
@@ -1167,6 +1163,7 @@ router.post(
 );
 
 module.exports = router;
+module.exports.ebarimtShivye = ebarimtShivye;
 module.exports.ebarimtDuudya = ebarimtDuudya;
 module.exports.ebarimtIlgeeye = ebarimtIlgeeye;
 module.exports.zogsooloosEbarimtUusgye = zogsooloosEbarimtUusgye;
