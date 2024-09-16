@@ -40,6 +40,9 @@ const passRoute = require("./routes/passRoute");
 const parkingRoute = require("./routes/parkingRoute");
 const eventRoute = require("./routes/eventRoute");
 const tasalbarRoute = require("./routes/tasalbarRoute");
+
+const {} = require("../controller/zogsool");
+
 const { db } = require("zevbackv2");
 
 const aldaaBarigch = require("./middlewares/aldaaBarigch");
@@ -202,6 +205,17 @@ cron.schedule(
   function () {
     console.log("zogsoolMsgIlgeeye");
     zogsool.zogsoolMsgIlgeeye();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+cron.schedule(
+  "02 01 * * * ",
+  function () {
+    console.log("ebarimtDutuugShivye");
+    zogsool.ebarimtDutuugShivye();
   },
   {
     scheduled: true,
