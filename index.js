@@ -41,7 +41,7 @@ const parkingRoute = require("./routes/parkingRoute");
 const eventRoute = require("./routes/eventRoute");
 const tasalbarRoute = require("./routes/tasalbarRoute");
 
-const {} = require("../controller/zogsool");
+
 
 const { db } = require("zevbackv2");
 
