@@ -629,10 +629,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
   try {
     var kholboltuud;
 
-    if (!!req.body.tukhainBaaziinKholbolt) {
+    const { db } = require("zevbackv2");
+    if (!!req?.body?.tukhainBaaziinKholbolt) {
       kholboltuud = [req.body.tukhainBaaziinKholbolt];
     } else {
-      const { db } = require("zevbackv2");
       kholboltuud = db.kholboltuud;
     }
     var dansnuud;
