@@ -1121,6 +1121,7 @@ router.get(
               ).format("YYYY/MM/DD HH:mm:ss"),
               tulukhDun: bodsonDun,
               zogsoolId: zogsool._id,
+              garakhKhugatsaa: zogsool?.garakhTsag || 30,
               id: oldsonMashin._id,
             };
             tukhainKholbolt = kholbolt;
