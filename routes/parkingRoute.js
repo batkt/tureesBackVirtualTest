@@ -1878,7 +1878,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
     }
     if (
       !!tukhainObject?.tuukh?.[0].tsagiinTuukh?.[0].garsanTsag &&
-      !!tukhainObject.niitDun
+      tukhainObject.niitDun > 0
     ) {
       bodsonDun = tukhainObject.niitDun;
     } else
