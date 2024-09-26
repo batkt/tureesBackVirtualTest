@@ -667,8 +667,8 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
     {
-      header: "Код",
-      key: "Код",
+      header: "Талбайн №",
+      key: "Талбайн №",
       width: 30,
     },
     {
@@ -730,7 +730,7 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
       baganiiToo = baganiiToo + 1;
     });
   }
-  worksheet.dataValidations.add("G2:G9999", {
+  worksheet.dataValidations.add("H2:H9999", {
     type: "list",
     allowBlank: false,
     formulae: ['"Тийм,Үгүй"'],
@@ -942,8 +942,8 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
     {
-      header: "Төлөлт хийх өдөр",
-      key: "Төлөлт хийх өдөр",
+      header: "Авлага үүсэх өдөр",
+      key: "Авлага үүсэх өдөр",
       width: 20,
     },
     {
@@ -1094,7 +1094,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             tolgoinObject.gereeniiOgnoo = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Хугацаа(Сараар)"))
             tolgoinObject.khugatsaa = cellAsString[0];
-          else if (worksheet[cellAsString].v.includes("Төлөлт хийх өдөр"))
+          else if (worksheet[cellAsString].v.includes("Авлага үүсэх өдөр"))
             tolgoinObject.tulukhUdur = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Талбайн код"))
             tolgoinObject.talbainDugaar = cellAsString[0];
