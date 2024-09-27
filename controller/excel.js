@@ -413,7 +413,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     var muriinDugaar = 1;
     if (
       !worksheet["A1"].v.includes("Давхар") ||
-      !worksheet["B1"].v.includes("Код") ||
+      !worksheet["B1"].v.includes("Талбайн №") ||
       !worksheet["C1"].v.includes("Талбайн хэмжээ") ||
       !worksheet["D1"].v.includes("Талбайн метркуб") ||
       !worksheet["E1"].v.includes("Талбайн нэгж үнэ") ||
@@ -436,7 +436,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject.talbainKhemjee = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Талбайн метркуб"))
           tolgoinObject.talbainKhemjeeMetrKube = cellAsString[0];
-        else if (worksheet[cellAsString].v.includes("Код"))
+        else if (worksheet[cellAsString].v.includes("Талбайн №"))
           tolgoinObject.kod = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Талбайн нэгж үнэ"))
           tolgoinObject.talbainNegjUne = cellAsString[0];
@@ -519,7 +519,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
           if (!object.davkhar) aldaaniiMsg = aldaaniiMsg + "Давхар ";
           if (!object.talbainKhemjee)
             aldaaniiMsg = aldaaniiMsg + "Талбайн хэмжээ ";
-          if (!object.kod) aldaaniiMsg = aldaaniiMsg + "Код ";
+          if (!object.kod) aldaaniiMsg = aldaaniiMsg + "Талбайн № ";
           if (!object.talbainNegjUne)
             aldaaniiMsg = aldaaniiMsg + "Талбайн нэгж үнэ ";
           if (!object.talbainNiitUne)
