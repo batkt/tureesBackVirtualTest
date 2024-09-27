@@ -298,7 +298,7 @@ async function talbaiBaigaaEskhiigShalgaya(
             (x.talbainKhemjee != null ? x.talbainKhemjee : 0) +
             mur.talbainKhemjee;
           x.sariinTurees = x.talbainNiitUne;
-          x.talbainIdnuud.push(x._id);
+          x.talbainIdnuud.push(mur._id);
           x.baritsaaAvakhDun =
             x.baritsaaAwakhKhugatsaa * mur.talbainNiitUne +
             (x.baritsaaAvakhDun != null ? x.baritsaaAvakhDun : 0);
@@ -314,7 +314,7 @@ async function talbaiBaigaaEskhiigShalgaya(
         x.talbainNiitUne = tukhainTalbai.talbainNiitUne;
         x.talbainKhemjee = tukhainTalbai.talbainKhemjee;
         x.sariinTurees = tukhainTalbai.talbainNiitUne;
-        x.talbainIdnuud = [x._id];
+        x.talbainIdnuud = [tukhainTalbai._id];
         x.baritsaaAvakhDun =
           x.baritsaaAwakhKhugatsaa * tukhainTalbai.talbainNiitUne;
       }
@@ -1342,14 +1342,17 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     var talbainBulk = [];
     var khariltsagchBulk = [];
     jagsaalt.forEach((a) => {
-        let upsertTalbai = {
-        updateOne: {
-            filter: { kod: a.talbainDugaar, barilgiinId: req.body.barilgiinId },
-            update: {
-              idevkhiteiEsekh: true,
-            },
-          },
-        };
+        a.talbainIdnuud.forEach((b) => {
+          let upsertTalbai = {
+            updateOne: {
+                filter: { _id: b, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId },
+                update: {
+                  idevkhiteiEsekh: true,
+                },
+              },
+          };  
+          talbainBulk.push(upsertTalbai);
+        });
         let upsertKhariltsagcj = {
           updateOne: {
               filter: { register: a.register, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId },
@@ -1358,7 +1361,6 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
               },
             },
           };
-        talbainBulk.push(upsertTalbai);
         khariltsagchBulk.push(upsertKhariltsagcj);
     });
     if (talbainBulk)
