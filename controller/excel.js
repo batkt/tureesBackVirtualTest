@@ -1139,6 +1139,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       data.forEach((mur) => {
         muriinDugaar++;
         let object = new Geree(req.body.tukhainBaaziinKholbolt)();
+        object.tuluv = 1;
         object.gereeniiDugaar =
           mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiDugaar)];
         object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
@@ -1337,29 +1338,50 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         ];
       }
     });
-    console.log("jagsaalt", jagsaalt);
-    Geree(req.body.tukhainBaaziinKholbolt).insertMany(jagsaalt, function (err) {
-      if (err) {
-        next(err);
-      }
-      var registeruud = [];
-      var talbainKoduud = [];
-      jagsaalt.forEach((a) => {
-        registeruud.push(a.register);
-        if (a.talbainDugaar.includes(",")) {
-          talbainKoduud = [...talbainKoduud, ...a.talbainDugaar.split(",")];
-        } else talbainKoduud.push(a.talbainDugaar);
-      });
-      Geree(req.body.tukhainBaaziinKholbolt).updateMany(
-        { register: { $in: registeruud }, barilgiinId: req.body.barilgiinId },
-        { $set: { idevkhiteiEsekh: true } }
-      );
-      Talbai(req.body.tukhainBaaziinKholbolt).updateMany(
-        { kod: { $in: talbainKoduud }, barilgiinId: req.body.barilgiinId },
-        { $set: { idevkhiteiEsekh: true } }
-      );
-      res.status(200).send("Amjilttai");
+    Geree(req.body.tukhainBaaziinKholbolt).insertMany(jagsaalt);
+    var talbainBulk = [];
+    var khariltsagchBulk = [];
+    jagsaalt.forEach((a) => {
+        let upsertTalbai = {
+        updateOne: {
+            filter: { kod: a.talbainDugaar, barilgiinId: req.body.barilgiinId },
+            update: {
+              idevkhiteiEsekh: true,
+            },
+          },
+        };
+        let upsertKhariltsagcj = {
+          updateOne: {
+              filter: { register: a.register, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId },
+              update: {
+                idevkhiteiEsekh: true,
+              },
+            },
+          };
+        talbainBulk.push(upsertTalbai);
+        khariltsagchBulk.push(upsertKhariltsagcj);
     });
+    if (talbainBulk)
+      Talbai(req.body.tukhainBaaziinKholbolt)
+        .bulkWrite(talbainBulk)
+          .then((bulkWriteOpResult) => {
+            console.log("Talbai BULK update OK", bulkWriteOpResult);
+          })
+          .catch((err) => {
+            console.log("Talbai BULK update error", err);
+            next(err);
+          });
+    if (khariltsagchBulk)
+      Khariltsagch(db.erunkhiiKholbolt)
+        .bulkWrite(khariltsagchBulk)
+          .then((bulkWriteOpResult) => {
+            console.log("Khariltsagch BULK update OK", bulkWriteOpResult);
+          })
+          .catch((err) => {
+            console.log("Khariltsagch BULK update error", err);
+            next(err);
+          });      
+    res.status(200).send("Amjilttai");
   } catch (error) {
     next(error);
   }
