@@ -61,6 +61,7 @@ const gereeSchema = new Schema(
     ovog: String,
     ner: String,
     register: String,
+    customerTin: String,
     albanTushaal: String,
     zakhirliinOvog: String,
     zakhirliinNer: String,
