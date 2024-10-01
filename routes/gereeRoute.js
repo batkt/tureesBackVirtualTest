@@ -469,13 +469,24 @@ router
     }
   });
 
+function tooZasyaSync(too) {
+  var zassanToo = Math.round((too + Number.EPSILON) * 100) / 100;
+  return +zassanToo.toFixed(2);
+}  
+
 router
   .route("/gereeSungaya")
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
-      var geree = await Geree(req.body.tukhainBaaziinKholbolt)
-        .findById(req.body.gereeniiId)
-        .select("+avlaga");
+      var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(req.body.gereeniiId).select("+avlaga");
+      var val = geree.khugatsaa + req.body.sar;
+      await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate({ _id: req.body.gereeniiId }, {khugatsaa: val}).then((xariu) => {
+        console.log(xariu);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+      geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(req.body.gereeniiId).select("+avlaga");
       var shineDuusakhOgnoo = new Date(req.body.duusakhOgnoo);
       if (shineDuusakhOgnoo < new Date())
         throw new Error("Сунгах огноо өнөөдрөөс хойш байх шаардлагатай!");

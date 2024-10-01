@@ -12,6 +12,7 @@ const khariltsagchSchema = new Schema(
     utas: [String],
     mail: String,
     register: String,
+    customerTin: String, // Бүртгэлийн дугаар буюу ТИН дугаар
     albanTushaal: String,
     zakhirliinOvog: String,
     zakhirliinNer: String,

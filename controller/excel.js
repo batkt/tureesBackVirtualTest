@@ -298,7 +298,7 @@ async function talbaiBaigaaEskhiigShalgaya(
             (x.talbainKhemjee != null ? x.talbainKhemjee : 0) +
             mur.talbainKhemjee;
           x.sariinTurees = x.talbainNiitUne;
-          x.talbainIdnuud.push(x._id);
+          x.talbainIdnuud.push(mur._id);
           x.baritsaaAvakhDun =
             x.baritsaaAwakhKhugatsaa * mur.talbainNiitUne +
             (x.baritsaaAvakhDun != null ? x.baritsaaAvakhDun : 0);
@@ -314,7 +314,7 @@ async function talbaiBaigaaEskhiigShalgaya(
         x.talbainNiitUne = tukhainTalbai.talbainNiitUne;
         x.talbainKhemjee = tukhainTalbai.talbainKhemjee;
         x.sariinTurees = tukhainTalbai.talbainNiitUne;
-        x.talbainIdnuud = [x._id];
+        x.talbainIdnuud = [tukhainTalbai._id];
         x.baritsaaAvakhDun =
           x.baritsaaAwakhKhugatsaa * tukhainTalbai.talbainNiitUne;
       }
@@ -413,7 +413,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     var muriinDugaar = 1;
     if (
       !worksheet["A1"].v.includes("Давхар") ||
-      !worksheet["B1"].v.includes("Код") ||
+      !worksheet["B1"].v.includes("Талбайн №") ||
       !worksheet["C1"].v.includes("Талбайн хэмжээ") ||
       !worksheet["D1"].v.includes("Талбайн метркуб") ||
       !worksheet["E1"].v.includes("Талбайн нэгж үнэ") ||
@@ -436,7 +436,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject.talbainKhemjee = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Талбайн метркуб"))
           tolgoinObject.talbainKhemjeeMetrKube = cellAsString[0];
-        else if (worksheet[cellAsString].v.includes("Код"))
+        else if (worksheet[cellAsString].v.includes("Талбайн №"))
           tolgoinObject.kod = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Талбайн нэгж үнэ"))
           tolgoinObject.talbainNegjUne = cellAsString[0];
@@ -519,7 +519,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
           if (!object.davkhar) aldaaniiMsg = aldaaniiMsg + "Давхар ";
           if (!object.talbainKhemjee)
             aldaaniiMsg = aldaaniiMsg + "Талбайн хэмжээ ";
-          if (!object.kod) aldaaniiMsg = aldaaniiMsg + "Код ";
+          if (!object.kod) aldaaniiMsg = aldaaniiMsg + "Талбайн № ";
           if (!object.talbainNegjUne)
             aldaaniiMsg = aldaaniiMsg + "Талбайн нэгж үнэ ";
           if (!object.talbainNiitUne)
@@ -667,8 +667,8 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
     {
-      header: "Код",
-      key: "Код",
+      header: "Талбайн №",
+      key: "Талбайн №",
       width: 30,
     },
     {
@@ -730,7 +730,7 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
       baganiiToo = baganiiToo + 1;
     });
   }
-  worksheet.dataValidations.add("G2:G9999", {
+  worksheet.dataValidations.add("H2:H9999", {
     type: "list",
     allowBlank: false,
     formulae: ['"Тийм,Үгүй"'],
@@ -942,8 +942,8 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
     {
-      header: "Төлөлт хийх өдөр",
-      key: "Төлөлт хийх өдөр",
+      header: "Авлага үүсэх өдөр",
+      key: "Авлага үүсэх өдөр",
       width: 20,
     },
     {
@@ -1094,7 +1094,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             tolgoinObject.gereeniiOgnoo = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Хугацаа(Сараар)"))
             tolgoinObject.khugatsaa = cellAsString[0];
-          else if (worksheet[cellAsString].v.includes("Төлөлт хийх өдөр"))
+          else if (worksheet[cellAsString].v.includes("Авлага үүсэх өдөр"))
             tolgoinObject.tulukhUdur = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Талбайн код"))
             tolgoinObject.talbainDugaar = cellAsString[0];
@@ -1139,6 +1139,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       data.forEach((mur) => {
         muriinDugaar++;
         let object = new Geree(req.body.tukhainBaaziinKholbolt)();
+        object.tuluv = 1;
         object.gereeniiDugaar =
           mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiDugaar)];
         object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
@@ -1337,29 +1338,52 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         ];
       }
     });
-    console.log("jagsaalt", jagsaalt);
-    Geree(req.body.tukhainBaaziinKholbolt).insertMany(jagsaalt, function (err) {
-      if (err) {
-        next(err);
-      }
-      var registeruud = [];
-      var talbainKoduud = [];
-      jagsaalt.forEach((a) => {
-        registeruud.push(a.register);
-        if (a.talbainDugaar.includes(",")) {
-          talbainKoduud = [...talbainKoduud, ...a.talbainDugaar.split(",")];
-        } else talbainKoduud.push(a.talbainDugaar);
-      });
-      Geree(req.body.tukhainBaaziinKholbolt).updateMany(
-        { register: { $in: registeruud }, barilgiinId: req.body.barilgiinId },
-        { $set: { idevkhiteiEsekh: true } }
-      );
-      Talbai(req.body.tukhainBaaziinKholbolt).updateMany(
-        { kod: { $in: talbainKoduud }, barilgiinId: req.body.barilgiinId },
-        { $set: { idevkhiteiEsekh: true } }
-      );
-      res.status(200).send("Amjilttai");
+    Geree(req.body.tukhainBaaziinKholbolt).insertMany(jagsaalt);
+    var talbainBulk = [];
+    var khariltsagchBulk = [];
+    jagsaalt.forEach((a) => {
+        a.talbainIdnuud.forEach((b) => {
+          let upsertTalbai = {
+            updateOne: {
+                filter: { _id: b, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId },
+                update: {
+                  idevkhiteiEsekh: true,
+                },
+              },
+          };  
+          talbainBulk.push(upsertTalbai);
+        });
+        let upsertKhariltsagcj = {
+          updateOne: {
+              filter: { register: a.register, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId },
+              update: {
+                idevkhiteiEsekh: true,
+              },
+            },
+          };
+        khariltsagchBulk.push(upsertKhariltsagcj);
     });
+    if (talbainBulk)
+      Talbai(req.body.tukhainBaaziinKholbolt)
+        .bulkWrite(talbainBulk)
+          .then((bulkWriteOpResult) => {
+            console.log("Talbai BULK update OK", bulkWriteOpResult);
+          })
+          .catch((err) => {
+            console.log("Talbai BULK update error", err);
+            next(err);
+          });
+    if (khariltsagchBulk)
+      Khariltsagch(db.erunkhiiKholbolt)
+        .bulkWrite(khariltsagchBulk)
+          .then((bulkWriteOpResult) => {
+            console.log("Khariltsagch BULK update OK", bulkWriteOpResult);
+          })
+          .catch((err) => {
+            console.log("Khariltsagch BULK update error", err);
+            next(err);
+          });      
+    res.status(200).send("Amjilttai");
   } catch (error) {
     next(error);
   }
