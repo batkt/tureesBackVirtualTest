@@ -139,8 +139,8 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try {
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
-    if (req?.body?.Color) {
-      console.log("Color", Color);
+    if (req.body.baiguullagiinId == "669e28beb13f35e669e773a6") {
+      console.log("Color", req.body);
     }
     const medegdel = async (uilchluulegch, khariltsagchiinId) => {
       /**
