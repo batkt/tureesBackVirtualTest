@@ -139,6 +139,9 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try {
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
+    if (req?.body?.Color) {
+      console.log("Color", Color);
+    }
     const medegdel = async (uilchluulegch, khariltsagchiinId) => {
       /**
        * Web.с машин бүртгэсэн тохиолдолд khariltsagchiinId байхгүй байгаа тул
