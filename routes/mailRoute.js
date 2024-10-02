@@ -105,6 +105,8 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       tuukh.nekhemjlekhiinZagvarId = tempData.nekhemjlekhiinZagvarId;
       tuukh.tsonkhniiNer = tempData.tsonkhniiNer;
       tuukh.medeelel = tempData.medeelel;
+      tuukh.nekhemjlekh = tempData.nekhemjlekh;
+      tuukh.zagvariinNer = tempData.zagvariinNer;
       await tuukh.save()
       .then((result) => {
         console.log("result ----------> " + result);

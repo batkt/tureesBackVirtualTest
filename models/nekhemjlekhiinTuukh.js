@@ -44,6 +44,8 @@ const nekhemjlekhiinTuukhSchema = new Schema(
     nekhemjlekhiinZagvarId: String,
     medeelel: mongoose.Schema.Types.Mixed,
     tsonkhniiNer: String,
+    nekhemjlekh: String,
+    zagvariinNer: String,
   },
   {
     timestamps: true,
