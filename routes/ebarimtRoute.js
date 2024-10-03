@@ -923,7 +923,7 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
     var tuxainSalbar = baiguullaga?.barilguud?.find(
       (e) => e._id.toString() == req.body?.barilgiinId
     )?.tokhirgoo;
-    if (!!tuxainSalbar.eBarimtShine) ebarimtShine = true;
+    if (!!tuxainSalbar && !!tuxainSalbar?.eBarimtShine) ebarimtShine = true;
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
