@@ -335,7 +335,7 @@ crud(
 router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   const { db } = require("zevbackv2");
   const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(req.body);
-  khariltsagch.id = khariltsagch.register;
+  khariltsagch.id = khariltsagch.register ? khariltsagch.register : khariltsagch.customerTin;
   var unuudur = new Date();
   unuudur = new Date(
     unuudur.getFullYear(),
@@ -366,10 +366,21 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     isNew: true,
   });
   req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
-  var khariltsagchShalguur = await Khariltsagch(db.erunkhiiKholbolt).findOne({
-    register: khariltsagch.register,
-    barilgiinId: req.body.barilgiinId,
-  });
+  var khariltsagchShalguur;
+  if(!!khariltsagch.register)
+  {
+    khariltsagchShalguur = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+      register: khariltsagch.register,
+      barilgiinId: req.body.barilgiinId,
+    });    
+  }
+  else if(!!khariltsagch.customerTin)
+  {
+    khariltsagchShalguur = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+      customerTin: khariltsagch.customerTin,
+      barilgiinId: req.body.barilgiinId,
+    });  
+  }
   if (!khariltsagchShalguur) await khariltsagch.save();
   dugaarlalt.save();
   var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
@@ -792,11 +803,23 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
     var khariltsagchiinBulk = [];
     for await (const id of gereeniiIdnuud) {
       let geree = await Geree(tukhainBaaziinKholbolt).findById(id);
-      let busadGereenuud = await Geree(tukhainBaaziinKholbolt).findOne({
-        register: geree.register,
-        barilgiinId: geree.barilgiinId,
-        tuluv: { $ne: -1 },
-      });
+      let busadGereenuud;
+      if(!!geree.register)
+      {
+        busadGereenuud = await Geree(tukhainBaaziinKholbolt).findOne({
+          register: geree.register,
+          barilgiinId: geree.barilgiinId,
+          tuluv: { $ne: -1 },
+        });
+      }
+      else if(!!geree.customerTin)
+      {
+        busadGereenuud = await Geree(tukhainBaaziinKholbolt).findOne({
+          customerTin: geree.customerTin,
+          barilgiinId: geree.barilgiinId,
+          tuluv: { $ne: -1 },
+        });
+      }
       var talbainuud = await Talbai(tukhainBaaziinKholbolt).find({
         _id: { $in: geree.talbainIdnuud },
       });
@@ -838,18 +861,35 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
           };
           talbainBulk.push(upsertTalbai);
         }
-
-        let upsertKhariltsagch = {
-          updateOne: {
-            filter: {
-              register: geree.register,
-              barilgiinId: geree.barilgiinId,
+        let upsertKhariltsagch;
+        if(!!geree.register)
+        {
+          upsertKhariltsagch = {
+            updateOne: {
+              filter: {
+                register: geree.register,
+                barilgiinId: geree.barilgiinId,
+              },
+              update: {
+                idevkhiteiEsekh: busadGereenuud ? true : false,
+              },
             },
-            update: {
-              idevkhiteiEsekh: busadGereenuud ? true : false,
+          };
+        }
+        else if(!!geree.customerTin)
+        {
+          upsertKhariltsagch = {
+            updateOne: {
+              filter: {
+                customerTin: geree.customerTin,
+                barilgiinId: geree.barilgiinId,
+              },
+              update: {
+                idevkhiteiEsekh: busadGereenuud ? true : false,
+              },
             },
-          },
-        };
+          };
+        }
         khariltsagchiinBulk.push(upsertKhariltsagch);
       }
     }
