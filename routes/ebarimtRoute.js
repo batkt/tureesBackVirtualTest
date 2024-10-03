@@ -927,11 +927,18 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
-      createdAt: {
+    };
+    if (!!ebarimtShine) {
+      match.createdAt = {
         $gte: new Date(req.body.ekhlekhOgnoo),
         $lte: new Date(req.body.duusakhOgnoo),
-      },
-    };
+      };
+    } else {
+      match.dateOgnoo = {
+        $gte: new Date(req.body.ekhlekhOgnoo),
+        $lte: new Date(req.body.duusakhOgnoo),
+      };
+    }
     if (req.body.barimtTurul === "mashiniiDugaar")
       match.mashiniiDugaar = { $exists: true };
     else if (req.body.barimtTurul === "gereeniiDugaar")
@@ -961,7 +968,7 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
                 },
                 dun: {
                   $sum: {
-                    $toDecimal: "$amount",
+                    $toDecimal: { $ifNull: ["$amount", "$totalAmount"] },
                   },
                 },
               },
@@ -983,7 +990,7 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
                 },
                 dun: {
                   $sum: {
-                    $toDecimal: "$amount",
+                    $toDecimal: { $ifNull: ["$amount", "$totalAmount"] },
                   },
                 },
               },
