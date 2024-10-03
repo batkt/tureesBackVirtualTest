@@ -43,17 +43,32 @@ crud(
   async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
-      if (!req.body.register) throw new Error("Регистрийн дугаар бөглөнө үү!");
+      if (!req.body.register && !req.body.customerTin) throw new Error("Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!");
       else {
-        var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
-          register: req.body.register,
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-        });
-        if (khariltsagch)
-          throw new Error(
-            "Тухайн утасны дугаараар харилцагч бүртгэлтэй байна!"
-          );
+        if(!!req.body.register)
+        {
+          var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+            register: req.body.register,
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+          });
+          if (khariltsagch)
+            throw new Error(
+              "Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!"
+            );
+        }
+        if(!!req.body.customerTin)
+        {
+          var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+            customerTin: req.body.customerTin,
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+          });
+          if (khariltsagch)
+            throw new Error(
+              "Тухайн бүртгэлийн дугаараар харилцагч бүртгэлтэй байна!"
+            );
+        }
       }
       next();
     } catch (error) {
