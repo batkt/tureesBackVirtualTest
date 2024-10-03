@@ -125,6 +125,7 @@ async function khariltsagchBaigaaEskhiigShalgaya(
     gereenuud.forEach((a) => {
       jagsaalt.push(a.register);
     });
+  var tempJagsaalt;
   var khariltsagchiinJagsaalt = await Khariltsagch(tukhainBaaziinKholbolt).find(
     {
       register: { $in: jagsaalt },
@@ -144,27 +145,67 @@ async function khariltsagchBaigaaEskhiigShalgaya(
         "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " +
         oldooguiJagsaalt +
         "<br/>";
-  } else
-    shineAldaaniiMsg =
-      aldaaniiMsg +
-      "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " +
-      jagsaalt +
-      "<br/>";
-
+  } 
+  else
+  {
+    tempJagsaalt = await Khariltsagch(tukhainBaaziinKholbolt).find(
+      {
+        baiguullagiinId: baiguullagiinId,
+        barilgiinId: barilgiinId,
+        customerTin: { $in: jagsaalt },
+      }
+    );
+    if(!!tempJagsaalt && tempJagsaalt.length > 0)
+    {
+      oldooguiJagsaalt = [];
+      jagsaalt.forEach((x) => {
+        if (tempJagsaalt.find((a) => a.customerTin == x) == null)
+          oldooguiJagsaalt.push(x);
+      });
+      if (oldooguiJagsaalt.length !== 0)
+        shineAldaaniiMsg =
+          aldaaniiMsg +
+          "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " +
+          oldooguiJagsaalt +
+          "<br/>";
+    }
+    else
+      shineAldaaniiMsg =
+        aldaaniiMsg +
+        "Дараах бүртгэлийн дугаартай харилцагчид олдсонгүй! : " +
+        jagsaalt +
+        "<br/>";
+  }
   if (shineAldaaniiMsg) aldaaniiMsg = shineAldaaniiMsg;
   else {
     var tukhainKhariltsagch;
     if (gereenuud)
       gereenuud.forEach((x) => {
-        tukhainKhariltsagch = khariltsagchiinJagsaalt.find(
-          (a) => a.register == x.register
-        );
-        x.ovog = tukhainKhariltsagch.ovog;
-        x.ner = tukhainKhariltsagch.ner;
-        x.turul = tukhainKhariltsagch.turul;
-        x.zakhirliinOvog = tukhainKhariltsagch.zakhirliinOvog;
-        x.zakhirliinNer = tukhainKhariltsagch.zakhirliinNer;
-        x.utas = tukhainKhariltsagch.utas;
+        if(!!khariltsagchiinJagsaalt && khariltsagchiinJagsaalt.length > 0)
+        {
+          tukhainKhariltsagch = khariltsagchiinJagsaalt.find(
+            (a) => a.register == x.register
+          );
+          x.ovog = tukhainKhariltsagch.ovog;
+          x.ner = tukhainKhariltsagch.ner;
+          x.turul = tukhainKhariltsagch.turul;
+          x.zakhirliinOvog = tukhainKhariltsagch.zakhirliinOvog;
+          x.zakhirliinNer = tukhainKhariltsagch.zakhirliinNer;
+          x.utas = tukhainKhariltsagch.utas;
+        }
+        else if(!!tempJagsaalt && tempJagsaalt.length > 0)
+        {
+          tukhainKhariltsagch = tempJagsaalt.find(
+            (a) => a.customerTin == x.register
+          );
+          x.ovog = tukhainKhariltsagch.ovog;
+          x.ner = tukhainKhariltsagch.ner;
+          x.turul = tukhainKhariltsagch.turul;
+          x.zakhirliinOvog = tukhainKhariltsagch.zakhirliinOvog;
+          x.zakhirliinNer = tukhainKhariltsagch.zakhirliinNer;
+          x.utas = tukhainKhariltsagch.utas;
+          x.customerTin = tukhainKhariltsagch.customerTin;
+        }
       });
   }
   return aldaaniiMsg;
@@ -179,12 +220,18 @@ async function khariltsagchBaikhguigShalgaya(
 ) {
   var jagsaalt = [];
   var utasniiJagsaalt = [];
+  var customTimJagsaalt = [];
   var shineAldaaniiMsg = "";
   if (khariltsagchid)
+  {
     khariltsagchid.forEach((a) => {
-      jagsaalt.push(a.register);
+      if(!!a.register)
+        jagsaalt.push(a.register);
+      if(!!a.customerTin)
+        customTimJagsaalt.push(a.customerTin);
       if (a.utas && a.utas.length > 0) utasniiJagsaalt.push(a.utas[0]);
     });
+  }
 
   const toFindDuplicates = (arry) =>
     arry.filter((item, index) => arry.indexOf(item) !== index);
@@ -233,6 +280,27 @@ async function khariltsagchBaikhguigShalgaya(
       aldaaniiMsg +
       "Дараах утасны дугаартай харилцагчид бүртгэлтэй байна! : " +
       davkhardsanUtasnuud +
+      "<br/>";
+  }
+  var khariltsagchiinCustomerTinJagsaalt = await Khariltsagch(
+    tukhainBaaziinKholbolt
+  ).find({
+    customerTin: { $in: customTimJagsaalt },
+    baiguullagiinId: baiguullagiinId,
+    barilgiinId: barilgiinId,
+  });
+  if (khariltsagchiinCustomerTinJagsaalt.length > 0) {
+    var davkhardsanCustomerTinuud = [];
+    khariltsagchiinCustomerTinJagsaalt.forEach((a) => {
+      davkhardsanCustomerTinuud.push(...a.customerTin);
+    });
+    davkhardsanCustomerTinuud = davkhardsanCustomerTinuud.filter((x) =>
+      customTimJagsaalt.includes(x)
+    );
+    shineAldaaniiMsg =
+      aldaaniiMsg +
+      "Дараах бүртгэлийн дугаартай харилцагчид бүртгэлтэй байна! : " +
+      davkhardsanCustomerTinuud +
       "<br/>";
   }
   if (shineAldaaniiMsg) aldaaniiMsg = shineAldaaniiMsg;
@@ -775,6 +843,11 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
     {
       header: "Регистр",
       key: "Регистр",
+      width: 20,
+    },
+    {
+      header: "Бүртгэлийн дугаар",
+      key: "Бүртгэлийн дугаар",
       width: 20,
     },
     {
@@ -1958,9 +2031,10 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       !irgenSheet["C1"].v.includes("Нэр") ||
       !irgenSheet["B1"].v.includes("Овог") ||
       !irgenSheet["D1"].v.includes("Регистр") ||
-      !irgenSheet["E1"].v.includes("Утас") ||
-      !irgenSheet["F1"].v.includes("Мэйл") ||
-      !irgenSheet["G1"].v.includes("Хаяг")
+      !irgenSheet["E1"].v.includes("Бүртгэлийн дугаар") ||
+      !irgenSheet["F1"].v.includes("Утас") ||
+      !irgenSheet["G1"].v.includes("Мэйл") ||
+      !irgenSheet["H1"].v.includes("Хаяг")
     ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
@@ -1991,6 +2065,8 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject.ovog = cellAsString[0];
         else if (irgenSheet[cellAsString].v.includes("Регистр"))
           tolgoinObject.register = cellAsString[0];
+        else if (irgenSheet[cellAsString].v.includes("Бүртгэлийн дугаар"))
+          tolgoinObject.customerTin = cellAsString[0];
         else if (irgenSheet[cellAsString].v.includes("Утас"))
           tolgoinObject.utas = cellAsString[0];
         else if (irgenSheet[cellAsString].v.includes("Мэйл"))
@@ -2017,6 +2093,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ovog = mur[usegTooruuKhurvuulekh(tolgoinObject.ovog)];
       object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
+      object.customerTin = mur[usegTooruuKhurvuulekh(tolgoinObject.customerTin)];
       object.utas = [mur[usegTooruuKhurvuulekh(tolgoinObject.utas)]];
       object.mail = mur[usegTooruuKhurvuulekh(tolgoinObject.mail)];
       object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];
@@ -2045,19 +2122,19 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       if (
         object.id ||
         object.ner ||
-        object.register ||
+        (object.register && object.customerTin) ||
         object.ovog ||
         object.utas ||
         object.mail ||
         object.khayag ||
         object.mail
       ) {
-        if (!object.id || !object.ner || !object.register || !object.utas) {
+        if (!object.id || !object.ner || (!object.register && !object.customerTin) || !object.utas) {
           aldaaniiMsg =
             aldaaniiMsg + "Иргэн sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
           if (!object.id) aldaaniiMsg = aldaaniiMsg + "'Код', ";
           if (!object.ner) aldaaniiMsg = aldaaniiMsg + "'Нэр', ";
-          if (!object.register) aldaaniiMsg = aldaaniiMsg + "'Регистр', ";
+          if (!object.register && !object.customerTin) aldaaniiMsg = aldaaniiMsg + "'Регистр', 'Бүртгэлийн дугаар',";
           if (!object.utas || !object.utas[0])
             aldaaniiMsg = aldaaniiMsg + "'Утас', ";
           aldaaniiMsg = aldaaniiMsg.slice(0, -2);
