@@ -927,7 +927,7 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
-      dateOgnoo: {
+      createdAt: {
         $gte: new Date(req.body.ekhlekhOgnoo),
         $lte: new Date(req.body.duusakhOgnoo),
       },
