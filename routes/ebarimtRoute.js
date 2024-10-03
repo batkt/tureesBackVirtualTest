@@ -916,6 +916,14 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
 });
 router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
   try {
+    var ebarimtShine = false;
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      req.body.baiguullagiinId
+    );
+    var tuxainSalbar = baiguullaga?.barilguud?.find(
+      (e) => e._id.toString() == req.body?.barilgiinId
+    )?.tokhirgoo;
+    if (!!tuxainSalbar.eBarimtShine) ebarimtShine = true;
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
@@ -984,11 +992,20 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
         },
       },
     ];
-    var result = await Ebarimt(req.body.tukhainBaaziinKholbolt)
-      .aggregate(query)
-      .catch((err) => {
-        next(err);
-      });
+    var result;
+
+    if (!!ebarimtShine)
+      result = await EbarimtShine(req.body.tukhainBaaziinKholbolt)
+        .aggregate(query)
+        .catch((err) => {
+          next(err);
+        });
+    else
+      result = await Ebarimt(req.body.tukhainBaaziinKholbolt)
+        .aggregate(query)
+        .catch((err) => {
+          next(err);
+        });
 
     query = [
       {
