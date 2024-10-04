@@ -2436,13 +2436,27 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             umnukhZaalt = suuliinGuilgee.suuliinZaalt;
           }
         }
-        var tukhainZardal = jagsaalt.find((x) => {
-          return (
-            x.register === geree.register ||
-            x.talbainDugaar === geree.talbainDugaar ||
-            x.gereeniiDugaar === geree.gereeniiDugaar
-          );
-        });
+        var tukhainZardal;
+        if(!!geree.register)
+        {
+          tukhainZardal = jagsaalt.find((x) => {
+            return (
+              x.register === geree.register ||
+              x.talbainDugaar === geree.talbainDugaar ||
+              x.gereeniiDugaar === geree.gereeniiDugaar
+            );
+          });    
+        }
+        else if(!!geree.customerTin)
+        {
+          tukhainZardal = jagsaalt.find((x) => {
+            return (
+              x.register === geree.customerTin ||
+              x.talbainDugaar === geree.talbainDugaar ||
+              x.gereeniiDugaar === geree.gereeniiDugaar
+            );
+          }); 
+        }
         if (
           umnukhZaalt > 0 &&
           (umnukhZaalt - tukhainZardal.umnukhZaalt > 0.1 ||

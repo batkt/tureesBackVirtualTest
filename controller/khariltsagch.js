@@ -283,11 +283,24 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
             var khariltsagchiinBulk = [];
             for await (const id of gereeniiIdnuud) {
               let geree = await Geree(kholbolt).findById(id);
-              let busadGereenuud = await Geree(kholbolt).findOne({
-                register: geree.register,
-                barilgiinId: geree.barilgiinId,
-                tuluv: { $ne: -1 },
-              });
+              let busadGereenuud;
+              if(!!geree.register)
+              {
+                busadGereenuud = await Geree(kholbolt).findOne({
+                  register: geree.register,
+                  barilgiinId: geree.barilgiinId,
+                  tuluv: { $ne: -1 },
+                });    
+              }
+              else if(!!geree.customerTin)
+              {
+                busadGereenuud = await Geree(kholbolt).findOne({
+                  customerTin: geree.customerTin,
+                  barilgiinId: geree.barilgiinId,
+                  tuluv: { $ne: -1 },
+                }); 
+              }
+              
               var talbainuud = await Talbai(kholbolt).find({
                 _id: { $in: geree.talbainIdnuud },
               });
@@ -328,17 +341,35 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
                   talbainBulk.push(upsertTalbai);
                 }
 
-                let upsertKhariltsagch = {
-                  updateOne: {
-                    filter: {
-                      register: geree.register,
-                      barilgiinId: geree.barilgiinId,
+                let upsertKhariltsagch;
+                if(!!geree.register)
+                {
+                  upsertKhariltsagch = {
+                    updateOne: {
+                      filter: {
+                        register: geree.register,
+                        barilgiinId: geree.barilgiinId,
+                      },
+                      update: {
+                        idevkhiteiEsekh: busadGereenuud ? true : false,
+                      },
                     },
-                    update: {
-                      idevkhiteiEsekh: busadGereenuud ? true : false,
+                  };    
+                }
+                else if(!!geree.customerTin)
+                {
+                  upsertKhariltsagch = {
+                    updateOne: {
+                      filter: {
+                        customerTin: geree.customerTin,
+                        barilgiinId: geree.barilgiinId,
+                      },
+                      update: {
+                        idevkhiteiEsekh: busadGereenuud ? true : false,
+                      },
                     },
-                  },
-                };
+                  };
+                }
                 khariltsagchiinBulk.push(upsertKhariltsagch);
               }
             }
