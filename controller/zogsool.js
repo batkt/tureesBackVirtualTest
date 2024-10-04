@@ -1,5 +1,5 @@
 const Baiguullaga = require("../models/baiguullaga");
-const { ebarimtShivye } = require("../routes/ebarimtRoute");
+const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
 const { msgIlgeeye } = require("./khariltsagch");
 const {
   Mashin: ParkingMashin,
@@ -313,28 +313,27 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
           var tukhainKholbolt = kholboltuud.find(
             (x) => x.baiguullagiinId == baiguullaga._id.toString()
           );
+          console.log("tukhainKholbolt", tukhainKholbolt);
           var shiveeguiTuukhuud = await Uilchluulegch(tukhainKholbolt).find({
             niitDun: { $gt: 0 },
-            ebarimtAvsanEsekh: { $ne: false },
-            updatedAt: { $gt: new Date(moment(new Date()).add(-1, "day")) },
+            ebarimtAvsanEsekh: { $ne: true },
+            createdAt: { $gt: new Date(moment(new Date()).add(-1, "day")) },
           });
-          for await (const barimt of shiveeguiTuukhuud) {
-            await ebarimtShivye(
-              {
-                body: {
-                  tukhainBaaziinKholbolt: tukhainKholbolt,
-                  ebarimtiinTurul: "zogsool",
-                  baiguullagiinId: barimt.baiguullagiinId,
-                  id: barimt._id,
-                },
-              },
-              (khariu) => {
-                console.log("ebarimtDutuugShivye amjilttai ==>", khariu);
-              },
-              (err) => {
-                console.log("ebarimtDutuugShivye aldaa ==>", err);
+          console.log("shiveeguiTuukhuud", shiveeguiTuukhuud);
+          if (!!shiveeguiTuukhuud) {
+            var niitDun = 0;
+            for await (const object of shiveeguiTuukhuud) {
+              for await (const tulbur of object.tuukh[0]?.tulbur) {
+                if (!!tulbur?.turul) niitDun = niitDun + tulbur.dun;
               }
-            );
+            }
+            if (niitDun > 0) {
+              await zogsoolNiitDungeerEbarimtShivye(
+                tukhainKholbolt,
+                niitDun,
+                shiveeguiTuukhuud[0]?.barilgiinId
+              );
+            }
           }
         }
       }
