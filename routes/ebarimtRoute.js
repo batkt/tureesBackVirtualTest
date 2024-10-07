@@ -493,6 +493,69 @@ async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
     );
   }
 }
+async function zogsoolNiitDungeerEbarimtShivye(
+  kholbolt,
+  shivekhDun,
+  barilgiinId
+) {
+  console.log("zogsoolNiitDungeerEbarimtShivye", shivekhDun);
+  var guilgee = {
+    niitDun: shivekhDun,
+    _id: "zogsoolSystem",
+    baiguullagiinId: kholbolt.baiguullagiinId,
+    barilgiinId,
+  };
+  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+    kholbolt.baiguullagiinId
+  );
+  var tuxainSalbar = baiguullaga?.barilguud?.find(
+    (e) => e._id.toString() == guilgee.barilgiinId
+  )?.tokhirgoo;
+  var nuatTulukhEsekh = false;
+  nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
+  if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
+  tuxainSalbar = baiguullaga?.barilguud?.find(
+    (e) => e._id.toString() == guilgee.barilgiinId
+  )?.tokhirgoo;
+  if (!!tuxainSalbar?.eBarimtShine)
+    ebarimt = await zogsooloosEbarimtShineUusgye(
+      guilgee,
+      null,
+      null,
+      tuxainSalbar.merchantTin, //"37900846788",
+      tuxainSalbar.districtCode, //,"0023"
+      kholbolt,
+      nuatTulukhEsekh
+    );
+  else
+    ebarimt = await zogsooloosEbarimtUusgye(
+      guilgee,
+      null,
+      null,
+      kholbolt,
+      nuatTulukhEsekh
+    );
+  butsaakhMethod = function (d, khariuObject) {
+    try {
+      if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
+      var ebarimt;
+      if (!!tuxainSalbar.eBarimtShine) ebarimt = new EbarimtShine(kholbolt)(d);
+      else ebarimt = new Ebarimt(kholbolt)(d);
+      ebarimt.zogsooliinId = khariuObject._id;
+      ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
+      ebarimt.barilgiinId = khariuObject.barilgiinId;
+      ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
+      ebarimt.save().catch((err) => {
+        next(err);
+      });
+      console.log("ebarimt duuslaa");
+      res.send(d);
+    } catch (err) {
+      next(err);
+    }
+  };
+}
+
 async function ebarimtShivye(req, res, next) {
   try {
     var ebarimtiinTurul = req.body.ebarimtiinTurul;
@@ -1192,3 +1255,5 @@ module.exports.ebarimtDuudya = ebarimtDuudya;
 module.exports.ebarimtIlgeeye = ebarimtIlgeeye;
 module.exports.zogsooloosEbarimtUusgye = zogsooloosEbarimtUusgye;
 module.exports.zogsooloosEbarimtShineUusgye = zogsooloosEbarimtShineUusgye;
+module.exports.zogsoolNiitDungeerEbarimtShivye =
+  zogsoolNiitDungeerEbarimtShivye;
