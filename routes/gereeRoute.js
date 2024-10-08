@@ -219,7 +219,7 @@ router
             .filter(
               (a) =>
                 a.ognoo < new Date(req.query.duusakhOgnoo) &&
-                a.turul === "aldangi"
+                (a.turul === "aldangi" || a.turul === "bank")
             );
           if (!!req.query.shineOgnoo) {
             const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
