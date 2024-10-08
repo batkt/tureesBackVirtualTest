@@ -932,7 +932,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   "/v1/account/operative/statement",
                   "OPERACCTSTA",
                   next,
-                  req.body.tukhainBaaziinKholbolt
+                  kholbolt
                 );
                 if (
                   !!khariu &&
