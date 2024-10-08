@@ -206,6 +206,40 @@ router
         next(err);
       });
   });
+  router
+  .route("/gereeniiAldangiTulultAvya/:gereeniiId")
+  .get(tokenShalgakh, (req, res, next) => {
+    Geree(req.body.tukhainBaaziinKholbolt)
+      .findById(req.params.gereeniiId)
+      .select("avlaga")
+      .then((result) => {
+        if (lodash.isArray(lodash.get(result, "avlaga.guilgeenuud"))) {
+          var a = lodash
+            .get(result, "avlaga.guilgeenuud")
+            .filter(
+              (a) =>
+                a.ognoo < new Date(req.query.duusakhOgnoo) &&
+                a.turul === "aldangi"
+            );
+          if (!!req.query.shineOgnoo) {
+            const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
+            if (endOgnoo && startOgnoo) {
+              a = a.filter(
+                (data) =>
+                  data.ognoo < new Date(endOgnoo) &&
+                  data.ognoo >= new Date(startOgnoo)
+              );
+            }
+          }
+          a = lodash.orderBy(a, ["ognoo"], ["asc"]);
+          res.send(a);
+        }
+      })
+      .catch((err) => {
+        next(err);
+      });
+  });
+
 router
   .route("/baritsaaTulultAvya/:gereeniiId")
   .get(tokenShalgakh, (req, res, next) => {
