@@ -11,6 +11,7 @@ const lodash = require("lodash");
 const moment = require("moment");
 const mongoose = require("mongoose");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
+const TogloomiinTuv = require("../models/togloomiinTuv");
 
 exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
   var guilgeenuud = req.body.guilgeenuud;
@@ -2209,56 +2210,41 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
 
 exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
   try {
-    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
-      .find({
-        barilgiinId: req.body.barilgiinId,
-        "avlaga.guilgeenuud.0": {
-          $exists: true,
-        },
-        "tulukhUdur.0": {
-          $exists: true,
-        },
-      })
-      .select("+avlaga");
+    var togloomiinTuv = await TogloomiinTuv(
+      req.body.tukhainBaaziinKholbolt
+    ).find({
+      barilgiinId: req.body.barilgiinId,
+      tuluv: { $ne: -1 },
+      "niitTulbur.0": {
+        $exists: true,
+      },
+      "niitTulbur.1": {
+        $exists: false,
+      },
+    });
     var bulkOps = [];
     if (gereenuud)
-      for await (const geree of gereenuud) {
-        var khuuchinUnetei = true;
-        for await (const guilgee of geree?.avlaga?.guilgeenuud) {
-          if (
-            guilgee.tailbar == "Халуун ус" ||
-            guilgee.tailbar == "Хүйтэн ус"
-          ) {
-            if (guilgee.ognoo < new Date(2024, 7, 5, 1, 0, 0)) {
-              guilgee.tulukhDun = guilgee.tulukhDun / 1.1;
-            }
-          }
-          if (guilgee.tailbar == "Дулааны төлбөр") {
-            guilgee.tailbar = "Дулаан";
-            if (geree.register != "5903858")
-              guilgee.tulukhDun = guilgee.tulukhDun * 1.1;
-            guilgee.tariff = 664.4;
-            guilgee.negj = geree.talbainKhemjeeMetrKube;
-          }
-        }
-
-        let upsertDoc = {
-          updateOne: {
-            filter: { _id: geree._id },
-            update: [
-              {
-                $set: {
-                  "avlaga.guilgeenuud": geree.avlaga.guilgeenuud,
+      for await (const togloom of togloomiinTuv) {
+        var niilberDun = togloom.niitTulbur[0].dun;
+        if (niilberDun != togloom.niitDun) {
+          let upsertDoc = {
+            updateOne: {
+              filter: { _id: togloom._id },
+              update: [
+                {
+                  $set: {
+                    "niitTulbur.0.dun": togloom.niitDun,
+                  },
                 },
-              },
-            ],
-          },
-        };
-        bulkOps.push(upsertDoc);
+              ],
+            },
+          };
+          bulkOps.push(upsertDoc);
+        }
       }
 
     if (bulkOps.length > 0)
-      await Geree(req.body.tukhainBaaziinKholbolt)
+      await TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
         .bulkWrite(bulkOps)
         .then((bulkWriteOpResult) => {
           console.log("BULK ==>", bulkOps);
