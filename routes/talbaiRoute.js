@@ -10,6 +10,7 @@ const storage = multer.memoryStorage();
 const { tokenShalgakh, crud, UstsanBarimt, Segment } = require("zevbackv2");
 const moment = require("moment");
 const uploadFile = multer({ storage: storage });
+const ZassanBarimtShalgakh = require("../components/zassanBarimtShalgakh");
 
 crud(router, "talbai", Talbai, UstsanBarimt, async (req, res, next) => {
   try {
@@ -368,6 +369,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
     }
   }
   talbai.isNew = false;
+  ZassanBarimtShalgakh.zassanBarimtShalgakh(khuuchinTalbai, talbai, talbai.kod, "Talbai", "Талбай", req.body);
   talbai.save();
   res.send("Amjilttai");
 });
