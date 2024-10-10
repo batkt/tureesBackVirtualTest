@@ -74,6 +74,9 @@ function orchuulyaText(text){
   text = text.toString();
   var butsaakhText = "";
   switch (text) {
+    case "kod":
+      butsaakhText = "Код";
+      break;
     case "id":
       butsaakhText = "Дугаар";
       break;  
