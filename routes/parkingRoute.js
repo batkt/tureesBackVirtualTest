@@ -425,23 +425,22 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      const match =
-        req.body.garsanKhaalga !== null
-          ? {
-              "tuukh.garsanKhaalga": !!req.body.garsanKhaalga
-                ? req.body.garsanKhaalga
-                : { $exists: true },
-              "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: new Date(req.body.ekhlekhOgnoo),
-                $lte: new Date(req.body.duusakhOgnoo),
-              },
-            }
-          : {
-              "tuukh.tulbur.ognoo": {
-                $gte: new Date(req.body.ekhlekhOgnoo),
-                $lte: new Date(req.body.duusakhOgnoo),
-              },
-            };
+      const match = !!req.body.garsanKhaalga
+        ? {
+            "tuukh.garsanKhaalga": !!req.body.garsanKhaalga
+              ? req.body.garsanKhaalga
+              : { $exists: true },
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+          }
+        : {
+            "tuukh.tulbur.ognoo": {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+          };
       if (!!req.body.burtgesenAjiltaniiId)
         match["tuukh.burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
       console.log("match", JSON.stringify(match, null, 4));
