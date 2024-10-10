@@ -871,7 +871,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     .aggregate(query)
     .then((result) => {
       res.send({
-        uldegdel: result[0]?.uldegdel || 0,
+        uldegdel: (result[0]?.uldegdel || 0).toFixed(2),
       });
     })
     .catch((err) => {
