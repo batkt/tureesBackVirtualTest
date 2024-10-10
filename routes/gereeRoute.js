@@ -74,6 +74,9 @@ const {
   tooluurZaaltOruulya,
 } = require("../controller/excel");
 const Baiguullaga = require("../models/baiguullaga");
+const ZassanBarimt = require("../models/zassanBarimt");
+
+crud(router, "zassanBarimt", ZassanBarimt);
 
 router.route("/gereeniiToololtAvya").post(tokenShalgakh, gereeniiToololtAvya);
 router
@@ -219,7 +222,7 @@ router
             .filter(
               (a) =>
                 a.ognoo < new Date(req.query.duusakhOgnoo) &&
-                a.turul === "aldangi"
+                (a.turul === "aldangi" || a.turul === "bank")
             );
           if (!!req.query.shineOgnoo) {
             const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
@@ -494,6 +497,7 @@ router
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
+      var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).find({ _id: geree._id });
       geree.tuluv = 1;
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
@@ -507,12 +511,388 @@ router
             [geree._id],
             req.body.tukhainBaaziinKholbolt
           );
+          zassanBarimtShalgakh(gereeOld[0], geree, "Geree", "Гэрээ", req.body);
         });
       res.send("Amjilttai");
     } catch (err) {
       next(err);
     }
   });
+
+function zassanBarimtShalgakh(oldData, newData, classType, className, body)
+{
+  if(!!oldData && !!newData)
+  {
+    const uurchlult = [];
+    for (const [key, value] of Object.entries(oldData._doc)) {
+      var shineUtga = newData._doc[key]
+      if(JSON.stringify(value) !== JSON.stringify(shineUtga))
+      {
+        var tempData = {
+          talbar: key,
+          talbarNer: orchuulyaText(key),
+          umnukhUtga: JSON.stringify(value),
+          shineUtga: JSON.stringify(shineUtga),
+          utganiiTurul: typeof shineUtga,
+        }
+        uurchlult.push(tempData);
+      }
+    }
+    if(!!uurchlult && uurchlult.length > 0)
+    {
+      var barimt = new ZassanBarimt(body.tukhainBaaziinKholbolt)();
+      barimt.baiguullagiinId = oldData.baiguullagiinId;
+      barimt.barilgiinId = oldData.barilgiinId;
+      barimt.classId = oldData._id;
+      barimt.classDugaar = oldData.gereeniiDugaar;
+      barimt.classOgnoo = oldData.createdAt;
+      barimt.classType = classType;
+      barimt.className = className;
+      barimt.uurchlult = uurchlult;
+      barimt.ajiltniiId = body.nevtersenAjiltniiToken.id;
+      barimt.ajiltniiNer = body.nevtersenAjiltniiToken.ner;
+      barimt.save(); 
+    }
+  }
+}
+
+function orchuulyaText(text){
+  text = text.toString();
+  var butsaakhText = "";
+  switch (text) {
+    case "id":
+      butsaakhText = "Дугаар";
+      break;  
+    case "gereeniiDugaar":
+      butsaakhText = "Гэрээний дугаар дугаар";
+      break;
+    case "gereeniiOgnoo":
+      butsaakhText = "Гэрээний огноо";  
+      break;
+    case "turul":
+      butsaakhText = "Төрөл";
+      break;
+    case "ovog":
+      butsaakhText = "Овог";
+      break;
+    case "ner":
+      butsaakhText = "Нэр";    
+      break;
+    case "register":
+      butsaakhText = "Регистер";
+      break;
+    case "customerTin":
+      butsaakhText = "ТИН дугаар";
+      break;
+    case "albanTushaal":
+      butsaakhText = "Албан тушаал";
+      break;
+    case "zakhirliinOvog":
+      butsaakhText = "Захиралын овог";  
+      break;
+    case "zakhirliinNer":
+      butsaakhText = "Захиралын нэр";
+      break;
+    case "utas":
+      butsaakhText = "Утас";
+      break;
+    case "mail":
+      butsaakhText = "И-Мэйл";
+      break;
+    case "khayag":
+      butsaakhText = "Хаяг";    
+      break;
+    case "khugatsaa":
+      butsaakhText = "Хугацаа";
+      break;
+    case "duusakhOgnoo":
+      butsaakhText = "Дуусах огноо";
+      break;
+    case "tsutsalsanOgnoo":
+      butsaakhText = "Цуцалсан огноо";
+      break;
+    case "khungulukhKhugatsaa":
+      butsaakhText = "Хөнгөлөх хугацаа";  
+      break;
+    case "sariinTurees":
+      butsaakhText = "Сарын түрээс";
+      break;
+    case "gerchilgeeniiZurag":
+      butsaakhText = "Гэрчилгээний зураг";
+      break;
+    case "unemlekhniiZurag":
+      butsaakhText = "Үнэмлэхийн зураг";
+      break;
+    case "zuvshuurliinZurag":
+      butsaakhText = "Зөвшөөрлийн зураг";    
+      break;
+    case "zoriulalt":
+      butsaakhText = "Зориулалт";
+      break;
+    case "talbainDugaar":
+      butsaakhText = "Талбайн дугаар";
+      break;
+    case "talbainIdnuud":
+      butsaakhText = "Талбайн дугаарууд";
+      break;
+    case "talbainNegjUne":
+      butsaakhText = "Талбайн нэгж үнэ";  
+      break;
+    case "talbainNiitUne":
+      butsaakhText = "Талбайн нийт үнэ";  
+      break;
+    case "talbainKhemjee":
+      butsaakhText = "Талбайн хэмжээ";
+      break;
+    case "talbainKhemjeeMetrKube":
+      butsaakhText = "Талбайн хэмжээ m³";
+      break;
+    case "davkhar":
+      butsaakhText = "Давхар";
+      break;
+    case "baritsaaAvakhDun":
+      butsaakhText = "Барьцаа авах дүн"; 
+      break;
+    case "baritsaaniiUldegdel":
+      butsaakhText = "Барьцааны үлдэгдэл";
+      break;
+    case "baritsaaBairshuulakhKhugatsaa":
+      butsaakhText = "Барьцаа байршуулах хугацаа";
+      break;
+    case "baritsaaAvakhKhugatsaa":
+      butsaakhText = "Барьцаа авах хугацаа";
+      break;
+    case "baiguullagiinId":
+      butsaakhText = "Байгууллага";
+      break;
+    case "baiguullagiinNer":
+      butsaakhText = "Байгууллагийн нэр";  
+      break;
+    case "tulukhUdur":
+      butsaakhText = "Төлөх өдөр";  
+      break;
+    case "sanuulakhKhonog":
+      butsaakhText = "Сануулах хоног";
+      break;
+    case "khuleekhKhonog":
+      butsaakhText = "Хүлээх хоног";
+      break;
+    case "khungulukhEsekh":
+      butsaakhText = "Хөнгөлөх эсэх";
+      break;
+    case "daraagiinTulukhOgnoo":
+      butsaakhText = "Дараагийн төлөх огноо";  
+      break;
+    case "daraagiinSanuulakhOgnoo":
+      butsaakhText = "Дараагийн сануулах огноо";
+      break;
+    case "daraagiinKhuleekhOgnoo":
+      butsaakhText = "Дараагийн хүлээх огноо";
+      break;
+    case "uldegdel":
+      butsaakhText = "Үлдэгдэл";
+      break;
+    case "aldangiinUldegdel":
+      butsaakhText = "Алдангийн үлдэгдэл";
+      break;
+    case "avlaga":
+      butsaakhText = "Авлага";  
+      break;
+    case "dans":
+      butsaakhText = "Данс";  
+      break;
+    case "turGereeEsekh":
+      butsaakhText = "Түр гэрээ эсэх";
+      break;
+    case "zardluud":
+      butsaakhText = "Зардлууд";
+      break;
+    case "segmentuud":
+      butsaakhText = "Сегментүүд";
+      break;
+    case "gereeniiTuukhuud":
+      butsaakhText = "Гэрээний түүхүүд";  
+      break;
+    default:
+    break;
+  }
+  return butsaakhText;
+}
+
+function textUpper(text) {
+  text = text.toString();
+  return text;
+}
+
+function orchuulya(text) {
+  text = text.toString();
+  var a = text.split("а");
+  var o = text.split("о");
+  var y = text.split("у");
+  text = text.replace("ii", (a?.length > 0 || o?.length > 0 || y?.length > 0) ? "ы" : "ий");
+
+  text = text.replace("Ts", "Ц");  
+  text = text.replace("Ch", "Ч");  
+  text = text.replace("Sh", "Ш");  
+  text = text.replace("Yu", "Ю");  
+  text = text.replace("Ya", "Я");  
+        
+  text = text.replace("kh", "х");
+  text = text.replace("ts", "ц");  
+  text = text.replace("ch", "ч");  
+  text = text.replace("sh", "ш");  
+  text = text.replace("yu", "ю");  
+  text = text.replace("ya", "й"); 
+  text = text.replace(text[0], text[0].toUpperCase());
+  
+
+  var butsaakhText = "";
+  for (let i = 0; i < text.length; i++) {
+    switch (text[i]) {
+      case "A":
+        butsaakhText = butsaakhText + " А";
+        break;
+      case "B":
+        butsaakhText = butsaakhText + " Б";
+        break;
+      case "V":
+        butsaakhText = butsaakhText + " В";
+        break;
+      case "G":
+        butsaakhText = butsaakhText + " Г";
+        break;
+      case "D":
+        butsaakhText = butsaakhText + " Д";
+        break;
+      case "Ye":
+        butsaakhText = butsaakhText + " Е";
+        break;
+      case "Yo":
+        butsaakhText = butsaakhText + " Ё";
+        break;
+      case "J":
+        butsaakhText = butsaakhText + " Ж";
+        break;
+      case "Z":
+        butsaakhText = butsaakhText + " З";
+        break;
+      case "I":
+        butsaakhText = butsaakhText + " И";
+        break;
+      case "К":
+        butsaakhText = butsaakhText + " K";
+        break;
+      case "L":
+        butsaakhText = butsaakhText + " Л";
+        break;
+      case "М":
+        butsaakhText = butsaakhText + " M";
+        break;
+      case "N":
+        butsaakhText = butsaakhText + " Н";
+        break;
+      case "O":
+        butsaakhText = butsaakhText + " О";
+        break;
+      case "U":
+        butsaakhText = butsaakhText + " Ө";
+        break;
+      case "P":
+        butsaakhText = butsaakhText + " П";
+        break;
+      case "R":
+        butsaakhText = butsaakhText + " Р";
+        break;
+      case "S":
+        butsaakhText = butsaakhText + " С";
+        break;
+      case "​Т":
+        butsaakhText = butsaakhText + " T";
+        break;
+      case "U":
+        butsaakhText = butsaakhText + " У";
+        break;
+      case "F":
+        butsaakhText = butsaakhText + " Ф";
+        break;
+      case "H":
+        butsaakhText = butsaakhText + " Х";
+        break;
+      case "E":
+          butsaakhText = butsaakhText + " Э";
+      case "а":
+        butsaakhText = butsaakhText + "a";
+        break;
+      case "b":
+        butsaakhText = butsaakhText + "б";
+        break;
+      case "v":
+        butsaakhText = butsaakhText + "в";
+        break;
+      case "g":
+        butsaakhText = butsaakhText + "г";
+        break;
+      case "d":
+        butsaakhText = butsaakhText + "д";
+        break;
+      case "ye":
+        butsaakhText = butsaakhText + "е";
+        break;
+      case "yo":
+        butsaakhText = butsaakhText + "ё";
+        break;
+      case "j":
+        butsaakhText = butsaakhText + "ж";
+        break;
+      case "z":
+        butsaakhText = butsaakhText + "з";
+        break;
+      case "i":
+        butsaakhText = butsaakhText + "и";
+        break;
+      case "k":
+        butsaakhText = butsaakhText + "к";
+        break;
+      case "l":
+        butsaakhText = butsaakhText + "л";
+        break;
+      case "m":
+        butsaakhText = butsaakhText + "м";
+        break;
+      case "n":
+        butsaakhText = butsaakhText + "н";
+        break;
+      case "o":
+        butsaakhText = butsaakhText + "о";
+        break;
+      case "u":
+        butsaakhText = butsaakhText + "у";
+        break;
+      case "p":
+        butsaakhText = butsaakhText + "п";
+        break;
+      case "r":
+        butsaakhText = butsaakhText + "р";
+        break;
+      case "s":
+        butsaakhText = butsaakhText + "с";
+        break;
+      case "t":
+        butsaakhText = butsaakhText + "т";
+        break;
+      case "f":
+        butsaakhText = butsaakhText + "ф";
+        break;
+      case "e":
+        butsaakhText = butsaakhText + "э";
+        break;  
+      default:
+        butsaakhText = butsaakhText + text[i];
+        break;
+    }
+  }
+  return butsaakhText;
+}
 
 function tooZasyaSync(too) {
   var zassanToo = Math.round((too + Number.EPSILON) * 100) / 100;
