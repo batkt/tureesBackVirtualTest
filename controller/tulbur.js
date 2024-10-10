@@ -2233,7 +2233,7 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
               update: [
                 {
                   $set: {
-                    "niitTulbur.0.dun": togloom.niitDun,
+                    "niitTulbur[0].dun": togloom.niitDun,
                   },
                 },
               ],
