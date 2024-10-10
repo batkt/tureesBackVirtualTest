@@ -2223,7 +2223,7 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
       },
     });
     var bulkOps = [];
-    if (gereenuud)
+    if (togloomiinTuv)
       for await (const togloom of togloomiinTuv) {
         var niilberDun = togloom.niitTulbur[0].dun;
         if (niilberDun != togloom.niitDun) {
