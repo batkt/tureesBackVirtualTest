@@ -2233,6 +2233,13 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
               guilgee.tulukhDun = guilgee.tulukhDun / 1.1;
             }
           }
+          if (guilgee.tailbar == "Дулааны төлбөр") {
+            guilgee.tailbar = "Дулаан";
+            if (geree.register != "5903858")
+              guilgee.tulukhDun = guilgee.tulukhDun * 1.1;
+            guilgee.tariff = 664.4;
+            guilgee.negj = geree.talbainKhemjeeMetrKube;
+          }
         }
 
         let upsertDoc = {
