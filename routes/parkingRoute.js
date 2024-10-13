@@ -443,7 +443,6 @@ router.post(
           };
       if (!!req.body.burtgesenAjiltaniiId)
         match["tuukh.burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
-      console.log("match", JSON.stringify(match, null, 4));
       var udriinTailan = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
       ).aggregate([

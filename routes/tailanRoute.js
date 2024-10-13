@@ -10,6 +10,7 @@ const {
   zardaliinTailanAvya,
   ashigiinTailanAvya,
   analitikTailanAvya,
+  negtgelMedeelelAvya,
 } = require("../controller/tailan");
 const TailangiinZagvar = require("../models/tailangiinZagvar");
 
@@ -31,6 +32,9 @@ router
 router.route("/zardaliinTailanAvya").post(tokenShalgakh, zardaliinTailanAvya);
 router.route("/ashigiinTailanAvya").post(tokenShalgakh, ashigiinTailanAvya);
 router.route("/analitikTailanAvya").post(tokenShalgakh, analitikTailanAvya);
+router
+  .route("/negtgelMedeelelAvya/:turul/:ekhlekhOgnoo/:duusakhOgnoo")
+  .get(tokenShalgakh, negtgelMedeelelAvya);
 router.get("/ognooAvya", tokenShalgakh, async (req, res, next) => {
   res.send(new Date());
 });

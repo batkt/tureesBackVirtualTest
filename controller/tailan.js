@@ -2,7 +2,9 @@ const asyncHandler = require("express-async-handler");
 const Geree = require("../models/geree");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Baiguullaga = require("../models/baiguullaga");
+const TogloomiinTuv = require("../models/togloomiinTuv");
 const Zardal = require("../models/zardal");
+const { Uilchluulegch } = require("parking-v1");
 const lodash = require("lodash");
 const moment = require("moment");
 
@@ -1498,7 +1500,6 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         const barilgaData = catList.find(
           (mur) => mur["_id"].barilgiinId == _id
         );
-        console.log("barilgaData", barilgaData);
         if (barilgaData?.tulsun > 0) data.push(barilgaData.tulsun.toFixed(2));
         else data.push(0);
       });
@@ -1518,3 +1519,141 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
     res.send(data);
   }
 );
+
+exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
+  try {
+    var butsaakhKhariu = {
+      msg: "Амжилттай",
+      turul: req.params.turul,
+      ekhlekhOgnoo: req.params.ekhlekhOgnoo,
+      duusakhOgnoo: req.params.duusakhOgnoo,
+      data: {},
+    };
+    var dunguud;
+    if (req.params.turul == "Rent") {
+      dunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $match: {
+            "avlaga.guilgeenuud.turul": {
+              $nin: ["baritsaa"],
+            },
+            "avlaga.guilgeenuud.ognoo": {
+              $gte: new Date(req.params.ekhlekhOgnoo),
+              $lte: new Date(req.params.duusakhOgnoo),
+            },
+            "avlaga.guilgeenuud.tulsunDun": {
+              $gt: 0,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$avlaga.guilgeenuud.turul",
+            dun: {
+              $sum: "$avlaga.guilgeenuud.tulsunDun",
+            },
+          },
+        },
+      ]);
+    } else if (req.params.turul == "Parking") {
+      dunguud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $unwind: "$tuukh",
+        },
+        {
+          $unwind: "$tuukh.tulbur",
+        },
+        {
+          $match: {
+            "tuukh.tulbur.ognoo": {
+              $gte: new Date(req.params.ekhlekhOgnoo),
+              $lte: new Date(req.params.duusakhOgnoo),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$tuukh.tulbur.turul",
+            dun: {
+              $sum: "$tuukh.tulbur.dun",
+            },
+          },
+        },
+      ]);
+    } else if (req.params.turul == "Parking") {
+      dunguud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $unwind: "$tuukh",
+        },
+        {
+          $unwind: "$tuukh.tulbur",
+        },
+        {
+          $match: {
+            "tuukh.tulbur.ognoo": {
+              $gte: new Date(req.params.ekhlekhOgnoo),
+              $lte: new Date(req.params.duusakhOgnoo),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$tuukh.tulbur.turul",
+            dun: {
+              $sum: "$tuukh.tulbur.dun",
+            },
+          },
+        },
+      ]);
+    } else if (req.params.turul == "Toyland") {
+      dunguud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            ognoo: {
+              $gte: new Date(req.params.ekhlekhOgnoo),
+              $lte: new Date(req.params.duusakhOgnoo),
+            },
+            tuluv: {
+              $ne: -1,
+            },
+          },
+        },
+        {
+          $unwind: "$niitTulbur",
+        },
+        {
+          $match: {
+            "niitTulbur.turul": { $nin: ["khariult", "khungulult"] },
+          },
+        },
+        {
+          $group: {
+            _id: "$niitTulbur.turul",
+            niitDun: {
+              $sum: "$niitTulbur.dun",
+            },
+          },
+        },
+      ]);
+    }
+
+    if (dunguud && dunguud.length > 0) {
+      data = {
+        currency: "MNT",
+      };
+      for await (const dun of dunguud) {
+        data[dun._id] = dun.dun;
+      }
+      butsaakhKhariu.data = data;
+    } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
+    res.send(butsaakhKhariu);
+  } catch (err) {
+    next(err);
+  }
+});
