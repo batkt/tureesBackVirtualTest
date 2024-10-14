@@ -508,6 +508,34 @@ router
           geree
         )
         .then((result) => {
+          if(gereeOld[0]?.talbainIdnuud?.length > 0)
+          {
+            var talbainBulk = [];
+            gereeOld[0]?.talbainIdnuud.forEach((a) => {
+              const talbainId = geree?.talbainIdnuud?.filter((b) => b === a);
+              if(talbainId?.length === 0)
+              {
+                let upsertTalbai = {
+                  updateOne: {
+                    filter: { _id: a },
+                    update: {
+                      idevkhiteiEsekh: false,
+                    },
+                  },
+                };
+                talbainBulk.push(upsertTalbai);    
+              }
+            });
+            if (talbainBulk)
+              Talbai(req.body.tukhainBaaziinKholbolt)
+                .bulkWrite(talbainBulk)
+                .then((bulkWriteOpResult) => {
+                  console.log("Talbai idevkhiteiEsekh OK ----", bulkWriteOpResult);
+                })
+                .catch((err) => {
+                  console.log("Talbai BULK update error", err);
+                });
+          }
           talbaiKhariltsagchiinTuluvUurchluy(
             [geree._id],
             req.body.tukhainBaaziinKholbolt
