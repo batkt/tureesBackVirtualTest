@@ -603,7 +603,7 @@ router
                 moment(a.ognoo).isSame(tukhainUdur, "day")
               );
             });
-            if (!baigaa && talbai.talbainNiitUne > 0)
+            if (!baigaa && talbai?.talbainNiitUne > 0)
               khuvaariud.push({
                 ognoo: tukhainUdur,
                 khyamdral: 0,
@@ -638,7 +638,7 @@ router
                         zardal.tariff * talbai.talbainKhemjeeMetrKube
                       ),
                     });
-                } else if (zardal.turul == "1м2" && talbai.talbainKhemjee > 0) {
+                } else if (zardal.turul == "1м2" && talbai?.talbainKhemjee > 0) {
                   baigaa = khuvaariud.find((a) => {
                     return (
                       a.turul == "avlaga" &&

@@ -105,7 +105,7 @@ function orchuulyaText(text){
       butsaakhText = "Түрээсийн төлбөр";
       break; 
     case "segmentuud":
-        butsaakhText = "Сегментүүд";
+        butsaakhText = "Ялгах утга";
         break; 
     case "khurunguud":
       butsaakhText = "Хөрөнгүүд";
@@ -117,7 +117,7 @@ function orchuulyaText(text){
       butsaakhText = "Дугаар";
       break;  
     case "gereeniiDugaar":
-      butsaakhText = "Гэрээний дугаар дугаар";
+      butsaakhText = "Гэрээний дугаар";
       break;
     case "gereeniiOgnoo":
       butsaakhText = "Гэрээний огноо";  
@@ -135,8 +135,14 @@ function orchuulyaText(text){
       butsaakhText = "Регистер";
       break;
     case "customerTin":
-      butsaakhText = "ТИН дугаар";
+      butsaakhText = "Бүртгэлийн дугаар";
       break;
+    case "aktiinZagvariinId":
+      butsaakhText = "Актын загвар";
+      break; 
+    case "gereeniiZagvariinId":
+      butsaakhText = "Гэрээний загвар";
+      break;    
     case "albanTushaal":
       butsaakhText = "Албан тушаал";
       break;
@@ -259,9 +265,6 @@ function orchuulyaText(text){
       break;
     case "zardluud":
       butsaakhText = "Зардлууд";
-      break;
-    case "segmentuud":
-      butsaakhText = "Сегментүүд";
       break;
     case "gereeniiTuukhuud":
       butsaakhText = "Гэрээний түүхүүд";  
