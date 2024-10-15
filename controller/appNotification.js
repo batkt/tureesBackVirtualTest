@@ -2,7 +2,7 @@ const { admin } = require("../middlewares/firebase-config");
 
 async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
   const payload = {
-    to: token,
+    token,
     notification: {
       title: "Таньд мэдэгдэл ирлээ!",
       body: "Hello world",
@@ -10,10 +10,8 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
       sound: "default",
       badge: "1",
       ...medeelel,
-    },
-    priority: "high",
-    timeToLive: 60 * 60 * 24,
-  };
+    }
+  }
   const options = {
   };
   if (token)
