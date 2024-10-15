@@ -508,6 +508,34 @@ router
           geree
         )
         .then((result) => {
+          if(gereeOld[0]?.talbainIdnuud?.length > 0)
+          {
+            var talbainBulk = [];
+            gereeOld[0]?.talbainIdnuud.forEach((a) => {
+              const talbainId = geree?.talbainIdnuud?.filter((b) => b === a);
+              if(talbainId?.length === 0)
+              {
+                let upsertTalbai = {
+                  updateOne: {
+                    filter: { _id: a },
+                    update: {
+                      idevkhiteiEsekh: false,
+                    },
+                  },
+                };
+                talbainBulk.push(upsertTalbai);    
+              }
+            });
+            if (talbainBulk)
+              Talbai(req.body.tukhainBaaziinKholbolt)
+                .bulkWrite(talbainBulk)
+                .then((bulkWriteOpResult) => {
+                  console.log("Talbai idevkhiteiEsekh OK ----", bulkWriteOpResult);
+                })
+                .catch((err) => {
+                  console.log("Talbai BULK update error", err);
+                });
+          }
           talbaiKhariltsagchiinTuluvUurchluy(
             [geree._id],
             req.body.tukhainBaaziinKholbolt
@@ -603,7 +631,7 @@ router
                 moment(a.ognoo).isSame(tukhainUdur, "day")
               );
             });
-            if (!baigaa && talbai.talbainNiitUne > 0)
+            if (!baigaa && talbai?.talbainNiitUne > 0)
               khuvaariud.push({
                 ognoo: tukhainUdur,
                 khyamdral: 0,
@@ -638,7 +666,7 @@ router
                         zardal.tariff * talbai.talbainKhemjeeMetrKube
                       ),
                     });
-                } else if (zardal.turul == "1м2" && talbai.talbainKhemjee > 0) {
+                } else if (zardal.turul == "1м2" && talbai?.talbainKhemjee > 0) {
                   baigaa = khuvaariud.find((a) => {
                     return (
                       a.turul == "avlaga" &&
