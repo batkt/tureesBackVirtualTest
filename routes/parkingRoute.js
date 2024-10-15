@@ -1085,7 +1085,7 @@ router.get(
     var message = "Amjilttai";
     var success = true;
     var oldsonMashin;
-    var freeze = true;
+    var freeze = req.query.freeze ;
     var tukhainKholbolt;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
@@ -1643,11 +1643,20 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
             oldsonMashin = await Uilchluulegch(kholbolt).findOne({
               "tuukh.0.zogsooliinId": zogsool._id,
               mashiniiDugaar: req.body.dugaar,
+              $or: [
+                {
+                  "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                    $gt: new Date(Date.now() - 100000), //1.30sec in dotor
+                  },
+                },
+                {
+                  "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                    $exists: false,
+                  },
+                },
+              ],
               "tuukh.0.tuluv": {
                 $nin: [-2, -3],
-              },
-              updatedAt: {
-                $gt: new Date(Date.now() - 300000), //5min dotor
               },
             });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
