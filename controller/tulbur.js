@@ -2210,34 +2210,17 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
 
 exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
   try {
-    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+    var gereenuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
       .find({
-        barilgiinId: req.body.barilgiinId,
-        "avlaga.guilgeenuud.0": {
-          $exists: true,
-        },
-        "tulukhUdur.0": {
-          $exists: true,
-        },
+        "niitTulbur.turul": "khunglukh"
       })
       .select("+avlaga");
     var bulkOps = [];
     if (gereenuud)
       for await (const geree of gereenuud) {
-        var khuuchinUnetei = true;
-        for await (const guilgee of geree?.avlaga?.guilgeenuud) {
-          if (
-            guilgee.tailbar == "Халуун ус" ||
-            guilgee.tailbar == "Хүйтэн ус"
-          ) {
-            if (guilgee.ognoo < new Date(2024, 7, 5, 1, 0, 0)) {
-              guilgee.tulukhDun = guilgee.tulukhDun / 1.1;
-            }
-          }
-          if (guilgee.tailbar == "Дулаан") {
-            guilgee.tariff = 664.4;
-            guilgee.negj = geree.talbainKhemjeeMetrKube;
-            guilgee.tulukhDun = geree.talbainKhemjeeMetrKube * guilgee.tariff;
+        for await (const guilgee of geree?.niitTulbur) {
+          if (guilgee.turul == "khunglukh") {
+            guilgee.turul = "khungulult";
           }
         }
 
@@ -2247,7 +2230,7 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
             update: [
               {
                 $set: {
-                  "avlaga.guilgeenuud": geree.avlaga.guilgeenuud,
+                  "niitTulbur": geree.niitTulbur,
                 },
               },
             ],
@@ -2257,7 +2240,7 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
       }
 
     if (bulkOps.length > 0)
-      await Geree(req.body.tukhainBaaziinKholbolt)
+      await TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
         .bulkWrite(bulkOps)
         .then((bulkWriteOpResult) => {
           console.log("BULK ==>", bulkOps);
