@@ -9,14 +9,16 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
       sound: "default",
       badge: "1",
       ...medeelel,
-    },token,
+    },
+  };
+  const options = {
     priority: "high",
     timeToLive: 60 * 60 * 24,
   };
   if (token)
     admin
       .messaging()
-      .send(payload)
+      .send(token, payload, options)
       .then((response) => {
         if (callback) callback(response);
         console.log("Notification sent successfully", JSON.stringify(response));
