@@ -3,6 +3,7 @@ const { admin } = require("../middlewares/firebase-config");
 async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
   const payload = {
     token,
+    webpush : {
     notification: {
       title: "Таньд мэдэгдэл ирлээ!",
       body: "Hello world",
@@ -11,6 +12,7 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
       badge: "1",
       ...medeelel,
     }
+  }
   }
   const options = {
   };
