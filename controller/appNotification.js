@@ -4,17 +4,33 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
   const payload = {
     token,
     webpush : {
-    notification: {
-      title: "Таньд мэдэгдэл ирлээ!",
-      body: "Hello world",
-      icon: "default",
-      sound: "default",
-      badge: "1",
-      ...medeelel,
-    }
-  }
+      "priority":"high",
+      "TTL":"86400",
+      notification: {
+        title: "Таньд мэдэгдэл ирлээ!",
+        body: "Hello world",
+        icon: "default",
+        sound: "default",
+        badge: "1",
+        ...medeelel,
+      },
+    },
+    android:{
+      "priority":"high",
+      "ttl":"86400s",
+      notification: {
+        title: "Таньд мэдэгдэл ирлээ!",
+        body: "Hello world",
+        icon: "default",
+        sound: "default",
+        badge: "1",
+        ...medeelel,
+      },
+    },
   }
   const options = {
+    priority: "high",
+    timeToLive: 60 * 60 * 24,
   };
   if (token)
     admin
