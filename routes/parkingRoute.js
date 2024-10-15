@@ -1646,6 +1646,9 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
               "tuukh.0.tuluv": {
                 $nin: [-2, -3],
               },
+              updatedAt: {
+                $gt: new Date(Date.now() - 300000), //5min dotor
+              },
             });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
