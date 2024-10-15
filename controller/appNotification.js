@@ -2,6 +2,7 @@ const { admin } = require("../middlewares/firebase-config");
 
 async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
   const payload = {
+    to: token,
     notification: {
       title: "Таньд мэдэгдэл ирлээ!",
       body: "Hello world",
@@ -10,15 +11,15 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
       badge: "1",
       ...medeelel,
     },
-  };
-  const options = {
     priority: "high",
     timeToLive: 60 * 60 * 24,
+  };
+  const options = {
   };
   if (token)
     admin
       .messaging()
-      .send(token, payload, options)
+      .send(payload)
       .then((response) => {
         if (callback) callback(response);
         console.log("Notification sent successfully", JSON.stringify(response));
