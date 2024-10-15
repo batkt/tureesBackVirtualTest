@@ -1085,7 +1085,7 @@ router.get(
     var message = "Amjilttai";
     var success = true;
     var oldsonMashin;
-    var freeze = req.query.freeze;
+    var freeze = true;
     var tukhainKholbolt;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
