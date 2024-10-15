@@ -5,7 +5,7 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
     token,
     webpush : {
       "priority":"high",
-      "TTL":"86400",
+      "TTL":86400,
       notification: {
         title: "Таньд мэдэгдэл ирлээ!",
         body: "Hello world",
@@ -17,7 +17,7 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
     },
     android:{
       "priority":"high",
-      "ttl":"86400s",
+      "TTL": 86400,
       notification: {
         title: "Таньд мэдэгдэл ирлээ!",
         body: "Hello world",
