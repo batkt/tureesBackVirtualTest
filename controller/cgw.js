@@ -545,7 +545,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
             upsert: true,
           }
         )
-        .then((resa) => console.log(resa))
         .catch((err) => console.log(err));
       var textUseg = "A";
       if (dans.baiguullagiinId == "631595e9957b7d5ec013c076") textUseg = "U";
@@ -1173,7 +1172,6 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
         upsert: true,
       }
     )
-    .then((resa) => console.log(resa))
     .catch((err) => console.log(err));
   var textUseg = "A";
   if (dans.baiguullagiinId == "631595e9957b7d5ec013c076") textUseg = "U";
@@ -1350,7 +1348,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       upsert: true,
                     }
                   )
-                  .then((resa) => console.log(resa))
                   .catch((err) => console.log(err));
                 var textUseg = "A";
                 if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")

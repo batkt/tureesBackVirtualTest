@@ -90,7 +90,6 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     { register: baiguullaga.register, system: "Turees" },
     async (khariu) => {
       try {
-        console.log("nevtrekhXariu Irlee");
         if (khariu.success) {
           if (!!khariu.salbaruud) {
             var butsaakhSalbaruud = [];
@@ -133,7 +132,6 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
           var tuukh = new NevtreltiinTuukh(db.erunkhiiKholbolt)();
-          console.log("tuukh", tuukh);
           tuukh.ajiltniiId = ajiltan._id;
           tuukh.ajiltniiNer = ajiltan.ner;
           tuukh.ognoo = new Date();
@@ -269,7 +267,6 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
     }
     const token = req.headers.authorization.split(" ")[1];
     const tokenObject = jwt.verify(token, process.env.APP_SECRET, 401);
-    console.log(tokenObject);
     if (tokenObject.id == "zochin")
       throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
     Ajiltan(db.erunkhiiKholbolt)
@@ -281,7 +278,6 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
         res.send(urdunJson);
       })
       .catch((err) => {
-        console.log("aldaa");
         next(err);
       });
   } catch (error) {
@@ -332,7 +328,6 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       req.body.baiguullagiinId
     );
-    console.log("baiguullaga", baiguullaga);
     if (!baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     request.post(
       "http://103.143.40.43:8282/erkhiinMedeelelAvya",
