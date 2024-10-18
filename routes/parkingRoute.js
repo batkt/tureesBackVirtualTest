@@ -358,19 +358,19 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     }
     if(baiguullagiinId == "6115f350b35689cdbf1b9da3")
     {
-      if(nemeltUtga == "Хаалт 1")
+      if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 1")||nemeltUtga.includes("ХААЛТ 1")))
         {
           query["tuukh.0.garsanKhaalga"] = "192.168.1.202"
         }
-        else if(nemeltUtga == "Хаалт 2")
+      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 2")||nemeltUtga.includes("ХААЛТ 2")))
         {
           query["tuukh.0.garsanKhaalga"] = "192.168.1.204"
         }
-        else if(nemeltUtga == "Хаалт 3")
+      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 3")||nemeltUtga.includes("ХААЛТ 3")))
         {
           query["tuukh.0.garsanKhaalga"] = "192.168.1.207"
         }
-        else if(nemeltUtga == "Хаалт4")
+      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 4")||nemeltUtga.includes("ХААЛТ 4")))
         {
           query["tuukh.0.garsanKhaalga"] = "192.168.1.205"
         }
