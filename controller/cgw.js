@@ -1231,7 +1231,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
         if (dansnuud)
           for await (const dans of dansnuud) {
             try {
-              console.log("dans baina --------------------------");
               if (dans.bank == "khanbank") {
                 var tokenObject = await Token(kholbolt).findOne({
                   turul: "khaanCorporate",
@@ -1436,6 +1435,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                                 baiguullagiinId: dans.baiguullagiinId,
                                 tulsunDun: item.Amt,
                                 zogsooliinId: dans.zogsooliinId,
+                                nemeltUtga :TxAddInf
                               })
                               .catch(function (error) {});
                           }
@@ -1560,6 +1560,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                           baiguullagiinId: dans.baiguullagiinId,
                           tulsunDun: item.tranAmount,
                           zogsooliinId: dans.zogsooliinId,
+                          nemeltUtga : item.tranDesc
                         })
                         .catch(function (error) {});
                     }
@@ -1688,6 +1689,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                             baiguullagiinId: dans.baiguullagiinId,
                             tulsunDun: item.income,
                             zogsooliinId: dans.zogsooliinId,
+                            nemeltUtga : item.txnDesc
                           })
                           .catch(function (error) {});
                       }
