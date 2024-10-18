@@ -322,8 +322,8 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
   try {
     var baiguullagiinId = req.body.baiguullagiinId;
     var zogsooliinId = req.body.zogsooliinId;
+    var nemeltUtga = req.body.nemeltUtga;
     var tulsunDun = Number(req.body.tulsunDun);
-    console.log("zogsooliinTulburOrjIrlee", tulsunDun);
     var shineDun = 0;
     if (
       baiguullagiinId == "65435cdff2f5358696c61454" ||
@@ -341,7 +341,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var shuukhKhugatsaa = new Date(
       Date.now() - 300000 //5 * 60 * 1000
     );
-    var oldsonData = await Uilchluulegch(kholbolt).findOne({
+    var query = {
       $or: [
         {
           niitDun: tulsunDun,
@@ -355,8 +355,27 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         $gt: shuukhKhugatsaa,
       },
       "tuukh.0.tuluv": 0,
-    });
-    console.log("zogsooliinTulburOrjIrlee oldsonData", oldsonData);
+    }
+    if(baiguullagiinId == "6115f350b35689cdbf1b9da3")
+    {
+      if(nemeltUtga == "Хаалт 1")
+        {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.202"
+        }
+        else if(nemeltUtga == "Хаалт 2")
+        {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.204"
+        }
+        else if(nemeltUtga == "Хаалт 3")
+        {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.207"
+        }
+        else if(nemeltUtga == "Хаалт4")
+        {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.205"
+        }
+    }
+    var oldsonData = await Uilchluulegch(kholbolt).findOne(query);
     if (oldsonData) {
       await Uilchluulegch(kholbolt).findByIdAndUpdate(
         oldsonData._id,
