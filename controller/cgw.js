@@ -1435,7 +1435,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                                 baiguullagiinId: dans.baiguullagiinId,
                                 tulsunDun: item.Amt,
                                 zogsooliinId: dans.zogsooliinId,
-                                nemeltUtga :TxAddInf
+                                nemeltUtga :item.TxAddInf
                               })
                               .catch(function (error) {});
                           }
