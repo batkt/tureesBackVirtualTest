@@ -11,6 +11,7 @@ const {
   ashigiinTailanAvya,
   analitikTailanAvya,
   negtgelMedeelelAvya,
+  negtgelTailanAvya,
 } = require("../controller/tailan");
 const TailangiinZagvar = require("../models/tailangiinZagvar");
 
@@ -38,4 +39,5 @@ router
 router.get("/ognooAvya", tokenShalgakh, async (req, res, next) => {
   res.send(new Date());
 });
+router.route("/negtgelTailanAvya").post(tokenShalgakh, negtgelTailanAvya);
 module.exports = router;
