@@ -397,17 +397,12 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         _id: qpayBarimt.gereeniiId,
       });
       if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
-        tulbur.push({
-          tailbar: "qpay",
-          turul: "aldangi",
-          tulsunDun: qpayBarimt.qpay.amount,
-          ognoo: qpayBarimt.ognoo,
-          guilgeeKhiisenOgnoo: new Date(),
-        });
+        var tulsunDun = 0;
         if (geree.aldangiinUldegdel >= qpayBarimt.qpay.amount) {
-          geree.aldangiinUldegdel =
-            geree.aldangiinUldegdel - qpayBarimt.qpay.amount;
+          geree.aldangiinUldegdel = geree.aldangiinUldegdel - qpayBarimt.qpay.amount;
+          tulsunDun = qpayBarimt.qpay.amount
         } else {
+          tulsunDun = geree.aldangiinUldegdel;
           geree.aldangiinUldegdel = 0;
           var iluuDun = qpayBarimt.qpay.amount - geree.aldangiinUldegdel;
           tulbur.push({
@@ -417,6 +412,14 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
             guilgeeKhiisenOgnoo: new Date(),
           });
         }
+        tulbur.push({
+          tailbar: "qpay",
+          turul: "aldangi",
+          tulukhAldangi: geree.aldangiinUldegdel,
+          tulsunDun: tulsunDun,
+          ognoo: qpayBarimt.ognoo,
+          guilgeeKhiisenOgnoo: new Date(),
+        });
         updateQuery = {
           $push: {
             [`avlaga.guilgeenuud`]: {
