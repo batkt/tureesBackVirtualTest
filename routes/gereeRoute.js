@@ -374,36 +374,41 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   const { db } = require("zevbackv2");
   const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(req.body);
   khariltsagch.id = khariltsagch.register ? khariltsagch.register : khariltsagch.customerTin;
-  var unuudur = new Date();
-  unuudur = new Date(
-    unuudur.getFullYear(),
-    unuudur.getMonth(),
-    unuudur.getDate()
-  );
-  var maxDugaar = 1;
-  await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
-    .find({
+  if(req.body.gereeniiDugaar === `ГД${moment(new Date()).format("YYMMDD")}`)
+  {
+    var unuudur = new Date();
+    unuudur = new Date(
+      unuudur.getFullYear(),
+      unuudur.getMonth(),
+      unuudur.getDate()
+    );
+    var maxDugaar = 1;
+    await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+      .find({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        turul: "geree",
+        ognoo: unuudur,
+      })
+      .sort({
+        dugaar: -1,
+      })
+      .limit(1)
+      .then((result) => {
+        if (result != 0) maxDugaar = result[0].dugaar + 1;
+      });
+    var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)({
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
+      dugaar: maxDugaar,
       turul: "geree",
       ognoo: unuudur,
-    })
-    .sort({
-      dugaar: -1,
-    })
-    .limit(1)
-    .then((result) => {
-      if (result != 0) maxDugaar = result[0].dugaar + 1;
+      isNew: true,
     });
-  var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)({
-    baiguullagiinId: req.body.baiguullagiinId,
-    barilgiinId: req.body.barilgiinId,
-    dugaar: maxDugaar,
-    turul: "geree",
-    ognoo: unuudur,
-    isNew: true,
-  });
-  req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
+    req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
+    dugaarlalt.save();
+  }
+
   var khariltsagchShalguur;
   if(!!khariltsagch.register)
   {
@@ -420,7 +425,6 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     });  
   }
   if (!khariltsagchShalguur) await khariltsagch.save();
-  dugaarlalt.save();
   var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
   var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
   try {
