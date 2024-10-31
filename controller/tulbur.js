@@ -2281,12 +2281,11 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
       {
         if(mur?.avlaga?.guilgeenuud?.length > 0)
         {
-          for(const a of mur?.avlaga?.guilgeenuud) 
+          const filterAvlaga = mur?.avlaga?.guilgeenuud?.find((a) => a.turul === "bank").sort({ createdAt: -1 });
+          if(filterAvlaga?.length > 0)
           {
-            a.ognoo.setHours(0, 0, 0, 0);
-            if(a.turul === "bank" && a.ognoo >= new Date(req.body.ekhlekhOgnoo) && a.ognoo <= new Date(req.body.duusakhOgnoo))  
-            {
-              console.log("gereeData ------" + a.turul);
+            var a = filterAvlaga[0];
+            console.log("turul ------" + a.turul);
               let avlagabulk = {
                 updateOne: {
                     filter: { _id: mur._id },
@@ -2302,7 +2301,6 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
               };  
               console.log("avlagabulk --------->>" + avlagabulk);
               bulkAvlaga.push(avlagabulk);
-            }
           }
         }
       }
