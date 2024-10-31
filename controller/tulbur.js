@@ -2272,8 +2272,10 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
     var tempData = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
     if(tempData?.length > 0)
     {
-      var filterGereeniiId = tempData.filter((a) => a?.kholbosonGereeniiId?.length > 0).map((b) => new ObjectId(b.a?.kholbosonGereeniiId[0]));
+      var filterGereeniiId = tempData.filter((a) => a?.kholbosonGereeniiId?.length > 0).map((b) => b.a?.kholbosonGereeniiId[0]);
+      console.log("filterGereeniiId ------" + filterGereeniiId);
       var gereeData = await Geree(req.body.tukhainBaaziinKholbolt).find({tuluv: 1, baiguullagiinId: req.body.baiguullagiinId, _id: { $in: filterGereeniiId}}).select("+avlaga");
+      console.log("gereeData ------" + gereeData);
       var bulkAvlaga = [];
       for(const mur of gereeData)
       {
@@ -2283,6 +2285,7 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
           {
             if(a.turul === "bank" && a.ognoo >= new Date(req.body.ekhlekhOgnoo) && a.ognoo <= new Date(req.body.duusakhOgnoo))  
             {
+              console.log("gereeData ------" + a.turul);
               let avlagabulk = {
                 updateOne: {
                     filter: { _id: mur._id },
