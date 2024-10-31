@@ -2255,3 +2255,67 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+exports.avlagaZasay = asyncHandler(async (req, res, next) => {
+  try
+  {
+    var ObjectId = require("mongodb").ObjectId;
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId, 
+      barilgiinId: req.body.barilgiinId,
+      createdAt: {
+        $gte: new Date(req.body.ekhlekhOgnoo),
+        $lte: new Date(req.body.duusakhOgnoo),
+      },    
+      description :{ $regex: "qpay", $options: "i" }
+    }
+    var tempData = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
+    if(tempData?.length > 0)
+    {
+      var filterGereeniiId = tempData.filter((a) => a?.kholbosonGereeniiId?.length > 0).map((b) => new ObjectId(b.a?.kholbosonGereeniiId[0]));
+      var gereeData = await Geree(req.body.tukhainBaaziinKholbolt).find({tuluv: 1, baiguullagiinId: req.body.baiguullagiinId, _id: { $in: filterGereeniiId}}).select("+avlaga");
+      var bulkAvlaga = [];
+      for(const mur of gereeData)
+      {
+        if(mur?.avlaga?.guilgeenuud?.length > 0)
+        {
+          for(const a of mur?.avlaga?.guilgeenuud) 
+          {
+            if(a.turul === "bank" && a.ognoo >= new Date(req.body.ekhlekhOgnoo) && a.ognoo <= new Date(req.body.duusakhOgnoo))  
+            {
+              let avlagabulk = {
+                updateOne: {
+                    filter: { _id: mur._id },
+                    update: {
+                      $pull: {
+                        [`avlaga.guilgeenuud`]: {
+                          _id: a._id,
+                        },
+                      },
+                      $inc: inc,
+                    },
+                  },
+              };  
+              console.log("avlagabulk --------->>" + avlagabulk);
+              bulkAvlaga.push(avlagabulk);
+            }
+          }
+        }
+      }
+      if(bulkAvlaga?.length > 0)
+      {
+        await Geree(req.body.tukhainBaaziinKholbolt)
+          .bulkWrite(bulkAvlaga)
+            .then((bulkWriteOpResult) => {
+            console.log("BULK update OK", bulkWriteOpResult);
+          })
+          .catch((err) => {
+            console.log("BULK update error", err);
+          });
+      }
+      res.send(bulkAvlaga);
+    }
+  } catch (err) {
+    next(err);
+  }
+});
