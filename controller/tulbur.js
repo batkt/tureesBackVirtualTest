@@ -2279,29 +2279,26 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
         {
           const mur = await Geree(req.body.tukhainBaaziinKholbolt).find({tuluv: 1, baiguullagiinId: req.body.baiguullagiinId, _id: new ObjectId(data?.kholbosonGereeniiId[0])}).select("+avlaga");
           console.log("geree ------" + mur);
-          if(mur?.avlaga?.guilgeenuud?.length > 0)
+          var shuugdsenJagsaalt = lodash.get(mur, "avlaga.guilgeenuud").filter((a) => a.ognoo >= new Date(req.body.ekhlekhOgnoo) && a.turul === "bank");
+          shuugdsenJagsaalt = lodash.orderBy(shuugdsenJagsaalt, ["ognoo"], ["desc"]);
+          if(shuugdsenJagsaalt?.length > 0)
           {
-            const filterAvlaga = mur?.avlaga?.guilgeenuud?.filter((e) => e.turul === "bank");
-            console.log("filterAvlaga ------" + filterAvlaga);
-            if(filterAvlaga?.length > 0)
-            {
-              var a = filterAvlaga[0];
-              console.log("turul ------" + a.turul);
-              let avlagabulk = {
-                updateOne: {
-                    filter: { _id: mur._id },
-                    update: {
-                      $pull: {
-                        [`avlaga.guilgeenuud`]: {
-                          _id: a._id,
-                        },
+            var a = shuugdsenJagsaalt[0];
+            console.log("turul ------" + a.turul);
+            let avlagabulk = {
+              updateOne: {
+                  filter: { _id: mur._id },
+                  update: {
+                    $pull: {
+                      [`avlaga.guilgeenuud`]: {
+                        _id: a._id,
                       },
                     },
                   },
-              };  
-              console.log("avlagabulk --------->>" + avlagabulk);
-              bulkAvlaga.push(avlagabulk);
-            }
+                },
+            };  
+            console.log("avlagabulk --------->>" + avlagabulk);
+            bulkAvlaga.push(avlagabulk);
           }
         }
       }
