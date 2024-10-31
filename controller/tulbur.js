@@ -2277,11 +2277,12 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
       {
         if(data?.kholbosonGereeniiId?.length > 0)
         {
-          var mur = await Geree(req.body.tukhainBaaziinKholbolt).find({tuluv: 1, baiguullagiinId: req.body.baiguullagiinId, _id: new ObjectId(data?.kholbosonGereeniiId[0])}).select("+avlaga");
+          const mur = await Geree(req.body.tukhainBaaziinKholbolt).find({tuluv: 1, baiguullagiinId: req.body.baiguullagiinId, _id: new ObjectId(data?.kholbosonGereeniiId[0])}).select("+avlaga");
           console.log("geree ------" + mur);
           if(mur?.avlaga?.guilgeenuud?.length > 0)
           {
-            var filterAvlaga = mur?.avlaga?.guilgeenuud.find((e) => e.turul === "bank").sort({createdAt: -1});
+            const filterAvlaga = mur?.avlaga?.guilgeenuud.find((e) => e.turul === "bank").sort({ognoo: -1});
+            console.log("filterAvlaga ------" + filterAvlaga);
             if(filterAvlaga?.length > 0)
             {
               var a = filterAvlaga[0];
