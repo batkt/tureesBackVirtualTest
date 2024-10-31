@@ -2279,10 +2279,10 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
         {
           var mur = await Geree(req.body.tukhainBaaziinKholbolt).find({tuluv: 1, baiguullagiinId: req.body.baiguullagiinId, _id: new ObjectId(data?.kholbosonGereeniiId[0])}).select("+avlaga");
           console.log("geree ------" + mur);
-          if (lodash.isArray(lodash.get(mur, "avlaga.guilgeenuud"))) 
+          if (mur?.avlaga?.guilgeenuud) 
           {
             console.log("lodash ------" + mur);
-            var shuugdsenJagsaalt = lodash.get(mur, "avlaga.guilgeenuud").filter((a) => a.ognoo >= new Date(req.body.ekhlekhOgnoo) && a.turul === "bank");
+            var shuugdsenJagsaalt = mur?.avlaga?.guilgeenuud.filter((a) => a.ognoo >= new Date(req.body.ekhlekhOgnoo) && a.turul === "bank");
             shuugdsenJagsaalt = lodash.orderBy(shuugdsenJagsaalt, ["ognoo"], ["desc"]);
             if(shuugdsenJagsaalt?.length > 0)
             {
