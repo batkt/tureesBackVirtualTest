@@ -2281,7 +2281,7 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
           console.log("geree ------" + mur);
           if(mur?.avlaga?.guilgeenuud?.length > 0)
           {
-            const filterAvlaga = mur?.avlaga?.guilgeenuud.find((e) => e.turul === "bank").sort({ognoo: -1});
+            const filterAvlaga = mur?.avlaga?.guilgeenuud.filter((e) => e.turul === "bank" && e.ognoo >= new Date(req.body.ekhlekhOgnoo));
             console.log("filterAvlaga ------" + filterAvlaga);
             if(filterAvlaga?.length > 0)
             {
