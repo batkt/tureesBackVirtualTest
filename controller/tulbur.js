@@ -2281,28 +2281,25 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
           console.log("geree ------" + mur);
           if(mur?.avlaga?.guilgeenuud?.length > 0)
           {
-            for(const a of mur?.avlaga?.guilgeenuud) 
+            var filterAvlaga = mur?.avlaga?.guilgeenuud.find((e) => e.turul === "bank").sort({createdAt: -1});
+            if(filterAvlaga?.length > 0)
             {
-              a.ognoo.setHours(0, 0, 0, 0);
-              if(a.turul === "bank" && a.ognoo >= new Date(req.body.ekhlekhOgnoo) && a.ognoo <= new Date(req.body.duusakhOgnoo))  
-              {
-                console.log("turul ------" + a.turul);
-                let avlagabulk = {
-                  updateOne: {
-                      filter: { _id: mur._id },
-                      update: {
-                        $pull: {
-                          [`avlaga.guilgeenuud`]: {
-                            _id: a._id,
-                          },
+              var a = filterAvlaga[0];
+              console.log("turul ------" + a.turul);
+              let avlagabulk = {
+                updateOne: {
+                    filter: { _id: mur._id },
+                    update: {
+                      $pull: {
+                        [`avlaga.guilgeenuud`]: {
+                          _id: a._id,
                         },
-                        $inc: inc,
                       },
                     },
-                };  
-                console.log("avlagabulk --------->>" + avlagabulk);
-                bulkAvlaga.push(avlagabulk);
-              }
+                  },
+              };  
+              console.log("avlagabulk --------->>" + avlagabulk);
+              bulkAvlaga.push(avlagabulk);
             }
           }
         }
