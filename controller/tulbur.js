@@ -687,32 +687,32 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
         (tuxainGuilgee.tulsunDun ? tuxainGuilgee.tulsunDun : 0) +
           (tuxainGuilgee.tulsunAldangi ? tuxainGuilgee.tulsunAldangi : 0)
       );
-      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
-        .updateOne({ _id: req.body.guilgeeniiId }, [
-          {
-            $set: {
-              kholbosonDun: {
-                $add: [{ $ifNull: ["$kholbosonDun", 0] }, dun * -1],
-              },
-            },
-          },
-        ])
-        .catch((err) => {
-          next(err);
-        });
-      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
-        .updateOne(
-          { _id: req.body.guilgeeniiId },
-          {
-            $pull: {
-              kholbosonGereeniiId: req.body.gereeniiId,
-              kholbosonTalbainId: req.body.talbainDugaar,
-            },
-          }
-        )
-        .catch((err) => {
-          next(err);
-        });
+      // await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+      //   .updateOne({ _id: req.body.guilgeeniiId }, [
+      //     {
+      //       $set: {
+      //         kholbosonDun: {
+      //           $add: [{ $ifNull: ["$kholbosonDun", 0] }, dun * -1],
+      //         },
+      //       },
+      //     },
+      //   ])
+      //   .catch((err) => {
+      //     next(err);
+      //   });
+      // await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+      //   .updateOne(
+      //     { _id: req.body.guilgeeniiId },
+      //     {
+      //       $pull: {
+      //         kholbosonGereeniiId: req.body.gereeniiId,
+      //         kholbosonTalbainId: req.body.talbainDugaar,
+      //       },
+      //     }
+      //   )
+      //   .catch((err) => {
+      //     next(err);
+      //   });
     }
     await session.commitTransaction();
     session.endSession();
