@@ -2272,6 +2272,7 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
     var tempData = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
     if(tempData?.length > 0)
     {
+      var bulkAvlaga = [];
       for(const data of tempData)
       {
         if(data?.kholbosonGereeniiId?.length > 0)
