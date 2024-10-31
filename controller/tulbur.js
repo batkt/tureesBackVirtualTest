@@ -2272,35 +2272,37 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
     var tempData = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
     if(tempData?.length > 0)
     {
-      var filterGereeniiId = tempData.filter((a) => a?.kholbosonGereeniiId?.length > 0).map((b) => new ObjectId(b.a?.kholbosonGereeniiId[0]));
-      console.log("filterGereeniiId ------" + filterGereeniiId);
-      var gereeData = await Geree(req.body.tukhainBaaziinKholbolt).find({tuluv: 1, baiguullagiinId: req.body.baiguullagiinId, _id: { $in: filterGereeniiId}}).select("+avlaga");
-      console.log("gereeData ------" + gereeData);
-      var bulkAvlaga = [];
-      for(const mur of gereeData)
+      for(const data of tempData)
       {
-        if(mur?.avlaga?.guilgeenuud?.length > 0)
+        if(data?.kholbosonGereeniiId?.length > 0)
         {
-          const filterAvlaga = mur?.avlaga?.guilgeenuud?.find((a) => a.turul === "bank").sort({ createdAt: -1 });
-          if(filterAvlaga?.length > 0)
+          var mur = await Geree(req.body.tukhainBaaziinKholbolt).find({tuluv: 1, baiguullagiinId: req.body.baiguullagiinId, _id: new ObjectId(data?.kholbosonGereeniiId[0])}).select("+avlaga");
+          console.log("geree ------" + mur);
+          if(mur?.avlaga?.guilgeenuud?.length > 0)
           {
-            var a = filterAvlaga[0];
-            console.log("turul ------" + a.turul);
-              let avlagabulk = {
-                updateOne: {
-                    filter: { _id: mur._id },
-                    update: {
-                      $pull: {
-                        [`avlaga.guilgeenuud`]: {
-                          _id: a._id,
+            for(const a of mur?.avlaga?.guilgeenuud) 
+            {
+              a.ognoo.setHours(0, 0, 0, 0);
+              if(a.turul === "bank" && a.ognoo >= new Date(req.body.ekhlekhOgnoo) && a.ognoo <= new Date(req.body.duusakhOgnoo))  
+              {
+                console.log("turul ------" + a.turul);
+                let avlagabulk = {
+                  updateOne: {
+                      filter: { _id: mur._id },
+                      update: {
+                        $pull: {
+                          [`avlaga.guilgeenuud`]: {
+                            _id: a._id,
+                          },
                         },
+                        $inc: inc,
                       },
-                      $inc: inc,
                     },
-                  },
-              };  
-              console.log("avlagabulk --------->>" + avlagabulk);
-              bulkAvlaga.push(avlagabulk);
+                };  
+                console.log("avlagabulk --------->>" + avlagabulk);
+                bulkAvlaga.push(avlagabulk);
+              }
+            }
           }
         }
       }
