@@ -2283,6 +2283,7 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
         {
           for(const a of mur?.avlaga?.guilgeenuud) 
           {
+            a.ognoo.setHours(0, 0, 0, 0);
             if(a.turul === "bank" && a.ognoo >= new Date(req.body.ekhlekhOgnoo) && a.ognoo <= new Date(req.body.duusakhOgnoo))  
             {
               console.log("gereeData ------" + a.turul);
