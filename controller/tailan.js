@@ -1657,3 +1657,109 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+
+exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
+  try
+  {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      // gereeniiOgnoo: {
+      //   $gte: new Date(req.body.ekhlekhOgnoo),
+      //   $lte: new Date(req.body.duusakhOgnoo),
+      // },
+      tuluv: {
+        $ne: -1,
+      },
+    };
+    if(req.body.query)
+      match["$or"] = req.body.query["$or"];
+    var matchGroup = {};
+    if(!!req.body.khariltsagchiinId)
+      matchGroup["_id.register"] = { $in: req.body.khariltsagchiinId};
+    console.log(match);
+    var query = [
+      {
+        $match: match,
+      },
+      {
+        $unwind: "$avlaga.guilgeenuud"
+      },
+      {
+        $match: {
+          "avlaga.guilgeenuud.ognoo": {
+            $gte: new Date(req.body.ekhlekhOgnoo),
+            $lte: new Date(req.body.duusakhOgnoo),
+          },
+          "avlaga.guilgeenuud.turul": { $in: ["avlaga", "khuvaari"]},
+        }
+      },
+      {
+        $project: {
+          gereeniiOgnoo: "$gereeniiOgnoo",
+          ovog: "$ovog",
+          utas: "$utas",
+          mail: "$mail",
+          talbainDugaar: "$talbainDugaar",
+          gereeniiDugaar: "$gereeniiDugaar",
+          customer: { $ifNull: ["$register", "$customerTin"] },
+          ner: "$ner",
+          talbainKhemjee: "$talbainKhemjee",
+          talbainNegjUne: "$talbainNegjUne",
+          talbainNiitUne: "$talbainNiitUne",
+          avlaga: "$avlaga.guilgeenuud",
+        },
+      },
+      {
+        $group: {
+          _id: {
+            gereeniiOgnoo: "$gereeniiOgnoo",
+            ovog: "$ovog",
+            utas: "$utas",
+            mail: "$mail",
+            talbainDugaar: "$talbainDugaar",
+            gereeniiDugaar: "$gereeniiDugaar",
+            register: "$customer",
+            ner: "$ner",
+            talbainKhemjee: "$talbainKhemjee",
+            talbainNegjUne: "$talbainNegjUne",
+            talbainNiitUne: "$talbainNiitUne"
+          },
+          avlaga: {
+            $push: "$avlaga",
+          },
+        },
+      },
+      {
+        $match: matchGroup,
+      },
+      {
+        $sort: { "_id.register":1, "_id.gereeniiDugaar":1 }
+      },
+    ];  
+    console.log(query);
+    var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
+    if(khariu?.length > 0)
+    {
+      khariu?.forEach((a) => {
+        var niitTulukhDun = 0;
+        a.avlaga?.forEach((b) => {
+          niitTulukhDun += (b.tulukhDun || 0);
+          if(b.turul === "avlaga" && (b.tailbar === "Менежментийн төлбөр" || b.tailbar === "Менежментийн зардал" || b.tailbar === "Менежмент"))
+            b.tariff = b.tulukhDun/(a._id?.talbainKhemjee || 1)
+          if(b.turul === "khuvaari")
+          {
+            b.tailbar = "Түрээсийн төлбөр";
+            b.talbainKhemjee = a._id?.talbainKhemjee;
+            b.talbainNegjUne = a._id?.talbainNegjUne;
+          }
+        });
+        a.niitTulukhDun = niitTulukhDun;
+      });
+    }
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+});

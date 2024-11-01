@@ -2255,3 +2255,71 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+exports.avlagaZasay = asyncHandler(async (req, res, next) => {
+  try
+  {
+    var ObjectId = require("mongodb").ObjectId;
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId, 
+      barilgiinId: req.body.barilgiinId,
+      tranDate: {
+        $gte: new Date(req.body.ekhlekhOgnoo),
+        $lte: new Date(req.body.duusakhOgnoo),
+      },    
+      description :{ $regex: "qpay", $options: "i" }
+    }
+    var tempData = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
+    if(tempData?.length > 0)
+    {
+      var bulkAvlaga = [];
+      for(const data of tempData)
+      {
+        if(data?.kholbosonGereeniiId?.length > 0)
+        {
+          var mur = await Geree(req.body.tukhainBaaziinKholbolt).find({tuluv: 1, baiguullagiinId: req.body.baiguullagiinId, _id: new ObjectId(data?.kholbosonGereeniiId[0])}).select("+avlaga");
+          console.log("geree ------" + mur);
+          if (mur?.avlaga?.guilgeenuud) 
+          {
+            console.log("lodash ------" + mur);
+            var shuugdsenJagsaalt = mur?.avlaga?.guilgeenuud.filter((a) => a.ognoo >= new Date(req.body.ekhlekhOgnoo) && a.turul === "bank");
+            shuugdsenJagsaalt = lodash.orderBy(shuugdsenJagsaalt, ["ognoo"], ["desc"]);
+            if(shuugdsenJagsaalt?.length > 0)
+            {
+              var a = shuugdsenJagsaalt[0];
+              console.log("turul ------" + a.turul);
+              let avlagabulk = {
+                updateOne: {
+                    filter: { _id: mur._id },
+                    update: {
+                      $pull: {
+                        [`avlaga.guilgeenuud`]: {
+                          _id: a._id,
+                        },
+                      },
+                    },
+                  },
+              };  
+              console.log("avlagabulk --------->>" + avlagabulk);
+              bulkAvlaga.push(avlagabulk);
+            }
+          }
+        }
+      }
+      if(bulkAvlaga?.length > 0)
+      {
+        await Geree(req.body.tukhainBaaziinKholbolt)
+          .bulkWrite(bulkAvlaga)
+            .then((bulkWriteOpResult) => {
+            console.log("BULK update OK", bulkWriteOpResult);
+          })
+          .catch((err) => {
+            console.log("BULK update error", err);
+          });
+      }
+      res.send(bulkAvlaga);
+    }
+  } catch (err) {
+    next(err);
+  }
+});
