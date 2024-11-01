@@ -348,16 +348,39 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
 module.exports.tulultTaniya = async function tulultTaniya() {
   const { db } = require("zevbackv2");
   var kholboltuud = db.kholboltuud;
+  var ekhlekhOgnoo = moment(new Date()).startOf("month");
+  var duusakhOgnoo = moment(new Date()).endOf("month");
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {
       var guilgeenuud = await BankniiGuilgee(kholbolt).find({
-        createdAt: { $gte: new Date(new Date().getTime() - 5 * 60000) },
+        createdAt: { 
+          $gte: ekhlekhOgnoo, 
+          $lte: duusakhOgnoo,
+        },
+        kholbosonDun: { $exists: false },
+        $or: [
+          {
+            TxDt: {
+              $gte: ekhlekhOgnoo,
+              $lte: duusakhOgnoo,
+            }
+          },
+          {
+            tranDate: {
+              $gte: ekhlekhOgnoo,
+              $lte: duusakhOgnoo,
+            }
+          }
+        ],
         $or: [
           {
             amount: { $gt: 0 },
           },
           {
             Amt: { $gt: 0 },
+          },
+          {
+            tranAmount: { $gt: 0 },
           },
         ],
       });
@@ -368,21 +391,30 @@ module.exports.tulultTaniya = async function tulultTaniya() {
           guilgeenuud.forEach(async (x) => {
             if (
               (x.description && x.description.toLowerCase().includes("qpay")) ||
-              (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay"))
+              (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay")) ||
+              (x.tranDesc && x.tranDesc.toLowerCase().includes("qpay"))
             ) {
               khaikhNukhtsul = [];
               if (x.description) tailbar = x.description.split(/,| /);
               else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
+              else if (x.tranDesc) tailbar = x.tranDesc.split(/,| /);
               tailbar.forEach((y) => {
                 khaikhNukhtsul.push({ gereeniiDugaar: y });
               });
               var oldsonGereenuud = await Geree(kholbolt).find({
                 $or: khaikhNukhtsul,
                 tuluv: 1,
-                barilgiinId: guilgeenuud.barilgiinId,
+                barilgiinId: x.barilgiinId,
               });
               if (oldsonGereenuud != null && oldsonGereenuud.length == 1) {
+                var jagsaalt = [];
+                var dugaar = oldsonGereenuud[0].talbainDugaar;
+                if (dugaar.includes(",")) {
+                  jagsaalt = [...jagsaalt, ...dugaar.split(",")];
+                } else jagsaalt.push(dugaar);  
                 x.kholbosonGereeniiId = [oldsonGereenuud[0]._id];
+                x.kholbosonTalbainId = jagsaalt;
+                x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
                 x.isNew = false;
                 x.save();
               }
@@ -390,6 +422,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               khaikhNukhtsul = [];
               if (x.description) tailbar = x.description.split(" ");
               else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
+              else if (x.tranDesc) tailbar = x.tranDesc.split(" ");
               if (x.relatedAccount != null)
                 khaikhNukhtsul.push({
                   "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
@@ -410,7 +443,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               var oldsonGereenuud = await Geree(kholbolt).find({
                 $or: khaikhNukhtsul,
                 tuluv: 1,
-                barilgiinId: guilgeenuud.barilgiinId,
+                barilgiinId: x.barilgiinId,
               });
               if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
                 oldsonGereenuud.forEach((a) => {
