@@ -1391,11 +1391,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
         });
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            if (!!req.body.session_id) {
-              oldsonMashin = await Uilchluulegch(kholbolt).findById(
-                req.body.session_id
-              );
-            } else {
               oldsonMashin = await Uilchluulegch(kholbolt).findOne({
                 "tuukh.0.zogsooliinId": zogsool._id,
                 mashiniiDugaar: req.body.plate_number,
@@ -1406,7 +1401,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
                   $gt: new Date(Date.now() - 300000), //5min dotor
                 },
               });
-            }
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;

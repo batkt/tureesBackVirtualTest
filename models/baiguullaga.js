@@ -113,6 +113,7 @@ const baiguullagaSchema = new Schema(
       apiTogloomiinTuvDans: String,
       aktAshiglakhEsekh: Boolean,
       zogsoolNer: String,
+      qpayShimtgelTusdaa : Boolean
     },
     erkhuud: [
       {

@@ -648,6 +648,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
       ekhlekhOgnoo.setHours(0, 0, 0, 0);
       duusakhOgnoo.setHours(23, 59, 59, 999);
       for await (const baiguullaga of baiguullaguud) {
+        try {
         var kholboltuud = db.kholboltuud;
         var kholbolt = kholboltuud.find(
           (a) => a.baiguullagiinId == baiguullaga._id.toString()
@@ -923,6 +924,12 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
           );
         }
       }
+        catch (aldaaa) {
+          console.log("msg aldaa garlaa ==> ", aldaaa);
+          continue;
+        }
+      }
+    
     } catch (error) {
       console.log(error);
     }

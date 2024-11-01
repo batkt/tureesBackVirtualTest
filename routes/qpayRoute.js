@@ -130,6 +130,13 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
           maxDugaar.toString();
 
         req.body.zakhialgiinDugaar = maxDugaar.toString();
+        //gereetei ued mungun dun 300tugrug nemex
+        if(req.body.tulukhDun > 0)
+        {
+          var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
+          if(!!baiguullaga && baiguullaga.tokhirgoo?.qpayShimtgelTusdaa == true)
+          req.body.tulukhDun = await Math.round((req.body.tulukhDun + 300 + Number.EPSILON) * 100) / 100
+        }
       }
 
       console.log("callback_url", callback_url);
