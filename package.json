@@ -22,7 +22,7 @@
     "form-data": "^4.0.0",
     "jspdf": "^2.5.1",
     "mon_num": "^1.0.3",
-    "parking-v1": "^1.4.48",
+    "parking-v1": "^1.4.49",
     "pg": "^8.11.5",
     "quickqpaypackv2": "^1.0.44",
     "sharp": "^0.30.7",
