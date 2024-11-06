@@ -860,11 +860,10 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     {
       $match: {
         "avlaga.guilgeenuud.ognoo": {
-          $lt: new Date(moment(moment().endOf("month").format("YYYY-MM-DD 23:59:59"))),
+          $lte: new Date(moment(moment().endOf("month").format("YYYY-MM-DD 23:59:59"))),
         },
         "avlaga.guilgeenuud.turul": {
-          $nin: ["baritsaa"],
-          $nin: ["aldangi"],
+          $nin: ["baritsaa", "aldangi"],
         },
       },
     },
@@ -904,6 +903,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   Geree(req.body.tukhainBaaziinKholbolt)
     .aggregate(query)
     .then((result) => {
+      console.log("result --------------->>>" + JSON.stringify(result));
       res.send({
         uldegdel: (result[0]?.uldegdel || 0).toFixed(2),
       });
