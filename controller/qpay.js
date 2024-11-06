@@ -413,10 +413,10 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           });
         }
         tulbur.push({
-          tailbar: "qpay",
+          tailbar: "алданги qpay ээр төлсөн",
           turul: "aldangi",
           tulukhAldangi: geree.aldangiinUldegdel,
-          tulsunDun: tulsunDun,
+          tulsunAldangi: tulsunDun,
           ognoo: qpayBarimt.ognoo,
           guilgeeKhiisenOgnoo: new Date(),
         });
