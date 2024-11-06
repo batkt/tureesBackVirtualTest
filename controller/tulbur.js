@@ -860,7 +860,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     {
       $match: {
         "avlaga.guilgeenuud.ognoo": {
-          $lte: new Date(moment(moment().endOf("month").format("YYYY-MM-DD 23:59:59"))),
+          $lte: new Date(),
         },
         "avlaga.guilgeenuud.turul": {
           $nin: ["baritsaa", "aldangi"],
