@@ -183,7 +183,8 @@ router
             .filter(
               (a) =>
                 a.ognoo < new Date(req.query.duusakhOgnoo) &&
-                a.turul != "baritsaa"
+                a.turul != "baritsaa" &&
+                a.turul != "aldangi"
             );
           if (!!req.query.shineOgnoo) {
             const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
