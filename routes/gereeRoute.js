@@ -505,7 +505,13 @@ router
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
-      var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).find({ _id: geree._id });
+      var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).find({ _id: geree._id }).select("+avlaga");
+      if(geree?.avlaga?.guilgeenuud?.length > 0 && gereeOld[0]?.avlaga?.guilgeenuud?.length > 0)
+      {
+        var filterTulsunDun = gereeOld[0]?.avlaga?.guilgeenuud?.filter((a) => a.tulsunDun > 0 || a.tulsunAldangi > 0);
+        if(filterTulsunDun?.length > 0)
+          geree?.avlaga?.guilgeenuud.push(...filterTulsunDun);
+      }
       geree.tuluv = 1;
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
