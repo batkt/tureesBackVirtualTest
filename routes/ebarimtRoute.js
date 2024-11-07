@@ -866,7 +866,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
               { _id: butsaakhBarimt.togloomiinId },
               {
                 ebarimtAvsanEsekh: false,
-                ebarimtAvakhDun: butsaakhBarimt.amount,
+                ebarimtAvakhDun: butsaakhBarimt.amount || butsaakhBarimt.totalAmount,
               }
             )
             .catch((err) => {
