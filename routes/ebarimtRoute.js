@@ -605,7 +605,7 @@ async function ebarimtShivye(req, res, next) {
           else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
-          ebarimt.togloomiinId = khariuObject._id;
+          ebarimt.togloomiinId = khariuObject.togloomiinId;
           ebarimt.save().catch((err) => {
             next(err);
           });
