@@ -1730,7 +1730,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       dunguud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate([
         {
           $match: {
-            baiguullagiinId: req.body.baiguullagiinId,
+            //baiguullagiinId: req.body.baiguullagiinId,
             ognoo: {
               $gte: new Date(req.params.ekhlekhOgnoo),
               $lte: new Date(req.params.duusakhOgnoo),
