@@ -1527,11 +1527,16 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       turul: req.params.turul,
       ekhlekhOgnoo: req.params.ekhlekhOgnoo,
       duusakhOgnoo: req.params.duusakhOgnoo,
-      data: {},
+      data: req.params.turul == "Rent" ? [] : {},
     };
     var dunguud;
     if (req.params.turul == "Rent") {
-      dunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      var registeruud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $match: {
+            tuluv: { $ne: -1, },  
+          }  
+        },
         {
           $unwind: {
             path: "$avlaga.guilgeenuud",
@@ -1540,7 +1545,36 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         {
           $match: {
             "avlaga.guilgeenuud.turul": {
-              $nin: ["baritsaa"],
+              $nin: ["baritsaa", "aldangi"],
+            },
+            "avlaga.guilgeenuud.ognoo": {
+              $gte: new Date(req.params.ekhlekhOgnoo),
+              $lte: new Date(req.params.duusakhOgnoo),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: "$register",
+          },
+        },
+      ]);
+
+      dunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $match: {
+            tuluv: { $ne: -1, },  
+          }  
+        },
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $match: {
+            "avlaga.guilgeenuud.turul": {
+              $nin: ["baritsaa", "aldangi"],
             },
             "avlaga.guilgeenuud.ognoo": {
               $gte: new Date(req.params.ekhlekhOgnoo),
@@ -1553,38 +1587,120 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
         {
           $group: {
-            _id: "$avlaga.guilgeenuud.turul",
+            _id: { turul: "$avlaga.guilgeenuud.turul", register: "$register" },
             dun: {
               $sum: "$avlaga.guilgeenuud.tulsunDun",
             },
           },
         },
       ]);
-    } else if (req.params.turul == "Parking") {
-      dunguud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).aggregate([
+      var tulukhDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
         {
-          $unwind: "$tuukh",
+          $match: {
+            tuluv: { $ne: -1, },  
+          }  
         },
         {
-          $unwind: "$tuukh.tulbur",
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
         },
         {
           $match: {
-            "tuukh.tulbur.ognoo": {
+            "avlaga.guilgeenuud.turul": {
+              $nin: ["baritsaa", "aldangi"],
+            },
+            "avlaga.guilgeenuud.ognoo": {
               $gte: new Date(req.params.ekhlekhOgnoo),
               $lte: new Date(req.params.duusakhOgnoo),
+            },
+            "avlaga.guilgeenuud.tulukhDun": {
+              $gt: 0,
             },
           },
         },
         {
           $group: {
-            _id: "$tuukh.tulbur.turul",
-            dun: {
-              $sum: "$tuukh.tulbur.dun",
+            _id: { turul: { 
+              $cond: [
+                {
+                  $or: [
+                    {
+                      $eq: ["$avlaga.guilgeenuud.tailbar", "Менежментийн төлбөр"],
+                    },
+                    {
+                      $eq: ["$avlaga.guilgeenuud.tailbar", "Менежмент"],
+                    },
+                  ]
+                },
+                "management",
+                {
+                  $cond: [
+                    {
+                      $eq: ["$avlaga.guilgeenuud.tailbar", "Дулаан"],
+                    },  
+                    "dulaan",
+                    {
+                      $cond: [
+                        {
+                          $eq: ["$avlaga.guilgeenuud.tailbar", "Цахилгаан"],
+                        },  
+                        "tsahilgaan",
+                        {
+                          $cond: [
+                            {
+                              $eq: ["$avlaga.guilgeenuud.tailbar", "Халуун ус"],
+                            },  
+                            "khaluunUs",
+                            {
+                              $cond: [
+                                {
+                                  $eq: ["$avlaga.guilgeenuud.tailbar", "Хүйтэн ус"],
+                                },  
+                                "khuitenUs",
+                                "turees",
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+              ],
+            }, register: "$register" },
+            tulukhDun: {
+              $sum: "$avlaga.guilgeenuud.tulukhDun",
             },
           },
         },
       ]);
+      if (registeruud && registeruud.length > 0) {
+        var data = []
+        for (const register of registeruud) {
+          if(!!register?._id)
+          {
+            var mur = {
+              registerNo: register?._id,
+            };
+            var filterDunguud = dunguud?.filter((a) => a._id?.register === register?._id);
+            if(filterDunguud?.length > 0)
+            {
+              for (const row of filterDunguud)
+                mur[row._id.turul] = row.dun;
+            }
+            var filterTulukhDun = tulukhDunguud.filter((a) => a._id?.register === register?._id);
+            if(filterTulukhDun?.length > 0)
+            {
+              for( const row of filterTulukhDun)
+                mur[row._id.turul] = row.tulukhDun;
+            }
+            data.push(mur);
+          }
+        }
+        butsaakhKhariu.data = data;
+      } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
+      
     } else if (req.params.turul == "Parking") {
       dunguud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).aggregate([
         {
@@ -1642,16 +1758,18 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
       ]);
     }
-
-    if (dunguud && dunguud.length > 0) {
-      data = {
-        currency: "MNT",
-      };
-      for await (const dun of dunguud) {
-        data[dun._id] = dun.dun;
-      }
-      butsaakhKhariu.data = data;
-    } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
+    if(req.params.turul !== "Rent")
+    {
+      if (dunguud && dunguud.length > 0) {
+        data = {
+          currency: "MNT",
+        };
+        for await (const dun of dunguud) {
+          data[dun._id] = dun.dun;
+        }
+        butsaakhKhariu.data = data;
+      } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
+    }
     res.send(butsaakhKhariu);
   } catch (err) {
     next(err);
