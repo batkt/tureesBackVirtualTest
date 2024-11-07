@@ -34,7 +34,7 @@ async function guilgeeneesEbarimtUusgye(
   tukhainBaaziinKholbolt,
   nuatTulukhEsekh = true
 ) {
-  var dun = guilgee.amount ? guilgee.amount : guilgee.Amt;
+  var dun = guilgee.amount ? guilgee.amount : (guilgee.Amt || guilgee.tranAmount);
   var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
   var ebarimt = new Ebarimt(tukhainBaaziinKholbolt)();
   if (register) {
@@ -97,7 +97,7 @@ async function guilgeeneesEbarimtShineUusgye(
   tukhainBaaziinKholbolt,
   nuatTulukhEsekh = true
 ) {
-  var dun = guilgee.amount ? guilgee.amount : guilgee.Amt;
+  var dun = guilgee.amount ? guilgee.amount : (guilgee.Amt || guilgee.tranAmount);
   var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
   var ebarimt = new EbarimtShine(tukhainBaaziinKholbolt)();
   if (!!customerTin) {
