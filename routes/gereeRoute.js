@@ -513,6 +513,7 @@ router
           geree?.avlaga?.guilgeenuud.push(...filterTulsunDun);
       }
       geree.tuluv = 1;
+      console.log("------------->>>" + JSON.stringify(geree));
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
           {
@@ -523,6 +524,7 @@ router
         .then((result) => {
           if(gereeOld[0]?.talbainIdnuud?.length > 0)
           {
+            console.log("talbainBulk ------------->>>" + JSON.stringify(gereeOld[0]));
             var talbainBulk = [];
             gereeOld[0]?.talbainIdnuud.forEach((a) => {
               const talbainId = geree?.talbainIdnuud?.filter((b) => b === a);
@@ -549,11 +551,14 @@ router
                   console.log("Talbai BULK update error", err);
                 });
           }
+          console.log("talbaiKhariltsagchiinTuluvUurchluy ------------->>>");
           talbaiKhariltsagchiinTuluvUurchluy(
             [geree._id],
             req.body.tukhainBaaziinKholbolt
           );
+          console.log("zassanBarimtShalgakh start ------------->>>");
           ZassanBarimtShalgakh.zassanBarimtShalgakh(gereeOld[0], geree, geree.gereeniiDugaar, "Geree", "Гэрээ", req.body);
+          console.log("zassanBarimtShalgakh ------------->>>");
         });
       res.send("Amjilttai");
     } catch (err) {
