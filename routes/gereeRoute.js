@@ -507,9 +507,11 @@ router
       console.log("star t ------------->>>");
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       console.log("gere  ------------->>>" + JSON.stringify(geree));
-      var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).find({ _id: geree._id }).select("+avlaga");
+      var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
+      console.log("gere 1111  ------------->>>");
       if(geree?.avlaga?.guilgeenuud?.length > 0 && gereeOld[0]?.avlaga?.guilgeenuud?.length > 0)
       {
+        console.log("gere gerea  ------------->>>");
         var filterTulsunDun = gereeOld[0]?.avlaga?.guilgeenuud?.filter((a) => a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0);
         if(filterTulsunDun?.length > 0)
           geree?.avlaga?.guilgeenuud.push(...filterTulsunDun);
