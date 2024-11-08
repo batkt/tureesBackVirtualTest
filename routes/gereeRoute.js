@@ -504,7 +504,9 @@ router
   .route("/gereeZasya")
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
+      console.log("star t ------------->>>");
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
+      console.log("gere  ------------->>>" + JSON.stringify(geree));
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).find({ _id: geree._id }).select("+avlaga");
       if(geree?.avlaga?.guilgeenuud?.length > 0 && gereeOld[0]?.avlaga?.guilgeenuud?.length > 0)
       {
