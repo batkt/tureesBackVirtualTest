@@ -1751,7 +1751,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         {
           $group: {
             _id: "$niitTulbur.turul",
-            niitDun: {
+            dun: {
               $sum: "$niitTulbur.dun",
             },
           },
