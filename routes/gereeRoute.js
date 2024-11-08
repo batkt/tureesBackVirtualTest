@@ -508,7 +508,7 @@ router
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).find({ _id: geree._id }).select("+avlaga");
       if(geree?.avlaga?.guilgeenuud?.length > 0 && gereeOld[0]?.avlaga?.guilgeenuud?.length > 0)
       {
-        var filterTulsunDun = gereeOld[0]?.avlaga?.guilgeenuud?.filter((a) => a.tulsunDun > 0 || a.tulsunAldangi > 0);
+        var filterTulsunDun = gereeOld[0]?.avlaga?.guilgeenuud?.filter((a) => a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0);
         if(filterTulsunDun?.length > 0)
           geree?.avlaga?.guilgeenuud.push(...filterTulsunDun);
       }
