@@ -348,30 +348,10 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
 module.exports.tulultTaniya = async function tulultTaniya() {
   const { db } = require("zevbackv2");
   var kholboltuud = db.kholboltuud;
-  var ekhlekhOgnoo = moment(new Date()).startOf("month");
-  var duusakhOgnoo = moment(new Date()).endOf("month");
   if (kholboltuud) {
     for await (const kholbolt of kholboltuud) {
       var guilgeenuud = await BankniiGuilgee(kholbolt).find({
-        createdAt: { 
-          $gte: ekhlekhOgnoo, 
-          $lte: duusakhOgnoo,
-        },
-        kholbosonDun: { $exists: false },
-        $or: [
-          {
-            TxDt: {
-              $gte: ekhlekhOgnoo,
-              $lte: duusakhOgnoo,
-            }
-          },
-          {
-            tranDate: {
-              $gte: ekhlekhOgnoo,
-              $lte: duusakhOgnoo,
-            }
-          }
-        ],
+        createdAt: { $gte: new Date(new Date().getTime() - 60 * 60000) },
         $or: [
           {
             amount: { $gt: 0 },
