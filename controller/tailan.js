@@ -1658,7 +1658,15 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                                   $eq: ["$avlaga.guilgeenuud.tailbar", "Хүйтэн ус"],
                                 },  
                                 "khuitenUs",
-                                "turees",
+                                {
+                                  $cond: [
+                                    {
+                                      $eq: ["$avlaga.guilgeenuud.ekhniiUldegdelEsekh", true]
+                                    },
+                                    "ekhniiUldegdel",
+                                    "turees",
+                                  ]
+                                }
                               ]
                             }
                           ]
