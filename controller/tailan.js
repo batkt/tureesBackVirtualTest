@@ -1594,6 +1594,42 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
           },
         },
       ]);
+
+      var khungulultiinDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $match: {
+            tuluv: { $ne: -1, },  
+          }  
+        },
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $match: {
+            "avlaga.guilgeenuud.turul": {
+              $in: ["khungulult"],
+            },
+            "avlaga.guilgeenuud.ognoo": {
+              $gte: new Date(req.params.ekhlekhOgnoo),
+              $lte: new Date(req.params.duusakhOgnoo),
+            },
+            "avlaga.guilgeenuud.khyamdral": {
+              $gt: 0,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: { turul: "$avlaga.guilgeenuud.turul", register: "$register" },
+            dun: {
+              $sum: "$avlaga.guilgeenuud.khyamdral",
+            },
+          },
+        },
+      ]);
+
       var tulukhDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
         {
           $match: {
@@ -1695,6 +1731,12 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
             if(filterDunguud?.length > 0)
             {
               for (const row of filterDunguud)
+                mur[row._id.turul] = row.dun;
+            }
+            var filterKhungulult = khungulultiinDunguud?.filter((a) => a._id?.register === register?._id);
+            if(filterKhungulult?.length > 0)
+            {
+              for (const row of filterKhungulult)
                 mur[row._id.turul] = row.dun;
             }
             var filterTulukhDun = tulukhDunguud.filter((a) => a._id?.register === register?._id);
