@@ -919,26 +919,30 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
       console.log("khariu", khariu);
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
         _id: { $in: gereeniiDugaaruud },
-      });
+      }).select("+avlaga");
       for await (const geree of gereenuud) {
         khyamdraluud = [];
         var khungulultiinDun = khungulult.khamaataiGereenuud?.find(
           (x) => x.gereeniiId == geree._id
         )?.khymdarsanDun;
         for await (const ognoo of khungulult.ognoonuud) {
-          khyamdral = {
-            tulukhDun: 0,
-            ognoo: ognoo,
-            turul: "khungulult",
-            khyamdral: khungulultiinDun,
-            nemeltTailbar: khungulult.shaltgaan,
-            tailbar: req.body.tailbar,
-            khyamdraliinId: khariu._id,
-            guilgeeKhiisenOgnoo: new Date(),
-            guilgeeKhiisenAjiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
-            guilgeeKhiisenAjiltniiId: req.body.nevtersenAjiltniiToken?.id,
-          };
-          khyamdraluud.push(khyamdral);
+          var filterGuilgeenuud = geree.avlaga?.guilgeenuud.filter((a) => a.turul === "khuvaari" && moment(a.ognoo).format("YYYY/MM") === moment(ognoo).format("YYYY/MM"));
+          if(filterGuilgeenuud?.length > 0)
+          {
+            khyamdral = {
+              tulukhDun: 0,
+              ognoo: filterGuilgeenuud[0].ognoo,
+              turul: "khungulult",
+              khyamdral: khungulultiinDun,
+              nemeltTailbar: khungulult.shaltgaan,
+              tailbar: req.body.tailbar,
+              khyamdraliinId: khariu._id,
+              guilgeeKhiisenOgnoo: new Date(),
+              guilgeeKhiisenAjiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
+              guilgeeKhiisenAjiltniiId: req.body.nevtersenAjiltniiToken?.id,
+            };
+            khyamdraluud.push(khyamdral);
+          }
         }
         await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
           { _id: geree._id },
