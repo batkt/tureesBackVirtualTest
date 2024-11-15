@@ -9,6 +9,9 @@ const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const moment = require("moment");
 const {
   gereeZasakhShalguur,
+  gereeSungakhShalguur,
+  gereeSergeekhShalguur,
+  gereeTsutslakhShalguur,
   guilgeeUstgakhShalguur,
 } = require("../components/shalguur");
 const multer = require("multer");
@@ -513,7 +516,6 @@ router
           geree?.avlaga?.guilgeenuud.push(...filterTulsunDun);
       }
       geree.tuluv = 1;
-      console.log("------------->>>" + JSON.stringify(geree));
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
           {
@@ -524,7 +526,6 @@ router
         .then((result) => {
           if(gereeOld[0]?.talbainIdnuud?.length > 0)
           {
-            console.log("talbainBulk ------------->>>" + JSON.stringify(gereeOld[0]));
             var talbainBulk = [];
             gereeOld[0]?.talbainIdnuud.forEach((a) => {
               const talbainId = geree?.talbainIdnuud?.filter((b) => b === a);
@@ -551,14 +552,11 @@ router
                   console.log("Talbai BULK update error", err);
                 });
           }
-          console.log("talbaiKhariltsagchiinTuluvUurchluy ------------->>>");
           talbaiKhariltsagchiinTuluvUurchluy(
             [geree._id],
             req.body.tukhainBaaziinKholbolt
           );
-          console.log("zassanBarimtShalgakh start ------------->>>");
           ZassanBarimtShalgakh.zassanBarimtShalgakh(gereeOld[0], geree, geree.gereeniiDugaar, "Geree", "Гэрээ", req.body);
-          console.log("zassanBarimtShalgakh ------------->>>");
         });
       res.send("Amjilttai");
     } catch (err) {
@@ -573,7 +571,7 @@ function tooZasyaSync(too) {
 
 router
   .route("/gereeSungaya")
-  .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+  .post(tokenShalgakh, gereeSungakhShalguur, async (req, res, next) => {
     try {
       var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(req.body.gereeniiId).select("+avlaga");
       var val = geree.khugatsaa + req.body.sar;
@@ -774,7 +772,7 @@ router
 
 router
   .route("/gereeSergeeye")
-  .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+  .post(tokenShalgakh, gereeSergeekhShalguur, async (req, res, next) => {
     try {
       var geree = await Geree(req.body.tukhainBaaziinKholbolt)
         .findById(req.body.gereeniiId)
@@ -1003,7 +1001,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
 
 router
   .route("/gereeTsutslaya")
-  .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
+  .post(tokenShalgakh, gereeTsutslakhShalguur, async (req, res, next) => {
     var geree = await Geree(req.body.tukhainBaaziinKholbolt)
       .findById(req.body.gereeniiId)
       .select({
