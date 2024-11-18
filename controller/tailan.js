@@ -1860,7 +1860,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             $gte: new Date(req.body.ekhlekhOgnoo),
             $lte: new Date(req.body.duusakhOgnoo),
           },
-          "avlaga.guilgeenuud.turul": { $in: ["avlaga", "khuvaari"]},
+          "avlaga.guilgeenuud.turul": { $in: ["avlaga", "khuvaari", "khungulult"]},
         }
       },
       {
@@ -1912,17 +1912,40 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
     {
       khariu?.forEach((a) => {
         var niitTulukhDun = 0;
+        var khungulultuusKhassanJagsaalt = [];
+        var tempJagsaaltAvlaga = a.avlaga;
+        var indexTemp = 3;
         a.avlaga?.forEach((b) => {
           niitTulukhDun += (b.tulukhDun || 0);
+          b.index = indexTemp;
+          indexTemp++;
           if(b.turul === "avlaga" && (b.tailbar === "Менежментийн төлбөр" || b.tailbar === "Менежментийн зардал" || b.tailbar === "Менежмент"))
             b.tariff = b.tulukhDun/(a._id?.talbainKhemjee || 1)
           if(b.turul === "khuvaari")
           {
+            b.index = 0;
             b.tailbar = "Түрээсийн төлбөр";
             b.talbainKhemjee = a._id?.talbainKhemjee;
             b.talbainNegjUne = a._id?.talbainNegjUne;
           }
+          if(b.turul === "khungulult")
+          {
+            b.index = 1;
+            b.tailbar = "Хөнгөлөлт";
+            b.tulukhDun = b.khyamdral;
+            var tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => e.ognoo === b.ognoo && e.turul === "khuvaari")[0];
+            var khungulultuusKhassan = {
+              index: 2,
+              ognoo: b.ognoo,
+              turul: b.turul,
+              tailbar: "Хөнгөлөлтөөс хассан дүн",
+              tulukhDun: (tempKhuvaari.tulukhDun - b.khyamdral),
+            }
+            khungulultuusKhassanJagsaalt.push(khungulultuusKhassan);
+          }
         });
+        a.avlaga.push(...khungulultuusKhassanJagsaalt);
+        a.avlaga?.sort(function (a, b) { return a.index - b.index; });
         a.niitTulukhDun = niitTulukhDun;
       });
     }
