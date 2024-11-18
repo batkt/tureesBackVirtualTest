@@ -1933,13 +1933,13 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             b.index = 1;
             b.tailbar = "Хөнгөлөлт";
             b.tulukhDun = b.khyamdral;
-            var tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => e.ognoo === b.ognoo && e.turul === "khuvaari")[0];
+            var tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khuvaari");
             var khungulultuusKhassan = {
               index: 2,
               ognoo: b.ognoo,
               turul: b.turul,
               tailbar: "Хөнгөлөлтөөс хассан дүн",
-              tulukhDun: (tempKhuvaari.tulukhDun - b.khyamdral),
+              tulukhDun: (tempKhuvaari[0].tulukhDun - b.khyamdral),
             }
             khungulultuusKhassanJagsaalt.push(khungulultuusKhassan);
           }
