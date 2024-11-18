@@ -1940,7 +1940,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
                 index: 2,
                 ognoo: b.ognoo,
                 turul: b.turul,
-                tailbar: "Хөнгөлөлтөөс хассан дүн",
+                tailbar: "Хөнгөлөлтөөс хассан Т/Т",
                 tulukhDun: (tempKhuvaari[0].tulukhDun - b.khyamdral),
               }
               khungulultuusKhassanJagsaalt.push(khungulultuusKhassan);
