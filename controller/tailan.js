@@ -1916,7 +1916,9 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
         var tempJagsaaltAvlaga = a.avlaga;
         var indexTemp = 3;
         a.avlaga?.forEach((b) => {
-          niitTulukhDun += (b.tulukhDun || 0);
+          var tempkhungulult = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khungulult");
+          if(b.turul !== "khuvaari" || (tempkhungulult?.length === 0 && b.turul === "khuvaari"))
+            niitTulukhDun += (b.tulukhDun || 0);
           b.index = indexTemp;
           indexTemp++;
           if(b.turul === "avlaga" && (b.tailbar === "Менежментийн төлбөр" || b.tailbar === "Менежментийн зардал" || b.tailbar === "Менежмент"))
@@ -1936,14 +1938,16 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             var tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khuvaari");
             if(tempKhuvaari?.length > 0)
             {
+              var khassanTulkhDun = (tempKhuvaari[0].tulukhDun - b.khyamdral);
               var khungulultuusKhassan = {
                 index: 2,
                 ognoo: b.ognoo,
                 turul: b.turul,
-                tailbar: "Хөнгөлөлтөөс хассан Т/Т",
-                tulukhDun: (tempKhuvaari[0].tulukhDun - b.khyamdral),
+                tailbar: "Хөнгөлөлт хассан дүн",
+                tulukhDun: khassanTulkhDun,
               }
               khungulultuusKhassanJagsaalt.push(khungulultuusKhassan);
+              niitTulukhDun += (khassanTulkhDun || 0);
             }
           }
         });
