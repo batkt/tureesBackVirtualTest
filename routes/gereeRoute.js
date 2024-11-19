@@ -2774,7 +2774,7 @@ router
   .get(tokenShalgakh, async (req, res, next) => {
     try {
       var match = {
-        "avlaga.guilgeenuud.tailbar": "Дулааны төлбөр", 
+        //"avlaga.guilgeenuud.tailbar": "Дулааны төлбөр", 
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,          
       }
