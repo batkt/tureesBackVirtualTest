@@ -2774,7 +2774,7 @@ router
   .get(tokenShalgakh, async (req, res, next) => {
     try {
       var match = {
-        //"avlaga.guilgeenuud.tailbar": "Дулааны төлбөр", 
+        "avlaga.guilgeenuud.tailbar": "Дулааны төлбөр", 
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,          
       }
@@ -2787,7 +2787,7 @@ router
         for (const geree of gereenuud)
         {
           var tariff = geree.zardluud.filter((c) => c.ner === "Дулаан")[0].tariff;
-          var filterDulaan = geree.avlaga?.guilgeenuud?.filter((a) => a.tailbar === "Менежментийн төлбөр");
+          var filterDulaan = geree.avlaga?.guilgeenuud?.filter((a) => a.tailbar === "Дулааны төлбөр");
           if(filterDulaan?.length > 0)
           {
             var objt = [];
