@@ -2794,7 +2794,7 @@ router
             for ( const avlagaDulaan of filterDulaan)
             {
               var object = {
-                tulukhDun: geree.talbainKhemjeeMetrKube * tariff,
+                tulukhDun: (geree.talbainKhemjeeMetrKube * tariff).toFixed(2),
                 ognoo: avlagaDulaan.ognoo,
                 negj: geree.talbainKhemjeeMetrKube,
                 tariff: tariff,
