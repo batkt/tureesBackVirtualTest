@@ -509,11 +509,16 @@ router
     try {
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
-      if(geree?.avlaga?.guilgeenuud?.length > 0 && gereeOld[0]?.avlaga?.guilgeenuud?.length > 0)
+      if(gereeOld[0]?.avlaga?.guilgeenuud?.length > 0)
       {
-        var filterTulsunDun = gereeOld[0]?.avlaga?.guilgeenuud?.filter((a) => a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
-        if(filterTulsunDun?.length > 0)
-          geree?.avlaga?.guilgeenuud.push(...filterTulsunDun);
+        if(geree?.avlaga?.guilgeenuud?.length > 0)
+        {
+          var filterTulsunDun = gereeOld[0]?.avlaga?.guilgeenuud?.filter((a) => a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
+          if(filterTulsunDun?.length > 0)
+            geree?.avlaga?.guilgeenuud.push(...filterTulsunDun);
+        }
+        else
+          geree?.avlaga?.guilgeenuud?.push(gereeOld[0]?.avlaga?.guilgeenuud);
       }
       geree.tuluv = 1;
       await Geree(req.body.tukhainBaaziinKholbolt)
@@ -2763,5 +2768,61 @@ router.route("/msgKhucheerIlgeeye").post(async (req, res, next) => {
   orlogiinMsgIlgeeye(req.body.tsag, req.body.id);
   res.sendStatus(200);
 });
+
+router
+  .route("/dulaanZasya")
+  .get(tokenShalgakh, async (req, res, next) => {
+    try {
+      var match = {
+        "avlaga.guilgeenuud.tailbar": "Дулааны төлбөр", 
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,          
+      }
+      if(!!req.body.gereeniiDugaar)
+        match["gereeniiDugaar"] = req.body.gereeniiDugaar
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find(match).select("+avlaga");
+      var khariu = [];
+      if(gereenuud?.length > 0)  
+      {
+        for (const geree of gereenuud)
+        {
+          var tariff = geree.zardluud.filter((c) => c.ner === "Дулаан")[0].tariff;
+          var filterDulaan = geree.avlaga?.guilgeenuud?.filter((a) => a.tailbar === "Дулааны төлбөр");
+          if(filterDulaan?.length > 0)
+          {
+            var objt = [];
+            for ( const avlagaDulaan of filterDulaan)
+            {
+              var object = {
+                tulukhDun: geree.talbainKhemjeeMetrKube * tariff,
+                ognoo: avlagaDulaan.ognoo,
+                negj: geree.talbainKhemjeeMetrKube,
+                tariff: tariff,
+                tailbar: "Дулаан",
+                turul: avlagaDulaan.turul,
+              };
+              objt.push(object);
+            }
+          }
+          await Geree(req.body.tukhainBaaziinKholbolt)
+            .updateOne(
+              { gereeniiDugaar: geree.gereeniiDugaar, tuluv: 1 },
+              {
+                $push: {
+                  ["avlaga.guilgeenuud"]: objt,
+                },
+              }
+            )
+            .then(async (result) => {
+              console.log("result", result);
+              khariu.push(result);
+            });
+        }
+      }
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 module.exports = router;
