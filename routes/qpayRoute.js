@@ -104,6 +104,8 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
         !req.body.dansniiDugaar
       )
         req.body.dansniiDugaar = "5129057717";
+      if (req.body.baiguullagiinId == "65cf2f027fbc788f85e50b90") // sakura khaan dans
+        req.body.dansniiDugaar = "5112418947";
       req.body.tailbar = tailbar;
       /*Төлбөр callback url*/
       var callback_url =
