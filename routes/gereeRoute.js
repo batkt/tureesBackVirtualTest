@@ -509,16 +509,16 @@ router
     try {
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
-      if(gereeOld[0]?.avlaga?.guilgeenuud?.length > 0)
+      if(gereeOld?.avlaga?.guilgeenuud?.length > 0)
       {
         if(geree?.avlaga?.guilgeenuud?.length > 0)
         {
-          var filterTulsunDun = gereeOld[0]?.avlaga?.guilgeenuud?.filter((a) => a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
+          var filterTulsunDun = gereeOld?.avlaga?.guilgeenuud?.filter((a) => a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
           if(filterTulsunDun?.length > 0)
             geree?.avlaga?.guilgeenuud.push(...filterTulsunDun);
         }
         else
-          geree?.avlaga?.guilgeenuud?.push(gereeOld[0]?.avlaga?.guilgeenuud);
+          geree?.avlaga?.guilgeenuud?.push(gereeOld?.avlaga?.guilgeenuud);
       }
       geree.tuluv = 1;
       await Geree(req.body.tukhainBaaziinKholbolt)
@@ -529,10 +529,10 @@ router
           geree
         )
         .then((result) => {
-          if(gereeOld[0]?.talbainIdnuud?.length > 0)
+          if(gereeOld?.talbainIdnuud?.length > 0)
           {
             var talbainBulk = [];
-            gereeOld[0]?.talbainIdnuud.forEach((a) => {
+            gereeOld?.talbainIdnuud.forEach((a) => {
               const talbainId = geree?.talbainIdnuud?.filter((b) => b === a);
               if(talbainId?.length === 0)
               {
@@ -561,7 +561,7 @@ router
             [geree._id],
             req.body.tukhainBaaziinKholbolt
           );
-          ZassanBarimtShalgakh.zassanBarimtShalgakh(gereeOld[0], geree, geree.gereeniiDugaar, "Geree", "Гэрээ", req.body);
+          ZassanBarimtShalgakh.zassanBarimtShalgakh(gereeOld, geree, geree.gereeniiDugaar, "Geree", "Гэрээ", req.body);
         });
       res.send("Amjilttai");
     } catch (err) {
