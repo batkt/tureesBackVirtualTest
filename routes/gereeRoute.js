@@ -2874,7 +2874,7 @@ router
       var khungulult = await KhungulultiinTuukh(req.body.tukhainBaaziinKholbolt).find({
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId
-      });
+      }).select("+khamaataiGereenuud");
       gereeniiDugaaruud = [];
       khungulult.khamaataiGereenuud.forEach((x) => {
         if (typeof x === "object") {
