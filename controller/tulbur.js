@@ -2065,6 +2065,7 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
     var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
       .find({
         tuluv: { $ne: -1 },
+        gereeniiDugaar: { $nin: ["ТГ/F3/D39,40,41"] }
       })
       .select("+avlaga +gereeniiTuukhuud");
     if (gereenuud) {
