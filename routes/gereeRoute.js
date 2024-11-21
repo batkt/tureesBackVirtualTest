@@ -2896,23 +2896,26 @@ router
           var khungulultiinDun = x.khamaataiGereenuud?.find(
             (x) => x.gereeniiId == geree._id
           )?.khymdarsanDun;
-          for await (const ognoo of x.ognoonuud) {
-            var filterGuilgeenuud = geree.avlaga?.guilgeenuud.filter((a) => a.turul === "khuvaari" && moment(a.ognoo).format("YYYY/MM") === moment(ognoo).format("YYYY/MM"));
-            if(filterGuilgeenuud?.length > 0)
-            {
-              khyamdral = {
-                tulukhDun: 0,
-                ognoo: filterGuilgeenuud[0].ognoo,
-                turul: "khungulult",
-                khyamdral: khungulultiinDun,
-                nemeltTailbar: x.shaltgaan,
-                tailbar: "Түрээс",
-                khyamdraliinId: x._id,
-                guilgeeKhiisenOgnoo: new Date(),
-                guilgeeKhiisenAjiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
-                guilgeeKhiisenAjiltniiId: req.body.nevtersenAjiltniiToken?.id,
-              };
-              khyamdraluud.push(khyamdral);
+          if(khungulultiinDun > 0)
+          {
+            for await (const ognoo of x.ognoonuud) {
+              var filterGuilgeenuud = geree.avlaga?.guilgeenuud.filter((a) => a.turul === "khuvaari" && moment(a.ognoo).format("YYYY/MM") === moment(ognoo).format("YYYY/MM"));
+              if(filterGuilgeenuud?.length > 0)
+              {
+                khyamdral = {
+                  tulukhDun: 0,
+                  ognoo: filterGuilgeenuud[0].ognoo,
+                  turul: "khungulult",
+                  khyamdral: khungulultiinDun,
+                  nemeltTailbar: x.shaltgaan,
+                  tailbar: "Түрээс",
+                  khyamdraliinId: x._id,
+                  guilgeeKhiisenOgnoo: new Date(),
+                  guilgeeKhiisenAjiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
+                  guilgeeKhiisenAjiltniiId: req.body.nevtersenAjiltniiToken?.id,
+                };
+                khyamdraluud.push(khyamdral);
+              }
             }
           }
         }
