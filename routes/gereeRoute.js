@@ -2863,4 +2863,69 @@ router
     }
   });  
 
+router
+.route("/khungulultZasya")  
+.get(tokenShalgakh, async (req, res, next) => {
+  try {
+    const session =
+      await req.body.tukhainBaaziinKholbolt.kholbolt.startSession();
+    session.startTransaction();
+    try {
+      var khungulult = await KhungulultiinTuukh(req.body.tukhainBaaziinKholbolt).find({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId
+      });
+      gereeniiDugaaruud = [];
+      khungulult.khamaataiGereenuud.forEach((x) => {
+        if (typeof x === "object") {
+          gereeniiDugaaruud.push(x.gereeniiId);
+        } else {
+          gereeniiDugaaruud.push(x);
+        }
+      });
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
+        _id: { $in: gereeniiDugaaruud },
+      }).select("+avlaga");
+      for await (const geree of gereenuud) {
+        khyamdraluud = [];
+        var khungulultiinDun = khungulult.khamaataiGereenuud?.find(
+          (x) => x.gereeniiId == geree._id
+        )?.khymdarsanDun;
+        for await (const ognoo of khungulult.ognoonuud) {
+          var filterGuilgeenuud = geree.avlaga?.guilgeenuud.filter((a) => a.turul === "khuvaari" && moment(a.ognoo).format("YYYY/MM") === moment(ognoo).format("YYYY/MM"));
+          if(filterGuilgeenuud?.length > 0)
+          {
+            khyamdral = {
+              tulukhDun: 0,
+              ognoo: filterGuilgeenuud[0].ognoo,
+              turul: "khungulult",
+              khyamdral: khungulultiinDun,
+              nemeltTailbar: khungulult.shaltgaan,
+              tailbar: req.body.tailbar,
+              khyamdraliinId: khariu._id,
+              guilgeeKhiisenOgnoo: new Date(),
+              guilgeeKhiisenAjiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
+              guilgeeKhiisenAjiltniiId: req.body.nevtersenAjiltniiToken?.id,
+            };
+            khyamdraluud.push(khyamdral);
+          }
+        }
+        await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
+          { _id: geree._id },
+          { $push: { "avlaga.guilgeenuud": { $each: khyamdraluud } } }
+        );
+      }
+      await session.commitTransaction();
+      session.endSession();
+      res.send("Amjilttai");
+    } catch (err1) {
+      console.log("err1", err1);
+      await session.abortTransaction();
+      next(err1);
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
