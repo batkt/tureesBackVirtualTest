@@ -2825,4 +2825,42 @@ router
     }
   });
 
+  router
+  .route("/talbaiZasayNiit")
+  .get(tokenShalgakh, async (req, res, next) => {
+    try {
+      var talbainuud = await Talbai(req.body.tukhainBaaziinKholbolt).find({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId
+      });
+      var talbainBulk = [];
+      for await (const talbai of talbainuud) {
+        var niitUne = talbai.talbainKhemjee * talbai.talbainNegjUne;
+        let upsertTalbai = {
+          updateOne: {
+              filter: { _id: talbai._id, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId },
+              update: {
+                talbainNiitUne: niitUne,
+                tureesiinTulbur: niitUne,
+              },
+            },
+        };  
+        talbainBulk.push(upsertTalbai);
+      }
+      if (talbainBulk)
+        Talbai(req.body.tukhainBaaziinKholbolt)
+          .bulkWrite(talbainBulk)
+            .then((bulkWriteOpResult) => {
+              console.log("Talbai BULK update OK", bulkWriteOpResult);
+            })
+            .catch((err) => {
+              console.log("Talbai BULK update error", err);
+              next(err);
+            });
+      res.send(talbainBulk);
+    } catch (err) {
+      next(err);
+    }
+  });  
+
 module.exports = router;
