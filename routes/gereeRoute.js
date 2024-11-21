@@ -509,7 +509,7 @@ router
     try {
       var ObjectId = require("mongodb").ObjectId;
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
-      var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findOne({_id: new ObjectId(geree._id) }).select("+avlaga");
+      var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findOne({tuluv: 1, barilgiinId: geree.barilgiinId, baiguullagiinId: geree.baiguullagiinId, _id: new ObjectId(geree._id) }).select("+avlaga");
       if(gereeOld?.avlaga?.guilgeenuud?.length > 0)
       {
         if(geree?.avlaga?.guilgeenuud?.length > 0)
