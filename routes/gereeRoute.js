@@ -2911,8 +2911,8 @@ router
                   tailbar: "Түрээс",
                   khyamdraliinId: x._id,
                   guilgeeKhiisenOgnoo: new Date(),
-                  guilgeeKhiisenAjiltniiNer: req.body.nevtersenAjiltniiToken?.ner,
-                  guilgeeKhiisenAjiltniiId: req.body.nevtersenAjiltniiToken?.id,
+                  guilgeeKhiisenAjiltniiNer: x.guilgeeKhiisenAjiltniiNer,
+                  guilgeeKhiisenAjiltniiId: x.guilgeeKhiisenAjiltniiId,
                 };
                 khyamdraluud.push(khyamdral);
               }
