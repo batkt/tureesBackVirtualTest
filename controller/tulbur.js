@@ -2099,8 +2099,8 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
         var today = new Date();
         var unuudur = new Date(
           today.getFullYear(),
-          today.getMonth() - 2,
-          today.getDate(),
+          today.getMonth() - 3,
+          1,
           0,
           0,
           0
