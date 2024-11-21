@@ -2080,18 +2080,18 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
         });
         if(!!talbai && talbai.talbainNiitUne > 0)
         {
-          if (!!geree.zardluud && !!ashiglaltiinZardluud) {
-            for await (const zardal of geree.zardluud) {
-              var tukhainZardal = ashiglaltiinZardluud.find(
-                (x) => x.ner == zardal.ner
-              );
-              if (!!tukhainZardal) {
-                zardal.turul = tukhainZardal.turul;
-                zardal.tariff = tukhainZardal.tariff;
-                zardal.suuriKhuraamj = tukhainZardal.suuriKhuraamj;
-              }
-            }
-          }
+          // if (!!geree.zardluud && !!ashiglaltiinZardluud) {
+          //   for await (const zardal of geree.zardluud) {
+          //     var tukhainZardal = ashiglaltiinZardluud.find(
+          //       (x) => x.ner == zardal.ner
+          //     );
+          //     if (!!tukhainZardal) {
+          //       zardal.turul = tukhainZardal.turul;
+          //       zardal.tariff = tukhainZardal.tariff;
+          //       zardal.suuriKhuraamj = tukhainZardal.suuriKhuraamj;
+          //     }
+          //   }
+          // }
           var khuvaariud = geree.avlaga.guilgeenuud;
           khuvaariud = khuvaariud.filter(
             (x) =>
