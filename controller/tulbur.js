@@ -2096,15 +2096,8 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
           (x) =>
             x.ognoo <= new Date() || x.turul == "khyamdral" || x.khyamdral > 0
         );
-        var today = new Date();
-        var unuudur = new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          0,
-          0,
-          0
-        );
+       
+        var unuudur = new Date(req.body.ognoo);
         new Array((geree.khugatsaa || 0) + 12).fill("").map((mur, index) => {
           geree.tulukhUdur.forEach((udur) => {
             if (
