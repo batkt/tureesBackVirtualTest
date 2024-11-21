@@ -2099,8 +2099,8 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
         var today = new Date();
         var unuudur = new Date(
           today.getFullYear(),
-          today.getMonth() - 3,
-          1,
+          today.getMonth(),
+          today.getDate(),
           0,
           0,
           0
@@ -2111,7 +2111,7 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
               moment(unuudur).add(index, "month").set("date", udur) <=
                 moment(geree.duusakhOgnoo) &&
               moment(unuudur).add(index, "month").set("date", udur) >
-                moment(new Date())
+                moment(new Date("2024-09-30"))
             ) {
               var tukhainUdur = moment(unuudur)
                 .add(index, "month")
