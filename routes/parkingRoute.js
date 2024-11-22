@@ -220,6 +220,24 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   }
 });
 
+router.post("/qpayMobileSdk", tokenShalgakh, async (req, res, next) => {
+  try {
+    const io = req.app.get("socketio");
+    if(!!req.body.mashiniiDugaar)
+    {
+      io.emit(`qpayMobileSdk${req.body.baiguullagiinId}`, {
+        khaalgaTurul: "Гарах",
+        turul: "qpayMobile",
+        mashiniiDugaar: req.body.mashiniiDugaar,
+        cameraIP: req.body.cameraIP,
+      });
+    }
+    res.send(req.body.mashiniiDugaar);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router
   .route("/zogsoolOrlogoGaraas")
   .post(tokenShalgakh, async (req, res, next) => {
@@ -1066,6 +1084,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             pay_amount: 0,
             parking_id: zogsool._id,
             session_id: oldsonMashin._id,
+            garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
           };
           break;
         }
