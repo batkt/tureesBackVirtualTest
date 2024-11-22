@@ -509,6 +509,7 @@ router
     try {
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
+      var oldAvlaga = [];
       if(gereeOld?.avlaga?.guilgeenuud?.length > 0)
       {
         if(geree?.avlaga?.guilgeenuud?.length > 0)
@@ -520,12 +521,12 @@ router
             {
               var filGeree = geree?.avlaga?.guilgeenuud?.filter((a) => a._id === data._id);
               if(filGeree?.length === 0)
-                geree?.avlaga?.guilgeenuud.push(data);
+                oldAvlaga.push(data);
             }
           }
         }
         else
-          geree?.avlaga?.guilgeenuud?.push(gereeOld?.avlaga?.guilgeenuud);
+          oldAvlaga.push(...gereeOld?.avlaga?.guilgeenuud);
       }
       geree.tuluv = 1;
       await Geree(req.body.tukhainBaaziinKholbolt)
@@ -570,6 +571,17 @@ router
           );
           ZassanBarimtShalgakh.zassanBarimtShalgakh(gereeOld, geree, geree.gereeniiDugaar, "Geree", "Гэрээ", req.body);
         });
+        await Geree(req.body.tukhainBaaziinKholbolt)
+        .updateOne(
+          {
+            _id: geree._id,
+          },
+          {
+            $push: {
+              ["avlaga.guilgeenuud"]: oldAvlaga,
+            },}
+        )
+        .then((result) => { });
       res.send("Amjilttai");
     } catch (err) {
       next(err);
