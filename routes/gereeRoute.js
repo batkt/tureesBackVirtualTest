@@ -522,8 +522,7 @@ router
           if(filterTulsunDun?.length > 0)
           {
             console.log("777 ----------------------------->>>" + filterTulsunDun?.length);
-            for (const value of filterTulsunDun)
-              geree?.avlaga?.guilgeenuud.push(value);
+            geree?.avlaga?.guilgeenuud?.push(...filterTulsunDun);
             console.log("555 ----------------------------->>>" + geree?.avlaga?.guilgeenuud?.length);
           }
           console.log("11111 ----------------------------->>>" + gereeOld._id);
