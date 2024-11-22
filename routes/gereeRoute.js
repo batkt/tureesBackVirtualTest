@@ -507,33 +507,19 @@ router
   .route("/gereeZasya")
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
-      console.log("gereeZasya geree ----------------------------->>>");
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
-      console.log("geree ----------------------------->>>" + geree._id);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
-      console.log("1 ----------------------------->>>" + gereeOld._id);
       if(gereeOld?.avlaga?.guilgeenuud?.length > 0)
       {
         if(geree?.avlaga?.guilgeenuud?.length > 0)
         {
-          console.log("88888 ----------------------------->>>" + gereeOld._id);
           var filterTulsunDun = gereeOld?.avlaga?.guilgeenuud?.filter((a) => !!a.guilgeeKhiisenAjiltniiNer || !!a.guilgeeKhiisenAjiltniiId || a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
-          console.log("999 ----------------------------->>>" + gereeOld._id);
           if(filterTulsunDun?.length > 0)
-          {
-            console.log("777 ----------------------------->>>" + JSON.stringify(filterTulsunDun));
             geree?.avlaga?.guilgeenuud?.push(...filterTulsunDun);
-            console.log("555 ----------------------------->>>" + geree?.avlaga?.guilgeenuud?.length);
-          }
-          console.log("11111 ----------------------------->>>" + gereeOld._id);
         }
         else
-        {
-          console.log("222 ----------------------------->>>" + gereeOld?.avlaga?.guilgeenuud?.length);
           geree?.avlaga?.guilgeenuud?.push(gereeOld?.avlaga?.guilgeenuud);
-        }
       }
-      console.log("1  gereeOld ----------------------------->>>" + gereeOld._id);
       geree.tuluv = 1;
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
@@ -543,7 +529,6 @@ router
           geree,
         )
         .then((result) => {
-          console.log("2  gereeOld ----------------------------->>>" + gereeOld._id);
           if(gereeOld?.talbainIdnuud?.length > 0)
           {
             var talbainBulk = [];
@@ -562,7 +547,6 @@ router
                 talbainBulk.push(upsertTalbai);    
               }
             });
-            console.log("3  gereeOld ----------------------------->>>" + gereeOld._id);
             if (talbainBulk)
               Talbai(req.body.tukhainBaaziinKholbolt)
                 .bulkWrite(talbainBulk)
@@ -572,7 +556,6 @@ router
                 .catch((err) => {
                   console.log("Talbai BULK update error", err);
                 });
-            console.log("8  gereeOld ----------------------------->>>" + gereeOld._id);    
           }
           talbaiKhariltsagchiinTuluvUurchluy(
             [geree._id],
