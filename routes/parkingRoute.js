@@ -222,8 +222,10 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
 
 router.post("/qpayMobileSdk", tokenShalgakh, async (req, res, next) => {
   try {
+    console.log("mashiniiDugaar ----------------->>" + req.body.mashiniiDugaar);
+    console.log("cameraIP ----------------->>" + req.body.cameraIP);
     const io = req.app.get("socketio");
-    if(!!req.body.mashiniiDugaar)
+    if(io)
     {
       io.emit(`qpayMobileSdk${req.body.baiguullagiinId}`, {
         khaalgaTurul: "Гарах",
