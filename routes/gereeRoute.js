@@ -507,6 +507,7 @@ router
   .route("/gereeZasya")
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
+      var ObjectId = require("mongodb").ObjectId;
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
         baiguullagiinId: geree.baiguullagiinId,
@@ -529,7 +530,7 @@ router
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
           {
-            _id: geree._id,
+            _id: new ObjectId(geree._id),
           },
           geree
         )
