@@ -191,6 +191,7 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
       var set = {
         "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
         "tuukh.$[t].tuluv": 1,
+        "tuukh.$[t].tulukhDun": 0,
       };
       if (bodsonDun > 0) {
         if (bodsonDun == body.paid_amount) {
