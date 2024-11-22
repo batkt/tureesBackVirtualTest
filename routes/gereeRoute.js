@@ -513,7 +513,7 @@ router
       {
         if(geree?.avlaga?.guilgeenuud?.length > 0)
         {
-          var filterTulsunDun = gereeOld?.avlaga?.guilgeenuud?.filter((a) => !!a.guilgeeKhiisenAjiltniiNer || !!a.guilgeeKhiisenAjiltniiId || a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
+          var filterTulsunDun = gereeOld?.avlaga?.guilgeenuud?.filter((a) => a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
           if(filterTulsunDun?.length > 0)
             geree?.avlaga?.guilgeenuud?.push(...filterTulsunDun);
         }
