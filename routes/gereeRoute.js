@@ -507,21 +507,26 @@ router
   .route("/gereeZasya")
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
-      console.log("start ------------------->>>");
+      var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
       if(gereeOld?.avlaga?.guilgeenuud?.length > 0)
       {
-        if(req.body?.avlaga?.guilgeenuud?.length > 0)
+        if(geree?.avlaga?.guilgeenuud?.length > 0)
         {
-          var filterTulsunDun = gereeOld?.avlaga?.guilgeenuud?.filter((a) => a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
+          var filterTulsunDun = gereeOld?.avlaga?.guilgeenuud?.filter((a) => !!a.guilgeeKhiisenAjiltniiNer || !!a.guilgeeKhiisenAjiltniiId || a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
           if(filterTulsunDun?.length > 0)
-            req.body?.avlaga?.guilgeenuud?.push(...filterTulsunDun);
+          {
+            for (const data of filterTulsunDun)
+            {
+              var filGeree = geree?.avlaga?.guilgeenuud?.filter((a) => a._id === data._id);
+              if(filGeree?.length === 0)
+                geree?.avlaga?.guilgeenuud.push(data);
+            }
+          }
         }
         else
-          req.body?.avlaga?.guilgeenuud?.push(gereeOld?.avlaga?.guilgeenuud);
+          geree?.avlaga?.guilgeenuud?.push(gereeOld?.avlaga?.guilgeenuud);
       }
-      console.log("end ------------------->>>");
-      var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       geree.tuluv = 1;
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
