@@ -508,41 +508,35 @@ router
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
-      var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
+      var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).find({
         baiguullagiinId: geree.baiguullagiinId,
         barilgiinId: geree.barilgiinId,
-        tuluv: 1, 
-        gereeniiDugaar: geree.gereeniiDugaar, 
+        _id: geree._id,
       }).select("+avlaga");
-      if(gereeOld?.avlaga?.guilgeenuud?.length > 0)
+      if(gereeOld[0]?.avlaga?.guilgeenuud?.length > 0)
       {
         if(geree?.avlaga?.guilgeenuud?.length > 0)
         {
-          var filterTulsunDun = gereeOld?.avlaga?.guilgeenuud?.filter((a) => !!a.guilgeeKhiisenAjiltniiNer || !!a.guilgeeKhiisenAjiltniiId || a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
+          var filterTulsunDun = gereeOld[0]?.avlaga?.guilgeenuud?.filter((a) => !!a.guilgeeKhiisenAjiltniiNer || !!a.guilgeeKhiisenAjiltniiId || a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
           if(filterTulsunDun?.length > 0)
             geree?.avlaga?.guilgeenuud.push(...filterTulsunDun);
         }
         else
-          geree?.avlaga?.guilgeenuud?.push(gereeOld?.avlaga?.guilgeenuud);
+          geree?.avlaga?.guilgeenuud?.push(gereeOld[0]?.avlaga?.guilgeenuud);
       }
       geree.tuluv = 1;
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
           {
-            baiguullagiinId: geree.baiguullagiinId,
-            barilgiinId: geree.barilgiinId,
-            tuluv: 1, 
-            gereeniiDugaar: geree.gereeniiDugaar, 
+            _id: geree._id,
           },
-          {
-            geree,
-          }
+          geree,
         )
         .then((result) => {
-          if(gereeOld?.talbainIdnuud?.length > 0)
+          if(gereeOld[0]?.talbainIdnuud?.length > 0)
           {
             var talbainBulk = [];
-            gereeOld?.talbainIdnuud.forEach((a) => {
+            gereeOld[0]?.talbainIdnuud.forEach((a) => {
               const talbainId = geree?.talbainIdnuud?.filter((b) => b === a);
               if(talbainId?.length === 0)
               {
@@ -571,7 +565,7 @@ router
             [geree._id],
             req.body.tukhainBaaziinKholbolt
           );
-          ZassanBarimtShalgakh.zassanBarimtShalgakh(gereeOld, geree, geree.gereeniiDugaar, "Geree", "Гэрээ", req.body);
+          ZassanBarimtShalgakh.zassanBarimtShalgakh(gereeOld[0], geree, geree.gereeniiDugaar, "Geree", "Гэрээ", req.body);
         });
       res.send("Amjilttai");
     } catch (err) {
