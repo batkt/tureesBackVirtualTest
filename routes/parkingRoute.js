@@ -1073,6 +1073,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             pay_amount: bodsonDun,
             parking_id: zogsool._id,
             session_id: oldsonMashin._id,
+            garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
           };
           tukhainKholbolt = kholbolt;
           break;
