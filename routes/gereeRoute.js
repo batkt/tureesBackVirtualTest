@@ -511,6 +511,7 @@ router
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       console.log("geree ----------------------------->>>" + geree._id);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
+      console.log("1 ----------------------------->>>" + gereeOld._id);
       if(gereeOld?.avlaga?.guilgeenuud?.length > 0)
       {
         if(geree?.avlaga?.guilgeenuud?.length > 0)
@@ -522,6 +523,7 @@ router
         else
           geree?.avlaga?.guilgeenuud?.push(gereeOld?.avlaga?.guilgeenuud);
       }
+      console.log("1  gereeOld ----------------------------->>>" + gereeOld._id);
       geree.tuluv = 1;
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
@@ -531,6 +533,7 @@ router
           geree,
         )
         .then((result) => {
+          console.log("2  gereeOld ----------------------------->>>" + gereeOld._id);
           if(gereeOld?.talbainIdnuud?.length > 0)
           {
             var talbainBulk = [];
@@ -549,6 +552,7 @@ router
                 talbainBulk.push(upsertTalbai);    
               }
             });
+            console.log("3  gereeOld ----------------------------->>>" + gereeOld._id);
             if (talbainBulk)
               Talbai(req.body.tukhainBaaziinKholbolt)
                 .bulkWrite(talbainBulk)
@@ -558,6 +562,7 @@ router
                 .catch((err) => {
                   console.log("Talbai BULK update error", err);
                 });
+            console.log("8  gereeOld ----------------------------->>>" + gereeOld._id);    
           }
           talbaiKhariltsagchiinTuluvUurchluy(
             [geree._id],
