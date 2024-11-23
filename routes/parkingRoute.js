@@ -220,19 +220,22 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   }
 });
 
-router.post("/qpayMobileSdk", tokenShalgakh, async (req, res, next) => {
+router.post("/zogsoolMobileSdk", tokenShalgakh, async (req, res, next) => {
   try {
     console.log("mashiniiDugaar ----------------->>" + req.body.mashiniiDugaar);
     console.log("cameraIP ----------------->>" + req.body.cameraIP);
-    const io = req.app.get("socketio");
-    if(io)
+    if(req.body.baiguullagiinId === "6715ef2ca5cefb3e54505428")
     {
-      io.emit(`qpayMobileSdk${req.body.baiguullagiinId}`, {
-        khaalgaTurul: "Гарах",
-        turul: "qpayMobile",
-        mashiniiDugaar: req.body.mashiniiDugaar,
-        cameraIP: req.body.cameraIP,
-      });
+      const io = req.app.get("socketio");
+      if(io)
+      {
+        io.emit(`qpayMobileSdk${req.body.baiguullagiinId}`, {
+          khaalgaTurul: "Гарах",
+          turul: "qpayMobile",
+          mashiniiDugaar: req.body.mashiniiDugaar,
+          cameraIP: req.body.cameraIP,
+        });
+      }
     }
     res.send(req.body.mashiniiDugaar);
   } catch (err) {
