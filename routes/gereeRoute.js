@@ -1446,7 +1446,7 @@ router
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
                     zardal.tailbar = zardal._id.tailbar;
-                    if (zardal.tailbar == "Хөнгөлөлт")
+                    if (zardal.tailbar == "Түрээс" || zardal.tailbar == "Хөнгөлөлт")
                       x.khungulult = zardal.khungulult;
                   });
                 }
