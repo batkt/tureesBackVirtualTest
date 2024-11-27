@@ -31,6 +31,7 @@ const bankniiGuilgeeSchema = new Schema(
     code: String,
     amount: Number,
     balance: Number,
+    beforeBalance: Number,
     debit: Number,
     correction: Number,
     description: String,

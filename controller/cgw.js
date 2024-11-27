@@ -157,6 +157,47 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     new Error("Банктай холбогдоход алдаа гарлаа!");
   }
 }
+
+async function bogdTokentAvya(dans, tukhainBaaziinKholbolt){
+  
+  var tokenObject = await Token(tukhainBaaziinKholbolt).findOne({
+    turul: "bogd",
+    baiguullagiinId: dans.baiguullagiinId,
+    ognoo: { $gte: new Date(new Date().getTime() - 590000) }, //59 * 60000) }, 
+  });
+  if(!tokenObject)
+  {
+    const paramsVal = new URLSearchParams("username=" + dans.corporateNevtrekhNer + "&password=" + dans.corporateNuutsUg);
+    const response = await got.post(process.env.BOGD_SERVER + "authentication/login", { 
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8", "lang_code": "MN", }, 
+      body: paramsVal.toString(), 
+    })
+    .catch((err) => {
+      console.log("error " + err.message);
+      throw err;
+    });
+    var khariu = JSON.parse(response.body);
+      Token(tukhainBaaziinKholbolt)
+        .updateOne(
+          { turul: "bogd", baiguullagiinId: dans.baiguullagiinId },
+          {
+            ognoo: new Date(),
+            token: khariu.data.access_token,
+          },
+          { upsert: true }
+        )
+        .then((x) => {
+          console.log(x);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      return khariu.data.access_token;
+    }
+    else
+      return tokenObject?.token;
+}
+
 async function transTokenAvya(dans, tukhainBaaziinKholbolt) {
   try {
     var tokenObject = await Token(tukhainBaaziinKholbolt).findOne({
@@ -618,6 +659,23 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       var khariu = JSON.parse(response.body);
       tokenObject = khariu;
       return res.send(tokenObject);
+    } else if (dans && dans.bank == "bogd") {
+      var tokenObject = await bogdTokentAvya(dans, req.body.tukhainBaaziinKholbolt);
+      const response = await got
+        .post(process.env.BOGD_SERVER + "api/accounts", {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+            "lang_code": "MN",
+            Authorization: "Bearer " + tokenObject,
+          },
+        })
+        .catch((err) => {
+          console.log("error " + err.message);
+          throw err;
+        });
+      var khariu = JSON.parse(response.body);
+      var khariltsakh = khariu?.data?.types[0].accounts?.filter((e) => e.accountNo === dans.dugaar)[0];
+      res.send({ uldegdel: khariltsakh?.balance });
     }
   } catch (err) {
     next(err);
@@ -1102,6 +1160,78 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       console.log(err);
                     });
                 }
+              } else if (dans.bank == "bogd") {
+                var tokenObject = await bogdTokentAvya(dans, kholbolt);
+                var max = await BankniiGuilgee(kholbolt)
+                  .findOne({
+                    barilgiinId: dans.barilgiinId,
+                    dansniiDugaar: dans.dugaar,
+                  })
+                  .sort({ createdAt: -1 })
+                  .limit(1);
+                if (!!max) {
+                  firstDay = new Date(max.tranDate);
+                }
+                const paramsVal = new URLSearchParams("account_no=" + dans.dugaar + 
+                  "&start_date=" + firstDay.getFullYear() + "-" + (firstDay.getMonth() < 9 ? "0" : "") + (firstDay.getMonth() + 1) + "-" + (firstDay.getDate() < 10 ? "0" : "") + firstDay.getDate() +
+                  "&end_date=" + lastDay.getFullYear() + "-" + (lastDay.getMonth() < 9 ? "0" : "") + (lastDay.getMonth() + 1) + "-" + (lastDay.getDate() < 10 ? "0" : "") + lastDay.getDate());
+                const response = await got
+                  .post(process.env.BOGD_SERVER + "api/statement", {
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                      "lang_code": "MN",
+                      Authorization: "Bearer " + tokenObject,
+                    },
+                    body: paramsVal.toString(),
+                  })
+                  .catch((err) => {
+                    console.log("error " + err.message);
+                    throw err;
+                  });
+                var khariu = JSON.parse(response.body);
+                var guilgeenuud = [];
+                if(khariu?.data?.transactions?.length > 0)
+                {
+                  khariu?.data?.transactions.forEach((mur) => {
+                    var postedDate = new Date(mur?.date);
+                    postedDate.setHours(mur?.time?.split(":")[0]);
+                    postedDate.setMinutes(mur?.time?.split(":")[1]);
+                    postedDate.setSeconds(mur?.time?.split(":")[2]);
+                    guilgeenuud.push(
+                      new BankniiGuilgee(kholbolt)({
+                      requestId: mur?.txn_id,
+                      recNum: mur?.txn_no,
+                      tranId: mur?.txn_id,
+                      tranDate: new Date(mur?.date),
+                      drOrCr: "Credit",
+                      amount: mur?.debit,
+                      description: mur?.description,
+                      tranPostedDate: postedDate,
+                      tranCrnCode: mur?.currency,
+                      exchRate: 1,
+                      balance: mur?.balance_after,
+                      beforeBalance: mur?.balance_before,
+                      accName: mur?.to_acc_name,
+                      accNum: mur?.to_acc_no,
+                      relatedAccount: mur?.to_acc_no,
+                      time: mur?.time,
+                      })
+                    );
+                  });  
+                }
+                guilgeenuud.forEach((x) => {
+                  x.dansniiDugaar = dans.dugaar;
+                  x.baiguullagiinId = dans.baiguullagiinId;
+                  x.barilgiinId = dans.barilgiinId;
+                });
+                BankniiGuilgee(kholbolt)
+                    .insertMany(guilgeenuud)
+                    .then((result) => {
+                      if (res) res.send("Amjilttai");
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
               }
             } catch (aldaaa) {
               console.log("tatax ued aldaa garlaa ==> ", aldaaa);
@@ -1701,6 +1831,78 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       console.log(err);
                     });
                 }
+              } else if (dans.bank == "bogd") {
+                var tokenObject = await bogdTokentAvya(dans, kholbolt);
+                var max = await BankniiGuilgee(kholbolt)
+                  .findOne({
+                    barilgiinId: dans.barilgiinId,
+                    dansniiDugaar: dans.dugaar,
+                  })
+                  .sort({ createdAt: -1 })
+                  .limit(1);
+                if (!!max) {
+                  firstDay = new Date(max.tranDate);
+                }
+                const paramsVal = new URLSearchParams("account_no=" + dans.dugaar + 
+                  "&start_date=" + firstDay.getFullYear() + "-" + (firstDay.getMonth() < 9 ? "0" : "") + (firstDay.getMonth() + 1) + "-" + (firstDay.getDate() < 10 ? "0" : "") + firstDay.getDate() +
+                  "&end_date=" + lastDay.getFullYear() + "-" + (lastDay.getMonth() < 9 ? "0" : "") + (lastDay.getMonth() + 1) + "-" + (lastDay.getDate() < 10 ? "0" : "") + lastDay.getDate());
+                const response = await got
+                  .post(process.env.BOGD_SERVER + "api/statement", {
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                      "lang_code": "MN",
+                      Authorization: "Bearer " + tokenObject,
+                    },
+                    body: paramsVal.toString(),
+                  })
+                  .catch((err) => {
+                    console.log("error " + err.message);
+                    throw err;
+                  });
+                var khariu = JSON.parse(response.body);
+                var guilgeenuud = [];
+                if(khariu?.data?.transactions?.length > 0)
+                {
+                  khariu?.data?.transactions.forEach((mur) => {
+                    var postedDate = new Date(mur?.date);
+                    postedDate.setHours(mur?.time?.split(":")[0]);
+                    postedDate.setMinutes(mur?.time?.split(":")[1]);
+                    postedDate.setSeconds(mur?.time?.split(":")[2]);
+                    guilgeenuud.push(
+                      new BankniiGuilgee(kholbolt)({
+                      requestId: mur?.txn_id,
+                      recNum: mur?.txn_no,
+                      tranId: mur?.txn_id,
+                      tranDate: new Date(mur?.date),
+                      drOrCr: "Credit",
+                      amount: mur?.debit,
+                      description: mur?.description,
+                      tranPostedDate: postedDate,
+                      tranCrnCode: mur?.currency,
+                      exchRate: 1,
+                      balance: mur?.balance_after,
+                      beforeBalance: mur?.balance_before,
+                      accName: mur?.to_acc_name,
+                      accNum: mur?.to_acc_no,
+                      relatedAccount: mur?.to_acc_no,
+                      time: mur?.time,
+                      })
+                    );
+                  });  
+                }
+                guilgeenuud.forEach((x) => {
+                  x.dansniiDugaar = dans.dugaar;
+                  x.baiguullagiinId = dans.baiguullagiinId;
+                  x.barilgiinId = dans.barilgiinId;
+                });
+                BankniiGuilgee(kholbolt)
+                    .insertMany(guilgeenuud)
+                    .then((result) => {
+                      if (res) res.send("Amjilttai");
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                    });
               }
             } catch (aldaaa) {
               console.log("tatax ued aldaa garlaa ==> ", aldaaa);
