@@ -1878,7 +1878,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
 router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
   try {
     let tulbur = [];
-    if (req.body.ajiltniiId == "66384a9061eeda747d01a320" || req.body.ajiltniiId == "6746b7b1e3a4bd05bbac6880") {
+    if (req.body.ajiltniiId == "66384a9061eeda747d01a320") {
       if (req.body.paid_amount == 0) {
         tulbur = [
           {
@@ -1893,6 +1893,29 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
             ognoo: new Date(),
             turul: "Fitness",
             dun: 3000,
+          },
+          {
+            ognoo: new Date(),
+            turul: req.body.turul,
+            dun: req.body.paid_amount,
+          },
+        ];
+      }
+    } else if (req.body.ajiltniiId == "6746b7b1e3a4bd05bbac6880") {
+      if (req.body.paid_amount == 0) {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Fitness",
+            dun: 4000,
+          },
+        ];
+      } else {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Fitness",
+            dun: 4000,
           },
           {
             ognoo: new Date(),
