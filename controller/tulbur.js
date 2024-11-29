@@ -823,6 +823,19 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
 });
 
 exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
+  var match = {
+    "avlaga.guilgeenuud.turul": {
+      $nin: ["baritsaa", "aldangi"],
+    },
+  }
+  if(!!req.body.ognoo)
+  {
+    match["avlaga.guilgeenuud.ognoo"] = { 
+      $lte: new Date(moment(req.body.ognoo && req.body.ognoo[1]).endOf("month").format("YYYY-MM-DD 23:59:59")), 
+    }
+  }
+  else
+    match["avlaga.guilgeenuud.ognoo"] = { $lte: new Date(), }
   var query = [
     {
       $match: {
@@ -838,14 +851,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
       },
     },
     {
-      $match: {
-        "avlaga.guilgeenuud.ognoo": {
-          $lte: new Date(),
-        },
-        "avlaga.guilgeenuud.turul": {
-          $nin: ["baritsaa", "aldangi"],
-        },
-      },
+      $match: match,
     },
     {
       $group: {

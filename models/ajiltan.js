@@ -47,6 +47,7 @@ const ajiltanSchema = new Schema(
       gereeTsutslakhErkh: [String],
       umkhunSaraarKhungulultEsekh: [String],
       guilgeeUstgakhErkh: [String],
+      guilgeeKhiikhEsekh: [String],
       khungulultUzuulekhEsekh: [String],
       m2UneTokhiruulakhEsekh: [String],
       zogsoolNegtgelDunKharakhEsekh: Boolean,
