@@ -54,14 +54,15 @@ async function duriinMailIlgeeye(
   else
     tls = {
       rejectUnauthorized: false,
-      secureProtocol: "TLSv1_method",
+      // secureProtocol: "TLSv1_method",
+      minVersion: "TLSv1"
     };
   let transporter = nodemailer.createTransport({
     host: host ? host : "smtp.zevtabs.mn",
     port: port ? port : 587,
     secureConnection: false,
     tls,
-    pool: true,
+    // pool: true,
     auth: {
       user: user, // generated ethereal user
       pass: pass, // generated ethereal password
