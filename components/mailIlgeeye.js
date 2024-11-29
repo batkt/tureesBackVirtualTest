@@ -57,6 +57,10 @@ async function duriinMailIlgeeye(
       // secureProtocol: "TLSv1_method",
       minVersion: "TLSv1"
     };
+  console.log("host ---------->>>" + host);
+  console.log("port ---------->>>" + port);
+  console.log("user ---------->>>" + user);
+  console.log("pass ---------->>>" + pass);
   let transporter = nodemailer.createTransport({
     host: host ? host : "smtp.zevtabs.mn",
     port: port ? port : 587,
