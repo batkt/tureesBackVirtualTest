@@ -1906,7 +1906,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         tulbur = [
           {
             ognoo: new Date(),
-            turul: "Соёолж",
+            turul: "Соёолж Ц/Д",
             dun: 4000,
           },
         ];
@@ -1914,7 +1914,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         tulbur = [
           {
             ognoo: new Date(),
-            turul: "Соёолж",
+            turul: "Соёолж Ц/Д",
             dun: 4000,
           },
           {
@@ -1987,7 +1987,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
               throw new Error("Хөнгөлөлт оруулсан байна!");
           }
           else if (req.body.ajiltniiId == "6746b7b1e3a4bd05bbac6880") {
-            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Соёолж"))
+            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Соёолж Ц/Д"))
               throw new Error("Хөнгөлөлт оруулсан байна!");
           }
           tukhainObject.tuukh[0].tulbur.push(...tulbur);
