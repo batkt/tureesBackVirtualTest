@@ -1168,25 +1168,30 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
           });
         }
         if (!!localEsekh && !!oldsonMashin) {
-          data = "Үнэгүй зочид";
-          await Uilchluulegch(tukhainKholbolt).updateOne(
-            { _id: oldsonMashin._id },
-            {
-              "tuukh.0.uneguiGarsan": data,
-              "tuukh.0.tulbur": [ { ognoo: new Date(), turul: "Үнэгүй", dun: 0, }, ]
-            }
-          );
+          data = { 
+            plate_number: req.params.plate_number, 
+            text: "Үнэгүй зочид",
+          };
         }
+        if (data && data.plate_number) break;
       }
       if (data && data.plate_number) break;
     }
   }
 
-  // if (!oldsonMashin) {
-  //   message = "Машины мэдээлэл олдсонгүй!";
-  //   success = false;
-  // }
-  
+  if (!oldsonMashin) {
+    message = "Машины мэдээлэл олдсонгүй!";
+    success = false;
+  }
+  if (!!localEsekh && !!oldsonMashin) {
+    await Uilchluulegch(tukhainKholbolt).updateOne(
+      { _id: oldsonMashin._id },
+      {
+        "tuukh.0.uneguiGarsan": data.text,
+        "tuukh.0.tulbur": [ { ognoo: new Date(), turul: "Үнэгүй", dun: 0, }, ]
+      }
+    );
+  }
   var butsaakhKhariu = {
     success,
     message,
