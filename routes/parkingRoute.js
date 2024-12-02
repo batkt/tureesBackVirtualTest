@@ -1119,6 +1119,82 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
   res.send(butsaakhKhariu);
 });
 
+
+router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
+  const { db } = require("zevbackv2");
+  var ObjectId = require("mongodb").ObjectId;
+  var kholboltuud = db.kholboltuud;
+  var data;
+  var message = "Amjilttai";
+  var success = true;
+  var oldsonMashin;
+  var tukhainKholbolt;
+  var localEsekh = !!req.query.baiguullagiinId;
+  if (localEsekh) {
+    kholboltuud = kholboltuud.filter(
+      (a) => a.baiguullagiinId == req.query.baiguullagiinId
+    );
+  }
+  if (kholboltuud) {
+    for await (const kholbolt of kholboltuud) {
+      var query = localEsekh
+        ? { baiguullagiinId: req.query.baiguullagiinId }
+        : {
+            tokiNer: { $exists: true },
+          };
+      var zogsooluud = await Parking(kholbolt).find(query);
+      for await (const zogsool of zogsooluud) {
+        if (!!zogsool) {
+          tukhainKholbolt = kholbolt;
+          oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+            "tuukh.0.zogsooliinId": new ObjectId(zogsool._id),
+            mashiniiDugaar: req.params.plate_number,
+            // "tuukh.0.tulbur": { $eq: [] },
+            $or: [
+              {
+                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                  $gt: new Date(Date.now() - 5 * 100000), //1.30sec in dotor
+                },
+              },
+              {
+                "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                  $exists: false,
+                },
+              },
+            ],
+            "tuukh.0.tuluv": {
+              $nin: [-2, -3],
+            },
+          });
+        }
+        if (!!localEsekh && !!oldsonMashin) {
+          data = "Үнэгүй зочид";
+          await Uilchluulegch(tukhainKholbolt).updateOne(
+            { _id: oldsonMashin._id },
+            {
+              "tuukh.0.uneguiGarsan": data,
+              "tuukh.0.tulbur": [ { ognoo: new Date(), turul: "Үнэгүй", dun: 0, }, ]
+            }
+          );
+        }
+      }
+      if (data && data.plate_number) break;
+    }
+  }
+
+  // if (!oldsonMashin) {
+  //   message = "Машины мэдээлэл олдсонгүй!";
+  //   success = false;
+  // }
+  
+  var butsaakhKhariu = {
+    success,
+    message,
+    data,
+  };
+  res.send(butsaakhKhariu);
+});
+
 router.get(
   "/pass/mashinKhaikh/:dugaar",
   tokenShalgakh,
