@@ -510,7 +510,6 @@ router
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
       var oldAvlaga = [];
-      var ObjectId = require("mongodb").ObjectId;
       if(gereeOld?.avlaga?.guilgeenuud?.length > 0)
       {
         if(geree?.avlaga?.guilgeenuud?.length > 0)
@@ -520,7 +519,7 @@ router
           {
             for (const data of filterTulsunDun)
             {
-              var filGeree = geree?.avlaga?.guilgeenuud?.filter((a) => new ObjectId(a._id) === new ObjectId(data._id));
+              var filGeree = geree?.avlaga?.guilgeenuud?.filter((a) => JSON.stringify(a._id) === JSON.stringify(data._id));
               if(filGeree?.length === 0)
                 oldAvlaga.push(data);
             }
@@ -530,6 +529,19 @@ router
           oldAvlaga.push(...gereeOld?.avlaga?.guilgeenuud);
       }
       geree.tuluv = 1;
+      var ustgakhJagsaalt = [];
+      if (oldAvlaga) {
+        for await (const item of oldAvlaga) {
+          item.index = 0;
+          if(ustgakhJagsaalt.includes(item))
+            item.index = 1;
+          ustgakhJagsaalt.push(item);
+        }
+        if (!!ustgakhJagsaalt) {
+          oldAvlaga = oldAvlaga.filter((el) => el.index === 0);
+        }
+      }
+
       await Geree(req.body.tukhainBaaziinKholbolt)
         .updateOne(
           {
