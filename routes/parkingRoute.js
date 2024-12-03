@@ -2112,6 +2112,10 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
             if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Соёолж Ц/Д"))
               throw new Error("Хөнгөлөлт оруулсан байна!");
           }
+          else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
+            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Хөнгөлөлт"))
+              throw new Error("Хөнгөлөлт оруулсан байна!");
+          }
           tukhainObject.tuukh[0].tulbur.push(...tulbur);
         } else tukhainObject.tuukh[0].tulbur = tulbur;
       var set = {
