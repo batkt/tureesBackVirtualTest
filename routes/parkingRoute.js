@@ -1061,11 +1061,30 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             },
           });
           if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar)
+          {
+            if(req.query.baiguullagiinId === "673d88133987e97992f77c02" && oldsonMashin.tuukh[0].tulbur?.length === 0) // hawai
+            {
+              var tulbur = [
+                {
+                  ognoo: new Date(),
+                  turul: "Хөнгөлөлт",
+                  dun: (zogsool.undsenUne || 1) * 3,
+                },
+              ];
+              await Uilchluulegch(kholbolt).updateOne(
+                { _id: oldsonMashin._id },
+                {
+                  "tuukh.0.tulbur":tulbur
+                }
+              );
+            }
             bodsonDun = await zogsooliinDunAvya(
               zogsool,
               oldsonMashin,
               kholbolt
             );
+          }
+            
         }
         if (bodsonDun > 0) {
           data = {
@@ -1130,6 +1149,7 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
   var oldsonMashin;
   var tukhainKholbolt;
   var localEsekh = !!req.query.baiguullagiinId;
+  var tulburData = [];
   if (localEsekh) {
     kholboltuud = kholboltuud.filter(
       (a) => a.baiguullagiinId == req.query.baiguullagiinId
@@ -1168,10 +1188,24 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
           });
         }
         if (!!localEsekh && !!oldsonMashin) {
-          data = { 
-            plate_number: req.params.plate_number, 
-            text: "Үнэгүй зочид",
-          };
+          if(req.query.baiguullagiinId === "670f3437b41a478195dd3d4b")
+          {
+            data = { 
+              plate_number: req.params.plate_number, 
+              text: "Үнэгүй зочид",
+            };
+            tulburData = [ { ognoo: new Date(), turul: "Үнэгүй", dun: 0, }, ];
+          }
+          else if(req.query.baiguullagiinId === "670f3437b41a478195dd3d4b")
+          {
+            tulbur = [
+              {
+                ognoo: new Date(),
+                turul: "Соёолж Ц/Д",
+                dun: 4000,
+              },
+            ];
+          }
         }
         if (data && data.plate_number) break;
       }
@@ -1188,7 +1222,7 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
       { _id: oldsonMashin._id },
       {
         "tuukh.0.uneguiGarsan": data.text,
-        "tuukh.0.tulbur": [ { ognoo: new Date(), turul: "Үнэгүй", dun: 0, }, ]
+        "tuukh.0.tulbur": tulburData,
       }
     );
   }
