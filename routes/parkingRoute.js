@@ -2023,7 +2023,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           },
         ];
       }
-    } else if (req.query.baiguullagiinId === "673d88133987e97992f77c02") {
+    } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
       if (req.body.paid_amount == 0) {
         tulbur = [
           {
