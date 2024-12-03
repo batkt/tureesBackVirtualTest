@@ -510,6 +510,7 @@ router
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
       var oldAvlaga = [];
+      var ObjectId = require("mongodb").ObjectId;
       if(gereeOld?.avlaga?.guilgeenuud?.length > 0)
       {
         if(geree?.avlaga?.guilgeenuud?.length > 0)
@@ -519,7 +520,7 @@ router
           {
             for (const data of filterTulsunDun)
             {
-              var filGeree = geree?.avlaga?.guilgeenuud?.filter((a) => a._id === data._id);
+              var filGeree = geree?.avlaga?.guilgeenuud?.filter((a) => new ObjectId(a._id) === new ObjectId(data._id));
               if(filGeree?.length === 0)
                 oldAvlaga.push(data);
             }
