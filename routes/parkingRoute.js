@@ -1062,22 +1062,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
           });
           if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar)
           {
-            if(req.query.baiguullagiinId === "673d88133987e97992f77c02" && oldsonMashin.tuukh[0].tulbur?.length === 0) // hawai
-            {
-              var tulbur = [
-                {
-                  ognoo: new Date(),
-                  turul: "Хөнгөлөлт",
-                  dun: (zogsool.undsenUne || 1) * 3,
-                },
-              ];
-              await Uilchluulegch(kholbolt).updateOne(
-                { _id: oldsonMashin._id },
-                {
-                  "tuukh.0.tulbur":tulbur
-                }
-              );
-            }
             bodsonDun = await zogsooliinDunAvya(
               zogsool,
               oldsonMashin,
@@ -2031,6 +2015,29 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
             ognoo: new Date(),
             turul: "Соёолж Ц/Д",
             dun: 4000,
+          },
+          {
+            ognoo: new Date(),
+            turul: req.body.turul,
+            dun: req.body.paid_amount,
+          },
+        ];
+      }
+    } else if (req.query.baiguullagiinId === "673d88133987e97992f77c02") {
+      if (req.body.paid_amount == 0) {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Хөнгөлөлт",
+            dun: 3000,
+          },
+        ];
+      } else {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Хөнгөлөлт",
+            dun: 3000,
           },
           {
             ognoo: new Date(),
