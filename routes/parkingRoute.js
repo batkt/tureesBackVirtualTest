@@ -213,8 +213,37 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
         );
       }
     };
-    const khariu = await sdkData(req, medegdel);
-    res.send(khariu);
+
+    var zogsooluud = await (Parking)(req.body.tukhainBaaziinKholbolt).find({
+      'khaalga.camera.cameraIP': req.body.CAMERA_IP,
+    });
+    var zogsool = {};
+    if (zogsooluud.length > 0) {
+      zogsool = zogsooluud[0];
+    }
+    req.body.ekhlekhOgnoo = moment().startOf("day").format("YYYY-MM-DD 00:00:00");
+    req.body.duusakhOgnoo = moment().endOf("day").format("YYYY-MM-DD 23:59:59")
+    const zogsoolResult = await zogsoolTusBurUilchluulegchdiinToo(req.body);
+    const filterData = zogsoolResult?.filter((mur) => JSON.stringify(mur?._id?.zogsool) === JSON.stringify(zogsool?._id));
+    var sulToo = (zogsool.too || 0) - (filterData?.length > 0 ? filterData[0].too : 0);
+    if(zogsool?.zogsoolTooKhyazgaarlakhEsekh && (sulToo === 0 || sulToo <= -1))
+    {
+      const io = req.app.get("socketio");
+      if (io) {
+        io.emit(`zogsool${zogsool?.baiguullagiinId}`, {
+          khaalgaTurul: "oroh",
+          cameraIP: req.body.CAMERA_IP,
+          mashiniiDugaar: "Зогсоол дүүрсэн",
+        });
+      }
+      console.log("----------------->>>Зогсоол дүүрсэн");
+      res.send({aldaa: "Зогсоол дүүрсэн"});
+    }
+    else
+    {
+      const khariu = await sdkData(req, medegdel);
+      res.send(khariu);
+    }
   } catch (err) {
     next(err);
   }
@@ -2281,4 +2310,5 @@ router.route("/mashinUpdate1").post(async (req, res, next) => {
     next(error);
   }
 });
+
 module.exports = router;

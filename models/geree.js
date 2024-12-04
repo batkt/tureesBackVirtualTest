@@ -79,6 +79,9 @@ const gereeSchema = new Schema(
     unemlekhniiZurag: String,
     zuvshuurliinZurag: String,
     zoriulalt: String,
+    tusgaiZoriulalt: String,
+    khariltsagchiinNershil: String,
+    talbaiNemeltNukhtsul: String,
     talbainDugaar: String,
     talbainIdnuud: [String],
     talbainNegjUne: Number,
@@ -116,6 +119,7 @@ const gereeSchema = new Schema(
         ner: String,
         turul: String,
         tariff: Number,
+        tariffUsgeer: String,
         tulukhDun: Number, // Менежментийн зардал
         dun: Number, //dung n zuwxun munguur tootsoj awax togtmol ued buglunu
         suuriKhuraamj: String,
