@@ -216,7 +216,6 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
 
     var zogsooluud = await (Parking)(req.body.tukhainBaaziinKholbolt).find({
       'khaalga.camera.cameraIP': req.body.CAMERA_IP,
-      'khaalga.camera.turul': 'Орох',
     });
     var zogsool = {};
     if (zogsooluud.length > 0) {
@@ -229,7 +228,9 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
     var sulToo = (zogsool.too || 0) - (filterData?.length > 0 ? filterData[0].too : 0);
     console.log("CAMERA_IP ----------------->>>" + req.body.CAMERA_IP);
     console.log("sulToo ----------------->>>" + sulToo);
-    if(zogsool?.zogsoolTooKhyazgaarlakhEsekh && (sulToo === 0 || sulToo <= -1))
+    var orokhZogsool = zogsool?.khaalga?.filter((a)  => a.turul === 'Орох');
+    var orokhCamera = orokhZogsool[0]?.camera?.filter((b) => b.cameraIP === req.body.CAMERA_IP);
+    if(orokhCamera?.length > 0 && zogsool?.zogsoolTooKhyazgaarlakhEsekh && (sulToo === 0 || sulToo <= -1))
     {
       const io = req.app.get("socketio");
       if (io) {
