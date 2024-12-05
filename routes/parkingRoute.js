@@ -1021,6 +1021,8 @@ router.get("/pass/zogsool", tokenShalgakh, async (req, res, next) => {
           }
           var slot = {
             gadna: {
+              garakhTsag: zogsool.garakhTsag || 30, 
+              tulburuud: zogsool.tulburuud,
               niit: zogsool.too,
               zogsson: parked,
             },
