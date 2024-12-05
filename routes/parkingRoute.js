@@ -216,6 +216,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
 
     var zogsooluud = await (Parking)(req.body.tukhainBaaziinKholbolt).find({
       'khaalga.camera.cameraIP': req.body.CAMERA_IP,
+      'khaalga.camera.turul': 'Орох',
     });
     var zogsool = {};
     if (zogsooluud.length > 0) {
