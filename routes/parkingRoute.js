@@ -227,9 +227,6 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
     const filterData = zogsoolResult?.filter((mur) => JSON.stringify(mur?._id?.zogsool) === JSON.stringify(zogsool?._id));
     var sulToo = (zogsool.too || 0) - (filterData?.length > 0 ? filterData[0].too : 0);
     console.log("CAMERA_IP ----------------->>>" + req.body.CAMERA_IP);
-    console.log("req.body ----------------->>>" + JSON.stringify(req.body));
-    console.log("zogsool too ----------------->>>" + zogsool.too);
-    console.log("filterData ----------------->>>" + JSON.stringify(filterData));
     console.log("sulToo ----------------->>>" + sulToo);
     if(zogsool?.zogsoolTooKhyazgaarlakhEsekh && (sulToo === 0 || sulToo <= -1))
     {
