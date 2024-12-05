@@ -228,20 +228,26 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
     var sulToo = (zogsool.too || 0) - (filterData?.length > 0 ? filterData[0].too : 0);
     console.log("CAMERA_IP ----------------->>>" + req.body.CAMERA_IP);
     console.log("sulToo ----------------->>>" + sulToo);
-    var orokhZogsool = zogsool?.khaalga?.filter((a)  => a.turul === 'Орох');
-    var orokhCamera = orokhZogsool[0]?.camera?.filter((b) => b.cameraIP === req.body.CAMERA_IP);
-    if(orokhCamera?.length > 0 && zogsool?.zogsoolTooKhyazgaarlakhEsekh && (sulToo === 0 || sulToo <= -1))
+    if(zogsool?.zogsoolTooKhyazgaarlakhEsekh && (sulToo === 0 || sulToo <= -1))
     {
-      const io = req.app.get("socketio");
-      if (io) {
-        io.emit(`zogsool${zogsool?.baiguullagiinId}`, {
-          khaalgaTurul: "oroh",
-          cameraIP: req.body.CAMERA_IP,
-          mashiniiDugaar: "Зогсоол дүүрсэн",
-        });
+      var orokhZogsool = zogsool?.khaalga?.filter((a)  => a.turul === 'Орох');
+      if(orokhZogsool?.length > 0)
+      {
+        var orokhCamera = orokhZogsool[0]?.camera?.filter((b) => b.cameraIP === req.body.CAMERA_IP);
+        if(orokhCamera?.length > 0 )
+        {
+          const io = req.app.get("socketio");
+          if (io) {
+            io.emit(`zogsool${zogsool?.baiguullagiinId}`, {
+              khaalgaTurul: "oroh",
+              cameraIP: req.body.CAMERA_IP,
+              mashiniiDugaar: "Зогсоол дүүрсэн",
+            });
+          }
+          console.log("----------------->>>Зогсоол дүүрсэн");
+          res.send({aldaa: "Зогсоол дүүрсэн"});
+        }
       }
-      console.log("----------------->>>Зогсоол дүүрсэн");
-      res.send({aldaa: "Зогсоол дүүрсэн"});
     }
     else
     {
