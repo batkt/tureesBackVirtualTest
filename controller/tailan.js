@@ -7,6 +7,7 @@ const Zardal = require("../models/zardal");
 const { Uilchluulegch } = require("parking-v1");
 const lodash = require("lodash");
 const moment = require("moment");
+const { Dans } = require("zevbackv2");
 
 const unguud = [
   "rgba(255, 99, 132, 0.5)",
@@ -1574,7 +1575,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         {
           $match: {
             "avlaga.guilgeenuud.turul": {
-              $nin: ["baritsaa", "aldangi"],
+              $nin: ["bank", "baritsaa", "aldangi"],
             },
             "avlaga.guilgeenuud.ognoo": {
               $gte: new Date(req.params.ekhlekhOgnoo),
@@ -1595,6 +1596,49 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
       ]);
 
+      var bankDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $match: {
+            tuluv: { $ne: -1, },  
+          }  
+        },
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $match: {
+            "avlaga.guilgeenuud.turul": {
+              $in: ["bank"],
+            },
+            "avlaga.guilgeenuud.ognoo": {
+              $gte: new Date(req.params.ekhlekhOgnoo),
+              $lte: new Date(req.params.duusakhOgnoo),
+            },
+            "avlaga.guilgeenuud.tulsunDun": {
+              $gt: 0,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: { turul: "$avlaga.guilgeenuud.turul", dansniiDugaar: "$avlaga.guilgeenuud.dansniiDugaar", register: "$register" },
+            dun: {
+              $sum: "$avlaga.guilgeenuud.tulsunDun",
+            },
+          },
+        },
+      ]);
+      for (const bankDun of bankDunguud)
+      {
+        if(!!bankDun?._id?.dansniiDugaar)
+        {
+          var filterDans = await Dans(req.body.tukhainBaaziinKholbolt).findOne({dugaar: bankDun._id.dansniiDugaar});
+          bankDun._id.turul = filterDans.bank;
+        }
+      }
+      
       var khungulultiinDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
         {
           $match: {
@@ -1731,6 +1775,12 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
             if(filterDunguud?.length > 0)
             {
               for (const row of filterDunguud)
+                mur[row._id.turul] = row.dun;
+            }
+            var filterBankuud = bankDunguud?.filter((a) => a._id?.register === register?._id);
+            if(filterBankuud?.length > 0)
+            {
+              for (const row of filterBankuud)
                 mur[row._id.turul] = row.dun;
             }
             var filterKhungulult = khungulultiinDunguud?.filter((a) => a._id?.register === register?._id);

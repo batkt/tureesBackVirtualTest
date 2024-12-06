@@ -277,7 +277,15 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     var khugatsaa = Number(body.khugatsaa) + 1;
     if (body.turGereeEsekh) khugatsaa = 1;
     var tulukhUdruud = body.tulukhUdruud;
-    var ekhlekhOgnoo = new Date(body.ekhlekhOgnoo);
+    var ekhlekhOgnoo;
+    if(body.baiguullagiinId === "63c0f31efe522048bf02086d")
+    {
+      var foodcityEkhlekhOgnoo = new Date(moment("2024-09-30").format("YYYY-MM-DD 00:00:00"))
+      var tempEkhlekhOgnoo = new Date(moment(body.ekhlekhOgnoo).format("YYYY-MM-DD 00:00:00"))
+      ekhlekhOgnoo = new Date(foodcityEkhlekhOgnoo > tempEkhlekhOgnoo ? foodcityEkhlekhOgnoo : tempEkhlekhOgnoo); // body.ekhlekhOgnoo
+    }
+    else
+      ekhlekhOgnoo = new Date(body.ekhlekhOgnoo);
     var duusakhOgnoo = new Date(body.duusakhOgnoo);
     if (body.turGereeEsekh) tulukhUdruud = [ekhlekhOgnoo.getDate()];
     var butsaakhJagsaalt = [];
