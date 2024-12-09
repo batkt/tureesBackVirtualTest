@@ -999,7 +999,8 @@ router.get("/pass/zogsool", tokenShalgakh, async (req, res, next) => {
             },
           };
           if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) slot.dotor = dotor;
-          if(jagsaalt.filter((e) => e.id !== zogsool._id.toString()))
+          var filterZogsool = jagsaalt.filter((e) => e.id === zogsool._id.toString())
+          if(filterZogsool?.length === 0)
             jagsaalt.push({
               id: zogsool._id.toString(),
               ner: zogsool.passNer,
