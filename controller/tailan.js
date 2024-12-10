@@ -1883,10 +1883,6 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
-      // gereeniiOgnoo: {
-      //   $gte: new Date(req.body.ekhlekhOgnoo),
-      //   $lte: new Date(req.body.duusakhOgnoo),
-      // },
       tuluv: {
         $ne: -1,
       },
@@ -1965,7 +1961,28 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
         var khungulultuusKhassanJagsaalt = [];
         var tempJagsaaltAvlaga = a.avlaga;
         var indexTemp = 3;
+        
+        var tempZardliinTurulFilter = a.avlaga.filter((o) => { return !!o.zardliinTurul});
+        var guilgeeKhiisenFilter = a.avlaga.filter((o) => { return !!o.guilgeeKhiisenAjiltniiId});
+        a.avlaga = a.avlaga.filter((o) => { return !o.zardliinTurul && !o.guilgeeKhiisenAjiltniiId});
+
         a.avlaga?.forEach((b) => {
+          var filter = tempZardliinTurulFilter?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khuvaari");
+          if(filter?.length > 0 && b.turul === "khuvaari")
+            b.tulukhDun += filter?.reduce((a, b) => a + (b.tulukhDun || 0), 0);
+
+          var filterManagement = tempZardliinTurulFilter?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "management");
+          if(filterManagement?.length > 0 && b.turul === "avlaga" && (b.tailbar === "Менежментийн төлбөр" || b.tailbar === "Менежментийн зардал" || b.tailbar === "Менежмент"))
+            b.tulukhDun += filterManagement?.reduce((a, b) => a + (b.tulukhDun || 0), 0);
+         
+          var filterDulaan = tempZardliinTurulFilter?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "dulaan");
+          if(filterDulaan?.length > 0 && b.turul === "avlaga" && b.tailbar === "Дулаан")
+            b.tulukhDun += filterDulaan?.reduce((a, b) => a + (b.tulukhDun || 0), 0);
+
+          var filterGuilgee = guilgeeKhiisenFilter?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "avlaga" && e.tailbar === b.tailbar);
+          if(filterGuilgee?.length > 0 && b.turul === "avlaga")
+            b.tulukhDun += filterGuilgee?.reduce((a, b) => a + (b.tulukhDun || 0), 0);
+
           var tempkhungulult = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khungulult");
           if(b.turul !== "khuvaari" || (tempkhungulult?.length === 0 && b.turul === "khuvaari"))
             niitTulukhDun += (b.tulukhDun || 0);
