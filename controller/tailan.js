@@ -1961,7 +1961,6 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
         var khungulultuusKhassanJagsaalt = [];
         var tempJagsaaltAvlaga = a.avlaga;
         var indexTemp = 3;
-        
         a.avlaga?.forEach((b) => {
           if(b.zardliinTurul === "management") 
             b.tailbar = "Менежментийн зардал";
@@ -1973,6 +1972,8 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             b.tailbar = "Халуун ус";
           if(b.zardliinTurul === "khuitenUs") 
             b.tailbar = "Хүйтэн ус";
+          if(b.tailbar === "Management")
+            b.tailbar = "Менежментийн төлбөр";
 
           var tempkhungulult = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khungulult");
           if(b.turul !== "khuvaari" || (tempkhungulult?.length === 0 && b.turul === "khuvaari"))
@@ -1980,7 +1981,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
           b.index = indexTemp;
           indexTemp++;
           if(b.turul === "avlaga" && (b.tailbar === "Менежментийн төлбөр" || b.tailbar === "Менежментийн зардал" || b.tailbar === "Менежмент"))
-            b.tariff = b.tulukhDun/(a._id?.talbainKhemjee || 1)
+            b.talbainKhemjee = a._id?.talbainKhemjee;
           if(b.turul === "khuvaari")
           {
             b.index = 0;
