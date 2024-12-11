@@ -1963,8 +1963,8 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
         var indexTemp = 3;
         
         var tempZardliinTurulFilter = a.avlaga.filter((o) => { return !!o.zardliinTurul});
-        var guilgeeKhiisenFilter = a.avlaga.filter((o) => { return !!o.guilgeeKhiisenAjiltniiId});
-        a.avlaga = a.avlaga.filter((o) => { return !o.zardliinTurul && !o.guilgeeKhiisenAjiltniiId});
+        // var guilgeeKhiisenFilter = a.avlaga.filter((o) => { return !!o.guilgeeKhiisenAjiltniiId});
+        a.avlaga = a.avlaga.filter((o) => { return !o.zardliinTurul }); // && !o.guilgeeKhiisenAjiltniiId
 
         a.avlaga?.forEach((b) => {
           var filter = tempZardliinTurulFilter?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khuvaari");
@@ -1979,9 +1979,9 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
           if(filterDulaan?.length > 0 && b.turul === "avlaga" && b.tailbar === "Дулаан")
             b.tulukhDun += filterDulaan?.reduce((a, b) => a + (b.tulukhDun || 0), 0);
 
-          var filterGuilgee = guilgeeKhiisenFilter?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "avlaga" && e.tailbar === b.tailbar);
-          if(filterGuilgee?.length > 0 && b.turul === "avlaga")
-            b.tulukhDun += filterGuilgee?.reduce((a, b) => a + (b.tulukhDun || 0), 0);
+          // var filterGuilgee = guilgeeKhiisenFilter?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "avlaga" && e.tailbar === b.tailbar);
+          // if(filterGuilgee?.length > 0 && b.turul === "avlaga")
+          //   b.tulukhDun += filterGuilgee?.reduce((a, b) => a + (b.tulukhDun || 0), 0);
 
           var tempkhungulult = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khungulult");
           if(b.turul !== "khuvaari" || (tempkhungulult?.length === 0 && b.turul === "khuvaari"))
