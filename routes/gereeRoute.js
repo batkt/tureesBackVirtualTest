@@ -1441,37 +1441,37 @@ router
                               {
                                 $eq: ["$avlaga.zardliinTurul", "turees"],
                               },
-                              "Түрээсийн төлбөр",
+                              "Түрээсийн төлбөр нэмэлт",
                               {
                                 $cond: [
                                   {
                                     $eq: ["$avlaga.zardliinTurul", "management"],
                                   },
-                                  "Менежментийн төлбөр",
+                                  "Менежментийн төлбөр нэмэлт",
                                   {
                                     $cond: [
                                       {
                                         $eq: ["$avlaga.zardliinTurul", "dulaan"],
                                       },
-                                      "Дулаан",
+                                      "Дулаан нэмэлт",
                                       {
                                         $cond: [
                                           {
                                             $eq: ["$avlaga.zardliinTurul", "khulaanUs"],
                                           },
-                                          "Халуун ус",
+                                          "Халуун ус нэмэлт",
                                           {
                                             $cond: [
                                               {
                                                 $eq: ["$avlaga.zardliinTurul", "khuitenUs"],
                                               },
-                                              "Хүйтэн ус",
+                                              "Хүйтэн ус нэмэлт",
                                               {
                                                 $cond: [
                                                   {
                                                     $eq: ["$avlaga.zardliinTurul", "tsakhilgaan"],
                                                   },
-                                                  "Цахилгаан",
+                                                  "Цахилгаан нэмэлт",
                                                   "$avlaga.tailbar",
                                                 ]
                                               }
