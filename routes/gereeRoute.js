@@ -1250,7 +1250,7 @@ router
                           $nin: ["baritsaa"],
                         },
                         "avlaga.guilgeenuud.ognoo": {
-                          $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
+                          $lt: new Date(req.body.ekhlekhOgnoo),
                         },
                       },
                     },
