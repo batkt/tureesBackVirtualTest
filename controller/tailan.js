@@ -1962,8 +1962,6 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
         var tempJagsaaltAvlaga = a.avlaga;
         var indexTemp = 3;
         a.avlaga?.forEach((b) => {
-          if(b.zardliinTurul === "management") 
-            b.tailbar = "Менежментийн зардал";
           if(b.zardliinTurul === "dulaan") 
             b.tailbar = "Дулаан";
           if(b.zardliinTurul === "tsakhilgaan") 
@@ -1972,7 +1970,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             b.tailbar = "Халуун ус";
           if(b.zardliinTurul === "khuitenUs") 
             b.tailbar = "Хүйтэн ус";
-          if(b.tailbar === "Management")
+          if(b.tailbar === "Management" || b.zardliinTurul === "management")
             b.tailbar = "Менежментийн төлбөр";
 
           var tempkhungulult = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khungulult");
