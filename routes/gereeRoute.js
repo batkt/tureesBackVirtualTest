@@ -1267,6 +1267,21 @@ router
                             $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
                           },
                         },
+                      },
+                    },
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.turul": {
+                          $nin: ["baritsaa"],
+                        },
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
+                        },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
                         tulsun: {
                           $sum: {
                             $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
