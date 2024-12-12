@@ -1436,7 +1436,55 @@ router
                       $group: {
                         _id: {
                           gereeniiDugaar: "$gereeniiDugaar",
-                          tailbar: "$avlaga.tailbar",
+                          tailbar: {
+                            $cond: [
+                              {
+                                $eq: ["$avlaga.zardliinTurul", "turees"],
+                              },
+                              "Түрээсийн төлбөр",
+                              {
+                                $cond: [
+                                  {
+                                    $eq: ["$avlaga.zardliinTurul", "management"],
+                                  },
+                                  "Менежментийн төлбөр",
+                                  {
+                                    $cond: [
+                                      {
+                                        $eq: ["$avlaga.zardliinTurul", "dulaan"],
+                                      },
+                                      "Дулаан",
+                                      {
+                                        $cond: [
+                                          {
+                                            $eq: ["$avlaga.zardliinTurul", "khulaanUs"],
+                                          },
+                                          "Халуун ус",
+                                          {
+                                            $cond: [
+                                              {
+                                                $eq: ["$avlaga.zardliinTurul", "khuitenUs"],
+                                              },
+                                              "Хүйтэн ус",
+                                              {
+                                                $cond: [
+                                                  {
+                                                    $eq: ["$avlaga.zardliinTurul", "tsakhilgaan"],
+                                                  },
+                                                  "Цахилгаан",
+                                                  "$avlaga.tailbar",
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ] 
+                                  }
+                                ] 
+                              }
+                            ]
+                          },
                         },
                         khemjikhNegj: { $max: "$avlaga.khemjikhNegj" },
                         negj: {
