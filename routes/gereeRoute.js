@@ -1238,6 +1238,39 @@ router
                       },
                     },
                   ],
+                  umnukhSariinTulsun: [
+                    {
+                      $unwind: {
+                        path: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.turul": {
+                          $nin: ["baritsaa"],
+                        },
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
+                        },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        tulsun: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                          },
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        uldegdel: "$tulsun",
+                      },
+                    },
+                  ],
                   umnukhSariinUrTulbur: [
                     {
                       $unwind: {
@@ -1270,34 +1303,12 @@ router
                       },
                     },
                     {
-                      $match: {
-                        "avlaga.guilgeenuud.turul": {
-                          $nin: ["baritsaa"],
-                        },
-                        "avlaga.guilgeenuud.ognoo": {
-                          $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
-                        },
-                      },
-                    },
-                    {
-                      $group: {
-                        _id: "$gereeniiDugaar",
-                        tulsun: {
-                          $sum: {
-                            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                          },
-                        },
-                      },
-                    },
-                    {
                       $project: {
                         gereeniiDugaar: "$gereeniiDugaar",
                         uldegdel: {
                           $subtract: [
                             "$tulukh",
-                            {
-                              $sum: ["$tulsun", "$khyamdral"],
-                            },
+                            "$khyamdral",
                           ],
                         },
                       },
@@ -1547,10 +1558,15 @@ router
                   gereenuud[0].eneSardTulukhDun.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;
+                x.umnukhSariinTulsun =
+                  gereenuud[0].umnukhSariinTulsun?.find(
+                    (a) => a._id == x.gereeniiDugaar
+                  )?.uldegdel || 0;  
                 x.umnukhSariinUrTulbur =
                   gereenuud[0].umnukhSariinUrTulbur.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;
+                x.umnukhSariinUrTulbur = x.umnukhSariinUrTulbur - x.umnukhSariinTulsun;
                 x.niitUldegdel =
                   gereenuud[0].niitUldegdel.find(
                     (a) => a._id == x.gereeniiDugaar
