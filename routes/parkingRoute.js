@@ -1521,11 +1521,18 @@ router.route("/v1/pay").post(async (req, res, next) => {
     var tukhainZogsool;
     var success = true;
     var bodsonDun = 0;
+    var localEsekh = !!req.body.baiguullagiinId;
+    if (localEsekh) {
+      kholboltuud = kholboltuud.filter(
+        (a) => a.baiguullagiinId == req.body.baiguullagiinId
+      );
+    }
     if (kholboltuud) {
+      var query = { tokiNer: { $exists: true } }
+      if(!!req.body.baiguullagiinId)
+        query["baiguullagiinId"] = req.body.baiguullagiinId;
       for await (const kholbolt of kholboltuud) {
-        var zogsooluud = await Parking(kholbolt).find({
-          tokiNer: { $exists: true },
-        });
+        var zogsooluud = await Parking(kholbolt).find(query);
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
               oldsonMashin = await Uilchluulegch(kholbolt).findOne({

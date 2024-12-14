@@ -30,6 +30,7 @@ const mashinSchema = new Schema(
     duusakhOgnoo: Date,
     gereeniiId: String,
     khariltsagchiinNer: String,
+    cameraIP: String,
   },
   {
     timestamps: true,
