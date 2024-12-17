@@ -1711,37 +1711,75 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                     {
                       $eq: ["$avlaga.guilgeenuud.tailbar", "Менежмент"],
                     },
+                    {
+                      $eq: ["$avlaga.guilgeenuud.zardliinTurul", "management"],
+                    },
                   ]
                 },
                 "management",
                 {
                   $cond: [
                     {
-                      $eq: ["$avlaga.guilgeenuud.tailbar", "Дулаан"],
+                      $or: [
+                        {
+                          $eq: ["$avlaga.guilgeenuud.tailbar", "Дулаан"],
+                        },
+                        {
+                          $eq: ["$avlaga.guilgeenuud.zardliinTurul", "dulaan"],
+                        },
+                      ]
                     },  
                     "dulaan",
                     {
                       $cond: [
                         {
-                          $eq: ["$avlaga.guilgeenuud.tailbar", "Цахилгаан"],
+                          $or: [
+                            {
+                              $eq: ["$avlaga.guilgeenuud.tailbar", "Цахилгаан"],
+                            },
+                            {
+                              $eq: ["$avlaga.guilgeenuud.zardliinTurul", "tsakhilgaan"],
+                            },
+                          ]
                         },  
                         "tsahilgaan",
                         {
                           $cond: [
                             {
-                              $eq: ["$avlaga.guilgeenuud.tailbar", "Халуун ус"],
+                              $or: [
+                                {
+                                  $eq: ["$avlaga.guilgeenuud.tailbar", "Халуун ус"],
+                                },
+                                {
+                                  $eq: ["$avlaga.guilgeenuud.zardliinTurul", "khulaanUs"],
+                                },
+                              ]
                             },  
                             "khaluunUs",
                             {
                               $cond: [
                                 {
-                                  $eq: ["$avlaga.guilgeenuud.tailbar", "Хүйтэн ус"],
+                                  $or: [
+                                    {
+                                      $eq: ["$avlaga.guilgeenuud.tailbar", "Хүйтэн ус"],
+                                    }, 
+                                    {
+                                      $eq: ["$avlaga.guilgeenuud.zardliinTurul", "khuitenUs"],
+                                    },
+                                  ]
                                 },  
                                 "khuitenUs",
                                 {
                                   $cond: [
                                     {
-                                      $eq: ["$avlaga.guilgeenuud.ekhniiUldegdelEsekh", true]
+                                      $and: [
+                                        {
+                                          $eq: ["$avlaga.guilgeenuud.zardliinTurul", "turees"],
+                                        },
+                                        {
+                                          $eq: ["$avlaga.guilgeenuud.ekhniiUldegdelEsekh", true],
+                                        }, 
+                                      ]
                                     },
                                     "ekhniiUldegdel",
                                     "turees",
