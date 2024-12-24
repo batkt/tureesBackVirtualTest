@@ -844,13 +844,14 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   }
   else
     match["avlaga.guilgeenuud.ognoo"] = { $lte: new Date(), }
+  var valTuluv = req.body.tsutsalsanTurul ? { $in: [-1] } : { $nin: [-1] }
   var query = [
     {
       $match: {
         gereeniiDugaar: req.body.gereeniiDugaar,
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
-        tuluv: { $nin: [-1] },
+        tuluv: valTuluv,
       },
     },
     {

@@ -155,10 +155,10 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     var barilgiinId = req.body.barilgiinId;
     var match = {
       "avlaga.guilgeenuud.ognoo": {
-        $lt: ekhlekhOgnoo,
+        $lte: new Date(moment(req.body.duusakhOgnoo).endOf("month").format("YYYY-MM-DD 23:59:59")),
       },
       "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa"],
+        $nin: ["baritsaa", "aldangi"],
       },
       baiguullagiinId: req.body.baiguullagiinId,
       tuluv: {
@@ -264,7 +264,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $lte: duusakhOgnoo,
       },
       "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa"],
+        $nin: ["baritsaa", "aldangi"],
       },
       baiguullagiinId: req.body.baiguullagiinId,
       tuluv: {
@@ -329,12 +329,12 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     var khugatsaaKhetersen = await gereeObject.aggregate(query);
     match = {
       "avlaga.guilgeenuud.ognoo": {
-        $gte: ekhlekhOgnoo,
-        $lte: duusakhOgnoo,
+        $lte: new Date(req.body.duusakhOgnoo),
+        $gte: new Date(req.body.ekhlekhOgnoo),
       },
       baiguullagiinId: req.body.baiguullagiinId,
       "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa"],
+        $nin: ["baritsaa", "aldangi"],
       },
       tuluv: {
         $ne: -1,
@@ -385,7 +385,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
       baiguullagiinId: req.body.baiguullagiinId,
       "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa"],
+        $nin: ["baritsaa", "aldangi"],
       },
     }
     if(!!barilgiinId)
@@ -417,7 +417,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $lte: duusakhOgnoo,
       },
       "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa"],
+        $nin: ["baritsaa",  "aldangi"],
       },
       baiguullagiinId: req.body.baiguullagiinId,
       tuluv: {
@@ -470,7 +470,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       {
         $match: {
           "avlaga.guilgeenuud.turul": {
-            $nin: ["baritsaa"],
+            $nin: ["baritsaa", "aldangi"],
           },
           "avlaga.guilgeenuud.ognoo": {
             $lte: duusakhOgnoo,
@@ -820,7 +820,7 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
           },
           baiguullagiinId: req.body.baiguullagiinId,
           "avlaga.guilgeenuud.turul": {
-            $nin: ["baritsaa"],
+            $nin: ["baritsaa", "aldangi"],
           },
           tuluv: {
             $ne: -1,
@@ -865,7 +865,7 @@ exports.khyanakhSambariinUgugdul = asyncHandler(async (req, res, next) => {
           },
           baiguullagiinId: req.body.baiguullagiinId,
           "avlaga.guilgeenuud.turul": {
-            $nin: ["baritsaa"],
+            $nin: ["baritsaa", "aldangi"],
           },
         },
       },

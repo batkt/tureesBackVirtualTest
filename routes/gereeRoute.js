@@ -2623,7 +2623,7 @@ router
                     $lte: new Date(req.body.duusakhOgnoo),
                   },
                   "avlaga.guilgeenuud.turul": {
-                    $ne: "baritsaa",
+                    $nin: ["baritsaa", "aldangi"],
                   },
                 },
               },
@@ -2668,13 +2668,9 @@ router
                     $lte: new Date(req.body.duusakhOgnoo),
                     $gte: new Date(req.body.ekhlekhOgnoo),
                   },
-                  $or: [
-                    {
-                      "avlaga.guilgeenuud.turul": {
-                        $nin: ["baritsaa"],
-                      },
-                    },
-                  ],
+                  "avlaga.guilgeenuud.turul": {
+                    $nin: ["baritsaa", "aldangi"],
+                  },
                 },
               },
               {
