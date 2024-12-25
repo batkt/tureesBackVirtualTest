@@ -2733,7 +2733,7 @@ router
                   gereenuud[0].niitUldegdel.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;
-                // if (x.tuluvluguut < 0) x.tuluvluguut = 0;
+                if (x.tuluvluguut < 0) x.tuluvluguut = 0;
                 if (x.niitUldegdel < 0) x.niitUldegdel = 0;
               });
             res.send(result);

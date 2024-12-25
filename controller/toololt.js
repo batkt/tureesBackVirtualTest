@@ -353,7 +353,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
       {
         $group: {
-          _id: "tulukh",
+          _id: "$gereeniiDugaar",
           tulukh: {
             $sum: {
               $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -374,7 +374,13 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         },
       },
     ];
-    var eneSardTulukh = await gereeObject.aggregate(query);
+    var eneSardTulukhJagsaalt = await gereeObject.aggregate(query);
+    var eneSardTulukh = [];
+    if(eneSardTulukhJagsaalt?.length > 0)
+      eneSardTulukh.push({dun: eneSardTulukhJagsaalt?.reduce((a, b) => a + (b.dun < 0 ? 0 : b.dun), 0)});
+    else
+      eneSardTulukh.push({dun: 0});
+    
     match = {
       "avlaga.guilgeenuud.ognoo": {
         $gte: ekhlekhOgnoo,
