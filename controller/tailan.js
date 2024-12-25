@@ -1635,10 +1635,42 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         if(!!bankDun?._id?.dansniiDugaar)
         {
           var filterDans = await Dans(req.body.tukhainBaaziinKholbolt).findOne({dugaar: bankDun._id.dansniiDugaar});
-          bankDun._id.turul = filterDans.bank;
+          bankDun._id.turul = filterDans?.bank;
         }
       }
-      
+
+      var aldangiDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $match: {
+            tuluv: { $ne: -1, },  
+          }  
+        },
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $match: {
+            "avlaga.guilgeenuud.turul": {
+              $in: ["aldangi"],
+            },
+            "avlaga.guilgeenuud.ognoo": {
+              $gte: new Date(req.params.ekhlekhOgnoo),
+              $lte: new Date(req.params.duusakhOgnoo),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: { turul: "$avlaga.guilgeenuud.turul", register: "$register" },
+            dun: {
+              $sum: "$avlaga.guilgeenuud.tulsunAldangi",
+            },
+          },
+        },
+      ]);
+
       var khungulultiinDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
         {
           $match: {
@@ -1832,6 +1864,13 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
             {
               for( const row of filterTulukhDun)
                 mur[row._id.turul] = row.tulukhDun;
+            }
+
+            var filterAldangi = aldangiDunguud?.filter((a) => a._id?.register === register?._id);
+            if(filterAldangi?.length > 0)
+            {
+              for( const row of filterAldangi)
+                mur[row._id.turul] = row.dun;
             }
             data.push(mur);
           }

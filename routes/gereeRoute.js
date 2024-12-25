@@ -2717,6 +2717,7 @@ router
         if (!!body?.search) body.search = String(body.search);
         console.log("turJagsaalt", turJagsaalt);
         body.query["gereeniiDugaar"] = { $in: turJagsaalt };
+        body.query["tuluv"] = { $ne: -1 },
         body.lean = true;
 
         console.log("body", body);
