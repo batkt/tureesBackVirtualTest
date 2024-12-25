@@ -393,6 +393,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       "avlaga.guilgeenuud.turul": {
         $nin: ["baritsaa", "aldangi"],
       },
+      tuluv: {
+        $ne: -1,
+      },
     }
     if(!!barilgiinId)
       match["barilgiinId"] = barilgiinId
