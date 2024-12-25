@@ -515,13 +515,13 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           },
         },
       },
-      {
-        $match: {
-          dun: {
-            $gt: 0,
-          },
-        },
-      },
+      // {
+      //   $match: {
+      //     dun: {
+      //       $gt: 0,
+      //     },
+      //   },
+      // },
       {
         $group: {
           _id: "tsutslagdsanAvlaga",

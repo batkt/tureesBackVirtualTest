@@ -2702,9 +2702,8 @@ router
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(
         query
       );
-      console.log(gereenuud);
       if (gereenuud.length < 0 || gereenuud[0].tuluvluguut.length < 1)
-        res.send(null);
+        res.send([]);
       else {
         var turJagsaalt = [];
         gereenuud[0].tuluvluguut.forEach((x) => {
