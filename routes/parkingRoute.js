@@ -2282,7 +2282,6 @@ router.post("/zogsoolMobileSdk", tokenShalgakh, async (req, res, next) => {
   try {
     console.log("mashiniiDugaar ----------------->>" + req.body.mashiniiDugaar);
     console.log("cameraIP ----------------->>" + req.body.cameraIP);
-    console.log("qpayObject ----------------->>" + JSON.stringify(req.body.qpayObject));
     if(req.body.baiguullagiinId === "6715ef2ca5cefb3e54505428")
     {
       const io = req.app.get("socketio");
@@ -2293,7 +2292,6 @@ router.post("/zogsoolMobileSdk", tokenShalgakh, async (req, res, next) => {
           turul: "qpayMobile",
           mashiniiDugaar: req.body.mashiniiDugaar,
           cameraIP: req.body.cameraIP,
-          qpayObject: req.body.qpayObject,
         });
       }
     }
