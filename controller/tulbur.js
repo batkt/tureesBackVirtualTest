@@ -578,7 +578,14 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 var bulkOps = [];
                 for (const geree of gereenuud) {
                   if (
-                    geree.uldegdel > 0 
+                    geree.uldegdel > 0 &&
+                    new Date() >
+                      new Date(
+                        moment(new Date(geree._id.daraagiinTulukhOgnoo)).add(
+                          aldangiChuluulukhKhonog,
+                          "days"
+                        )
+                      )
                   ) {
                     var bodogdsonKhuu = tooZasyaSync(
                       (geree.uldegdel * aldagiinKhuvi) / 100
