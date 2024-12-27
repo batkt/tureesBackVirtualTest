@@ -1653,11 +1653,14 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         {
           $match: {
             "avlaga.guilgeenuud.turul": {
-              $in: ["aldangi"],
+              $in: ["bank", "aldangi"],
             },
             "avlaga.guilgeenuud.ognoo": {
               $gte: new Date(req.params.ekhlekhOgnoo),
               $lte: new Date(req.params.duusakhOgnoo),
+            },
+            "avlaga.guilgeenuud.tulsunAldangi": {
+              $gt: 0,
             },
           },
         },
