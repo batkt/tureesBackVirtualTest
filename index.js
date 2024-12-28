@@ -109,17 +109,17 @@ zuragPack(app);
 
 app.use(aldaaBarigch);
 
-cron.schedule(
-  "*/5 * * * * ",
-  function () {
-    // console.log("xuulga tatlaa", new Date());
-    cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
+// cron.schedule(
+//   "*/5 * * * * ",
+//   function () {
+//     // console.log("xuulga tatlaa", new Date());
+//     cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 
 cron.schedule(
   "59 23 * * *",

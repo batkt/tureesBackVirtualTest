@@ -95,4 +95,54 @@ router
       });
   });
 
+  router
+  .route("/davkhardsanDansniiKhuulga")
+  .post(tokenShalgakh, async (req, res, next) => {  
+    let query = [
+      {
+        $match: {
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          NtryRef: '912701023763',
+        },
+        $group: {
+          _id: "$NtryRef",
+          countRef: {
+            $sum: 1,
+          },
+        },
+      }]
+
+    var result = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).aggregate(query);
+    var filterResult = result?.filter((e) => e.countRef > 1);
+    var ustgakhIds = [];
+    for await (const val of filterResult)
+    {
+      var match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        NtryRef: val?._id
+      }
+      var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
+      if(resultRef?.length > 0)
+      {
+        var filterKholboson =  resultRef?.filter((e) => e.kholbosonTalbainId?.length > 0);
+        if(filterKholboson?.length > 0)
+        {
+          var filterRemove = resultRef?.filter((e) => e.kholbosonTalbainId?.length === 0);
+          ustgakhIds.push(...filterRemove?.map((e) => e._id));
+        }
+        else
+        {
+          var ustgakhJagsaalt = [];
+          ustgakhJagsaalt.push(resultRef[0]);
+          var fRemove = resultRef.filter((el) => !ustgakhJagsaalt.includes(el));
+          ustgakhIds.push(...fRemove?.map((e) => e._id));
+        }
+      }
+    }
+    await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: ustgakhIds }, });
+    res.send(ustgakhIds);
+  });
+
 module.exports = router;
