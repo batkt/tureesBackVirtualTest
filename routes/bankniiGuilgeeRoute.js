@@ -103,7 +103,8 @@ router
         $match: {
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
-          NtryRef: '912701023763',
+          // NtryRef: '912701023763',
+          NtryRef: '912600843246'
         },
       },
       {
