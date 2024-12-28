@@ -119,7 +119,6 @@ router
 
     var result = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).aggregate(query);
     var filterResult = result?.filter((e) => e.countRef > 1);
-    var ustgakhIds = [];
     for await (const val of filterResult)
     {
       match = {
@@ -134,19 +133,18 @@ router
         if(filterKholboson?.length > 0)
         {
           var filterRemove = resultRef?.filter((e) => e.kholbosonTalbainId?.length === 0);
-          ustgakhIds.push(...filterRemove?.map((e) => e._id));
+          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: filterRemove?.map((e) => e._id) }, });
         }
         else
         {
           var ustgakhJagsaalt = [];
           ustgakhJagsaalt.push(resultRef[0]);
           var fRemove = resultRef.filter((el) => !ustgakhJagsaalt.includes(el));
-          ustgakhIds.push(...fRemove?.map((e) => e._id));
+          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: fRemove?.map((e) => e._id) }, });
         }
       }
     }
-    await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: ustgakhIds }, });
-    res.send(ustgakhIds);
+    res.send("Амжилт");
   });
 
 module.exports = router;
