@@ -105,6 +105,8 @@ router
           barilgiinId: req.body.barilgiinId,
           NtryRef: '912701023763',
         },
+      },
+      {
         $group: {
           _id: "$NtryRef",
           countRef: {
