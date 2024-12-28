@@ -97,15 +97,16 @@ router
 
   router
   .route("/davkhardsanDansniiKhuulga")
-  .post(tokenShalgakh, async (req, res, next) => {  
+  .post(tokenShalgakh, async (req, res, next) => {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+    }
+    if(!!req.body.NtryRef)  
+      match["NtryRef"] = req.body.NtryRef
     let query = [
       {
-        $match: {
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-          // NtryRef: '912701023763',
-          NtryRef: '912600843246'
-        },
+        $match: match,
       },
       {
         $group: {
@@ -121,7 +122,7 @@ router
     var ustgakhIds = [];
     for await (const val of filterResult)
     {
-      var match = {
+      match = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
         NtryRef: val?._id
