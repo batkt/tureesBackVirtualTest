@@ -711,7 +711,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       for await (const kholbolt of kholboltuud) {
         if (!req)
           dansnuud = await Dans(kholbolt)
-            .find({ corporateAshiglakhEsekh: true })
+            .find({ corporateAshiglakhEsekh: true, oirkhonTatakhEsekh: { $exists: false }, })
             .lean();
         else if (req.body.dansniiDugaar) {
           dansnuud = await Dans(kholbolt)
