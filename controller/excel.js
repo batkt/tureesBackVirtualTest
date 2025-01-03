@@ -2269,6 +2269,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
     var ashiglaltiinZardal = await AshiglaltiinZardluud(
       req.body.tukhainBaaziinKholbolt
     ).findById(req.body.ashiglaltiinId);
@@ -2301,6 +2302,14 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           tolgoinObject.umnukhZaalt = cellAsString[0];
         else if (sheet[cellAsString].v.includes("Одоогийн заалт"))
           tolgoinObject.suuliinZaalt = cellAsString[0];
+
+        if(baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
+        {
+          if (sheet[cellAsString].v.includes("Гүйдлийн коэффициент"))
+            tolgoinObject.guidliinKoep = cellAsString[0];
+          else if (sheet[cellAsString].v.includes("Бичилтийн хоног"))
+            tolgoinObject.bichiltKhonog = cellAsString[0];
+        }
       }
     }
     var data = xlsx.utils.sheet_to_json(sheet, {
@@ -2320,6 +2329,11 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         mur[usegTooruuKhurvuulekh(tolgoinObject.umnukhZaalt)];
       object.suuliinZaalt =
         mur[usegTooruuKhurvuulekh(tolgoinObject.suuliinZaalt)];
+      if(baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)  
+      {
+        object.guidliinKoep = mur[usegTooruuKhurvuulekh(tolgoinObject.guidliinKoep)];
+        object.bichiltKhonog = mur[usegTooruuKhurvuulekh(tolgoinObject.bichiltKhonog)];    
+      }
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
       object.ognoo = new Date(req.body.ognoo);
@@ -2507,6 +2521,15 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           }
         }
         var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
+        var tsakhilgaanDun = 0;
+        var tsakhilgaanKBTST = 0;
+        if(baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
+        {
+          tsakhilgaanKBTST = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (tukhainZardal.guidliinKoep || 1)
+          tsakhilgaanDun = tukhainZardal.bichiltKhonog > 0 && tsakhilgaanKBTST > 0 && ashiglaltiinZardal.tariff > 0 ? (tsakhilgaanKBTST/tukhainZardal.bichiltKhonog/12 * ashiglaltiinZardal.tariff) : ashiglaltiinZardal.tariff * tsakhilgaanKBTST
+        }
+        else
+          tsakhilgaanDun = ashiglaltiinZardal.tariff * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (zoruuDun || 0);
         var tempDun =
           (ashiglaltiinZardal.ner === "Хүйтэн ус" ||
             ashiglaltiinZardal.ner === "Халуун ус") &&
@@ -2516,9 +2539,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
               (ashiglaltiinZardal.ner === "Халуун ус"
                 ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
                 : 0)
-            : ashiglaltiinZardal.tariff *
-              (ashiglaltiinZardal.tsakhilgaanUrjver || 1) *
-              (zoruuDun || 0);
+            : tsakhilgaanDun;
         console.log("tempDun", tempDun);
         updateObject = {
           turul: "avlaga",
@@ -2537,6 +2558,9 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
               : 0,
           suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj || 0,
           tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver || 1,
+          tsakhilgaanKBTST: tsakhilgaanKBTST || 0,
+          guidliinKoep: tukhainZardal.guidliinKoep || 0,
+          bichiltKhonog: tukhainZardal.bichiltKhonog || 0,
           ognoo: tukhainZardal.ognoo,
           gereeniiId: geree._id,
           tailbar: ashiglaltiinZardal.ner,
@@ -2588,7 +2612,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
 exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Тоолуур");
-  worksheet.columns = [
+  var addCol = [
     {
       header: "Регистр",
       key: "Регистр",
@@ -2614,7 +2638,30 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
       key: "Одоогийн заалт",
       width: 30,
     },
-  ];
+  ]
+
+  const { db } = require("zevbackv2");
+  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
+  if(baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
+  {
+    console.log("-------------->>" + baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh);
+    var temp = [
+      {
+        header: "Гүйдлийн коэффициент",
+        key: "Гүйдлийн коэффициент",
+        width: 30,
+      },
+      {
+        header: "Бичилтийн хоног",
+        key: "Бичилтийн хоног",
+        width: 30,
+      },
+    ];
+    addCol.push(...temp);
+  }
+  worksheet.columns = addCol;
+
+  
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

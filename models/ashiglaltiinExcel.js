@@ -15,6 +15,8 @@ const ashiglaltiinExcelSchema = new Schema(
     talbainDugaar: String,
     umnukhZaalt: Number,
     suuliinZaalt: Number,
+    guidliinKoep: Number,
+    bichiltKhonog: Number,
     tariff: Number,
     zoruu: Number,
     niitDun: Number,

@@ -11,6 +11,7 @@ const { tokenShalgakh, crud, UstsanBarimt, Segment } = require("zevbackv2");
 const moment = require("moment");
 const uploadFile = multer({ storage: storage });
 const ZassanBarimtShalgakh = require("../components/zassanBarimtShalgakh");
+const Baiguullaga = require("../models/baiguullaga");
 
 crud(router, "talbai", Talbai, UstsanBarimt, async (req, res, next) => {
   try {
@@ -349,18 +350,23 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
             }
           });
         });
+        const { db } = require("zevbackv2");
+        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
+        var setMatch = {
+          "avlaga.guilgeenuud": khuvaariud,
+          talbainDugaar: talbai.kod,
+          talbainNegjUne: talbai.talbainNegjUne,
+          talbainNiitUne: talbai.talbainNiitUne,
+          sariinTurees: talbai.talbainNiitUne,
+          talbainKhemjee: talbai.talbainKhemjee,
+          davkhar: talbai.davkhar,
+        }
+        if(baiguullaga?.tokhirgoo?.baritsaaUneAdiltgakhEsekh)
+          setMatch["baritsaaAvakhDun"] = talbai.talbainNiitUne;
         await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
           { _id: geree._id },
           {
-            $set: {
-              "avlaga.guilgeenuud": khuvaariud,
-              talbainDugaar: talbai.kod,
-              talbainNegjUne: talbai.talbainNegjUne,
-              talbainNiitUne: talbai.talbainNiitUne,
-              sariinTurees: talbai.talbainNiitUne,
-              talbainKhemjee: talbai.talbainKhemjee,
-              davkhar: talbai.davkhar,
-            },
+            $set: setMatch,
           }
         );
       }

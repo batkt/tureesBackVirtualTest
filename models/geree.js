@@ -39,6 +39,9 @@ var avlagiinTurul = new Schema({
       usKhalaasanDun: Number,
       suuriKhuraamj: Number,
       tsakhilgaanUrjver: Number, //tsakhilgaanii coefficent
+      tsakhilgaanKBTST: Number,
+      guidliinKoep: Number,
+      bichiltKhonog: Number,
     },
   ],
   baritsaa: [
