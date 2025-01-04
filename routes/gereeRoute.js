@@ -80,6 +80,7 @@ const {
 const Baiguullaga = require("../models/baiguullaga");
 const ZassanBarimt = require("../models/zassanBarimt");
 const ZassanBarimtShalgakh = require("../components/zassanBarimtShalgakh");
+const testgeree = require("../models/testgeree");
 
 crud(router, "zassanBarimt", ZassanBarimt);
 
@@ -3064,25 +3065,27 @@ router
 router
 .route("/gereeUneZasya")  
 .post(tokenShalgakh, async (req, res, next) => {
-  const { db } = require("zevbackv2");
-  var kholboltuud = db.kholboltuud;
-  for(const val of kholboltuud)
+  var oldGeree = await testgeree(req.body.tukhainBaaziinKholbolt).find({gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 }}).select("+avlaga");
+  if(oldGeree?.length > 0)
   {
-    console.log("baaziinNer -------------->"+val.baaziinNer);
+    var tempGeree = oldGeree[0]?.avlaga?.guilgeenuud.filter((e) => e.turul === "khuvaari" && e.ognoo < new Date(moment("2024-12-31").format("YYYY-MM-DD 23:59:59")));
+    if(tempGeree?.length > 0)
+    {
+      await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
+        {
+          $pull: { "avlaga.guilgeenuud": { turul: "khuvaari", ognoo: { $lt: new Date(moment("2024-12-31").format("YYYY-MM-DD 23:59:59")) } } },
+        }
+      );
+      await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
+        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
+        { $push: { "avlaga.guilgeenuud": { $each: tempGeree } } }
+      );
+      res.send("Amjilttai");
+    }
   }
-  // kholboltuud = kholboltuud.filter((a) => a.baaziinNer === "test");  
-  // var oldGeree = await Geree(kholboltuud[0]).find({gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 }}).select("+avlaga");
-  // var geree = await Geree(req.body.tukhainBaaziinKholbolt).find({gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 }}).select("+avlaga");
-  // if(oldGeree?.length > 0 && geree?.length > 0)
-  // {
-  //   var tempGeree = geree[0].avlaga?.guilgeenuud.filter((e) => e.turul === "khuvaari" && e.ognoo <= new Date(moment("2024-11-11").format("YYYY-MM-DD 23:59:59")));
-  //   oldGeree[0]?.avlaga?.guilgeenuud.push(...tempGeree);
-  //   console.log("------------------->>>"+ JSON.stringify(oldGeree[0]?.avlaga?.guilgeenuud));
-  //   res.send("Amjilttai");
-  // }
-  // else
-  //   res.send("Amjiltgui");
-  res.send("Amjiltgui");
+  else
+    res.send("Amjiltgui");
 });
 
 module.exports = router;
