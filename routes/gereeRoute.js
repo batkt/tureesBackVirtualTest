@@ -509,23 +509,9 @@ router
     try {
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
-      var oldAvlaga = [];
-      if(gereeOld?.avlaga?.guilgeenuud?.length > 0)
-      {
-        if(geree?.avlaga?.guilgeenuud?.length > 0)
-        {
-          var filterTulsunDun = gereeOld?.avlaga?.guilgeenuud?.filter((a) => !!a.guilgeeKhiisenAjiltniiNer || !!a.guilgeeKhiisenAjiltniiId || a.ekhniiUldegdelEsekh || a.tulsunDun > 0 || a.tulsunAldangi > 0 || a.khyamdral > 0 || a.suuliinZaalt > 0 || a.umnukhZaalt);
-          if(filterTulsunDun?.length > 0)
-          {
-            for (const data of filterTulsunDun)
-            {
-              var filGeree = geree?.avlaga?.guilgeenuud?.filter((a) => JSON.stringify(a._id) === JSON.stringify(data._id));
-              if(filGeree?.length === 0)
-                oldAvlaga.push(data);
-            }
-          }
-        }
-      }
+      var khuvaariud = gereeOld?.avlaga?.guilgeenuud;
+      khuvaariud = khuvaariud.filter((x) => x.ognoo <= new Date() || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId);
+      geree?.avlaga?.guilgeenuud.push(...khuvaariud);
       geree.tuluv = 1;
       
       await Geree(req.body.tukhainBaaziinKholbolt)
@@ -570,20 +556,20 @@ router
           );
           ZassanBarimtShalgakh.zassanBarimtShalgakh(gereeOld, geree, geree.gereeniiDugaar, "Geree", "Гэрээ", req.body);
         });
-        if(oldAvlaga)
-        {
-          await Geree(req.body.tukhainBaaziinKholbolt)
-          .updateOne(
-            {
-              _id: geree._id,
-            },
-            {
-              $push: {
-                ["avlaga.guilgeenuud"]: oldAvlaga,
-              },}
-          )
-          .then((result) => { });
-        }
+        // if(oldAvlaga)
+        // {
+        //   await Geree(req.body.tukhainBaaziinKholbolt)
+        //   .updateOne(
+        //     {
+        //       _id: geree._id,
+        //     },
+        //     {
+        //       $push: {
+        //         ["avlaga.guilgeenuud"]: oldAvlaga,
+        //       },}
+        //   )
+        //   .then((result) => { });
+        // }
       res.send("Amjilttai");
     } catch (err) {
       next(err);
