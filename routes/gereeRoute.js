@@ -556,20 +556,6 @@ router
           );
           ZassanBarimtShalgakh.zassanBarimtShalgakh(gereeOld, geree, geree.gereeniiDugaar, "Geree", "Гэрээ", req.body);
         });
-        // if(oldAvlaga)
-        // {
-        //   await Geree(req.body.tukhainBaaziinKholbolt)
-        //   .updateOne(
-        //     {
-        //       _id: geree._id,
-        //     },
-        //     {
-        //       $push: {
-        //         ["avlaga.guilgeenuud"]: oldAvlaga,
-        //       },}
-        //   )
-        //   .then((result) => { });
-        // }
       res.send("Amjilttai");
     } catch (err) {
       next(err);
