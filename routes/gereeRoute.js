@@ -511,6 +511,8 @@ router
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
       var khuvaariud = gereeOld?.avlaga?.guilgeenuud;
       khuvaariud = khuvaariud.filter((x) => x.ognoo <= new Date() || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId);
+      if(geree?.avlaga?.baritsaa?.length === 0)
+        geree?.avlaga?.baritsaa.push(...gereeOld?.avlaga?.baritsaa);
       geree?.avlaga?.guilgeenuud.push(...khuvaariud);
       geree.tuluv = 1;
       
