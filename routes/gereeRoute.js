@@ -3088,6 +3088,7 @@ router
         { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
         { $push: { "avlaga.guilgeenuud": { $each: tempGeree } } }
       );
+      res.send("Amjilttai");
     }
   }
   else
