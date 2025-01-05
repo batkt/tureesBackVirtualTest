@@ -3089,21 +3089,6 @@ router
         { $push: { "avlaga.guilgeenuud": { $each: tempGeree } } }
       );
     }
-    var tempGeree1 = oldGeree[0]?.avlaga?.guilgeenuud.filter((e) => turul === "khuvaari" && e.ognoo === new Date(moment(req.body.khuvaariOgnoo).format("YYYY-MM-DD 00:00:00")));
-    if(tempGeree1?.length > 0)
-    {
-      await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
-        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
-        {
-          $pull: { "avlaga.guilgeenuud": { turul: "khuvaari", ognoo: { $eq: new Date(moment(req.body.khuvaariOgnoo).format("YYYY-MM-DD 00:00:00")) } } },
-        }
-      );
-      await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
-        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
-        { $push: { "avlaga.guilgeenuud": { $each: tempGeree1 } } }
-      );
-      res.send("Amjilttai");
-    }
   }
   else
     res.send("Amjiltgui");
