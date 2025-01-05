@@ -3075,21 +3075,35 @@ router
         { $push: { "avlaga.baritsaa": { $each: oldGeree[0]?.avlaga?.baritsaa } } }
       );
     }
-    var tempGeree = oldGeree[0]?.avlaga?.guilgeenuud.filter((e) => e.ognoo < new Date(moment(req.body.ekhlekhOgnoo).format("YYYY-MM-DD 23:59:59")));
+    var tempGeree = oldGeree[0]?.avlaga?.guilgeenuud.filter((e) => turul !== "khuvaari" && e.ognoo < new Date(moment(req.body.ekhlekhOgnoo).format("YYYY-MM-DD 23:59:59")));
     if(tempGeree?.length > 0)
     {
       await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
         { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
         {
-          $pull: { "avlaga.guilgeenuud": { ognoo: { $lt: new Date(moment(req.body.ekhlekhOgnoo).format("YYYY-MM-DD 23:59:59")) } } },
+          $pull: { "avlaga.guilgeenuud": { turul: { $ne: "khuvaari" }, ognoo: { $lt: new Date(moment(req.body.ekhlekhOgnoo).format("YYYY-MM-DD 23:59:59")) } } },
         }
       );
       await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
         { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
         { $push: { "avlaga.guilgeenuud": { $each: tempGeree } } }
       );
-      res.send("Amjilttai");
     }
+    var tempGeree1 = oldGeree[0]?.avlaga?.guilgeenuud.filter((e) => turul === "khuvaari" && e.ognoo < new Date(moment(req.body.khuvaariOgnoo).format("YYYY-MM-DD 23:59:59")));
+    if(tempGeree1?.length > 0)
+    {
+      await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
+        {
+          $pull: { "avlaga.guilgeenuud": { turul: "khuvaari", ognoo: { $lt: new Date(moment(req.body.khuvaariOgnoo).format("YYYY-MM-DD 23:59:59")) } } },
+        }
+      );
+      await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
+        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
+        { $push: { "avlaga.guilgeenuud": { $each: tempGeree1 } } }
+      );
+    }
+    res.send("Amjilttai");
   }
   else
     res.send("Amjiltgui");
