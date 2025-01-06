@@ -3065,7 +3065,7 @@ router
 router
 .route("/gereeUneZasya")  
 .post(tokenShalgakh, async (req, res, next) => {
-  var oldGeree = await testgeree(req.body.tukhainBaaziinKholbolt).find({gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 }}).select("+avlaga");
+  var oldGeree = await testgeree(req.body.tukhainBaaziinKholbolt).find({gereeniiDugaar: req.body.gereeniiDugaarOld, tuluv: { $ne: -1 }}).select("+avlaga");
   if(oldGeree?.length > 0)
   {
     if(req.body.baritsaaInsert && oldGeree[0]?.avlaga?.baritsaa?.length > 0)
