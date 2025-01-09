@@ -75,7 +75,9 @@ const {
   gereeniiExcelAvya,
   gereeniiExcelTatya,
   tooluurZaaltZagvarAvya,
+  ekhniiUldegdelZagvarOruulya,
   tooluurZaaltOruulya,
+  ekhniiUldegdelOruulya,
 } = require("../controller/excel");
 const Baiguullaga = require("../models/baiguullaga");
 const ZassanBarimt = require("../models/zassanBarimt");
@@ -99,8 +101,14 @@ router
   .route("/tooluurZaaltZagvarAvya")
   .get(tokenShalgakh, tooluurZaaltZagvarAvya);
 router
+  .route("/ekhniiUldegdelZagvarOruulya")
+  .get(tokenShalgakh, ekhniiUldegdelZagvarOruulya);  
+router
   .route("/tooluurZaaltOruulya")
   .post(uploadFile.single("file"), tokenShalgakh, tooluurZaaltOruulya);
+router
+  .route("/ekhniiUldegdelOruulya")
+  .post(uploadFile.single("file"), tokenShalgakh, ekhniiUldegdelOruulya);  
 router
   .route("/tulultOlnoorKhadgalya")
   .post(tokenShalgakh, tulultOlnoorKhadgalya);

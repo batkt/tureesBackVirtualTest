@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
-const ashiglaltiinExcelSchema = new Schema(
+const ekhniiUldegdelExcelSchema = new Schema(
   {
     baiguullagiinId: String,
     barilgiinId: String,
@@ -13,23 +13,18 @@ const ashiglaltiinExcelSchema = new Schema(
     register: String,
     gereeniiDugaar: String,
     talbainDugaar: String,
-    umnukhZaalt: Number,
-    suuliinZaalt: Number,
-    guidliinKoep: Number,
     tariff: Number,
-    zoruu: Number,
-    niitDun: Number,
+    ekhniiUldegdel: Number,
+    tureesEkhniiUldegdelEsekh: Boolean,
   },
   {
     timestamps: true,
   }
 );
 
-//module.exports = mongoose.model("ashiglaltiinExcel", ashiglaltiinExcelSchema);
-
 module.exports = function a(conn) {
   if (!conn || !conn.kholbolt)
     throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
   conn = conn.kholbolt;
-  return conn.model("ashiglaltiinExcel", ashiglaltiinExcelSchema);
+  return conn.model("ekhniiUldegdelExcel", ekhniiUldegdelExcelSchema);
 };

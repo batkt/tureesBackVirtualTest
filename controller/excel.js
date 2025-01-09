@@ -8,6 +8,7 @@ const Talbai = require("../models/talbai");
 // const Mashin = require("../models/mashin");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const AshiglaltiinExcel = require("../models/ashiglaltiinExcel");
+const EkhniiUldegdelExcel = require("../models/ekhniiUldegdelExcel");
 const { Segment } = require("zevbackv2");
 const aldaa = require("../components/aldaa");
 const xlsx = require("xlsx");
@@ -23,7 +24,6 @@ const {
   uilchluulegchdiinToo,
   sdkData,
 } = require("parking-v1");
-const ashiglaltiinExcel = require("../models/ashiglaltiinExcel");
 
 function usegTooruuKhurvuulekh(useg) {
   if (!!useg) return useg.charCodeAt() - 65;
@@ -2307,8 +2307,6 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         {
           if (sheet[cellAsString].v.includes("Гүйдлийн коэффициент"))
             tolgoinObject.guidliinKoep = cellAsString[0];
-          else if (sheet[cellAsString].v.includes("Бичилтийн хоног"))
-            tolgoinObject.bichiltKhonog = cellAsString[0];
         }
       }
     }
@@ -2330,10 +2328,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
       object.suuliinZaalt =
         mur[usegTooruuKhurvuulekh(tolgoinObject.suuliinZaalt)];
       if(baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)  
-      {
         object.guidliinKoep = mur[usegTooruuKhurvuulekh(tolgoinObject.guidliinKoep)];
-        object.bichiltKhonog = mur[usegTooruuKhurvuulekh(tolgoinObject.bichiltKhonog)];    
-      }
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
       object.ognoo = new Date(req.body.ognoo);
@@ -2523,10 +2518,14 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
         var tsakhilgaanDun = 0;
         var tsakhilgaanKBTST = 0;
+        var chadalDun = 0;
+        var tsekhDun = 0;
         if(baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
         {
           tsakhilgaanKBTST = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (tukhainZardal.guidliinKoep || 1)
-          tsakhilgaanDun = tukhainZardal.bichiltKhonog > 0 && tsakhilgaanKBTST > 0 && ashiglaltiinZardal.tariff > 0 ? (tsakhilgaanKBTST/tukhainZardal.bichiltKhonog/12 * ashiglaltiinZardal.tariff) : ashiglaltiinZardal.tariff * tsakhilgaanKBTST
+          chadalDun = baiguullaga?.tokhirgoo?.bichiltKhonog > 0 && tsakhilgaanKBTST > 0 ? (tsakhilgaanKBTST/baiguullaga?.tokhirgoo?.bichiltKhonog/12 * 15500) : 0
+          tsekhDun = ashiglaltiinZardal.tariff * tsakhilgaanKBTST
+          tsakhilgaanDun = chadalDun + tsekhDun;
         }
         else
           tsakhilgaanDun = ashiglaltiinZardal.tariff * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (zoruuDun || 0);
@@ -2560,7 +2559,9 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver || 1,
           tsakhilgaanKBTST: tsakhilgaanKBTST || 0,
           guidliinKoep: tukhainZardal.guidliinKoep || 0,
-          bichiltKhonog: tukhainZardal.bichiltKhonog || 0,
+          bichiltKhonog: baiguullaga?.tokhirgoo?.bichiltKhonog || 0,
+          chadalDun: chadalDun || 0,
+          tsekhDun: tsekhDun || 0,
           ognoo: tukhainZardal.ognoo,
           gereeniiId: geree._id,
           tailbar: ashiglaltiinZardal.ner,
@@ -2651,11 +2652,6 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
         key: "Гүйдлийн коэффициент",
         width: 30,
       },
-      {
-        header: "Бичилтийн хоног",
-        key: "Бичилтийн хоног",
-        width: 30,
-      },
     ];
     addCol.push(...temp);
   }
@@ -2671,4 +2667,283 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
   return workbook.xlsx.write(res).then(function () {
     res.status(200).end();
   });
+});
+
+
+exports.ekhniiUldegdelZagvarOruulya = asyncHandler(async (req, res, next) => {
+  let workbook = new excel.Workbook();
+  let worksheet = workbook.addWorksheet("Эхний үлдэгдэл");
+  var addCol = [
+    {
+      header: "Регистр",
+      key: "Регистр",
+      width: 20,
+    },
+    {
+      header: "Гэрээний дугаар",
+      key: "Гэрээний дугаар",
+      width: 20,
+    },
+    {
+      header: "Талбайн дугаар",
+      key: "Талбайн дугаар",
+      width: 30,
+    },
+    {
+      header: "Үлдэгдэл",
+      key: "Үлдэгдэл",
+      width: 30,
+    },
+  ]
+  worksheet.columns = addCol;
+
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "attachment; filename=" + "Эхний үлдэгдэл"
+  );
+
+  return workbook.xlsx.write(res).then(function () {
+    res.status(200).end();
+  });
+});
+
+
+exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
+  try {
+    const workbook = xlsx.read(req.file.buffer);
+    if (workbook.SheetNames[0] !== "Эхний үлдэгдэл")
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    console.log("--------------->>>" + req.body.tureesEkhniiUldegdelEsekh);
+    console.log("--------------->>>" + req.body.ashiglaltiinId);
+    var ashiglaltiinZardal = {};
+    if(req.body.tureesEkhniiUldegdelEsekh === "false" && req.body.ashiglaltiinId)
+    {
+      ashiglaltiinZardal = await AshiglaltiinZardluud(req.body.tukhainBaaziinKholbolt).findById(req.body.ashiglaltiinId);
+      console.log("--------------->>>" + ashiglaltiinZardal?.ner);
+    }
+    
+    const jagsaalt = [];
+    var tolgoinObject = {};
+    var muriinDugaar = 1;
+    if (
+      !sheet["A1"].v.includes("Регистр") ||
+      !sheet["B1"].v.includes("Гэрээний дугаар") ||
+      !sheet["C1"].v.includes("Талбайн дугаар") ||
+      !sheet["D1"].v.includes("Үлдэгдэл")
+    ) {
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    }
+    for (let cell in sheet) {
+      var cellAsString = cell.toString();
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!sheet[cellAsString].v
+      ) {
+        if (sheet[cellAsString].v.includes("Регистр"))
+          tolgoinObject.register = cellAsString[0];
+        else if (sheet[cellAsString].v.includes("Гэрээний дугаар"))
+          tolgoinObject.gereeniiDugaar = cellAsString[0];
+        else if (sheet[cellAsString].v.includes("Талбайн дугаар"))
+          tolgoinObject.talbainDugaar = cellAsString[0];
+        else if (sheet[cellAsString].v.includes("Үлдэгдэл"))
+          tolgoinObject.ekhniiUldegdel = cellAsString[0];
+      }
+    }
+    var data = xlsx.utils.sheet_to_json(sheet, {
+      header: 1,
+      range: 1,
+    });
+    var aldaaniiMsg = "";
+    data.forEach((mur) => {
+      muriinDugaar++;
+      let object = new EkhniiUldegdelExcel(req.body.tukhainBaaziinKholbolt)();
+      object.register = mur[usegTooruuKhurvuulekh(tolgoinObject.register)];
+      object.gereeniiDugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.gereeniiDugaar)];
+      object.talbainDugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.talbainDugaar)];
+      object.ekhniiUldegdel = mur[usegTooruuKhurvuulekh(tolgoinObject.ekhniiUldegdel)];
+      object.baiguullagiinId = req.body.baiguullagiinId;
+      object.barilgiinId = req.body.barilgiinId;
+      object.ognoo = new Date(req.body.ognoo);
+      object.tureesEkhniiUldegdelEsekh = req.body.tureesEkhniiUldegdelEsekh;
+      if(req.body.tureesEkhniiUldegdelEsekh === "false" && !!ashiglaltiinZardal?._id)
+      {
+        object.zardliinId = ashiglaltiinZardal?._id;
+        object.zardliinNer = ashiglaltiinZardal?.ner;
+        object.tariff = ashiglaltiinZardal?.tariff;
+      }
+      if (!object.register && !object.gereeniiDugaar && !object.talbainDugaar) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          muriinDugaar +
+          " дугаар мөрөнд регистр, гэрээний дугаар, талбайн дугаар талбарын аль нэгийг бөглөнө үү! ";
+      } else jagsaalt.push(object);
+    });
+    var registeruud = [];
+    var talbainDugaaruud = [];
+    var gereeniiDugaaruud = [];
+    for await (const mur of jagsaalt) {
+      if (!!mur.register) {
+        registeruud.push(mur.register);
+      } else if (!!mur.talbainDugaar) {
+        talbainDugaaruud.push(mur.talbainDugaar);
+      } else if (!!mur.gereeniiDugaar) {
+        gereeniiDugaaruud.push(mur.gereeniiDugaar);
+      }
+    }
+    var niitGereenuud = [];
+    var oldooguiGeree = [];
+    if (registeruud.length > 0) {
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+        .find({
+          register: { $in: registeruud },
+          barilgiinId: req.body.barilgiinId,
+          tuluv: 1,
+        })
+        .select("+avlaga");
+      if (!!gereenuud) {
+        registeruud.forEach((a) => {
+          var oldsonGeree = gereenuud.find((b) => b.register === a);
+          if (!oldsonGeree) oldooguiGeree.push(a);
+        });
+        if (oldooguiGeree.length > 0) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            " Дараах регистрын дугаартай гэрээнүүд олдсонгүй! " +
+            oldooguiGeree.toString();
+        } else niitGereenuud.push(...gereenuud);
+      }
+    }
+    if (talbainDugaaruud.length > 0) {
+      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+        .find({
+          talbainDugaar: { $in: talbainDugaaruud },
+          barilgiinId: req.body.barilgiinId,
+          tuluv: 1,
+        })
+        .select("+avlaga");
+      if (!!gereenuud) {
+        oldooguiGeree = [];
+        talbainDugaaruud.forEach((a) => {
+          var oldsonGeree = gereenuud.find((b) => b.talbainDugaar === a);
+          if (!oldsonGeree) oldooguiGeree.push(a);
+        });
+        if (oldooguiGeree.length > 0) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            " Дараах талбайн дугаартай гэрээнүүд олдсонгүй! " +
+            oldooguiGeree.toString();
+        } else niitGereenuud.push(...gereenuud);
+      }
+    }
+    if (gereeniiDugaaruud.length > 0) {
+      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+        .find({
+          gereeniiDugaar: { $in: gereeniiDugaaruud },
+          barilgiinId: req.body.barilgiinId,
+          tuluv: 1,
+        })
+        .select("+avlaga");
+      if (!!gereenuud) {
+        oldooguiGeree = [];
+        gereeniiDugaaruud.forEach((a) => {
+          var oldsonGeree = gereenuud.find((b) => b.gereeniiDugaar === a);
+          if (!oldsonGeree) oldooguiGeree.push(a);
+        });
+        if (oldooguiGeree.length > 0) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            " Дараах гэрээний дугаартай гэрээнүүд олдсонгүй! " +
+            oldooguiGeree.toString();
+        } else niitGereenuud.push(...gereenuud);
+      }
+    }
+    var bulkOps = [];
+    var updateObject;
+    if (niitGereenuud.length > 0) {
+      for await (const geree of niitGereenuud) {
+        updateObject = {};
+        var tukhainZardal;
+        if(!!geree.register)
+        {
+          tukhainZardal = jagsaalt.find((x) => {
+            return (
+              x.register === geree.register ||
+              x.talbainDugaar === geree.talbainDugaar ||
+              x.gereeniiDugaar === geree.gereeniiDugaar
+            );
+          });    
+        }
+        else if(!!geree.customerTin)
+        {
+          tukhainZardal = jagsaalt.find((x) => {
+            return (
+              x.register === geree.customerTin ||
+              x.talbainDugaar === geree.talbainDugaar ||
+              x.gereeniiDugaar === geree.gereeniiDugaar
+            );
+          }); 
+        }
+        if(tukhainZardal?.ekhniiUldegdel != 0)
+        {
+          var tempTurul = tukhainZardal?.zardliinNer === "Менежментийн төлбөр" || tukhainZardal?.zardliinNer === "Хөрөнгийн менежмент" || tukhainZardal?.zardliinNer === "Худалдааны менежмент" ? "management" : 
+                            tukhainZardal?.zardliinNer === "Дулаан" ? "dulaan" : 
+                              tukhainZardal?.zardliinNer === "Цахилгаан" ? "tsakhilgaan" :
+                                tukhainZardal?.zardliinNer === "Халуун ус" ? "khulaanUs" :
+                                  tukhainZardal?.zardliinNer === "Ус" ? "us" :
+                                    tukhainZardal?.zardliinNer === "Хүйтэн ус" ? "khuitenUs" : "busad";
+          updateObject = {
+            turul: tukhainZardal?.tureesEkhniiUldegdelEsekh ? 'khuvaari' : 'avlaga',
+            tulukhDun: tukhainZardal?.ekhniiUldegdel,
+            ognoo: tukhainZardal.ognoo,
+            gereeniiId: geree._id,
+            tailbar: tukhainZardal?.tureesEkhniiUldegdelEsekh ? "Түрээс" : tukhainZardal?.zardliinNer,
+            nekhemjlekhDeerKharagdakh: false,
+            ekhniiUldegdelEsekh: true,
+            zardliinTurul: tukhainZardal?.tureesEkhniiUldegdelEsekh ? "turees" : tempTurul,
+          }
+          if(tukhainZardal?.tureesEkhniiUldegdelEsekh)
+          {
+            updateObject["undsenDun"] = tukhainZardal?.ekhniiUldegdel;
+            updateObject["khyamdral"] = 0;
+          }
+          else
+            updateObject["tulsunDun"] = 0;
+          tukhainZardal.gereeniiId = geree._id;
+          let upsertDoc = {
+            updateOne: {
+              filter: { _id: geree._id },
+              update: {
+                $push: {
+                  "avlaga.guilgeenuud": updateObject,
+                },
+              },
+            },
+          };
+          bulkOps.push(upsertDoc);
+        }
+      }
+    }
+    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
+    if (bulkOps && bulkOps.length > 0)
+      await Geree(req.body.tukhainBaaziinKholbolt)
+        .bulkWrite(bulkOps)
+        .then((bulkWriteOpResult) => {
+          console.log("BULK update OK", bulkWriteOpResult);
+          EkhniiUldegdelExcel(req.body.tukhainBaaziinKholbolt).insertMany(
+            jagsaalt
+          );
+          res.status(200).send("Amjilttai");
+        })
+        .catch((err) => {
+          console.log("BULK update error", err);
+          next(err);
+        });
+    else
+      res.status(200).send("Amjilttai");    
+  } catch (error) {
+    next(error);
+  }
 });
