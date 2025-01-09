@@ -3073,13 +3073,23 @@ router
 router
 .route("/gereeUneZasya")  
 .post(tokenShalgakh, async (req, res, next) => {
-  var oldGeree = await testgeree(req.body.tukhainBaaziinKholbolt).find({gereeniiDugaar: req.body.gereeniiDugaarOld, tuluv: { $ne: -1 }}).select("+avlaga");
+  var oldGeree = await testgeree(req.body.tukhainBaaziinKholbolt).find({
+    baiguullagiinId: req.body.baiguullagiinId,
+    barilgiinId: req.body.barilgiinId,
+    gereeniiDugaar: req.body.gereeniiDugaarOld, 
+    tuluv: { $ne: -1 }
+  }).select("+avlaga");
   if(oldGeree?.length > 0)
   {
     if(req.body.baritsaaInsert && oldGeree[0]?.avlaga?.baritsaa?.length > 0)
     {
       await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
-        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
+        { 
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          gereeniiDugaar: req.body.gereeniiDugaar, 
+          tuluv: { $ne: -1 } 
+        },
         { $push: { "avlaga.baritsaa": { $each: oldGeree[0]?.avlaga?.baritsaa } } }
       );
     }
@@ -3087,13 +3097,23 @@ router
     if(tempGeree?.length > 0)
     {
       await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
-        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
+        { 
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          gereeniiDugaar: req.body.gereeniiDugaar, 
+          tuluv: { $ne: -1 } 
+        },
         {
           $pull: { "avlaga.guilgeenuud": { turul: { $ne: "khuvaari" }, ognoo: { $lt: new Date(moment(req.body.ekhlekhOgnoo).format("YYYY-MM-DD 23:59:59")) } } },
         }
       );
       await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
-        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
+        { 
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          gereeniiDugaar: req.body.gereeniiDugaar, 
+          tuluv: { $ne: -1 } 
+        },
         { $push: { "avlaga.guilgeenuud": { $each: tempGeree } } }
       );
     }
@@ -3101,13 +3121,23 @@ router
     if(tempGeree1?.length > 0)
     {
       await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
-        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
+        { 
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          gereeniiDugaar: req.body.gereeniiDugaar, 
+          tuluv: { $ne: -1 } 
+        },
         {
           $pull: { "avlaga.guilgeenuud": { turul: "khuvaari", ognoo: { $lt: new Date(moment(req.body.khuvaariOgnoo).format("YYYY-MM-DD 23:59:59")) } } },
         }
       );
       await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
-        { gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } },
+        { 
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          gereeniiDugaar: req.body.gereeniiDugaar, 
+          tuluv: { $ne: -1 } 
+        },
         { $push: { "avlaga.guilgeenuud": { $each: tempGeree1 } } }
       );
     }
