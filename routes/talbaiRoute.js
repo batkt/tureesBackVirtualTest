@@ -359,6 +359,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
           talbainNiitUne: talbai.talbainNiitUne,
           sariinTurees: talbai.talbainNiitUne,
           talbainKhemjee: talbai.talbainKhemjee,
+          talbainKhemjeeMetrKube: talbai.talbainKhemjeeMetrKube,
           davkhar: talbai.davkhar,
         }
         if(baiguullaga?.tokhirgoo?.baritsaaUneAdiltgakhEsekh)
