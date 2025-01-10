@@ -941,7 +941,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
           (x) => x.gereeniiId == geree._id
         )?.khymdarsanDun;
         for await (const ognoo of khungulult.ognoonuud) {
-          var filterGuilgeenuud = geree.avlaga?.guilgeenuud.filter((a) => a.turul === "khuvaari" && moment(a.ognoo).format("YYYY/MM") === moment(ognoo).format("YYYY/MM"));
+          var filterGuilgeenuud = geree.avlaga?.guilgeenuud.filter((a) => (a.turul === "khuvaari" || a.turul === "avlaga") && moment(a.ognoo).format("YYYY/MM") === moment(ognoo).format("YYYY/MM"));
           if(filterGuilgeenuud?.length > 0)
           {
             khyamdral = {
