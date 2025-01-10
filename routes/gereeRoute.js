@@ -680,7 +680,7 @@ router
       var khuvaariud = geree.avlaga.guilgeenuud;
       khuvaariud = khuvaariud.filter(
         (x) =>
-          x.ognoo <= new Date() || x.turul == "khyamdral" || x.khyamdral > 0
+          x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId
       );
       var today = new Date();
       var unuudur = new Date(
@@ -696,8 +696,8 @@ router
           if (
             moment(unuudur).add(index, "month").set("date", udur) <=
               moment(new Date(req.body.duusakhOgnoo)) &&
-            moment(unuudur).add(index, "month").set("date", udur) >
-              moment(new Date())
+            moment(unuudur).add(index, "month").set("date", udur) >=
+              moment().startOf("month")
           ) {
             var tukhainUdur = moment(unuudur)
               .add(index, "month")

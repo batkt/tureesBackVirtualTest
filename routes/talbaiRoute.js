@@ -239,7 +239,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
         var khuvaariud = geree.avlaga.guilgeenuud;
         khuvaariud = khuvaariud.filter(
           (x) =>
-            x.ognoo <= new Date() || x.turul == "khyamdral" || x.khyamdral > 0
+            x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId
         );
         var today = new Date();
         var unuudur = new Date(
@@ -255,8 +255,8 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
             if (
               moment(unuudur).add(index, "month").set("date", udur) <=
                 moment(geree.duusakhOgnoo) &&
-              moment(unuudur).add(index, "month").set("date", udur) >
-                moment(new Date())
+              moment(unuudur).add(index, "month").set("date", udur) >=
+                moment().startOf("month")
             ) {
               var tukhainUdur = moment(unuudur)
                 .add(index, "month")
