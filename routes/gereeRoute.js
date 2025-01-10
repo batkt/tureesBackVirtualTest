@@ -1430,9 +1430,21 @@ router
                           $lte: new Date(req.body.duusakhOgnoo),
                           $gte: new Date(req.body.ekhlekhOgnoo),
                         },
-                        "avlaga.guilgeenuud.turul": {
-                          $in: ["avlaga", "khungulult", "zalruulga"],
-                        },
+                        $or: [
+                          {
+                            "avlaga.guilgeenuud.turul": { $in: ["avlaga", "khungulult", "zalruulga"] },
+                          },
+                          {
+                            $and: [
+                              {
+                                "avlaga.guilgeenuud.turul": { $in: ["khuvaari"] }
+                              },
+                              {
+                                "avlaga.guilgeenuud.zardliinTurul": { $in: ["turees"] }
+                              }
+                            ]
+                          }
+                        ]
                       },
                     },
                     {
