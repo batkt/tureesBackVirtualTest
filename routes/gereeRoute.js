@@ -1586,7 +1586,7 @@ router
                 x.firebaseToken = gereenuud[0].khariltsagch.find(
                   (a) => a.register == x.register
                 )?.token;
-                if (x.umnukhSariinUrTulbur < 0) x.umnukhSariinUrTulbur = 0;
+                //if (x.umnukhSariinUrTulbur < 0) x.umnukhSariinUrTulbur = 0;
                 if (x.eneSardTulukhDun < 0) x.eneSardTulukhDun = 0;
                 // if (x.niitUldegdel < 0) x.niitUldegdel = 0;
               });
