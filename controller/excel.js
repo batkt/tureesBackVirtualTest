@@ -2573,6 +2573,11 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           updateObject["suuliinZaalt"] = tukhainZardal.suuliinZaalt;
           updateObject["umnukhZaalt"] = umnukhZaalt;
         }
+        updateObject["guilgeeKhiisenOgnoo"] = new Date();
+        if (req.body.nevtersenAjiltniiToken) {
+          updateObject["guilgeeKhiisenAjiltniiNer"] = req.body.nevtersenAjiltniiToken.ner;
+          updateObject["guilgeeKhiisenAjiltniiId"] = req.body.nevtersenAjiltniiToken.id;
+        }
         console.log("updateObject", updateObject);
         tukhainZardal.gereeniiId = geree._id;
         tukhainZardal.zoruu = ashiglaltiinZardal.zoruuDun;
