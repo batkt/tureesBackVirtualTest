@@ -3089,7 +3089,7 @@ router
     baiguullagiinId: req.body.baiguullagiinId,
     barilgiinId: req.body.barilgiinId,
     gereeniiDugaar: req.body.gereeniiDugaarOld, 
-    tuluv: { $ne: -1 }
+    //tuluv: { $ne: -1 }
   }).select("+avlaga");
   if(oldGeree?.length > 0)
   {
