@@ -983,6 +983,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate(),
                 };
+                console.log("------   yawuulaxBody  --->>" + JSON.stringify(yawuulaxBody));
                 var khariu = await golomtServiceDuudya(
                   dans,
                   yawuulaxBody,
