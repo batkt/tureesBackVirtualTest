@@ -597,9 +597,9 @@ async function zogsoolNiitDungeerEbarimtShivye(
         console.log("lottery --------------->>" +  d?.lottery);
         var msgnuud = [];
         var text =
-          "Tanii ebarimtiin suglaanii dugaar " + (d?.lottery || "") +
-          " , tulsun dun " + (formatNumber(shivekhDun)) + 
-          "₮ bna";
+          "Tanii zogsooliin barimt " + (d?.lottery || "") +
+          " , " + (formatNumber(shivekhDun)) + 
+          "₮ ";
         msgnuud.push({ to: dugaar, text });
         if (msgnuud.length > 0) {
           var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
