@@ -383,11 +383,11 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     }
     if(baiguullagiinId === "674042c8640d59bcf2e95a9a") // NaranTuul Office
     {
-      if(!!nemeltUtga && (nemeltUtga.includes("office 2") || nemeltUtga.includes("OFFICE 2")))
+      if(!!nemeltUtga && (nemeltUtga.includes("office2") || nemeltUtga.includes("OFFICE2")))
       {
         query["tuukh.0.garsanKhaalga"] = "192.168.1.102"
       }
-      else if(!!nemeltUtga && (nemeltUtga.includes("office 1") || nemeltUtga.includes("OFFICE 1")))
+      else if(!!nemeltUtga && (nemeltUtga.includes("office1") || nemeltUtga.includes("OFFICE1")))
       {
         query["tuukh.0.garsanKhaalga"] = "192.168.1.102"
       }
