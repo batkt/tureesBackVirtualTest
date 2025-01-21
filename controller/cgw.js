@@ -1578,6 +1578,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                             axios
                               .post(url, {
                                 baiguullagiinId: dans.baiguullagiinId,
+                                barilgiinId: dans.barilgiinId,
                                 tulsunDun: item.Amt,
                                 zogsooliinId: dans.zogsooliinId,
                                 nemeltUtga :item.TxAddInf
@@ -1703,6 +1704,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       axios
                         .post(url, {
                           baiguullagiinId: dans.baiguullagiinId,
+                          barilgiinId: dans.barilgiinId,
                           tulsunDun: item.tranAmount,
                           zogsooliinId: dans.zogsooliinId,
                           nemeltUtga : item.tranDesc
@@ -1832,6 +1834,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         axios
                           .post(url, {
                             baiguullagiinId: dans.baiguullagiinId,
+                            barilgiinId: dans.barilgiinId,
                             tulsunDun: item.income,
                             zogsooliinId: dans.zogsooliinId,
                             nemeltUtga : item.txnDesc

@@ -29,6 +29,7 @@ const { sonorduulgaIlgeeye } = require("../controller/appNotification");
 const lodash = require("lodash");
 const moment = require("moment");
 const Baiguullaga = require("../models/baiguullaga");
+const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
     console.log('parking --- ', req.body);
@@ -318,9 +319,14 @@ router
     }
   });
 
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}  
+
 router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
   try {
     var baiguullagiinId = req.body.baiguullagiinId;
+    var barilgiinId = req.body.barilgiinId;
     var zogsooliinId = req.body.zogsooliinId;
     var nemeltUtga = req.body.nemeltUtga;
     var tulsunDun = Number(req.body.tulsunDun);
@@ -375,6 +381,17 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
           query["tuukh.0.garsanKhaalga"] = "192.168.1.205"
         }
     }
+    if(baiguullagiinId === "674042c8640d59bcf2e95a9a") // NaranTuul Office
+    {
+      if(!!nemeltUtga && (nemeltUtga.includes("office 2") || nemeltUtga.includes("OFFICE 2")))
+      {
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.102"
+      }
+      else if(!!nemeltUtga && (nemeltUtga.includes("office 1") || nemeltUtga.includes("OFFICE 1")))
+      {
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.102"
+      }
+    }
     var oldsonData = await Uilchluulegch(kholbolt).findOne(query);
     if (oldsonData) {
       await Uilchluulegch(kholbolt).findByIdAndUpdate(
@@ -417,6 +434,26 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
           khaalgaTurul: "oroh",
           cameraIP: oldsonData.tuukh[0].garsanKhaalga,
         });
+      }
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
+      var tuxainSalbar = baiguullaga?.barilguud?.find((e) => e._id.toString() === barilgiinId)?.tokhirgoo;
+      if(tuxainSalbar?.eBarimtMessageIlgeekhEsekh && nemeltUtga)
+      {
+        var filterDugaar = nemeltUtga?.split(/,| /)?.filter((a) => isNumeric(a) && a.length === 8);
+        console.log("dugaar ------->>" + JSON.stringify(filterDugaar));
+        if(filterDugaar?.length > 0)
+        {
+          var shiveeguiTuukhuud = [];
+          shiveeguiTuukhuud.push(oldsonData);
+          await zogsoolNiitDungeerEbarimtShivye(
+            kholbolt,
+            tulsunDun,
+            barilgiinId,
+            next,
+            shiveeguiTuukhuud,
+            filterDugaar[0],
+          );
+        }
       }
     }
     res.sendStatus(200);

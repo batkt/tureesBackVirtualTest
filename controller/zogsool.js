@@ -333,7 +333,10 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
               await zogsoolNiitDungeerEbarimtShivye(
                 tukhainKholbolt,
                 niitDun,
-                shiveeguiTuukhuud[0]?.barilgiinId
+                shiveeguiTuukhuud[0]?.barilgiinId,
+                next,
+                shiveeguiTuukhuud,
+                null,
               );
             }
           }

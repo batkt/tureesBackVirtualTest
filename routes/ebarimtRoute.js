@@ -19,6 +19,24 @@ const {
 } = require("zevbackv2");
 const request = require("request");
 const { Uilchluulegch } = require("parking-v1");
+const { msgIlgeeye } = require("../controller/khariltsagch");
+const lodash = require("lodash");
+
+function formatNumber(num, fixed = 2) {
+  if (num === undefined || num === null || num === "")
+    return formatNumber("0.00", fixed);
+  var fixedNum = parseFloat(num).toFixed(fixed).toString();
+  var numSplit = fixedNum.split(".");
+  if (numSplit === null || numSplit.length === 0) {
+    return formatNumber("0.00", fixed);
+  }
+  var firstFormatNum = numSplit[0]
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  if (lodash.isNaN(firstFormatNum)) firstFormatNum = "0";
+  if (fixed === 0) return firstFormatNum;
+  return firstFormatNum + "." + numSplit[1];
+}
 
 function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
@@ -496,7 +514,10 @@ async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
 async function zogsoolNiitDungeerEbarimtShivye(
   kholbolt,
   shivekhDun,
-  barilgiinId
+  barilgiinId,
+  next,
+  shiveeguiTuukhuud,
+  dugaar,
 ) {
   console.log("zogsoolNiitDungeerEbarimtShivye", shivekhDun);
   var guilgee = {
@@ -505,6 +526,8 @@ async function zogsoolNiitDungeerEbarimtShivye(
     baiguullagiinId: kholbolt.baiguullagiinId,
     barilgiinId,
   };
+  if(!!dugaar)
+    guilgee["mashiniiDugaar"] = shiveeguiTuukhuud[0]?.mashiniiDugaar;
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     kholbolt.baiguullagiinId
   );
@@ -517,6 +540,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
   tuxainSalbar = baiguullaga?.barilguud?.find(
     (e) => e._id.toString() == guilgee.barilgiinId
   )?.tokhirgoo;
+  var ebarimt;
   if (!!tuxainSalbar?.eBarimtShine)
     ebarimt = await zogsooloosEbarimtShineUusgye(
       guilgee,
@@ -535,7 +559,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
       kholbolt,
       nuatTulukhEsekh
     );
-  butsaakhMethod = function (d, khariuObject) {
+  var butsaakhMethod = function (d, khariuObject) {
     try {
       if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
       var ebarimt;
@@ -549,11 +573,53 @@ async function zogsoolNiitDungeerEbarimtShivye(
         next(err);
       });
       console.log("ebarimt duuslaa");
-      res.send(d);
+      if(!!shiveeguiTuukhuud && shiveeguiTuukhuud?.length > 0)
+      {
+        for (const object of shiveeguiTuukhuud) {
+          var update = { ebarimtAvsanEsekh: true };
+          if (ebarimt.customerNo)
+            update = {
+              ...update,
+              ebarimtRegister: ebarimt.customerNo,
+            };
+          Uilchluulegch(kholbolt)
+            .findByIdAndUpdate(object._id, update)
+            .then((xariu) => {
+              console.log("xariu", xariu);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }
+      if(!!dugaar)
+      {
+        console.log("lottery --------------->>" +  d?.lottery);
+        var msgnuud = [];
+        var text =
+          "Tanii ebarimtiin suglaanii dugaar " + (d?.lottery || "") +
+          " , tulsun dun " + (formatNumber(shivekhDun)) + 
+          "₮ bna";
+        msgnuud.push({ to: dugaar, text });
+        if (msgnuud.length > 0) {
+          var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
+          var msgIlgeekhDugaar = "72002002";
+          msgIlgeeye(
+            msgnuud,
+            msgIlgeekhKey,
+            msgIlgeekhDugaar,
+            [],
+            0,
+            kholbolt,
+            ebarimt?.baiguullagiinId
+          );
+        }
+      }
     } catch (err) {
       next(err);
     }
   };
+  ebarimtDuudya(ebarimt, butsaakhMethod, next, !!tuxainSalbar.eBarimtShine);
 }
 
 async function ebarimtShivye(req, res, next) {
