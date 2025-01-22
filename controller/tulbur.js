@@ -832,9 +832,27 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
 
 exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   var match = {
-    "avlaga.guilgeenuud.turul": {
-      $nin: ["aldangi", "baritsaa"],
-    },
+    $or: [
+      {
+        "avlaga.guilgeenuud.turul": {
+          $nin: ["aldangi", "baritsaa"],
+        }
+      },
+      {
+        $and: [
+          {
+            "avlaga.guilgeenuud.turul": {
+              $in: ["baritsaa"],
+            }
+          },
+          {
+            "avlaga.guilgeenuud.tulsunDun": {
+              $gt: 0,
+            }
+          }
+        ]
+      }
+    ]
   }
   if(!!req.body.ognoo)
   {

@@ -196,7 +196,7 @@ router
               (a) =>
                 a.ognoo < new Date(req.query.duusakhOgnoo) &&
                 a.turul != "baritsaa" &&
-                a.turul != "aldangi"
+                a.turul != "aldangi" || (a.turul === "baritsaa" && a.tulsunDun > 0)
             );
           if (!!req.query.shineOgnoo) {
             const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
@@ -1589,6 +1589,13 @@ router
                 //if (x.umnukhSariinUrTulbur < 0) x.umnukhSariinUrTulbur = 0;
                 if (x.eneSardTulukhDun < 0) x.eneSardTulukhDun = 0;
                 // if (x.niitUldegdel < 0) x.niitUldegdel = 0;
+                let diffMonth = moment(req.body.duusakhOgnoo).diff(moment(), 'months');
+                if(diffMonth)
+                {
+                  x.sariinTurees = (diffMonth + 1) * x.sariinTurees;
+                  x.talbainNiitUne = (diffMonth + 1) * x.talbainNiitUne;
+                  x.diffMonth = diffMonth;
+                }
               });
             }
           }
