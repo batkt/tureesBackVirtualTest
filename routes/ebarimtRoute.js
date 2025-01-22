@@ -21,6 +21,7 @@ const request = require("request");
 const { Uilchluulegch } = require("parking-v1");
 const { msgIlgeeye } = require("../controller/khariltsagch");
 const lodash = require("lodash");
+const MsgTuukh = require("../models/msgTuukh");
 
 function formatNumber(num, fixed = 2) {
   if (num === undefined || num === null || num === "")
@@ -604,6 +605,13 @@ async function zogsoolNiitDungeerEbarimtShivye(
         if (msgnuud.length > 0) {
           var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
           var msgIlgeekhDugaar = "72002002";
+          var msg = new MsgTuukh(kholbolt)();
+          msg.baiguullagiinId = ebarimt?.baiguullagiinId;
+          msg.barilgiinId = ebarimt?.barilgiinId;
+          msg.mashiniiDugaar = ebarimt?.mashiniiDugaar;
+          msg.dugaar = dugaar;
+          msg.msg = text;
+          msg.save();
           msgIlgeeye(
             msgnuud,
             msgIlgeekhKey,
