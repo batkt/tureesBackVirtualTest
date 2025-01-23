@@ -527,8 +527,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
     baiguullagiinId: kholbolt.baiguullagiinId,
     barilgiinId,
   };
-  if(!!dugaar)
-    guilgee["mashiniiDugaar"] = shiveeguiTuukhuud[0]?.mashiniiDugaar;
+  guilgee["mashiniiDugaar"] = !!dugaar ? shiveeguiTuukhuud[0]?.mashiniiDugaar : "0000ЮЮЮ";
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     kholbolt.baiguullagiinId
   );

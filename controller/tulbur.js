@@ -2375,3 +2375,27 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+exports.ashiglakhKhonogTootsoolokh = asyncHandler(async (req, res, next) => {
+  try
+  {
+    var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(req.body.gereeniiId).select({ avlaga: 1 });
+    var filteredGeree = geree.avlaga?.guilgeenuud.filter((a) => a.ognoo >= moment().startOf("month") && a.ognoo <= moment().endOf("month"));
+    var filteredAvlagas = filteredGeree?.filter((e) => e.tulukhDun > 0 && !e.guilgeeKhiisenAjiltniiId);
+    var lastDay = moment().endOf("month").format("DD");
+    var changedAvlagas = [];
+    for (const temp of filteredAvlagas)
+    {
+      temp.tulukhDun = (temp.tulukhDun * req.body.diffDay)/lastDay;
+      if(temp.undsenDun > 0)
+        temp.undsenDun = (temp.undsenDun * req.body.diffDay)/lastDay;
+      changedAvlagas.push(temp);
+    }
+    var niitTulsunDun = filteredGeree?.filter((e) => (e.tulsunDun > 0 || e.khyamdral) && !!e.guilgeeKhiisenAjiltniiId).reduce((a, b) => a + ((b.tulsunDun || 0) + (b.khyamdral || 0)), 0);
+    var niitTulukhDun = changedAvlagas?.reduce((a, b) => a + (b.tulukhDun || 0), 0);
+    var niitAvlaga = Number(req.body.ekhniiUldegdel || 0) + (niitTulukhDun - niitTulsunDun);
+    res.send({ uldegdelAvlaga: niitAvlaga, avlagas: changedAvlagas });
+  } catch (err) {
+    next(err);
+  }
+});

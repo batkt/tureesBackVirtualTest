@@ -319,6 +319,7 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
           var shiveeguiTuukhuud = await Uilchluulegch(tukhainKholbolt).find({
             niitDun: { $gt: 0 },
             ebarimtAvsanEsekh: { $ne: true },
+            turul: { $exists: false },
             createdAt: { $gt: new Date(moment(new Date()).add(-1, "day")) },
           });
           console.log("shiveeguiTuukhuud", shiveeguiTuukhuud);

@@ -67,6 +67,7 @@ const {
   gereenuudZasya,
   fcZasvarKhiie,
   avlagaZasay,
+  ashiglakhKhonogTootsoolokh,
 } = require("../controller/tulbur");
 router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require("lodash");
@@ -92,6 +93,7 @@ router
   .post(tokenShalgakh, guilgeeniiToololtAvya);
 router.route("/fcZasvarKhiie").post(tokenShalgakh, fcZasvarKhiie);
 router.route("/avlagaZasay").post(tokenShalgakh, avlagaZasay);
+router.route("/ashiglakhKhonogTootsoolokh").post(tokenShalgakh, ashiglakhKhonogTootsoolokh);
 
 router.route("/gereeniiExcelAvya").get(tokenShalgakh, gereeniiExcelAvya);
 router
@@ -1080,6 +1082,7 @@ router
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
     };
     console.log(tuukh);
+    var avlagaMatch = req.body.udruurBodokhEsekh ? { ognoo: { $gte: moment().startOf("month") }, guilgeeKhiisenAjiltniiId: { $exists: false } } : { ognoo: { $gt: new Date() } };
     if (geree.gereeniiTuukhuud) {
       Geree(req.body.tukhainBaaziinKholbolt)
         .findOneAndUpdate(
@@ -1092,7 +1095,7 @@ router
               tsutsalsanOgnoo: new Date(),
               tuluv: -1,
             },
-            $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } },
+            $pull: { "avlaga.guilgeenuud": avlagaMatch },
           }
         )
         .then((result) => {
@@ -1117,7 +1120,7 @@ router
               tsutsalsanOgnoo: new Date(),
               tuluv: -1,
             },
-            $pull: { "avlaga.guilgeenuud": { ognoo: { $gt: new Date() } } },
+            $pull: { "avlaga.guilgeenuud": avlagaMatch },
           }
         )
         .then((result) => {
@@ -1125,6 +1128,29 @@ router
             [geree._id],
             req.body.tukhainBaaziinKholbolt
           );
+          res.send("Amjilttai");
+        })
+        .catch((err) => {
+          next(err);
+        });
+    }
+    if(req.body.udruurBodokhEsekh && req.body.suuliinSariinAvlaguud && req.body.suuliinSariinAvlaguud?.length > 0)
+    {
+      var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud;
+      for (const savlaga of suuliinSariinAvlaguud)
+      {
+        savlaga.guilgeeKhiisenOgnoo = new Date();
+        savlaga.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+        savlaga.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id;
+      }
+      Geree(req.body.tukhainBaaziinKholbolt)
+        .findOneAndUpdate(
+          { _id: req.body.gereeniiId },
+          {
+            $push: { "avlaga.guilgeenuud": suuliinSariinAvlaguud },
+          }
+        )
+        .then((result) => {
           res.send("Amjilttai");
         })
         .catch((err) => {
