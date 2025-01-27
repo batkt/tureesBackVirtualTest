@@ -1415,7 +1415,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 var max = await BankniiGuilgee(kholbolt).aggregate(query);
                 var maxDugaar = 1;
                 if (max && max.length !== 0) maxDugaar = max[0].max;
-                var khariu = await dansniiKhuulgaAvya(token, next, {
+                var khariu = await dansniiKhuulgaAvya(token, null, {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
                   dansniiDugaar: dans.dugaar,
