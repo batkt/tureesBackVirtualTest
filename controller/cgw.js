@@ -788,6 +788,23 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
                   });
+                  if (guilgeenuud) {
+                    var ustgakhJagsaalt = [];
+                    for await (const item of guilgeenuud) {
+                      var guilgee = await BankniiGuilgee(kholbolt).findOne({
+                        record: item.record,
+                        code: item.code,
+                        branch: item.branch,
+                        barilgiinId: dans.barilgiinId,
+                      });
+                      if (guilgee) ustgakhJagsaalt.push(item);
+                    }
+                    if (!!ustgakhJagsaalt) {
+                      guilgeenuud = guilgeenuud.filter(
+                        (el) => !ustgakhJagsaalt.includes(el)
+                      );
+                    }
+                  }
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
@@ -1447,6 +1464,23 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
                   });
+                  if (guilgeenuud) {
+                    var ustgakhJagsaalt = [];
+                    for await (const item of guilgeenuud) {
+                      var guilgee = await BankniiGuilgee(kholbolt).findOne({
+                        record: item.record,
+                        code: item.code,
+                        branch: item.branch,
+                        barilgiinId: dans.barilgiinId,
+                      });
+                      if (guilgee) ustgakhJagsaalt.push(item);
+                    }
+                    if (!!ustgakhJagsaalt) {
+                      guilgeenuud = guilgeenuud.filter(
+                        (el) => !ustgakhJagsaalt.includes(el)
+                      );
+                    }
+                  }
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
