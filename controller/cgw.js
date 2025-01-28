@@ -765,13 +765,13 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
                   dansniiDugaar: dans.dugaar,
-                  Startdate:
+                  ekhlekhOgnoo:
                     firstDay.getFullYear() +
                     (firstDay.getMonth() < 9 ? "0" : "") +
                     (firstDay.getMonth() + 1) +
                     (firstDay.getDate() < 10 ? "0" : "") +
                     firstDay.getDate(),
-                  Enddate:
+                  duusakhOgnoo:
                     lastDay.getFullYear() +
                     (lastDay.getMonth() < 9 ? "0" : "") +
                     (lastDay.getMonth() + 1) +
@@ -1424,13 +1424,13 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
                   dansniiDugaar: dans.dugaar,
-                  Startdate:
+                  ekhlekhOgnoo:
                     firstDay.getFullYear() +
                     (firstDay.getMonth() < 9 ? "0" : "") +
                     (firstDay.getMonth() + 1) +
                     (firstDay.getDate() < 10 ? "0" : "") +
                     firstDay.getDate(),
-                  Enddate:
+                  duusakhOgnoo:
                     lastDay.getFullYear() +
                     (lastDay.getMonth() < 9 ? "0" : "") +
                     (lastDay.getMonth() + 1) +
