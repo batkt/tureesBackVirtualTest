@@ -198,6 +198,7 @@ router
               (a) =>
                 a.ognoo < new Date(req.query.duusakhOgnoo) &&
                 a.turul != "baritsaa" &&
+                (a.tulsunDun > 0 || a.tulukhDun > 0 || a.khyamdral > 0) &&
                 a.turul != "aldangi" || (a.turul === "baritsaa" && a.tulsunDun > 0)
             );
           if (!!req.query.shineOgnoo) {

@@ -34,7 +34,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
       };
       if (tulbur.tulsunAldangi && tulbur.tulsunAldangi > 0)
         inc["aldangiinUldegdel"] = -tulbur.tulsunAldangi;
-
+      var tempGeree = await Geree(req.body.tukhainBaaziinKholbolt).findById(tulbur.gereeniiId).select("avlaga");
       var updatedGeree = await Geree(req.body.tukhainBaaziinKholbolt)
         .findByIdAndUpdate(
           { _id: tulbur.gereeniiId },
@@ -54,19 +54,22 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
       );
       if (tulbur.guilgeeniiId) {
         console.log("updatedGeree", updatedGeree);
-        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
-          .updateOne(
-            { _id: tulbur.guilgeeniiId },
-            {
-              $push: {
-                kholbosonGereeniiId: tulbur.gereeniiId,
-                kholbosonTalbainId: updatedGeree.talbainDugaar,
-              },
-            }
-          )
-          .catch((err) => {
-            next(err);
-          });
+        var filteredBaritsaa = tempGeree?.avlaga?.baritsaa?.filter((a) => a.guilgeeniiId === tulbur.guilgeeniiId);
+        var filteredGuilgee = tempGeree?.avlaga?.guilgeenuud?.filter((a) => a.guilgeeniiId === tulbur.guilgeeniiId);
+        if(filteredBaritsaa?.length === 0 && filteredGuilgee?.length === 0)
+          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+            .updateOne(
+              { _id: tulbur.guilgeeniiId },
+              {
+                $push: {
+                  kholbosonGereeniiId: tulbur.gereeniiId,
+                  kholbosonTalbainId: updatedGeree.talbainDugaar,
+                },
+              }
+            )
+            .catch((err) => {
+              next(err);
+            });
         await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
           .updateOne({ _id: tulbur.guilgeeniiId }, [
             {
@@ -146,21 +149,23 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
         next(err);
       });
     if (guilgee.guilgeeniiId) {
-      console.log("updatedGeree", updatedGeree);
-      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
-        .updateOne(
-          { _id: guilgee.guilgeeniiId },
-          {
-            $push: {
-              kholbosonGereeniiId: guilgee.gereeniiId,
-              kholbosonTalbainId: updatedGeree.talbainDugaar,
-            },
-          }
-        )
-        .catch((err) => {
-          aldaaniiMsg = aldaaniiMsg + err.message;
-          next(err);
-        });
+      var tempGeree = await Geree(req.body.tukhainBaaziinKholbolt).findById(guilgee.gereeniiId).select("avlaga");
+      var filteredGuilgee = tempGeree?.avlaga?.guilgeenuud?.filter((a) => a.guilgeeniiId === guilgee.guilgeeniiId);
+      if(filteredGuilgee?.length === 0)
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+          .updateOne(
+            { _id: guilgee.guilgeeniiId },
+            {
+              $push: {
+                kholbosonGereeniiId: guilgee.gereeniiId,
+                kholbosonTalbainId: updatedGeree.talbainDugaar,
+              },
+            }
+          )
+          .catch((err) => {
+            aldaaniiMsg = aldaaniiMsg + err.message;
+            next(err);
+          });
       await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
         .updateOne({ _id: guilgee.guilgeeniiId }, [
           {
@@ -721,19 +726,23 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
         .catch((err) => {
           next(err);
         });
-      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
-        .updateOne(
-          { _id: req.body.guilgeeniiId },
-          {
-            $pull: {
-              kholbosonGereeniiId: req.body.gereeniiId,
-              kholbosonTalbainId: req.body.talbainDugaar,
-            },
-          }
-        )
-        .catch((err) => {
-          next(err);
-        });
+      var tempGeree = await Geree(req.body.tukhainBaaziinKholbolt).findById(req.body.gereeniiId).select("avlaga");
+      var filteredBaritsaa = tempGeree?.avlaga?.baritsaa?.filter((a) => a.guilgeeniiId === req.body.guilgeeniiId);
+      var filteredGuilgee = tempGeree?.avlaga?.guilgeenuud?.filter((a) => a.guilgeeniiId === req.body.guilgeeniiId);
+      if(filteredBaritsaa?.length === 0 && filteredGuilgee?.length === 0)
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+          .updateOne(
+            { _id: req.body.guilgeeniiId },
+            {
+              $pull: {
+                kholbosonGereeniiId: req.body.gereeniiId,
+                kholbosonTalbainId: req.body.talbainDugaar,
+              },
+            }
+          )
+          .catch((err) => {
+            next(err);
+          });
     }
     await session.commitTransaction();
     session.endSession();
@@ -803,19 +812,22 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         .catch((err) => {
           next(err);
         });
-      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
-        .updateOne(
-          { _id: req.body.guilgeeniiId },
-          {
-            $pull: {
-              kholbosonGereeniiId: req.body.gereeniiId,
-              kholbosonTalbainId: updatedGeree.talbainDugaar,
-            },
-          }
-        )
-        .catch((err) => {
-          next(err);
-        });
+      var tempGeree = await Geree(req.body.tukhainBaaziinKholbolt).findById(req.body.gereeniiId).select("avlaga");
+      var filteredGuilgee = tempGeree?.avlaga?.guilgeenuud?.filter((a) => a.guilgeeniiId === req.body.guilgeeniiId);
+      if(filteredGuilgee?.length === 0)
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+          .updateOne(
+            { _id: req.body.guilgeeniiId },
+            {
+              $pull: {
+                kholbosonGereeniiId: req.body.gereeniiId,
+                kholbosonTalbainId: updatedGeree.talbainDugaar,
+              },
+            }
+          )
+          .catch((err) => {
+            next(err);
+          });
     }
     await daraagiinTulukhOgnooZasya(
       req.body.gereeniiId,
