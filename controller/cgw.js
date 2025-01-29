@@ -1499,6 +1499,24 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         })
                         .catch(function (error) {});
                     }
+                    if(dans.baiguullagiinId === "65435cdff2f5358696c61454") // GTHub dotor garakh
+                    {
+                      var url =
+                        "http://" +
+                        process.env.UNDSEN_IP +
+                        ":" +
+                        process.env.PORT +
+                        "/zogsooliinTulburOrjIrlee";
+                      axios
+                        .post(url, {
+                          baiguullagiinId: dans.baiguullagiinId,
+                          barilgiinId: dans.barilgiinId,
+                          tulsunDun: item.amount,
+                          zogsooliinId: "655599400445b0f0de65267c",
+                          nemeltUtga :item.description
+                        })
+                        .catch(function (error) {});
+                    }
                   }
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
