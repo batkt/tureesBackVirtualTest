@@ -1467,23 +1467,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   if (guilgeenuud) {
                     var ustgakhJagsaalt = [];
                     for await (const item of guilgeenuud) {
-                      if (!!dans.zogsooliinId) {
-                        var url =
-                          "http://" +
-                          process.env.UNDSEN_IP +
-                          ":" +
-                          process.env.PORT +
-                          "/zogsooliinTulburOrjIrlee";
-                        axios
-                          .post(url, {
-                            baiguullagiinId: dans.baiguullagiinId,
-                            barilgiinId: dans.barilgiinId,
-                            tulsunDun: item.amount,
-                            zogsooliinId: dans.zogsooliinId,
-                            nemeltUtga :item.description
-                          })
-                          .catch(function (error) {});
-                      }
                       var guilgee = await BankniiGuilgee(kholbolt).findOne({
                         record: item.record,
                         code: item.code,
@@ -1496,6 +1479,25 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       guilgeenuud = guilgeenuud.filter(
                         (el) => !ustgakhJagsaalt.includes(el)
                       );
+                    }
+                  }
+                  for await (const item of guilgeenuud) {
+                    if (!!dans.zogsooliinId) {
+                      var url =
+                        "http://" +
+                        process.env.UNDSEN_IP +
+                        ":" +
+                        process.env.PORT +
+                        "/zogsooliinTulburOrjIrlee";
+                      axios
+                        .post(url, {
+                          baiguullagiinId: dans.baiguullagiinId,
+                          barilgiinId: dans.barilgiinId,
+                          tulsunDun: item.amount,
+                          zogsooliinId: dans.zogsooliinId,
+                          nemeltUtga :item.description
+                        })
+                        .catch(function (error) {});
                     }
                   }
                   BankniiGuilgee(kholbolt)
