@@ -1521,11 +1521,11 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
-                      if (res) res.send("Amjilttai");
+                      // if (res) res.send("Amjilttai");
                     })
                     .catch((err) => {
                       console.log(err);
-                      next(err);
+                      // next(err);
                     });
                 }
               } else if (dans.bank == "tdb") {
