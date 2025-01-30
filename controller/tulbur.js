@@ -483,6 +483,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             (a) => a.baiguullagiinId == baiguullaga._id.toString()
           );
           console.log("kholbolt -> ", kholbolt);
+          var bulkOps = [];
           for await (const barilga of baiguullaga.barilguud) {
             console.log("aldangiBodyo -> barilguud ->");
             if (
@@ -581,7 +582,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               ]);
               console.log("gereenuud", gereenuud.length);
               if (gereenuud && gereenuud.length > 0) {
-                var bulkOps = [];
                 for (const geree of gereenuud) {
                   if (
                     geree.uldegdel > 0 &&
