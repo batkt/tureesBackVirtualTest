@@ -498,7 +498,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 barilga.tokhirgoo && barilga.tokhirgoo.aldangiinKhuvi
                   ? barilga.tokhirgoo.aldangiinKhuvi
                   : 0.5;
-              console.log("-------------------aldagiinKhuvi --------------" + aldagiinKhuvi);
               var aldangiChuluulukhKhonog =
                 barilga.tokhirgoo && barilga.tokhirgoo.aldangiChuluulukhKhonog
                   ? barilga.tokhirgoo.aldangiChuluulukhKhonog
@@ -580,7 +579,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   },
                 },
               ]);
-              console.log("gereenuud", gereenuud.length);
               if (gereenuud && gereenuud.length > 0) {
                 for (const geree of gereenuud) {
                   if (
@@ -596,8 +594,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                     var bodogdsonKhuu = tooZasyaSync(
                       (geree.uldegdel * aldagiinKhuvi) / 100
                     );
-                    console.log("bodogdsonKhuu ------------>" + bodogdsonKhuu);
-                    console.log("bodogdsonKhuu ------------>" + geree?._id?._id);
                     let upsertDoc = {
                       updateOne: {
                         filter: { _id: geree._id._id },
