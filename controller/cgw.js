@@ -1499,7 +1499,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         })
                         .catch(function (error) {});
                     }
-                    if(dans.baiguullagiinId === "65435cdff2f5358696c61454") // GTHub dotor garakh
+                    if(!!dans.zogsooliinId && dans.baiguullagiinId === "65435cdff2f5358696c61454") // GTHub dotor garakh
                     {
                       var url =
                         "http://" +
