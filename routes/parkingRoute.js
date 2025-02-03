@@ -391,6 +391,25 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         query["tuukh.0.garsanKhaalga"] = "192.168.1.102"
       }
     }
+    if(baiguullagiinId == "6731b43bc23730ac1908da2d") // soyolj
+    {
+      if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 1")||nemeltUtga.includes("ХААЛТ 1")))
+      {
+        query["tuukh.0.garsanKhaalga"] = "192.168.2.21"
+      }
+      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 2")||nemeltUtga.includes("ХААЛТ 2")))
+      {
+        query["tuukh.0.garsanKhaalga"] = "192.168.2.24"
+      }
+      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 3")||nemeltUtga.includes("ХААЛТ 3")))
+      {
+        query["tuukh.0.garsanKhaalga"] = "192.168.2.25"
+      }
+      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 4")||nemeltUtga.includes("ХААЛТ 4")))
+      {
+        query["tuukh.0.garsanKhaalga"] = "192.168.2.26"
+      }
+    }
     var oldsonData = await Uilchluulegch(kholbolt).findOne(query);
     if (oldsonData) {
       await Uilchluulegch(kholbolt).findByIdAndUpdate(
