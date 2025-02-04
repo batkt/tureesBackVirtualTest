@@ -2138,7 +2138,7 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
         var khuvaariud = geree.avlaga.guilgeenuud;
         khuvaariud = khuvaariud.filter(
           (x) =>
-            x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId
+            x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
         );
         var today = new Date();
         var unuudur = new Date(
@@ -2392,7 +2392,7 @@ exports.ashiglakhKhonogTootsoolokh = asyncHandler(async (req, res, next) => {
   {
     var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(req.body.gereeniiId).select({ avlaga: 1 });
     var filteredGeree = geree.avlaga?.guilgeenuud.filter((a) => a.ognoo >= moment().startOf("month") && a.ognoo <= moment().endOf("month"));
-    var filteredAvlagas = filteredGeree?.filter((e) => e.tulukhDun > 0 && !e.guilgeeKhiisenAjiltniiId);
+    var filteredAvlagas = filteredGeree?.filter((e) => e.tulukhDun > 0 && !e.guilgeeKhiisenOgnoo);
     var lastDay = moment().endOf("month").format("DD");
     var changedAvlagas = [];
     for (const temp of filteredAvlagas)
@@ -2402,7 +2402,7 @@ exports.ashiglakhKhonogTootsoolokh = asyncHandler(async (req, res, next) => {
         temp.undsenDun = (temp.undsenDun * req.body.diffDay)/lastDay;
       changedAvlagas.push(temp);
     }
-    var niitTulsunDun = filteredGeree?.filter((e) => (e.tulsunDun > 0 || e.khyamdral) && !!e.guilgeeKhiisenAjiltniiId).reduce((a, b) => a + ((b.tulsunDun || 0) + (b.khyamdral || 0)), 0);
+    var niitTulsunDun = filteredGeree?.filter((e) => (e.tulsunDun > 0 || e.khyamdral) && !!e.guilgeeKhiisenOgnoo).reduce((a, b) => a + ((b.tulsunDun || 0) + (b.khyamdral || 0)), 0);
     var niitTulukhDun = changedAvlagas?.reduce((a, b) => a + (b.tulukhDun || 0), 0);
     var niitAvlaga = Number(req.body.ekhniiUldegdel || 0) + (niitTulukhDun - niitTulsunDun);
     res.send({ uldegdelAvlaga: niitAvlaga, avlagas: changedAvlagas });

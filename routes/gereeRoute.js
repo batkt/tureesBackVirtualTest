@@ -522,7 +522,7 @@ router
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
       var khuvaariud = gereeOld?.avlaga?.guilgeenuud;
-      khuvaariud = khuvaariud.filter((x) => x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId);
+      khuvaariud = khuvaariud.filter((x) => x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo);
       if(geree?.avlaga?.baritsaa?.length === 0)
         geree?.avlaga?.baritsaa.push(...gereeOld?.avlaga?.baritsaa);
       geree?.avlaga?.guilgeenuud.push(...khuvaariud);
@@ -683,7 +683,7 @@ router
       var khuvaariud = geree.avlaga.guilgeenuud;
       khuvaariud = khuvaariud.filter(
         (x) =>
-          x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId
+          x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
       );
       var today = new Date();
       var unuudur = new Date(
@@ -1083,7 +1083,7 @@ router
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
     };
     console.log(tuukh);
-    var avlagaMatch = req.body.udruurBodokhEsekh ? { ognoo: { $gte: moment().startOf("month") }, guilgeeKhiisenAjiltniiId: { $exists: false } } : { ognoo: { $gt: new Date() } };
+    var avlagaMatch = req.body.udruurBodokhEsekh ? { ognoo: { $gte: moment().startOf("month") }, guilgeeKhiisenOgnoo: { $exists: false } } : { ognoo: { $gt: new Date() } };
     if (geree.gereeniiTuukhuud) {
       Geree(req.body.tukhainBaaziinKholbolt)
         .findOneAndUpdate(
