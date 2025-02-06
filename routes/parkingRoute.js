@@ -2034,7 +2034,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           {
             ognoo: new Date(),
             turul: "Fitness",
-            dun: 3000,
+            dun: 4000,
           },
         ];
       } else {
@@ -2042,7 +2042,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           {
             ognoo: new Date(),
             turul: "Fitness",
-            dun: 3000,
+            dun: 4000,
           },
           {
             ognoo: new Date(),
