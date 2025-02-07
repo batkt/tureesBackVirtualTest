@@ -416,7 +416,6 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         oldsonData._id,
         {
           $set: {
-            "tuukh.$[t].burtgesenAjiltaniiId": "system",
             "tuukh.$[t].burtgesenAjiltaniiNer": "system",
             "tuukh.$[t].tulbur": [
               {
