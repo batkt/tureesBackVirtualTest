@@ -296,6 +296,17 @@ cron.schedule(
   }
 );
 
+cron.schedule(
+  "*/3 * * * * * ",
+  function () {
+    cgw.davkhardsanMashinTseverlye(null, null, null);
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
 io.once("connection", (socket) => {
   console.log("connected");
   socket.on("disconnect", () => {

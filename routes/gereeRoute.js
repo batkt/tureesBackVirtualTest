@@ -1083,7 +1083,7 @@ router
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
     };
     console.log(tuukh);
-    var avlagaMatch = req.body.udruurBodokhEsekh ? { ognoo: { $gte: moment().startOf("month") }, guilgeeKhiisenOgnoo: { $exists: false } } : { ognoo: { $gt: new Date() } };
+    var avlagaMatch = req.body.udruurBodokhEsekh ? { ognoo: { $gte: moment(req.body.tsutslakhOgnoo).startOf("month") }, guilgeeKhiisenOgnoo: { $exists: false } } : { ognoo: { $gt: new Date() } };
     if (geree.gereeniiTuukhuud) {
       Geree(req.body.tukhainBaaziinKholbolt)
         .findOneAndUpdate(
@@ -1139,11 +1139,7 @@ router
     {
       var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud;
       for (const savlaga of suuliinSariinAvlaguud)
-      {
-        savlaga.guilgeeKhiisenOgnoo = new Date();
-        savlaga.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
-        savlaga.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken.id;
-      }
+        savlaga.tailbar = req.body.shaltgaan;
       Geree(req.body.tukhainBaaziinKholbolt)
         .findOneAndUpdate(
           { _id: req.body.gereeniiId },

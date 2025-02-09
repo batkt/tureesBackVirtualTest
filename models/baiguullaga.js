@@ -118,7 +118,8 @@ const baiguullagaSchema = new Schema(
       udruurBodokhEsekh: Boolean,
       baritsaaUneAdiltgakhEsekh: Boolean,
       zogsoolNer: String,
-      qpayShimtgelTusdaa : Boolean
+      qpayShimtgelTusdaa : Boolean,
+      davkharsanMDTSDavtamjSecond: Number,
     },
     erkhuud: [
       {
