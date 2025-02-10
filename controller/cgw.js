@@ -739,7 +739,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     dans.baiguullagiinId,
                     kholbolt
                   );
-                  token = tokenObject.access_token;
+                  token = tokenObject?.access_token;
                 } else token = tokenObject.token;
                 var query = [
                   {
