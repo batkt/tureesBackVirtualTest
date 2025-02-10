@@ -35,7 +35,10 @@ async function tokenAvya(
     url.username = username;
     url.password = password;
     const stringBody = JSON.stringify({ terminal_id: "95000059" });
-    const response = await instance.post(url, { body: stringBody });
+    const response = await instance.post(url, { body: stringBody }).catch((err) => {
+      console.log("QPAY_MERCHANT_SERVER error " + err.message);
+      throw err;
+    });
     const khariu = JSON.parse(response.body);
     Token(tukhainBaaziinKholbolt)
       .updateOne(
@@ -71,7 +74,10 @@ async function tokenAvyaKhuuchin(
     var url = new URL(process.env.QPAY_SERVER + "v2/auth/token/");
     url.username = username;
     url.password = password;
-    const response = await instance.post(url);
+    const response = await instance.post(url).catch((err) => {
+      console.log("QPAY_SERVER err " + err.message);
+      throw err;
+    });
     var khariu = JSON.parse(response.body);
     Token(tukhainBaaziinKholbolt)
       .updateOne(
@@ -107,6 +113,9 @@ async function qpayMedeelelAvya(token, qpayObject, next) {
     const response = await instance.post(url, {
       context,
       body: qpayObjectString,
+    }).catch((err) => {
+      console.log("QPAY_MERCHANT_SERVER err " + err.message);
+      throw err;
     });
     if (!response.body) {
       if (next) {
@@ -127,7 +136,10 @@ async function tokenSungaya(token, next) {
     const context = {
       token: "Bearer " + token,
     };
-    const response = await instance.post(url, { context });
+    const response = await instance.post(url, { context }).catch((err) => {
+      console.log("tokenSungaya error " + err.message);
+      throw err;
+    });
     if (!response.body) {
       if (next) {
         next(new aldaa("Алдаа гарлаа!"));
@@ -152,6 +164,9 @@ async function qpayShivye(token, qpayObject, next) {
     const response = await instance.post(url, {
       context,
       body: qpayObjectString,
+    }).catch((err) => {
+      console.log("qpayShivye error " + err.message);
+      throw err;
     });
     if (!response.body) {
       if (next) {

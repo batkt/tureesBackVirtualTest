@@ -48,7 +48,10 @@ async function tokenAvya(
     );
     url.username = username;
     url.password = password;
-    const response = await instance.post(url);
+    const response = await instance.post(url).catch((err) => {
+      console.log("khanbank tokenAvya err " + err.message);
+      throw err;
+    });
     var khariu = JSON.parse(response.body);
     Token(tukhainBaaziinKholbolt)
       .updateOne(

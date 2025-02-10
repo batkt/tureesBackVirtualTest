@@ -26,7 +26,10 @@ exports.tdbcer = asyncHandler(async (req, res, next) => {
         }
         const objectString = JSON.stringify(xml);
         var url = new URL(process.env.ZEV_TEST_SERVER + ":5000/")
-        const response = await instance.post(url, { body: objectString });
+        const response = await instance.post(url, { body: objectString }).catch((err) => {
+            console.log("tdbcer error " + err.message);
+            throw err;
+        });
         console.log("response.body", response.body);
         var parseString = xml2js.parseString;
         parseString(response.body, function (err, result) {
