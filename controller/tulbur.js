@@ -2400,7 +2400,6 @@ exports.ashiglakhKhonogTootsoolokh = asyncHandler(async (req, res, next) => {
       temp.tulukhDun = (temp.tulukhDun * req.body.diffDay)/lastDay;
       if(temp.undsenDun > 0)
         temp.undsenDun = (temp.undsenDun * req.body.diffDay)/lastDay;
-      temp._id = null;
       changedAvlagas.push(temp);
     }
     var niitTulsunDun = filteredGeree?.filter((e) => (e.tulsunDun > 0 || e.khyamdral) && !!e.guilgeeKhiisenOgnoo).reduce((a, b) => a + ((b.tulsunDun || 0) + (b.khyamdral || 0)), 0);
