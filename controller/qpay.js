@@ -411,15 +411,16 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       var geree = await Geree(tukhainBaaziinKholbolt).findOne({
         _id: qpayBarimt.gereeniiId,
       });
+      var qpayAmount = parseFloat(qpayBarimt.qpay.amount);
       if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
         var tulsunDun = 0;
-        if (geree.aldangiinUldegdel >= qpayBarimt.qpay.amount) {
-          geree.aldangiinUldegdel = geree.aldangiinUldegdel - qpayBarimt.qpay.amount;
-          tulsunDun = qpayBarimt.qpay.amount
+        if (geree.aldangiinUldegdel >= qpayAmount) {
+          geree.aldangiinUldegdel = geree.aldangiinUldegdel - qpayAmount;
+          tulsunDun = qpayAmount;
         } else {
           tulsunDun = geree.aldangiinUldegdel;
           geree.aldangiinUldegdel = 0;
-          var iluuDun = qpayBarimt.qpay.amount - geree.aldangiinUldegdel;
+          var iluuDun = qpayAmount - geree.aldangiinUldegdel;
           tulbur.push({
             turul: "qpay",
             tulsunDun: iluuDun,
@@ -448,7 +449,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       } else {
         tulbur.push({
           turul: "qpay",
-          tulsunDun: qpayBarimt.qpay.amount,
+          tulsunDun: qpayAmount,
           ognoo: qpayBarimt.ognoo,
           guilgeeKhiisenOgnoo: new Date(),
         });
