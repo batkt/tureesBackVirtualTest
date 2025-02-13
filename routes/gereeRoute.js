@@ -1516,7 +1516,9 @@ router
                                                     $eq: ["$avlaga.zardliinTurul", "tsakhilgaan"],
                                                   },
                                                   "Цахилгаан нэмэлт",
-                                                  "$avlaga.tailbar",
+                                                  {
+                                                    $ifNull: ["$avlaga.zardliinNer", "$avlaga.tailbar"],
+                                                  },
                                                 ]
                                               }
                                             ]
