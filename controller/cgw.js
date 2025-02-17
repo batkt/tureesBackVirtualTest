@@ -324,17 +324,7 @@ async function dansniiJagsaaltAvya(token, next) {
 
 async function dansniiKhuulgaAvya(token, next, body) {
   try {
-    var url =
-      "https://api.khanbank.com/v1/statements/" +
-      body.dansniiDugaar +
-      "?from=" +
-      body.ekhlekhOgnoo +
-      "&to=" +
-      body.duusakhOgnoo;
-    if(body.khuudasniiDugaar) url = url + "&page=" + body.khuudasniiDugaar;
-    if(body.khuudasniiKhemjee) url = url + "&&size=" + body.khuudasniiKhemjee;
-    if (body.record) url = url + "&&record=" + body.record;
-    url = new URL(url);
+    var url = "https://api.khanbank.com/v1/statements/" + body.dansniiDugaar + "/record?record=" + body.record;
     const context = {
       token: "Bearer " + token,
     };
@@ -769,20 +759,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
                   dansniiDugaar: dans.dugaar,
-                  ekhlekhOgnoo:
-                    firstDay.getFullYear() +
-                    (firstDay.getMonth() < 9 ? "0" : "") +
-                    (firstDay.getMonth() + 1) +
-                    (firstDay.getDate() < 10 ? "0" : "") +
-                    firstDay.getDate(),
-                  duusakhOgnoo:
-                    lastDay.getFullYear() +
-                    (lastDay.getMonth() < 9 ? "0" : "") +
-                    (lastDay.getMonth() + 1) +
-                    (lastDay.getDate() < 10 ? "0" : "") +
-                    lastDay.getDate(),
-                  khuudasniiKhemjee: 100,
-                  khuudasniiDugaar: 0,
                   record: maxDugaar,   
                 });
                 if (khariu && khariu.transactions) {
@@ -1448,20 +1424,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
                   dansniiDugaar: dans.dugaar,
-                  ekhlekhOgnoo:
-                    firstDay.getFullYear() +
-                    (firstDay.getMonth() < 9 ? "0" : "") +
-                    (firstDay.getMonth() + 1) +
-                    (firstDay.getDate() < 10 ? "0" : "") +
-                    firstDay.getDate(),
-                  duusakhOgnoo:
-                    lastDay.getFullYear() +
-                    (lastDay.getMonth() < 9 ? "0" : "") +
-                    (lastDay.getMonth() + 1) +
-                    (lastDay.getDate() < 10 ? "0" : "") +
-                    lastDay.getDate(),
-                  khuudasniiKhemjee: 100,
-                  khuudasniiDugaar: 0,
                   record: maxDugaar,  
                 });
                 if (khariu && khariu.transactions) {
