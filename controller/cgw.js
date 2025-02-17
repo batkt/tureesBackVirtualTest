@@ -781,6 +781,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getMonth() + 1) +
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate(),
+                  khuudasniiKhemjee: 100,
+                  khuudasniiDugaar: 0,
+                  record: maxDugaar,   
                 });
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
@@ -1457,6 +1460,9 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     (lastDay.getMonth() + 1) +
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate(),
+                  khuudasniiKhemjee: 100,
+                  khuudasniiDugaar: 0,
+                  record: maxDugaar,  
                 });
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
