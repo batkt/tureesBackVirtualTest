@@ -317,7 +317,7 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
           );
           console.log("tukhainKholbolt", tukhainKholbolt);
           var shiveeguiTuukhuud = await Uilchluulegch(tukhainKholbolt).find({
-            niitDun: { $gt: 0 },
+            "tuukh.tulbur": { $exists: true, $not: { $size: 0 } },
             ebarimtAvsanEsekh: { $ne: true },
             turul: { $exists: false },
             createdAt: { $gt: new Date(moment(new Date()).add(-1, "day")) },
