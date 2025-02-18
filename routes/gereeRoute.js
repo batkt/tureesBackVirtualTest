@@ -95,7 +95,7 @@ router.route("/fcZasvarKhiie").post(tokenShalgakh, fcZasvarKhiie);
 router.route("/avlagaZasay").post(tokenShalgakh, avlagaZasay);
 router.route("/ashiglakhKhonogTootsoolokh").post(tokenShalgakh, ashiglakhKhonogTootsoolokh);
 
-router.route("/gereeniiExcelAvya").get(tokenShalgakh, gereeniiExcelAvya);
+router.route("/gereeniiExcelAvya/:barilgiinId").get(tokenShalgakh, gereeniiExcelAvya);
 router
   .route("/gereeniiExcelTatya")
   .post(uploadFile.single("file"), tokenShalgakh, gereeniiExcelTatya);
@@ -1466,6 +1466,20 @@ router
                                 "avlaga.guilgeenuud.zardliinTurul": { $in: ["turees"] }
                               }
                             ]
+                          },
+                          {
+                            $and: [
+                              {
+                                "avlaga.guilgeenuud.turul": {
+                                  $in: ["baritsaa"],
+                                }
+                              },
+                              {
+                                "avlaga.guilgeenuud.tulsunDun": {
+                                  $gt: 0,
+                                }
+                              }
+                            ]
                           }
                         ]
                       },
@@ -1517,8 +1531,16 @@ router
                                                   },
                                                   "Цахилгаан нэмэлт",
                                                   {
-                                                    $ifNull: ["$avlaga.zardliinNer", "$avlaga.tailbar"],
-                                                  },
+                                                    $cond: [
+                                                      {
+                                                        $eq: ["$avlaga.turul", "baritsaa"],
+                                                      },
+                                                      "Барьцаа ашигласан",
+                                                      {
+                                                        $ifNull: ["$avlaga.zardliinNer", "$avlaga.tailbar"],  
+                                                      }
+                                                    ]  
+                                                  }
                                                 ]
                                               }
                                             ]

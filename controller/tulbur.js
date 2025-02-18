@@ -304,7 +304,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
         return a - b;
       });
     await new Array(khugatsaa).fill("").map((mur, index) => {
-      tulukhUdruud.forEach((udur) => {
+      tulukhUdruud?.forEach((udur) => {
         if (!duussanEsekh) {
           console.log("tukhainSar", tukhainSar);
           suuliinUdur = moment(tukhainSar).endOf("month").date();

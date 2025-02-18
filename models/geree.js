@@ -103,6 +103,7 @@ const gereeSchema = new Schema(
     },
     baritsaaBairshuulakhKhugatsaa: Number,
     baritsaaAvakhKhugatsaa: Number,
+    baritsaaAvakhEsekh: Boolean,
     baiguullagiinId: String,
     baiguullagiinNer: String,
     aktiinZagvariinId: String,
@@ -129,6 +130,13 @@ const gereeSchema = new Schema(
         tariffUsgeer: String,
         tulukhDun: Number, // Менежментийн зардал
         dun: Number, //dung n zuwxun munguur tootsoj awax togtmol ued buglunu
+        bodokhArga: String, //togtmol tomyotoi baidag arguud
+        tseverUsDun: Number, // xaluun xuiten ustei ued xatuu bodno
+        bokhirUsDun: Number, // xaluun xuiten ustei ued xatuu bodno
+        usKhalaasniiDun: Number, // xaluun us ued xatuu bodno
+        tsakhilgaanUrjver: Number, //tsakhilgaanii coefficent
+        tsakhilgaanChadal: Number,
+        tsakhilgaanDemjikh: Number,
         suuriKhuraamj: String,
         nuatNemekhEsekh: Boolean,
       },

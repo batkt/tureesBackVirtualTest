@@ -990,6 +990,7 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
     req.body.tukhainBaaziinKholbolt
   ).find({
     baiguullagiinId: req.body.baiguullagiinId,
+    barilgiinId: req.params.barilgiinId,
   });
   console.log("zardluud", zardluud);
   console.log("segmentuud", segmentuud);
@@ -1128,6 +1129,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       req.body.tukhainBaaziinKholbolt
     ).find({
       baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
     });
     const { db } = require("zevbackv2");
     console.log("zardluud", zardluud);
@@ -1240,7 +1242,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.daraagiinTulukhOgnoo = moment(ognoo)
           .add(1, "month")
           .set("date", object.tulukhUdur);
-        object.baritsaaAvakhKhugatsaa = baritsaaAvakhSar;
+        object.baritsaaAvakhKhugatsaa = baritsaaAvakhSar === 0 ? mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaAwakhKhugatsaa)] : baritsaaAvakhSar;
+        object.baritsaaAvakhEsekh = object.baritsaaAvakhKhugatsaa > 0;
         object.avlaga = {
           guilgeenuud: [
             {
@@ -1278,31 +1281,17 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         if (zardluud && zardluud.length > 0) {
           zardluud.forEach((zardal) => {
             if (tolgoinObject.hasOwnProperty(zardal.ner)) {
+              console.log("useg --------------->" + mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]);
               if (
                 mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] !=
-                  "Авахгүй" ||
-                mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] > 0
+                  "Авахгүй" &&
+                  mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] !=
+                  undefined
               ) {
                 if (object.zardluud && object.zardluud.length > 0) {
-                  object.zardluud.push({
-                    ner: zardal.ner,
-                    dun: isNumeric(
-                      mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]
-                    )
-                      ? mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]
-                      : 0,
-                  });
+                  object.zardluud.push(zardal);
                 } else {
-                  object.zardluud = [
-                    {
-                      ner: zardal.ner,
-                      dun: isNumeric(
-                        mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]
-                      )
-                        ? mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]
-                        : 0,
-                    },
-                  ];
+                  object.zardluud = [ zardal ];
                 }
               }
             }
