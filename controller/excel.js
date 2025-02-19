@@ -1245,15 +1245,16 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
           .set("date", object.tulukhUdur);
         object.baritsaaAvakhKhugatsaa = baritsaaAvakhSar === 0 ? mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaAwakhKhugatsaa)] : baritsaaAvakhSar;
         object.baritsaaAvakhEsekh = object.baritsaaAvakhKhugatsaa > 0;
-        object.avlaga = {
-          guilgeenuud: [
-            {
-              ognoo,
-              tulukhDun: object.uldegdel,
-              undsenDun: object.uldegdel,
-            },
-          ],
-        };
+        if(!!object.uldegdel)
+          object.avlaga = {
+            guilgeenuud: [
+              {
+                ognoo,
+                tulukhDun: object.uldegdel,
+                undsenDun: object.uldegdel,
+              },
+            ],
+          };
         object.gereeniiZagvariinId = zagvariinId;
         object.baiguullagiinId = req.body.baiguullagiinId;
         object.barilgiinId = req.body.barilgiinId;
