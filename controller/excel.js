@@ -381,6 +381,7 @@ async function talbaiBaigaaEskhiigShalgaya(
         x.talbainNegjUne = tukhainTalbai.talbainNegjUne;
         x.talbainNiitUne = tukhainTalbai.talbainNiitUne;
         x.talbainKhemjee = tukhainTalbai.talbainKhemjee;
+        x.talbainKhemjeeMetrKube = tukhainTalbai.talbainKhemjeeMetrKube;
         x.sariinTurees = tukhainTalbai.talbainNiitUne;
         x.talbainIdnuud = [tukhainTalbai._id];
         x.baritsaaAvakhDun =
@@ -1373,15 +1374,19 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             });
             if (x.zardluud && x.zardluud.length > 0)
               x.zardluud.forEach((zardal) => {
-                if (zardal.dun > 0)
-                  data.push({
-                    ognoo: moment(ognoo)
-                      .add(index, "month")
-                      .set("date", udur),
-                    turul: "avlaga",
-                    tailbar: zardal.ner,
-                    tulukhDun: zardal.dun,
-                  });
+                if (zardal && zardal.ner != "Цахилгаан") {
+                  if (zardal.turul == "1м2")
+                    zardal.dun = tooZasyaSync(zardal.tariff * (x.talbainKhemjee || 0));
+                  if (zardal.turul == "1м3/талбай")
+                    zardal.dun = tooZasyaSync(zardal.tariff * (x.talbainKhemjeeMetrKube || 0));
+                  if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
+                    data.push({
+                      turul: "avlaga",
+                      tailbar: zardal.ner,
+                      ognoo: moment(ognoo).add(index, "month").set("date", udur),
+                      tulukhDun: zardal.dun,
+                    });
+                }
               });
           }
         });
