@@ -1360,12 +1360,12 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         x.tulukhUdur.forEach((udur) => {
           if (
             moment(ognoo)
-              .add(index + 1, "month")
+              .add(index, "month")
               .set("date", udur) <= moment(x.duusakhOgnoo)
           ) {
             data.push({
               ognoo: moment(ognoo)
-                .add(index + 1, "month")
+                .add(index, "month")
                 .set("date", udur),
               khyamdral: 0,
               undsenDun: x.talbainNiitUne,
@@ -1376,7 +1376,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
                 if (zardal.dun > 0)
                   data.push({
                     ognoo: moment(ognoo)
-                      .add(index + 1, "month")
+                      .add(index, "month")
                       .set("date", udur),
                     turul: "avlaga",
                     tailbar: zardal.ner,
