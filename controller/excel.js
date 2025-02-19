@@ -1456,6 +1456,11 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
   }
 });
 
+function tooZasyaSync(too) {
+  var zassanToo = Math.round((too + Number.EPSILON) * 100) / 100;
+  return +zassanToo.toFixed(2);
+}
+
 function ExcelDateToJSDate(date) {
   return new Date(Math.round((date - 25569) * 86400 * 1000));
 }
