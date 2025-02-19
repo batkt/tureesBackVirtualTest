@@ -1362,9 +1362,9 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
               ognoo: moment(ognoo)
                 .add(index, "month")
                 .set("date", udur),
-              khyamdral: 0,
               undsenDun: x.talbainNiitUne,
               tulukhDun: x.talbainNiitUne,
+              turul: "khuvaari",
             });
             if (x.zardluud && x.zardluud.length > 0)
               x.zardluud.forEach((zardal) => {
