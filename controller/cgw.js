@@ -754,6 +754,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   },
                 ];
                 var max = await BankniiGuilgee(kholbolt).aggregate(query);
+                console.log("max --------------->" + JSON.stringify(max));
                 var maxDugaar = 1;
                 if (max && max.length !== 0) maxDugaar = max[0].max;
                 var khariu = await dansniiKhuulgaAvya(token, next, {
