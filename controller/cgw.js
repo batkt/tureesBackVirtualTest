@@ -739,6 +739,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     $match: {
                       dansniiDugaar: dans.dugaar,
                       baiguullagiinId: dans.baiguullagiinId,
+                      barilgiinId: dans.barilgiinId,
                     },
                   },
                   {
