@@ -328,6 +328,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
     const context = {
       token: "Bearer " + token,
     };
+    console.log("url -------------------->>" + JSON.stringify(url));
     const response = await instance.get(url, { context });
     if (!response.body) {
       if (next) next(new aldaa("Татах хуулга байхгүй"));
