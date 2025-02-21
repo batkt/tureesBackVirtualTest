@@ -324,7 +324,9 @@ async function dansniiJagsaaltAvya(token, next) {
 
 async function dansniiKhuulgaAvya(token, next, body) {
   try {
-    var url = "https://api.khanbank.com/v1/statements/" + body.dansniiDugaar + "/record?record=" + body.record;
+    var url = "https://api.khanbank.com/v1/statements/" + body.dansniiDugaar;
+    if(body.record)
+      url = url + "/record?record=" + body.record;
     const context = {
       token: "Bearer " + token,
     };
@@ -758,12 +760,24 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 console.log("max --------------->" + JSON.stringify(max));
                 var maxDugaar = 1;
                 if (max && max.length !== 0) maxDugaar = max[0].max;
-                var khariu = await dansniiKhuulgaAvya(token, next, {
-                  baiguullagiinId: dans.baiguullagiinId,
-                  barilgiinId: dans.barilgiinId,
-                  dansniiDugaar: dans.dugaar,
-                  record: maxDugaar,   
-                });
+                if(dans.dugaar === "5100229713" && dans.baiguullagiinId === "6735c77a7fc60cd66deb2909")
+                {
+                  var khariu = await dansniiKhuulgaAvya(token, next, {
+                    baiguullagiinId: dans.baiguullagiinId,
+                    barilgiinId: dans.barilgiinId,
+                    dansniiDugaar: dans.dugaar,
+                  });  
+                }
+                else
+                {
+                  var khariu = await dansniiKhuulgaAvya(token, next, {
+                    baiguullagiinId: dans.baiguullagiinId,
+                    barilgiinId: dans.barilgiinId,
+                    dansniiDugaar: dans.dugaar,
+                    record: maxDugaar,   
+                  });
+                }
+                
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
                   khariu.transactions.forEach((mur) =>
