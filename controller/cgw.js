@@ -758,26 +758,14 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 ];
                 var max = await BankniiGuilgee(kholbolt).aggregate(query);
                 console.log("max --------------->" + JSON.stringify(max));
-                var maxDugaar = 1;
-                if (max && max.length !== 0) maxDugaar = max[0].max;
-                if(dans.dugaar === "5100229713" && dans.baiguullagiinId === "6735c77a7fc60cd66deb2909")
-                {
-                  var khariu = await dansniiKhuulgaAvya(token, next, {
-                    baiguullagiinId: dans.baiguullagiinId,
-                    barilgiinId: dans.barilgiinId,
-                    dansniiDugaar: dans.dugaar,
-                  });  
+                var bodyKhuulga = {
+                  baiguullagiinId: dans.baiguullagiinId,
+                  barilgiinId: dans.barilgiinId,
+                  dansniiDugaar: dans.dugaar,
                 }
-                else
-                {
-                  var khariu = await dansniiKhuulgaAvya(token, next, {
-                    baiguullagiinId: dans.baiguullagiinId,
-                    barilgiinId: dans.barilgiinId,
-                    dansniiDugaar: dans.dugaar,
-                    record: maxDugaar,   
-                  });
-                }
-                
+                if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
+                var khariu = await dansniiKhuulgaAvya(token, next, bodyKhuulga);
+
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
                   khariu.transactions.forEach((mur) =>
