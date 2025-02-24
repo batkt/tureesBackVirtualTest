@@ -956,7 +956,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
       let busadGereenuud;
       if(!!geree.register)
       {
-        busadGereenuud = await Geree(tukhainBaaziinKholbolt).findOne({
+        busadGereenuud = await Geree(tukhainBaaziinKholbolt).find({
           register: geree.register,
           barilgiinId: geree.barilgiinId,
           tuluv: { $ne: -1 },
@@ -964,7 +964,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
       }
       else if(!!geree.customerTin)
       {
-        busadGereenuud = await Geree(tukhainBaaziinKholbolt).findOne({
+        busadGereenuud = await Geree(tukhainBaaziinKholbolt).find({
           customerTin: geree.customerTin,
           barilgiinId: geree.barilgiinId,
           tuluv: { $ne: -1 },
@@ -1021,7 +1021,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
                 barilgiinId: geree.barilgiinId,
               },
               update: {
-                idevkhiteiEsekh: busadGereenuud ? true : false,
+                idevkhiteiEsekh: busadGereenuud?.length > 0 || geree.tuluv == 1,
               },
             },
           };
@@ -1035,7 +1035,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
                 barilgiinId: geree.barilgiinId,
               },
               update: {
-                idevkhiteiEsekh: busadGereenuud ? true : false,
+                idevkhiteiEsekh: busadGereenuud?.length > 0 || geree.tuluv == 1,
               },
             },
           };
