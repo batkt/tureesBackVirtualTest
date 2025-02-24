@@ -3213,4 +3213,19 @@ router
     res.send("Amjiltgui");
 });
 
+router
+  .route("/garaasTuluvUurchluyZasya")  
+  .post(tokenShalgakh, async (req, res, next) => {
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({ tuluv: 1 })
+    if(gereenuud?.length > 0)
+    {
+      for await (const geree of gereenuud) {
+        talbaiKhariltsagchiinTuluvUurchluy(
+          [geree._id],
+          req.body.tukhainBaaziinKholbolt
+        );
+      }
+    }
+    res.send("Amjilttai");
+});
 module.exports = router;
