@@ -1423,6 +1423,15 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             },
           };
         khariltsagchBulk.push(upsertKhariltsagcj);
+        let upsertTinKhariltsagcj = {
+          updateOne: {
+              filter: { customerTin: a.register, baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId },
+              update: {
+                idevkhiteiEsekh: true,
+              },
+            },
+          };
+        khariltsagchBulk.push(upsertTinKhariltsagcj);
     });
     if (talbainBulk)
       Talbai(req.body.tukhainBaaziinKholbolt)
