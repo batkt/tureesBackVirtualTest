@@ -1012,12 +1012,12 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
           talbainBulk.push(upsertTalbai);
         }
         let upsertKhariltsagch;
-        if(!!geree.register)
+        if(!!geree.customerTin)
         {
           upsertKhariltsagch = {
             updateOne: {
               filter: {
-                register: geree.register,
+                customerTin: geree.customerTin,
                 barilgiinId: geree.barilgiinId,
               },
               update: {
@@ -1026,12 +1026,12 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
             },
           };
         }
-        else if(!!geree.customerTin)
+        else if(!!geree.register)
         {
           upsertKhariltsagch = {
             updateOne: {
               filter: {
-                customerTin: geree.customerTin,
+                register: geree.register,
                 barilgiinId: geree.barilgiinId,
               },
               update: {
