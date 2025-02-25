@@ -570,7 +570,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
       ebarimt.barilgiinId = khariuObject.barilgiinId;
       ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
       ebarimt.save().catch((err) => {
-        next(err);
+        if(next) next(err);
       });
       console.log("ebarimt duuslaa");
       if(!!shiveeguiTuukhuud && shiveeguiTuukhuud?.length > 0)
@@ -623,7 +623,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
         }
       }
     } catch (err) {
-      next(err);
+      if(next) next(err);
     }
   };
   ebarimtDuudya(ebarimt, butsaakhMethod, next, !!tuxainSalbar.eBarimtShine);
