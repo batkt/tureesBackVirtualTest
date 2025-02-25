@@ -13,7 +13,7 @@ function aldaagIlgeeye(aldaa, req) {
     })
   );
   const options = {
-    hostname: "127.0.0.1",
+    hostname: "103.143.40.43",
     port: 8282,
     path: "/aldaa",
     method: "POST",
