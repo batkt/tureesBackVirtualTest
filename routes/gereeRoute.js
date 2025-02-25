@@ -954,18 +954,18 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
     for await (const id of gereeniiIdnuud) {
       let geree = await Geree(tukhainBaaziinKholbolt).findById(id);
       let busadGereenuud;
-      if(!!geree.register)
+      if(!!geree.customerTin)
       {
         busadGereenuud = await Geree(tukhainBaaziinKholbolt).find({
-          register: geree.register,
+          customerTin: geree.customerTin,
           barilgiinId: geree.barilgiinId,
           tuluv: { $ne: -1 },
         });
       }
-      else if(!!geree.customerTin)
+      else if(!!geree.register)
       {
         busadGereenuud = await Geree(tukhainBaaziinKholbolt).find({
-          customerTin: geree.customerTin,
+          register: geree.register,
           barilgiinId: geree.barilgiinId,
           tuluv: { $ne: -1 },
         });
