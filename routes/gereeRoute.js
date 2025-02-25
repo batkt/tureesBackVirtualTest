@@ -1068,6 +1068,8 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
 router
   .route("/gereeTsutslaya")
   .post(tokenShalgakh, gereeTsutslakhShalguur, async (req, res, next) => {
+  try
+  {
     var geree = await Geree(req.body.tukhainBaaziinKholbolt)
       .findById(req.body.gereeniiId)
       .select({
@@ -1148,13 +1150,17 @@ router
           }
         )
         .then((result) => {
-          res.send("Amjilttai");
+          
         })
         .catch((err) => {
           next(err);
         });
     }
-  });
+  }
+  catch (error) {
+    next(error);
+  }
+});
 
 router
   .route("/eneSardTulukhJagsaaltAvya")
