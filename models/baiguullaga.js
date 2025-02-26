@@ -6,6 +6,7 @@ const baiguullagaSchema = new Schema(
   {
     id: String,
     ner: String,
+    dotoodNer: String,
     khayag: String,
     mail: [String],
     register: String,
