@@ -521,7 +521,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         );
       }
       var khariu = await dansniiJagsaaltAvya(token, next);
-      khariu = khariu.accounts.filter(
+      khariu = khariu?.accounts?.filter(
         (a) => a.number == req.body.dansniiDugaar
       );
       if (khariu && khariu.length > 0) uldegdel = khariu[0].avalaibleBalance;
