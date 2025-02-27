@@ -15,7 +15,7 @@ const ashiglaltiinZardluudSchema = new Schema(
     tsakhilgaanUrjver: Number, //tsakhilgaanii coefficent
     tsakhilgaanChadal: Number,
     tsakhilgaanDemjikh: Number,
-    tariff: String,
+    tariff: Number,
     tariffUsgeer: String,
     suuriKhuraamj: String,
     nuatNemekhEsekh: Boolean,
