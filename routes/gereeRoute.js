@@ -1642,12 +1642,15 @@ router
                 //if (x.umnukhSariinUrTulbur < 0) x.umnukhSariinUrTulbur = 0;
                 if (x.eneSardTulukhDun < 0) x.eneSardTulukhDun = 0;
                 // if (x.niitUldegdel < 0) x.niitUldegdel = 0;
-                let diffMonth = moment(req.body.duusakhOgnoo).diff(moment(), 'months');
-                if(diffMonth)
+                if(req.body.baiguullagiinId != "679aea9032299b7ba8462a77") // urangan
                 {
-                  x.sariinTurees = (diffMonth + 1) * x.sariinTurees;
-                  x.talbainNiitUne = (diffMonth + 1) * x.talbainNiitUne;
-                  x.diffMonth = diffMonth;
+                  let diffMonth = moment(req.body.duusakhOgnoo).diff(moment(), 'months');
+                  if(diffMonth)
+                  {
+                    x.sariinTurees = (diffMonth + 1) * x.sariinTurees;
+                    x.talbainNiitUne = (diffMonth + 1) * x.talbainNiitUne;
+                    x.diffMonth = diffMonth;
+                  }
                 }
               });
             }
