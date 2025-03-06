@@ -8,6 +8,7 @@ const { Uilchluulegch } = require("parking-v1");
 const lodash = require("lodash");
 const moment = require("moment");
 const { Dans } = require("zevbackv2");
+const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 
 const unguud = [
   "rgba(255, 99, 132, 0.5)",
@@ -2033,6 +2034,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
       },
     ];  
     console.log(query);
+    var zardluud = await AshiglaltiinZardluud(req.body.tukhainBaaziinKholbolt).find({ baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId });
     var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
     if(khariu?.length > 0)
     {
@@ -2050,9 +2052,19 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             b.tailbar = "Халуун ус";
           if(b.zardliinTurul === "khuitenUs") 
             b.tailbar = "Хүйтэн ус";
+          if(b.zardliinTurul === "busad") 
+            b.tailbar = "Бусад авлага";
           if(b.tailbar === "Management" || b.zardliinTurul === "management")
             b.tailbar = "Менежментийн төлбөр";
-
+          if(!!b.zardliinNer)
+            b.tailbar = b.zardliinNer;
+          if(!b.zardliinTurul && !b.zardliinNer)
+          {
+            var filteredZardal = zardluud?.filter((a) => a.ner === b.tailbar);
+            if(filteredZardal?.length === 0)
+              b.tailbar = "Бусад авлага";
+          }
+          
           var tempkhungulult = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khungulult");
           if(b.turul !== "khuvaari" || (tempkhungulult?.length === 0 && b.turul === "khuvaari"))
             niitTulukhDun += (b.tulukhDun || 0);

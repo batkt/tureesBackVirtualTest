@@ -52,6 +52,7 @@ const ajiltanSchema = new Schema(
       m2UneTokhiruulakhEsekh: [String],
       zogsoolNegtgelDunKharakhEsekh: Boolean,
       togloomiinTuvNegtgelDunKharakhEsekh: Boolean,
+      zogsooliinKhungulultEsekh: Boolean,
     },
   },
   {
