@@ -1352,9 +1352,27 @@ router
                     },
                     {
                       $match: {
-                        "avlaga.guilgeenuud.turul": {
-                          $nin: ["baritsaa"],
-                        },
+                        $or: [
+                          {
+                            "avlaga.guilgeenuud.turul": {
+                              $nin: ["baritsaa"],
+                            },
+                          },
+                          {
+                            $and: [
+                              {
+                              "avlaga.guilgeenuud.turul": {
+                                $in: ["baritsaa"],
+                              }
+                              },
+                              {
+                              "avlaga.guilgeenuud.tulsunDun": {
+                                $gt: 0,
+                              }
+                              }
+                            ]
+                          }
+                        ],
                         "avlaga.guilgeenuud.ognoo": {
                           $lte: new Date(req.body.duusakhOgnoo),
                         },
