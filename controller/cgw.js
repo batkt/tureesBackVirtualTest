@@ -503,11 +503,14 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
     });
     var uldegdel = 0;
     if (dans && dans.bank == "khanbank") {
-      var tokenObject = await Token(req.body.tukhainBaaziinKholbolt).findOne({
+      var query = {
         turul: "khaanCorporate",
         baiguullagiinId: dans.baiguullagiinId,
         ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
-      });
+      }
+      if(dans.corporateBarilgaTusBur && !!dans.barilgiinId)
+        query["barilgiinId"] = dans.barilgiinId
+      var tokenObject = await Token(req.body.tukhainBaaziinKholbolt).findOne(query);
       var token;
       if (!tokenObject) {
         tokenObject = await tokenAvya(
@@ -726,11 +729,14 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
           for await (const dans of dansnuud) {
             try {
               if (dans.bank == "khanbank") {
-                var tokenObject = await Token(kholbolt).findOne({
+                var query = {
                   turul: "khaanCorporate",
                   baiguullagiinId: dans.baiguullagiinId,
                   ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
-                });
+                }
+                if(dans.corporateBarilgaTusBur && !!dans.barilgiinId)
+                  query["barilgiinId"] = dans.barilgiinId
+                var tokenObject = await Token(kholbolt).findOne(query);
                 var token;
                 if (!tokenObject) {
                   tokenObject = await tokenAvya(
@@ -1394,11 +1400,14 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
           for await (const dans of dansnuud) {
             try {
               if (dans.bank == "khanbank") {
-                var tokenObject = await Token(kholbolt).findOne({
+                var query = {
                   turul: "khaanCorporate",
                   baiguullagiinId: dans.baiguullagiinId,
                   ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
-                });
+                }
+                if(dans.corporateBarilgaTusBur && !!dans.barilgiinId)
+                  query["barilgiinId"] = dans.barilgiinId
+                var tokenObject = await Token(kholbolt).findOne(query);
                 var token;
                 if (!tokenObject) {
                   tokenObject = await tokenAvya(
