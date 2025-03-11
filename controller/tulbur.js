@@ -306,15 +306,11 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     await new Array(khugatsaa).fill("").map((mur, index) => {
       tulukhUdruud?.forEach((udur) => {
         if (!duussanEsekh) {
-          console.log("tukhainSar", tukhainSar);
           suuliinUdur = moment(tukhainSar).endOf("month").date();
-          console.log("suuliinUdur", suuliinUdur);
           if (suuliinUdur < udur) {
             turOgnoo = new Date(moment(tukhainSar).set("date", suuliinUdur));
-            console.log("if ruu orson => ", turOgnoo);
           } else {
             turOgnoo = new Date(moment(tukhainSar).set("date", udur));
-            console.log("else ruu orson => ", turOgnoo);
           }
           if (turOgnoo >= ekhlekhOgnoo) {
             if (
@@ -322,6 +318,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               turOgnoo.getFullYear() == duusakhOgnoo.getFullYear()
             )
               duussanEsekh = true;
+            dun = ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, body.dun); // Ekhnii sariin dun bodokh
             if (dun > 0)
               butsaakhJagsaalt.push({
                 turul: "khuvaari",
@@ -337,11 +334,12 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                   if (zardal.turul == "1м3/талбай")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.metrKube);
                   if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
+                  var zardalDun = ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, zardal.dun);
                   butsaakhJagsaalt.push({
                     turul: "avlaga",
                     tailbar: zardal.ner,
                     ognoo: turOgnoo,
-                    tulukhDun: zardal.dun,
+                    tulukhDun: zardalDun,
                   });
                 }
               });
@@ -357,6 +355,17 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     next(aldaa);
   }
 });
+
+function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
+  if(body.shineGereeEsekh && turOgnoo.getMonth() == ekhlekhOgnoo.getMonth() && turOgnoo.getFullYear() == ekhlekhOgnoo.getFullYear())
+  {
+    var sariinNiitKhonog = body.guchKhonogOruulakhEsekh ? 30 : parseFloat(moment(ekhlekhOgnoo).endOf("month").format("DD"));
+    var ashiglakhKhonog = body.garaasKhonogOruulakhEsekh ? body.ekhniiSariinKhonog : moment(ekhlekhOgnoo).endOf("month").diff(body.gereeniiOgnoo, "d");
+    ashiglakhKhonog = sariinNiitKhonog < ashiglakhKhonog ? sariinNiitKhonog : ashiglakhKhonog; // 28 < 30
+    dun = (dun * ashiglakhKhonog)/(sariinNiitKhonog || 1);
+  }
+  return dun;
+}
 
 module.exports.tulultTaniya = async function tulultTaniya() {
   const { db } = require("zevbackv2");
