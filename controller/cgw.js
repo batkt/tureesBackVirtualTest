@@ -40,6 +40,7 @@ async function tokenAvya(
   password,
   next,
   baiguullagiinId,
+  barilgiinId,
   tukhainBaaziinKholbolt
 ) {
   try {
@@ -52,10 +53,13 @@ async function tokenAvya(
       console.log("khanbank tokenAvya err " + err.message);
       throw err;
     });
+    var qeury = { turul: "khaanCorporate", baiguullagiinId: baiguullagiinId };
+    if(!!barilgiinId)
+      qeury["barilgiinId"] = barilgiinId;
     var khariu = JSON.parse(response.body);
     Token(tukhainBaaziinKholbolt)
       .updateOne(
-        { turul: "khaanCorporate", baiguullagiinId: baiguullagiinId },
+        qeury,
         { ognoo: new Date(), token: khariu.access_token },
         { upsert: true }
       )
@@ -511,6 +515,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           dans.corporateNuutsUg,
           next,
           dans.baiguullagiinId,
+          dans.corporateBarilgaTusBur ? dans.barilgiinId : null,
           req.body.tukhainBaaziinKholbolt
         );
         token = tokenObject?.access_token;
@@ -733,6 +738,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     dans.corporateNuutsUg,
                     next,
                     dans.baiguullagiinId,
+                    dans.corporateBarilgaTusBur ? dans.barilgiinId : null,
                     kholbolt
                   );
                   token = tokenObject?.access_token;
@@ -1400,6 +1406,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     dans.corporateNuutsUg,
                     null,
                     dans.baiguullagiinId,
+                    dans.corporateBarilgaTusBur ? dans.barilgiinId : null,
                     kholbolt
                   );
                   token = tokenObject.access_token;
