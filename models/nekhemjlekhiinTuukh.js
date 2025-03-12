@@ -46,6 +46,7 @@ const nekhemjlekhiinTuukhSchema = new Schema(
     tsonkhniiNer: String,
     nekhemjlekh: String,
     zagvariinNer: String,
+    content: String,
   },
   {
     timestamps: true,
