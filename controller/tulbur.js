@@ -360,7 +360,7 @@ function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
   if(body.shineGereeEsekh && turOgnoo.getMonth() == ekhlekhOgnoo.getMonth() && turOgnoo.getFullYear() == ekhlekhOgnoo.getFullYear())
   {
     var sariinNiitKhonog = body.guchKhonogOruulakhEsekh ? 30 : parseFloat(moment(ekhlekhOgnoo).endOf("month").format("DD"));
-    var ashiglakhKhonog = body.garaasKhonogOruulakhEsekh ? body.ekhniiSariinKhonog : moment(ekhlekhOgnoo).endOf("month").diff(body.gereeniiOgnoo, "d");
+    var ashiglakhKhonog = body.garaasKhonogOruulakhEsekh ? body.ekhniiSariinKhonog : (moment(ekhlekhOgnoo).endOf("month").diff(body.gereeniiOgnoo, "d") + 1);
     ashiglakhKhonog = sariinNiitKhonog < ashiglakhKhonog ? sariinNiitKhonog : ashiglakhKhonog; // 28 < 30
     dun = (dun * ashiglakhKhonog)/(sariinNiitKhonog || 1);
   }

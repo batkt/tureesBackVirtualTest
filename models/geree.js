@@ -122,6 +122,9 @@ const gereeSchema = new Schema(
     avlaga: { type: avlagiinTurul, select: false },
     dans: String,
     turGereeEsekh: Boolean,
+    guchKhonogOruulakhEsekh: Boolean,
+    garaasKhonogOruulakhEsekh: Boolean,
+    ekhniiSariinKhonog: Number,
     zardluud: [
       {
         ner: String,
