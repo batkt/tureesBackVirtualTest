@@ -270,6 +270,7 @@ async function golomtServiceDuudya(
     var a = JSON.stringify(yawuulaxBody);
     var hash = CryptoJS.SHA256(a.toString());
     var hex = hash.toString(CryptoJS.enc.Hex);
+    console.log("dans ------------>>>" + JSON.stringify(dans));
     console.log("sessionKey ------------>>>" + sessionKey);
     var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
     var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
