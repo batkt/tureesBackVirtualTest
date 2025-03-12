@@ -265,15 +265,12 @@ async function golomtServiceDuudya(
   tukhainBaaziinKholbolt
 ) {
   try {
-    var { sessionKey, ivKey } = dans;
     var tokenObject = await golomtTokenAvya(dans, tukhainBaaziinKholbolt);
     var a = JSON.stringify(yawuulaxBody);
     var hash = CryptoJS.SHA256(a.toString());
     var hex = hash.toString(CryptoJS.enc.Hex);
-    console.log("dans ------------>>>" + JSON.stringify(dans));
-    console.log("sessionKey ------------>>>" + sessionKey);
-    var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
-    var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
+    var sessionKey = CryptoJS.enc.Latin1.parse(dans.sessionKey);
+    var ivKey = CryptoJS.enc.Latin1.parse(dans.ivKey);
     var encrypted = CryptoJS.AES.encrypt(hex, sessionKey, {
       mode: CryptoJS.mode.CBC,
       iv: ivKey,
