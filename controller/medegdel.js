@@ -41,7 +41,7 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
         if(!!firebaseToken)
           khariltsagchidSonorduulgaIlgeeye(
             firebaseToken,
-            khariu,
+            { title: khariu.title, body: khariu.body },
             (r) => {
               var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
               sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
