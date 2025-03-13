@@ -32,10 +32,10 @@ router
       _id: req.body.khariltsagchiinId,
     });
     if (kharilltsagch) firebaseToken = kharilltsagch.firebaseToken;
-    sonorduulgaIlgeeye(
-      firebaseToken,
-      medeelel,
-      (r) => {
+    // sonorduulgaIlgeeye(
+    //   firebaseToken,
+    //   medeelel,
+    //   (r) => {
         var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
         sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
         sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
@@ -51,10 +51,10 @@ router
         var io = req.app.get("socketio");
         if (io)
           io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
-        res.send(r);
-      },
-      next
-    );
+        res.send("Амжилттай");
+    //   },
+    //   next
+    // );
   });
 
 module.exports = router;
