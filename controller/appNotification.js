@@ -60,9 +60,9 @@ async function khariltsagchidSonorduulgaIlgeeye(
     notification: {
       title: "Таньд мэдэгдэл ирлээ!",
       body: "Hello world",
-      icon: "default",
-      sound: "default",
-      badge: "1",
+      // icon: "default",
+      // sound: "default",
+      // badge: "1",
       ...medeelel,
     },
   };
