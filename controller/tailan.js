@@ -1196,8 +1196,8 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
           $ne: -1,
         },
         "avlaga.guilgeenuud.ognoo": {
-          $gte: new Date("2022-01-01 00:00:00"),
-          $lte: new Date("2022-12-31 23:59:59"),
+          $gte: new Date(new Date().getFullYear(), 0, 1),
+          $lte: new Date(new Date().getFullYear(), 11, 31),
         },
         "avlaga.guilgeenuud.turul": {
           $nin: ["baritsaa"],
@@ -1282,8 +1282,8 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
           $ne: -1,
         },
         "avlaga.guilgeenuud.ognoo": {
-          $gte: new Date("2022-01-01 00:00:00"),
-          $lte: new Date("2022-12-31 23:59:59"),
+          $gte: new Date(new Date().getFullYear(), 0, 1),
+          $lte: new Date(new Date().getFullYear(), 11, 31),
         },
         "avlaga.guilgeenuud.turul": {
           $nin: ["baritsaa"],
