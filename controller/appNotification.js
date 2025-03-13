@@ -52,6 +52,11 @@ async function khariltsagchidSonorduulgaIlgeeye(
   next
 ) {
   const payload = {
+    token,
+    // options: {
+    //   priority: "high",
+    //   timeToLive: 60 * 60 * 24,
+    // },
     notification: {
       title: "Таньд мэдэгдэл ирлээ!",
       body: "Hello world",
@@ -61,13 +66,9 @@ async function khariltsagchidSonorduulgaIlgeeye(
       ...medeelel,
     },
   };
-  const options = {
-    priority: "high",
-    timeToLive: 60 * 60 * 24,
-  };
   admin
     .messaging()
-    .sendToDevice(token, payload, options)
+    .send(payload)
     .then((response) => {
       callback(response);
       console.log("Notification sent successfully", response);
@@ -79,4 +80,5 @@ async function khariltsagchidSonorduulgaIlgeeye(
 
 module.exports = {
   sonorduulgaIlgeeye,
+  khariltsagchidSonorduulgaIlgeeye
 };

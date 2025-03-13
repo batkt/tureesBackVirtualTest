@@ -7,7 +7,7 @@ const Khariltsagch = require("../models/khariltsagch");
 //const { crud } = require("../components/crud");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
-const { sonorduulgaIlgeeye } = require("../controller/appNotification");
+const { khariltsagchidSonorduulgaIlgeeye } = require("../controller/appNotification");
 const { db } = require("zevbackv2");
 const {
   sanalKhadgalya,
@@ -32,10 +32,10 @@ router
       _id: req.body.khariltsagchiinId,
     });
     if (kharilltsagch) firebaseToken = kharilltsagch.firebaseToken;
-    // sonorduulgaIlgeeye(
-    //   firebaseToken,
-    //   medeelel,
-    //   (r) => {
+    khariltsagchidSonorduulgaIlgeeye(
+      firebaseToken,
+      medeelel,
+      (r) => {
         var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
         sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
         sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
@@ -52,9 +52,9 @@ router
         if (io)
           io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
         res.send("Амжилттай");
-    //   },
-    //   next
-    // );
+      },
+      next
+    );
   });
 
 module.exports = router;
