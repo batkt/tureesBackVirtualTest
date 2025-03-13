@@ -38,11 +38,11 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
           _id: req.body.khariltsagchiinId,
         });
         if (kharilltsagch) firebaseToken = kharilltsagch.firebaseToken;
-        if(!!firebaseToken)
-          sonorduulgaIlgeeye(
-            firebaseToken,
-            { title: khariu.title, body: khariu.body },
-            (r) => {
+        // if(!!firebaseToken)
+        //   sonorduulgaIlgeeye(
+        //     firebaseToken,
+        //     { title: khariu.title, body: khariu.body },
+        //     (r) => {
               var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
               sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
               sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
@@ -58,11 +58,11 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
                 io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
               console.log("r 1----------------"+ JSON.stringify(r));
               res.send(r);
-            },
-            next
-          );
-        else
-          res.send("!fire token not found");  
+        //     },
+        //     next
+        //   );
+        // else
+        //   res.send("!fire token not found");  
       }
     });
   } catch (err) {
