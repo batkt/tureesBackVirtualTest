@@ -4,7 +4,7 @@ const SanalGomdol = require("../models/sanalGomdol");
 const Khariltsagch = require("../models/khariltsagch");
 const SonorduulgaObject = require("../models/sonorduulga");
 const Sonorduulga = require("../components/sonorduulga");
-const { sonorduulgaIlgeeye } = require("../controller/appNotification");
+const { khariltsagchidSonorduulgaIlgeeye } = require("../controller/appNotification");
 const jwt = require("jsonwebtoken");
 
 exports.uruunuudOlyo = asyncHandler((ajiltan, callback) => {
@@ -38,24 +38,31 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
           _id: req.body.khariltsagchiinId,
         });
         if (kharilltsagch) firebaseToken = kharilltsagch.firebaseToken;
-        sonorduulgaIlgeeye(
-          firebaseToken,
-          { title: req.body.title, body: req.body.message },
-          (r) => {
-            var sonorduulga = new SonorduulgaObject(
-              req.body.tukhainBaaziinKholbolt
-            )(req.body);
-            if (req.body.khariltsagchiinId)
-              sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
-            sonorduulga.kharsanEsekh = false;
-            sonorduulga.save();
-            var io = req.app.get("socketio");
-            if (io)
-              io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
-            res.send(r);
-          },
-          next
-        );
+        if(!!firebaseToken)
+          khariltsagchidSonorduulgaIlgeeye(
+            firebaseToken,
+            khariu,
+            (r) => {
+              var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+              sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
+              sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+              sonorduulga.barilgiinId = req.body.barilgiinId;
+              if (req.body.khariltsagchiinId)
+                sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
+              sonorduulga.title = khariu.title;
+              sonorduulga.message = khariu.body;
+              sonorduulga.kharsanEsekh = false;
+              sonorduulga.save();
+              var io = req.app.get("socketio");
+              if (io)
+                io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
+              console.log("r 1----------------"+ JSON.stringify(r));
+              res.send(r);
+            },
+            next
+          );
+        else
+          res.send("!fire token not found");  
       }
     });
   } catch (err) {
