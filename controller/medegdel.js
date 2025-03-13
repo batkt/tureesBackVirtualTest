@@ -4,7 +4,7 @@ const SanalGomdol = require("../models/sanalGomdol");
 const Khariltsagch = require("../models/khariltsagch");
 const SonorduulgaObject = require("../models/sonorduulga");
 const Sonorduulga = require("../components/sonorduulga");
-const { khariltsagchidSonorduulgaIlgeeye } = require("../controller/appNotification");
+const { sonorduulgaIlgeeye, khariltsagchidSonorduulgaIlgeeye } = require("../controller/appNotification");
 const jwt = require("jsonwebtoken");
 
 exports.uruunuudOlyo = asyncHandler((ajiltan, callback) => {
