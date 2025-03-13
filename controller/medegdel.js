@@ -39,7 +39,7 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
         });
         if (kharilltsagch) firebaseToken = kharilltsagch.firebaseToken;
         if(!!firebaseToken)
-          khariltsagchidSonorduulgaIlgeeye(
+          sonorduulgaIlgeeye(
             firebaseToken,
             { title: khariu.title, body: khariu.body },
             (r) => {
