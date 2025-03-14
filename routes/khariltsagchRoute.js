@@ -159,7 +159,7 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
-      // var davkhar = req.body.davkhar;
+      var davkhar = req.body.davkhar;
       var matchQuery = {};
       var query = [
         {
@@ -197,9 +197,9 @@ router
         },
       ];
       if (req.body.query) matchQuery = req.body.query;
-      // if (davkhar) {
-      //   matchQuery["geree.davkhar"] = davkhar;
-      // }
+      if (davkhar) {
+        matchQuery["geree.davkhar"] = davkhar;
+      }
       // matchQuery["geree.gereeniiDugaar"] = { $exists: true };
       // matchQuery["geree.tuluv"] = { $nin: [-1] };
       if (matchQuery)
