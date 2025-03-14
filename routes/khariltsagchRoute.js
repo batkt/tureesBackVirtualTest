@@ -198,18 +198,17 @@ router
       ];
       if (req.body.query) matchQuery = req.body.query;
       if (davkhar?.length > 0) {
-        matchQuery["geree.davkhar"] = { $in: davkhar};
+        matchQuery["geree.davkhar"] = davkhar;
       }
       matchQuery["geree.gereeniiDugaar"] = { $exists: true };
       matchQuery["geree.tuluv"] = { $nin: [-1] };
+      if (matchQuery)
+        query.push({
+          $match: matchQuery,
+        });
       query.push({
         $addFields: {
           talbainDugaar: "$geree.talbainDugaar",
-        },
-      });
-      query.push({
-        $addFields: {
-          davkhar: "$geree.davkhar",
         },
       });
       query.push({
@@ -217,10 +216,6 @@ router
           geree: 0,
         },
       });
-      if (matchQuery)
-        query.push({
-          $match: matchQuery,
-        });
       var result = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
       res.send(result);
     } catch (error) {
