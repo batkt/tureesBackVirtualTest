@@ -160,13 +160,16 @@ router
     try {
       const { db } = require("zevbackv2");
       var davkhar = req.body.davkhar;
-      var matchQuery = {};
+      var matchQuery = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+      };
+      if (davkhar?.length > 0) {
+        matchQuery["davkhar"] = { $in: davkhar};
+      }
       var query = [
         {
-          $match: {
-            baiguullagiinId: req.body.baiguullagiinId,
-            barilgiinId: req.body.barilgiinId,
-          },
+          $match: matchQuery,
         },
         {
           $lookup: {
@@ -197,11 +200,8 @@ router
         },
       ];
       if (req.body.query) matchQuery = req.body.query;
-      if (davkhar?.length > 0) {
-        matchQuery["davkhar"] = { $in: davkhar};
-      }
-      // matchQuery["geree.gereeniiDugaar"] = { $exists: true };
-      // matchQuery["geree.tuluv"] = { $nin: [-1] };
+      matchQuery["geree.gereeniiDugaar"] = { $exists: true };
+      matchQuery["geree.tuluv"] = { $nin: [-1] };
       if (matchQuery)
         query.push({
           $match: matchQuery,
