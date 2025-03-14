@@ -197,11 +197,11 @@ router
         },
       ];
       if (req.body.query) matchQuery = req.body.query;
-      if (davkhar) {
+      if (davkhar && davkhar != "") {
         matchQuery["geree.davkhar"] = davkhar;
       }
-      // matchQuery["geree.gereeniiDugaar"] = { $exists: true };
-      // matchQuery["geree.tuluv"] = { $nin: [-1] };
+      matchQuery["geree.gereeniiDugaar"] = { $exists: true };
+      matchQuery["geree.tuluv"] = { $nin: [-1] };
       if (matchQuery)
         query.push({
           $match: matchQuery,
