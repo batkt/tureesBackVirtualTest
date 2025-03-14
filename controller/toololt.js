@@ -202,7 +202,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             $subtract: [
               "$tulukh",
               {
-                $sum: ["$tulsun", "$khyamdral"],
+                $add : [ { $ifNull: ["$tulsun", 0] }, { $ifNull: ["$khyamdral", 0] }]
               },
             ],
           },
@@ -221,6 +221,34 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
     ];
     var avlaga = await gereeObject.aggregate(query);
+    match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      tuluv: {
+        $ne: -1,
+      },
+    }
+    if(!!barilgiinId)
+      match["barilgiinId"] = barilgiinId
+    query = [
+      {
+        $match: match,
+      },
+      {
+        $group: {
+          _id: "avlaga",
+          dun: {
+            $sum: { $ifNull: ["$aldangiinUldegdel", 0] },
+          },
+          too: {
+            $sum: 1,
+          },
+        },
+      },
+    ];
+    var avlagaAldangi = await gereeObject.aggregate(query);
+    if(avlaga?.length > 0 && avlagaAldangi?.length > 0)
+      for await (const val of avlaga)
+        val.dun += avlagaAldangi?.[0]?.dun;
 
     match = {
       "avlaga.guilgeenuud.ognoo": {
@@ -391,7 +419,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
       baiguullagiinId: req.body.baiguullagiinId,
       "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa", "aldangi"],
+        $nin: ["baritsaa", "aldangi", "zalruulga"],
       },
       tuluv: {
         $ne: -1,
