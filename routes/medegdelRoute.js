@@ -55,7 +55,7 @@ router
             var io = req.app.get("socketio");
             if (io)
               io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
-            console.log("r ---------------" + JSON.stringify(r));
+            console.log("r ---------------" + JSON.stringify(req.body.khariltsagchiinId));
             res.send(r);
           },
           next
