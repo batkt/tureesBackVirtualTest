@@ -212,6 +212,11 @@ router
         },
       });
       query.push({
+        $addFields: {
+          davkhar: "$geree.davkhar",
+        },
+      });
+      query.push({
         $project: {
           geree: 0,
         },
