@@ -160,16 +160,13 @@ router
     try {
       const { db } = require("zevbackv2");
       var davkhar = req.body.davkhar;
-      var matchQuery = {
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-      };
-      if (davkhar?.length > 0) {
-        matchQuery["davkhar"] = { $in: davkhar};
-      }
+      var matchQuery = {};
       var query = [
         {
-          $match: matchQuery,
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+          },
         },
         {
           $lookup: {
@@ -200,12 +197,11 @@ router
         },
       ];
       if (req.body.query) matchQuery = req.body.query;
+      if (davkhar?.length > 0) {
+        matchQuery["davkhar"] = { $in: davkhar};
+      }
       matchQuery["geree.gereeniiDugaar"] = { $exists: true };
       matchQuery["geree.tuluv"] = { $nin: [-1] };
-      if (matchQuery)
-        query.push({
-          $match: matchQuery,
-        });
       query.push({
         $addFields: {
           talbainDugaar: "$geree.talbainDugaar",
@@ -221,6 +217,10 @@ router
           geree: 0,
         },
       });
+      if (matchQuery)
+        query.push({
+          $match: matchQuery,
+        });
       var result = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
       res.send(result);
     } catch (error) {
