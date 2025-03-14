@@ -56,7 +56,7 @@ router
             if (io)
               io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
             console.log("r ---------------" + JSON.stringify(req.body.khariltsagchiinId));
-            res.send(r);
+            res.send("done");
           },
           next
         );
