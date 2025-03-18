@@ -147,4 +147,53 @@ router
     res.send("Амжилт");
   });
 
+  router
+  .route("/copyBankniiKhuulga")
+  .post(tokenShalgakh, async (req, res, next) => {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      dansniiDugaar: req.body.dansniiDugaar,
+    }
+    if(!!req.body.record)  
+      match["record"] = req.body.record;
+    
+    var result = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
+    for await (const val of result)
+    {
+      match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.insertBarilgiinId,
+        dansniiDugaar: req.body.dansniiDugaar,
+        record: val.record,
+      }
+      var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
+      if(resultRef?.length === 0)
+      {
+        var guilgee = new BankniiGuilgee(req.body.tukhainBaaziinKholbolt)();
+        guilgee.record = val.record;
+        guilgee.tranDate = val.tranDate;
+        guilgee.postDate = val.postDate;
+        guilgee.time = val.time;
+        guilgee.branch = val.branch;
+        guilgee.teller = val.teller;
+        guilgee.journal = val.journal;
+        guilgee.code = val.code;
+        guilgee.amount = val.amount;
+        guilgee.balance = val.balance;
+        guilgee.debit = val.debit;
+        guilgee.correction = val.correction;
+        guilgee.description = val.description;
+        guilgee.relatedAccount = val.relatedAccount;
+        guilgee.kholbosonGereeniiId = [];
+        guilgee.kholbosonTalbainId = [];
+        guilgee.dansniiDugaar = val.dansniiDugaar;
+        guilgee.baiguullagiinId = val.baiguullagiinId;
+        guilgee.barilgiinId = req.body.insertBarilgiinId;
+        guilgee.save();
+      }
+    }
+    res.send("Амжилт");
+  });
+
 module.exports = router;
