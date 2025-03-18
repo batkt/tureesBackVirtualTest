@@ -2019,46 +2019,29 @@ router
             umnukhSariinUrTulbur: [
               {
                 $match: {
+                  "avlaga.guilgeenuud.ognoo": {
+                    $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
+                  },
                   $or: [
                     {
-                      "avlaga.guilgeenuud.ognoo": {
-                        $lt: new Date(req.body.ekhlekhOgnoo),
+                      "avlaga.guilgeenuud.turul": {
+                        $nin: ["baritsaa"],
                       },
                     },
                     {
                       $and: [
                         {
-                          "avlaga.guilgeenuud.ognoo": {
-                            $lte: new Date(req.body.nekhemjlekhAvakhOgnoo),
-                            $gte: new Date(req.body.ekhlekhOgnoo),
-                          },
+                        "avlaga.guilgeenuud.turul": {
+                          $in: ["baritsaa"],
+                        }
                         },
                         {
-                          $or: [
-                            {
-                              "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": {
-                                $exists: false,
-                              },
-                            },
-                            {
-                              "avlaga.guilgeenuud.nekhemjlekhDeerKharagdakh": false,
-                            },
-                          ],
-                        },
-                        {
-                          $or: [
-                            {
-                              "avlaga.guilgeenuud.undsenDun": {
-                                $exists: false,
-                              },
-                            },
-                            {
-                              "avlaga.guilgeenuud.undsenDun": 0,
-                            },
-                          ],
-                        },
-                      ],
-                    },
+                        "avlaga.guilgeenuud.tulsunDun": {
+                          $gt: 0,
+                        }
+                        }
+                      ]
+                    }
                   ],
                 },
               },
