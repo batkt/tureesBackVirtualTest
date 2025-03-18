@@ -321,7 +321,7 @@ router
 
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
-}  
+}
 
 router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
   try {
@@ -331,9 +331,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var nemeltUtga = req.body.nemeltUtga;
     var tulsunDun = Number(req.body.tulsunDun);
     var shineDun = 0;
-    if (
-      baiguullagiinId == "663da696aa6bedd9ae0567f0"
-    ) {
+    if (baiguullagiinId == "663da696aa6bedd9ae0567f0") {
       tulsunDun = tulsunDun + 50; //sms 50tug
     }
     shineDun =
@@ -360,54 +358,66 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         $gt: shuukhKhugatsaa,
       },
       "tuukh.0.tuluv": 0,
-    }
-    if(baiguullagiinId == "6115f350b35689cdbf1b9da3")
-    {
-      if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 1")||nemeltUtga.includes("ХААЛТ 1")))
-        {
-          query["tuukh.0.garsanKhaalga"] = "192.168.1.202"
-        }
-      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 2")||nemeltUtga.includes("ХААЛТ 2")))
-        {
-          query["tuukh.0.garsanKhaalga"] = "192.168.1.204"
-        }
-      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 3")||nemeltUtga.includes("ХААЛТ 3")))
-        {
-          query["tuukh.0.garsanKhaalga"] = "192.168.1.207"
-        }
-      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 4")||nemeltUtga.includes("ХААЛТ 4")))
-        {
-          query["tuukh.0.garsanKhaalga"] = "192.168.1.205"
-        }
-    }
-    if(baiguullagiinId === "674042c8640d59bcf2e95a9a") // NaranTuul Office
-    {
-      if(!!nemeltUtga && (nemeltUtga.includes("office2") || nemeltUtga.includes("OFFICE2")))
-      {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.102"
-      }
-      else if(!!nemeltUtga && (nemeltUtga.includes("office1") || nemeltUtga.includes("OFFICE1")))
-      {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.102"
+    };
+    if (baiguullagiinId == "6115f350b35689cdbf1b9da3") {
+      if (
+        !!nemeltUtga &&
+        (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))
+      ) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.202";
+      } else if (
+        !!nemeltUtga &&
+        (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))
+      ) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.204";
+      } else if (
+        !!nemeltUtga &&
+        (nemeltUtga.includes("Хаалт 3") || nemeltUtga.includes("ХААЛТ 3"))
+      ) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.207";
+      } else if (
+        !!nemeltUtga &&
+        (nemeltUtga.includes("Хаалт 4") || nemeltUtga.includes("ХААЛТ 4"))
+      ) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.205";
       }
     }
-    if(baiguullagiinId == "6731b43bc23730ac1908da2d") // soyolj
-    {
-      if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 1")||nemeltUtga.includes("ХААЛТ 1")))
-      {
-        query["tuukh.0.garsanKhaalga"] = "192.168.2.21"
+    if (baiguullagiinId === "674042c8640d59bcf2e95a9a") {
+      // NaranTuul Office
+      if (
+        !!nemeltUtga &&
+        (nemeltUtga.includes("office2") || nemeltUtga.includes("OFFICE2"))
+      ) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.102";
+      } else if (
+        !!nemeltUtga &&
+        (nemeltUtga.includes("office1") || nemeltUtga.includes("OFFICE1"))
+      ) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.102";
       }
-      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 2")||nemeltUtga.includes("ХААЛТ 2")))
-      {
-        query["tuukh.0.garsanKhaalga"] = "192.168.2.24"
-      }
-      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 3")||nemeltUtga.includes("ХААЛТ 3")))
-      {
-        query["tuukh.0.garsanKhaalga"] = "192.168.2.25"
-      }
-      else if(!!nemeltUtga && (nemeltUtga.includes("Хаалт 4")||nemeltUtga.includes("ХААЛТ 4")))
-      {
-        query["tuukh.0.garsanKhaalga"] = "192.168.2.26"
+    }
+    if (baiguullagiinId == "6731b43bc23730ac1908da2d") {
+      // soyolj
+      if (
+        !!nemeltUtga &&
+        (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))
+      ) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.2.21";
+      } else if (
+        !!nemeltUtga &&
+        (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))
+      ) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.2.24";
+      } else if (
+        !!nemeltUtga &&
+        (nemeltUtga.includes("Хаалт 3") || nemeltUtga.includes("ХААЛТ 3"))
+      ) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.2.25";
+      } else if (
+        !!nemeltUtga &&
+        (nemeltUtga.includes("Хаалт 4") || nemeltUtga.includes("ХААЛТ 4"))
+      ) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.2.26";
       }
     }
     var oldsonData = await Uilchluulegch(kholbolt).findOne(query);
@@ -452,14 +462,18 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
           cameraIP: oldsonData.tuukh[0].garsanKhaalga,
         });
       }
-      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
-      var tuxainSalbar = baiguullaga?.barilguud?.find((e) => e._id.toString() === barilgiinId)?.tokhirgoo;
-      if(tuxainSalbar?.eBarimtMessageIlgeekhEsekh && nemeltUtga)
-      {
-        var filterDugaar = nemeltUtga?.split(/,| /)?.filter((a) => isNumeric(a) && a.length === 8);
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+        kholbolt.baiguullagiinId
+      );
+      var tuxainSalbar = baiguullaga?.barilguud?.find(
+        (e) => e._id.toString() === barilgiinId
+      )?.tokhirgoo;
+      if (tuxainSalbar?.eBarimtMessageIlgeekhEsekh && nemeltUtga) {
+        var filterDugaar = nemeltUtga
+          ?.split(/,| /)
+          ?.filter((a) => isNumeric(a) && a.length === 8);
         console.log("dugaar ------->>" + JSON.stringify(filterDugaar));
-        if(filterDugaar?.length > 0)
-        {
+        if (filterDugaar?.length > 0) {
           var shiveeguiTuukhuud = [];
           shiveeguiTuukhuud.push(oldsonData);
           await zogsoolNiitDungeerEbarimtShivye(
@@ -468,7 +482,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
             barilgiinId,
             next,
             shiveeguiTuukhuud,
-            filterDugaar[0],
+            filterDugaar[0]
           );
         }
       }
@@ -883,8 +897,8 @@ router.get("/v1/parking", async (req, res, next) => {
     );
   }
   if (kholboltuud) {
-    var query = { tokiNer: { $exists: true } }
-    if(!!req.body.baiguullagiinId)
+    var query = { tokiNer: { $exists: true } };
+    if (!!req.body.baiguullagiinId)
       query["baiguullagiinId"] = req.body.baiguullagiinId;
     for await (const kholbolt of kholboltuud) {
       var zogsooluud = await Parking(kholbolt).find(query);
@@ -1031,15 +1045,17 @@ router.get("/pass/zogsool", tokenShalgakh, async (req, res, next) => {
           }
           var slot = {
             gadna: {
-              garakhTsag: zogsool.garakhTsag || 30, 
+              garakhTsag: zogsool.garakhTsag || 30,
               tulburuud: zogsool.tulburuud,
               niit: zogsool.too,
               zogsson: parked,
             },
           };
           if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) slot.dotor = dotor;
-          var filterZogsool = jagsaalt.filter((e) => e.id === zogsool._id.toString())
-          if(filterZogsool?.length === 0)
+          var filterZogsool = jagsaalt.filter(
+            (e) => e.id === zogsool._id.toString()
+          );
+          if (filterZogsool?.length === 0)
             jagsaalt.push({
               id: zogsool._id.toString(),
               ner: zogsool.passNer,
@@ -1103,15 +1119,13 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               $nin: [-2, -3],
             },
           });
-          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar)
-          {
+          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
             bodsonDun = await zogsooliinDunAvya(
               zogsool,
               oldsonMashin,
               kholbolt
             );
           }
-            
         }
         if (bodsonDun > 0) {
           data = {
@@ -1165,7 +1179,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
   res.send(butsaakhKhariu);
 });
 
-
 router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
   const { db } = require("zevbackv2");
   var ObjectId = require("mongodb").ObjectId;
@@ -1215,16 +1228,13 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
           });
         }
         if (!!localEsekh && !!oldsonMashin) {
-          if(req.query.baiguullagiinId === "670f3437b41a478195dd3d4b")
-          {
-            data = { 
-              plate_number: req.params.plate_number, 
+          if (req.query.baiguullagiinId === "670f3437b41a478195dd3d4b") {
+            data = {
+              plate_number: req.params.plate_number,
               text: "Үнэгүй зочид",
             };
-            tulburData = [ { ognoo: new Date(), turul: "Үнэгүй", dun: 0, }, ];
-          }
-          else if(req.query.baiguullagiinId === "670f3437b41a478195dd3d4b")
-          {
+            tulburData = [{ ognoo: new Date(), turul: "Үнэгүй", dun: 0 }];
+          } else if (req.query.baiguullagiinId === "670f3437b41a478195dd3d4b") {
             tulbur = [
               {
                 ognoo: new Date(),
@@ -1272,7 +1282,7 @@ router.get(
     var message = "Amjilttai";
     var success = true;
     var oldsonMashin;
-    var freeze = req.query.freeze ;
+    var freeze = req.query.freeze;
     var tukhainKholbolt;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
@@ -1559,23 +1569,23 @@ router.route("/v1/pay").post(async (req, res, next) => {
       );
     }
     if (kholboltuud) {
-      var query = { tokiNer: { $exists: true } }
-      if(!!req.body.baiguullagiinId)
+      var query = { tokiNer: { $exists: true } };
+      if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
       for await (const kholbolt of kholboltuud) {
         var zogsooluud = await Parking(kholbolt).find(query);
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-              oldsonMashin = await Uilchluulegch(kholbolt).findOne({
-                "tuukh.0.zogsooliinId": zogsool._id,
-                mashiniiDugaar: req.body.plate_number,
-                "tuukh.0.tuluv": {
-                  $nin: [-2, -3],
-                },
-                updatedAt: {
-                  $gt: new Date(Date.now() - 300000), //5min dotor
-                },
-              });
+            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+              "tuukh.0.zogsooliinId": zogsool._id,
+              mashiniiDugaar: req.body.plate_number,
+              "tuukh.0.tuluv": {
+                $nin: [-2, -3],
+              },
+              updatedAt: {
+                $gt: new Date(Date.now() - 300000), //5min dotor
+              },
+            });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
@@ -2073,6 +2083,29 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           },
         ];
       }
+    } else if (req.body.ajiltniiId == "67d92062513ec21e26bdb604") {
+      if (req.body.paid_amount == 0) {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Бассэйн",
+            dun: 7000,
+          },
+        ];
+      } else {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Бассэйн",
+            dun: 7000,
+          },
+          {
+            ognoo: new Date(),
+            turul: req.body.turul,
+            dun: req.body.paid_amount,
+          },
+        ];
+      }
     } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
       if (req.body.paid_amount == 0) {
         tulbur = [
@@ -2157,13 +2190,18 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           if (req.body.ajiltniiId == "66384a9061eeda747d01a320") {
             if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Fitness"))
               throw new Error("Хөнгөлөлт оруулсан байна!");
-          }
-          else if (req.body.ajiltniiId == "6746b7b1e3a4bd05bbac6880") {
-            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Соёолж Ц/Д"))
+          } else if (req.body.ajiltniiId == "6746b7b1e3a4bd05bbac6880") {
+            if (
+              tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Соёолж Ц/Д")
+            )
               throw new Error("Хөнгөлөлт оруулсан байна!");
-          }
-          else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
-            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Хөнгөлөлт"))
+          } else if (req.body.ajiltniiId == "67d92062513ec21e26bdb604") {
+            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Бассэйн"))
+              throw new Error("Хөнгөлөлт оруулсан байна!");
+          } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
+            if (
+              tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Хөнгөлөлт")
+            )
               throw new Error("Хөнгөлөлт оруулсан байна!");
           }
           tukhainObject.tuukh[0].tulbur.push(...tulbur);
@@ -2217,8 +2255,7 @@ router
     var tukhainObject = await Uilchluulegch(tukhainKholbolt).findById(
       req.body.uilchluulegchiinId
     );
-    if(!!tukhainObject)
-    {
+    if (!!tukhainObject) {
       tukhainObject.niitDun = req.body.paid_amount;
       const { db } = require("zevbackv2");
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
@@ -2294,9 +2331,7 @@ router
         }
       };
       ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
-    }
-    else
-      res.send(null);
+    } else res.send(null);
   });
 
 router.route("/mashinUpdate").post(tokenShalgakh, async (req, res, next) => {
@@ -2341,11 +2376,9 @@ router.post("/zogsoolMobileSdk", tokenShalgakh, async (req, res, next) => {
   try {
     console.log("mashiniiDugaar ----------------->>" + req.body.mashiniiDugaar);
     console.log("cameraIP ----------------->>" + req.body.cameraIP);
-    if(req.body.baiguullagiinId === "6715ef2ca5cefb3e54505428")
-    {
+    if (req.body.baiguullagiinId === "6715ef2ca5cefb3e54505428") {
       const io = req.app.get("socketio");
-      if(io)
-      {
+      if (io) {
         io.emit(`qpayMobileSdk${req.body.baiguullagiinId}`, {
           khaalgaTurul: "Гарах",
           turul: "qpayMobile",
