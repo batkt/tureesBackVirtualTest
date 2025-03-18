@@ -2020,25 +2020,25 @@ router
               {
                 $match: {
                   "avlaga.guilgeenuud.ognoo": {
-                    $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
+                    $lt: new Date(req.body.nekhemjlekhAvakhOgnoo).endOf("month").format("YYYY-MM-DD 23:59:59"),
                   },
                   $or: [
                     {
                       "avlaga.guilgeenuud.turul": {
-                        $nin: ["baritsaa"],
-                      },
+                        $nin: ["aldangi", "baritsaa"],
+                      }
                     },
                     {
                       $and: [
                         {
-                        "avlaga.guilgeenuud.turul": {
-                          $in: ["baritsaa"],
-                        }
+                          "avlaga.guilgeenuud.turul": {
+                            $in: ["baritsaa"],
+                          }
                         },
                         {
-                        "avlaga.guilgeenuud.tulsunDun": {
-                          $gt: 0,
-                        }
+                          "avlaga.guilgeenuud.tulsunDun": {
+                            $gt: 0,
+                          }
                         }
                       ]
                     }
