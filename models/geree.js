@@ -47,6 +47,9 @@ var avlagiinTurul = new Schema({
       bichiltKhonog: Number,
       tsekhDun: Number,
       chadalDun: Number,
+      khungulultDuusakhOgnoo: Date,
+      khonogTootsokhEsekh: Boolean,
+      khungulultKhonog: Number,
     },
   ],
   baritsaa: [

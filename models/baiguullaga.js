@@ -82,6 +82,12 @@ const baiguullagaSchema = new Schema(
       /**Хөнгөлөлт ажилтан харгалзахгүй өгөх боломж олгоно */
       bukhAjiltanKhungulultOruulakhEsekh: Boolean,
 
+      /**Хоногоор хөнгөлөлт боломж олгоно */
+      khonogKhungulultOruulakhEsekh: Boolean,
+
+      /**Сар бүрийн тогтмол өдөр хөнгөлөлт боломж олгоно */
+      sarBurAutoKhungulultOruulakhEsekh: Boolean,
+
       /**Тухайн байгууллагын хөнгөлж болох дээд хувь байна */
       deedKhungulultiinKhuvi: Number,
 
