@@ -2081,23 +2081,41 @@ router
             ],
             niitUldegdel: [
               {
+                $unwind: {
+                  path: "$avlaga.guilgeenuud",
+                },
+              },
+              {
                 $match: {
+                  $or: [
+                    {
+                      "avlaga.guilgeenuud.turul": {
+                        $nin: ["baritsaa"],
+                      },
+                    },
+                    {
+                      $and: [
+                        {
+                        "avlaga.guilgeenuud.turul": {
+                          $in: ["baritsaa"],
+                        }
+                        },
+                        {
+                        "avlaga.guilgeenuud.tulsunDun": {
+                          $gt: 0,
+                        }
+                        }
+                      ]
+                    }
+                  ],
                   "avlaga.guilgeenuud.ognoo": {
                     $lte: new Date(req.body.duusakhOgnoo),
                   },
                 },
               },
               {
-                $unwind: {
-                  path: "$talbai",
-                },
-              },
-              {
                 $group: {
                   _id: "$gereeniiDugaar",
-                  niitAshiglaltiinZardal: {
-                    $max: "$talbai.niitAshiglaltiinZardal",
-                  },
                   tulukh: {
                     $sum: {
                       $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -2118,7 +2136,6 @@ router
               {
                 $project: {
                   gereeniiDugaar: "$gereeniiDugaar",
-                  niitAshiglaltiinZardal: "$niitAshiglaltiinZardal",
                   uldegdel: {
                     $subtract: [
                       "$tulukh",
