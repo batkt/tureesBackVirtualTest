@@ -2790,12 +2790,19 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         var tsakhilgaanKBTST = 0;
         var chadalDun = 0;
         var tsekhDun = 0;
+        var sekhDemjikhTulburDun = 0
         if(baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
         {
           tsakhilgaanKBTST = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (tukhainZardal.guidliinKoep || 1)
-          chadalDun = baiguullaga?.tokhirgoo?.bichiltKhonog > 0 && tsakhilgaanKBTST > 0 ? (tsakhilgaanKBTST/baiguullaga?.tokhirgoo?.bichiltKhonog/12 * 15500) : 0
+          chadalDun = baiguullaga?.tokhirgoo?.bichiltKhonog > 0 && tsakhilgaanKBTST > 0 ? (tsakhilgaanKBTST/baiguullaga?.tokhirgoo?.bichiltKhonog/12 * (req.body.baiguullagiinId === "679aea9032299b7ba8462a77" ? 11520 : 15500)) : 0
           tsekhDun = ashiglaltiinZardal.tariff * tsakhilgaanKBTST
-          tsakhilgaanDun = chadalDun + tsekhDun;
+          if(req.body.baiguullagiinId === "679aea9032299b7ba8462a77") // URANGAN
+          {
+            sekhDemjikhTulburDun = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * 23.79;
+            tsakhilgaanDun = chadalDun + tsekhDun + sekhDemjikhTulburDun;
+          }
+          else
+            tsakhilgaanDun = chadalDun + tsekhDun;
         }
         else
           tsakhilgaanDun = ashiglaltiinZardal.tariff * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (zoruuDun || 0);
@@ -2832,6 +2839,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           bichiltKhonog: baiguullaga?.tokhirgoo?.bichiltKhonog || 0,
           chadalDun: chadalDun || 0,
           tsekhDun: tsekhDun || 0,
+          sekhDemjikhTulburDun: sekhDemjikhTulburDun || 0,
           ognoo: tukhainZardal.ognoo,
           gereeniiId: geree._id,
           tailbar: ashiglaltiinZardal.ner,

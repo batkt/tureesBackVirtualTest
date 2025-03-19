@@ -986,6 +986,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
             khungulultDuusakhOgnoo: khungulult.ognoonuud[1],
             khonogTootsokhEsekh: khungulult.khonogTootsokhEsekh,
             khungulultKhonog: khungulult.khungulultKhonog,
+            khungulultKhuvi: khungulult.khungulultKhuvi,
             turul: "khungulult",
             khyamdral: khungulultiinDun,
             nemeltTailbar: khungulult.shaltgaan,
