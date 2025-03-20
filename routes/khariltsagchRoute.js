@@ -223,4 +223,31 @@ router
     }
   });
 
+  router
+  .route("/khariltsagchInsert")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      const { db } = require("zevbackv2");
+      var jagsaalt = [];
+      var resultTukhain = await Khariltsagch(db.erunkhiiKholbolt).find({ baiguullagiinId: req.body.baiguullagiinId, });
+      if(resultTukhain?.length > 0)
+      {
+        for await (const data of resultTukhain)
+        {
+          var result = await Khariltsagch(req.body.tukhainBaaziinKholbolt).find({ baiguullagiinId: req.body.baiguullagiinId, register: data?.register });
+          if(result?.length === 0)  
+            jagsaalt.push(data);
+        }
+      }
+      Khariltsagch(req.body.tukhainBaaziinKholbolt).insertMany(jagsaalt, function (err) {
+        if (err) {
+          next(err);
+        }
+        res.status(200).send("Amjilttai");
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
 module.exports = router;
