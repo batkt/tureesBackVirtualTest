@@ -229,12 +229,18 @@ router
     try {
       const { db } = require("zevbackv2");
       var jagsaalt = [];
-      var resultTukhain = await Khariltsagch(db.erunkhiiKholbolt).find({ baiguullagiinId: req.body.baiguullagiinId, barilgiinId:  req.body.barilgiinId});
+      var matchQuery = { baiguullagiinId: req.body.baiguullagiinId };
+      if(!!req.body.barilgiinId)
+        matchQuery["barilgiinId"] = req.body.barilgiinId
+      var resultTukhain = await Khariltsagch(db.erunkhiiKholbolt).find(matchQuery);
       if(resultTukhain?.length > 0)
       {
         for await (const data of resultTukhain)
         {
-          var result = await Khariltsagch(req.body.tukhainBaaziinKholbolt).find({ baiguullagiinId: req.body.baiguullagiinId, barilgiinId:  req.body.barilgiinId, register: data?.register });
+          matchQuery = { baiguullagiinId: req.body.baiguullagiinId, register: data?.register };
+          if(!!req.body.barilgiinId)
+            matchQuery["barilgiinId"] = req.body.barilgiinId
+          var result = await Khariltsagch(req.body.tukhainBaaziinKholbolt).find(matchQuery);
           if(result?.length === 0)  
             jagsaalt.push(data);
         }
