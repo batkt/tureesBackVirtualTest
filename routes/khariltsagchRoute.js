@@ -198,7 +198,7 @@ router
       ];
       if (req.body.query) matchQuery = req.body.query;
       if (davkhar?.length > 0) {
-        matchQuery["geree.davkhar"] = davkhar;
+        matchQuery["geree.davkhar"] = { $in: davkhar};
       }
       matchQuery["geree.gereeniiDugaar"] = { $exists: true };
       matchQuery["geree.tuluv"] = { $nin: [-1] };
