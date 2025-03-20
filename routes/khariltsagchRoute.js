@@ -216,7 +216,7 @@ router
           geree: 0,
         },
       });
-      var result = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
+      var result = await Khariltsagch(req.body.tukhainBaaziinKholbolt).aggregate(query);
       res.send(result);
     } catch (error) {
       next(error);
