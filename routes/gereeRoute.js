@@ -2016,33 +2016,71 @@ router
         },
         {
           $facet: {
-            umnukhSariinUrTulbur: [
+            umnukhSariinTulsun: [
+              {
+                $unwind: {
+                  path: "$avlaga.guilgeenuud",
+                },
+              },
               {
                 $match: {
                   "avlaga.guilgeenuud.ognoo": {
-                    $lt: new Date(req.body.ekhlekhOgnoo),
+                    $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
                   },
                   $or: [
                     {
                       "avlaga.guilgeenuud.turul": {
-                        $nin: ["aldangi", "baritsaa"],
-                      }
+                        $nin: ["baritsaa"],
+                      },
                     },
                     {
                       $and: [
                         {
-                          "avlaga.guilgeenuud.turul": {
-                            $in: ["baritsaa"],
-                          }
+                        "avlaga.guilgeenuud.turul": {
+                          $in: ["baritsaa"],
+                        }
                         },
                         {
-                          "avlaga.guilgeenuud.tulsunDun": {
-                            $gt: 0,
-                          }
+                        "avlaga.guilgeenuud.tulsunDun": {
+                          $gt: 0,
+                        }
                         }
                       ]
                     }
                   ],
+                },
+              },
+              {
+                $group: {
+                  _id: "$gereeniiDugaar",
+                  tulsun: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                    },
+                  },
+                },
+              },
+              {
+                $project: {
+                  gereeniiDugaar: "$gereeniiDugaar",
+                  uldegdel: "$tulsun",
+                },
+              },
+            ],
+            umnukhSariinUrTulbur: [
+              {
+                $unwind: {
+                  path: "$avlaga.guilgeenuud",
+                },
+              },
+              {
+                $match: {
+                  "avlaga.guilgeenuud.turul": {
+                    $nin: ["baritsaa"],
+                  },
+                  "avlaga.guilgeenuud.ognoo": {
+                    $lt: new Date(req.body.ekhlekhOgnoo),
+                  },
                 },
               },
               {
@@ -2058,11 +2096,6 @@ router
                       $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
                     },
                   },
-                  tulsun: {
-                    $sum: {
-                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                    },
-                  },
                 },
               },
               {
@@ -2071,9 +2104,7 @@ router
                   uldegdel: {
                     $subtract: [
                       "$tulukh",
-                      {
-                        $sum: ["$tulsun", "$khyamdral"],
-                      },
+                      "$khyamdral",
                     ],
                   },
                 },
