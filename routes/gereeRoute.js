@@ -2037,6 +2037,7 @@ router
               {
                 $match: {
                   "avlaga.guilgeenuud.ognoo": {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
                     $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
                   },
                   $and: [
