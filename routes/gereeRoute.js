@@ -1497,7 +1497,7 @@ router
                         },
                         $or: [
                           {
-                            "avlaga.guilgeenuud.turul": { $in: ["avlaga", "khungulult", "zalruulga"] },
+                            "avlaga.guilgeenuud.turul": { $in: ["avlaga", "khungulult"] },
                           },
                           {
                             $and: [
@@ -1624,6 +1624,18 @@ router
                         suuliinZaalt: {
                           $max: "$avlaga.suuliinZaalt",
                         },
+                        nuatBodokh: {
+                          $sum: {
+                            $cond: [
+                              {
+                                $eq: ["$avlaga.nuatBodokhEsekh", true
+                                ]
+                              },
+                              1,
+                              0
+                            ]
+                          }
+                        }
                       },
                     },
                   ],
