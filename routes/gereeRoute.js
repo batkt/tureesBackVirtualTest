@@ -2020,7 +2020,7 @@ router
               {
                 $match: {
                   "avlaga.guilgeenuud.ognoo": {
-                    $lt: new Date(moment(req.body.nekhemjlekhAvakhOgnoo).subtract(1, "month").endOf("month").format("YYYY-MM-DD 23:59:59")),
+                    $lt: new Date(moment(req.body.nekhemjlekhAvakhOgnoo).subtract(1, "month").format("YYYY-MM-DD 23:59:59")),
                   },
                   $or: [
                     {
