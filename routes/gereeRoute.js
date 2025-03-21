@@ -2016,6 +2016,48 @@ router
         },
         {
           $facet: {
+            baritsaaAshiglasanDun: [
+              {
+                $unwind: {
+                  path: "$avlaga.guilgeenuud",
+                },
+              },
+              {
+                $match: {
+                  "avlaga.guilgeenuud.ognoo": {
+                    $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
+                  },
+                  $and: [
+                    {
+                    "avlaga.guilgeenuud.turul": {
+                      $in: ["baritsaa"],
+                    }
+                    },
+                    {
+                    "avlaga.guilgeenuud.tulsunDun": {
+                      $gt: 0,
+                    }
+                    }
+                  ]
+                },
+              },
+              {
+                $group: {
+                  _id: "$gereeniiDugaar",
+                  tulsun: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                    },
+                  },
+                },
+              },
+              {
+                $project: {
+                  gereeniiDugaar: "$gereeniiDugaar",
+                  uldegdel: "$tulsun",
+                },
+              },
+            ],
             umnukhSariinTulsun: [
               {
                 $unwind: {
