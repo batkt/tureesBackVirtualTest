@@ -2843,6 +2843,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           ognoo: tukhainZardal.ognoo,
           gereeniiId: geree._id,
           tailbar: ashiglaltiinZardal.ner,
+          nuatBodokhEsekh: req.body.nuatBodokhEsekh,
         };
         if (
           ashiglaltiinZardal.turul === "кВт" ||
