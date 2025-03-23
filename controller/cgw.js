@@ -1446,7 +1446,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
                   dansniiDugaar: dans.dugaar,
-                  record: maxDugaar,  
+                  record: maxDugaar === 1 ? null : maxDugaar,  
                 });
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
