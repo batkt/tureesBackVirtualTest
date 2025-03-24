@@ -35,6 +35,29 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.khariltsagchNuutsUgSolikh = asyncHandler(async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt)
+      .findOne({ utas: req.body.utas })
+      .catch((err) => {
+        next(err);
+      });
+    console.log("khariltsagch", khariltsagch);
+    if (!khariltsagch)
+      throw new aldaa("Хэрэглэгчийн утасны дугаар олдсонгүй!");
+    var butsaakhObject = {
+      result: khariltsagch,
+      success: true,
+    };
+    const token = await khariltsagch.tokenUusgeye();
+    butsaakhObject.token = token;
+    res.status(200).json(butsaakhObject);
+  } catch (err) {
+    next(err);
+  }
+});
+
 async function kodUusgey() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
