@@ -344,6 +344,8 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var shuukhKhugatsaa = new Date(
       Date.now() - 300000 //5 * 60 * 1000
     );
+    console.log("---------shineDun ----->>>" + shineDun);
+    console.log("--------tulsunDun ------>>>" + tulsunDun);
     var query = {
       $or: [
         {
@@ -421,6 +423,8 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
       }
     }
     if (baiguullagiinId == "67dfebe55b92ee004ba43ad2") {
+      // chingeltei
+      console.log("--------nemeltUtga ------>>>" + JSON.stringify(nemeltUtga));
       if (!!nemeltUtga && (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))) {
         query["tuukh.0.garsanKhaalga"] = "192.168.1.122";
       } else if (!!nemeltUtga && (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))) {
