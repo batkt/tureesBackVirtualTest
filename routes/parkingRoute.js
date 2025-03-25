@@ -420,6 +420,13 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         query["tuukh.0.garsanKhaalga"] = "192.168.2.26";
       }
     }
+    if (baiguullagiinId == "67dfebe55b92ee004ba43ad2") {
+      if (!!nemeltUtga && (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.122";
+      } else if (!!nemeltUtga && (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))) {
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.121";
+      }
+    }
     var oldsonData = await Uilchluulegch(kholbolt).findOne(query);
     if (oldsonData) {
       await Uilchluulegch(kholbolt).findByIdAndUpdate(
