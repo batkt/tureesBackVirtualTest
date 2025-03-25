@@ -1483,6 +1483,40 @@ router
                       },
                     },
                   ],
+                  tukhainSariinTureesiinTulukhDun: [
+                    {
+                      $unwind: {
+                        path: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.turul": {
+                          $in: ["khuvaari"],
+                        },
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lte: new Date(req.body.duusakhOgnoo),
+                          $gte: new Date(req.body.ekhlekhOgnoo),
+                        },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        tulukh: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                          },
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        tulukh: "$tulukh",
+                      },
+                    },
+                  ],
                   zardluud: [
                     {
                       $unwind: {
@@ -1650,6 +1684,10 @@ router
                 gereenuud[0].niitUldegdel.find((b) => b._id == a.gereeniiDugaar)
               );
               result.jagsaalt.forEach((x) => {
+                x.tukhainSariinTureesiinTulukhDun =
+                  gereenuud[0].tukhainSariinTureesiinTulukhDun.find(
+                    (a) => a._id == x.gereeniiDugaar
+                  )?.tulukh || 0;
                 x.eneSardTulukhDun =
                   gereenuud[0].eneSardTulukhDun.find(
                     (a) => a._id == x.gereeniiDugaar
@@ -1690,6 +1728,8 @@ router
                 //if (x.umnukhSariinUrTulbur < 0) x.umnukhSariinUrTulbur = 0;
                 if (x.eneSardTulukhDun < 0) x.eneSardTulukhDun = 0;
                 // if (x.niitUldegdel < 0) x.niitUldegdel = 0;
+                x.sariinTurees = x.tukhainSariinTureesiinTulukhDun;
+                x.talbainNiitUne = x.tukhainSariinTureesiinTulukhDun;
                 if(req.body.baiguullagiinId != "679aea9032299b7ba8462a77") // urangan
                 {
                   let diffMonth = moment(req.body.duusakhOgnoo).diff(moment(), 'months');

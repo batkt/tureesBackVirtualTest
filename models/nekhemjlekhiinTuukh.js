@@ -50,6 +50,7 @@ const nekhemjlekhiinTuukhSchema = new Schema(
     nekhemjlekhiinDans: String,
     nekhemjlekhiinDansniiNer: String,
     nekhemjlekhiinBank: String,
+    nekhemjlekhiinIbanDugaar: String,
   },
   {
     timestamps: true,
