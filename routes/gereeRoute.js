@@ -3399,4 +3399,75 @@ router
     }
     res.send("Amjilttai");
 });
+router
+  .route("/tooluurMedeelelTatya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var talbainuud = await Talbai(req.body.tukhainBaaziinKholbolt).find({tooluuriinDugaar : {$exists : true}});
+      const crypto = require('crypto');
+      if(talbainuud != null && talbainuud.length > 0)
+      {
+        var talbainDugaaruud = "";
+        var tatakhOgnoo = new Date(req.body.ognoo);
+        talbainuud.forEach((a) => talbainDugaaruud + a.tooluuriinDugaar + ",");
+        talbainDugaaruud = talbainDugaaruud.slice(0, -1);
+        talbainDugaaruud = "241008002701,241008002702,241008002703";
+        var key1 = 'Ski452Doodjfqef'.padEnd(32, '\0'); 
+        const iv = '1MMNT20240126ECM'; // 16 bytes
+        function encrypt(plainText) {
+            const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key1, 'utf8'), Buffer.from(iv, 'utf8'));
+            let encrypted = cipher.update(plainText, 'utf8', 'hex');
+            encrypted += cipher.final('hex');
+            return encrypted;
+        }
+        function getFormattedDate(mode, ognoo) {
+          const now = ognoo;
+          
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const day = String(now.getDate()).padStart(2, '0');
+          const hour = String(now.getHours()).padStart(2, '0');
+      
+          if (mode === 1) {
+          return `${year}${month}${day}${hour}`;
+          } else if (mode === 2) {
+            return `${year}-${month}-${day}`;
+          }
+      }
+        var xariu = await encrypt(getFormattedDate(1, new Date()));
+        var dateFormatted = getFormattedDate(2, tatakhOgnoo);
+        console.log("xariu",xariu)
+        const axios = require('axios');
+        let config = {
+          method: 'get',
+          maxBodyLength: Infinity,
+          url: "http://66.181.165.175:56033/service.ashx?name=energy&apikey="+ xariu + "&numbers=" + talbainDugaaruud + "&date=" +dateFormatted + "&token=oivcf4e0h4u03Mao8w8Db80mDG44u1OAKgEgwl8SLYXKkIwmjp",
+          headers: { }
+        };
+    
+        var khariu = await axios.request(config)
+        .catch((error) => {
+          console.log(error);
+          throw new Error(error.message)
+        });
+        butsaakhJagsaalt = [];
+        talbainuud.forEach((x) => {
+          var tukhainMur = khariu.data.find((a)=> a.meter_id == x.tooluuriinDugaar);
+          if(!!tukhainMur)
+          butsaakhJagsaalt.push({
+            talbainId: x._id,
+            talbainDugaar: x.kod,
+            tooluuriinDugaar: x.tooluuriinDugaar,
+            suuliinZaalt: tukhainMur.tariffs
+          });
+        })
+        res.send(butsaakhJagsaalt);
+      }
+      else {
+        throw new Error("Талбайн мэдээлэл олдсонгүй!");
+      }
+    } catch (err) {
+      next(err);
+    }
+  });
 module.exports = router;

@@ -50,6 +50,7 @@ const baiguullagaSchema = new Schema(
           districtCode: String,
           nuatTulukhEsekh: Boolean,
           zogsoolMsgIlgeekh: Boolean,
+          tooluurAutomatTatakhToken : String
         },
         davkharuud: [
           {

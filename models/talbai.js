@@ -23,6 +23,7 @@ const talbaiSchema = new Schema(
     ashiglaltiinZardal: Number,
     niitAshiglaltiinZardal: Number,
     niitiinTalbaiEsekh: Boolean,
+    tooluuriinDugaar : String,
     idevkhiteiEsekh: {
       type: Boolean,
       default: false,

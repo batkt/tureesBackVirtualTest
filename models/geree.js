@@ -106,6 +106,7 @@ const gereeSchema = new Schema(
     talbainNiitUne: Number,
     talbainKhemjee: Number,
     talbainKhemjeeMetrKube: Number,
+    tooluuriinDugaar : String,// odooxondoo gantsaar awchixya tsaashid olshirwol yaaxaa shiidne
     davkhar: String,
     baritsaaAvakhDun: Number,
     baritsaaniiUldegdel: {
