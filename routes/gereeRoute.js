@@ -6,6 +6,7 @@ const Khariltsagch = require("../models/khariltsagch");
 //const Dugaarlalt = require("../models/dugaarlalt");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
+const AshiglaltiinExcel = require("../models/ashiglaltiinExcel");
 const moment = require("moment");
 const {
   gereeZasakhShalguur,
@@ -3411,7 +3412,7 @@ router
         var tatakhOgnoo = new Date(req.body.ognoo);
         talbainuud.forEach((a) => talbainDugaaruud + a.tooluuriinDugaar + ",");
         talbainDugaaruud = talbainDugaaruud.slice(0, -1);
-        talbainDugaaruud = "241008002701,241008002702,241008002703";
+        //talbainDugaaruud = "241008002701,241008002702,241008002703";
         var key1 = 'Ski452Doodjfqef'.padEnd(32, '\0'); 
         const iv = '1MMNT20240126ECM'; // 16 bytes
         function encrypt(plainText) {
@@ -3470,4 +3471,183 @@ router
       next(err);
     }
   });
+  
+router
+.route("/zaaltOlnoorOruulya")
+.post(tokenShalgakh, async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
+    var ashiglaltiinZardal = await AshiglaltiinZardluud(
+      req.body.tukhainBaaziinKholbolt
+    ).findById(req.body.ashiglaltiinId);
+    const jagsaalt = req.body.jagsaalt;
+    var talbainDugaaruud = [];
+    for await (const mur of jagsaalt) {
+        talbainDugaaruud.push(mur.talbainDugaar);
+    }
+    var niitGereenuud = [];
+    var oldooguiGeree = [];
+    var aldaaniiMsg = "";
+    if (talbainDugaaruud.length > 0) {
+      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+        .find({
+          talbainDugaar: { $in: talbainDugaaruud },
+          barilgiinId: req.body.barilgiinId,
+          tuluv: 1,
+        })
+        .select("+avlaga");
+      if (!!gereenuud) {
+        oldooguiGeree = [];
+        talbainDugaaruud.forEach((a) => {
+          var oldsonGeree = gereenuud.find((b) => b.talbainDugaar === a);
+          if (!oldsonGeree) oldooguiGeree.push(a);
+        });
+        if (oldooguiGeree.length > 0) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            " Дараах талбайн дугаартай гэрээнүүд олдсонгүй! " +
+            oldooguiGeree.toString();
+        } else niitGereenuud.push(...gereenuud);
+      }
+    }
+    var bulkOps = [];
+    var updateObject;
+    if (niitGereenuud.length > 0) {
+      for await (const geree of niitGereenuud) {
+        updateObject = {};
+        if (
+          ashiglaltiinZardal.turul == "кВт" ||
+          ashiglaltiinZardal.turul == "1м3"
+        ) {
+          var umnukhZaalt = 0;
+          var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
+            return (
+              x.khemjikhNegj == ashiglaltiinZardal.turul &&
+              x.tailbar == ashiglaltiinZardal.ner
+            );
+          });
+          if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
+            suuliinGuilgee = lodash.orderBy(suuliinGuilgee, ["ognoo"], ["asc"]);
+            suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
+          }
+          if (!!suuliinGuilgee?.suuliinZaalt) {
+            umnukhZaalt = suuliinGuilgee.suuliinZaalt;
+          }
+        }
+        var tukhainZardal;
+          tukhainZardal = jagsaalt.find((x) => {
+            return (
+              x.talbainDugaar === geree.talbainDugaar
+            );
+          });
+        var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
+        var tsakhilgaanDun = 0;
+        var tsakhilgaanKBTST = 0;
+        var chadalDun = 0;
+        var tsekhDun = 0;
+        var sekhDemjikhTulburDun = 0
+        if(baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
+        {
+          tsakhilgaanKBTST = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (tukhainZardal.guidliinKoep || 1)
+          chadalDun = baiguullaga?.tokhirgoo?.bichiltKhonog > 0 && tsakhilgaanKBTST > 0 ? (tsakhilgaanKBTST/baiguullaga?.tokhirgoo?.bichiltKhonog/12 * (req.body.baiguullagiinId === "679aea9032299b7ba8462a77" ? 11520 : 15500)) : 0
+          tsekhDun = ashiglaltiinZardal.tariff * tsakhilgaanKBTST
+          if(req.body.baiguullagiinId === "679aea9032299b7ba8462a77") // URANGAN
+          {
+            sekhDemjikhTulburDun = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * 23.79;
+            tsakhilgaanDun = chadalDun + tsekhDun + sekhDemjikhTulburDun;
+          }
+          else
+            tsakhilgaanDun = chadalDun + tsekhDun;
+        }
+        else
+          tsakhilgaanDun = ashiglaltiinZardal.tariff * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (zoruuDun || 0);
+        var tempDun =
+          (ashiglaltiinZardal.ner === "Хүйтэн ус" ||
+            ashiglaltiinZardal.ner === "Халуун ус") &&
+          ashiglaltiinZardal.bodokhArga === "Khatuu"
+            ? ashiglaltiinZardal.tseverUsDun * zoruuDun +
+              ashiglaltiinZardal.bokhirUsDun * zoruuDun +
+              (ashiglaltiinZardal.ner === "Халуун ус"
+                ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
+                : 0)
+            : tsakhilgaanDun;
+        console.log("tempDun", tempDun);
+        updateObject = {
+          turul: "avlaga",
+          tulsunDun: 0,
+          tulukhDun: !!req.body.nuatBodokhEsekh
+            ? ((ashiglaltiinZardal.suuriKhuraamj || 0) + tempDun) * 1.1
+            : (ashiglaltiinZardal.suuriKhuraamj || 0) + tempDun,
+          negj: zoruuDun && zoruuDun,
+          khemjikhNegj: ashiglaltiinZardal.turul,
+          tariff: ashiglaltiinZardal.tariff,
+          tseverUsDun: ashiglaltiinZardal.tseverUsDun * zoruuDun || 0,
+          bokhirUsDun: ashiglaltiinZardal.bokhirUsDun * zoruuDun || 0,
+          usKhalaasanDun:
+            ashiglaltiinZardal.ner === "Халуун ус"
+              ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
+              : 0,
+          suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj || 0,
+          tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver || 1,
+          tsakhilgaanKBTST: tsakhilgaanKBTST || 0,
+          guidliinKoep: tukhainZardal.guidliinKoep || 0,
+          bichiltKhonog: baiguullaga?.tokhirgoo?.bichiltKhonog || 0,
+          chadalDun: chadalDun || 0,
+          tsekhDun: tsekhDun || 0,
+          sekhDemjikhTulburDun: sekhDemjikhTulburDun || 0,
+          ognoo: tukhainZardal.ognoo,
+          gereeniiId: geree._id,
+          tailbar: ashiglaltiinZardal.ner,
+          nuatBodokhEsekh: req.body.nuatBodokhEsekh,
+        };
+        if (
+          ashiglaltiinZardal.turul === "кВт" ||
+          ashiglaltiinZardal.turul === "1м3"
+        ) {
+          updateObject["suuliinZaalt"] = tukhainZardal.suuliinZaalt;
+          updateObject["umnukhZaalt"] = umnukhZaalt;
+        }
+        updateObject["guilgeeKhiisenOgnoo"] = new Date();
+        if (req.body.nevtersenAjiltniiToken) {
+          updateObject["guilgeeKhiisenAjiltniiNer"] = req.body.nevtersenAjiltniiToken.ner;
+          updateObject["guilgeeKhiisenAjiltniiId"] = req.body.nevtersenAjiltniiToken.id;
+        }
+        console.log("updateObject", updateObject);
+        tukhainZardal.gereeniiId = geree._id;
+        tukhainZardal.zoruu = ashiglaltiinZardal.zoruuDun;
+        tukhainZardal.niitDun = tempDun;
+        let upsertDoc = {
+          updateOne: {
+            filter: { _id: geree._id },
+            update: {
+              $push: {
+                "avlaga.guilgeenuud": updateObject,
+              },
+            },
+          },
+        };
+        bulkOps.push(upsertDoc);
+      }
+    }
+    if (aldaaniiMsg) throw new Error(aldaaniiMsg);
+    if (bulkOps && bulkOps.length > 0)
+      await Geree(req.body.tukhainBaaziinKholbolt)
+        .bulkWrite(bulkOps)
+        .then((bulkWriteOpResult) => {
+          console.log("BULK update OK", bulkWriteOpResult);
+          AshiglaltiinExcel(req.body.tukhainBaaziinKholbolt).insertMany(
+            jagsaalt
+          );
+          res.status(200).send("Amjilttai");
+        })
+        .catch((err) => {
+          console.log("BULK update error", err);
+          next(err);
+        });
+  
+  } catch (err) {
+    next(err);
+  }
+});
 module.exports = router;
