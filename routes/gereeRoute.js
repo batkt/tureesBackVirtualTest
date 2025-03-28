@@ -3410,7 +3410,7 @@ router
       {
         var talbainDugaaruud = "";
         var tatakhOgnoo = new Date(req.body.ognoo);
-        talbainuud.forEach((a) => talbainDugaaruud + a.tooluuriinDugaar + ",");
+        talbainuud.forEach((a) => talbainDugaaruud = talbainDugaaruud + a.tooluuriinDugaar + ",");
         talbainDugaaruud = talbainDugaaruud.slice(0, -1);
         //talbainDugaaruud = "241008002701,241008002702,241008002703";
         var key1 = 'Ski452Doodjfqef'.padEnd(32, '\0'); 
