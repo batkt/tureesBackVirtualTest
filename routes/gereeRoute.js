@@ -1353,20 +1353,20 @@ router
                     },
                     {
                       $match: {
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lt: new Date(req.body.ekhlekhOgnoo),
+                        },
                         $or: [
                           {
                             "avlaga.guilgeenuud.turul": { $in: ["khuvaari" ], },
                           },
                           {
                             $and: [
-                              { "avlaga.guilgeenuud.turul": { $in: [, "khungulult"], }, },
-                              { "avlaga.guilgeenuud.taibar": { $in: [, "Хөнгөлөлт"], }, }
+                              { "avlaga.guilgeenuud.turul": { $in: ["khungulult"], }, },
+                              { "avlaga.guilgeenuud.tailbar": { $in: ["Хөнгөлөлт"], }, }
                             ]
                           }
                         ],
-                        "avlaga.guilgeenuud.ognoo": {
-                          $lt: new Date(req.body.ekhlekhOgnoo),
-                        },
                       },
                     },
                     {
@@ -1404,20 +1404,20 @@ router
                     },
                     {
                       $match: {
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lt: new Date(req.body.ekhlekhOgnoo),
+                        },
                         $or: [
                           {
                             "avlaga.guilgeenuud.turul": { $in: ["avlaga" ], },
                           },
                           {
                             $and: [
-                              { "avlaga.guilgeenuud.turul": { $in: [, "khungulult"], }, },
-                              { "avlaga.guilgeenuud.taibar": { $nin: [, "Хөнгөлөлт"], }, }
+                              { "avlaga.guilgeenuud.turul": { $in: ["khungulult"], }, },
+                              { "avlaga.guilgeenuud.tailbar": { $nin: ["Хөнгөлөлт"], }, },
                             ]
                           }
                         ],
-                        "avlaga.guilgeenuud.ognoo": {
-                          $lt: new Date(req.body.ekhlekhOgnoo),
-                        },
                       },
                     },
                     {
