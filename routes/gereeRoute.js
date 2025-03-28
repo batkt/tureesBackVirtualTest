@@ -1528,7 +1528,7 @@ router
                       $match: {
                         "avlaga.guilgeenuud.ognoo": {
                           $lte: new Date(req.body.duusakhOgnoo),
-                          $gte: new Date(req.body.ekhlekhOgnoo),
+                          $gte: req.body.baiguullagiinId === "679aea9032299b7ba8462a77" ?  new Date(moment(req.body.ekhlekhOgnoo).subtract(1, 'month')) : new Date(req.body.ekhlekhOgnoo),
                         },
                         $or: [
                           {
