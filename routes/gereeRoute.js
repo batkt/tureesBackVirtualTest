@@ -1345,6 +1345,108 @@ router
                       },
                     },
                   ],
+                  umnukhSariinTureesUrTulbur: [
+                    {
+                      $unwind: {
+                        path: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $match: {
+                        $or: [
+                          {
+                            "avlaga.guilgeenuud.turul": { $in: ["khuvaari" ], },
+                          },
+                          {
+                            $and: [
+                              { "avlaga.guilgeenuud.turul": { $in: [, "khungulult"], }, },
+                              { "avlaga.guilgeenuud.taibar": { $in: [, "Хөнгөлөлт"], }, }
+                            ]
+                          }
+                        ],
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lt: new Date(req.body.ekhlekhOgnoo),
+                        },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        tulukh: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                          },
+                        },
+                        khyamdral: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                          },
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        uldegdel: {
+                          $subtract: [
+                            "$tulukh",
+                            "$khyamdral",
+                          ],
+                        },
+                      },
+                    },
+                  ],
+                  umnukhSariinAshiglaltUrTulbur: [
+                    {
+                      $unwind: {
+                        path: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $match: {
+                        $or: [
+                          {
+                            "avlaga.guilgeenuud.turul": { $in: ["avlaga" ], },
+                          },
+                          {
+                            $and: [
+                              { "avlaga.guilgeenuud.turul": { $in: [, "khungulult"], }, },
+                              { "avlaga.guilgeenuud.taibar": { $nin: [, "Хөнгөлөлт"], }, }
+                            ]
+                          }
+                        ],
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lt: new Date(req.body.ekhlekhOgnoo),
+                        },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        tulukh: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                          },
+                        },
+                        khyamdral: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                          },
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        uldegdel: {
+                          $subtract: [
+                            "$tulukh",
+                            "$khyamdral",
+                          ],
+                        },
+                      },
+                    },
+                  ],
                   niitUldegdel: [
                     {
                       $unwind: {
@@ -1528,7 +1630,7 @@ router
                       $match: {
                         "avlaga.guilgeenuud.ognoo": {
                           $lte: new Date(req.body.duusakhOgnoo),
-                          $gte: req.body.baiguullagiinId === "679aea9032299b7ba8462a77" ?  new Date(moment(req.body.ekhlekhOgnoo).subtract(1, 'month')) : new Date(req.body.ekhlekhOgnoo),
+                          $gte: new Date(req.body.ekhlekhOgnoo),
                         },
                         $or: [
                           {
@@ -1697,6 +1799,17 @@ router
                   gereenuud[0].umnukhSariinTulsun?.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;  
+                x.umnukhSariinTureesUrTulbur =
+                  gereenuud[0].umnukhSariinTureesUrTulbur?.find(
+                    (a) => a._id == x.gereeniiDugaar
+                  )?.uldegdel || 0;  
+                x.umnukhSariinAshiglaltUrTulbur =
+                  gereenuud[0].umnukhSariinAshiglaltUrTulbur?.find(
+                    (a) => a._id == x.gereeniiDugaar
+                  )?.uldegdel || 0;    
+                x.umnukhSariinTureesUrTulbur = x.umnukhSariinTureesUrTulbur - x.umnukhSariinTulsun;
+                if (x.umnukhSariinTureesUrTulbur < 0)
+                  x.umnukhSariinAshiglaltUrTulbur = x.umnukhSariinAshiglaltUrTulbur + x.umnukhSariinTureesUrTulbur;
                 x.umnukhSariinUrTulbur =
                   gereenuud[0].umnukhSariinUrTulbur.find(
                     (a) => a._id == x.gereeniiDugaar
