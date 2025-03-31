@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-// const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer');
 async function mailIlgeeye(mailKhayag, ilgeekhMail, zurag) {
   let transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -37,14 +37,14 @@ async function mailIlgeeye(mailKhayag, ilgeekhMail, zurag) {
   });
 }
 
-// async function convertHtmlToPdf(htmlContent) {
-//   const browser = await puppeteer.launch();
-//   const page = await browser.newPage();
-//   await page.setContent(htmlContent);
-//   const pdfBuffer = await page.pdf();
-//   await browser.close();
-//   return pdfBuffer;
-// }
+async function convertHtmlToPdf(htmlContent) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.setContent(htmlContent);
+  const pdfBuffer = await page.pdf();
+  await browser.close();
+  return pdfBuffer;
+}
 
 async function duriinMailIlgeeye(
   user,
@@ -68,7 +68,7 @@ async function duriinMailIlgeeye(
       minVersion: "TLSv1"
     };
 
-  // const pdfBuffer = await convertHtmlToPdf(ilgeekhMail);  
+  const pdfBuffer = await convertHtmlToPdf(ilgeekhMail);  
   let transporter = nodemailer.createTransport({
     host: host ? host : "smtp.zevtabs.mn",
     port: port ? port : 587,
@@ -86,12 +86,12 @@ async function duriinMailIlgeeye(
     subject: subject, // Subject line
     // text: "Нэхэмжлэхийг PDF файлаар илгээв.", // plain text body
     html: ilgeekhMail, // html body
-    // attachments: [
-    //   {
-    //     filename: gereeniiDugaar + '.pdf',
-    //     content: pdfBuffer
-    //   }
-    // ],
+    attachments: [
+      {
+        filename: gereeniiDugaar + '.pdf',
+        content: pdfBuffer
+      }
+    ],
   };
   transporter.sendMail(mail, function (error, info) {
     if (error) {
