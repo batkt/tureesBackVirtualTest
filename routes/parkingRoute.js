@@ -1146,6 +1146,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             ).format("YYYY/MM/DD HH:mm:ss"),
             pay_amount: bodsonDun,
             parking_id: zogsool._id,
+            parkingUndsenUne: zogsool.undsenUne,
             session_id: oldsonMashin._id,
             garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
           };
@@ -1160,6 +1161,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             ).format("YYYY/MM/DD HH:mm:ss"),
             pay_amount: 0,
             parking_id: zogsool._id,
+            parkingUndsenUne: zogsool.undsenUne,
             session_id: oldsonMashin._id,
             garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
           };
