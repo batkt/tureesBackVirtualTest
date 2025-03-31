@@ -25,7 +25,6 @@
     "nodemailer": "^6.10.0",
     "parking-v1": "^1.5.40",
     "pg": "^8.11.5",
-    "puppeteer": "^23.11.1",
     "quickqpaypackv2": "^1.0.44",
     "sharp": "^0.30.7",
     "zevbackv2": "^1.1.27",
