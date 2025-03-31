@@ -2218,7 +2218,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
               throw new Error("Хөнгөлөлт оруулсан байна!");
           }
           else if (req.body.barilgiinId === "67e0ca757d7ac716ef9c3cc5") {
-            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == req.body.turul))
+            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul === req.body.turul))
               throw new Error("Хөнгөлөлт оруулсан байна!");
           }
           tukhainObject.tuukh[0].tulbur.push(...tulbur);
