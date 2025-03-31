@@ -51,7 +51,32 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     !baiguullaga.tokhirgoo.mailPassword
   )
     throw new aldaa("И-Мэйлын тохиргоо хийгдээгүй байна!");
+
+  const puppeteer = require("puppeteer");    
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ["--no-sandbox"],
+  });
+  console.log("browser baina");
+  // Create a new page
+  const page = await browser.newPage();
   for await (const mail of req.body.mailuud) {
+    await page.setContent(mail.content, {
+      waitUntil: "domcontentloaded",
+    });
+    const pdf = await page.pdf({
+      path: mail.gereeniiDugaar + ".pdf",
+      margin: {
+        top: "3px",
+        right: "3px",
+        bottom: "3px",
+        left: "3px",
+      },
+      printBackground: true,
+      format: "A4",
+    });
+    await browser.close;
+    console.log("pdf duussan");
     await MailIlgeeye.duriinMailIlgeeye(
       baiguullaga.tokhirgoo.mailNevtrekhNer,
       baiguullaga.tokhirgoo.mailPassword,
@@ -60,7 +85,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       mail.mail,
       req.body.subject,
       mail.content,
-      null
+      mail.gereeniiDugaar
     );
   }
   if(req.body.subject === "Түрээсийн төлбөр" && !!req.body.gereenuud)
