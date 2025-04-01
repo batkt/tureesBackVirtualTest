@@ -12,7 +12,7 @@ const request = require("request");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const NekhemjlekhiinTuukh = require("../models/nekhemjlekhiinTuukh");
-
+const axios = require("axios");
 
 crud(router, "mailiinZagvar", MailiinZagvar, UstsanBarimt);
 crud(router, "msgTuukh", MsgTuukh, UstsanBarimt);
@@ -52,18 +52,16 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
   )
     throw new aldaa("И-Мэйлын тохиргоо хийгдээгүй байна!");
   
-  for await (const mail of req.body.mailuud) {
-    await MailIlgeeye.duriinMailIlgeeye(
-      baiguullaga.tokhirgoo.mailNevtrekhNer,
-      baiguullaga.tokhirgoo.mailPassword,
-      baiguullaga.tokhirgoo.mailHost,
-      baiguullaga.tokhirgoo.mailPort,
-      mail.mail,
-      req.body.subject,
-      mail.content,
-      mail.gereeniiDugaar,
-    );
-  }
+  var axiosKhariu = await axios.post(
+    "http://103.143.40.43:8282/tureesMailIlgeeye",
+    // "http://192.168.1.241:8282/tureesMailIlgeeye",
+    {
+      baiguullaga: baiguullaga,
+      mailuud: req.body.mailuud,
+      subject: req.body.subject,
+    }
+  );
+  console.log("mail ->" + JSON.stringify(axiosKhariu?.data));
   if(req.body.subject === "Түрээсийн төлбөр" && !!req.body.gereenuud)
   {
     for await (const tempData of req.body.gereenuud)
