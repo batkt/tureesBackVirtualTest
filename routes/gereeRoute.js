@@ -3810,4 +3810,46 @@ router
     next(err);
   }
 });
+router
+.route("/baritsaaOlnoorOruulakh")
+.post(tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      "avlaga.baritsaa": [],
+    }
+    if(!!req.body.gereeniiDugaar)
+      match["gereeniiDugaar"] = req.body.gereeniiDugaar;
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find(match).select("+avlaga");
+    if(gereenuud?.length > 0)
+    {
+      for await (const geree of gereenuud)
+      {
+        var dun = ((geree.baritsaaAvakhDun || 0) - (geree.baritsaaniiUldegdel || 0));
+        var baritsaa = {
+          ognoo: geree.gereeniiOgnoo,
+          orlogo: dun,
+          zarlaga: 0,
+          tailbar: '',
+          guilgeeKhiisenOgnoo: new Date(),
+          guilgeeKhiisenAjiltniiNer: 'Нягтлан',
+          guilgeeKhiisenAjiltniiId: '679aea9032299b7ba8462a7a'
+        }
+        await Geree(req.body.tukhainBaaziinKholbolt)
+            .findByIdAndUpdate(
+              { _id: geree?._id.toString() },
+              {
+                $push: {
+                  [`avlaga.baritsaa`]: baritsaa,
+                },
+                $set: { baritsaaniiUldegdel: dun }
+              });
+      }
+    }
+    res.send("Amjilttai");
+  } catch (err) {
+    next(err);
+  }
+});
 module.exports = router;
