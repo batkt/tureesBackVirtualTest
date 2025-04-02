@@ -273,7 +273,7 @@ router
                 ner: `${a.ner}.Нэгж`,
                 talbar: `<${a.ner}.negj>`,
               });
-              if (a.turul == "кВт" || a.turul == "1м3") {
+              if (a.turul == "кВт" || a.turul == "1м3" || a.turul == "кг") {
                 oruulakhTalbar.push({
                   ner: `${a.ner}.Өмнөх заалт`,
                   talbar: `<${a.ner}.umnukhZaalt>`,

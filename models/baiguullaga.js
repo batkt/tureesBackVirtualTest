@@ -126,6 +126,7 @@ const baiguullagaSchema = new Schema(
       apiTogloomiinTuvDans: String,
       aktAshiglakhEsekh: Boolean,
       guidelBuchiltKhonogEsekh: Boolean,
+      sekhDemjikhTulburAvakhEsekh: Boolean,
       bichiltKhonog: Number,
       udruurBodokhEsekh: Boolean,
       baritsaaUneAdiltgakhEsekh: Boolean,

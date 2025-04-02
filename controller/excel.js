@@ -2698,7 +2698,8 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         updateObject = {};
         if (
           ashiglaltiinZardal.turul == "кВт" ||
-          ashiglaltiinZardal.turul == "1м3"
+          ashiglaltiinZardal.turul == "1м3" ||
+          ashiglaltiinZardal.turul === "кг"
         ) {
           var umnukhZaalt = 0;
           var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
@@ -2791,12 +2792,12 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         var chadalDun = 0;
         var tsekhDun = 0;
         var sekhDemjikhTulburDun = 0
-        if(baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
+        if(ashiglaltiinZardal.ner === "Цахилгаан" && baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
         {
           tsakhilgaanKBTST = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (tukhainZardal.guidliinKoep || 1)
           chadalDun = baiguullaga?.tokhirgoo?.bichiltKhonog > 0 && tsakhilgaanKBTST > 0 ? (tsakhilgaanKBTST/baiguullaga?.tokhirgoo?.bichiltKhonog/12 * (req.body.baiguullagiinId === "679aea9032299b7ba8462a77" ? 11520 : 15500)) : 0
           tsekhDun = ashiglaltiinZardal.tariff * tsakhilgaanKBTST
-          if(req.body.baiguullagiinId === "679aea9032299b7ba8462a77") // URANGAN
+          if(baiguullaga?.tokhirgoo?.sekhDemjikhTulburAvakhEsekh) // URANGAN Ikhnayd
           {
             sekhDemjikhTulburDun = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * 23.79;
             tsakhilgaanDun = chadalDun + tsekhDun + sekhDemjikhTulburDun;
@@ -2814,15 +2815,23 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
               ashiglaltiinZardal.bokhirUsDun * zoruuDun +
               (ashiglaltiinZardal.ner === "Халуун ус"
                 ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
-                : 0)
+                : 0)  
+            : ashiglaltiinZardal.turul === "кг" ? ((zoruuDun || 0) * ashiglaltiinZardal.togtmolUtga * ashiglaltiinZardal.tariff)
             : tsakhilgaanDun;
         console.log("tempDun", tempDun);
+        if(tempDun === 0)
+          aldaaniiMsg =
+                aldaaniiMsg +
+                (tukhainZardal.register || "") + " " +
+                (tukhainZardal.talbainDugaar || "") + " " +
+                (tukhainZardal.gereeniiDugaar || "") + " " +
+                " гэрээний төлөх дүн тэг байна! ";
         updateObject = {
           turul: "avlaga",
           tulsunDun: 0,
           tulukhDun: !!req.body.nuatBodokhEsekh
             ? ((ashiglaltiinZardal.suuriKhuraamj || 0) + tempDun) * 1.1
-            : (ashiglaltiinZardal.suuriKhuraamj || 0) + tempDun,
+            : ((ashiglaltiinZardal.suuriKhuraamj || 0) + tempDun),
           negj: zoruuDun && zoruuDun,
           khemjikhNegj: ashiglaltiinZardal.turul,
           tariff: ashiglaltiinZardal.tariff,
@@ -2835,19 +2844,21 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj || 0,
           tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver || 1,
           tsakhilgaanKBTST: tsakhilgaanKBTST || 0,
-          guidliinKoep: tukhainZardal.guidliinKoep || 0,
-          bichiltKhonog: baiguullaga?.tokhirgoo?.bichiltKhonog || 0,
-          chadalDun: chadalDun || 0,
-          tsekhDun: tsekhDun || 0,
-          sekhDemjikhTulburDun: sekhDemjikhTulburDun || 0,
+          guidliinKoep: ashiglaltiinZardal.ner === "Цахилгаан" ? (tukhainZardal.guidliinKoep || 0) : 0,
+          bichiltKhonog: ashiglaltiinZardal.ner === "Цахилгаан" ? (baiguullaga?.tokhirgoo?.bichiltKhonog || 0) : 0,
+          chadalDun: ashiglaltiinZardal.ner === "Цахилгаан" ? (chadalDun || 0) : 0,
+          tsekhDun: ashiglaltiinZardal.ner === "Цахилгаан" ? (tsekhDun || 0) : 0,
+          sekhDemjikhTulburDun: ashiglaltiinZardal.ner === "Цахилгаан" ? (sekhDemjikhTulburDun || 0) : 0,
           ognoo: tukhainZardal.ognoo,
           gereeniiId: geree._id,
           tailbar: ashiglaltiinZardal.ner,
           nuatBodokhEsekh: req.body.nuatBodokhEsekh,
+          togtmolUtga: ashiglaltiinZardal.turul === "кг" ? (ashiglaltiinZardal.togtmolUtga || 0) : 0,
         };
         if (
           ashiglaltiinZardal.turul === "кВт" ||
-          ashiglaltiinZardal.turul === "1м3"
+          ashiglaltiinZardal.turul === "1м3" ||
+          ashiglaltiinZardal.turul === "кг"
         ) {
           updateObject["suuliinZaalt"] = tukhainZardal.suuliinZaalt;
           updateObject["umnukhZaalt"] = umnukhZaalt;

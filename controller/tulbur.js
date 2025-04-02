@@ -335,12 +335,13 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                     zardal.dun = tooZasyaSync(zardal.tariff * body.metrKube);
                   if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                   var zardalDun = ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, zardal.dun);
-                  butsaakhJagsaalt.push({
-                    turul: "avlaga",
-                    tailbar: zardal.ner,
-                    ognoo: turOgnoo,
-                    tulukhDun: zardalDun,
-                  });
+                  if(zardalDun > 0)
+                    butsaakhJagsaalt.push({
+                      turul: "avlaga",
+                      tailbar: zardal.ner,
+                      ognoo: turOgnoo,
+                      tulukhDun: zardalDun,
+                    });
                 }
               });
             }

@@ -1086,7 +1086,7 @@ router
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
     };
     console.log(tuukh);
-    var avlagaMatch = req.body.udruurBodokhEsekh ? { ognoo: { $gte: moment(req.body.tsutslakhOgnoo).startOf("month") }, $or: [ { guilgeeKhiisenOgnoo: { $exists: false } }, { guilgeeKhiisenOgnoo: { $exists: true }, turul: 'khungulult' }] } : { ognoo: { $gt: new Date() } };
+    var avlagaMatch = req.body.udruurBodokhEsekh ? { ognoo: { $gte: new Date(moment(req.body.tsutslakhOgnoo).startOf("month")) } } : { ognoo: { $gt: new Date() } };
     if (geree.gereeniiTuukhuud) {
       Geree(req.body.tukhainBaaziinKholbolt)
         .findOneAndUpdate(
@@ -3631,7 +3631,8 @@ router
         updateObject = {};
         if (
           ashiglaltiinZardal.turul == "кВт" ||
-          ashiglaltiinZardal.turul == "1м3"
+          ashiglaltiinZardal.turul == "1м3" ||
+          ashiglaltiinZardal.turul === "кг"
         ) {
           var umnukhZaalt = 0;
           var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
@@ -3665,7 +3666,7 @@ router
           tsakhilgaanKBTST = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (tukhainZardal.guidliinKoep || 1)
           chadalDun = baiguullaga?.tokhirgoo?.bichiltKhonog > 0 && tsakhilgaanKBTST > 0 ? (tsakhilgaanKBTST/baiguullaga?.tokhirgoo?.bichiltKhonog/12 * (req.body.baiguullagiinId === "679aea9032299b7ba8462a77" ? 11520 : 15500)) : 0
           tsekhDun = ashiglaltiinZardal.tariff * tsakhilgaanKBTST
-          if(req.body.baiguullagiinId === "679aea9032299b7ba8462a77") // URANGAN
+          if(baiguullaga?.tokhirgoo?.sekhDemjikhTulburAvakhEsekh) // URANGAN iknayd
           {
             sekhDemjikhTulburDun = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * 23.79;
             tsakhilgaanDun = chadalDun + tsekhDun + sekhDemjikhTulburDun;
@@ -3716,7 +3717,8 @@ router
         };
         if (
           ashiglaltiinZardal.turul === "кВт" ||
-          ashiglaltiinZardal.turul === "1м3"
+          ashiglaltiinZardal.turul === "1м3" ||
+          ashiglaltiinZardal.turul === "кг"
         ) {
           updateObject["suuliinZaalt"] = tukhainZardal.suuliinZaalt;
           updateObject["umnukhZaalt"] = umnukhZaalt;
@@ -3759,6 +3761,51 @@ router
           next(err);
         });
   
+  } catch (err) {
+    next(err);
+  }
+});
+
+router
+.route("/zaaltTegBolgoy")
+.post(tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+    }
+    if(!!req.body.gereeniiDugaar)
+      match["gereeniiDugaar"] = req.body.gereeniiDugaar;
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find(match).select("+avlaga"); 
+    if(gereenuud?.length > 0)
+    {
+      for await (const geree of gereenuud)
+      {
+        var avlagaMatch = { ognoo: { $lt: new Date(req.body.ognoo) }, tailbar: 'Цахилгаан', turul: 'avlaga', suuliinZaalt: { $gte: 0 } };
+        var lastAvlaga = geree?.avlaga?.guilgeenuud.find(avlagaMatch).sort({guilgeeKhiisenOgnoo: -1}).limit(1);
+        if(!!lastAvlaga && lastAvlaga._id)
+        {
+          avlagaMatch["_id"] = lastAvlaga._id.toString();
+          Geree(req.body.tukhainBaaziinKholbolt)
+          .findOneAndUpdate(
+            { _id: geree?._id?.toString() },
+            {
+              $pull: { "avlaga.guilgeenuud": avlagaMatch },
+            }
+          );
+          lastAvlaga.suuliinZaalt = 0;
+          Geree(req.body.tukhainBaaziinKholbolt)
+          .findOneAndUpdate(
+            { _id: geree?._id?.toString() },
+            {
+              $push: { "avlaga.guilgeenuud": lastAvlaga },
+            }
+          );
+        }
+      }
+    }
+    res.send("Amjilttai");
   } catch (err) {
     next(err);
   }

@@ -19,6 +19,7 @@ const ashiglaltiinZardluudSchema = new Schema(
     tariffUsgeer: String,
     suuriKhuraamj: Number,
     nuatNemekhEsekh: Boolean,
+    togtmolUtga: Number,
   },
   {
     timestamps: true,
