@@ -52,18 +52,32 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
   )
     throw new aldaa("И-Мэйлын тохиргоо хийгдээгүй байна!");
   
-  for await (const mail of req.body.mailuud) {
-    await MailIlgeeye.duriinMailIlgeeye(
-      baiguullaga.tokhirgoo.mailNevtrekhNer,
-      baiguullaga.tokhirgoo.mailPassword,
-      baiguullaga.tokhirgoo.mailHost,
-      baiguullaga.tokhirgoo.mailPort,
-      mail.mail,
-      req.body.subject,
-      mail.content,
-      mail.gereeniiDugaar,
-    );
+  // for await (const mail of req.body.mailuud) {
+  //   await MailIlgeeye.duriinMailIlgeeye(
+  //     baiguullaga.tokhirgoo.mailNevtrekhNer,
+  //     baiguullaga.tokhirgoo.mailPassword,
+  //     baiguullaga.tokhirgoo.mailHost,
+  //     baiguullaga.tokhirgoo.mailPort,
+  //     mail.mail,
+  //     req.body.subject,
+  //     mail.content,
+  //     mail.gereeniiDugaar,
+  //   );
+  // }
+  var ilgeekhBody = {
+    mailuud: req.body.mailuud,
+    baiguullaga: baiguullaga,
+    subject: req.body.subject,
   }
+  await request.post(
+    "http://103.143.40.43:8282/tureesMailIlgeeye",
+    // "http://192.168.1.241:8282/tureesMailIlgeeye",
+    { json: true, body: ilgeekhBody },
+    (err, res1, body) => {
+      if (err) next(err);
+      console.log(body);
+    }
+  );
   if(req.body.subject === "Түрээсийн төлбөр" && !!req.body.gereenuud)
   {
     for await (const tempData of req.body.gereenuud)
