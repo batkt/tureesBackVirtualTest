@@ -307,6 +307,18 @@ cron.schedule(
   }
 );
 
+cron.schedule(
+  "40 * * * * ",
+  function () {
+    console.log("sarBuriinKhungulultBodoy ---", new Date());
+    gereeRoute.sarBuriinKhungulultBodoy();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
 io.once("connection", (socket) => {
   console.log("connected");
   socket.on("disconnect", () => {

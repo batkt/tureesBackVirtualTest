@@ -3852,4 +3852,145 @@ router
     next(err);
   }
 });
+
+async function sarBuriinKhungulultBodoy() {
+  try 
+  {
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
+      "tokhirgoo.sarBurAutoKhungulultOruulakhEsekh": true,
+    });
+    for await (const baiguullaga of baiguullaguud) {
+      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
+      var match = {
+        $or: [
+          {
+            "avlaga.guilgeenuud.turul": {
+              $nin: ["aldangi", "baritsaa"],
+            }
+          },
+          {
+            $and: [
+              {
+                "avlaga.guilgeenuud.turul": {
+                  $in: ["baritsaa"],
+                }
+              },
+              {
+                "avlaga.guilgeenuud.tulsunDun": {
+                  $gt: 0,
+                }
+              }
+            ]
+          }
+        ],
+        "avlaga.guilgeenuud.ognoo": {
+          $lte: new Date(moment().subtract(1, "month").endOf("month").format("YYYY-MM-DD 23:59:59")), 
+        }
+      }
+      var query = [
+        {
+          $match: {
+            baiguullagiinId: baiguullaga._id.toString(),
+            tuluv: {
+              $ne: -1,
+            },
+          },
+        },
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $match: match,
+        },
+        {
+          $group: {
+            _id: "$_id",
+            tulukh: {
+              $sum: {
+                $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+              },
+            },
+            khyamdral: {
+              $sum: {
+                $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+              },
+            },
+            tulsun: {
+              $sum: {
+                $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            uldegdel: {
+              $subtract: [
+                "$tulukh",
+                {
+                  $sum: ["$tulsun", "$khyamdral"],
+                },
+              ],
+            },
+          },
+        },
+        {
+          $match: { "uldegdel": { $lte: (baiguullaga?.tokhirgoo?.khungulukhSarBuriinShalguurDun || 0) } }
+        }
+      ];
+      var khariu = await Geree(kholbolt).aggregate(query);
+      if(khariu?.length > 0)
+      {
+        for await (const data of khariu)  
+        {
+          var geree = await Geree(kholbolt).findById(data._id).select("+avlaga");
+          console.log("--->>" + JSON.stringify(geree?.gereeniiDugaar));
+          var ognoo = moment().set("date", geree?.tulukhUdur[0]).add(1, "day").format("YYYY-MM-DD 00:00:00");
+          var filteredData = geree?.avlaga?.guilgeenuud.filter((a) => moment(a.ognoo).format("YYYY-MM-DD 00:00:00") === ognoo && a.turul === "khungulult" && a.tailbar === "системээс автомат хөнгөлөлт" && a.sarBurAutoKhungulultOruulakhEsekh);
+          if(filteredData?.length === 0)
+          {
+            console.log("-f-->>" + JSON.stringify(geree?.gereeniiDugaar));
+            var khungulultiinDun = 0;
+            if (baiguullaga?.tokhirgoo?.khungulukhSarBuriinTurul === "khuvi") {
+              khungulultiinDun = (geree?.talbainNiitUne * baiguullaga?.tokhirgoo?.khungulukhSarBuriinUtga) / 100;
+            } else {
+              khungulultiinDun = baiguullaga?.tokhirgoo?.khungulukhSarBuriinUtga;
+            }
+            var khyamdral = {
+              tulukhDun: 0,
+              ognoo: ognoo,
+              turul: "khungulult",
+              khyamdral: khungulultiinDun,
+              nemeltTailbar: "системээс автомат хөнгөлөлт",
+              tailbar: "системээс автомат хөнгөлөлт",
+              khyamdraliinId: geree?._id,
+              guilgeeKhiisenOgnoo: new Date(),
+              sarBurAutoKhungulultOruulakhEsekh: baiguullaga?.tokhirgoo?.sarBurAutoKhungulultOruulakhEsekh,
+              khungulukhSarBuriinShalguurDun: baiguullaga?.tokhirgoo?.khungulukhSarBuriinShalguurDun,
+              khungulukhSarBuriinTurul: baiguullaga?.tokhirgoo?.khungulukhSarBuriinTurul,
+              khungulukhSarBuriinUtga: baiguullaga?.tokhirgoo?.khungulukhSarBuriinUtga,
+              guilgeeKhiisenAjiltniiNer: "system",
+              guilgeeKhiisenAjiltniiId: 1,
+            };
+            await Geree(kholbolt)
+              .findByIdAndUpdate(
+                { _id: geree?._id.toString() },
+                {
+                  $push: {
+                    [`avlaga.guilgeenuud`]: khyamdral,
+                  },
+                });
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.log("sarBuriinKhungulultBodoy error", error);
+  }
+}
 module.exports = router;
+module.exports.sarBuriinKhungulultBodoy = sarBuriinKhungulultBodoy;

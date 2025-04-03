@@ -88,7 +88,6 @@ const baiguullagaSchema = new Schema(
 
       /**Сар бүрийн тогтмол өдөр хөнгөлөлт боломж олгоно */
       sarBurAutoKhungulultOruulakhEsekh: Boolean,
-      khungulukhSarBuriinUdur: Number,
       khungulukhSarBuriinShalguurDun: Number,
       khungulukhSarBuriinTurul: String,
       khungulukhSarBuriinUtga: Number,

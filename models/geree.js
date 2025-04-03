@@ -53,7 +53,6 @@ var avlagiinTurul = new Schema({
       khungulultKhonog: Number,
       khungulultKhuvi: Number,
       sarBurAutoKhungulultOruulakhEsekh: Boolean,
-      khungulukhSarBuriinUdur: Number,
       khungulukhSarBuriinShalguurDun: Number,
       khungulukhSarBuriinTurul: String,
       khungulukhSarBuriinUtga: Number,
