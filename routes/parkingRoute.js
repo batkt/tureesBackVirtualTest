@@ -2410,4 +2410,60 @@ router.post("/zogsoolMobileSdk", tokenShalgakh, async (req, res, next) => {
   }
 });
 
+router.post("/tokiZogsoolIdOruulakh", tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      tokiId: 'toki',
+      ebarimtAvsanEsekh: true,
+      mashiniiDugaar: { $exists: true }
+    }
+    if(!!req.body.mashiniiDugaar)
+      match["mashiniiDugaar"] = req.body.mashiniiDugaar;
+    var uilchluulegchuud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).find(match);
+    var ebarimtuud = [];
+    if(uilchluulegchuud?.length > 0)
+    {
+      for await (const data of uilchluulegchuud)   
+      {
+        ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find({
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId, 
+          ustgasanOgnoo: { $exists: false },
+          zogsooliinId: data?._id,
+        });
+        if(ebarimtuud?.length === 0)  
+        {
+          ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find({
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId, 
+            ustgasanOgnoo: { $exists: false },
+            mashiniiDugaar: data?.mashiniiDugaar,
+            createdAt: {
+              $gte: moment(data.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag).format("YYYY-MM-DD 00:00:00"),
+              $lte: moment(data.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag).format("YYYY-MM-DD 23:59:59"),
+            }
+          });
+          if(ebarimtuud?.length > 0)
+          {
+            for await (const saveEBarimt of ebarimtuud)
+            {
+              saveEBarimt.zogsooliinId = data?._id; 
+              await saveEBarimt.save().catch((err) => {
+                next(err);
+                console.log("aldaa", err);
+              });
+            }
+          }
+        }
+      }
+    }
+    res.send(ebarimtuud);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
