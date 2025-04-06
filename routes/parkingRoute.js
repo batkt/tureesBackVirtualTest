@@ -2491,6 +2491,7 @@ router.post("/ebarimtAvsanDunOruulakh", tokenShalgakh, async (req, res, next) =>
           });  
       }
     }
+    res.send("Амжилттай");
   } catch (err) {
     next(err);
   }
