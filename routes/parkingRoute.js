@@ -2410,15 +2410,15 @@ router.post("/zogsoolMobileSdk", tokenShalgakh, async (req, res, next) => {
   }
 });
 
-router.post("/tokiZogsoolIdOruulakh", tokenShalgakh, async (req, res, next) => {
+router.post("/turluurZogsoolIdOruulakh", tokenShalgakh, async (req, res, next) => {
   try
   {
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
-      tokiId: 'toki',
       ebarimtAvsanEsekh: true,
-      mashiniiDugaar: { $exists: true }
+      mashiniiDugaar: { $exists: true },
+      "tuukh.tulbur.turul": req.body.turul
     }
     if(!!req.body.mashiniiDugaar)
       match["mashiniiDugaar"] = req.body.mashiniiDugaar;
