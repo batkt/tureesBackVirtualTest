@@ -2442,8 +2442,8 @@ router.post("/tokiZogsoolIdOruulakh", tokenShalgakh, async (req, res, next) => {
             ustgasanOgnoo: { $exists: false },
             mashiniiDugaar: data?.mashiniiDugaar,
             createdAt: {
-              $gte: moment(data.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag).format("YYYY-MM-DD 00:00:00"),
-              $lte: moment(data.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag).format("YYYY-MM-DD 23:59:59"),
+              $gte: moment(data.tuukh[0]?.tulbur[0]?.ognoo).format("YYYY-MM-DD 00:00:00"),
+              $lte: moment(data.tuukh[0]?.tulbur[0]?.ognoo).format("YYYY-MM-DD 23:59:59"),
             }
           });
           if(ebarimtuud?.length > 0)
