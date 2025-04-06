@@ -1387,7 +1387,6 @@ router.post(
                   console.log("aldaa", err);
                 });
                 console.log("duuslaa", d);
-                res.send("Amjilttai");
               },
               next,
               ebarimtShine
