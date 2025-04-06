@@ -1709,7 +1709,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(tukhainKholbolt)(d);
           else ebarimt = new Ebarimt(tukhainKholbolt)(d);
-          ebarimt.zogsooliinId = khariuObject._id;
+          ebarimt.zogsooliinId = tukhainObject._id;
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
@@ -1970,7 +1970,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(tukhainKholbolt)(d);
           else ebarimt = new Ebarimt(tukhainKholbolt)(d);
-          ebarimt.zogsooliinId = khariuObject._id;
+          ebarimt.zogsooliinId = tukhainObject._id;
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
@@ -2311,7 +2311,7 @@ router
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(tukhainKholbolt)(d);
           else ebarimt = new Ebarimt(tukhainKholbolt)(d);
-          ebarimt.zogsooliinId = khariuObject._id;
+          ebarimt.zogsooliinId = tukhainObject._id;
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
