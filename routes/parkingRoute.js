@@ -1716,7 +1716,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
           ebarimt.save().catch((err) => {
             next(err);
           });
-          var update = { ebarimtAvsanEsekh: true };
+          var update = { ebarimtAvsanEsekh: true, ebarimtAvsanDun: (ebarimt.cashAmount || ebarimt.totalAmount) };
           if (ebarimt.customerNo)
             update = {
               ...update,
@@ -1977,7 +1977,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
           ebarimt.save().catch((err) => {
             next(err);
           });
-          var update = { ebarimtAvsanEsekh: true };
+          var update = { ebarimtAvsanEsekh: true, ebarimtAvsanDun: (ebarimt.cashAmount || ebarimt.totalAmount) };
           if (ebarimt.customerNo)
             update = {
               ...update,
@@ -2318,7 +2318,7 @@ router
           ebarimt.save().catch((err) => {
             next(err);
           });
-          var update = { ebarimtAvsanEsekh: true };
+          var update = { ebarimtAvsanEsekh: true, ebarimtAvsanDun: (ebarimt.cashAmount || ebarimt.totalAmount) };
           if (ebarimt.customerNo)
             update = {
               ...update,
@@ -2461,6 +2461,36 @@ router.post("/turluurZogsoolIdOruulakh", tokenShalgakh, async (req, res, next) =
       }
     }
     res.send(ebarimtuud);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/ebarimtAvsanDunOruulakh", tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      mashiniiDugaar: { $exists: true },
+      zogsooliinId: { $exists: true }
+    }
+    var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(match);
+    if(ebarimtuud?.length > 0)
+    {
+      for await (const ebarimt of ebarimtuud)
+      {
+        var update = { ebarimtAvsanDun: (ebarimt.cashAmount || ebarimt.totalAmount) };
+        Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+          .findByIdAndUpdate(ebarimt.zogsooliinId, update)
+          .then((xariu) => {
+            console.log("xariu", xariu);
+          })
+          .catch((err) => {
+            console.log(err);
+          });  
+      }
+    }
   } catch (err) {
     next(err);
   }

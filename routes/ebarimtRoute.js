@@ -743,7 +743,7 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.save().catch((err) => {
             next(err);
           });
-          var update = { ebarimtAvsanEsekh: true };
+          var update = { ebarimtAvsanEsekh: true, ebarimtAvsanDun: (ebarimt.cashAmount || ebarimt.totalAmount) };
           if (ebarimt.customerNo)
             update = {
               ...update,
