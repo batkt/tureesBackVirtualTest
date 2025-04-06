@@ -1330,7 +1330,8 @@ router.post(
       var match = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
-        mashiniiDugaar: { $exists: true }
+        mashiniiDugaar: { $exists: true },
+        ustgasanOgnoo: { $exists: false }
       }
       if(!!req.body.mashiniiDugaar)
         match["mashiniiDugaar"] = req.body.mashiniiDugaar;
@@ -1350,32 +1351,15 @@ router.post(
           $match: { "too": { $gt: 1 } }
         }
       ];
-      var ebarimtShine = false;
       var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).aggregate(query);
-      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-        req.body.baiguullagiinId
-      );
-      var tuxainSalbar = baiguullaga?.barilguud?.find(
-        (e) => e._id.toString() == req.body?.barilgiinId
-      )?.tokhirgoo;
       if(ebarimtuud?.length > 0)
       {
         for await (const barimt of ebarimtuud)
         {
           var ebarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find({zogsooliinId: barimt?._id});
           ebarimt?.shift();
-          for await (const barimtShine of ebarimt)
+          for await (const butsaakhBarimt of ebarimt)
           {
-            var butsaakhBarimt;
-            if (!!tuxainSalbar.eBarimtShine) ebarimtShine = true;
-            if (!!ebarimtShine)
-              butsaakhBarimt = await EbarimtShine(
-                req.body.tukhainBaaziinKholbolt
-              ).findById(barimtShine._id);
-            else {
-              butsaakhBarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(req.body);
-              butsaakhBarimt.returnBillId = butsaakhBarimt.billId;
-            }
             ebarimtButsaaya(
               butsaakhBarimt,
               async (d) => {
@@ -1387,15 +1371,15 @@ router.post(
                   console.log("aldaa", err);
                 });
                 console.log("duuslaa", d);
-                res.send("Amjilttai");
+                // res.send("Amjilttai");
               },
               next,
-              ebarimtShine
+              true
             );
           }
         }
       }
-      // res.send(ebarimtuud);
+      res.send(ebarimtuud);
     } catch (error) {
       next(error);
     }
