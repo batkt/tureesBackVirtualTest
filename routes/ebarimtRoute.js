@@ -1322,6 +1322,40 @@ router.post(
   }
 );
 
+router.post(
+  "/davkhardsanEBarintUstakh",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      var match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        mashiniiDugaar: { $exists: true }
+      }
+      var query = [
+        {
+          $match: match,
+        },
+        {
+          $group: {
+            _id: "$zogsooliinId",
+            too: {
+              $sum: 1,
+            }
+          }
+        },
+        {
+          $match: { "too": { $gt: 1 } }
+        }
+      ];
+      var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).aggregate(query);
+      res.send(ebarimtuud);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 module.exports = router;
 module.exports.ebarimtShivye = ebarimtShivye;
 module.exports.ebarimtDuudya = ebarimtDuudya;
