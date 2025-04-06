@@ -1387,6 +1387,7 @@ router.post(
                   console.log("aldaa", err);
                 });
                 console.log("duuslaa", d);
+                res.send("Amjilttai");
               },
               next,
               ebarimtShine
@@ -1394,7 +1395,7 @@ router.post(
           }
         }
       }
-      res.send(ebarimtuud);
+      // res.send(ebarimtuud);
     } catch (error) {
       next(error);
     }
