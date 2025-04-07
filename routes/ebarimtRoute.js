@@ -156,7 +156,7 @@ async function guilgeeneesEbarimtShineUusgye(
   ebarimt.posNo = "0001";
   ebarimt.merchantTin = merchantTin;
   ebarimt.customerNo = customerNo;
-
+  ebarimt.createdAt = ognoo;
   ebarimt.receipts = [
     {
       totalAmount: dun.toFixed(2),
