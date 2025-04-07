@@ -2087,7 +2087,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             var tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khuvaari");
             if(tempKhuvaari?.length > 0)
             {
-              var khassanTulkhDun = (tempKhuvaari[0].tulukhDun - b.khyamdral);
+              var khassanTulkhDun = (tempKhuvaari?.reduce((a, b) => a + (b.tulukhDun || 0), 0) - b.khyamdral);
               var khungulultuusKhassan = {
                 index: 2,
                 ognoo: b.ognoo,
