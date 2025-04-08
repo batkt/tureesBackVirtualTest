@@ -3582,19 +3582,22 @@ router
             var umnukhZaalt = 0;
             var guidliinKoep = 1;
             var geree = niitGereenuud.find((a)=> a.talbainDugaar == x.kod);
-            var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
-              return (
-                x.tailbar == "Цахилгаан"
-              );
-            });
-            if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
-              suuliinGuilgee = lodash.orderBy(suuliinGuilgee, ["ognoo"], ["asc"]);
-              suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
+            if(!!geree)
+            {
+              var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
+                return (
+                  x.tailbar == "Цахилгаан"
+                );
+              });
+              if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
+                suuliinGuilgee = lodash.orderBy(suuliinGuilgee, ["ognoo"], ["asc"]);
+                suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
+              }
+              if (!!suuliinGuilgee?.suuliinZaalt)
+                umnukhZaalt = suuliinGuilgee.suuliinZaalt;
+              if (!!suuliinGuilgee?.guidliinKoep)
+                guidliinKoep = suuliinGuilgee.guidliinKoep;
             }
-            if (!!suuliinGuilgee?.suuliinZaalt)
-              umnukhZaalt = suuliinGuilgee.suuliinZaalt;
-            if (!!suuliinGuilgee?.guidliinKoep)
-              guidliinKoep = suuliinGuilgee.guidliinKoep;
             butsaakhJagsaalt.push({
               talbainId: x._id,
               talbainDugaar: x.kod,
