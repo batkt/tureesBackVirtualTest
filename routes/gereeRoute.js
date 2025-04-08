@@ -3825,10 +3825,10 @@ router
         if(!!lastAvlaga && lastAvlaga?._id)
         {
           console.log("avlaga -> " + JSON.stringify(lastAvlaga));
-          var avlagaMatch = { _id: lastAvlaga?._id, ognoo: { $lt: new Date(req.body.ognoo) }, tailbar: 'Цахилгаан', turul: 'avlaga', suuliinZaalt: { $gte: 0 } };
+          var avlagaMatch = { _id: lastAvlaga?._id };
           Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
-            { _id: geree?._id?.toString() },
+            { _id: geree?._id },
             {
               $pull: { "avlaga.guilgeenuud": avlagaMatch },
             }
@@ -3836,7 +3836,7 @@ router
           lastAvlaga.suuliinZaalt = 0;
           Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
-            { _id: geree?._id?.toString() },
+            { _id: geree?._id },
             {
               $push: { "avlaga.guilgeenuud": lastAvlaga },
             }
