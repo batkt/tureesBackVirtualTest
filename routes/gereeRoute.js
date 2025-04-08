@@ -4008,7 +4008,7 @@ async function sarBuriinKhungulultBodoy() {
               khungulukhSarBuriinTulburDuusakhUdur: baiguullaga?.tokhirgoo?.khungulukhSarBuriinTulburDuusakhUdur,
               tureesiinDungeesKhungulukhEsekh: baiguullaga?.tokhirgoo?.tureesiinDungeesKhungulukhEsekh,
               ashiglaltDungeesKhungulukhEsekh: baiguullaga?.tokhirgoo?.ashiglaltDungeesKhungulukhEsekh,
-              guilgeeKhiisenAjiltniiNer: "system",
+              guilgeeKhiisenAjiltniiNer: "систем",
               guilgeeKhiisenAjiltniiId: 1,
             };
             await Geree(kholbolt)

@@ -308,7 +308,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "40 * * * * ",
+  "19 * * * * ",
   function () {
     console.log("sarBuriinKhungulultBodoy ---", new Date());
     gereeRoute.sarBuriinKhungulultBodoy();
