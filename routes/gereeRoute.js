@@ -3815,8 +3815,11 @@ router
     {
       for await (const geree of gereenuud)
       {
-        var avlagaMatch = { ognoo: { $lt: new Date(req.body.ognoo) }, tailbar: 'Цахилгаан', turul: 'avlaga', suuliinZaalt: { $gte: 0 } };
-        var lastAvlaga = geree?.avlaga?.guilgeenuud.find(avlagaMatch).sort((a, b) => b.ognoo - a.ognoo)[0];
+        var lastAvlaga = geree?.avlaga?.guilgeenuud.filter((a) => a.ognoo < new Date(req.body.ognoo) && a.tailbar === 'Цахилгаан' && a.turul === 'avlaga' && a.suuliinZaalt >= 0);
+        if (!!lastAvlaga && lastAvlaga?.length > 0) {
+          lastAvlaga = lodash.orderBy(lastAvlaga, ["ognoo"], ["desc"]);
+          lastAvlaga = lastAvlaga[lastAvlaga.length - 1];
+        }
         if(!!lastAvlaga && lastAvlaga._id)
         {
           avlagaMatch["_id"] = lastAvlaga._id.toString();
