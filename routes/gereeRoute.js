@@ -3826,7 +3826,7 @@ router
         {
           console.log("avlaga -> " + JSON.stringify(lastAvlaga));
           var avlagaMatch = { _id: lastAvlaga?._id };
-          Geree(req.body.tukhainBaaziinKholbolt)
+          await Geree(req.body.tukhainBaaziinKholbolt)
           .findByIdAndUpdate(
             { _id: geree?._id },
             {
@@ -3834,7 +3834,7 @@ router
             }
           );
           lastAvlaga.suuliinZaalt = 0;
-          Geree(req.body.tukhainBaaziinKholbolt)
+          await Geree(req.body.tukhainBaaziinKholbolt)
           .findByIdAndUpdate(
             { _id: geree?._id },
             {
