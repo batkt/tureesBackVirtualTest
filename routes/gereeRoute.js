@@ -3521,10 +3521,14 @@ router
       const crypto = require('crypto');
       if(talbainuud != null && talbainuud.length > 0)
       {
-        var talbainDugaaruud = "";
+        var talbainDugaaruud = [];
+        var tooluuriinDugaaruud = "";
         var tatakhOgnoo = new Date(req.body.ognoo);
-        talbainuud.forEach((a) => talbainDugaaruud = talbainDugaaruud + a.tooluuriinDugaar + ",");
-        talbainDugaaruud = talbainDugaaruud.slice(0, -1);
+        talbainuud.forEach((a) => {
+          tooluuriinDugaaruud = tooluuriinDugaaruud + a.tooluuriinDugaar + ","
+          talbainDugaaruud.push(a.kod);
+        });
+        tooluuriinDugaaruud = tooluuriinDugaaruud.slice(0, -1);
         //talbainDugaaruud = "241008002701,241008002702,241008002703";
         var key1 = 'Ski452Doodjfqef'.padEnd(32, '\0'); 
         const iv = '1MMNT20240126ECM'; // 16 bytes
@@ -3555,7 +3559,7 @@ router
         let config = {
           method: 'get',
           maxBodyLength: Infinity,
-          url: "http://66.181.165.175:56033/service.ashx?name=energy&apikey="+ xariu + "&numbers=" + talbainDugaaruud + "&date=" +dateFormatted + "&token=oivcf4e0h4u03Mao8w8Db80mDG44u1OAKgEgwl8SLYXKkIwmjp",
+          url: "http://66.181.165.175:56033/service.ashx?name=energy&apikey="+ xariu + "&numbers=" + tooluuriinDugaaruud + "&date=" +dateFormatted + "&token=oivcf4e0h4u03Mao8w8Db80mDG44u1OAKgEgwl8SLYXKkIwmjp",
           headers: { }
         };
     
@@ -3565,15 +3569,41 @@ router
           throw new Error(error.message)
         });
         butsaakhJagsaalt = [];
+        var niitGereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+          .find({
+            talbainDugaar: { $in: talbainDugaaruud },
+            tuluv: 1,
+          })
+          .select("+avlaga");
         talbainuud.forEach((x) => {
           var tukhainMur = khariu.data.find((a)=> a.meter_id == x.tooluuriinDugaar);
           if(!!tukhainMur)
-          butsaakhJagsaalt.push({
-            talbainId: x._id,
-            talbainDugaar: x.kod,
-            tooluuriinDugaar: x.tooluuriinDugaar,
-            suuliinZaalt: tukhainMur.tariffs
-          });
+          {
+            var umnukhZaalt = 0;
+            var guidliinKoep = 1;
+            var geree = niitGereenuud.find((a)=> a.talbainDugaar == x.kod);
+            var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
+              return (
+                x.tailbar == "Цахилгаан"
+              );
+            });
+            if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
+              suuliinGuilgee = lodash.orderBy(suuliinGuilgee, ["ognoo"], ["asc"]);
+              suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
+            }
+            if (!!suuliinGuilgee?.suuliinZaalt) {
+              umnukhZaalt = suuliinGuilgee.suuliinZaalt;
+              guidliinKoep = suuliinGuilgee.guidliinKoep;
+            }
+            butsaakhJagsaalt.push({
+              talbainId: x._id,
+              talbainDugaar: x.kod,
+              tooluuriinDugaar: x.tooluuriinDugaar,
+              suuliinZaalt: tukhainMur.tariffs,
+              guidliinKoep,
+              umnukhZaalt
+            });
+          }
         })
         res.send(butsaakhJagsaalt);
       }
