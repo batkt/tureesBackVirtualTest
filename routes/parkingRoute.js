@@ -2497,4 +2497,39 @@ router.post("/ebarimtAvsanDunOruulakh", tokenShalgakh, async (req, res, next) =>
   }
 });
 
+router.post("/davkharBarimtZasakh", tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      mashiniiDugaar: { $exists: true },
+      "tuukh.tulbur": { $size: req.body.count }, 
+      "tuukh.tulbur.turul": req.body.turul
+    }
+    if(!!req.body.mashiniiDugaar)
+      match["mashiniiDugaar"] = req.body.mashiniiDugaar;
+    var uilchluulegchuud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).find(match);
+    if(uilchluulegchuud?.length > 0)
+    {
+      for await (const data of uilchluulegchuud)        
+      {
+        var filteredData = data.tuukh?.tulbur?.filter((a) => a.turul === req.body.turul);    
+        if(filteredData?.length === req.body.count)
+        {
+          await Uilchluulegch(req.body.tukhainBaaziinKholbolt).updateOne(
+            { _id: data._id },
+            {
+              "tuukh.0.tulbur": [filteredData[0]],
+            }
+          );  
+        }
+      }
+    }
+    res.send("Амжилттай");
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
