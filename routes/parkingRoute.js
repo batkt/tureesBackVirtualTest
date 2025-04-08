@@ -1648,6 +1648,8 @@ router.route("/v1/pay").post(async (req, res, next) => {
           else set["tuukh.$[t].tuluv"] = 1;
         }
       }
+      if ( !!tukhainObject.tuukh[0].tsagiinTuukh?.[0].garsanTsag && tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag > new Date(Date.now() - 60000))//60 * 1000
+      req.body.manually_open = true;
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
         tukhainObject._id,
         {
