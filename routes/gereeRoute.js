@@ -3591,10 +3591,10 @@ router
               suuliinGuilgee = lodash.orderBy(suuliinGuilgee, ["ognoo"], ["asc"]);
               suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
             }
-            if (!!suuliinGuilgee?.suuliinZaalt) {
+            if (!!suuliinGuilgee?.suuliinZaalt)
               umnukhZaalt = suuliinGuilgee.suuliinZaalt;
-              guidliinKoep = suuliinGuilgee.guidliinKoep;
-            }
+              if (!!suuliinGuilgee?.guidliinKoep)
+            guidliinKoep = suuliinGuilgee.guidliinKoep;
             butsaakhJagsaalt.push({
               talbainId: x._id,
               talbainDugaar: x.kod,
