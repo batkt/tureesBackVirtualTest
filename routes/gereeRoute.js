@@ -3593,8 +3593,8 @@ router
             }
             if (!!suuliinGuilgee?.suuliinZaalt)
               umnukhZaalt = suuliinGuilgee.suuliinZaalt;
-              if (!!suuliinGuilgee?.guidliinKoep)
-            guidliinKoep = suuliinGuilgee.guidliinKoep;
+            if (!!suuliinGuilgee?.guidliinKoep)
+              guidliinKoep = suuliinGuilgee.guidliinKoep;
             butsaakhJagsaalt.push({
               talbainId: x._id,
               talbainDugaar: x.kod,
