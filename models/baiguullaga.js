@@ -91,6 +91,10 @@ const baiguullagaSchema = new Schema(
       khungulukhSarBuriinShalguurDun: Number,
       khungulukhSarBuriinTurul: String,
       khungulukhSarBuriinUtga: Number,
+      khungulukhSarBuriinTulburEkhlekhUdur: Number,
+      khungulukhSarBuriinTulburDuusakhUdur: Number,
+      tureesiinDungeesKhungulukhEsekh: Boolean,
+      ashiglaltDungeesKhungulukhEsekh: Boolean,
 
       /**Тухайн байгууллагын хөнгөлж болох дээд хувь байна */
       deedKhungulultiinKhuvi: Number,
