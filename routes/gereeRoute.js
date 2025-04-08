@@ -3813,7 +3813,7 @@ router
       for await (const geree of gereenuud)
       {
         var avlagaMatch = { ognoo: { $lt: new Date(req.body.ognoo) }, tailbar: 'Цахилгаан', turul: 'avlaga', suuliinZaalt: { $gte: 0 } };
-        var lastAvlaga = geree?.avlaga?.guilgeenuud.find(avlagaMatch).sort({guilgeeKhiisenOgnoo: -1}).limit(1);
+        var lastAvlaga = geree?.avlaga?.guilgeenuud.find(avlagaMatch).sort((a, b) => b.ognoo - a.ognoo)[0];
         if(!!lastAvlaga && lastAvlaga._id)
         {
           avlagaMatch["_id"] = lastAvlaga._id.toString();
