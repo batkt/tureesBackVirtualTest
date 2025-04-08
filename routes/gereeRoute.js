@@ -3815,11 +3815,13 @@ router
     {
       for await (const geree of gereenuud)
       {
+        console.log("geree -> " + JSON.stringify(geree));
         var lastAvlaga = geree?.avlaga?.guilgeenuud.filter((a) => a.ognoo < new Date(req.body.ognoo) && a.tailbar === 'Цахилгаан' && a.turul === 'avlaga' && a.suuliinZaalt >= 0);
         if (!!lastAvlaga && lastAvlaga?.length > 0) {
           lastAvlaga = lodash.orderBy(lastAvlaga, ["ognoo"], ["desc"]);
           lastAvlaga = lastAvlaga[lastAvlaga.length - 1];
         }
+        console.log("lastAvlaga ------ -> " + JSON.stringify(lastAvlaga));
         if(!!lastAvlaga && lastAvlaga?._id)
         {
           console.log("avlaga -> " + JSON.stringify(lastAvlaga));
