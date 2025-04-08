@@ -2514,7 +2514,7 @@ router.post("/davkharBarimtZasakh", tokenShalgakh, async (req, res, next) => {
     {
       for await (const data of uilchluulegchuud)        
       {
-        var filteredData = data.tuukh?.tulbur?.filter((a) => a.turul === req.body.turul);    
+        var filteredData = data.tuukh[0]?.tulbur?.filter((a) => a.turul === req.body.turul);    
         if(filteredData?.length === req.body.count)
         {
           await Uilchluulegch(req.body.tukhainBaaziinKholbolt).updateOne(
