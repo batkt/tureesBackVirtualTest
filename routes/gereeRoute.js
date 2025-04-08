@@ -3820,9 +3820,10 @@ router
           lastAvlaga = lodash.orderBy(lastAvlaga, ["ognoo"], ["desc"]);
           lastAvlaga = lastAvlaga[lastAvlaga.length - 1];
         }
-        if(!!lastAvlaga && lastAvlaga._id)
+        if(!!lastAvlaga && lastAvlaga?._id)
         {
-          avlagaMatch["_id"] = lastAvlaga._id.toString();
+          console.log("avlaga -> " + JSON.stringify(lastAvlaga));
+          var avlagaMatch = { _id: lastAvlaga?._id.toString(), ognoo: { $lt: new Date(req.body.ognoo) }, tailbar: 'Цахилгаан', turul: 'avlaga', suuliinZaalt: { $gte: 0 } };
           Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
             { _id: geree?._id?.toString() },
