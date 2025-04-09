@@ -4017,8 +4017,22 @@ async function sarBuriinKhungulultBodoy() {
             niitDun += avlagaDun;
             tulsunDun -= avlagaDun;  
           }
-          var filteredData = geree?.avlaga?.guilgeenuud.filter((a) => moment(a.ognoo).format("YYYY-MM-DD 23:59:59") === duusakhOgnoo && a.turul === "khungulult" && a.tailbar === "системээс автомат хөнгөлөлт" && a.sarBurAutoKhungulultOruulakhEsekh);
-          if(filteredData?.length === 0 && tulsunDun >= 0 && filteredTulsunDun?.length > 0)
+          var filteredData = geree?.avlaga?.guilgeenuud.filter((a) => moment(b.ognoo).format("YYYY-MM") === moment().format("YYYY-MM") && a.turul === "khungulult" && a.tailbar === "системээс автомат хөнгөлөлт" && a.sarBurAutoKhungulultOruulakhEsekh);
+          if(filteredData?.length > 0)
+          {
+            for await (const avlagaData of filteredData)
+            {
+              await Geree(kholbolt)
+                .findByIdAndUpdate(
+                  { _id: geree?._id.toString() },
+                  {
+                    $pull: {
+                      [`avlaga.guilgeenuud`]: { _id: avlagaData?._id.toString() },
+                    },
+                  });  
+            }
+          }
+          if(tulsunDun >= 0 && filteredTulsunDun?.length > 0)
           {
             console.log("-f-->>" + JSON.stringify(geree?.gereeniiDugaar));
             var khungulultiinDun = 0;
