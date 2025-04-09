@@ -13,7 +13,7 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt)
-      .findOne({ utas: req.body.utas })
+      .findOne({ utas: req.body.utas, idevkhiteiEsekh: true })
       .select("+nuutsUg")
       .catch((err) => {
         next(err);
