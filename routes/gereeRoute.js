@@ -3895,7 +3895,7 @@ async function sarBuriinKhungulultBodoy() {
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
-      "tokhirgoo.sarBurAutoKhungulultOruulakhEsekh": true,
+      "barilguud.tokhirgoo.sarBurAutoKhungulultOruulakhEsekh": true,
     });
     for await (const baiguullaga of baiguullaguud) {
       var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
