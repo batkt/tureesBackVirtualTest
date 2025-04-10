@@ -50,7 +50,16 @@ const baiguullagaSchema = new Schema(
           districtCode: String,
           nuatTulukhEsekh: Boolean,
           zogsoolMsgIlgeekh: Boolean,
-          tooluurAutomatTatakhToken : String
+          tooluurAutomatTatakhToken : String,
+          /**Сар бүрийн тогтмол өдөр хөнгөлөлт боломж олгоно */
+          sarBurAutoKhungulultOruulakhEsekh: Boolean,
+          khungulukhSarBuriinShalguurDun: Number,
+          khungulukhSarBuriinTurul: String,
+          khungulukhSarBuriinUtga: Number,
+          khungulukhSarBuriinTulburEkhlekhUdur: Number,
+          khungulukhSarBuriinTulburDuusakhUdur: Number,
+          tureesiinDungeesKhungulukhEsekh: Boolean,
+          ashiglaltDungeesKhungulukhEsekh: Boolean,
         },
         davkharuud: [
           {
@@ -85,16 +94,6 @@ const baiguullagaSchema = new Schema(
 
       /**Хоногоор хөнгөлөлт боломж олгоно */
       khonogKhungulultOruulakhEsekh: Boolean,
-
-      /**Сар бүрийн тогтмол өдөр хөнгөлөлт боломж олгоно */
-      sarBurAutoKhungulultOruulakhEsekh: Boolean,
-      khungulukhSarBuriinShalguurDun: Number,
-      khungulukhSarBuriinTurul: String,
-      khungulukhSarBuriinUtga: Number,
-      khungulukhSarBuriinTulburEkhlekhUdur: Number,
-      khungulukhSarBuriinTulburDuusakhUdur: Number,
-      tureesiinDungeesKhungulukhEsekh: Boolean,
-      ashiglaltDungeesKhungulukhEsekh: Boolean,
 
       /**Тухайн байгууллагын хөнгөлж болох дээд хувь байна */
       deedKhungulultiinKhuvi: Number,
