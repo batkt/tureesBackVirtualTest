@@ -3979,11 +3979,11 @@ async function sarBuriinKhungulultBodoy() {
             },
           },
           {
-            $match: { "uldegdel": { $lte: (barilga?.khungulukhSarBuriinShalguurDun || 0) } }
+            $match: { "uldegdel": { $lte: (barilga?.tokhirgoo?.khungulukhSarBuriinShalguurDun || 0) } }
           }
         ];
-        var ekhlekhOgnoo = moment().set("date", (barilga?.khungulukhSarBuriinTulburEkhlekhUdur || 1)).format("YYYY-MM-DD 00:00:00");
-        var duusakhOgnoo = moment().set("date", (barilga?.khungulukhSarBuriinTulburDuusakhUdur || 1)).format("YYYY-MM-DD 23:59:59");
+        var ekhlekhOgnoo = moment().set("date", (barilga?.tokhirgoo?.khungulukhSarBuriinTulburEkhlekhUdur || 1)).format("YYYY-MM-DD 00:00:00");
+        var duusakhOgnoo = moment().set("date", (barilga?.tokhirgoo?.khungulukhSarBuriinTulburDuusakhUdur || 1)).format("YYYY-MM-DD 23:59:59");
         var khariu = await Geree(kholbolt).aggregate(query);
         mainMatch["gereeniiOgnoo"] = { 
           $gte: moment().startOf("month"),
@@ -4006,14 +4006,14 @@ async function sarBuriinKhungulultBodoy() {
             var tulsunDun = filteredTulsunDun?.length > 0 ? filteredTulsunDun?.reduce((a, b) => a + b?.tulsunDun, 0) : 0;
             var ognoo = moment().set("date", geree?.tulukhUdur[0]).format("YYYY-MM-DD 00:00:00");
             var niitDun = 0;
-            if(barilga?.tureesiinDungeesKhungulukhEsekh)
+            if(barilga?.tokhirgoo?.tureesiinDungeesKhungulukhEsekh)
             {
               var filteredTurees = geree?.avlaga?.guilgeenuud.filter((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "khuvaari" && b.tulukhDun > 0);
               var tureesDun = filteredTurees?.length > 0 ? filteredTurees?.reduce((a, b) => a + b?.tulukhDun, 0) : 0;
               niitDun += tureesDun;
               tulsunDun -= tureesDun;
             }
-            if(barilga?.ashiglaltDungeesKhungulukhEsekh)
+            if(barilga?.tokhirgoo?.ashiglaltDungeesKhungulukhEsekh)
             {
               var filteredAvlaga = geree?.avlaga?.guilgeenuud.filter((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "avlaga" && b.tulukhDun > 0);
               var avlagaDun = filteredAvlaga?.length > 0 ? filteredAvlaga?.reduce((a, b) => a + b?.tulukhDun, 0) : 0;
@@ -4035,14 +4035,14 @@ async function sarBuriinKhungulultBodoy() {
                     });  
               }
             }
-            if(barilga?.sarBurAutoKhungulultOruulakhEsekh && tulsunDun >= 0 && filteredTulsunDun?.length > 0)
+            if(barilga?.tokhirgoo?.sarBurAutoKhungulultOruulakhEsekh && tulsunDun >= 0 && filteredTulsunDun?.length > 0)
             {
               console.log("-f-->>" + JSON.stringify(geree?.gereeniiDugaar));
               var khungulultiinDun = 0;
-              if (barilga?.khungulukhSarBuriinTurul === "khuvi") {
-                khungulultiinDun = (niitDun * barilga?.khungulukhSarBuriinUtga) / 100;
+              if (barilga?.tokhirgoo?.khungulukhSarBuriinTurul === "khuvi") {
+                khungulultiinDun = (niitDun * barilga?.tokhirgoo?.khungulukhSarBuriinUtga) / 100;
               } else {
-                khungulultiinDun = barilga?.khungulukhSarBuriinUtga;
+                khungulultiinDun = barilga?.tokhirgoo?.khungulukhSarBuriinUtga;
               }
               var khyamdral = {
                 tulukhDun: 0,
@@ -4053,14 +4053,14 @@ async function sarBuriinKhungulultBodoy() {
                 tailbar: "системээс автомат хөнгөлөлт",
                 khyamdraliinId: geree?._id,
                 guilgeeKhiisenOgnoo: new Date(),
-                sarBurAutoKhungulultOruulakhEsekh: barilga?.sarBurAutoKhungulultOruulakhEsekh,
-                khungulukhSarBuriinShalguurDun: barilga?.khungulukhSarBuriinShalguurDun,
-                khungulukhSarBuriinTurul: barilga?.khungulukhSarBuriinTurul,
-                khungulukhSarBuriinUtga: barilga?.khungulukhSarBuriinUtga,
-                khungulukhSarBuriinTulburEkhlekhUdur: barilga?.khungulukhSarBuriinTulburEkhlekhUdur,
-                khungulukhSarBuriinTulburDuusakhUdur: barilga?.khungulukhSarBuriinTulburDuusakhUdur,
-                tureesiinDungeesKhungulukhEsekh: barilga?.tureesiinDungeesKhungulukhEsekh,
-                ashiglaltDungeesKhungulukhEsekh: barilga?.ashiglaltDungeesKhungulukhEsekh,
+                sarBurAutoKhungulultOruulakhEsekh: barilga?.tokhirgoo?.sarBurAutoKhungulultOruulakhEsekh,
+                khungulukhSarBuriinShalguurDun: barilga?.tokhirgoo?.khungulukhSarBuriinShalguurDun,
+                khungulukhSarBuriinTurul: barilga?.tokhirgoo?.khungulukhSarBuriinTurul,
+                khungulukhSarBuriinUtga: barilga?.tokhirgoo?.khungulukhSarBuriinUtga,
+                khungulukhSarBuriinTulburEkhlekhUdur: barilga?.tokhirgoo?.khungulukhSarBuriinTulburEkhlekhUdur,
+                khungulukhSarBuriinTulburDuusakhUdur: barilga?.tokhirgoo?.khungulukhSarBuriinTulburDuusakhUdur,
+                tureesiinDungeesKhungulukhEsekh: barilga?.tokhirgoo?.tureesiinDungeesKhungulukhEsekh,
+                ashiglaltDungeesKhungulukhEsekh: barilga?.tokhirgoo?.ashiglaltDungeesKhungulukhEsekh,
                 guilgeeKhiisenAjiltniiNer: "систем",
                 guilgeeKhiisenAjiltniiId: 1,
               };
