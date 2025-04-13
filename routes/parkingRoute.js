@@ -5,6 +5,7 @@ const {
   Parking,
   Mashin,
   Uilchluulegch,
+  ZurchilteiMashin,
   ZogsooliinTulbur,
   uilchluulegchdiinToo,
   zogsoolTusBurUilchluulegchdiinToo,
@@ -30,11 +31,13 @@ const lodash = require("lodash");
 const moment = require("moment");
 const Baiguullaga = require("../models/baiguullaga");
 const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
-
+const { msgIlgeeye } = require("../controller/khariltsagch");
+const MsgTuukh = require("../models/msgTuukh");
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
     console.log('parking --- ', req.body);
 });*/
 crud(router, "parking", Parking, UstsanBarimt);
+crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
 crud(router, "mashin", Mashin, UstsanBarimt);
 crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
 /*
@@ -638,6 +641,31 @@ router.post(
           },
         },
       ]);
+      var matchVal = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: !!req.body.barilgiinId ? req.body.barilgiinId : { $exists: true },
+        tuluv: 0,
+        // createdAt: {
+        //   $lte: new Date(moment(req.body.duusakhOgnoo).format("YYYY-MM-DD 23:59:59")),
+        // },
+      }
+      var query = [
+        {
+          $match: matchVal,
+        },
+        {
+          $group:{
+            _id: "Авлага",
+            niitDun: {
+              $sum: "$niitDun",
+            },
+            niitToo: {
+              $sum: 1,
+            }
+          },
+        }
+      ]
+      var zurchilteTailan = await ZurchilteiMashin(req.body.tukhainBaaziinKholbolt).aggregate(query);
       if (
         !!udriinTailan &&
         udriinTailan.length > 0 &&
@@ -646,6 +674,7 @@ router.post(
         if (!!zurchiltei && zurchiltei.length > 0)
           udriinTailan.push(zurchiltei[0]);
         if (!!unegui && unegui.length > 0) udriinTailan.push(unegui[0]);
+        if(zurchilteTailan?.length > 0) udriinTailan.push(zurchilteTailan[0]);
       }
       res.status(200).send(udriinTailan);
     } catch (error) {
@@ -2533,5 +2562,207 @@ router.post("/davkharBarimtZasakh", tokenShalgakh, async (req, res, next) => {
     next(err);
   }
 });
+
+router.post("/niitZurchilteiMashinOlokh", tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var query = { 
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      gadnaZogsooliinId: { $exists: false },
+      zurchulMsgeerSanuulakh: true
+    }
+    var zogsool = await Parking(req.body.tukhainBaaziinKholbolt).findOne(query);
+    if(zogsool?.zurchulMsgeerSanuulakh)
+    {
+      const zurchilteiUilchluulegch = await (Uilchluulegch)(req.body.tukhainBaaziinKholbolt).find({
+        baiguullagiinId: zogsool?.baiguullagiinId,
+        barilgiinId: zogsool.barilgiinId,
+        'tuukh.zogsooliinId': zogsool?._id.toString(),
+        "tuukh.tulbur": [],
+        "tuukh.tsagiinTuukh.garsanTsag": { $exists: true },
+        "tuukh.garsanKhaalga": { $exists : true },
+        niitDun: { $gt: (zogsool?.tulburiinLimitDun || 0) },
+      });
+      if(zurchilteiUilchluulegch?.length > 0)
+      {
+        for await (const zurchil of zurchilteiUilchluulegch)  
+        {
+          const zurchilteiData = await (ZurchilteiMashin)(req.body.tukhainBaaziinKholbolt).findOne({
+            baiguullagiinId: zurchil?.baiguullagiinId,
+            barilgiinId: zurchil?.barilgiinId,
+            uilchluulegchiinId: zurchil?._id.toString(),
+            zogsooliinId: zurchil?.tuukh[0]?.zogsooliinId,
+            mashiniiDugaar: zurchil?.mashiniiDugaar,
+          });
+          if(!zurchilteiData)
+          {
+            const zurchilModel = new (ZurchilteiMashin)(req.body.tukhainBaaziinKholbolt)();
+            zurchilModel.baiguullagiinId = zurchil?.baiguullagiinId;
+            zurchilModel.barilgiinId = zurchil?.barilgiinId;
+            zurchilModel.uilchluulegchiinId = zurchil?._id.toString();
+            zurchilModel.mashiniiDugaar = zurchil?.mashiniiDugaar;
+            zurchilModel.zogsooliinId = zurchil?.tuukh[0]?.zogsooliinId;
+            zurchilModel.niitKhugatsaa = zurchil?.niitKhugatsaa;
+            zurchilModel.orsonKhaalga = zurchil?.tuukh[0].orsonKhaalga;
+            zurchilModel.garsanKhaalga = zurchil?.tuukh[0].garsanKhaalga;
+            zurchilModel.orsonTsag = zurchil?.tuukh[0].tsagiinTuukh[0].orsonTsag;
+            zurchilModel.garsanTsag = zurchil?.tuukh[0].tsagiinTuukh[0].garsanTsag;
+            zurchilModel.niitDun = zurchil?.niitDun;
+            zurchilModel.turul = zurchil?.turul;
+            zurchilModel.tuluv = 0;
+            zurchilModel.save();
+          }
+        }
+      }
+    }
+    return res.send("Amjilttai");
+  } catch (err) {
+    next(err);
+  }
+})
+
+router.post("/zurchilteiMashinMsgilgeekh", tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var query = { 
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      gadnaZogsooliinId: { $exists: false },
+      zurchulMsgeerSanuulakh: true
+    }
+    var zogsool = await Parking(req.body.tukhainBaaziinKholbolt).findOne(query);
+    var msgnuud = [];
+    console.log("zz ---- >>" + JSON.stringify(req.body.mashiniiDugaar));
+    if(!!zogsool && zogsool?.zurchilMsgilgeekhDugaar?.length > 0)
+    {
+      var match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        zogsooliinId: zogsool?._id?.toString(),
+        mashiniiDugaar: req.body.mashiniiDugaar,
+        tuluv: { $ne: 1 },
+      }
+      var query = [
+        {
+          $match: match,
+        },
+        {
+          $group:{
+            _id: "$mashiniiDugaar",
+            dun: {
+              $sum: "$niitDun",
+            },
+          },
+        }
+      ]
+      var zurchiluud = await ZurchilteiMashin(req.body.tukhainBaaziinKholbolt).aggregate(query);
+      console.log("zurchiluud ---->" + JSON.stringify(zurchiluud));
+      if(zurchiluud?.length > 0)
+      {
+        for await (const dugaar of zogsool?.zurchilMsgilgeekhDugaar)
+        {
+          var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
+          msg.baiguullagiinId = req.body.baiguullagiinId;
+          msg.barilgiinId = req.body.barilgiinId;
+          msg.mashiniiDugaar = zurchiluud[0]._id;
+          msg.dugaar = dugaar;
+          msg.turul = "zurchil";
+          msg.msg = (formatNumber(zurchiluud[0].dun)) +  "₮ tulburiin zurchiltei " + (zurchiluud[0]._id || "") + " gesen dugaartai mashin zogsoold newterlee";
+          msg.save();
+          msgnuud.push({ to: dugaar, text: msg.msg });
+        }
+      }
+      if (msgnuud?.length > 0) {
+        var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
+        var msgIlgeekhDugaar = "72002002";
+        msgIlgeeye(
+          msgnuud,
+          msgIlgeekhKey,
+          msgIlgeekhDugaar,
+          [],
+          0,
+          req.body.tukhainBaaziinKholbolt,
+          req.body.baiguullagiinId
+        );
+      }
+    }
+    return res.send(msgnuud);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/zurchiluudTulsunBolgoy", tokenShalgakh, async (req, res, next) => {
+    try 
+    {
+      await ZurchilteiMashin(req.body.tukhainBaaziinKholbolt).updateMany(
+        { _id: { $in: req.body.utguud }, },
+        {
+          $set: {
+            tuluv: 1,
+            tailbar: req.body.shaltgaan,
+          },
+        },
+      );
+      res.send("Amjilttai");
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+function formatNumber(num, fixed = 2) {
+  if (num === undefined || num === null || num === "")
+    return formatNumber("0.00", fixed);
+  var fixedNum = parseFloat(num).toFixed(fixed).toString();
+  var numSplit = fixedNum.split(".");
+  if (numSplit === null || numSplit.length === 0) {
+    return formatNumber("0.00", fixed);
+  }
+  var firstFormatNum = numSplit[0]
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  if (lodash.isNaN(firstFormatNum)) firstFormatNum = "0";
+  if (fixed === 0) return firstFormatNum;
+  return firstFormatNum + "." + numSplit[1];
+}
+
+router.post("/zogsooliinTuluuguiMashiniiTailanAvya", tokenShalgakh, async (req, res, next) => {
+    try
+    {
+      var match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: !!req.body.barilgiinId ? req.body.barilgiinId : { $exists: true },
+        mashiniiDugaar: !!req.body.searchUtga ? { $regex: req.body.searchUtga, $options: "i" } : { $exists: true },
+        tuluv: 0,
+        createdAt: {
+          $lte: new Date(moment(req.body.ognoo).format("YYYY-MM-DD 23:59:59")),
+        },
+      }
+      var query = [
+        {
+          $match: match,
+        },
+        {
+          $group:{
+            _id: "$mashiniiDugaar",
+            dun: {
+              $sum: "$niitDun",
+            },
+            too: {
+              $sum: 1,
+            }
+          },
+        }
+      ]
+      var tailan = await ZurchilteiMashin(req.body.tukhainBaaziinKholbolt).aggregate(query);
+      res.send(tailan);
+    } 
+    catch (err) {
+      next(err);
+    } 
+  }
+);
 
 module.exports = router;

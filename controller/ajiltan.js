@@ -14,7 +14,7 @@ const axios = require("axios");
 const fs = require("fs");
 const moment = require("moment");
 const useragent = require("express-useragent");
-const { Uilchluulegch } = require("parking-v1");
+const { Uilchluulegch, ZurchilteiMashin } = require("parking-v1");
 const http = require("http");
 const lodash = require("lodash");
 const { formatNumber } = require("zevbackv2");
@@ -841,14 +841,35 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
               },
             },
           ]);
-
+          var zurchiluud = [];
+          if(baiguullaga.tokhirgoo.zurchulMsgeerSanuulakh)
+          {
+            zurchiluud = await ZurchilteiMashin(kholbolt).aggregate([
+              {
+                $match: {
+                  baiguullagiinId: baiguullaga._id.toString(),
+                  tuluv: { $ne: 1 },
+                },
+              },
+              {
+                $group:{
+                  _id: "niit",
+                  niitDun: {
+                    $sum: "$niitDun",
+                  },
+                },
+              }
+            ]);  
+          }
           console.log("togloom", togloom);
           console.log("zogsool", zogsool);
           console.log("turees", turees);
+          console.log("zurchil", zurchiluud);
           if (
             (togloom && togloom.length > 0) ||
             (zogsool && zogsool.length > 0) ||
-            (turees && turees.length > 0)
+            (turees && turees.length > 0) ||
+            (zurchiluud && zurchiluud.length > 0)
           ) {
             text =
               "Rently systemd " +
@@ -876,6 +897,8 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 "₮,";
             }
             text = text + " tus tus orlogo orson baina.";
+            if(baiguullaga?.tokhirgoo?.zurchulMsgeerSanuulakh && zurchiluud?.length > 0)
+              text = text + " Zurchiltei- " + (await formatNumber(zurchiluud[0].niitDun)) + "₮ avlaga uussen baina. ";
             if (zogsool && zogsool.length > 0 && zogsool[0].niitDun > 0) {
               const shineSession = new session(db.erunkhiiKholbolt)();
               const gishuun = new Ajiltan(kholbolt)();

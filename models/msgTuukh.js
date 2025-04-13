@@ -8,6 +8,7 @@ const msgTuukhSchema = new Schema(
     barilgiinId: String,
     gereeniiId: String,
     mashiniiDugaar: String,
+    turul: String,
     dugaar: [String],
     msg: String,
   },
