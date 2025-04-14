@@ -2675,7 +2675,7 @@ router.post("/zurchilteiMashinMsgilgeekh", tokenShalgakh, async (req, res, next)
       }
       if (msgnuud?.length > 0) {
         var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
-        var msgIlgeekhDugaar = "72002002";
+        var msgIlgeekhDugaar = "72002032";
         msgIlgeeye(
           msgnuud,
           msgIlgeekhKey,
