@@ -2668,7 +2668,7 @@ router.post("/zurchilteiMashinMsgilgeekh", tokenShalgakh, async (req, res, next)
           msg.mashiniiDugaar = zurchiluud[0]._id;
           msg.dugaar = dugaar;
           msg.turul = "zurchil";
-          msg.msg = (formatNumber(zurchiluud[0].dun)) +  "₮ tulburiin zurchiltei " + (zurchiluud[0]._id || "") + " gesen dugaartai mashin zogsoold newterlee";
+          msg.msg = (formatNumber(zurchiluud[0].dun, 0)) +  " zurchiltei " + (zurchiluud[0]._id || "") + " gesen dugaartai mashin zogsoold newterlee";
           msg.save();
           msgnuud.push({ to: dugaar, text: msg.msg });
         }
