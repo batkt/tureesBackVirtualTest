@@ -3853,6 +3853,7 @@ router
   {
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
       "avlaga.baritsaa": [],
     }
     if(!!req.body.gereeniiDugaar)
@@ -3869,8 +3870,8 @@ router
           zarlaga: 0,
           tailbar: '',
           guilgeeKhiisenOgnoo: new Date(),
-          guilgeeKhiisenAjiltniiNer: 'Нягтлан',
-          guilgeeKhiisenAjiltniiId: '679aea9032299b7ba8462a7a'
+          guilgeeKhiisenAjiltniiNer: 'Булган',
+          guilgeeKhiisenAjiltniiId: '64e855ce37fdc9b105f936e2'
         }
         await Geree(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(
