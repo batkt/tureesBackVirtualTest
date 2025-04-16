@@ -1086,7 +1086,7 @@ router
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
     };
     console.log(tuukh);
-    var avlagaMatch = req.body.udruurBodokhEsekh ? { ognoo: { $gte: new Date(moment(req.body.tsutslakhOgnoo).startOf("month")) } } : { ognoo: { $gt: new Date() } };
+    var avlagaMatch = req.body.udruurBodokhEsekh ? { ognoo: { $gte: new Date(moment(req.body.tsutslakhOgnoo).startOf("month")) }, tulsunDun: { $exists : false } } : { ognoo: { $gt: new Date() } };
     if (geree.gereeniiTuukhuud) {
       Geree(req.body.tukhainBaaziinKholbolt)
         .findOneAndUpdate(
