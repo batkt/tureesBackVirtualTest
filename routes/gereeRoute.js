@@ -2837,7 +2837,7 @@ router
             $gt: 0,
           },
           turul: {
-            $nin: ["baritsaa", "aldangi"],
+            $nin: ["baritsaa", "aldangi", "zalruulga"],
           },
         },
       };
