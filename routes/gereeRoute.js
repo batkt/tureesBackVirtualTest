@@ -2709,7 +2709,7 @@ async function turluurDunBugluy(
       matchQuery["avlaga.guilgeenuud.turul"] = "voucher";
     } else
       matchQuery["avlaga.guilgeenuud.turul"] = {
-        $ne: "baritsaa",
+        $nin: ["baritsaa", "aldangi", "zalruulga"],
       };
 
     if (turul == "khungulult") {
