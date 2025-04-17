@@ -506,9 +506,27 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
       {
         $match: {
-          "avlaga.guilgeenuud.turul": {
-            $nin: ["baritsaa", "aldangi"],
-          },
+          $or: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $nin: ["aldangi", "baritsaa"],
+              }
+            },
+            {
+              $and: [
+                {
+                  "avlaga.guilgeenuud.turul": {
+                    $in: ["baritsaa"],
+                  }
+                },
+                {
+                  "avlaga.guilgeenuud.tulsunDun": {
+                    $gt: 0,
+                  }
+                }
+              ]
+            }
+          ],
           "avlaga.guilgeenuud.ognoo": {
             $lte: duusakhOgnoo,
           },
