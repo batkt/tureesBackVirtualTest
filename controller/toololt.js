@@ -157,9 +157,27 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       "avlaga.guilgeenuud.ognoo": {
         $lte: new Date(moment(req.body.duusakhOgnoo).endOf("month").format("YYYY-MM-DD 23:59:59")),
       },
-      "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa", "aldangi"],
-      },
+      $or: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["aldangi", "baritsaa"],
+          }
+        },
+        {
+          $and: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $in: ["baritsaa"],
+              }
+            },
+            {
+              "avlaga.guilgeenuud.tulsunDun": {
+                $gt: 0,
+              }
+            }
+          ]
+        }
+      ],
       baiguullagiinId: req.body.baiguullagiinId,
       tuluv: {
         $ne: -1,
@@ -291,9 +309,27 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       daraagiinTulukhOgnoo: {
         $lte: duusakhOgnoo,
       },
-      "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa", "aldangi"],
-      },
+      $or: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["aldangi", "baritsaa"],
+          }
+        },
+        {
+          $and: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $in: ["baritsaa"],
+              }
+            },
+            {
+              "avlaga.guilgeenuud.tulsunDun": {
+                $gt: 0,
+              }
+            }
+          ]
+        }
+      ],
       baiguullagiinId: req.body.baiguullagiinId,
       tuluv: {
         $ne: -1,
@@ -361,9 +397,27 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $gte: new Date(req.body.ekhlekhOgnoo),
       },
       baiguullagiinId: req.body.baiguullagiinId,
-      "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa", "aldangi"],
-      },
+      $or: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["aldangi", "baritsaa"],
+          }
+        },
+        {
+          $and: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $in: ["baritsaa"],
+              }
+            },
+            {
+              "avlaga.guilgeenuud.tulsunDun": {
+                $gt: 0,
+              }
+            }
+          ]
+        }
+      ],
       tuluv: {
         $ne: -1,
       },
@@ -418,9 +472,27 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $ne: "System",
       },
       baiguullagiinId: req.body.baiguullagiinId,
-      "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa", "aldangi", "zalruulga"],
-      },
+      $or: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["aldangi", "baritsaa", "zalruulga"],
+          }
+        },
+        {
+          $and: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $in: ["baritsaa"],
+              }
+            },
+            {
+              "avlaga.guilgeenuud.tulsunDun": {
+                $gt: 0,
+              }
+            }
+          ]
+        }
+      ],
       tuluv: {
         $ne: -1,
       },
@@ -453,9 +525,27 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $gte: ekhlekhOgnoo,
         $lte: duusakhOgnoo,
       },
-      "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa",  "aldangi"],
-      },
+      $or: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["aldangi", "baritsaa"],
+          }
+        },
+        {
+          $and: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $in: ["baritsaa"],
+              }
+            },
+            {
+              "avlaga.guilgeenuud.tulsunDun": {
+                $gt: 0,
+              }
+            }
+          ]
+        }
+      ],
       baiguullagiinId: req.body.baiguullagiinId,
       tuluv: {
         $ne: -1,
