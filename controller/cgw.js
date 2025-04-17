@@ -49,6 +49,9 @@ async function tokenAvya(
     );
     url.username = username;
     url.password = password;
+    console.log("url ---------->>" + url);
+    console.log("username ---------->>" + username);
+    console.log("password ---------->>" + password);
     const response = await instance.post(url).catch((err) => {
       console.log("khanbank tokenAvya err " + err.message);
       throw err;
