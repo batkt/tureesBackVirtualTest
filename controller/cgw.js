@@ -1443,14 +1443,13 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   },
                 ];
                 var max = await BankniiGuilgee(kholbolt).aggregate(query);
-                var maxDugaar = 1;
-                if (max && max.length !== 0) maxDugaar = max[0].max;
-                var khariu = await dansniiKhuulgaAvya(token, null, {
+                var bodyKhuulga = {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
                   dansniiDugaar: dans.dugaar,
-                  record: maxDugaar === 1 ? null : maxDugaar,  
-                });
+                }
+                if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
+                var khariu = await dansniiKhuulgaAvya(token, null, bodyKhuulga);
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
                   khariu.transactions.forEach((mur) =>
