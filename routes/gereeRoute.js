@@ -3631,7 +3631,7 @@ router
     const jagsaalt = req.body.jagsaalt;
     var talbainDugaaruud = [];
     for await (const mur of jagsaalt) {
-        talbainDugaaruud.push(mur.talbainDugaar);
+        talbainDugaaruud.push(mur.talbainId);
     }
     var niitGereenuud = [];
     var oldooguiGeree = [];
@@ -3639,7 +3639,7 @@ router
     if (talbainDugaaruud.length > 0) {
       gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
         .find({
-          talbainDugaar: { $in: talbainDugaaruud },
+          talbainIdnuud: { $in: talbainDugaaruud },
           barilgiinId: req.body.barilgiinId,
           tuluv: 1,
         })
@@ -3647,7 +3647,7 @@ router
       if (!!gereenuud) {
         oldooguiGeree = [];
         talbainDugaaruud.forEach((a) => {
-          var oldsonGeree = gereenuud.find((b) => b.talbainDugaar === a);
+          var oldsonGeree = gereenuud.find((b) => b.talbainIdnuud.includes(a));
           if (!oldsonGeree) oldooguiGeree.push(a);
         });
         if (oldooguiGeree.length > 0) {
@@ -3686,7 +3686,7 @@ router
         var tukhainZardal;
           tukhainZardal = jagsaalt.find((x) => {
             return (
-              x.talbainDugaar === geree.talbainDugaar
+              geree.talbainIdnuud.includes(x.talbainId)
             );
           });
         var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
