@@ -3648,7 +3648,7 @@ router
         oldooguiGeree = [];
         talbainDugaaruud.forEach((a) => {
           var oldsonGeree = gereenuud.find((b) => b.talbainIdnuud.includes(a));
-          if (!oldsonGeree) oldooguiGeree.push(a);
+          if (!oldsonGeree) oldooguiGeree.push(jagsaalt.find((x) => x.talbainId == a).talbainDugaar);
         });
         if (oldooguiGeree.length > 0) {
           aldaaniiMsg =
