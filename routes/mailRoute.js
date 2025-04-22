@@ -251,6 +251,7 @@ function msgIlgeeyeUnitel(jagsaalt, key, dugaar, khariu, index, next, req, res) 
             } else {
               console.log("url", url);
               khariu.push(body[0]);
+              res.send(khariu);
             }
           }
         })
