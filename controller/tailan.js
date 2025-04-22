@@ -2070,7 +2070,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             niitTulukhDun += (b.tulukhDun || 0);
           b.index = indexTemp;
           indexTemp++;
-          if(b.turul === "avlaga" && (b.tailbar === "Менежментийн төлбөр" || b.tailbar === "Менежментийн зардал" || b.tailbar === "Менежмент"))
+          if(b.turul === "avlaga" && (b.tailbar?.includes("Менежментийн төлбөр") || b.tailbar === "Менежментийн зардал" || b.tailbar === "Менежмент"))
             b.talbainKhemjee = a._id?.talbainKhemjee;
           if(b.turul === "khuvaari")
           {
