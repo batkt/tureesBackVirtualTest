@@ -7,6 +7,8 @@ const Geree = require("../models/geree");
 const aldaa = require("../components/aldaa");
 const MailIlgeeye = require("../components/mailIlgeeye");
 const request = require("request");
+const axios = require("axios");
+const FormData = require("form-data");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const { crud } = require('../components/crud');
 //const UstsanBarimt = require("../models/ustsanBarimt");
@@ -213,7 +215,53 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
     next(err);
   }
 }
-
+function msgIlgeeyeUnitel(jagsaalt, key, dugaar, khariu, index, next, req, res) {
+  try {
+      const form = new FormData();
+      form.append('token_id', key);
+      form.append('extension_number', '11');
+      form.append('sms_number', dugaar);
+      form.append('to', jagsaalt[index].to.toString());
+      form.append('body',jagsaalt[index].text.toString());
+      axios({
+        method: "post",
+        url: "http://pbxuc.unitel.mn/hodupbx_api/v1.4/sendSms",
+        data: form,
+        headers: { ...form.getHeaders() },
+      })
+        .then((err1, res1, body) => {
+          if (err1) {
+            console.log("url", url);
+            next(err1);
+          } else {
+            if (!!req && !!req.body) {
+              var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
+              msg.baiguullagiinId = req.body.baiguullagiinId;
+              msg.barilgiinId = req.body.barilgiinId;
+              msg.dugaar = jagsaalt[index].to;
+              msg.gereeniiId = jagsaalt[index].gereeniiId;
+              msg.msg = jagsaalt[index].text;
+              msg.save();
+            }
+            if (jagsaalt.length > index + 1) {
+              console.log("url", url);
+              console.log("body", body);
+              khariu.push(body[0]);
+              msgIlgeeyeUnitel(jagsaalt, key, dugaar, khariu, index + 1, next, req, res);
+            } else {
+              console.log("url", url);
+              khariu.push(body[0]);
+            }
+          }
+        })
+        .catch((error) => {
+          console.log("backup error", error);
+          // Handle error
+        });
+  } catch (err) {
+    next(err);
+  }
+}
 router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
@@ -231,16 +279,10 @@ router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
     if (!msgIlgeekhKey || !msgIlgeekhDugaar)
       throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
     var khariu = [];
-    msgIlgeeye(
-      req.body.msgnuud,
-      msgIlgeekhKey,
-      msgIlgeekhDugaar,
-      khariu,
-      0,
-      next,
-      req,
-      res
-    );
+    if(msgIlgeekhKey == "g25dFjT1y1upZLYR")
+      msgIlgeeyeUnitel(req.body.msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, req, res);
+    else
+      msgIlgeeye(req.body.msgnuud, msgIlgeekhKey, msgIlgeekhDugaar, khariu, 0, next, req, res);
   } catch (err) {
     next(err);
   }
