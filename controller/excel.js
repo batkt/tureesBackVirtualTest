@@ -3183,7 +3183,7 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
         }
         if(tukhainZardal?.ekhniiUldegdel != 0)
         {
-          var tempTurul = tukhainZardal?.zardliinNer === "Менежментийн төлбөр" || tukhainZardal?.zardliinNer === "Хөрөнгийн менежмент" || tukhainZardal?.zardliinNer === "Худалдааны менежмент" ? "management" : 
+          var tempTurul = tukhainZardal?.zardliinNer?.includes("Менежментийн төлбөр") || tukhainZardal?.zardliinNer === "Хөрөнгийн менежмент" || tukhainZardal?.zardliinNer === "Худалдааны менежмент" ? "management" : 
                             tukhainZardal?.zardliinNer === "Дулаан" ? "dulaan" : 
                               tukhainZardal?.zardliinNer === "Цахилгаан" ? "tsakhilgaan" :
                                 tukhainZardal?.zardliinNer === "Халуун ус" ? "khulaanUs" :
