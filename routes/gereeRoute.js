@@ -3766,18 +3766,20 @@ router
         tukhainZardal.gereeniiId = geree._id;
         tukhainZardal.zoruu = ashiglaltiinZardal.zoruuDun;
         tukhainZardal.niitDun = tempDun;
-        let upsertDoc = {
-          updateOne: {
-            filter: { _id: geree._id },
-            update: {
-              $push: {
-                "avlaga.guilgeenuud": updateObject,
+        if(updateObject.tulukhDun > 0)
+        {
+          let upsertDoc = {
+            updateOne: {
+              filter: { _id: geree._id },
+              update: {
+                $push: {
+                  "avlaga.guilgeenuud": updateObject,
+                },
               },
             },
-          },
-        };
-        bulkOps.push(upsertDoc);
-      }
+          };
+          bulkOps.push(upsertDoc);}
+        }
     }
     if (aldaaniiMsg) throw new Error(aldaaniiMsg);
     if (bulkOps && bulkOps.length > 0)
