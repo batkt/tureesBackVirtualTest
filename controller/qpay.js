@@ -419,14 +419,14 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           tulsunDun = qpayAmount;
         } else {
           tulsunDun = geree.aldangiinUldegdel;
-          geree.aldangiinUldegdel = 0;
-          var iluuDun = qpayAmount - geree.aldangiinUldegdel;
+          var iluuDun = qpayAmount - tulsunDun;
           tulbur.push({
             turul: "qpay",
             tulsunDun: iluuDun,
             ognoo: qpayBarimt.ognoo,
             guilgeeKhiisenOgnoo: new Date(),
           });
+          geree.aldangiinUldegdel = 0;
         }
         tulbur.push({
           tailbar: "алданги qpay ээр төлсөн",
