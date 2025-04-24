@@ -139,7 +139,7 @@ router
         // {
           var ustgakhJagsaalt = [];
           ustgakhJagsaalt.push(resultRef[0]);
-          var fRemove = resultRef.filter((el) => !ustgakhJagsaalt.includes(el) && !el.ebarimtAvsanEsekh);
+          var fRemove = resultRef.filter((el) => !ustgakhJagsaalt.includes(el));
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: fRemove?.map((e) => e._id) }, });
         // }
       }
