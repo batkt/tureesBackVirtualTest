@@ -450,27 +450,48 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
   }
 }
 
-async function ebarimtMedeelelAvya(ugugdul, onFinish, next) {
-  var url = process.env.EBARIMT_IP + "/getInformation";
-  if (ugugdul) url = url + "?lib=" + ugugdul.toString();
-  console.log("url", url);
-  request(url, { json: true }, (err, res1, body) => {
-    if (err) next(err);
-    else {
-      onFinish(body);
-    }
-  });
+async function ebarimtMedeelelAvya(ugugdul, onFinish, next, ebarimtShine = false) {
+  if (!!ebarimtShine) {
+    var url = "";
+    if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
+      url = process.env.EBARIMTSHINE_TEST + "rest/info";
+    else url = process.env.EBARIMTSHINE_IP + "rest/info";
+    if (ugugdul) url = url + "?lib=" + ugugdul.toString();
+    console.log("url", url);
+    request(url, { json: true }, (err, res1, body) => {
+      if (err) next(err);
+      else {
+        onFinish(body);
+      }
+    });
+  }
+  else
+  {
+    var url = process.env.EBARIMT_IP + "/getInformation";
+    if (ugugdul) url = url + "?lib=" + ugugdul.toString();
+    console.log("url", url);
+    request(url, { json: true }, (err, res1, body) => {
+      if (err) next(err);
+      else {
+        onFinish(body);
+      }
+    });
+  }
 }
 
 router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
-  try {
+  try 
+  {
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
+    var tuxainSalbar = baiguullaga?.barilguud?.find((e) => e._id.toString() == req.body.barilgiinId)?.tokhirgoo;
     ebarimtMedeelelAvya(
       req.body.barilgiinId,
       (d) => {
         console.log("duuslaa", d);
         res.send(d);
       },
-      next
+      next,
+      tuxainSalbar?.eBarimtShine,
     );
   } catch (error) {
     next(error);
