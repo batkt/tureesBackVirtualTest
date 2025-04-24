@@ -103,14 +103,14 @@ router
       barilgiinId: req.body.barilgiinId,
     }
     if(!!req.body.NtryRef)  
-      match["NtryRef"] = req.body.NtryRef
+      match["record"] = req.body.NtryRef
     let query = [
       {
         $match: match,
       },
       {
         $group: {
-          _id: "$NtryRef",
+          _id: "$record",
           countRef: {
             $sum: 1,
           },
@@ -124,7 +124,7 @@ router
       match = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
-        NtryRef: val?._id
+        record: val?._id
       }
       var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
       if(resultRef?.length > 0)
@@ -139,7 +139,7 @@ router
         // {
           var ustgakhJagsaalt = [];
           ustgakhJagsaalt.push(resultRef[0]);
-          var fRemove = resultRef.filter((el) => !ustgakhJagsaalt.includes(el));
+          var fRemove = resultRef.filter((el) => !ustgakhJagsaalt.includes(el) && !el.ebarimtAvsanEsekh);
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: fRemove?.map((e) => e._id) }, });
         // }
       }
