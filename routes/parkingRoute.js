@@ -435,11 +435,11 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
       }
     }
     if (baiguullagiinId == "6800b91480a007fe5ab34436") {
-      // khaldvart
+      // khavdar
       if (!!nemeltUtga && (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))) {
         query["tuukh.0.garsanKhaalga"] = "192.168.1.103";
       } else if (!!nemeltUtga && (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.101";
+        query["tuukh.0.garsanKhaalga"] = "192.168.1.104";
       }
     }
     var oldsonData = await Uilchluulegch(kholbolt).findOne(query);
