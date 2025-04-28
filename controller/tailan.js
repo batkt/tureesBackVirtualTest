@@ -2082,9 +2082,13 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
           if(b.turul === "khungulult")
           {
             b.index = 1;
-            b.tailbar = "Хөнгөлөлт";
+            b.tailbar = (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт" : b.tailbar);
             b.tulukhDun = b.khyamdral;
-            var tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khuvaari");
+            var tempKhuvaari = [];
+            if(b.tailbar === "Хөнгөлөлт")
+              tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khuvaari");
+            else
+              tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "avlaga" && e.tailbar === b.tailbar);
             if(tempKhuvaari?.length > 0)
             {
               var khassanTulkhDun = (tempKhuvaari?.reduce((a, b) => a + (b.tulukhDun || 0), 0) - b.khyamdral);
@@ -2092,7 +2096,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
                 index: 2,
                 ognoo: b.ognoo,
                 turul: b.turul,
-                tailbar: "Хөнгөлөлт хассан дүн",
+                tailbar: (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт хассан дүн" : (b.tailbar + "/ хөнгөлөлт")),
                 tulukhDun: khassanTulkhDun,
               }
               khungulultuusKhassanJagsaalt.push(khungulultuusKhassan);
