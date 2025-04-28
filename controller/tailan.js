@@ -2058,7 +2058,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             b.tailbar = "Менежментийн төлбөр";
           if(!!b.zardliinNer)
             b.tailbar = b.zardliinNer;
-          if(!b.zardliinTurul && !b.zardliinNer)
+          if(!b.zardliinTurul && !b.zardliinNer && b.turul != "khungulult")
           {
             var filteredZardal = zardluud?.filter((a) => a.ner === b.tailbar);
             if(filteredZardal?.length === 0)
@@ -2082,7 +2082,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
           if(b.turul === "khungulult")
           {
             b.index = 1;
-            b.tailbar = (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт" : b.tailbar);
+            b.tailbar = (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт" : (b.tailbar + "/ хөнгөлөлт"));
             b.tulukhDun = b.khyamdral;
             var tempKhuvaari = [];
             if(b.tailbar === "Хөнгөлөлт")
@@ -2096,7 +2096,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
                 index: 2,
                 ognoo: b.ognoo,
                 turul: b.turul,
-                tailbar: (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт хассан дүн" : (b.tailbar + "/ хөнгөлөлт")),
+                tailbar: (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт хассан дүн" : (b.tailbar + "/ хөнгөлөлт хассан дүн")),
                 tulukhDun: khassanTulkhDun,
               }
               khungulultuusKhassanJagsaalt.push(khungulultuusKhassan);
