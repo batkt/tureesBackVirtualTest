@@ -2101,7 +2101,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
                 index: b.tailbar === "Хөнгөлөлт" ? 2 : b.index,
                 ognoo: b.ognoo,
                 turul: b.turul,
-                tailbar: (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт хассан дүн" : (b.tailbar + "/ хөнгөлөлт хассан дүн")),
+                tailbar: (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт хассан дүн" : (b.tailbar + " хассан дүн")),
                 tulukhDun: khassanTulkhDun,
               }
               khungulultuusKhassanJagsaalt.push(khungulultuusKhassan);
