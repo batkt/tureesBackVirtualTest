@@ -2081,14 +2081,16 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
           }
           if(b.turul === "khungulult")
           {
-            b.index = 1;
-            b.tailbar = (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт" : (b.tailbar + "/ хөнгөлөлт"));
-            b.tulukhDun = b.khyamdral;
             var tempKhuvaari = [];
             if(b.tailbar === "Хөнгөлөлт")
+            {
               tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khuvaari");
+              b.index = 1;
+            }
             else
               tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "avlaga" && e.tailbar === b.tailbar);
+            b.tailbar = (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт" : (b.tailbar + "/ хөнгөлөлт"));
+            b.tulukhDun = b.khyamdral;
             if(tempKhuvaari?.length > 0)
             {
               var khassanTulkhDun = (tempKhuvaari?.reduce((a, b) => a + (b.tulukhDun || 0), 0) - b.khyamdral);
