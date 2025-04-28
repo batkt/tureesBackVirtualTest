@@ -4006,7 +4006,7 @@ async function sarBuriinKhungulultBodoy() {
             var geree = await Geree(kholbolt).findById(data._id).select("+avlaga");
             console.log("--->>" + JSON.stringify(geree?.gereeniiDugaar));
 
-            var filteredTulsunDun = geree?.avlaga?.guilgeenuud.filter((data) => data.ognoo <= new Date(duusakhOgnoo) && data.ognoo >= new Date(ekhlekhOgnoo) && data.tulsunDun > 0);
+            var filteredTulsunDun = geree?.avlaga?.guilgeenuud.filter((data) => data.ognoo <= duusakhOgnoo && data.ognoo >= ekhlekhOgnoo && data.tulsunDun > 0);
             var tulsunDun = filteredTulsunDun?.length > 0 ? filteredTulsunDun?.reduce((a, b) => a + b?.tulsunDun, 0) : 0;
             var ognoo = moment().set("date", geree?.tulukhUdur[0]).format("YYYY-MM-DD 00:00:00");
             var niitDun = 0;
