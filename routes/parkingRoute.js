@@ -1746,38 +1746,41 @@ router.route("/v1/pay").post(async (req, res, next) => {
               butsaakhKhariu.success = true;
             res.send(butsaakhKhariu);
           }
-          var ebarimt;
-          if (!!tuxainSalbar.eBarimtShine)
-            ebarimt = new EbarimtShine(tukhainKholbolt)(d);
-          else ebarimt = new Ebarimt(tukhainKholbolt)(d);
-          ebarimt.zogsooliinId = tukhainObject._id;
-          ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
-          ebarimt.barilgiinId = khariuObject.barilgiinId;
-          ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
-          ebarimt.save().catch((err) => {
-            next(err);
-          });
-          var update = { ebarimtAvsanEsekh: true, ebarimtAvsanDun: (ebarimt.cashAmount || ebarimt.totalAmount) };
-          if (ebarimt.customerNo)
-            update = {
-              ...update,
-              ebarimtRegister: ebarimt.customerNo,
-            };
-          Uilchluulegch(tukhainKholbolt)
-            .findByIdAndUpdate(tukhainObject._id, update)
-            .then((xariu) => {
-              console.log("xariu", xariu);
-            })
-            .catch((err) => {
-              console.log(err);
+          else
+          {
+            var ebarimt;
+            if (!!tuxainSalbar.eBarimtShine)
+              ebarimt = new EbarimtShine(tukhainKholbolt)(d);
+            else ebarimt = new Ebarimt(tukhainKholbolt)(d);
+            ebarimt.zogsooliinId = tukhainObject._id;
+            ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
+            ebarimt.barilgiinId = khariuObject.barilgiinId;
+            ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
+            ebarimt.save().catch((err) => {
+              next(err);
             });
-          delete d.baiguullagiinId;
-          delete d.zogsooliinId;
-          delete d.barilgiinId;
-          delete d._id;
-          console.log("ebarimt duuslaa");
-          butsaakhKhariu.data = d;
-          res.send(butsaakhKhariu);
+            var update = { ebarimtAvsanEsekh: true, ebarimtAvsanDun: (ebarimt.cashAmount || ebarimt.totalAmount) };
+            if (ebarimt.customerNo)
+              update = {
+                ...update,
+                ebarimtRegister: ebarimt.customerNo,
+              };
+            Uilchluulegch(tukhainKholbolt)
+              .findByIdAndUpdate(tukhainObject._id, update)
+              .then((xariu) => {
+                console.log("xariu", xariu);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+            delete d.baiguullagiinId;
+            delete d.zogsooliinId;
+            delete d.barilgiinId;
+            delete d._id;
+            console.log("ebarimt duuslaa");
+            butsaakhKhariu.data = d;
+            res.send(butsaakhKhariu);
+          }
         } catch (err) {
           next(err);
         }
