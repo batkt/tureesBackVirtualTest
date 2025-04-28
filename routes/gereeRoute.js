@@ -3990,8 +3990,8 @@ async function sarBuriinKhungulultBodoy() {
         var duusakhOgnoo = moment().set("date", (barilga?.tokhirgoo?.khungulukhSarBuriinTulburDuusakhUdur || 1)).format("YYYY-MM-DD 23:59:59");
         var khariu = await Geree(kholbolt).aggregate(query);
         mainMatch["gereeniiOgnoo"] = { 
-          $gte: moment().startOf("month"),
-          $lte: moment().endOf("month")
+          $gte: new Date(moment().startOf("month")),
+          $lte: new Date(moment().endOf("month"))
         };
         var gereenuud = await Geree(kholbolt).find(mainMatch);
         if(gereenuud?.length > 0)
@@ -4005,26 +4005,28 @@ async function sarBuriinKhungulultBodoy() {
           {
             var geree = await Geree(kholbolt).findById(data._id).select("+avlaga");
             console.log("--->>" + JSON.stringify(geree?.gereeniiDugaar));
+            console.log("-duusakhOgnoo-->>" + duusakhOgnoo);
+            console.log("-ekhlekhOgnoo-->>" + ekhlekhOgnoo);
 
-            var filteredTulsunDun = geree?.avlaga?.guilgeenuud.find((e) => e.ognoo <= duusakhOgnoo && e.ognoo >= ekhlekhOgnoo && e.tulsunDun > 0);
+            var filteredTulsunDun = geree?.avlaga?.guilgeenuud.filter((e) => e.ognoo <= moment(duusakhOgnoo) && e.ognoo >= moment(ekhlekhOgnoo) && e.tulsunDun > 0);
             var tulsunDun = filteredTulsunDun?.length > 0 ? filteredTulsunDun?.reduce((a, b) => a + b?.tulsunDun, 0) : 0;
             var ognoo = moment().set("date", geree?.tulukhUdur[0]).format("YYYY-MM-DD 00:00:00");
             var niitDun = 0;
             if(barilga?.tokhirgoo?.tureesiinDungeesKhungulukhEsekh)
             {
-              var filteredTurees = geree?.avlaga?.guilgeenuud.find((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "khuvaari" && b.tulukhDun > 0);
+              var filteredTurees = geree?.avlaga?.guilgeenuud.filter((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "khuvaari" && b.tulukhDun > 0);
               var tureesDun = filteredTurees?.length > 0 ? filteredTurees?.reduce((a, b) => a + b?.tulukhDun, 0) : 0;
               niitDun += tureesDun;
               tulsunDun -= tureesDun;
             }
             if(barilga?.tokhirgoo?.ashiglaltDungeesKhungulukhEsekh)
             {
-              var filteredAvlaga = geree?.avlaga?.guilgeenuud.find((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "avlaga" && b.tulukhDun > 0);
+              var filteredAvlaga = geree?.avlaga?.guilgeenuud.filter((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "avlaga" && b.tulukhDun > 0);
               var avlagaDun = filteredAvlaga?.length > 0 ? filteredAvlaga?.reduce((a, b) => a + b?.tulukhDun, 0) : 0;
               niitDun += avlagaDun;
               tulsunDun -= avlagaDun;  
             }
-            var filteredData = geree?.avlaga?.guilgeenuud.find((a) => moment(a.ognoo).format("YYYY-MM") === moment().format("YYYY-MM") && a.turul === "khungulult" && a.tailbar === "системээс автомат хөнгөлөлт" && a.sarBurAutoKhungulultOruulakhEsekh);
+            var filteredData = geree?.avlaga?.guilgeenuud.filter((a) => moment(a.ognoo).format("YYYY-MM") === moment().format("YYYY-MM") && a.turul === "khungulult" && a.tailbar === "системээс автомат хөнгөлөлт" && a.sarBurAutoKhungulultOruulakhEsekh);
             if(filteredData?.length > 0)
             {
               for await (const avlagaData of filteredData)
