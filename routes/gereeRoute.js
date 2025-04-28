@@ -4004,10 +4004,7 @@ async function sarBuriinKhungulultBodoy() {
           for await (const data of khariu)  
           {
             var geree = await Geree(kholbolt).findById(data._id).select("+avlaga");
-            console.log("--->>" + JSON.stringify(geree?.gereeniiDugaar));
-            console.log("-duusakhOgnoo-->>" + duusakhOgnoo);
-            console.log("-ekhlekhOgnoo-->>" + ekhlekhOgnoo);
-
+            
             var filteredTulsunDun = geree?.avlaga?.guilgeenuud.filter((e) => e.ognoo <= moment(duusakhOgnoo) && e.ognoo >= moment(ekhlekhOgnoo) && e.tulsunDun > 0);
             var tulsunDun = filteredTulsunDun?.length > 0 ? filteredTulsunDun?.reduce((a, b) => a + b?.tulsunDun, 0) : 0;
             var ognoo = moment().set("date", geree?.tulukhUdur[0]).format("YYYY-MM-DD 00:00:00");
@@ -4041,9 +4038,6 @@ async function sarBuriinKhungulultBodoy() {
                     });  
               }
             }
-            console.log("------ tulsunDun ---------->>" + JSON.stringify(tulsunDun));
-            console.log("------ filteredTulsunDun ---------->>" + JSON.stringify(filteredTulsunDun));
-            console.log("------ khungulukhSarBuriinUtga ---------->>" + JSON.stringify(barilga?.tokhirgoo?.khungulukhSarBuriinUtga));
             if(barilga?.tokhirgoo?.sarBurAutoKhungulultOruulakhEsekh && tulsunDun >= 0 && filteredTulsunDun?.length > 0)
             {
               console.log("-f-->>" + JSON.stringify(geree?.gereeniiDugaar));
