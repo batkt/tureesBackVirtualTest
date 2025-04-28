@@ -4006,25 +4006,25 @@ async function sarBuriinKhungulultBodoy() {
             var geree = await Geree(kholbolt).findById(data._id).select("+avlaga");
             console.log("--->>" + JSON.stringify(geree?.gereeniiDugaar));
 
-            var filteredTulsunDun = geree?.avlaga?.guilgeenuud.filter((data) => data.ognoo <= duusakhOgnoo && data.ognoo >= ekhlekhOgnoo && data.tulsunDun > 0);
+            var filteredTulsunDun = geree?.avlaga?.guilgeenuud.find((e) => e.ognoo <= duusakhOgnoo && e.ognoo >= ekhlekhOgnoo && e.tulsunDun > 0);
             var tulsunDun = filteredTulsunDun?.length > 0 ? filteredTulsunDun?.reduce((a, b) => a + b?.tulsunDun, 0) : 0;
             var ognoo = moment().set("date", geree?.tulukhUdur[0]).format("YYYY-MM-DD 00:00:00");
             var niitDun = 0;
             if(barilga?.tokhirgoo?.tureesiinDungeesKhungulukhEsekh)
             {
-              var filteredTurees = geree?.avlaga?.guilgeenuud.filter((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "khuvaari" && b.tulukhDun > 0);
+              var filteredTurees = geree?.avlaga?.guilgeenuud.find((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "khuvaari" && b.tulukhDun > 0);
               var tureesDun = filteredTurees?.length > 0 ? filteredTurees?.reduce((a, b) => a + b?.tulukhDun, 0) : 0;
               niitDun += tureesDun;
               tulsunDun -= tureesDun;
             }
             if(barilga?.tokhirgoo?.ashiglaltDungeesKhungulukhEsekh)
             {
-              var filteredAvlaga = geree?.avlaga?.guilgeenuud.filter((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "avlaga" && b.tulukhDun > 0);
+              var filteredAvlaga = geree?.avlaga?.guilgeenuud.find((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "avlaga" && b.tulukhDun > 0);
               var avlagaDun = filteredAvlaga?.length > 0 ? filteredAvlaga?.reduce((a, b) => a + b?.tulukhDun, 0) : 0;
               niitDun += avlagaDun;
               tulsunDun -= avlagaDun;  
             }
-            var filteredData = geree?.avlaga?.guilgeenuud.filter((a) => moment(a.ognoo).format("YYYY-MM") === moment().format("YYYY-MM") && a.turul === "khungulult" && a.tailbar === "системээс автомат хөнгөлөлт" && a.sarBurAutoKhungulultOruulakhEsekh);
+            var filteredData = geree?.avlaga?.guilgeenuud.find((a) => moment(a.ognoo).format("YYYY-MM") === moment().format("YYYY-MM") && a.turul === "khungulult" && a.tailbar === "системээс автомат хөнгөлөлт" && a.sarBurAutoKhungulultOruulakhEsekh);
             if(filteredData?.length > 0)
             {
               for await (const avlagaData of filteredData)
@@ -4039,6 +4039,9 @@ async function sarBuriinKhungulultBodoy() {
                     });  
               }
             }
+            console.log("------ tulsunDun ---------->>" + JSON.stringify(tulsunDun));
+            console.log("------ filteredTulsunDun ---------->>" + JSON.stringify(filteredTulsunDun));
+            console.log("------ khungulukhSarBuriinUtga ---------->>" + JSON.stringify(barilga?.tokhirgoo?.khungulukhSarBuriinUtga));
             if(barilga?.tokhirgoo?.sarBurAutoKhungulultOruulakhEsekh && tulsunDun >= 0 && filteredTulsunDun?.length > 0)
             {
               console.log("-f-->>" + JSON.stringify(geree?.gereeniiDugaar));
