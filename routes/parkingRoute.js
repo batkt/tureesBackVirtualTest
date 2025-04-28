@@ -1742,6 +1742,8 @@ router.route("/v1/pay").post(async (req, res, next) => {
             delete d._id;
             console.log("ebarimt aldaatai duuslaa");
             butsaakhKhariu.data = d;
+            if (!tuxainSalbar.eBarimtShine) 
+              butsaakhKhariu.success = true;
             res.send(butsaakhKhariu);
           }
           var ebarimt;
