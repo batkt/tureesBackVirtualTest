@@ -2088,14 +2088,17 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
               b.index = 1;
             }
             else
+            {
               tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "avlaga" && e.tailbar === b.tailbar);
+              b.index = 5;
+            }
             b.tailbar = (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт" : (b.tailbar + "/ хөнгөлөлт"));
             b.tulukhDun = b.khyamdral;
             if(tempKhuvaari?.length > 0)
             {
               var khassanTulkhDun = (tempKhuvaari?.reduce((a, b) => a + (b.tulukhDun || 0), 0) - b.khyamdral);
               var khungulultuusKhassan = {
-                index: 2,
+                index: b.tailbar === "Хөнгөлөлт" ? 2 : 6,
                 ognoo: b.ognoo,
                 turul: b.turul,
                 tailbar: (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт хассан дүн" : (b.tailbar + "/ хөнгөлөлт хассан дүн")),
