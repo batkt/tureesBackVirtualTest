@@ -2088,7 +2088,10 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
               b.index = 1;
             }
             else
+            {
               tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "avlaga" && e.tailbar === b.tailbar);
+              b.index = tempKhuvaari?.length > 0 ? tempKhuvaari[0].index : b.index;
+            }
             b.tailbar = (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт" : (b.tailbar + "/ хөнгөлөлт"));
             b.tulukhDun = b.khyamdral;
             if(tempKhuvaari?.length > 0)
