@@ -2065,8 +2065,12 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
               b.tailbar = "Бусад авлага";
           }
           
-          var tempkhungulult = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khungulult");
-          if(b.turul !== "khuvaari" || (tempkhungulult?.length === 0 && b.turul === "khuvaari"))
+          var tempkhungulult = [];
+          if(b.turul === "khuvaari")
+            tempkhungulult = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khungulult" && e.turul === "khuvaari");
+          else
+            tempkhungulult = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khungulult" && e.turul === "avlaga" && e.tailbar === b.tailbar);
+          if(tempkhungulult?.length === 0)
             niitTulukhDun += (b.tulukhDun || 0);
           b.index = indexTemp;
           indexTemp++;
