@@ -4023,7 +4023,7 @@ async function sarBuriinKhungulultBodoy() {
               niitDun += avlagaDun;
               tulsunDun -= avlagaDun;  
             }
-            var filteredData = geree?.avlaga?.guilgeenuud.filter((a) => moment(a.ognoo).format("YYYY-MM") === moment().format("YYYY-MM") && a.turul === "khungulult" && a.tailbar === "системээс автомат хөнгөлөлт" && a.sarBurAutoKhungulultOruulakhEsekh);
+            var filteredData = geree?.avlaga?.guilgeenuud.filter((a) => moment(a.ognoo).format("YYYY-MM") === moment().format("YYYY-MM") && a.turul === "khungulult" && a.sarBurAutoKhungulultOruulakhEsekh);
             if(filteredData?.length > 0)
             {
               for await (const avlagaData of filteredData)
@@ -4053,7 +4053,7 @@ async function sarBuriinKhungulultBodoy() {
                 turul: "khungulult",
                 khyamdral: khungulultiinDun,
                 nemeltTailbar: "системээс автомат хөнгөлөлт",
-                tailbar: "системээс автомат хөнгөлөлт",
+                tailbar: "Хөнгөлөлт",
                 khyamdraliinId: geree?._id,
                 guilgeeKhiisenOgnoo: new Date(),
                 sarBurAutoKhungulultOruulakhEsekh: barilga?.tokhirgoo?.sarBurAutoKhungulultOruulakhEsekh,
