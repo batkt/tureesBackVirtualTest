@@ -129,6 +129,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       tuukh.nekhemjlekhiinDansniiNer = tempData.nekhemjlekhiinDansniiNer;
       tuukh.nekhemjlekhiinBank = tempData.nekhemjlekhiinBank;
       tuukh.nekhemjlekhiinIbanDugaar = tempData.nekhemjlekhiinIbanDugaar;
+      tuukh.nekhemjlekhiinOgnoo = req.body.ognoo;
       await tuukh.save()
       .then((result) => {
         console.log("result ----------> " + result?.mailKhayagTo);
