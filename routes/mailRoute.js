@@ -138,6 +138,13 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         console.log("err-----" + err);
         next(err);
       });
+      var update = { 
+        nekhemjlekhiinOgnoo: req.body.ognoo
+      }
+      await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+        tempData._id,
+        update
+      );
     }
   }
   res.send("Amjilttai");
