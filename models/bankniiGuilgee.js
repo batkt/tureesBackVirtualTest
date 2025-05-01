@@ -20,6 +20,10 @@ const bankniiGuilgeeSchema = new Schema(
     CtAcntOrg: String,
     CtBankNo: String,
     Amt: Number,
+    //tdbshine
+    bankcode : String,
+    refno: String,
+    fee: String,
     //khaan
     record: String,
     tranDate: Date,
