@@ -1619,7 +1619,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             });
             if (x.zardluud && x.zardluud.length > 0)
               x.zardluud.forEach((zardal) => {
-                if (zardal && zardal.ner != "Цахилгаан") {
+                if (zardal && !zardal.ner?.includes("Цахилгаан")) {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasyaSync(zardal.tariff * (x.talbainKhemjee || 0));
                   if (zardal.turul == "1м3/талбай")
@@ -2792,7 +2792,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         var chadalDun = 0;
         var tsekhDun = 0;
         var sekhDemjikhTulburDun = 0
-        if(ashiglaltiinZardal.ner === "Цахилгаан" && baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
+        if(ashiglaltiinZardal.ner?.includes("Цахилгаан") && baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
         {
           tsakhilgaanKBTST = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (tukhainZardal.guidliinKoep || 1)
           chadalDun = baiguullaga?.tokhirgoo?.bichiltKhonog > 0 && tsakhilgaanKBTST > 0 ? (tsakhilgaanKBTST/baiguullaga?.tokhirgoo?.bichiltKhonog/12 * (req.body.baiguullagiinId === "679aea9032299b7ba8462a77" ? 11520 : 15500)) : 0
@@ -2844,11 +2844,11 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj || 0,
           tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver || 1,
           tsakhilgaanKBTST: tsakhilgaanKBTST || 0,
-          guidliinKoep: ashiglaltiinZardal.ner === "Цахилгаан" ? (tukhainZardal.guidliinKoep || 0) : 0,
-          bichiltKhonog: ashiglaltiinZardal.ner === "Цахилгаан" ? (baiguullaga?.tokhirgoo?.bichiltKhonog || 0) : 0,
-          chadalDun: ashiglaltiinZardal.ner === "Цахилгаан" ? (chadalDun || 0) : 0,
-          tsekhDun: ashiglaltiinZardal.ner === "Цахилгаан" ? (tsekhDun || 0) : 0,
-          sekhDemjikhTulburDun: ashiglaltiinZardal.ner === "Цахилгаан" ? (sekhDemjikhTulburDun || 0) : 0,
+          guidliinKoep: ashiglaltiinZardal.ner?.includes("Цахилгаан") ? (tukhainZardal.guidliinKoep || 0) : 0,
+          bichiltKhonog: ashiglaltiinZardal.ner?.includes("Цахилгаан") ? (baiguullaga?.tokhirgoo?.bichiltKhonog || 0) : 0,
+          chadalDun: ashiglaltiinZardal.ner?.includes("Цахилгаан") ? (chadalDun || 0) : 0,
+          tsekhDun: ashiglaltiinZardal.ner?.includes("Цахилгаан") ? (tsekhDun || 0) : 0,
+          sekhDemjikhTulburDun: ashiglaltiinZardal.ner?.includes("Цахилгаан") ? (sekhDemjikhTulburDun || 0) : 0,
           ognoo: tukhainZardal.ognoo,
           gereeniiId: geree._id,
           tailbar: ashiglaltiinZardal.ner,
@@ -3185,7 +3185,7 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
         {
           var tempTurul = tukhainZardal?.zardliinNer?.includes("Менежментийн төлбөр") || tukhainZardal?.zardliinNer === "Хөрөнгийн менежмент" || tukhainZardal?.zardliinNer === "Худалдааны менежмент" ? "management" : 
                             tukhainZardal?.zardliinNer === "Дулаан" ? "dulaan" : 
-                              tukhainZardal?.zardliinNer === "Цахилгаан" ? "tsakhilgaan" :
+                              tukhainZardal?.zardliinNer?.includes("Цахилгаан") ? "tsakhilgaan" :
                                 tukhainZardal?.zardliinNer === "Халуун ус" ? "khulaanUs" :
                                   tukhainZardal?.zardliinNer === "Ус" ? "us" :
                                     tukhainZardal?.zardliinNer === "Хүйтэн ус" ? "khuitenUs" : "busad";

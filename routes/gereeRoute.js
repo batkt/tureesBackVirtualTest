@@ -3587,7 +3587,7 @@ router
             {
               var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
                 return (
-                  x.tailbar == "Цахилгаан"
+                  x.tailbar?.includes("Цахилгаан")
                 );
               });
               if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
