@@ -1672,7 +1672,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
         )
         {
           var tulburDun = tukhainObject.tuukh[0].tulbur?.reduce((a, b) => a + (b.dun || 0), 0);
-          if(tulburDun > 0 && bodsonDun > 0 && bodsonDun != tulburDun)
+          if(tulburDun > 0 && bodsonDun > 0 && bodsonDun == (req.body.paid_amount + tulburDun))
             tukhainObject.tuukh[0].tulbur.push(...tulbur);
         }
         else tukhainObject.tuukh[0].tulbur = tulbur;
