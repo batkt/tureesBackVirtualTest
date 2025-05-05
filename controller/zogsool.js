@@ -326,12 +326,22 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
             createdAt: { $gt: new Date(moment(new Date()).add(-1, "day").format("YYYY-MM-DD 23:59:59")) },
           });
           console.log("shiveeguiTuukhuud", shiveeguiTuukhuud);
+          var uilchluulegchBulk = [];
           if (!!shiveeguiTuukhuud) {
             var niitDun = 0;
             for await (const object of shiveeguiTuukhuud) {
-              for await (const tulbur of object.tuukh[0]?.tulbur) {
-                if (!!tulbur?.turul) niitDun = niitDun + tulbur.dun;
-              }
+              var niilberDun = object.tuukh[0]?.tulbur?.find((a) => !!a.turul && a.turul != "khungulult" && a.turul != "khariult").reduce((a, b) => a + b.dun, 0);
+              niitDun = niitDun + niilberDun;
+              let upsert = {
+                updateOne: {
+                    filter: { _id: object._id, baiguullagiinId: baiguullaga._id },
+                    update: {
+                      ebarimtAvsanDun: niilberDun,
+                      ebarimtAvsanEsekh: true,
+                    },
+                  },
+              };  
+              uilchluulegchBulk.push(upsert);
             }
             if (niitDun > 0) {
               await zogsoolNiitDungeerEbarimtShivye(
@@ -343,6 +353,16 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
                 null,
               );
             }
+            if (uilchluulegchBulk)
+              Uilchluulegch(tukhainKholbolt)
+                .bulkWrite(uilchluulegchBulk)
+                  .then((bulkWriteOpResult) => {
+                    console.log("Uilchluulegch BULK update OK", bulkWriteOpResult);
+                  })
+                  .catch((err) => {
+                    console.log("Uilchluulegch BULK update error", err);
+                    next(err);
+                  });
           }
         }
       }
