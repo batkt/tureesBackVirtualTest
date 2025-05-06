@@ -360,7 +360,6 @@ async function zogsooloosEbarimtShineUusgye(
   }
 
   var tulukhDun = guilgee.niitDun;
-  ebarimt.date = moment().format("YYYY-MM-DD HH:mm:ss");
   ebarimt.zogsooliinId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
