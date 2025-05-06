@@ -328,17 +328,20 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
             var niitDun = 0;
             for await (const object of shiveeguiTuukhuud) {
               var niilberDun = object.tuukh[0]?.tulbur?.find((a) => !!a.turul && a.turul != "khungulult" && a.turul != "khariult").reduce((a, b) => a + b.dun, 0);
-              niitDun = niitDun + niilberDun;
-              let upsert = {
-                updateOne: {
-                    filter: { _id: object._id, baiguullagiinId: baiguullaga._id },
-                    update: {
-                      ebarimtAvsanDun: niilberDun,
-                      ebarimtAvsanEsekh: true,
+              if(niilberDun > 0)
+              {
+                niitDun = niitDun + niilberDun;
+                let upsert = {
+                  updateOne: {
+                      filter: { _id: object._id, baiguullagiinId: baiguullaga._id },
+                      update: {
+                        ebarimtAvsanDun: niilberDun,
+                        ebarimtAvsanEsekh: true,
+                      },
                     },
-                  },
-              };  
-              uilchluulegchBulk.push(upsert);
+                };  
+                uilchluulegchBulk.push(upsert);
+              }
             }
             if (niitDun > 0) {
               await zogsoolNiitDungeerEbarimtShivye(
