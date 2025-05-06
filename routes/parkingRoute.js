@@ -2740,4 +2740,31 @@ router.post("/zogsooliinTuluuguiMashiniiTailanAvya", tokenShalgakh, async (req, 
   }
 );
 
+
+router.get("/notTokiParking", async (req, res, next) => {
+  const { db } = require("zevbackv2");
+  var kholboltuud = db.kholboltuud;
+  var localEsekh = !!req.body.baiguullagiinId;
+  if (localEsekh) {
+    kholboltuud = kholboltuud.filter(
+      (a) => a.baiguullagiinId == req.body.baiguullagiinId
+    );
+  }
+  var result = [];
+  if (kholboltuud) {
+    var query = { tokiNer: { $exists: false } };
+    if (!!req.body.baiguullagiinId)
+      query["baiguullagiinId"] = req.body.baiguullagiinId;
+    for await (const kholbolt of kholboltuud) {
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+        kholbolt.baiguullagiinId
+      );
+      var zogsooluud = await Parking(kholbolt).find(query);
+      if(zogsooluud?.length > 0)
+        result.push({ner: baiguullaga.ner, register: baiguullaga.register});
+    }
+  }
+  res.send(result);
+});
+
 module.exports = router;
