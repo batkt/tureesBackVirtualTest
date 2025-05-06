@@ -352,6 +352,7 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
                 null,
               );
             }
+            console.log("uilchluulegchBulk log ---->" + JSON.stringify(uilchluulegchBulk));
             if (uilchluulegchBulk)
               Uilchluulegch(tukhainKholbolt)
                 .bulkWrite(uilchluulegchBulk)
@@ -360,7 +361,6 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
                   })
                   .catch((err) => {
                     console.log("Uilchluulegch BULK update error", err);
-                    next(err);
                   });
           }
         }
