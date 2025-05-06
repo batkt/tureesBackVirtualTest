@@ -31,7 +31,7 @@ const ebarimtSchema = new Schema(
     inactiveId: String, //Засварлах баримтын ДДТД
     invoiceId: String, //Тухайн төлбөрийн баримтын харгалзах нэхэмжлэхийн ДДТД
     reportMonth: String, //Баримт харьяалагдах тайлант сар
-    date: Date,
+    date: String,
     dateOgnoo: Date,
     receipts: [
       {
