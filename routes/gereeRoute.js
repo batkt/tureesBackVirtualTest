@@ -4013,6 +4013,7 @@ async function sarBuriinKhungulultBodoy() {
             {
               var filteredTurees = geree?.avlaga?.guilgeenuud.filter((b) => moment(b.ognoo).format("YYYY-MM") === moment(ognoo).format("YYYY-MM") && b.turul === "khuvaari" && b.tulukhDun > 0);
               var tureesDun = filteredTurees?.length > 0 ? filteredTurees?.reduce((a, b) => a + b?.tulukhDun, 0) : 0;
+              tulsunDun += ((tureesDun * barilga?.tokhirgoo?.khungulukhSarBuriinUtga) / 100);
               niitDun += tureesDun;
               tulsunDun -= tureesDun;
             }
