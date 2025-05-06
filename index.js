@@ -210,7 +210,7 @@ cron.schedule(
   }
 );
 cron.schedule(
-  "01 45 00 * * * ",
+  "01 44 01 * * * ",
   function () {
     console.log("ebarimtDutuugShivye");
     zogsool.ebarimtDutuugShivye();
