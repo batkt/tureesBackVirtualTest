@@ -326,7 +326,7 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
           if (!!shiveeguiTuukhuud) {
             var niitDun = 0;
             for await (const object of shiveeguiTuukhuud) {
-              var niilberDun = object.tuukh[0]?.tulbur?.find((a) => !!a.turul && a.turul != "khungulult" && a.turul != "khariult").reduce((a, b) => a + b.dun, 0);
+              var niilberDun = object.tuukh[0]?.tulbur?.find((a) => !!a.turul && a.turul != "khungulult" && a.turul != "khariult")?.reduce((a, b) => a + b.dun, 0);
               if(niilberDun > 0)
               {
                 niitDun = niitDun + niilberDun;

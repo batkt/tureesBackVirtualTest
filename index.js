@@ -210,7 +210,7 @@ cron.schedule(
   }
 );
 cron.schedule(
-  "59 59 23 * * * ",
+  "50 06 00 * * * ",
   function () {
     console.log("ebarimtDutuugShivye");
     zogsool.ebarimtDutuugShivye();
