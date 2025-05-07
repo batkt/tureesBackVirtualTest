@@ -319,7 +319,7 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
           var shiveeguiTuukhuud = await Uilchluulegch(tukhainKholbolt).find({
             ebarimtAvsanEsekh: { $ne: true },
             "tuukh.0.tulbur": { $exists: true, $not: { $size: 0 } },
-            "tuukh.0.tulbur.ognoo": { $gt: new Date(moment(new Date()).add(-2, "day").format("YYYY-MM-DD 23:59:59")) },
+            "tuukh.0.tulbur.ognoo": { $gt: new Date(moment(new Date()).add(-1, "day").format("YYYY-MM-DD 23:59:59")) },
           });
           console.log("shiveeguiTuukhuud", shiveeguiTuukhuud);
           var uilchluulegchBulk = [];
