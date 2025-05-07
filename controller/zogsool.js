@@ -317,20 +317,33 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
           );
           console.log("tukhainKholbolt", tukhainKholbolt);
           var shiveeguiTuukhuud = await Uilchluulegch(tukhainKholbolt).find({
-            "tuukh.0.tulbur": { $exists: true, $not: { $size: 0 } },
-            "tuukh.0.tuluv": {
-              $in: [1, 2],
-            },
             ebarimtAvsanEsekh: { $ne: true },
-            turul: { $exists: false },
-            createdAt: { $gt: new Date(moment(new Date()).add(-1, "day").format("YYYY-MM-DD 23:59:59")) },
+            "tuukh.0.tulbur": { $exists: true, $not: { $size: 0 } },
+            "tuukh.0.tulbur.ognoo": { $gt: new Date(moment(new Date()).add(-2, "day").format("YYYY-MM-DD 23:59:59")) },
           });
           console.log("shiveeguiTuukhuud", shiveeguiTuukhuud);
+          var uilchluulegchBulk = [];
           if (!!shiveeguiTuukhuud) {
             var niitDun = 0;
             for await (const object of shiveeguiTuukhuud) {
+              var niilberDun = 0;
               for await (const tulbur of object.tuukh[0]?.tulbur) {
-                if (!!tulbur?.turul) niitDun = niitDun + tulbur.dun;
+                if(!!tulbur.turul && tulbur.turul != "khungulult" && tulbur.turul != "khariult") 
+                  niilberDun += tulbur.dun;
+              }
+              if(niilberDun > 0)
+              {
+                niitDun = niitDun + niilberDun;
+                let upsert = {
+                  updateOne: {
+                      filter: { _id: object._id, baiguullagiinId: baiguullaga._id },
+                      update: {
+                        ebarimtAvsanDun: niilberDun,
+                        ebarimtAvsanEsekh: true,
+                      },
+                    },
+                };  
+                uilchluulegchBulk.push(upsert);
               }
             }
             if (niitDun > 0) {
@@ -343,6 +356,16 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
                 null,
               );
             }
+            console.log("uilchluulegchBulk log ---->" + JSON.stringify(uilchluulegchBulk));
+            if (uilchluulegchBulk)
+              Uilchluulegch(tukhainKholbolt)
+                .bulkWrite(uilchluulegchBulk)
+                  .then((bulkWriteOpResult) => {
+                    console.log("Uilchluulegch BULK update OK", bulkWriteOpResult);
+                  })
+                  .catch((err) => {
+                    console.log("Uilchluulegch BULK update error", err);
+                  });
           }
         }
       }

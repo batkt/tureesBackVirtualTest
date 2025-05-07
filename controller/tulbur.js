@@ -328,7 +328,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               });
             if (zardluud && zardluud.length > 0) {
               zardluud.forEach((zardal) => {
-                if (zardal && zardal.ner != "Цахилгаан") {
+                if (zardal && !zardal.ner?.includes("Цахилгаан")) {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
                   if (zardal.turul == "1м3/талбай")
