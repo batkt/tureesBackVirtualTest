@@ -3661,7 +3661,8 @@ router
     var bulkOps = [];
     var updateObject;
     if (niitGereenuud.length > 0) {
-      for await (const geree of niitGereenuud) {
+      for await (const tukhainZardal of jagsaalt) {
+        var geree = niitGereenuud.find((x) => x.talbainIdnuud.includes(tukhainZardal.talbainId))
         updateObject = {};
         if (
           ashiglaltiinZardal.turul == "кВт" ||
@@ -3672,7 +3673,7 @@ router
           var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
             return (
               x.khemjikhNegj == ashiglaltiinZardal.turul &&
-              x.tailbar == ashiglaltiinZardal.ner
+              x.tailbar == ashiglaltiinZardal.ner && (!x.tooluuriinDugaar || tukhainZardal.tooluuriinDugaar == x.tooluuriinDugaar)
             );
           });
           if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
@@ -3683,12 +3684,6 @@ router
             umnukhZaalt = suuliinGuilgee.suuliinZaalt;
           }
         }
-        var tukhainZardal;
-          tukhainZardal = jagsaalt.find((x) => {
-            return (
-              geree.talbainIdnuud.includes(x.talbainId)
-            );
-          });
         var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
         var tsakhilgaanDun = 0;
         var tsakhilgaanKBTST = 0;
