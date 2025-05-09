@@ -3743,6 +3743,7 @@ router
           gereeniiId: geree._id,
           tailbar: ashiglaltiinZardal.ner,
           nuatBodokhEsekh: req.body.nuatBodokhEsekh,
+          tooluuriinDugaar : tukhainZardal.tooluuriinDugaar
         };
         if (
           ashiglaltiinZardal.turul === "кВт" ||
