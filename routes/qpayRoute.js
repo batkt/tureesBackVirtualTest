@@ -89,7 +89,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       req.body.burtgeliinDugaar = "6078893";
       await qpayGargayaKhuuchin(req, res, next);
     } else {
-      var tailbar = "Төлбөр";
+      var tailbar = "Төлбөр " + (req.body.mashiniiDugaar ? req.body.mashiniiDugaar : "");
       if (!!req.body.gereeniiId) {
         var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
           req.body.gereeniiId
