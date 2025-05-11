@@ -1681,16 +1681,18 @@ router.route("/v1/pay").post(async (req, res, next) => {
         tokiId: "toki",
       };
       if (bodsonDun > 0) {
-        if (bodsonDun == req.body.paid_amount) {
+        var tulburDun = tukhainObject.tuukh[0].tulbur?.reduce((a, b) => a + (b.dun || 0), 0);
+        if (bodsonDun == tulburDun) {
           if (!req.body.manually_open)
             set["garakhTsag"] = new Date(
               new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000
             );
-          else set["tuukh.$[t].tuluv"] = 1;
+          if(!!tukhainObject.tuukh[0].garsanKhaalga)
+            set["tuukh.$[t].tuluv"] = 1;
         }
       }
-      if ( !!tukhainObject.tuukh[0].tsagiinTuukh?.[0].garsanTsag && tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag > new Date(Date.now() - 60000))//60 * 1000
-      req.body.manually_open = true;
+      if ( !!tukhainObject.tuukh[0].tsagiinTuukh?.[0].garsanTsag && tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag > new Date(Date.now() - 600000))//10 * 60 * 1000
+        req.body.manually_open = true;
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
         tukhainObject._id,
         {
