@@ -4,6 +4,7 @@ const { tokenShalgakh, khuudaslalt, crud, UstsanBarimt } = require("zevbackv2");
 const {
   Parking,
   Mashin,
+  BlockMashin,
   Uilchluulegch,
   ZurchilteiMashin,
   ZogsooliinTulbur,
@@ -39,6 +40,7 @@ const MsgTuukh = require("../models/msgTuukh");
 crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
 crud(router, "mashin", Mashin, UstsanBarimt);
+crud(router, "blockMashin", BlockMashin, UstsanBarimt);
 crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
 /*
 crud(router, "zogsoolUilchluulegch", async (req, res, next) => {

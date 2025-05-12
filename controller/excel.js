@@ -19,6 +19,7 @@ const mongoose = require("mongoose");
 const {
   Parking,
   Mashin,
+  BlockMashin,
   Uilchluulegch,
   ZogsooliinTulbur,
   uilchluulegchdiinToo,
@@ -3238,6 +3239,123 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
         });
     else
       res.status(200).send("Amjilttai");    
+  } catch (error) {
+    next(error);
+  }
+});
+
+exports.blockMashiniiExcelAvya = asyncHandler(async (req, res, next) => {
+  try
+  {
+    let workbook = new excel.Workbook();
+    let worksheet = workbook.addWorksheet("Блок машин"); 
+    worksheet.columns = [
+      {
+        header: "Машины дугаар",
+        key: "Машины дугаар",
+        headerRow: true,
+        width: 30,
+      },
+      {
+        header: "Тайлбар",
+        key: "Тайлбар",
+        headerRow: true,
+        width: 30,
+      },
+    ];
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=" + encodeURI("Машины мэдээлэл.xlsx")
+    );
+    workbook.xlsx.write(res).then(function () {
+      res.end();
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+exports.blockMashiniiExcelTatya = asyncHandler(async (req, res, next) => {
+  try 
+  {
+    const workbook = xlsx.read(req.file.buffer);
+    if (workbook.SheetNames[0] !== "Блок машин")
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    const mashinSheet = workbook.Sheets[workbook.SheetNames[0]];
+    if (!mashinSheet["A1"].v.includes("Машины дугаар") || !mashinSheet["C1"].v.includes("Тайлбар"))
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!"); 
+    var jagsaalt = [];
+    var tolgoinObject = {};
+    for (let cell in mashinSheet) {
+      var cellAsString = cell.toString();
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!mashinSheet[cellAsString].v
+      ) {
+        if (mashinSheet[cellAsString].v.includes("Машины дугаар"))
+          tolgoinObject.dugaar = cellAsString[0];
+        else if (mashinSheet[cellAsString].v.includes("Тайлбар"))
+          tolgoinObject.tailbar = cellAsString[0];
+      }
+    } 
+    var data = xlsx.utils.sheet_to_json(mashinSheet, {
+      header: 1,
+      range: 1,
+    });
+    var aldaaniiMsg = "";
+    var muriinDugaar = 1;
+    data.forEach((mur) => {
+      muriinDugaar++;
+      let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
+      object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar)];
+      object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
+      object.baiguullagiinId = req.body.baiguullagiinId;
+      object.barilgiinId = req.body.barilgiinId;
+      object.burtgesenAjiltaniiId = req.body.nevtersenAjiltniiToken.id;
+      object.burtgesenAjiltaniiNer = req.body.nevtersenAjiltniiToken.ner;
+      if (!object.dugaar) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          `(${workbook.SheetNames[0]})` +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
+        if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
+        aldaaniiMsg = aldaaniiMsg.slice(0, -2);
+        aldaaniiMsg = aldaaniiMsg + " ";
+        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
+      } else if (!/[0-9]{4}[А-Я|а-я|ө|Ө|ү|Ү]{3}/.test(object.dugaar)) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          workbook.SheetNames[0] +
+          " sheet-ны " +
+          muriinDugaar +
+          " дугаар мөрөнд ";
+        aldaaniiMsg =
+          aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
+      } else {
+        object.dugaar = String(object.dugaar).toUpperCase();
+        jagsaalt.push(object);
+      }
+    });
+    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
+    await BlockMashin(req.body.tukhainBaaziinKholbolt).insertMany(
+      jagsaalt,
+      function (err) {
+        if (err) {
+          next(err);
+        }
+        res.status(200).send("Amjilttai");
+      }
+    );
   } catch (error) {
     next(error);
   }

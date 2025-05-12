@@ -28,12 +28,18 @@ crud(router, "zogsool", Zogsool, UstsanBarimt);
 const {
   mashiniiExcelAvya,
   mashiniiExcelTatya,
+  blockMashiniiExcelAvya,
+  blockMashiniiExcelTatya,
 } = require("../controller/excel");
 
 router.route("/mashiniiExcelAvya").get(mashiniiExcelAvya);
 router
   .route("/mashiniiExcelTatya")
   .post(uploadFile.single("file"), tokenShalgakh, mashiniiExcelTatya);
+router.route("/blockMashiniiExcelAvya").get(blockMashiniiExcelAvya);
+router
+  .route("/blockMashiniiExcelTatya")
+  .post(uploadFile.single("file"), tokenShalgakh, blockMashiniiExcelTatya);
 
 router.get("/zogsooloosTatya", async (req, res, next) => {
   var pool = new Pool({
