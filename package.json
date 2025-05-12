@@ -23,7 +23,7 @@
     "jspdf": "^2.5.1",
     "mon_num": "^1.0.3",
     "nodemailer": "^6.10.0",
-    "parking-v1": "^1.5.69",
+    "parking-v1": "^1.5.70",
     "pg": "^8.11.5",
     "quickqpaypackv2": "^1.0.44",
     "sharp": "^0.30.7",
