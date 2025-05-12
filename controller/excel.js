@@ -3312,7 +3312,7 @@ exports.blockMashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     var muriinDugaar = 1;
     data.forEach((mur) => {
       muriinDugaar++;
-      let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
+      let object = new BlockMashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar)];
       object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject.tailbar)];
       object.baiguullagiinId = req.body.baiguullagiinId;
