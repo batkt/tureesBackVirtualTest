@@ -922,14 +922,26 @@ router.post("/mashiniiTooAvya", tokenShalgakh, async (req, res, next) => {
       },
     },
   ];
-  Mashin(req.body.tukhainBaaziinKholbolt)
-    .aggregate(query)
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      next(err);
-    });
+  var mashinResult = await Mashin(req.body.tukhainBaaziinKholbolt).aggregate(query);
+  query = [
+    {
+      $match: {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+      },
+    },
+    {
+      $group: {
+        _id: "Block",
+        too: {
+          $sum: 1,
+        },
+      },
+    },
+  ];
+  var blockResult = await BlockMashin(req.body.tukhainBaaziinKholbolt).aggregate(query);
+  mashinResult.push(...blockResult);
+  res.send(mashinResult);
 });
 
 router.get("/v1/parking", async (req, res, next) => {
