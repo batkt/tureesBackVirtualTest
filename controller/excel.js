@@ -3287,7 +3287,7 @@ exports.blockMashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     if (workbook.SheetNames[0] !== "Блок машин")
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const mashinSheet = workbook.Sheets[workbook.SheetNames[0]];
-    if (!mashinSheet["A1"].v.includes("Машины дугаар") || !mashinSheet["C1"].v.includes("Тайлбар"))
+    if (!mashinSheet["A1"].v.includes("Машины дугаар") || !mashinSheet["B1"].v.includes("Тайлбар"))
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!"); 
     var jagsaalt = [];
     var tolgoinObject = {};
