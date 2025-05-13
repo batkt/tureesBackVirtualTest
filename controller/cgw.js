@@ -866,6 +866,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   );
                   guilgeenuud.forEach((x) => {
                     x.dansniiDugaar = dans.dugaar;
+                    x.bank = dans.bank;
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
                   });
@@ -974,6 +975,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     });
                     guilgeenuud.forEach((x) => {
                       x.dansniiDugaar = dans.dugaar;
+                      x.bank = dans.bank;
                       x.baiguullagiinId = dans.baiguullagiinId;
                       x.barilgiinId = dans.barilgiinId;
                     });
@@ -1124,6 +1126,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         });
                         guilgeenuud.forEach((x) => {
                           x.dansniiDugaar = dans.dugaar;
+                          x.bank = dans.bank;
                           x.baiguullagiinId = dans.baiguullagiinId;
                           x.barilgiinId = dans.barilgiinId;
                         });
@@ -1227,6 +1230,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   });
                   guilgeenuud.forEach((x) => {
                     x.dansniiDugaar = dans.dugaar;
+                    x.bank = dans.bank;
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
                   });
@@ -1342,6 +1346,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   });
                   guilgeenuud.forEach((x) => {
                     x.dansniiDugaar = dans.dugaar;
+                    x.bank = dans.bank;
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
                   });
@@ -1430,6 +1435,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 }
                 guilgeenuud.forEach((x) => {
                   x.dansniiDugaar = dans.dugaar;
+                  x.bank = dans.bank;
                   x.baiguullagiinId = dans.baiguullagiinId;
                   x.barilgiinId = dans.barilgiinId;
                 });
