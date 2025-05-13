@@ -213,7 +213,7 @@ router
           var guilgeenuud = await BankniiGuilgee(kholbolt).find({ baiguullagiinId: kholbolt.baiguullagiinId, bank: { $exists: false }});
           for await (const guilgee of guilgeenuud)
           {
-            var dans = await Dans(kholbolt).findOne({ dugaar: guilgee.dansniiDugaar });
+            var dans = await Dans(kholbolt).findOne({ baiguullagiinId: kholbolt.baiguullagiinId, dugaar: guilgee.dansniiDugaar });
             if(dans) 
               await BankniiGuilgee(kholbolt).findByIdAndUpdate(guilgee._id, { bank: dans?.bank });
           }
