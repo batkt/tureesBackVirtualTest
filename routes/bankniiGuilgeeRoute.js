@@ -252,4 +252,37 @@ router
     }
   });
 
+  router
+  .route("/bankIndexTalbar")
+  .post(async (req, res, next) => {
+    try
+    {
+      var kholboltuud;
+      const { db } = require("zevbackv2");
+      if (!!req?.body?.tukhainBaaziinKholbolt) {
+        kholboltuud = [req.body.tukhainBaaziinKholbolt];
+      } else {
+        kholboltuud = db.kholboltuud;
+      }
+      if (kholboltuud) {
+        for await (const kholbolt of kholboltuud) {
+          var guilgeenuud = await BankniiGuilgee(kholbolt).find({ baiguullagiinId: kholbolt.baiguullagiinId });
+          for await (const guilgee of guilgeenuud)
+          {
+            var dugaar = guilgee.bank === "khanbank" ? guilgee.record : 
+                guilgee.bank === "golomt" ?  guilgee.tranId : 
+                  guilgee.bank === "bogd" ?  guilgee.recNum :
+                    guilgee.bank === "tran" ? guilgee.jrno  :
+                      guilgee.bank === "tdb" && !!guilgee.NtryRef ? guilgee.NtryRef : guilgee.refno
+            var indexTalbar = guilgee.barilgiinId + guilgee.bank + guilgee.dansniiDugaar + dugaar;
+            await BankniiGuilgee(kholbolt).findByIdAndUpdate(guilgee._id, { indexTalbar: indexTalbar });
+          }
+        }    
+      }
+      res.send("Амжилт");
+    } catch (error) {
+      next(error);
+    }
+  });
+
 module.exports = router;
