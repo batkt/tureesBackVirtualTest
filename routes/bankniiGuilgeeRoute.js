@@ -216,7 +216,7 @@ router
             var dans = await Dans(kholbolt).findOne({ dugaar: guilgee.dansniiDugaar });
             await BankniiGuilgee(kholbolt).findByIdAndUpdate(
               guilgee._id,
-              { bank: dans.bank }
+              { bank: dans?.bank }
             );
           }
         }    
