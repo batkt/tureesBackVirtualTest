@@ -1224,6 +1224,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     )
       baritsaaAvakhSar = baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar;
     else baritsaaAvakhSar = 0;
+    console.log("worksheet ---->" + JSON.stringify(worksheet));
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
       console.log("cell ---->" + JSON.stringify(worksheet[cellAsString].v));
