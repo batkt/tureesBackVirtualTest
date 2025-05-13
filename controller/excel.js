@@ -1425,8 +1425,12 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
 
         if (zardluud && zardluud.length > 0) {
           zardluud.forEach((zardal) => {
-            if(zardal.turul === 'Дурын')
+            if(zardal.turul == 'Дурын')
+            {
               zardal.dun = mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner + " дурын авлага"])];
+              console.log("z dun --------------->" + zardal.dun);
+              console.log("dun --------------->" + mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner + " дурын авлага"])]);
+            }
             if (tolgoinObject.hasOwnProperty(zardal.ner)) {
               console.log("useg --------------->" + mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])]);
               if (
