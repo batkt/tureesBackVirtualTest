@@ -1275,8 +1275,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
               if (zardal)
               {
                 tolgoinObject[zardal.ner] = cellAsString[0];
-                if(zardal.turul === 'Дурын' && worksheet[cellAsString].v.includes(zardal.ner + " дурын авлага"))
-                  tolgoinObject[zardal.ner + " дурын авлага"] = cellAsString[0];    
+                if(zardal.turul === 'Дурын')
+                  tolgoinObject[zardal.ner + " дурын авлага"] = cellAsString[1];    
               }  
             }
           }
@@ -1336,8 +1336,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
               if (zardal)
               {
                 tolgoinObject30[zardal.ner] = cellAsString[0];
-                if(zardal.turul === 'Дурын' && worksheet30[cellAsString].v.includes(zardal.ner + " дурын авлага"))
-                  tolgoinObject30[zardal.ner + " дурын авлага"] = cellAsString[0];
+                if(zardal.turul === 'Дурын')
+                  tolgoinObject30[zardal.ner + " дурын авлага"] = cellAsString[1];
               }  
             }
           }
