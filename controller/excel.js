@@ -1169,7 +1169,7 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
           error: "Тохирох утгыг сонгоно уу!",
         });
       }
-      baganiiToo = baganiiToo + 1;
+      baganiiToo = baganiiToo + (x.turul === "Дурын" ? 2 : 1);
     });
   }
   res.setHeader(
