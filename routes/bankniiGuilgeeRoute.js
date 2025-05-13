@@ -210,14 +210,12 @@ router
       }
       if (kholboltuud) {
         for await (const kholbolt of kholboltuud) {
-          var guilgeenuud = await BankniiGuilgee(kholbolt).find({ baiguullagiinId: kholbolt.baiguullagiinId });
+          var guilgeenuud = await BankniiGuilgee(kholbolt).find({ baiguullagiinId: kholbolt.baiguullagiinId, bank: { $exists: false }});
           for await (const guilgee of guilgeenuud)
           {
             var dans = await Dans(kholbolt).findOne({ dugaar: guilgee.dansniiDugaar });
-            await BankniiGuilgee(kholbolt).findByIdAndUpdate(
-              guilgee._id,
-              { bank: dans?.bank }
-            );
+            if(dans) 
+              await BankniiGuilgee(kholbolt).findByIdAndUpdate(guilgee._id, { bank: dans?.bank });
           }
         }    
       }
