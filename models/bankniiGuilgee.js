@@ -84,6 +84,7 @@ const bankniiGuilgeeSchema = new Schema(
       type: [String],
       default: undefined,
     },
+    bank: String,
   },
   {
     timestamps: true,
