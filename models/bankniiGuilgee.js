@@ -95,13 +95,16 @@ const bankniiGuilgeeSchema = new Schema(
   }
 );
 
-bankniiGuilgeeSchema.pre("save", async function () {
-  var dugaar = this.bank === "khanbank" ? this.record : 
-                this.bank === "golomt" ?  this.tranId : 
-                  this.bank === "bogd" ?  this.recNum :
-                    this.bank === "tran" ? this.jrno  :
-                      this.bank === "tdb" && !!this.NtryRef ? this.NtryRef : this.refno
-  this.indexTalbar = this.barilgiinId + this.bank + this.dansniiDugaar + dugaar;
+bankniiGuilgeeSchema.pre('insertMany', function(next, docs) {
+  for (let doc of docs) {
+    var dugaar = doc.bank === "khanbank" ? doc.record : 
+                doc.bank === "golomt" ?  doc.tranId : 
+                  doc.bank === "bogd" ?  doc.recNum :
+                    doc.bank === "tran" ? doc.jrno  :
+                      doc.bank === "tdb" && !!doc.NtryRef ? doc.NtryRef : doc.refno
+    doc.indexTalbar = doc.barilgiinId + doc.bank + doc.dansniiDugaar + dugaar;
+  }
+  next();
 });
 
 module.exports = function a(conn) {
