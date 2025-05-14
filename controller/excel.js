@@ -1107,8 +1107,8 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       if(x.turul === 'Дурын')
       {
         baganuud.push({
-          header: x.ner + " дурын авлага",
-          key: x.ner + " дурын авлага",
+          header: x.ner + " дүн",
+          key: x.ner + " дүн",
           width: 20,
         });    
       }
@@ -1278,8 +1278,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
                 if(zardal.turul === 'Дурын')
                 {
                   for (const key in worksheet) {
-                    if (key[1] === "1" && key.length == 2 && !!worksheet[cellAsString].v && worksheet[key].v === zardal.ner + " дурын авлага") {
-                      tolgoinObject[zardal.ner + " дурын авлага"] = key[0];  
+                    if (key[1] === "1" && key.length == 2 && !!worksheet[cellAsString].v && worksheet[key].v === zardal.ner + " дүн") {
+                      tolgoinObject[zardal.ner + " дүн"] = key[0];  
                     }
                   }
                 }  
@@ -1345,8 +1345,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
                 if(zardal.turul === 'Дурын')
                 {
                   for (const key in worksheet30) {
-                    if (key[1] === "1" && key.length == 2 && !!worksheet30[key].v && worksheet30[key].v === zardal.ner + " дурын авлага") {
-                      tolgoinObject30[zardal.ner + " дурын авлага"] = key[0];  
+                    if (key[1] === "1" && key.length == 2 && !!worksheet30[key].v && worksheet30[key].v === zardal.ner + " дүн") {
+                      tolgoinObject30[zardal.ner + " дүн"] = key[0];  
                     }
                   }
                 }
@@ -1438,7 +1438,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         if (zardluud && zardluud.length > 0) {
           zardluud.forEach((zardal) => {
             if(zardal.turul == 'Дурын')
-              zardal.dun = mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner + " дурын авлага"])];
+              zardal.dun = mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner + " дүн"])];
             if (tolgoinObject.hasOwnProperty(zardal.ner)) {
               if (
                 mur[usegTooruuKhurvuulekh(tolgoinObject[zardal.ner])] !=
@@ -1560,7 +1560,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         if (zardluud && zardluud.length > 0) {
           zardluud.forEach((zardal) => {
             if(zardal.turul === 'Дурын')
-              zardal.dun = mur[usegTooruuKhurvuulekh(tolgoinObject30[zardal.ner + " дурын авлага"])];
+              zardal.dun = mur[usegTooruuKhurvuulekh(tolgoinObject30[zardal.ner + " дүн"])];
             if (tolgoinObject30.hasOwnProperty(zardal.ner)) {
               if (
                 mur[usegTooruuKhurvuulekh(tolgoinObject30[zardal.ner])] !=
