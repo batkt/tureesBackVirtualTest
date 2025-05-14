@@ -1278,7 +1278,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
                 if(zardal.turul === 'Дурын')
                 {
                   for (const key in worksheet) {
-                    if (worksheet[key]?.v?.includes(zardal.ner + " дурын авлага")) {
+                    if (key[1] === "1" && key.length == 2 && !!worksheet[cellAsString].v && worksheet[key].v === zardal.ner + " дурын авлага") {
                       tolgoinObject[zardal.ner + " дурын авлага"] = key[0];  
                     }
                   }
@@ -1345,7 +1345,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
                 if(zardal.turul === 'Дурын')
                 {
                   for (const key in worksheet30) {
-                    if (worksheet30[key]?.v?.includes(zardal.ner + " дурын авлага")) {
+                    if (key[1] === "1" && key.length == 2 && !!worksheet30[key].v && worksheet30[key].v === zardal.ner + " дурын авлага") {
                       tolgoinObject30[zardal.ner + " дурын авлага"] = key[0];  
                     }
                   }
