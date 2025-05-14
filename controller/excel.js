@@ -1224,11 +1224,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     )
       baritsaaAvakhSar = baritsaaAvakhSar.tokhirgoo.baritsaaAvakhSar;
     else baritsaaAvakhSar = 0;
-    console.log("worksheet ---->" + JSON.stringify(worksheet));
     for (let cell in worksheet) {
       var cellAsString = cell.toString();
-      console.log("cell ---->" + JSON.stringify(worksheet[cellAsString].v));
-      console.log("cell string ---->" + JSON.stringify(cellAsString));
       if (
         cellAsString[1] === "1" &&
         cellAsString.length == 2 &&
@@ -1279,7 +1276,13 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
               {
                 tolgoinObject[zardal.ner] = cellAsString[0];
                 if(zardal.turul === 'Дурын')
-                  tolgoinObject[zardal.ner + " дурын авлага"] = cellAsString[1];    
+                {
+                  for (const key in worksheet) {
+                    if (worksheet[key].v.includes(zardal.ner + " дурын авлага")) {
+                      tolgoinObject[zardal.ner + " дурын авлага"] = key[0];  
+                    }
+                  }
+                }  
               }  
             }
           }
@@ -1340,7 +1343,13 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
               {
                 tolgoinObject30[zardal.ner] = cellAsString[0];
                 if(zardal.turul === 'Дурын')
-                  tolgoinObject30[zardal.ner + " дурын авлага"] = cellAsString[1];
+                {
+                  for (const key in worksheet30) {
+                    if (worksheet30[key].v.includes(zardal.ner + " дурын авлага")) {
+                      tolgoinObject30[zardal.ner + " дурын авлага"] = key[0];  
+                    }
+                  }
+                }
               }  
             }
           }
