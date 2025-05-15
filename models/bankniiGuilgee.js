@@ -84,11 +84,28 @@ const bankniiGuilgeeSchema = new Schema(
       type: [String],
       default: undefined,
     },
+    bank: String,
+    indexTalbar: {
+      type: String,
+      unique: true,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+bankniiGuilgeeSchema.pre('insertMany', function(next, docs) {
+  for (let doc of docs) {
+    var dugaar = doc.bank === "khanbank" ? doc.record : 
+                doc.bank === "golomt" ?  doc.tranId : 
+                  doc.bank === "bogd" ?  doc.recNum :
+                    doc.bank === "tran" ? doc.jrno  :
+                      doc.bank === "tdb" && !!doc.NtryRef ? doc.NtryRef : doc.refno
+    doc.indexTalbar = doc.barilgiinId + doc.bank + doc.dansniiDugaar + dugaar;
+  }
+  next();
+});
 
 module.exports = function a(conn) {
   if (!conn || !conn.kholbolt)

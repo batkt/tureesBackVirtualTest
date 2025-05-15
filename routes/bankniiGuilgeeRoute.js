@@ -4,7 +4,7 @@ const BankniiGuilgee = require("../models/bankniiGuilgee");
 const { tdbcer } = require("../kholbolt/tdbcer");
 const { bankniiGuilgeeToololtAvya } = require("../controller/toololt");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
+const { tokenShalgakh, crud, UstsanBarimt, Dans } = require("zevbackv2");
 //const { crud } = require('../components/crud');
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 
@@ -98,19 +98,37 @@ router
   router
   .route("/davkhardsanDansniiKhuulga")
   .post(tokenShalgakh, async (req, res, next) => {
+    var bank = req.body.bank;
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
+      bank: bank,
     }
-    if(!!req.body.NtryRef)  
-      match["record"] = req.body.NtryRef
+    if(!!req.body.dugaar)  
+    {
+      if(bank === "khanbank")
+        match["record"] = req.body.dugaar;
+      else if(bank === "golomt")
+        match["tranId"] = req.body.dugaar;
+      else if(bank === "bogd")
+        match["recNum"] = req.body.dugaar;
+      else if(bank === "tran")
+        match["jrno"] = req.body.dugaar;
+      else if(bank === "tdb")
+        match["NtryRef"] = req.body.dugaar;
+    }
+    var str = bank === "khanbank" ? "$record" : 
+                bank === "golomt" ? "$tranId" : 
+                  bank === "bogd" ? "$recNum" : 
+                    bank === "tran" ? "$jrno" : 
+                      bank === "tdb" ? "$NtryRef" : "$refno";
     let query = [
       {
         $match: match,
       },
       {
         $group: {
-          _id: "$record",
+          _id: str,
           countRef: {
             $sum: 1,
           },
@@ -124,24 +142,33 @@ router
       match = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
-        record: val?._id
       }
+      if(bank === "khanbank")
+        match["record"] = val?._id;
+      else if(bank === "golomt")
+        match["tranId"] = val?._id;
+      else if(bank === "bogd")
+        match["recNum"] = val?._id;
+      else if(bank === "tran")
+        match["jrno"] = val?._id;
+      else if(bank === "tdb")
+        match["NtryRef"] = val?._id;
       var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
       if(resultRef?.length > 0)
       {
-        // var filterKholboson =  resultRef?.filter((e) => e.kholbosonTalbainId?.length > 0);
-        // if(filterKholboson?.length > 0)
-        // {
-        //   var filterRemove = resultRef?.filter((e) => e.kholbosonTalbainId?.length === 0);
-        //   await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: filterRemove?.map((e) => e._id) }, });
-        // }
-        // else
-        // {
+        var filterKholboson =  resultRef?.filter((e) => e.kholbosonTalbainId?.length > 0);
+        if(filterKholboson?.length > 0)
+        {
+          var filterRemove = resultRef?.filter((e) => e.kholbosonTalbainId?.length === 0);
+          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: filterRemove?.map((e) => e._id) }, });
+        }
+        else
+        {
           var ustgakhJagsaalt = [];
           ustgakhJagsaalt.push(resultRef[0]);
           var fRemove = resultRef.filter((el) => !ustgakhJagsaalt.includes(el) && !el.ebarimtAvsanEsekh);
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: fRemove?.map((e) => e._id) }, });
-        // }
+        }
       }
     }
     res.send("Амжилт");
@@ -194,6 +221,68 @@ router
       }
     }
     res.send("Амжилт");
+  });
+
+router
+  .route("/bankniiGuilgeeBankSet")
+  .post(async (req, res, next) => {
+    try
+    {
+      var kholboltuud;
+      const { db } = require("zevbackv2");
+      if (!!req?.body?.tukhainBaaziinKholbolt) {
+        kholboltuud = [req.body.tukhainBaaziinKholbolt];
+      } else {
+        kholboltuud = db.kholboltuud;
+      }
+      if (kholboltuud) {
+        for await (const kholbolt of kholboltuud) {
+          var guilgeenuud = await BankniiGuilgee(kholbolt).find({ baiguullagiinId: kholbolt.baiguullagiinId, bank: { $exists: false }});
+          for await (const guilgee of guilgeenuud)
+          {
+            var dans = await Dans(kholbolt).findOne({ baiguullagiinId: kholbolt.baiguullagiinId, dugaar: guilgee.dansniiDugaar });
+            if(dans) 
+              await BankniiGuilgee(kholbolt).findByIdAndUpdate(guilgee._id, { bank: dans?.bank });
+          }
+        }    
+      }
+      res.send("Амжилт");
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router
+  .route("/bankIndexTalbar")
+  .post(async (req, res, next) => {
+    try
+    {
+      var kholboltuud;
+      const { db } = require("zevbackv2");
+      if (!!req?.body?.tukhainBaaziinKholbolt) {
+        kholboltuud = [req.body.tukhainBaaziinKholbolt];
+      } else {
+        kholboltuud = db.kholboltuud;
+      }
+      if (kholboltuud) {
+        for await (const kholbolt of kholboltuud) {
+          var guilgeenuud = await BankniiGuilgee(kholbolt).find({ baiguullagiinId: kholbolt.baiguullagiinId, indexTalbar: { $exists: false } });
+          for await (const guilgee of guilgeenuud)
+          {
+            var dugaar = guilgee.bank === "khanbank" ? guilgee.record : 
+                guilgee.bank === "golomt" ?  guilgee.tranId : 
+                  guilgee.bank === "bogd" ?  guilgee.recNum :
+                    guilgee.bank === "tran" ? guilgee.jrno  :
+                      guilgee.bank === "tdb" && !!guilgee.NtryRef ? guilgee.NtryRef : guilgee.refno
+            var indexTalbar = guilgee.barilgiinId + guilgee.bank + guilgee.dansniiDugaar + dugaar;
+            await BankniiGuilgee(kholbolt).findByIdAndUpdate(guilgee._id, { indexTalbar: indexTalbar });
+          }
+        }    
+      }
+      res.send("Амжилт");
+    } catch (error) {
+      next(error);
+    }
   });
 
 module.exports = router;
