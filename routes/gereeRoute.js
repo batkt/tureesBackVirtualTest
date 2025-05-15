@@ -1830,7 +1830,7 @@ router
                 );
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
-                    zardal.tailbar = zardal._id.tailbar;
+                    zardal.tailbar = zardal._id.tailbar + (zardal._id.tooluuriinDugaar ? (" " + zardal._id.tooluuriinDugaar) : "");
                     if (zardal.tailbar == "Түрээс" || zardal.tailbar == "Хөнгөлөлт")
                       x.khungulult = zardal.khungulult;
                   });
