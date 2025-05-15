@@ -1673,6 +1673,7 @@ router
                       $group: {
                         _id: {
                           gereeniiDugaar: "$gereeniiDugaar",
+                          tooluuriinDugaar: { $ifNull: ["$avlaga.tooluuriinDugaar", ""] },
                           tailbar: {
                             $cond: [
                               {
