@@ -1846,7 +1846,7 @@ router
                 // if (x.niitUldegdel < 0) x.niitUldegdel = 0;
                 x.sariinTurees = x.tukhainSariinTureesiinTulukhDun;
                 x.talbainNiitUne = x.tukhainSariinTureesiinTulukhDun;
-                if(req.body.baiguullagiinId != "679aea9032299b7ba8462a77") // urangan
+                if(req.body.olnoorSaraarEsekh) // olon saraar nekhemjlekh
                 {
                   let diffMonth = moment(req.body.duusakhOgnoo).diff(moment(), 'months');
                   if(diffMonth)
