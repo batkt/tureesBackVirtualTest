@@ -381,9 +381,9 @@ async function dansniiJagsaaltAvya(token, next) {
 async function dansniiKhuulgaAvya(token, next, body) {
   try {
     var url = "https://api.khanbank.com/v1/statements/" + body.dansniiDugaar;
-    var odooTsag = new Date().getHours();
-    if(odooTsag < 6)
-    url = "https://api.khanbank.com/v1/statements/corporate/" + body.dansniiDugaar;
+    // var odooTsag = new Date().getHours();
+    // if(odooTsag < 6)
+    // url = "https://api.khanbank.com/v1/statements/corporate/" + body.dansniiDugaar;
     if(body.record)
       url = url + "/record?record=" + body.record;
     const context = {
@@ -808,7 +808,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
             })
             .lean();
         }
-        console.log("dansnuud", dansnuud);
         if (dansnuud)
           for await (const dans of dansnuud) {
             try {
