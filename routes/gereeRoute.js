@@ -1673,6 +1673,7 @@ router
                       $group: {
                         _id: {
                           gereeniiDugaar: "$gereeniiDugaar",
+                          tooluuriinDugaar: { $ifNull: ["$avlaga.tooluuriinDugaar", ""] },
                           tailbar: {
                             $cond: [
                               {
@@ -1829,7 +1830,7 @@ router
                 );
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
-                    zardal.tailbar = zardal._id.tailbar;
+                    zardal.tailbar = zardal._id.tailbar + (zardal._id.tooluuriinDugaar ? (" " + zardal._id.tooluuriinDugaar) : "");
                     if (zardal.tailbar == "Түрээс" || zardal.tailbar == "Хөнгөлөлт")
                       x.khungulult = zardal.khungulult;
                   });
@@ -1845,7 +1846,7 @@ router
                 // if (x.niitUldegdel < 0) x.niitUldegdel = 0;
                 x.sariinTurees = x.tukhainSariinTureesiinTulukhDun;
                 x.talbainNiitUne = x.tukhainSariinTureesiinTulukhDun;
-                if(req.body.baiguullagiinId != "679aea9032299b7ba8462a77") // urangan
+                if(req.body.olnoorSaraarEsekh) // olon saraar nekhemjlekh
                 {
                   let diffMonth = moment(req.body.duusakhOgnoo).diff(moment(), 'months');
                   if(diffMonth)
