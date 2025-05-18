@@ -3707,12 +3707,12 @@ router
         else
           tsakhilgaanDun = ashiglaltiinZardal.tariff * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (zoruuDun || 0);
         var tempDun =
-          (ashiglaltiinZardal.ner === "Хүйтэн ус" ||
-            ashiglaltiinZardal.ner === "Халуун ус") &&
+          (ashiglaltiinZardal.ner?.includes("Хүйтэн ус") ||
+            ashiglaltiinZardal.ner?.includes("Халуун ус")) &&
           ashiglaltiinZardal.bodokhArga === "Khatuu"
             ? ashiglaltiinZardal.tseverUsDun * zoruuDun +
               ashiglaltiinZardal.bokhirUsDun * zoruuDun +
-              (ashiglaltiinZardal.ner === "Халуун ус"
+              (ashiglaltiinZardal.ner?.includes("Халуун ус")
                 ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
                 : 0)
             : tsakhilgaanDun;
@@ -3729,7 +3729,7 @@ router
           tseverUsDun: ashiglaltiinZardal.tseverUsDun * zoruuDun || 0,
           bokhirUsDun: ashiglaltiinZardal.bokhirUsDun * zoruuDun || 0,
           usKhalaasanDun:
-            ashiglaltiinZardal.ner === "Халуун ус"
+            ashiglaltiinZardal.ner?.includes("Халуун ус")
               ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
               : 0,
           suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj || 0,

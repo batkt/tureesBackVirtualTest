@@ -2841,12 +2841,12 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         else
           tsakhilgaanDun = ashiglaltiinZardal.tariff * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (zoruuDun || 0);
         var tempDun =
-          (ashiglaltiinZardal.ner === "Хүйтэн ус" ||
-            ashiglaltiinZardal.ner === "Халуун ус") &&
+          (ashiglaltiinZardal.ner?.includes("Хүйтэн ус") ||
+            ashiglaltiinZardal.ner?.includes("Халуун ус")) &&
           ashiglaltiinZardal.bodokhArga === "Khatuu"
             ? ashiglaltiinZardal.tseverUsDun * zoruuDun +
               ashiglaltiinZardal.bokhirUsDun * zoruuDun +
-              (ashiglaltiinZardal.ner === "Халуун ус"
+              (ashiglaltiinZardal.ner?.includes("Халуун ус")
                 ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
                 : 0)  
             : ashiglaltiinZardal.turul === "кг" ? ((zoruuDun || 0) * ashiglaltiinZardal.togtmolUtga * ashiglaltiinZardal.tariff)
@@ -2871,7 +2871,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           tseverUsDun: ashiglaltiinZardal.tseverUsDun * zoruuDun || 0,
           bokhirUsDun: ashiglaltiinZardal.bokhirUsDun * zoruuDun || 0,
           usKhalaasanDun:
-            ashiglaltiinZardal.ner === "Халуун ус"
+            ashiglaltiinZardal.ner?.includes("Халуун ус")
               ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
               : 0,
           suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj || 0,
@@ -3219,9 +3219,9 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
           var tempTurul = tukhainZardal?.zardliinNer?.includes("Менежментийн төлбөр") || tukhainZardal?.zardliinNer === "Хөрөнгийн менежмент" || tukhainZardal?.zardliinNer === "Худалдааны менежмент" ? "management" : 
                             tukhainZardal?.zardliinNer === "Дулаан" ? "dulaan" : 
                               tukhainZardal?.zardliinNer?.includes("Цахилгаан") ? "tsakhilgaan" :
-                                tukhainZardal?.zardliinNer === "Халуун ус" ? "khulaanUs" :
+                                tukhainZardal?.zardliinNer?.includes("Халуун ус") ? "khulaanUs" :
                                   tukhainZardal?.zardliinNer === "Ус" ? "us" :
-                                    tukhainZardal?.zardliinNer === "Хүйтэн ус" ? "khuitenUs" : "busad";
+                                    tukhainZardal?.zardliinNer?.includes("Хүйтэн ус") ? "khuitenUs" : "busad";
           updateObject = {
             turul: tukhainZardal?.tureesEkhniiUldegdelEsekh ? 'khuvaari' : 'avlaga',
             tulukhDun: tukhainZardal?.ekhniiUldegdel,
