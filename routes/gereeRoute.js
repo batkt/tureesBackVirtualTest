@@ -1597,6 +1597,7 @@ router
                         "avlaga.guilgeenuud.turul": {
                           $in: ["khuvaari"],
                         },
+                        "avlaga.guilgeenuud.zardliinTurul": { $exists: false },
                         "avlaga.guilgeenuud.ognoo": {
                           $lte: new Date(req.body.duusakhOgnoo),
                           $gte: new Date(req.body.ekhlekhOgnoo),
