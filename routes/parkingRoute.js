@@ -2783,4 +2783,40 @@ router.get("/notTokiParking", async (req, res, next) => {
   res.send(result);
 });
 
+router.post("/dotorZogsoolDavhkardsanMashin", tokenShalgakh, async (req, res, next) => {
+  try
+    {
+      var match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        "tuukh.zogsooliinId": req.body.zogsooliinId,
+        "tuukh.orsonKhaalga": req.body.cameraIP, 
+        "tuukh.tsagiinTuukh.garsanTsag": {$exists: false}
+      };
+      if(req.body.mashiniiDugaar)
+        match["mashiniiDugaar"] = req.body.mashiniiDugaar
+      var mashinuud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).find(match);  
+      var result = [];
+      for await (const data of mashinuud)
+      {
+        var tuukh = data.tuukh?.filter((e) => e.orsonKhaalga === req.body.cameraIPGadna);
+        var filtered = data.tuukh?.filter((e) => e.orsonKhaalga === req.body.cameraIP);
+        tuukh.push(filtered[0]);
+        data.tuukh = tuukh;
+        await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+        data._id,
+        {
+          $set: {
+            "tuukh": tuukh,
+          },
+        });
+        result.push(data);
+      }
+      res.send(result);
+    }
+    catch (err) {
+      next(err);
+    } 
+  }
+);
 module.exports = router;
