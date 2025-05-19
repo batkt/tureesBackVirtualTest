@@ -2270,40 +2270,44 @@ exports.davkhardsanMashinTseverlye = asyncHandler(async (req, res, next) => {
             $gte: new Date(Date.now() - (baiguullaga?.tokhirgoo?.davkharsanMDTSDavtamjSecond * 1000)),
             $lt: new Date(),
           }
-
-        var kholbolt = kholboltuud.find((a) => a.baiguullagiinId === baiguullaga._id);
-        var groupCounts = await Uilchluulegch(kholbolt).aggregate([
-          {
-            $match: {
-              baiguullagiinId: baiguullaga._id.toString(),
-            },
-          },
-          {
-            $unwind: "$tuukh",
-          },
-          {
-            $match: query,
-          },
-          {
-            $group: {
-              _id: "$mashiniiDugaar",
-              too: {
-                $sum: 1,
-              },
-            },
-          },
-        ]);
-        if(groupCounts?.length > 0)
+        for await (const kholbolt of kholboltuud)
         {
-          var filterGroupCounts = groupCounts?.filter((a) => a.too > 1);
-          if(filterGroupCounts?.length > 0)
+          if(kholbolt.baiguullagiinId == baiguullaga._id)
           {
-            for await (const groupCount of filterGroupCounts)
+            var groupCounts = await Uilchluulegch(kholbolt).aggregate([
+              {
+                $match: {
+                  baiguullagiinId: baiguullaga._id.toString(),
+                },
+              },
+              {
+                $unwind: "$tuukh",
+              },
+              {
+                $match: query,
+              },
+              {
+                $group: {
+                  _id: "$mashiniiDugaar",
+                  too: {
+                    $sum: 1,
+                  },
+                },
+              },
+            ]);
+            if(groupCounts?.length > 0)
             {
-              query["mashiniiDugaar"] = groupCount._id;
-              const uilchluulegchuud = await Uilchluulegch(kholbolt).find(query).sort({ createdAt: -1 });
-              uilchluulegchuud?.shift();
-              await Uilchluulegch(kholbolt).deleteMany({ _id: { $in: uilchluulegchuud?.map((e) => e._id) }, });
+              var filterGroupCounts = groupCounts?.filter((a) => a.too > 1);
+              if(filterGroupCounts?.length > 0)
+              {
+                for await (const groupCount of filterGroupCounts)
+                {
+                  query["mashiniiDugaar"] = groupCount._id;
+                  const uilchluulegchuud = await Uilchluulegch(kholbolt).find(query).sort({ createdAt: -1 });
+                  uilchluulegchuud?.shift();
+                  await Uilchluulegch(kholbolt).deleteMany({ _id: { $in: uilchluulegchuud?.map((e) => e._id) }, });
+                }
+              }
             }
           }
         }
