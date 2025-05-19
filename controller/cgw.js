@@ -2271,7 +2271,7 @@ exports.davkhardsanMashinTseverlye = asyncHandler(async (req, res, next) => {
             $lt: new Date(),
           }
 
-        var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
+        var kholbolt = kholboltuud.find((a) => a.baiguullagiinId === baiguullaga._id);
         var groupCounts = await Uilchluulegch(kholbolt).aggregate([
           {
             $match: {
