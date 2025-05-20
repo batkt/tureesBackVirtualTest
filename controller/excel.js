@@ -2872,7 +2872,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           bokhirUsDun: ashiglaltiinZardal.bokhirUsDun * zoruuDun || 0,
           usKhalaasanDun:
             ashiglaltiinZardal.ner?.includes("Халуун ус")
-              ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
+              ? (ashiglaltiinZardal.usKhalaasniiDun || 0) * zoruuDun
               : 0,
           suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj || 0,
           tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver || 1,
