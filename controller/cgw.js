@@ -4,7 +4,7 @@ const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Baiguullaga = require("../models/baiguullaga");
 //const Dugaarlalt = require("../models/dugaarlalt");
 const { Dugaarlalt, Token, Dans } = require("zevbackv2");
-const { Uilchluulegch } = require("parking-v1");
+const { Uilchluulegch, Parking } = require("parking-v1");
 const xml2js = require("xml2js");
 const axios = require("axios");
 const got = require("got");
@@ -2314,6 +2314,57 @@ exports.davkhardsanMashinTseverlye = asyncHandler(async (req, res, next) => {
       }	
     }
     if(res) res.send("Amjilttai");
+  }
+  catch (err) {
+	  console.log("davkhardsan Mashin Tseverlye log err ==>", err);
+    if (next) next(err);
+  }
+});
+
+
+exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
+  try 
+  {
+    const { db } = require("zevbackv2");
+    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({"tokhirgoo.davkharsanMDTSDavtamjSecond": { $exists: true, } });
+    if(baiguullaguud?.length > 0)
+    {
+      var result = [];
+      for await (const baiguullaga of baiguullaguud) {
+        var kholboltuud = db.kholboltuud;
+        var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
+        var parking = await Parking(kholbolt).findOne({baiguullagiinId: baiguullaga._id, gadnaZogsooliinId: {$exists: true}});
+        if(!!parking)
+        {
+          var match = {
+            baiguullagiinId: parking.baiguullagiinId,
+            barilgiinId: parking.barilgiinId,
+            "tuukh.zogsooliinId": parking._id.toString(),
+            "tuukh.orsonKhaalga": "192.168.2.75", 
+            "tuukh.tsagiinTuukh.garsanTsag": {$exists: false}
+          };
+          if(req.body.mashiniiDugaar)
+            match["mashiniiDugaar"] = req.body.mashiniiDugaar
+          var mashinuud = await Uilchluulegch(kholbolt).find(match);  
+          for await (const data of mashinuud)
+          {
+            var tuukh = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.234");
+            var filtered = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.75");
+            tuukh.push(filtered[0]);
+            data.tuukh = tuukh;
+            await Uilchluulegch(kholbolt).findByIdAndUpdate(
+            data._id,
+            {
+              $set: {
+                "tuukh": tuukh,
+              },
+            });
+            result.push(data);
+          }
+        }
+      }
+    }
+    res.send(result);
   }
   catch (err) {
 	  console.log("davkhardsan Mashin Tseverlye log err ==>", err);
