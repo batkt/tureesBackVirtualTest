@@ -102,7 +102,12 @@ bankniiGuilgeeSchema.pre('insertMany', function(next, docs) {
                   doc.bank === "bogd" ?  doc.recNum :
                     doc.bank === "tran" ? doc.jrno  :
                       doc.bank === "tdb" && !!doc.NtryRef ? doc.NtryRef : doc.refno
-    doc.indexTalbar = doc.barilgiinId + doc.bank + doc.dansniiDugaar + dugaar;
+    var mungunDun = doc.bank === "khanbank" ? doc.amount : 
+                doc.bank === "golomt" ?  doc.tranAmount : 
+                  doc.bank === "bogd" ?  doc.amount :
+                    doc.bank === "tran" ? (doc.income > 0 ? doc.income : doc.outcome) :
+                      doc.bank === "tdb" ? doc.Amt : 0
+    doc.indexTalbar = doc.barilgiinId + doc.bank + doc.dansniiDugaar + dugaar + mungunDun.toString();
   }
   next();
 });

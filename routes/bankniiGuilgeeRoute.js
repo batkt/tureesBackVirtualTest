@@ -274,7 +274,12 @@ router
                   guilgee.bank === "bogd" ?  guilgee.recNum :
                     guilgee.bank === "tran" ? guilgee.jrno  :
                       guilgee.bank === "tdb" && !!guilgee.NtryRef ? guilgee.NtryRef : guilgee.refno
-            var indexTalbar = guilgee.barilgiinId + guilgee.bank + guilgee.dansniiDugaar + dugaar;
+            var mungunDun = doc.bank === "khanbank" ? guilgee.amount : 
+                        guilgee.bank === "golomt" ?  guilgee.tranAmount : 
+                        guilgee.bank === "bogd" ?  guilgee.amount :
+                        guilgee.bank === "tran" ? (guilgee.income > 0 ? guilgee.income : guilgee.outcome) :
+                        guilgee.bank === "tdb" ? guilgee.Amt : 0
+            indexTalbar = doc.barilgiinId + guilgee.bank + guilgee.dansniiDugaar + dugaar + mungunDun.toString();
             await BankniiGuilgee(kholbolt).findByIdAndUpdate(guilgee._id, { indexTalbar: indexTalbar });
           }
         }    
