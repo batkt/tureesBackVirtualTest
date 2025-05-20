@@ -2330,11 +2330,13 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
     if(baiguullaguud?.length > 0)
     {
       var result = [];
+      var resultDotor = [];
       for await (const baiguullaga of baiguullaguud) {
         var kholboltuud = db.kholboltuud;
         var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
         var parking = await Parking(kholbolt).findOne({gadnaZogsooliinId: {$exists: true}});
-        if(!!parking)
+        var gadnaParkuud = await Parking(kholbolt).find({gadnaZogsooliinId: {$exists: false}});
+        if(!!parking && parking.baiguullagiinId === "63c0f31efe522048bf02086d") // foodcity 
         {
           var match = {
             baiguullagiinId: parking.baiguullagiinId,
@@ -2359,13 +2361,65 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
                 "tuukh": tuukh,
               },
             });
-            result.push(data);
+            resultDotor.push(data);
+          }
+          var match = {
+            baiguullagiinId: parking.baiguullagiinId,
+            barilgiinId: parking.barilgiinId,
+            "tuukh.zogsooliinId": parking._id.toString(),
+            "tuukh.orsonKhaalga": "192.168.2.234", 
+            "tuukh.tsagiinTuukh.garsanTsag": {$exists: false}
+          };
+        }
+        if(!!gadnaParkuud?.length > 0)
+        {
+          for await (const gadnaParking of gadnaParkuud){
+            var match = {
+              baiguullagiinId: gadnaParking.baiguullagiinId,
+              barilgiinId: gadnaParking.barilgiinId,
+              "tuukh.zogsooliinId": gadnaParking._id.toString(),
+              "tuukh.tsagiinTuukh.garsanTsag": {$exists: false}
+            };
+            if(req?.body?.mashiniiDugaar)
+              match["mashiniiDugaar"] = req?.body?.mashiniiDugaar;
+            var groupCounts = await Uilchluulegch(kholbolt).aggregate([
+              {
+                $unwind: "$tuukh",
+              },
+              {
+                $match: match,
+              },
+              {
+                $group: {
+                  _id: "$mashiniiDugaar",
+                  too: {
+                    $sum: 1,
+                  },
+                },
+              },
+            ]);
+            if(groupCounts?.length > 0)
+            {
+              var filterGroupCounts = groupCounts?.filter((a) => a.too > 1);
+              if(filterGroupCounts?.length > 0)
+              {
+                for await (const groupCount of filterGroupCounts)
+                {
+                  match["mashiniiDugaar"] = groupCount._id;
+                  const uilchluulegchuud = await Uilchluulegch(kholbolt).find(match).sort({ createdAt: -1 });
+                  uilchluulegchuud?.shift();
+                  await Uilchluulegch(kholbolt).deleteMany({ _id: { $in: uilchluulegchuud?.map((e) => e._id) }, });
+                  result.push(groupCount);
+                }
+              }
+            }
           }
         }
       }
-      console.log("-------- dotorZogsoolDavhkardsanMashin ------->>  "+ JSON.stringify(result?.length));
+      console.log("-------- gadnaZogsoolDavhkardsanMashin ------->>  "+ JSON.stringify(result?.length));
+      console.log("-------- dotorZogsoolDavhkardsanMashin ------->>  "+ JSON.stringify(resultDotor?.length));
     }
-    res?.send(result);
+    res?.send(resultDotor);
   }
   catch (err) {
 	  console.log("davkhardsan Mashin Tseverlye log err ==>", err);
