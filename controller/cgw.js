@@ -2363,6 +2363,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           }
         }
       }
+      console.log("-------- dotorZogsoolDavhkardsanMashin ------->>  "+ JSON.stringify(result?.length));
     }
     res?.send(result);
   }
