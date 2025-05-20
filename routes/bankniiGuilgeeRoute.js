@@ -156,6 +156,7 @@ router
       var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
       if(resultRef?.length > 0)
       {
+        console.log("------------------>>"+ JSON.stringify(resultRef));
         // var filterKholboson =  resultRef?.filter((e) => e.kholbosonTalbainId?.length > 0);
         // if(filterKholboson?.length > 0)
         // {
