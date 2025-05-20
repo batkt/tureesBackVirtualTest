@@ -454,7 +454,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
             "tuukh.$[t].tulbur": [
               {
                 ognoo: new Date(),
-                turul: "khariltsakh",
+                turul: "qpay",
                 dun: tulsunDun,
               },
             ],
