@@ -2847,7 +2847,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             ? ashiglaltiinZardal.tseverUsDun * zoruuDun +
               ashiglaltiinZardal.bokhirUsDun * zoruuDun +
               (ashiglaltiinZardal.ner?.includes("Халуун ус")
-                ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
+                ? (ashiglaltiinZardal.usKhalaasniiDun || 0) * zoruuDun
                 : 0)  
             : ashiglaltiinZardal.turul === "кг" ? ((zoruuDun || 0) * ashiglaltiinZardal.togtmolUtga * ashiglaltiinZardal.tariff)
             : tsakhilgaanDun;
