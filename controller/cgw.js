@@ -2333,7 +2333,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
       for await (const baiguullaga of baiguullaguud) {
         var kholboltuud = db.kholboltuud;
         var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
-        var parking = await Parking(kholbolt).findOne({baiguullagiinId: baiguullaga._id, gadnaZogsooliinId: {$exists: true}});
+        var parking = await Parking(kholbolt).findOne({gadnaZogsooliinId: {$exists: true}});
         if(!!parking)
         {
           var match = {
@@ -2343,8 +2343,8 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
             "tuukh.orsonKhaalga": "192.168.2.75", 
             "tuukh.tsagiinTuukh.garsanTsag": {$exists: false}
           };
-          if(req.body.mashiniiDugaar)
-            match["mashiniiDugaar"] = req.body.mashiniiDugaar
+          if(req?.body?.mashiniiDugaar)
+            match["mashiniiDugaar"] = req?.body?.mashiniiDugaar
           var mashinuud = await Uilchluulegch(kholbolt).find(match);  
           for await (const data of mashinuud)
           {
@@ -2364,7 +2364,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
         }
       }
     }
-    res.send(result);
+    res?.send(result);
   }
   catch (err) {
 	  console.log("davkhardsan Mashin Tseverlye log err ==>", err);
