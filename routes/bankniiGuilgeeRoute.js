@@ -157,19 +157,19 @@ router
       if(resultRef?.length > 0)
       {
         console.log("------------------>>"+ JSON.stringify(resultRef));
-        // var filterKholboson =  resultRef?.filter((e) => e.kholbosonTalbainId?.length > 0);
-        // if(filterKholboson?.length > 0)
-        // {
-        //   var filterRemove = resultRef?.filter((e) => e.kholbosonTalbainId?.length === 0);
-        //   await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: filterRemove?.map((e) => e._id) }, });
-        // }
-        // else
-        // {
+        var filterKholboson =  resultRef?.filter((e) => e.kholbosonTalbainId?.length > 0);
+        if(filterKholboson?.length > 0)
+        {
+          var filterRemove = resultRef?.filter((e) => e.kholbosonTalbainId?.length === 0);
+          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: filterRemove?.map((e) => e._id) }, });
+        }
+        else
+        {
           var ustgakhJagsaalt = [];
           ustgakhJagsaalt.push(resultRef[0]);
-          var fRemove = resultRef.filter((el) => !ustgakhJagsaalt.includes(el) && !el.ebarimtAvsanEsekh && !e.kholbosonDun);
+          var fRemove = resultRef.filter((el) => !ustgakhJagsaalt.includes(el) && !el.ebarimtAvsanEsekh);
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({ _id: { $in: fRemove?.map((e) => e._id) }, });
-        // }
+        }
       }
     }
     res.send("Амжилт");
