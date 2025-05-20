@@ -266,7 +266,7 @@ router
       }
       if (kholboltuud) {
         for await (const kholbolt of kholboltuud) {
-          var guilgeenuud = await BankniiGuilgee(kholbolt).find({ baiguullagiinId: kholbolt.baiguullagiinId, indexTalbar: { $exists: false } });
+          var guilgeenuud = await BankniiGuilgee(kholbolt).find({ baiguullagiinId: kholbolt.baiguullagiinId });
           for await (const guilgee of guilgeenuud)
           {
             var dugaar = guilgee.bank === "khanbank" ? guilgee.record : 
