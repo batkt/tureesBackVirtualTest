@@ -2833,7 +2833,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           if(baiguullaga?.tokhirgoo?.sekhDemjikhTulburAvakhEsekh) // URANGAN Ikhnayd
           {
             if(baiguullaga?.tokhirgoo?.guidliinKoepEsekh) // kaidu 
-              sekhDemjikhTulburDun = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * 23.79 * (tukhainZardal.guidliinKoep || 1);
+              sekhDemjikhTulburDun = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * (tukhainZardal.guidliinKoep || 1) * 23.79;
             else  
               sekhDemjikhTulburDun = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * 23.79;
             tsakhilgaanDun = chadalDun + tsekhDun + sekhDemjikhTulburDun;
