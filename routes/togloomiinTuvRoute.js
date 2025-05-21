@@ -401,8 +401,6 @@ router
       var update = {
         tulburTulsunEsekh: false,
         tuluv: 1,
-        niitTulbur: guilgeeniiTuukh,
-        tulbur: guilgeeniiTuukh,
         dutuuDun: 0,
         ebarimtAvakhDun: 0,
       };
@@ -447,6 +445,20 @@ router
       await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
         req.body.id,
         update
+      );
+      var updateQuery = {
+        $push: {
+          [`niitTulbur`]: {
+            $each: guilgeeniiTuukh,
+          },
+          [`tulbur`]: {
+            $each: guilgeeniiTuukh,
+          },
+        },
+      };
+      await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+        req.body.id,
+        updateQuery
       );
       if (update.tulburTulsunEsekh === true) {
         await TogloomiinTulbur(req.body.tukhainBaaziinKholbolt).insertMany(
