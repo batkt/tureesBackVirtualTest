@@ -136,6 +136,7 @@ const baiguullagaSchema = new Schema(
       qpayShimtgelTusdaa : Boolean,
       davkharsanMDTSDavtamjSecond: Number,
       zurchulMsgeerSanuulakh: Boolean, /** Зогсоолын зөрчил сануулах жагсаалт харуулах тохируулах */
+      guidliinKoepEsekh: Boolean,
       msgNegjUne: Number, /** мессеж нэгж үнэ тохируулах */
     },
     erkhuud: [
