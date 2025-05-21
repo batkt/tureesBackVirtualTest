@@ -2832,7 +2832,10 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           tsekhDun = ashiglaltiinZardal.tariff * tsakhilgaanKBTST
           if(baiguullaga?.tokhirgoo?.sekhDemjikhTulburAvakhEsekh) // URANGAN Ikhnayd
           {
-            sekhDemjikhTulburDun = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * 23.79;
+            if(baiguullaga?._id === "64e855ce37fdc9b105f936e0") // kaidu 
+              sekhDemjikhTulburDun = (tukhainZardal.guidliinKoep || 0) === 1 ? (zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * 23.79) : tsakhilgaanKBTST * 23.79;
+            else  
+              sekhDemjikhTulburDun = zoruuDun * (ashiglaltiinZardal.tsakhilgaanUrjver || 1) * 23.79;
             tsakhilgaanDun = chadalDun + tsekhDun + sekhDemjikhTulburDun;
           }
           else
