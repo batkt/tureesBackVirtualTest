@@ -391,7 +391,11 @@ async function dansniiKhuulgaAvya(token, next, body) {
     };
     console.log("url -------------------->>" + JSON.stringify(url));
     const responseA = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
-    console.log("---- shunu corporate -------------------->>" + JSON.stringify(responseA.body));
+    if(responseA.body)
+    {
+      console.log("---- aa gulug iishee orj ban haha -------------------->>" + JSON.stringify(responseA.body));
+      console.log("---- shunu corporate -------------------->>" + JSON.stringify(responseA.body));
+    }
     const response = await instance.get(url, { context });
     if (!response.body) {
       if (next) next(new aldaa("Татах хуулга байхгүй"));
