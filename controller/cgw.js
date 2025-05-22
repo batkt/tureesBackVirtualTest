@@ -385,7 +385,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
     };
     const responseShunuEsekh = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
     var url = "https://api.khanbank.com/v1/statements/" + (responseShunuEsekh?.body ? "corporate/" : "") + body.dansniiDugaar;
-    if(body.record)
+    if(body.record && !responseShunuEsekh?.body)
       url = url + (responseShunuEsekh?.body ? "/?record=" : "/record?record=") + body.record;
     console.log("url -------------------->>" + JSON.stringify(url));
     const response = await instance.get(url, { context });
