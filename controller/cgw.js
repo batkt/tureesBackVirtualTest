@@ -380,22 +380,14 @@ async function dansniiJagsaaltAvya(token, next) {
 
 async function dansniiKhuulgaAvya(token, next, body) {
   try {
-    var url = "https://api.khanbank.com/v1/statements/" + body.dansniiDugaar;
-    // var odooTsag = new Date().getHours();
-    // if(odooTsag < 6)
-    // url = "https://api.khanbank.com/v1/statements/corporate/" + body.dansniiDugaar;
+    const responseShunuEsekh = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
+    var url = "https://api.khanbank.com/v1/statements/" + (responseShunuEsekh?.body ? "corporate/" : "") + body.dansniiDugaar;
     if(body.record)
       url = url + "/record?record=" + body.record;
     const context = {
       token: "Bearer " + token,
     };
     console.log("url -------------------->>" + JSON.stringify(url));
-    const responseA = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
-    if(responseA.body)
-    {
-      console.log("---- aa gulug iishee orj ban haha -------------------->>" + JSON.stringify(responseA.body));
-      console.log("---- shunu corporate -------------------->>" + JSON.stringify(responseA.body));
-    }
     const response = await instance.get(url, { context });
     if (!response.body) {
       if (next) next(new aldaa("Татах хуулга байхгүй"));
