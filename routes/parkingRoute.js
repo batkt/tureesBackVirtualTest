@@ -462,7 +462,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
             "tuukh.$[t].tulbur": [
               {
                 ognoo: new Date(),
-                turul: nemeltUtga?.includes("qpay") ? "qpay" : "khariltsakh",
+                turul: nemeltUtga?.includes("qpay") || nemeltUtga?.includes("QPAY") ? "qpay" : "khariltsakh",
                 dun: tulsunDun,
               },
             ],
