@@ -446,9 +446,9 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     }
     if(baiguullagiinId == "63c0f31efe522048bf02086d") // foodcity
     {
-      if (!!nemeltUtga && (nemeltUtga.includes("Гарах-2") || nemeltUtga.includes("ГАРАХ-2"))) {
+      if (!!nemeltUtga && (nemeltUtga.includes("Гарах-1") || nemeltUtga.includes("ГАРАХ-1"))) {
         query["tuukh.0.garsanKhaalga"] = "192.168.2.236";
-      } else if (!!nemeltUtga && (nemeltUtga.includes("Гарах-1") || nemeltUtga.includes("ГАРАХ-1"))) {
+      } else if (!!nemeltUtga && (nemeltUtga.includes("Гарах-2") || nemeltUtga.includes("ГАРАХ-2"))) {
         query["tuukh.0.garsanKhaalga"] = "192.168.2.237";
       }
     }
