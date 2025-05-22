@@ -380,13 +380,13 @@ async function dansniiJagsaaltAvya(token, next) {
 
 async function dansniiKhuulgaAvya(token, next, body) {
   try {
+    const context = {
+      token: "Bearer " + token,
+    };
     const responseShunuEsekh = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
     var url = "https://api.khanbank.com/v1/statements/" + (responseShunuEsekh?.body ? "corporate/" : "") + body.dansniiDugaar;
     if(body.record)
       url = url + "/record?record=" + body.record;
-    const context = {
-      token: "Bearer " + token,
-    };
     console.log("url -------------------->>" + JSON.stringify(url));
     const response = await instance.get(url, { context });
     if (!response.body) {
