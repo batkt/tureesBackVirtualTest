@@ -384,12 +384,13 @@ async function dansniiKhuulgaAvya(token, next, body) {
       token: "Bearer " + token,
     };
     var url;
-    if(body.baiguullagiinId === "6731b43bc23730ac1908da2d")
+    if(body.baiguullagiinId === "6731b43bc23730ac1908da2d") // soyolj
     {
       const responseShunuEsekh = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
+      console.log("sojolj state -------------------->>" + JSON.stringify(responseShunuEsekh));
       url = "https://api.khanbank.com/v1/statements/" + (responseShunuEsekh?.body ? "corporate/" : "") + body.dansniiDugaar;
-      if(body.record)
-        url = url + (responseShunuEsekh?.body ? "/?record=" : "/record?record=") + body.record;
+      // if(body.record)
+      //   url = url + (responseShunuEsekh?.body ? "/?record=" : "/record?record=") + body.record;
       console.log("sojolj url -------------------->>" + JSON.stringify(url));
     }
     else
