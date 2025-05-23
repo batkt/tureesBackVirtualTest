@@ -1353,7 +1353,7 @@ router.post(
         barilgiinId: req.body.barilgiinId,
         mashiniiDugaar: { $exists: true },
         ustgasanOgnoo: { $exists: false },
-        createdAt: { $gt: req.body.ognoo }
+        createdAt: { $gt: new Date(req.body.ognoo) }
       }
       if(!!req.body.mashiniiDugaar)
         match["mashiniiDugaar"] = req.body.mashiniiDugaar;
