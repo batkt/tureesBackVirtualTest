@@ -1357,10 +1357,10 @@ router.post(
       }
       if(!!req.body.mashiniiDugaar)
         match["mashiniiDugaar"] = req.body.mashiniiDugaar;
-      var query = [
-        {
-          $match: match,
-        },
+      // var query = [
+      //   {
+      //     $match: match,
+      //   },
         // {
         //   $group: {
         //     _id: "$zogsooliinId",
@@ -1372,8 +1372,8 @@ router.post(
         // {
         //   $match: { "too": { $gt: 1 } }
         // }
-      ];
-      var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).aggregate(query);
+      // ];
+      var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(match);
       if(ebarimtuud?.length > 0)
       {
         for await (const butsaakhBarimt of ebarimtuud)
