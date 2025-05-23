@@ -172,6 +172,18 @@ const gereeSchema = new Schema(
       type: [Schema.Types.Mixed],
       select: false,
     },
+    khungulult: [
+      {
+        ognoonuud: [Date],
+        turul: String,
+        zardliinId: String,
+        khungulukhTurul: String,
+        khungulukhKhuvi: Number,
+        tulukhDun: Number,
+        khungulultiinDun: Number,
+        key: String,
+      }
+    ],
   },
   {
     timestamps: true,

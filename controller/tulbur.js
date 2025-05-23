@@ -279,6 +279,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     var body = req.body;
     var dun = body.dun;
     var zardluud = body.zardluud;
+    var khungulultuud = body.khungulultuud;
     var khugatsaa = Number(body.khugatsaa) + 1;
     if (body.turGereeEsekh) khugatsaa = 1;
     var tulukhUdruud = body.tulukhUdruud;
@@ -343,6 +344,21 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                       tulukhDun: zardalDun,
                     });
                 }
+              });
+            }
+            if(khungulultuud?.length > 0)
+            {
+              khungulultuud.forEach((data) => {
+                data.ognoonuud.forEach((ognoo) => {
+                  butsaakhJagsaalt.push({
+                    tulukhDun: 0,
+                    ognoo: ognoo,
+                    turul: "khungulult",
+                    khyamdral: data.khungulultiinDun,
+                    nemeltTailbar: "Гэрээ",
+                    tailbar: "Хөнгөлөлт",
+                  });
+                })
               });
             }
           }
