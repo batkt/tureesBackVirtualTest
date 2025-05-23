@@ -1376,12 +1376,12 @@ router.post(
       var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).aggregate(query);
       if(ebarimtuud?.length > 0)
       {
-        for await (const barimt of ebarimtuud)
+        for await (const butsaakhBarimt of ebarimtuud)
         {
-          var ebarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find({zogsooliinId: barimt?._id});
+          // var ebarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find({_id: barimt?._id});
           // ebarimt?.shift();
-          for await (const butsaakhBarimt of ebarimt)
-          {
+          // for await (const butsaakhBarimt of ebarimt)
+          // {
             ebarimtButsaaya(
               butsaakhBarimt,
               async (d) => {
@@ -1398,7 +1398,7 @@ router.post(
               next,
               true
             );
-          }
+          // }
         }
       }
       res.send(ebarimtuud);
