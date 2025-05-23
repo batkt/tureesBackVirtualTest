@@ -1352,7 +1352,8 @@ router.post(
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
         mashiniiDugaar: { $exists: true },
-        ustgasanOgnoo: { $exists: false }
+        ustgasanOgnoo: { $exists: false },
+        createdAt: { $gt: req.body.ognoo }
       }
       if(!!req.body.mashiniiDugaar)
         match["mashiniiDugaar"] = req.body.mashiniiDugaar;
@@ -1360,17 +1361,17 @@ router.post(
         {
           $match: match,
         },
-        {
-          $group: {
-            _id: "$zogsooliinId",
-            too: {
-              $sum: 1,
-            }
-          }
-        },
-        {
-          $match: { "too": { $gt: 1 } }
-        }
+        // {
+        //   $group: {
+        //     _id: "$zogsooliinId",
+        //     too: {
+        //       $sum: 1,
+        //     }
+        //   }
+        // },
+        // {
+        //   $match: { "too": { $gt: 1 } }
+        // }
       ];
       var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).aggregate(query);
       if(ebarimtuud?.length > 0)
@@ -1378,7 +1379,7 @@ router.post(
         for await (const barimt of ebarimtuud)
         {
           var ebarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find({zogsooliinId: barimt?._id});
-          ebarimt?.shift();
+          // ebarimt?.shift();
           for await (const butsaakhBarimt of ebarimt)
           {
             ebarimtButsaaya(
