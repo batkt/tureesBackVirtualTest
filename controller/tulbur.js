@@ -349,16 +349,18 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
             if(khungulultuud?.length > 0)
             {
               khungulultuud.forEach((data) => {
-                data.ognoonuud.forEach((ognoo) => {
-                  butsaakhJagsaalt.push({
-                    tulukhDun: 0,
-                    ognoo: ognoo,
-                    turul: "khungulult",
-                    khyamdral: data.khungulultiinDun,
-                    nemeltTailbar: "Гэрээ",
-                    tailbar: "Хөнгөлөлт",
-                  });
-                })
+                if (data.ognoonuud?.length > 0 && turOgnoo >= data.ognoonuud[0]) {
+                  if (turOgnoo.getMonth() == data.ognoonuud[1].getMonth() && turOgnoo.getFullYear() == data.ognoonuud[1].getFullYear()) {
+                    butsaakhJagsaalt.push({
+                      tulukhDun: 0,
+                      ognoo: turOgnoo,
+                      turul: "khungulult",
+                      khyamdral: data.khungulultiinDun,
+                      nemeltTailbar: "Гэрээ",
+                      tailbar: "Хөнгөлөлт",
+                    });  
+                  }
+                }
               });
             }
           }
