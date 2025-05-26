@@ -349,7 +349,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
             if(khungulultuud?.length > 0)
             {
               khungulultuud.forEach((data) => {
-                if (moment(turOgnoo)  >= moment(data.ognoonuud[0]) && moment(turOgnoo) <= moment(data.ognoonuud[1])) {
+                if (moment(turOgnoo)  >= moment(moment(data.ognoonuud[0]).format("YYYY-MM-DD 00:00:00")) && moment(turOgnoo) <= moment(moment(data.ognoonuud[1]).format("YYYY-MM-DD 23:59:59"))) {
                   butsaakhJagsaalt.push({
                     tulukhDun: 0,
                     ognoo: turOgnoo,
