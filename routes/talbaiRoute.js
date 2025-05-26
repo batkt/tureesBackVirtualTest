@@ -351,7 +351,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
               {
                 geree?.khungulultuud.forEach((data) => {
                   if (moment(tukhainUdur) >= moment(moment(data.ognoonuud[0]).format("YYYY-MM-DD 00:00:00")) && moment(tukhainUdur) <= moment(moment(data.ognoonuud[1]).format("YYYY-MM-DD 23:59:59"))) {
-                    butsaakhJagsaalt.push({
+                    khuvaariud.push({
                       tulukhDun: 0,
                       ognoo: tukhainUdur,
                       turul: "khungulult",
