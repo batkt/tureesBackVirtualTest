@@ -172,7 +172,7 @@ const gereeSchema = new Schema(
       type: [Schema.Types.Mixed],
       select: false,
     },
-    khungulult: [
+    khungulultuud: [
       {
         ognoonuud: [Date],
         turul: String,
