@@ -55,6 +55,57 @@ router.get(
     }
   }
 );
+router.get(
+  "/qpaycallbackGadaaSticker/:baiguullagiinId/:barilgiinId/:mashiniiDugaar/:cameraIP/:zakhialgiinDugaar",
+  async (req, res, next) => {
+    try {
+      console.log("req.params", req.params);
+      console.log("req.query", req.query);
+      const { db } = require("zevbackv2");
+      const b = req.params.baiguullagiinId;
+      var kholbolt = db.kholboltuud.find((a) => a.baiguullagiinId == b);
+      const qpayObject = await QuickQpayObject(kholbolt).findOne({
+        zakhialgiinDugaar: req.params.zakhialgiinDugaar,
+        tulsunEsekh: false,
+      });
+      console.log("qpayObject ", qpayObject);
+
+      qpayObject.tulsunEsekh = true;
+      qpayObject.isNew = false;
+      await qpayObject.save();
+      req.app.get("socketio").emit(`qpay/${b}/${qpayObject.zakhialgiinDugaar}`);
+      if (qpayObject.zogsooliinId) {
+        const body = {
+          tukhainBaaziinKholbolt: kholbolt,
+          turul: "qpay",
+          uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
+          paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
+          plate_number: qpayObject.zogsoolUilchluulegch.plate_number,
+          barilgiinId: qpayObject.salbariinId,
+          ajiltniiNer: "zochin",
+          ajiltniiId: "zochin",
+          zogsooliinId: qpayObject.zogsooliinId,
+        };
+        await tulburUridchiljTulukh(body, res, next);
+      }
+      if(!!req.params.mashiniiDugaar && !!req.params.cameraIP)
+      {
+        const io = req.app.get("socketio");
+        if (io) {
+          io.emit(`qpayMobileSdk${req.params.baiguullagiinId}`, {
+            khaalgaTurul: "Гарах",
+            turul: "qpayMobile",
+            mashiniiDugaar: req.params.mashiniiDugaar,
+            cameraIP: req.params.cameraIP,
+          });
+        }
+      }
+      res.sendStatus(200);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 router.get("/qpayObjectAvya", tokenShalgakh, async (req, res, next) => {
   try {
     const qpayObject = await QuickQpayObject(
@@ -89,7 +140,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       req.body.burtgeliinDugaar = "6078893";
       await qpayGargayaKhuuchin(req, res, next);
     } else {
-      var tailbar = "Төлбөр " + (req.body.mashiniiDugaar ? req.body.mashiniiDugaar : "");
+      var tailbar = "Төлбөр " + (req.body.mashiniiDugaar ? req.body.mashiniiDugaar : "") + (req.body.turul ? req.body.turul : "");
       if (!!req.body.gereeniiId) {
         var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
           req.body.gereeniiId
@@ -117,6 +168,25 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
         req.body.baiguullagiinId +
         "/" +
         req.body?.zakhialgiinDugaar;
+      // zogsool gadaa sticker qr
+      if(req.body.turul === "QRGadaa" && !!req.body.mashiniiDugaar && !!req.body.cameraIP) {
+        callback_url =
+          "http://" +
+          process.env.UNDSEN_IP +
+          ":" +
+          process.env.PORT +
+          "/qpaycallbackGadaaSticker/" +
+          req.body.baiguullagiinId +
+          "/" +
+          req.body.barilgiinId.toString() +
+          "/" +
+          req.body.mashiniiDugaar +
+          "/" +
+          req.body.cameraIP +
+          "/" +
+          req.body?.zakhialgiinDugaar;
+      }
+
       /*Түрээсийн төлбөр callback url*/
       if (req.body.gereeniiId && req.body.dansniiDugaar) {
         callback_url =

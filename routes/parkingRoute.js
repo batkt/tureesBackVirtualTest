@@ -1176,7 +1176,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             $or: [
               {
                 "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-                  $gt: new Date(Date.now() - 5 * 100000), //1.30sec in dotor
+                  $gt: new Date(Date.now() - 15 * 100000), //1.30sec in dotor
                 },
               },
               {
