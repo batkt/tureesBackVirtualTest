@@ -350,12 +350,14 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
               if(geree?.khungulultuud?.length > 0)
               {
                 geree?.khungulultuud.forEach((data) => {
+                  data.tulukhDun = talbai.talbainNiitUne;
+                  data.khungulultiinDun = Math.round((((talbai.talbainNiitUne * data.khungulukhKhuvi) / 100) + Number.EPSILON) * 10000)/ 10000;
                   if (moment(tukhainUdur) >= moment(moment(data.ognoonuud[0]).format("YYYY-MM-DD 00:00:00")) && moment(tukhainUdur) <= moment(moment(data.ognoonuud[1]).format("YYYY-MM-DD 23:59:59"))) {
                     khuvaariud.push({
                       tulukhDun: 0,
                       ognoo: tukhainUdur,
                       turul: "khungulult",
-                      khyamdral: Math.round((((talbai.talbainNiitUne * data.khungulukhKhuvi) / 100) + Number.EPSILON) * 10000)/ 10000,
+                      khyamdral: data.khungulultiinDun,
                       nemeltTailbar: "Гэрээ",
                       tailbar: "Хөнгөлөлт",
                     });  
@@ -368,6 +370,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
         const { db } = require("zevbackv2");
         var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
         var setMatch = {
+          khungulultuud: geree?.khungulultuud,
           "avlaga.guilgeenuud": khuvaariud,
           talbainDugaar: talbai.kod,
           talbainNegjUne: talbai.talbainNegjUne,
