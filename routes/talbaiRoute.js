@@ -218,7 +218,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
         baiguullagiinId: khuuchinTalbai.baiguullagiinId,
         tuluv: 1,
       })
-      .select("+avlaga +gereeniiTuukhuud");
+      .select("+avlaga +gereeniiTuukhuud +khungulultuud");
     if (gereenuud)
       for await (const geree of gereenuud) {
         talbai.idevkhiteiEsekh = true;
@@ -346,6 +346,21 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                       });
                   }
                 });
+              }
+              if(geree?.khungulultuud?.length > 0)
+              {
+                geree?.khungulultuud.forEach((data) => {
+                  if (moment(tukhainUdur) >= moment(moment(data.ognoonuud[0]).format("YYYY-MM-DD 00:00:00")) && moment(tukhainUdur) <= moment(moment(data.ognoonuud[1]).format("YYYY-MM-DD 23:59:59"))) {
+                    butsaakhJagsaalt.push({
+                      tulukhDun: 0,
+                      ognoo: tukhainUdur,
+                      turul: "khungulult",
+                      khyamdral: Math.round((((talbai.talbainNiitUne * data.khungulukhKhuvi) / 100) + Number.EPSILON) * 10000)/ 10000,
+                      nemeltTailbar: "Гэрээ",
+                      tailbar: "Хөнгөлөлт",
+                    });  
+                  }
+                });            
               }
             }
           });
