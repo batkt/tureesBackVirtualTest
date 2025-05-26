@@ -82,8 +82,8 @@ router.get(
           paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
           plate_number: qpayObject.zogsoolUilchluulegch.plate_number,
           barilgiinId: qpayObject.salbariinId,
-          ajiltniiNer: "zochin",
-          ajiltniiId: "zochin",
+          ajiltniiNer: "qpaySticker",
+          ajiltniiId: "qpaySticker",
           zogsooliinId: qpayObject.zogsooliinId,
         };
         await tulburUridchiljTulukh(body, res, next);
