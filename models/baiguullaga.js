@@ -60,6 +60,10 @@ const baiguullagaSchema = new Schema(
           khungulukhSarBuriinTulburDuusakhUdur: Number,
           tureesiinDungeesKhungulukhEsekh: Boolean,
           ashiglaltDungeesKhungulukhEsekh: Boolean,
+          jilBurTalbaiTulburNemekhEsekh: Boolean, /** жил бүр талбайн төлбөр нэмэх эсэх */
+          jilBurTulbur: Number,
+          gereeDuusakhTalbaiTulburNemekhEsekh: Boolean, /** гэрээ дуусах үед талбайн төлбөр нэмэх эсэх */
+          gereeDuusakhTulbur: Number,
         },
         davkharuud: [
           {
