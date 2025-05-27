@@ -2149,6 +2149,29 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           },
         ];
       }
+    } else if (req.body.ajiltniiId == "68357e846653c13643908698" && !!req.body.khungulukhTsag && !!req.body.zogsoolUndsenUne) {
+      if (req.body.paid_amount == 0) {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Божон/ "+ req.body.khungulukhTsag + " цаг",
+            dun: req.body.zogsoolUndsenUne * req.body.khungulukhTsag,
+          },
+        ];
+      } else {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Божон/ "+ req.body.khungulukhTsag + " цаг",
+            dun: req.body.zogsoolUndsenUne * req.body.khungulukhTsag,
+          },
+          {
+            ognoo: new Date(),
+            turul: req.body.turul,
+            dun: req.body.paid_amount,
+          },
+        ];
+      }
     } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
       if (req.body.paid_amount == 0) {
         tulbur = [
@@ -2240,6 +2263,9 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
               throw new Error("Хөнгөлөлт оруулсан байна!");
           } else if (req.body.ajiltniiId == "67d92062513ec21e26bdb604") {
             if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Бассэйн"))
+              throw new Error("Хөнгөлөлт оруулсан байна!");
+          } else if (req.body.ajiltniiId == "68357e846653c13643908698") {
+            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul?.includes("Божон")))
               throw new Error("Хөнгөлөлт оруулсан байна!");
           } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
             if (
