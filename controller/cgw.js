@@ -882,23 +882,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
                   });
-                  if (guilgeenuud) {
-                    var ustgakhJagsaalt = [];
-                    for await (const item of guilgeenuud) {
-                      var guilgee = await BankniiGuilgee(kholbolt).findOne({
-                        record: item.record,
-                        code: item.code,
-                        branch: item.branch,
-                        barilgiinId: dans.barilgiinId,
-                      });
-                      if (guilgee) ustgakhJagsaalt.push(item);
-                    }
-                    if (!!ustgakhJagsaalt) {
-                      guilgeenuud = guilgeenuud.filter(
-                        (el) => !ustgakhJagsaalt.includes(el)
-                      );
-                    }
-                  }
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
@@ -991,21 +974,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       x.baiguullagiinId = dans.baiguullagiinId;
                       x.barilgiinId = dans.barilgiinId;
                     });
-                    if (guilgeenuud) {
-                      var ustgakhJagsaalt = [];
-                      for await (const item of guilgeenuud) {
-                        var guilgee = await BankniiGuilgee(kholbolt).findOne({
-                          refno: item.refno,
-                          barilgiinId: dans.barilgiinId,
-                        });
-                        if (guilgee) ustgakhJagsaalt.push(item);
-                      }
-                      if (!!ustgakhJagsaalt) {
-                        guilgeenuud = guilgeenuud.filter(
-                          (el) => !ustgakhJagsaalt.includes(el)
-                        );
-                      }
-                    }
                     BankniiGuilgee(kholbolt)
                       .insertMany(guilgeenuud)
                       .then((result) => {
@@ -1142,21 +1110,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                           x.baiguullagiinId = dans.baiguullagiinId;
                           x.barilgiinId = dans.barilgiinId;
                         });
-                        if (guilgeenuud) {
-                          var ustgakhJagsaalt = [];
-                          for await (const item of guilgeenuud) {
-                            var guilgee = await BankniiGuilgee(kholbolt).findOne({
-                              NtryRef: item.NtryRef,
-                              barilgiinId: dans.barilgiinId,
-                            });
-                            if (guilgee) ustgakhJagsaalt.push(item);
-                          }
-                          if (!!ustgakhJagsaalt) {
-                            guilgeenuud = guilgeenuud.filter(
-                              (el) => !ustgakhJagsaalt.includes(el)
-                            );
-                          }
-                        }
                         BankniiGuilgee(kholbolt)
                           .insertMany(guilgeenuud)
                           .then((result) => {
@@ -1246,21 +1199,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
                   });
-                  if (guilgeenuud) {
-                    var ustgakhJagsaalt = [];
-                    for await (const item of guilgeenuud) {
-                      var guilgee = await BankniiGuilgee(kholbolt).findOne({
-                        tranId: item.tranId,
-                        barilgiinId: dans.barilgiinId,
-                      });
-                      if (guilgee) ustgakhJagsaalt.push(item);
-                    }
-                    if (!!ustgakhJagsaalt) {
-                      guilgeenuud = guilgeenuud.filter(
-                        (el) => !ustgakhJagsaalt.includes(el)
-                      );
-                    }
-                  }
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
@@ -1362,21 +1300,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
                   });
-                  if (guilgeenuud) {
-                    var ustgakhJagsaalt = [];
-                    for await (const item of guilgeenuud) {
-                      var guilgee = await BankniiGuilgee(kholbolt).findOne({
-                        jrno: item.jrno,
-                        barilgiinId: dans.barilgiinId,
-                      });
-                      if (guilgee) ustgakhJagsaalt.push(item);
-                    }
-                    if (!!ustgakhJagsaalt) {
-                      guilgeenuud = guilgeenuud.filter(
-                        (el) => !ustgakhJagsaalt.includes(el)
-                      );
-                    }
-                  }
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
