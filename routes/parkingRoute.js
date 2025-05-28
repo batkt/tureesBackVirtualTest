@@ -1694,8 +1694,13 @@ router.route("/v1/pay").post(async (req, res, next) => {
         )
         {
           var tulburDun = tukhainObject.tuukh[0].tulbur?.reduce((a, b) => a + (b.dun || 0), 0);
-          if(tulburDun > 0 && bodsonDun > 0 && bodsonDun == (req.body.paid_amount + tulburDun))
-            tukhainObject.tuukh[0].tulbur.push(...tulbur);
+          if(tulburDun > 0 && bodsonDun > 0)
+          {
+            if(bodsonDun == (req.body.paid_amount + tulburDun))
+              tukhainObject.tuukh[0].tulbur.push(...tulbur);
+            else if(bodsonDun < (req.body.paid_amount + tulburDun))
+              res.send({ success: false, message: "Төлөлт хийгдсэн байна!" });
+          }
         }
         else tukhainObject.tuukh[0].tulbur = tulbur;
       var set = {
