@@ -382,22 +382,27 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
 
 
 module.exports.testCloudMongodb = async function testCloudMongodb() {
-  var mashiniiDugaar =  Math.floor(1000 + Math.random() * 9000) + "УУУ";
-  const form = new FormData();
-  form.append('mashiniiDugaar', mashiniiDugaar);
-  form.append('CAMERA_IP', "192.168.1.108");
-  form.append('barilgiinId', "622ca3938e64e5b4f0c36bed");
-  const response = await got.post("http://103.143.40.230:8081/zogsoolSdkService", 
+  try 
   {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MyIsIm5lciI6IkNBZG1pbiIsImJhaWd1dWxsYWdpaW5JZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MSIsImlhdCI6MTc0ODQ4ODQxNX0.FZFqETa5TMm2qVV1eZYDnGTZyOINWp-M9q_7eZf254U",
-    },
-    body: form,
-  })
-  .catch((err) => {
-    console.log("error " + err.message);
-  });
-  var khariu = JSON.parse(response?.body);
-  console.log("khariu --->" + JSON.stringify(khariu));
+    var mashiniiDugaar =  Math.floor(1000 + Math.random() * 9000) + "УУУ";
+    const form = new FormData();
+    form.append('mashiniiDugaar', mashiniiDugaar);
+    form.append('CAMERA_IP', "192.168.1.108");
+    form.append('barilgiinId', "622ca3938e64e5b4f0c36bed");
+    const response = await got.post("http://103.143.40.230:8081/zogsoolSdkService", 
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MyIsIm5lciI6IkNBZG1pbiIsImJhaWd1dWxsYWdpaW5JZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MSIsImlhdCI6MTc0ODQ4ODQxNX0.FZFqETa5TMm2qVV1eZYDnGTZyOINWp-M9q_7eZf254U",
+      },
+      body: form,
+    })
+    .catch((err) => {
+      console.log("error " + err.message);
+    });
+    var khariu = JSON.parse(response?.body);
+    console.log("khariu --->" + JSON.stringify(khariu));
+  } catch (err) {
+    console.log("err", err);
+  }
 };
