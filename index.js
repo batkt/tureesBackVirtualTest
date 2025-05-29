@@ -319,17 +319,17 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "*/1 * * * * * ",
-//   function () {
-//     console.log("testCloudMongodb --->");
-//     zogsool.testCloudMongodb();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "*/1 * * * * * ",
+  function () {
+    console.log("testCloudMongodb --->");
+    zogsool.testCloudMongodb();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 io.once("connection", (socket) => {
   console.log("connected");
