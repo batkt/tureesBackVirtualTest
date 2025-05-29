@@ -944,7 +944,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       console.log("error " + err.message);
                       throw err;
                     });
-                  var khariu = response.body;
+                  var khariu = response.data;
                   //console.log("khariu " + JSON.stringify(khariu, null, 4));
                   if (
                     !!khariu &&
