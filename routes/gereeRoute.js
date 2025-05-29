@@ -523,7 +523,7 @@ router
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
       var khuvaariud = gereeOld?.avlaga?.guilgeenuud;
-      khuvaariud = khuvaariud.filter((x) => x.ognoo < moment().startOf("month") || (x.turul == "khyamdral" && x.khyamdral > 0 && x.nemeltTailbar != 'Гэрээ') || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo);
+      khuvaariud = khuvaariud.filter((x) => (x.turul == "khyamdral" && x.khyamdral > 0 && x.nemeltTailbar != 'Гэрээ') || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo);
       if(geree?.avlaga?.baritsaa?.length === 0)
         geree?.avlaga?.baritsaa.push(...gereeOld?.avlaga?.baritsaa);
       geree?.avlaga?.guilgeenuud.push(...khuvaariud);
@@ -683,8 +683,7 @@ router
       }
       var khuvaariud = geree.avlaga.guilgeenuud;
       khuvaariud = khuvaariud.filter(
-        (x) =>
-          x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
+        (x) => (x.turul == "khyamdral" && x.khyamdral > 0 && x.nemeltTailbar != 'Гэрээ') || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
       );
       var today = new Date();
       var unuudur = new Date(
@@ -4083,5 +4082,78 @@ async function sarBuriinKhungulultBodoy() {
     console.log("sarBuriinKhungulultBodoy error", error);
   }
 }
+
+async function duusakhGereeAutomataarTalbainTulburNemekh() {
+  try 
+  {
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
+      "barilguud.tokhirgoo.gereeDuusakhTalbaiTulburNemekhEsekh": true,
+    });
+    for await (const baiguullaga of baiguullaguud) {
+      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
+      for await (const barilga of baiguullaga?.barilguud)
+      {
+        if(barilga.tokhirgoo?.gereeDuusakhTalbaiTulburNemekhEsekh && barilga.tokhirgoo?.gereeDuusakhTulbur > 0)
+        {
+          var mainMatch = {
+            baiguullagiinId: baiguullaga._id.toString(),
+            barilgiinId: barilga?._id.toString(),
+            tuluv: {
+              $ne: -1,
+            },
+            duusakhOgnoo: {
+              $gte: new Date(moment().startOf("day")),
+              $lte: new Date(moment().endOf("day"))
+            }
+          }
+          var gereenuud = await Geree(kholbolt).find(mainMatch);
+          if(gereenuud?.length > 0)
+          {
+            for await (const geree of gereenuud)
+            {
+              if(geree.talbainIdnuud?.length > 0)  
+              {
+                for await (const talbainId of geree.talbainIdnuud)
+                {
+                  var khuuchinTalbai = await Talbai(kholbolt).findById(talbainId);
+                  
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    } catch (error) {
+    console.log("duusakhGereeAutomataarTalbainTulburNemekh error", error);
+  }
+}
+
+async function jilBurAutomataarTalbainTulburNemekh() {
+  try 
+  {
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
+      "barilguud.tokhirgoo.jilBurTalbaiTulburNemekhEsekh": true,
+    });
+    for await (const baiguullaga of baiguullaguud) {
+      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
+      for await (const barilga of baiguullaga?.barilguud)
+      {
+        if(barilga.tokhirgoo?.jilBurTalbaiTulburNemekhEsekh && barilga.tokhirgoo?.jilBurTulbur > 0)
+        {
+          var khuuchinTalbai = await Talbai(kholbolt).findById(talbainId);
+        }
+      }
+    }
+  } catch (error) {
+    console.log("jilBurAutomataarTalbainTulburNemekh error", error);
+  }
+}
 module.exports = router;
 module.exports.sarBuriinKhungulultBodoy = sarBuriinKhungulultBodoy;
+module.exports.duusakhGereeAutomataarTalbainTulburNemekh = duusakhGereeAutomataarTalbainTulburNemekh;
+module.exports.jilBurAutomataarTalbainTulburNemekh = jilBurAutomataarTalbainTulburNemekh;
