@@ -782,7 +782,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
   try {
     var kholboltuud;
-
     const { db } = require("zevbackv2");
     if (!!req?.body?.tukhainBaaziinKholbolt) {
       kholboltuud = [req.body.tukhainBaaziinKholbolt];
@@ -808,7 +807,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       for await (const kholbolt of kholboltuud) {
         if (!req)
           dansnuud = await Dans(kholbolt)
-            .find({ corporateAshiglakhEsekh: true, oirkhonTatakhEsekh: { $exists: false }, })
+            .find({ corporateAshiglakhEsekh: true, oirkhonTatakhEsekh: { $exists: false } })
             .lean();
         else if (req.body.dansniiDugaar) {
           dansnuud = await Dans(kholbolt)
@@ -910,7 +909,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       barilgiinId: dans.barilgiinId,
                       dansniiDugaar: dans.dugaar,
                     })
-                    .sort({ createdAt: -1 })
+                    .sort({ txnDate: -1 })
                     .limit(1);
                   if (!!max) {
                     firstDay = new Date(max.txnDate);
@@ -933,8 +932,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate()
                   + "&page=0&size=100"
-                  console.log("url " + url);
-                  const response = await got
+                  console.log("urlurl " + url);
+                  var response = await axios
                     .get(url, {
                       headers: {
                         "Content-Type": "application/json",
