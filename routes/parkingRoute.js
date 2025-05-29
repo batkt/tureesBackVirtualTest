@@ -27,7 +27,7 @@ const Sonorduulga = require("../models/sonorduulga");
 const Ebarimt = require("../models/ebarimt");
 const EbarimtShine = require("../models/ebarimtShine");
 
-const { sonorduulgaIlgeeye } = require("../controller/appNotification");
+const { khariltsagchidSonorduulgaIlgeeye } = require("../controller/appNotification");
 const lodash = require("lodash");
 const moment = require("moment");
 const Baiguullaga = require("../models/baiguullaga");
@@ -194,7 +194,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
           </span>`,
         };
         firebaseToken = kharilltsagch.firebaseToken;
-        sonorduulgaIlgeeye(
+        khariltsagchidSonorduulgaIlgeeye(
           firebaseToken,
           medeelel,
           (r) => {
