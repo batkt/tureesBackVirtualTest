@@ -388,7 +388,7 @@ module.exports.testCloudMongodb = async function testCloudMongodb() {
       CAMERA_IP: "192.168.1.108",
       barilgiinId: "622ca3938e64e5b4f0c36bed",
     }
-  const response = await got.post("103.143.40.230:8081/zogsoolSdkService", body,
+  const response = await got.post("http://103.143.40.230:8081/zogsoolSdkService", body,
   {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
