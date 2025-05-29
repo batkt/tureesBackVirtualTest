@@ -6,6 +6,7 @@ const {
   Parking,
   Uilchluulegch,
   zogsooliinDunAvya,
+  sdkData,
 } = require("parking-v1");
 const moment = require("moment");
 
@@ -374,5 +375,33 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
     if (!!next) {
       next(err);
     } else console.log("err", err);
+  }
+};
+
+
+module.exports.testCloudMongodb = async function testCloudMongodb() {
+  const { db } = require("zevbackv2");
+  var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
+    register: "6688845",
+  });
+  if (!!baiguullaguud) {
+    var kholboltuud = db.kholboltuud;
+    for await (const baiguullaga of baiguullaguud) {
+      var tukhainKholbolt = kholboltuud.find(
+        (x) => x.baiguullagiinId == baiguullaga._id.toString()
+      );
+      var mashiniiDugaar =  Math.floor(1000 + Math.random() * 9000) + "УУУ";
+      console.log("mashiniiDugaar --->" + JSON.stringify(mashiniiDugaar));
+      var req = {
+        body: {
+          tukhainBaaziinKholbolt: tukhainKholbolt,
+          mashiniiDugaar: mashiniiDugaar,
+          CAMERA_IP: "192.168.1.108",
+          barilgiinId: "622ca3938e64e5b4f0c36bed",
+        }
+      }
+      const khariu = await sdkData(req, null);
+      console.log("add mashin --->" + JSON.stringify(khariu));
+    }
   }
 };
