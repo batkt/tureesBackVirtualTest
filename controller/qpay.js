@@ -486,7 +486,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           res.sendStatus(200);
         })
         .catch((err) => {
-          res.sendStatus(200);
+          if(next) next(err);
         });
     }
   }

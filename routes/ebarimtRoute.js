@@ -1338,7 +1338,7 @@ router.post(
         })
         .catch((a) => {
           console.log(a);
-          res.send("Aldaa");
+          next(a);
         });
     } catch (error) {
       next(error);
