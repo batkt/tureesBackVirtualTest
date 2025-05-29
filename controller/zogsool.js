@@ -398,5 +398,6 @@ module.exports.testCloudMongodb = async function testCloudMongodb() {
   .catch((err) => {
     console.log("error " + err.message);
   });
-  console.log("khariu --->" + JSON.stringify(response));
+  var khariu = JSON.parse(response?.body);
+  console.log("khariu --->" + JSON.stringify(khariu));
 };
