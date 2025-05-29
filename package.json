@@ -27,7 +27,7 @@
     "pg": "^8.11.5",
     "quickqpaypackv2": "^1.0.44",
     "sharp": "^0.30.7",
-    "zevbackv2": "^1.1.32",
+    "zevbackv2": "^1.1.33",
     "zuragpack": "^1.0.17"
   },
   "devDependencies": {
