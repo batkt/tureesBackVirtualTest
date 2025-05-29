@@ -88,6 +88,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     });
     if (!tokenObject) {
       var { username, password, sessionKey, ivKey } = dans;
+      if(!sessionKey || !ivKey) return tokenObject;
       var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
       var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
       var encryptedPass = await CryptoJS.AES.encrypt(password, sessionKey, {
@@ -322,6 +323,7 @@ async function golomtServiceDuudya(
     var hash = CryptoJS.SHA256(a.toString());
     var hex = hash.toString(CryptoJS.enc.Hex);
     console.log("sessionKey ------------>>>" + sessionKey);
+    if(!sessionKey || !ivKey) return "";
     var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
     var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
     var encrypted = CryptoJS.AES.encrypt(hex, sessionKey, {
