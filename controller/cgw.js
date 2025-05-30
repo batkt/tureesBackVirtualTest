@@ -2182,44 +2182,44 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
         var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
         var parking = await Parking(kholbolt).findOne({gadnaZogsooliinId: {$exists: true}});
         var gadnaParkuud = await Parking(kholbolt).find({gadnaZogsooliinId: {$exists: false}});
-        if(!!parking && parking.baiguullagiinId === "63c0f31efe522048bf02086d") // foodcity 
-        {
-          var match = {
-            baiguullagiinId: parking.baiguullagiinId,
-            barilgiinId: parking.barilgiinId,
-            "tuukh.zogsooliinId": parking._id.toString(),
-            "tuukh.1.orsonKhaalga": "192.168.2.75", 
-            "tuukh.0.garsanKhaalga": {$exists: false},
-            "tuukh.1.garsanKhaalga": {$exists: false},
-            "tuukh.0.tsagiinTuukh.0.garsanTsag": {$exists: false},
-            "tuukh.1.tsagiinTuukh.0.garsanTsag": {$exists: false}
-          };
-          if(req?.body?.mashiniiDugaar)
-            match["mashiniiDugaar"] = req?.body?.mashiniiDugaar
-          var mashinuud = await Uilchluulegch(kholbolt).find(match);  
-          for await (const data of mashinuud)
-          {
-            var tuukh = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.234");
-            var filtered = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.75");
-            tuukh.push(filtered[0]);
-            data.tuukh = tuukh;
-            await Uilchluulegch(kholbolt).findByIdAndUpdate(
-            data._id,
-            {
-              $set: {
-                "tuukh": tuukh,
-              },
-            });
-            resultDotor.push(data);
-          }
-          var match = {
-            baiguullagiinId: parking.baiguullagiinId,
-            barilgiinId: parking.barilgiinId,
-            "tuukh.zogsooliinId": parking._id.toString(),
-            "tuukh.orsonKhaalga": "192.168.2.234", 
-            "tuukh.tsagiinTuukh.garsanTsag": {$exists: false}
-          };
-        }
+        // if(!!parking && parking.baiguullagiinId === "63c0f31efe522048bf02086d") // foodcity 
+        // {
+        //   var match = {
+        //     baiguullagiinId: parking.baiguullagiinId,
+        //     barilgiinId: parking.barilgiinId,
+        //     "tuukh.zogsooliinId": parking._id.toString(),
+        //     "tuukh.1.orsonKhaalga": "192.168.2.75", 
+        //     "tuukh.0.garsanKhaalga": {$exists: false},
+        //     "tuukh.1.garsanKhaalga": {$exists: false},
+        //     "tuukh.0.tsagiinTuukh.0.garsanTsag": {$exists: false},
+        //     "tuukh.1.tsagiinTuukh.0.garsanTsag": {$exists: false}
+        //   };
+        //   if(req?.body?.mashiniiDugaar)
+        //     match["mashiniiDugaar"] = req?.body?.mashiniiDugaar
+        //   var mashinuud = await Uilchluulegch(kholbolt).find(match);  
+        //   for await (const data of mashinuud)
+        //   {
+        //     var tuukh = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.234");
+        //     var filtered = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.75");
+        //     tuukh.push(filtered[0]);
+        //     data.tuukh = tuukh;
+        //     await Uilchluulegch(kholbolt).findByIdAndUpdate(
+        //     data._id,
+        //     {
+        //       $set: {
+        //         "tuukh": tuukh,
+        //       },
+        //     });
+        //     resultDotor.push(data);
+        //   }
+        //   var match = {
+        //     baiguullagiinId: parking.baiguullagiinId,
+        //     barilgiinId: parking.barilgiinId,
+        //     "tuukh.zogsooliinId": parking._id.toString(),
+        //     "tuukh.orsonKhaalga": "192.168.2.234", 
+        //     "tuukh.tsagiinTuukh.garsanTsag": {$exists: false}
+        //   };
+        // }
         if(!!gadnaParkuud?.length > 0)
         {
           for await (const gadnaParking of gadnaParkuud){
