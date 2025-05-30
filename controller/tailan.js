@@ -482,7 +482,8 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
         };
         res.send(data);
       }
-      res.send(result);
+      else
+        res.send(result);
     })
     .catch((err) => {
       next(err);

@@ -420,7 +420,8 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
       console.log("url", url);
       request.post(url, { json: true, body: ugugdul }, (err, res1, body) => {
         if (err) {
-          next(err);
+          if(!!next)
+            next(err);
         } else {
           console.log("ebarimt body", body);
           onFinish(body, ugugdul);
@@ -437,7 +438,7 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
         (err, res1, body) => {
           if (err) {
             if(!!next)
-            next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+              next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
           } else {
             console.log("ebarimt body", body);
             onFinish(body, ugugdul);
@@ -447,7 +448,8 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
     }
   } catch (aldaa) {
     console.log("aldaa", aldaa);
-    next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+    if(!!next)
+      next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
   }
 }
 
@@ -1336,7 +1338,7 @@ router.post(
         })
         .catch((a) => {
           console.log(a);
-          res.send("Aldaa");
+          next(a);
         });
     } catch (error) {
       next(error);

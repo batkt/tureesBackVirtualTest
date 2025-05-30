@@ -39,7 +39,7 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
               res.send("Amjilttai");
             })
             .catch((err) => {
-              res.send(err);
+              next(err);
             });
         } else res.send("Amjilttai");
       })

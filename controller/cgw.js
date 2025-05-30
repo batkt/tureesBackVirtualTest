@@ -88,6 +88,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     });
     if (!tokenObject) {
       var { username, password, sessionKey, ivKey } = dans;
+      if(!sessionKey || !ivKey) return tokenObject;
       var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
       var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
       var encryptedPass = await CryptoJS.AES.encrypt(password, sessionKey, {
@@ -322,6 +323,7 @@ async function golomtServiceDuudya(
     var hash = CryptoJS.SHA256(a.toString());
     var hex = hash.toString(CryptoJS.enc.Hex);
     console.log("sessionKey ------------>>>" + sessionKey);
+    if(!sessionKey || !ivKey) return "";
     var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
     var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
     var encrypted = CryptoJS.AES.encrypt(hex, sessionKey, {
@@ -2186,13 +2188,27 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           var match = {
             baiguullagiinId: parking.baiguullagiinId,
             barilgiinId: parking.barilgiinId,
-            "tuukh.zogsooliinId": parking._id.toString(),
-            "tuukh.orsonKhaalga": "192.168.2.75", 
-            "tuukh.tsagiinTuukh.garsanTsag": {$exists: false}
+            niitDun: { $exists: false }
           };
           if(req?.body?.mashiniiDugaar)
             match["mashiniiDugaar"] = req?.body?.mashiniiDugaar
-          var mashinuud = await Uilchluulegch(kholbolt).find(match);  
+          var query = [
+            {
+              $match: match,
+            },
+            {
+              $unwind: "$tuukh",
+            },
+            {
+              $match: {
+                "tuukh.zogsooliinId": parking._id.toString(),
+                "tuukh.orsonKhaalga": "192.168.2.75", 
+                "tuukh.garsanKhaalga": {$exists: false},
+                "tuukh.tsagiinTuukh.garsanTsag": {$exists: false},
+              }
+            }
+          ]
+          var mashinuud = await Uilchluulegch(kholbolt).aggregate(query);  
           for await (const data of mashinuud)
           {
             var tuukh = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.234");
