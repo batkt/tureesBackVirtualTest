@@ -2189,7 +2189,8 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
             barilgiinId: parking.barilgiinId,
             "tuukh.zogsooliinId": parking._id.toString(),
             "tuukh.orsonKhaalga": "192.168.2.75", 
-            "tuukh.tsagiinTuukh.garsanTsag": {$exists: false}
+            "tuukh.0.tsagiinTuukh.0.garsanTsag": {$exists: false},
+            "tuukh.1.tsagiinTuukh.0.garsanTsag": {$exists: false}
           };
           if(req?.body?.mashiniiDugaar)
             match["mashiniiDugaar"] = req?.body?.mashiniiDugaar
