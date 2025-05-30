@@ -44,7 +44,6 @@ router.get(
           plate_number: qpayObject.zogsoolUilchluulegch.plate_number,
           barilgiinId: qpayObject.salbariinId,
           ajiltniiNer: "zochin",
-          ajiltniiId: "zochin",
           zogsooliinId: qpayObject.zogsooliinId,
         };
         await tulburUridchiljTulukh(body, res, next);
