@@ -807,7 +807,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       for await (const kholbolt of kholboltuud) {
         if (!req)
           dansnuud = await Dans(kholbolt)
-            .find({ corporateAshiglakhEsekh: true, oirkhonTatakhEsekh: { $exists: false } })
+            .find({ corporateAshiglakhEsekh: true, oirkhonTatakhEsekh: { $exists: false },dugaar : "MN140004000416098376" })
             .lean();
         else if (req.body.dansniiDugaar) {
           dansnuud = await Dans(kholbolt)
@@ -909,10 +909,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       barilgiinId: dans.barilgiinId,
                       dansniiDugaar: dans.dugaar,
                     })
-                    .sort({ txnDate: -1 })
+                    .sort({ TxDt: -1 })
                     .limit(1);
                   if (!!max) {
-                    firstDay = new Date(max.txnDate);
+                    firstDay = new Date(max.TxDt);
                   }
                   url = url + 
                   "?from=" +
@@ -944,6 +944,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       console.log("error " + err.message);
                       throw err;
                     });
+                  //console.log("response.data " + response.data);
                   var khariu = response.data;
                   //console.log("khariu " + JSON.stringify(khariu, null, 4));
                   if (
@@ -955,7 +956,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     khariu.txn.forEach((mur) => {
                       guilgeenuud.push(
                         new BankniiGuilgee(kholbolt)({
-                          txnDate: mur?.txndate,
+                          TxDt: mur?.txndate,
                           refno: mur?.refno,
                           TxAddInf: mur?.txndesc,
                           Amt: mur?.credit ? mur?.credit : mur?.debit, 
