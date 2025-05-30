@@ -2922,7 +2922,7 @@ router.post("/zochinAjiltaniiIdTseverlekh", async (req, res, next) => {
               data._id,
               {
                 $unset: {
-                  "tuukh.burtgesenAjiltaniiId": 1,
+                  "tuukh.0.burtgesenAjiltaniiId": 1,
                 },
               });
               result.push(data);
