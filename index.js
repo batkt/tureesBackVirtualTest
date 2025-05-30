@@ -121,17 +121,17 @@ cron.schedule(
   }
 );
 
-cron.schedule(
-  "59 23 * * *",
-  function () {
-    console.log("ebarimt ilgeelee", new Date());
-    ebarimtRoute.ebarimtIlgeeye("6115f350b35689cdbf1b9da3");
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
+// cron.schedule(
+//   "59 23 * * *",
+//   function () {
+//     console.log("ebarimt ilgeelee", new Date());
+//     ebarimtRoute.ebarimtIlgeeye("6115f350b35689cdbf1b9da3");
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 
 cron.schedule(
   "*/4 * * * * * ",
@@ -209,17 +209,17 @@ cron.schedule(
     timezone: "Asia/Ulaanbaatar",
   }
 );
-cron.schedule(
-  "50 59 23 * * * ",
-  function () {
-    console.log("ebarimtDutuugShivye");
-    zogsool.ebarimtDutuugShivye();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
+// cron.schedule(
+//   "50 59 23 * * * ",
+//   function () {
+//     console.log("ebarimtDutuugShivye");
+//     zogsool.ebarimtDutuugShivye();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 cron.schedule(
   "30 13 * * * * ",
   function () {
