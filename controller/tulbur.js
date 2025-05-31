@@ -287,11 +287,11 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     if(body.baiguullagiinId === "63c0f31efe522048bf02086d")
     {
       var foodcityEkhlekhOgnoo = new Date(moment("2024-09-30").format("YYYY-MM-DD 00:00:00"))
-      var tempEkhlekhOgnoo = new Date(moment(shineGereeEsekh ? body.ekhlekhOgnoo : moment().startOf("month")).format("YYYY-MM-DD 00:00:00"))
+      var tempEkhlekhOgnoo = new Date(moment(body.shineGereeEsekh ? body.ekhlekhOgnoo : moment().startOf("month")).format("YYYY-MM-DD 00:00:00"))
       ekhlekhOgnoo = new Date(foodcityEkhlekhOgnoo > tempEkhlekhOgnoo ? foodcityEkhlekhOgnoo : tempEkhlekhOgnoo); // body.ekhlekhOgnoo
     }
     else
-      ekhlekhOgnoo = new Date(shineGereeEsekh ? body.ekhlekhOgnoo: moment().startOf("month"));
+      ekhlekhOgnoo = new Date(body.shineGereeEsekh ? body.ekhlekhOgnoo: moment().startOf("month"));
     var duusakhOgnoo = new Date(body.duusakhOgnoo);
     if (body.turGereeEsekh) tulukhUdruud = [ekhlekhOgnoo.getDate()];
     var butsaakhJagsaalt = [];
