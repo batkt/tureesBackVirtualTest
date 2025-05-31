@@ -2896,4 +2896,45 @@ router.post("/dotorZogsoolDavhkardsanMashin", tokenShalgakh, async (req, res, ne
     } 
   }
 );
+router.post("/zochinAjiltaniiIdTseverlekh", async (req, res, next) => {
+  try
+    {
+      const { db } = require("zevbackv2");
+      var kholboltuud = db.kholboltuud;
+      var localEsekh = !!req.body.baiguullagiinId;
+      if (localEsekh) {
+        kholboltuud = kholboltuud.filter(
+          (a) => a.baiguullagiinId == req.body.baiguullagiinId
+        );
+      }
+      var result = [];
+      if (kholboltuud) {
+        var query = { "tuukh.burtgesenAjiltaniiId": 'zochin' };
+        if (!!req.body.baiguullagiinId)
+          query["baiguullagiinId"] = req.body.baiguullagiinId;
+        for await (const kholbolt of kholboltuud) {
+          var mashinuud = await Uilchluulegch(kholbolt).find(query);  
+          if(mashinuud?.length > 0)
+          {
+            for await (const data of mashinuud)
+            {
+              await Uilchluulegch(kholbolt).findByIdAndUpdate(
+              data._id,
+              {
+                $unset: {
+                  "tuukh.0.burtgesenAjiltaniiId": 1,
+                },
+              });
+              result.push(data);
+            }
+          }
+        }
+      }
+      res.send(result);
+    }
+    catch (err) {
+      next(err);
+    } 
+  }
+);
 module.exports = router;

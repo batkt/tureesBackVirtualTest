@@ -393,7 +393,6 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         plate_number: qpayBarimt.zogsoolUilchluulegch.plate_number,
         barilgiinId: qpayBarimt.salbariinId,
         ajiltniiNer: "zochin",
-        ajiltniiId: "zochin",
         zogsooliinId: qpayBarimt.zogsooliinId,
       };
       await tulburUridchiljTulukh(body, next);
