@@ -809,7 +809,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       for await (const kholbolt of kholboltuud) {
         if (!req)
           dansnuud = await Dans(kholbolt)
-            .find({ corporateAshiglakhEsekh: true, oirkhonTatakhEsekh: { $exists: false },dugaar : "MN140004000416098376" })
+            .find({ corporateAshiglakhEsekh: true, oirkhonTatakhEsekh: { $exists: false } })
             .lean();
         else if (req.body.dansniiDugaar) {
           dansnuud = await Dans(kholbolt)
