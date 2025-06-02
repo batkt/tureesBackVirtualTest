@@ -523,7 +523,7 @@ router
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt).findById(geree._id).select("+avlaga");
       var khuvaariud = gereeOld?.avlaga?.guilgeenuud;
-      khuvaariud = khuvaariud.filter((x) => x.ognoo < moment().startOf("month") || (x.turul == "khyamdral" && x.khyamdral > 0 && x.nemeltTailbar != 'Гэрээ') || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo);
+      khuvaariud = khuvaariud.filter((x) => x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo);
       if(geree?.avlaga?.baritsaa?.length === 0)
         geree?.avlaga?.baritsaa.push(...gereeOld?.avlaga?.baritsaa);
       geree?.avlaga?.guilgeenuud.push(...khuvaariud);
@@ -683,7 +683,7 @@ router
       }
       var khuvaariud = geree.avlaga.guilgeenuud;
       khuvaariud = khuvaariud.filter(
-        (x) => x.ognoo < moment().startOf("month") || (x.turul == "khyamdral" && x.khyamdral > 0 && x.nemeltTailbar != 'Гэрээ') || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
+        (x) => x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
       );
       var today = new Date();
       var unuudur = new Date(

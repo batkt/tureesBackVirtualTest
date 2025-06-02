@@ -2185,7 +2185,7 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
         var khuvaariud = geree.avlaga.guilgeenuud;
         khuvaariud = khuvaariud.filter(
           (x) =>
-            x.ognoo < moment().startOf("month") || (x.turul == "khyamdral" && x.khyamdral > 0 && x.nemeltTailbar != 'Гэрээ') || x.khyamdral > 0 || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
+            x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
         );
         var today = new Date();
         var unuudur = new Date(
