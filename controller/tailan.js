@@ -1743,7 +1743,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                 {
                   $or: [
                     {
-                      $regex: ["$avlaga.guilgeenuud.tailbar", "Менежментийн төлбөр"],
+                      $eq: ["$avlaga.guilgeenuud.tailbar", "Менежментийн төлбөр"],
                     },
                     {
                       $eq: ["$avlaga.guilgeenuud.tailbar", "Менежмент"],
