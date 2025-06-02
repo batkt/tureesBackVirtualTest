@@ -1759,7 +1759,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                     {
                       $or: [
                         {
-                          $eq: ["$avlaga.guilgeenuud.tailbar", "Дулаан"],
+                          $regexMatch: { input: "$avlaga.guilgeenuud.tailbar", regex: "Дулаан" }
                         },
                         {
                           $eq: ["$avlaga.guilgeenuud.zardliinTurul", "dulaan"],
@@ -1772,7 +1772,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                         {
                           $or: [
                             {
-                              $eq: ["$avlaga.guilgeenuud.tailbar", "Цахилгаан"],
+                              $regexMatch: { input: "$avlaga.guilgeenuud.tailbar", regex: "Цахилгаан" }
                             },
                             {
                               $eq: ["$avlaga.guilgeenuud.zardliinTurul", "tsakhilgaan"],
@@ -1785,7 +1785,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                             {
                               $or: [
                                 {
-                                  $eq: ["$avlaga.guilgeenuud.tailbar", "Халуун ус"],
+                                  $regexMatch: { input: "$avlaga.guilgeenuud.tailbar", regex: "Халуун ус" }
                                 },
                                 {
                                   $eq: ["$avlaga.guilgeenuud.zardliinTurul", "khulaanUs"],
@@ -1798,7 +1798,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                                 {
                                   $or: [
                                     {
-                                      $eq: ["$avlaga.guilgeenuud.tailbar", "Хүйтэн ус"],
+                                      $regexMatch: { input: "$avlaga.guilgeenuud.tailbar", regex: "Хүйтэн ус" }
                                     }, 
                                     {
                                       $eq: ["$avlaga.guilgeenuud.zardliinTurul", "khuitenUs"],
