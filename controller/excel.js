@@ -2769,6 +2769,25 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
               x.gereeniiDugaar === geree.gereeniiDugaar
             );
           }); 
+        }if (umnukhZaalt > 0 && tukhainZardal.umnukhZaalt > 0 && umnukhZaalt != tukhainZardal.umnukhZaalt){
+          if (!!tukhainZardal.register) {
+            aldaaniiMsg =
+              aldaaniiMsg +
+              tukhainZardal.register +
+              " регистртэй гэрээний өмнөх заалт зөрүүтэй байна! ";
+          }
+          if (!!tukhainZardal.talbainDugaar) {
+            aldaaniiMsg =
+              aldaaniiMsg +
+              tukhainZardal.talbainDugaar +
+              " талбайн дугаартай гэрээний өмнөх заалт зөрүүтэй байна! ";
+          }
+          if (!!tukhainZardal.gereeniiDugaar) {
+            aldaaniiMsg =
+              aldaaniiMsg +
+              tukhainZardal.gereeniiDugaar +
+              " дугаартай гэрээний өмнөх заалт зөрүүтэй байна! ";
+          }
         }
         if (
           umnukhZaalt > 0 &&
