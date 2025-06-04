@@ -521,10 +521,10 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gte: ["$avlaga.guilgeenuud.ognoo", moment(new Date(req.body.duusakhOgnoo)).subtract(30, "days").startOf("day")],
+                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(30, "days").startOf("day"))],
                     },
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", moment(new Date(req.body.duusakhOgnoo)).endOf("day")],
+                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).endOf("day"))],
                     },
                   ],
                 },
@@ -539,10 +539,10 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gte: ["$avlaga.guilgeenuud.ognoo", moment(new Date(req.body.duusakhOgnoo)).subtract(60, "days").startOf("day")],
+                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(60, "days").startOf("day"))],
                     },
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", moment(new Date(req.body.duusakhOgnoo)).subtract(31, "days").endOf("day")],
+                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(31, "days").endOf("day"))],
                     },
                   ],
                 },
@@ -557,10 +557,10 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gte: ["$avlaga.guilgeenuud.ognoo", moment(new Date(req.body.duusakhOgnoo)).subtract(90, "days").startOf("day")],
+                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(90, "days").startOf("day"))],
                     },
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", moment(new Date(req.body.duusakhOgnoo)).subtract(61, "days").endOf("day")],
+                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(61, "days").endOf("day"))],
                     },
                   ],
                 },
@@ -575,10 +575,10 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gte: ["$avlaga.guilgeenuud.ognoo", moment(new Date(req.body.duusakhOgnoo)).subtract(120, "days").startOf("day")],
+                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(120, "days").startOf("day"))],
                     },
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", moment(new Date(req.body.duusakhOgnoo)).subtract(91, "days").endOf("day")],
+                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(91, "days").endOf("day"))],
                     },
                   ],
                 },
@@ -593,7 +593,7 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", moment(new Date(req.body.duusakhOgnoo)).subtract(121, "days").endOf("day")],
+                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(121, "days").endOf("day"))],
                     },
                   ],
                 },
