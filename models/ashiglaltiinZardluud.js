@@ -21,6 +21,7 @@ const ashiglaltiinZardluudSchema = new Schema(
     nuatNemekhEsekh: Boolean,
     togtmolUtga: Number,
     dun: Number,
+    ognoonuud: [Date],
   },
   {
     timestamps: true,
