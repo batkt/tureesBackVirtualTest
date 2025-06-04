@@ -625,6 +625,11 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
           talbainDugaar: "$_id.talbainDugaar",
           ner: "$_id.ner",
           register: "$_id.register",
+          avalaga0: "$avalaga0",
+          avlaga31: "$avlaga31",
+          avlaga61: "$avlaga61",
+          avlaga91: "$avlaga91",
+          avlaga120: "$avlaga120",
           tulsunDun: "$tulsunDun",
           niitDun: "$uldegdel",
           tulukhDun: {
