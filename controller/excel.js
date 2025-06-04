@@ -2838,7 +2838,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
               " дугаартай гэрээний сүүлийн заалт өмнөх заалтаас бага байж болохгүй! ";
           }
         }
-        var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
+        var zoruuDun = (tukhainZardal.suuliinZaalt || 0) - (umnukhZaalt || 0);
         var tsakhilgaanDun = 0;
         var tsakhilgaanKBTST = 0;
         var chadalDun = 0;
@@ -2885,16 +2885,16 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           turul: "avlaga",
           tulsunDun: 0,
           tulukhDun: !!req.body.nuatBodokhEsekh
-            ? ((ashiglaltiinZardal.suuriKhuraamj || 0) + tempDun) * 1.1
-            : ((ashiglaltiinZardal.suuriKhuraamj || 0) + tempDun),
-          negj: zoruuDun && zoruuDun,
+            ? ((ashiglaltiinZardal.suuriKhuraamj || 0) + (tempDun || 0)) * 1.1
+            : ((ashiglaltiinZardal.suuriKhuraamj || 0) + (tempDun || 0)),
+          negj: zoruuDun || 0,
           khemjikhNegj: ashiglaltiinZardal.turul,
           tariff: ashiglaltiinZardal.tariff,
           tseverUsDun: ashiglaltiinZardal.tseverUsDun * zoruuDun || 0,
           bokhirUsDun: ashiglaltiinZardal.bokhirUsDun * zoruuDun || 0,
           usKhalaasanDun:
             ashiglaltiinZardal.ner?.includes("Халуун ус")
-              ? (ashiglaltiinZardal.usKhalaasniiDun || 0) * zoruuDun
+              ? (ashiglaltiinZardal.usKhalaasniiDun || 0) * (zoruuDun || 0)
               : 0,
           suuriKhuraamj: ashiglaltiinZardal.suuriKhuraamj || 0,
           tsakhilgaanUrjver: ashiglaltiinZardal.tsakhilgaanUrjver || 1,
