@@ -518,7 +518,7 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
               ]
             }
           },
-          tulukhDun: {
+          avlagaDun: {
             $sum: {
               $cond: [
                 {
@@ -545,9 +545,9 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
           ner: "$_id.ner",
           register: "$_id.register",
           tulsunDun: "$tulsunDun",
-          tulukhDun: "$tulukhDun",
-          niitDun: {
-            $add: [{ $ifNull: ["$tulukhDun", 0] }, { $ifNull: ["$tulsunDun", 0] }],
+          niitDun: "$avlagaDun",
+          tulukhDun: {
+            $subtract: [{ $ifNull: ["$avlagaDun", 0] }, { $ifNull: ["$tulsunDun", 0] }],
           },
         },
       },
