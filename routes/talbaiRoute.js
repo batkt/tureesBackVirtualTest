@@ -493,37 +493,39 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
         }
       },
       {
-        tulsunDun: [
-          {
-            $unwind: {
-              path: "$avlaga.guilgeenuud",
-            },
-          },
-          {
-            $match: {
-              "avlaga.guilgeenuud.ognoo": {
-                $gte: new Date(req.body.ekhlekhOgnoo),
-                $lte: new Date(req.body.duusakhOgnoo),
+        $facet: {
+          tulsunDun: [
+            {
+              $unwind: {
+                path: "$avlaga.guilgeenuud",
               },
             },
-          },
-          {
-            $group: {
-            _id: "$gereeniiDugaar",
-            tulsun: {
-              $sum: {
-                $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+            {
+              $match: {
+                "avlaga.guilgeenuud.ognoo": {
+                  $gte: new Date(req.body.ekhlekhOgnoo),
+                  $lte: new Date(req.body.duusakhOgnoo),
+                },
               },
             },
+            {
+              $group: {
+              _id: "$gereeniiDugaar",
+              tulsun: {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                },
+              },
+              },
             },
-          },
-          {
-            $project: {
-            gereeniiDugaar: "$gereeniiDugaar",
-            tulsunDun: "$tulsun",
+            {
+              $project: {
+              gereeniiDugaar: "$gereeniiDugaar",
+              tulsunDun: "$tulsun",
+              },
             },
-          },
-        ],
+          ],
+        }
       }
     ]
     var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
