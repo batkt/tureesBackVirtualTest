@@ -493,39 +493,31 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
         }
       },
       {
-        $facet: {
-          gereeniiDugaar: "$gereeniiDugaar",
-          tulsunDun: [
-            {
-              $unwind: {
-                path: "$avlaga.guilgeenuud",
-              },
-            },
-            {
-              $match: {
-                "avlaga.guilgeenuud.ognoo": {
-                  $gte: new Date(req.body.ekhlekhOgnoo),
-                  $lte: new Date(req.body.duusakhOgnoo),
+        $group: {
+          _id: {
+            gereeniiDugaar: "$gereeniiDugaar",
+            talbainDugaar: "$talbainDugaar",
+            ner: "$ner",
+            register: "$register",
+          },
+          tulsunDun: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $gt: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.ekhlekhOgnoo)],
+                    },
+                    {
+                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.duusakhOgnoo)],
+                    },
+                  ],
                 },
-              },
-            },
-            {
-              $group: {
-              _id: "$gereeniiDugaar",
-              tulsun: {
-                $sum: {
-                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                },
-              },
-              },
-            },
-            {
-              $project: {
-              gereeniiDugaar: "$gereeniiDugaar",
-              tulsunDun: "$tulsun",
-              },
-            },
-          ],
+                "$avlaga.guilgeenuud.tulsunDun",
+                0
+              ]
+            }
+          }
         }
       }
     ]
