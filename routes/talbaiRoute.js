@@ -494,6 +494,7 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
       },
       {
         $facet: {
+          gereeniiDugaar: "$gereeniiDugaar",
           tulsunDun: [
             {
               $unwind: {
