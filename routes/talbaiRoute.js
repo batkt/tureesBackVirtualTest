@@ -506,9 +506,6 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.ekhlekhOgnoo)],
-                    },
-                    {
                       $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.duusakhOgnoo)],
                     },
                   ],
@@ -518,14 +515,98 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
               ]
             }
           },
-          avlagaDun: {
+          avalaga0: {
             $sum: {
               $cond: [
                 {
                   $and: [
                     {
-                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.ekhlekhOgnoo)],
+                      $gte: ["$avlaga.guilgeenuud.ognoo", moment(req.body.duusakhOgnoo).subtract(30, "days").startOf("day")],
                     },
+                    {
+                      $lte: ["$avlaga.guilgeenuud.ognoo", moment(req.body.duusakhOgnoo).endOf("day")],
+                    },
+                  ],
+                },
+                "$avlaga.guilgeenuud.tulukhDun",
+                0
+              ]
+            }
+          },
+          avlaga31: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $gte: ["$avlaga.guilgeenuud.ognoo", moment(req.body.duusakhOgnoo).subtract(60, "days").startOf("day")],
+                    },
+                    {
+                      $lte: ["$avlaga.guilgeenuud.ognoo", moment(req.body.duusakhOgnoo).subtract(31, "days").endOf("day")],
+                    },
+                  ],
+                },
+                "$avlaga.guilgeenuud.tulukhDun",
+                0
+              ]
+            }
+          },
+          avlaga61: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $gte: ["$avlaga.guilgeenuud.ognoo", moment(req.body.duusakhOgnoo).subtract(90, "days").startOf("day")],
+                    },
+                    {
+                      $lte: ["$avlaga.guilgeenuud.ognoo", moment(req.body.duusakhOgnoo).subtract(61, "days").endOf("day")],
+                    },
+                  ],
+                },
+                "$avlaga.guilgeenuud.tulukhDun",
+                0
+              ]
+            }
+          },
+          avlaga91: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $gte: ["$avlaga.guilgeenuud.ognoo", moment(req.body.duusakhOgnoo).subtract(120, "days").startOf("day")],
+                    },
+                    {
+                      $lte: ["$avlaga.guilgeenuud.ognoo", moment(req.body.duusakhOgnoo).subtract(91, "days").endOf("day")],
+                    },
+                  ],
+                },
+                "$avlaga.guilgeenuud.tulukhDun",
+                0
+              ]
+            }
+          },
+          avlaga120: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $lte: ["$avlaga.guilgeenuud.ognoo", moment(req.body.duusakhOgnoo).subtract(121, "days").endOf("day")],
+                    },
+                  ],
+                },
+                "$avlaga.guilgeenuud.tulukhDun",
+                0
+              ]
+            }
+          },
+          uldegdel: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
                     {
                       $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.duusakhOgnoo)],
                     },
@@ -545,9 +626,9 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
           ner: "$_id.ner",
           register: "$_id.register",
           tulsunDun: "$tulsunDun",
-          niitDun: "$avlagaDun",
+          niitDun: "$uldegdel",
           tulukhDun: {
-            $subtract: [{ $ifNull: ["$avlagaDun", 0] }, { $ifNull: ["$tulsunDun", 0] }],
+            $subtract: [{ $ifNull: ["$uldegdel", 0] }, { $ifNull: ["$tulsunDun", 0] }],
           },
         },
       },
