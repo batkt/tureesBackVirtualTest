@@ -506,7 +506,7 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gt: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.ekhlekhOgnoo)],
+                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.ekhlekhOgnoo)],
                     },
                     {
                       $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.duusakhOgnoo)],
@@ -524,7 +524,7 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gt: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.ekhlekhOgnoo)],
+                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.ekhlekhOgnoo)],
                     },
                     {
                       $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.duusakhOgnoo)],
