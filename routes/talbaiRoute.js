@@ -466,4 +466,60 @@ router
     }
   });
 
+router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
+  try 
+  {  
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      tuluv: { $ne: -1 },
+    }
+    if(req.body.registeruud)
+      match["register"] = { $in: req.body.registeruud }
+    var query = [
+      {
+        $match: match,
+      },
+      {
+        $unwind: {
+          path: "$avlaga.guilgeenuud",
+        },
+      },
+      {
+        $match: {
+          "avlaga.guilgeenuud.turul": { 
+            $nin: ["baritsaa", "aldangi", "zalruulga"]
+          },
+        }
+      },
+      {
+        $group: {
+          _id: {
+            gereeniiDugaar: "$gereeniiDugaar",
+            talbainDugaar: "$talbainDugaar",
+            ner: "$ner",
+            register: "$register",
+          },
+          tulsunDun: {
+            $sum: {
+              $cond: [
+                {
+                  $gte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.ekhlekhOgnoo)],
+                  $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.duusakhOgnoo)],
+                },
+                "$avlaga.guilgeenuud.tulsunDun",
+                0
+              ]
+            }
+          }
+        }
+      }
+    ]
+    var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
