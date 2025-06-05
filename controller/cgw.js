@@ -1152,7 +1152,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       if (res) res.send("Amjilttai");
                     })
                     .catch((err) => {
-                      next(err);
+                      throw err;
                     });
                 }
               } else if (dans.bank == "trans") {
