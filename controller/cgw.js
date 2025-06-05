@@ -2188,7 +2188,6 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           var match = {
             baiguullagiinId: parking.baiguullagiinId,
             barilgiinId: parking.barilgiinId,
-            niitDun: { $exists: false }
           };
           if(req?.body?.mashiniiDugaar)
             match["mashiniiDugaar"] = req?.body?.mashiniiDugaar
@@ -2204,7 +2203,6 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
                 "tuukh.zogsooliinId": parking._id.toString(),
                 "tuukh.orsonKhaalga": "192.168.2.75", 
                 "tuukh.garsanKhaalga": {$exists: false},
-                "tuukh.tsagiinTuukh.garsanTsag": {$exists: false},
               }
             }
           ]
@@ -2213,16 +2211,19 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           {
             var tuukh = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.234");
             var filtered = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.75");
-            tuukh.push(filtered[0]);
-            data.tuukh = tuukh;
-            await Uilchluulegch(kholbolt).findByIdAndUpdate(
-            data._id,
+            if(filtered?.length > 1)
             {
-              $set: {
-                "tuukh": tuukh,
-              },
-            });
-            resultDotor.push(data);
+              tuukh.push(filtered[0]);
+              data.tuukh = tuukh;
+              await Uilchluulegch(kholbolt).findByIdAndUpdate(
+              data._id,
+              {
+                $set: {
+                  "tuukh": tuukh,
+                },
+              });
+              resultDotor.push(data);
+            }
           }
           var match = {
             baiguullagiinId: parking.baiguullagiinId,
