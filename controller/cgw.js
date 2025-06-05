@@ -2209,7 +2209,6 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           var mashinuud = await Uilchluulegch(kholbolt).aggregate(query);  
           for await (const data of mashinuud)
           {
-            console.log("--------- log data ----------->" + JSON.stringify(data));
             if(data.tuukh?.length > 0)
             {
               var tuukh = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.234");
