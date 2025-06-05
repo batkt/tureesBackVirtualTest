@@ -9,7 +9,7 @@ const Talbai = require("../models/talbai");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const AshiglaltiinExcel = require("../models/ashiglaltiinExcel");
 const EkhniiUldegdelExcel = require("../models/ekhniiUldegdelExcel");
-const { Dans, Segment } = require("zevbackv2");
+const { Dans, Segment, formatNumber } = require("zevbackv2");
 const aldaa = require("../components/aldaa");
 const xlsx = require("xlsx");
 const moment = require("moment");
@@ -2769,7 +2769,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
               x.gereeniiDugaar === geree.gereeniiDugaar
             );
           }); 
-        }if (umnukhZaalt > 0 && tukhainZardal.umnukhZaalt > 0 && umnukhZaalt != tukhainZardal.umnukhZaalt){
+        }if (umnukhZaalt > 0 && tukhainZardal.umnukhZaalt > 0 && parseFloat(formatNumber(umnukhZaalt, 2)) != parseFloat(formatNumber(tukhainZardal.umnukhZaalt, 2))){
           if (!!tukhainZardal.register) {
             aldaaniiMsg =
               aldaaniiMsg +
