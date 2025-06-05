@@ -511,14 +511,7 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                   ],
                 },
                 {
-                  $add: [
-                    {
-                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                    },
-                    {
-                      $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
-                    },
-                  ]
+                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
                 },
                 0
               ]
