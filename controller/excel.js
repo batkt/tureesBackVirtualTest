@@ -2770,8 +2770,10 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             );
           }); 
         }
-        console.log("--------------1 ------>>"+ formatNumber(umnukhZaalt, 2));
-        console.log("--------------2------>>"+ formatNumber(tukhainZardal.umnukhZaalt, 2));
+        console.log("--------------1 ------>>"+ JSON.stringify(umnukhZaalt, 2));
+        console.log("--------------2------>>"+ JSON.stringify(tukhainZardal.umnukhZaalt, 2));
+        console.log("--------------1 ------>>"+ JSON.stringify(formatNumber(umnukhZaalt, 2)));
+        console.log("--------------2------>>"+ JSON.stringify(formatNumber(tukhainZardal.umnukhZaalt, 2)));
         if (umnukhZaalt > 0 && tukhainZardal.umnukhZaalt > 0 && parseFloat(formatNumber(umnukhZaalt, 2)) !== parseFloat(formatNumber(tukhainZardal.umnukhZaalt, 2))){
           if (!!tukhainZardal.register) {
             aldaaniiMsg =
