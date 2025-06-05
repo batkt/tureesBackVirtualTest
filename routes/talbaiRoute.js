@@ -488,7 +488,7 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
       {
         $match: {
           "avlaga.guilgeenuud.turul": { 
-            $nin: ["baritsaa", "aldangi", "zalruulga"]
+            $nin: ["baritsaa", "aldangi"]
           },
         }
       },
@@ -510,7 +510,16 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                "$avlaga.guilgeenuud.tulsunDun",
+                {
+                  $add: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                    },
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                    },
+                  ]
+                },
                 0
               ]
             }
@@ -528,7 +537,23 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                "$avlaga.guilgeenuud.tulukhDun",
+                {
+                  $subtract: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                    {
+                      $add: [
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                        },
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                        },
+                      ],
+                    },
+                  ],
+                },
                 0
               ]
             }
@@ -546,7 +571,23 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                "$avlaga.guilgeenuud.tulukhDun",
+                {
+                  $subtract: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                    {
+                      $add: [
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                        },
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                        },
+                      ],
+                    },
+                  ],
+                },
                 0
               ]
             }
@@ -564,7 +605,23 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                "$avlaga.guilgeenuud.tulukhDun",
+                {
+                  $subtract: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                    {
+                      $add: [
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                        },
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                        },
+                      ],
+                    },
+                  ],
+                },
                 0
               ]
             }
@@ -582,7 +639,23 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                "$avlaga.guilgeenuud.tulukhDun",
+                {
+                  $subtract: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                    {
+                      $add: [
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                        },
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                        },
+                      ],
+                    },
+                  ],
+                },
                 0
               ]
             }
@@ -597,12 +670,28 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                "$avlaga.guilgeenuud.tulukhDun",
+                {
+                  $subtract: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                    {
+                      $add: [
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                        },
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                        },
+                      ],
+                    },
+                  ],
+                },
                 0
               ]
             }
           },
-          uldegdel: {
+          avlaga: {
             $sum: {
               $cond: [
                 {
@@ -613,6 +702,21 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                   ],
                 },
                 "$avlaga.guilgeenuud.tulukhDun",
+                0
+              ]
+            }
+          },
+          khungulult: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.duusakhOgnoo)],
+                    },
+                  ],
+                },
+                "$avlaga.guilgeenuud.khyamdral",
                 0
               ]
             }
@@ -631,9 +735,24 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
           avlaga91: "$avlaga91",
           avlaga120: "$avlaga120",
           tulsunDun: "$tulsunDun",
-          niitDun: "$uldegdel",
+          niitDun: "$avlaga",
+          khungulult: "$khungulult",
           tulukhDun: {
-            $subtract: [{ $ifNull: ["$uldegdel", 0] }, { $ifNull: ["$tulsunDun", 0] }],
+            $subtract: [
+              { 
+                $ifNull: ["$avlaga", 0] 
+              }, 
+              { 
+                $add: [
+                  {
+                    $ifNull: ["$tulsunDun", 0],
+                  },
+                  {
+                    $ifNull: ["$khungulult", 0],
+                  },
+                ] 
+              }
+            ],
           },
         },
       },
