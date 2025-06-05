@@ -2769,7 +2769,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
               x.gereeniiDugaar === geree.gereeniiDugaar
             );
           }); 
-        }if (umnukhZaalt > 0 && tukhainZardal.umnukhZaalt > 0 && parseFloat(formatNumber(umnukhZaalt, 2)) != parseFloat(formatNumber(tukhainZardal.umnukhZaalt, 2))){
+        }if (umnukhZaalt > 0 && tukhainZardal.umnukhZaalt > 0 && parseFloat(formatNumber(umnukhZaalt, 2)) !== parseFloat(formatNumber(tukhainZardal.umnukhZaalt, 2))){
           if (!!tukhainZardal.register) {
             aldaaniiMsg =
               aldaaniiMsg +
