@@ -474,6 +474,8 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
       barilgiinId: req.body.barilgiinId,
       tuluv: { $ne: -1 },
     }
+    if(req.body.query)
+      match["$or"] = req.body.query["$or"];
     if(req.body.registeruud)
       match["register"] = { $in: req.body.registeruud }
     var query = [
