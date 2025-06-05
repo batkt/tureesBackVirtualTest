@@ -2188,25 +2188,13 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           var match = {
             baiguullagiinId: parking.baiguullagiinId,
             barilgiinId: parking.barilgiinId,
+            "tuukh.zogsooliinId": parking._id.toString(),
+            "tuukh.orsonKhaalga": "192.168.2.75", 
+            "tuukh.garsanKhaalga": {$exists: false},
           };
           if(req?.body?.mashiniiDugaar)
             match["mashiniiDugaar"] = req?.body?.mashiniiDugaar
-          var query = [
-            {
-              $match: match,
-            },
-            {
-              $unwind: "$tuukh",
-            },
-            {
-              $match: {
-                "tuukh.zogsooliinId": parking._id.toString(),
-                "tuukh.orsonKhaalga": "192.168.2.75", 
-                "tuukh.garsanKhaalga": {$exists: false},
-              }
-            }
-          ]
-          var mashinuud = await Uilchluulegch(kholbolt).aggregate(query);  
+          var mashinuud = await Uilchluulegch(kholbolt).find(match);
           for await (const data of mashinuud)
           {
             if(data.tuukh?.length > 0)
