@@ -269,6 +269,9 @@ function orchuulyaText(text){
     case "gereeniiTuukhuud":
       butsaakhText = "Гэрээний түүхүүд";  
       break;
+    case "khungulultuud":
+      butsaakhText = "Хөнгөлөлт";  
+      break;  
     default:
     break;
   }
