@@ -9,7 +9,7 @@ const Talbai = require("../models/talbai");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const AshiglaltiinExcel = require("../models/ashiglaltiinExcel");
 const EkhniiUldegdelExcel = require("../models/ekhniiUldegdelExcel");
-const { Dans, Segment, formatNumber } = require("zevbackv2");
+const { Dans, Segment } = require("zevbackv2");
 const aldaa = require("../components/aldaa");
 const xlsx = require("xlsx");
 const moment = require("moment");
@@ -25,6 +25,22 @@ const {
   uilchluulegchdiinToo,
   sdkData,
 } = require("parking-v1");
+
+function formatNumber(num, fixed = 2) {
+  if (num === undefined || num === null || num === "")
+    return formatNumber("0.00", fixed);
+  var fixedNum = parseFloat(num).toFixed(fixed).toString();
+  var numSplit = fixedNum.split(".");
+  if (numSplit === null || numSplit.length === 0) {
+    return formatNumber("0.00", fixed);
+  }
+  var firstFormatNum = numSplit[0]
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  if (lodash.isNaN(firstFormatNum)) firstFormatNum = "0";
+  if (fixed === 0) return firstFormatNum;
+  return firstFormatNum + "." + numSplit[1];
+}
 
 function usegTooruuKhurvuulekh(useg) {
   if (!!useg) return useg.charCodeAt() - 65;
@@ -2772,8 +2788,8 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         }
         console.log("--------------1 ------>>"+ JSON.stringify(umnukhZaalt, 2));
         console.log("--------------2------>>"+ JSON.stringify(tukhainZardal.umnukhZaalt, 2));
-        console.log("--------------1 ------>>"+ JSON.stringify(formatNumber(Number(umnukhZaalt))));
-        console.log("--------------2------>>"+ JSON.stringify(formatNumber(Number(tukhainZardal.umnukhZaalt))));
+        console.log("--------------1 ------>>"+ formatNumber(umnukhZaalt));
+        console.log("--------------2------>>"+ JSON.stringify(formatNumber(tukhainZardal.umnukhZaalt)));
         if (umnukhZaalt > 0 && tukhainZardal.umnukhZaalt > 0 && parseFloat(formatNumber(umnukhZaalt, 2)) !== parseFloat(formatNumber(tukhainZardal.umnukhZaalt, 2))){
           if (!!tukhainZardal.register) {
             aldaaniiMsg =
