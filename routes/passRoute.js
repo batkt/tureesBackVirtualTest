@@ -127,7 +127,6 @@ router.post("/passGargaya", tokenShalgakh, async (req, res, next) => {
       req.body.baiguullagiinId +
       "/" +
       req.body?.zakhialgiinDugaar;
-    console.log("passcallback", callback_url);
     const requestBody = {
       pos_id: "dtb_70210003",
       payment_request_id: requestTime,
@@ -146,14 +145,10 @@ router.post("/passGargaya", tokenShalgakh, async (req, res, next) => {
     );
 
     const signature = sign(privateKeyStr, unsignedMessage);
-    console.log("signature: ", signature);
-
     const symmetricKey = crypto.randomBytes(16);
-    console.log("symmetricKey: ", symmetricKey);
     const encryptedMessage = encryptMessage(symmetricKey, bodyJson);
-    console.log("encryptedMessage: ", encryptedMessage);
     const encSymmetricKey = encryptKey(publicKeyStr, symmetricKey);
-    console.log("encSymmetricKey: ", encSymmetricKey);
+    
 
     const headers = {
       "Content-Type": contentType,
@@ -174,18 +169,15 @@ router.post("/passGargaya", tokenShalgakh, async (req, res, next) => {
         headers: headers,
       })
       .catch((err) => {
-        console.log("AXIOS ERROR: ", err);
+        
       });
     var khariuData = JSON.parse(khariu.data);
-    console.log("khariu.headers: ", khariu.headers);
 
     const decSymmetricKey = decryptKey(
       privateKeyStr,
       khariu.headers["symmetric-key"]
     );
-    console.log("decSymmetricKey: ", decSymmetricKey);
     const decryptedMessage = decryptMessage(decSymmetricKey, khariuData.data);
-    console.log("decryptedMessage: ", decryptedMessage);
     var butsaakhKhariu = JSON.parse(decryptedMessage);
     // const formattedMessage = prepareUnsignedMessage(
     //   httpMethod,
@@ -194,7 +186,6 @@ router.post("/passGargaya", tokenShalgakh, async (req, res, next) => {
     //   headers["Request-Time"],
     //   decryptedMessage
     // );
-    console.log("butsaakhKhariu", butsaakhKhariu);
     var passObject = new PassObject(req.body.tukhainBaaziinKholbolt)();
     passObject.zakhialgiinDugaar = req.body.zakhialgiinDugaar;
     passObject.amount = dun;
@@ -218,7 +209,6 @@ router.post(
       const { db } = require("zevbackv2");
       const b = req.params.baiguullagiinId;
       var kholbolt = db.kholboltuud.find((a) => a.baiguullagiinId == b);
-      console.log("passcallback", new Date());
       const passObject = await PassObject(kholbolt).findOne({
         zakhialgiinDugaar: req.params.zakhialgiinDugaar,
         tulsunEsekh: false,

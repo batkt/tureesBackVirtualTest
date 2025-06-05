@@ -84,7 +84,6 @@ router
         },
       },
     ];
-    console.log("turluur", JSON.stringify(query, null, 4));
     BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
       .aggregate(query)
       .then((result) => {

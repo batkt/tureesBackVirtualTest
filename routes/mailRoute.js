@@ -23,11 +23,9 @@ crud(router, "nekhemjlekhiinTuukh", NekhemjlekhiinTuukh, UstsanBarimt);
 router.post("/duriinMailIlgeeye", tokenShalgakh, (req, res, next) => {
   let id = req.body.id;
   let mail = req.body.mail;
-  console.log("body-->", req.body);
   MailiinZagvar(req.body.tukhainBaaziinKholbolt)
     .findById(id)
     .then(async (result) => {
-      console.log("result-->", result);
       await MailIlgeeye.mailIlgeeye(
         mail,
         result ? result.mail : null,
@@ -45,7 +43,6 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById({
     _id: req.body.baiguullagiinId,
   });
-  console.log("baiguullaga", baiguullaga);
   if (
     !baiguullaga ||
     !baiguullaga.tokhirgoo ||
@@ -77,7 +74,6 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     { json: true, body: ilgeekhBody },
     (err, res1, body) => {
       if (err) next(err);
-      console.log(body);
     }
   );
   if(req.body.subject === "Түрээсийн төлбөр" && !!req.body.gereenuud)
@@ -132,10 +128,8 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       tuukh.nekhemjlekhiinOgnoo = req.body.ognoo;
       await tuukh.save()
       .then((result) => {
-        console.log("result ----------> " + result?.mailKhayagTo);
       })
       .catch((err) => {
-        console.log("err-----" + err);
         next(err);
       });
       var update = { 
@@ -173,7 +167,6 @@ router.post("/msgIlgeesenTooAvya", tokenShalgakh, async (req, res, next) => {
       },
     ])
     .then((result) => {
-      console.log(result);
       if (result.length > 0) res.send(result[0].too.toString());
       else res.send("0");
     })
@@ -196,7 +189,6 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
     url = encodeURI(url);
     request(url, { json: true }, (err1, res1, body) => {
       if (err1) {
-        console.log("url", url);
         next(err1);
       } else {
         var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
@@ -207,12 +199,9 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
         msg.msg = jagsaalt[index].text;
         msg.save();
         if (jagsaalt.length > index + 1) {
-          console.log("url", url);
-          console.log("body", body);
           khariu.push(body[0]);
           msgIlgeeye(jagsaalt, key, dugaar, khariu, index + 1, next, req, res);
         } else {
-          console.log("url", url);
           khariu.push(body[0]);
           res.send(khariu);
         }
@@ -239,7 +228,6 @@ function msgIlgeeyeUnitel(jagsaalt, key, dugaar, khariu, index, next, req, res) 
       })
         .then((err1, res1, body) => {
           if (err1) {
-            console.log("url", url);
             next(err1);
           } else {
             if (!!req && !!req.body) {
@@ -252,20 +240,15 @@ function msgIlgeeyeUnitel(jagsaalt, key, dugaar, khariu, index, next, req, res) 
               msg.save();
             }
             if (jagsaalt.length > index + 1) {
-              console.log("url", url);
-              console.log("body", body);
               khariu.push(body[0]);
               msgIlgeeyeUnitel(jagsaalt, key, dugaar, khariu, index + 1, next, req, res);
             } else {
-              console.log("url", url);
               khariu.push(body[0]);
               res.send(khariu);
             }
           }
         })
         .catch((error) => {
-          console.log("backup error", error);
-          // Handle error
         });
   } catch (err) {
     next(err);

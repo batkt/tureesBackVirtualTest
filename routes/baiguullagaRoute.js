@@ -15,7 +15,6 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     const baiguullaga = new Baiguullaga(db.erunkhiiKholbolt)(req.body);
-    console.log("baiguullagaBurtgekh", req.body);
     baiguullaga.isNew = !baiguullaga.zasakhEsekh;
     baiguullaga.barilguud = [
       {
@@ -68,11 +67,9 @@ router.post("/salbarBurtgey", async (req, res, next) => {
         }
       )
       .then((result) => {
-        console.log("salbarBurtgey", result);
         res.send("Amjilttai");
       })
       .catch((err) => {
-        console.log("salbarBurtgey!", err);
         next(err);
       });
   } catch (error) {
@@ -128,7 +125,6 @@ router.post(
           if (field != "baiguullagiinId")
             update["tokhirgoo." + field] = req.body.tokhirgoo[field];
         }
-        console.log("update", update);
         await Baiguullaga(db.erunkhiiKholbolt).findOneAndUpdate(
           { _id: req.body.baiguullagiinId },
           update
@@ -176,7 +172,6 @@ router.get("/tatvaraasBaiguullagaAvya/:regno", (req, res, next) => {
       url = encodeURI(
         "https://api.ebarimt.mn/api/info/check/getInfo?tin=" + body.data
       );
-      console.log("aaa", url);
       request(url, { json: true }, (err2, res2, body2) => {
         if (err2) next(err2);
         else res.send({ ...body2.data, tin: body.data });

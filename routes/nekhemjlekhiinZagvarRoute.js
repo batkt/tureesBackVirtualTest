@@ -233,7 +233,6 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     const baiguullagiinId = req.body.baiguullagiinId;
     const tulugchid = req.body.nekhemjlekhiinJagsaalt;
-    console.log("tukhain tulugchid: ", tulugchid);
     const barilgiinId = req.body.barilgiinId;
     const turul = "nekhemjlel";
     const ashiglaltiinZardluud = req.body.ashiglaltiinZardluud;

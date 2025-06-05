@@ -17,14 +17,14 @@ async function ilgeeye(io, medegdel, tukhainBaaziinKholbolt) {
       io.emit("baiguullaga" + medegdel.baiguullagiinId, medegdel);
     })
     .catch((err) => {
-      console.log(err);
+      
     });
 }
 
 async function sonorduulgauzsenbolgoyo(id, tukhainBaaziinKholbolt) {
   Sonorduulga(tukhainBaaziinKholbolt)
     .updateMany({ _id: id }, { $set: { kharsanEsekh: true } })
-    .then((res) => console.log(res));
+    .then((res) => {});
 }
 module.exports = {
   ilgeeye,

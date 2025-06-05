@@ -64,9 +64,6 @@ async function guilgeeneesEbarimtUusgye(
   var today = new Date();
   var guilgeeniiSar = new Date(ognoo).getMonth();
   //ene xesegt getMonth 0-11 gsn too butsaadag uchir shuud xiilee
-  console.log("date", today.getDate());
-  console.log("guilgeeniiSar", guilgeeniiSar);
-  console.log("aaaa", today.getMonth());
   if (
     today.getDate() < 8 &&
     (guilgeeniiSar < today.getMonth() ||
@@ -76,7 +73,6 @@ async function guilgeeneesEbarimtUusgye(
       today.getFullYear().toString() +
       "-" +
       ("0" + today.getMonth()).slice(-2).toString();
-    console.log("orj irlee", ebarimt.reportMonth);
   }
   ebarimt.guilgeeniiId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
@@ -140,7 +136,6 @@ async function guilgeeneesEbarimtShineUusgye(
       "-" +
       (ognoo.getDate() < 10 ? "0" : "") +
       ognoo.getDate();
-    console.log("orj irlee", ebarimt.reportMonth);
   }
   ebarimt.guilgeeniiId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
@@ -407,7 +402,6 @@ async function zogsooloosEbarimtShineUusgye(
     },
   ];
   //ebarimt.receipts = receipts;
-  console.log("eeeebarimt", JSON.stringify(ebarimt, null, 4));
   return ebarimt;
 }
 async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
@@ -417,13 +411,11 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
       if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
         var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
       else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
-      console.log("url", url);
       request.post(url, { json: true, body: ugugdul }, (err, res1, body) => {
         if (err) {
           if(!!next)
             next(err);
         } else {
-          console.log("ebarimt body", body);
           onFinish(body, ugugdul);
         }
       });
@@ -431,7 +423,6 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
       var url = process.env.EBARIMT_IP + "/put";
       if (ugugdul.barilgiinId)
         url = url + "?lib=" + ugugdul.barilgiinId.toString();
-      console.log("url", url);
       request.post(
         url,
         { json: true, body: { data: ugugdul } },
@@ -440,14 +431,12 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
             if(!!next)
               next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
           } else {
-            console.log("ebarimt body", body);
             onFinish(body, ugugdul);
           }
         }
       );
     }
   } catch (aldaa) {
-    console.log("aldaa", aldaa);
     if(!!next)
       next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
   }
@@ -460,7 +449,6 @@ async function ebarimtMedeelelAvya(ugugdul, onFinish, next, ebarimtShine = false
       url = process.env.EBARIMTSHINE_TEST + "rest/info";
     else url = process.env.EBARIMTSHINE_IP + "rest/info";
     if (ugugdul) url = url + "?lib=" + ugugdul.toString();
-    console.log("url", url);
     request(url, { json: true }, (err, res1, body) => {
       if (err) next(err);
       else {
@@ -472,7 +460,6 @@ async function ebarimtMedeelelAvya(ugugdul, onFinish, next, ebarimtShine = false
   {
     var url = process.env.EBARIMT_IP + "/getInformation";
     if (ugugdul) url = url + "?lib=" + ugugdul.toString();
-    console.log("url", url);
     request(url, { json: true }, (err, res1, body) => {
       if (err) next(err);
       else {
@@ -490,7 +477,6 @@ router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
     ebarimtMedeelelAvya(
       req.body.barilgiinId,
       (d) => {
-        console.log("duuslaa", d);
         res.send(d);
       },
       next,
@@ -507,7 +493,6 @@ async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
     if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
       var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
     else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
-    console.log("url", url);
     request.delete(
       url,
       { json: true, body: { id: ugugdul.id, date: ugugdul.date } },
@@ -515,7 +500,6 @@ async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
         if (err) {
           next(err);
         } else {
-          console.log("ebarimt body", body);
           onFinish(body);
         }
       }
@@ -544,7 +528,6 @@ async function zogsoolNiitDungeerEbarimtShivye(
   shiveeguiTuukhuud,
   dugaar,
 ) {
-  console.log("zogsoolNiitDungeerEbarimtShivye", shivekhDun);
   var guilgee = {
     niitDun: shivekhDun,
     _id: "zogsoolSystem",
@@ -596,7 +579,6 @@ async function zogsoolNiitDungeerEbarimtShivye(
       ebarimt.save().catch((err) => {
         if(next) next(err);
       });
-      console.log("ebarimt duuslaa");
       if(!!shiveeguiTuukhuud && shiveeguiTuukhuud?.length > 0)
       {
         for (const object of shiveeguiTuukhuud) {
@@ -609,16 +591,13 @@ async function zogsoolNiitDungeerEbarimtShivye(
           Uilchluulegch(kholbolt)
             .findByIdAndUpdate(object._id, update)
             .then((xariu) => {
-              console.log("xariu", xariu);
             })
             .catch((err) => {
-              console.log(err);
             });
         }
       }
       if(!!dugaar)
       {
-        console.log("lottery --------------->>" +  d?.lottery);
         var msgnuud = [];
         var text =
           "Tanii zogsooliin barimt " + (d?.lottery || "") +
@@ -656,7 +635,6 @@ async function zogsoolNiitDungeerEbarimtShivye(
 async function ebarimtShivye(req, res, next) {
   try {
     var ebarimtiinTurul = req.body.ebarimtiinTurul;
-    console.log(req);
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       req.body.baiguullagiinId
     );
@@ -711,12 +689,10 @@ async function ebarimtShivye(req, res, next) {
           TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate({ _id: req.body.id }, update)
             .then((xariu) => {
-              console.log(xariu);
             })
             .catch((err) => {
-              console.log(err);
+              next(err);
             });
-          console.log("ebarimt duuslaa");
           res.send(d);
         } catch (err) {
           next(err);
@@ -781,12 +757,10 @@ async function ebarimtShivye(req, res, next) {
           Uilchluulegch(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(req.body.id, update)
             .then((xariu) => {
-              console.log("xariu", xariu);
             })
             .catch((err) => {
-              console.log(err);
+              next(err);
             });
-          console.log("ebarimt duuslaa");
           res.send(d);
         } catch (err) {
           next(err);
@@ -837,18 +811,15 @@ async function ebarimtShivye(req, res, next) {
               { ebarimtAvsanEsekh: true }
             )
             .then((xariu) => {
-              console.log(xariu);
             })
             .catch((err) => {
-              console.log(err);
+              next(err);    
             });
-          console.log("ebarimt duuslaa");
           res.send(d);
         } catch (err) {
           next(err);
         }
       };
-      console.log("tuxainSalbar", tuxainSalbar);
 
       var nuatTulukhEsekh = false;
       nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
@@ -874,8 +845,6 @@ async function ebarimtShivye(req, res, next) {
           nuatTulukhEsekh
         );
     }
-    console.log("ebarimt", ebarimt);
-    console.log("ebarimt", !!tuxainSalbar.eBarimtShine);
     ebarimtDuudya(ebarimt, butsaakhMethod, next, !!tuxainSalbar.eBarimtShine);
   } catch (error) {
     next(error);
@@ -894,7 +863,6 @@ router.post("/ebarimtZasya", tokenShalgakh, async (req, res, next) => {
     shineBarimt.stocks.forEach((mur) => {
       mur.vat = nuatBodyo(mur.totalAmount);
     });
-    console.log("ebarimt", shineBarimt);
     ebarimtDuudya(
       shineBarimt,
       (d) => {
@@ -908,7 +876,6 @@ router.post("/ebarimtZasya", tokenShalgakh, async (req, res, next) => {
         d.save().catch((err) => {
           next(err);
         });
-        console.log("duuslaa", d);
         res.send(d);
       },
       next
@@ -940,12 +907,10 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
     ebarimtButsaaya(
       butsaakhBarimt,
       async (d) => {
-        console.log("ebarimtButsaaya khariu irlee", butsaakhBarimt);
         butsaakhBarimt.ustgasanOgnoo = new Date();
         butsaakhBarimt.isNew = false;
         await butsaakhBarimt.save().catch((err) => {
           next(err);
-          console.log("aldaa", err);
         });
         if (butsaakhBarimt.guilgeeniiId)
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
@@ -955,7 +920,6 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
             )
             .catch((err) => {
               next(err);
-              console.log("aldaa", err);
             });
         else if (butsaakhBarimt.togloomiinId) {
           await TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
@@ -968,7 +932,6 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
             )
             .catch((err) => {
               next(err);
-              console.log("aldaa", err);
             });
         } else if (butsaakhBarimt.zogsooliinId) {
           await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
@@ -978,10 +941,8 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
             )
             .catch((err) => {
               next(err);
-              console.log("aldaa", err);
             });
         }
-        console.log("duuslaa", d);
         res.send("Amjilttai");
       },
       next,
@@ -1009,10 +970,8 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
       if (req.body.baiguullagiinId == "612f457d185280db676d0b51")
         url = process.env.EBARIMTSHINE_TEST + "rest/sendData";
       else url = process.env.EBARIMTSHINE_IP + "rest/sendData";
-      console.log("url", url);
       request.get(url, { json: true }, (err, res1, body) => {
         if (err) {
-          console.log(err);
           next(err);
         } else {
           res.send(body);
@@ -1022,10 +981,8 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
       var url = process.env.EBARIMT_IP + "/sendData";
       if (req.body.barilgiinId)
         url = url + "?lib=" + req.body.barilgiinId.toString();
-      console.log("url", url);
       request.get(url, { json: true }, (err, res1, body) => {
         if (err) {
-          console.log(err);
           next(err);
         } else {
           res.send(body);
@@ -1288,9 +1245,8 @@ async function ebarimtIlgeeye(baiguullagiinId) {
           url = url + "?lib=" + barilga._id.toString();
           request.get(url, { json: true }, (err, res1, body) => {
             if (err) {
-              console.log(err);
+              throw err;
             } else {
-              console.log("ebarimt amjilttai ilgeelee");
             }
           });
         } catch (aldaa) {
@@ -1299,7 +1255,7 @@ async function ebarimtIlgeeye(baiguullagiinId) {
       }
     }
   } catch (error) {
-    console.log("ebarimt error", error);
+    throw err;
   }
 }
 
@@ -1337,7 +1293,6 @@ router.post(
           res.send(x);
         })
         .catch((a) => {
-          console.log(a);
           next(a);
         });
     } catch (error) {
@@ -1388,14 +1343,11 @@ router.post(
             ebarimtButsaaya(
               butsaakhBarimt,
               async (d) => {
-                console.log("ebarimtButsaaya khariu irlee", butsaakhBarimt);
                 butsaakhBarimt.ustgasanOgnoo = new Date();
                 butsaakhBarimt.isNew = false;
                 await butsaakhBarimt.save().catch((err) => {
                   next(err);
-                  console.log("aldaa", err);
                 });
-                console.log("duuslaa", d);
                 // res.send("Amjilttai");
               },
               next,

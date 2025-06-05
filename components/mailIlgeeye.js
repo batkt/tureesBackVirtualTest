@@ -29,11 +29,7 @@ async function mailIlgeeye(mailKhayag, ilgeekhMail, zurag) {
       : null,
   };
   transporter.sendMail(mail, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
+    
   });
 }
 
@@ -94,11 +90,7 @@ async function duriinMailIlgeeye(
     // ],
   };
   transporter.sendMail(mail, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
+    
   });
 }
 module.exports = {

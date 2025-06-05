@@ -7,9 +7,8 @@ module.exports.backAvya = async function backAvya() {
     const { exec } = require("child_process");
     try {
       fs.unlinkSync("dump.tar");
-      console.log("removed");
     } catch (err) {
-      console.error(err);
+      throw err;
     }
     const { db } = require("zevbackv2");
     var backupDB = exec(
@@ -22,11 +21,7 @@ module.exports.backAvya = async function backAvya() {
         " --archive=dump.tar" +
         "  --gzip",
       (err, stdout, stderr) => {
-        console.log("err -->", err);
-        console.log("stdout -->", stdout);
-        console.log("stderr -->", stderr);
         if (stderr) {
-          console.error(`exec stderr: ${stderr}`);
           if (stderr.includes("error"))
             throw new Error("Back авах боломжгүй байна! exec aldaa");
           else {
@@ -46,11 +41,9 @@ module.exports.backAvya = async function backAvya() {
               headers: { ...form.getHeaders() },
             })
               .then((response) => {
-                console.log("backup response", response);
                 // Handle response
               })
               .catch((error) => {
-                console.log("backup error", error);
                 // Handle error
               });
           }
@@ -58,6 +51,5 @@ module.exports.backAvya = async function backAvya() {
       }
     );
   } catch (err) {
-    console.log("back awxad aldaa ==>", err);
   }
 };

@@ -118,7 +118,6 @@ router.get("/ustsanBarimt", tokenShalgakh, async (req, res, next) => {
       body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
     if (!!body?.khuudasniiKhemjee)
       body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    console.log("body", body);
     let jagsaalt = await UstsanBarimt(req.body.tukhainBaaziinKholbolt)
       .find(body.query)
       .sort(body.order)
@@ -150,7 +149,6 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      console.log(req.body);
       const { db } = require("zevbackv2");
       if (req.body.erkhuud && req.body.erkhuud.length > 0)
         var moduluud = req.body.erkhuud;
@@ -257,7 +255,6 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
           { json: true, body: ilgeekhBody },
           (err, res1, body) => {
             if (err) next(err);
-            console.log(body);
           }
         );
       }

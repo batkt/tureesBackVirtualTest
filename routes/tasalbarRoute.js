@@ -131,7 +131,6 @@ async function tasalbarEbarimtShineUusgye(
     },
   ];
   //ebarimt.receipts = receipts;
-  console.log("eeeebarimt", JSON.stringify(ebarimt, null, 4));
   return ebarimt;
 }
 
@@ -183,7 +182,6 @@ router
       var nuatTulukhEsekh = baiguullaga.barilguud.find(
         (x) => x._id.toString() == tukhainObject.barilgiinId
       )?.tokhirgoo?.nuatTulukhEsekh;
-      console.log("tuxainSalbar", tuxainSalbar);
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
       if (!!tuxainSalbar?.eBarimtShine)
         ebarimt = await tasalbarEbarimtShineUusgye(
@@ -225,16 +223,14 @@ router
           TasalbariinGuilgee(tukhainKholbolt)
             .findByIdAndUpdate(tukhainObject._id, update)
             .then((xariu) => {
-              console.log("xariu", xariu);
             })
             .catch((err) => {
-              console.log(err);
+              next(err);
             });
           delete d.baiguullagiinId;
           delete d.barilgiinId;
           delete d.tasalbariinGuilgeeniiId;
           delete d._id;
-          console.log("ebarimt duuslaa");
           var butsaakhKhariu = {
             success: true,
             message: "Amjilttai",
@@ -257,11 +253,7 @@ router
     try {
       // var temPath  = process.cwd() + "/file";
       var temPath = __dirname;
-      console.log("path --->" + temPath);
-      console.log(
-        "Checking for directory" + path.join(temPath, "tasalbarKhevlekh")
-      );
-
+      
       if (!fs.existsSync(path.join(temPath, "tasalbarKhevlekh")))
         fs.mkdirSync(path.join(temPath, "tasalbarKhevlekh"), true);
 
@@ -270,19 +262,16 @@ router
       doc.text("Hello world BATAA!", 10, 10);
       doc.save(temPath + "/tasalbarKhevlekh/khevlekh.pdf");
 
-      console.log("---------5-------------->>>>" + temPath);
 
       fs.readFile(
         path.join(temPath + "/tasalbarKhevlekh", "khevlekh.pdf"),
         "utf8",
         (err, data) => {
           if (err) {
-            console.error("Error reading file:", err);
             return;
           }
 
           const content = data;
-          console.log("fffff---" + content);
         }
       );
       res.send("test");

@@ -237,12 +237,10 @@ module.exports.zogsoolTseverlye = async (body, next) => {
         });
         if (!!zogsooluud) {
           for await (const zogsool of zogsooluud) {
-            console.log("zogsool", zogsool);
             var ognoo = new Date();
             ognoo = new Date(
               ognoo.getTime() - zogsool.mashinGargakhKhugatsaa * 60 * 60000
             );
-            console.log("ognoo", ognoo);
             await Uilchluulegch(kholbolt).updateMany(
               {
                 "tuukh.0.garsanKhaalga": {
@@ -285,12 +283,10 @@ module.exports.zogsooloosUstgay = async (body, next) => {
         });
         if (!!zogsooluud) {
           for await (const zogsool of zogsooluud) {
-            console.log("zogsool", zogsool);
             var ognoo = new Date();
             ognoo = new Date(
               ognoo.getTime() - zogsool.mashinUstgakhKhugatsaa * 24 * 60 * 60000
             );
-            console.log("ognoo", ognoo);
             await Uilchluulegch(kholbolt).deleteMany({
               createdAt: {
                 $lt: ognoo,
@@ -318,13 +314,11 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
           var tukhainKholbolt = kholboltuud.find(
             (x) => x.baiguullagiinId == baiguullaga._id.toString()
           );
-          console.log("tukhainKholbolt", tukhainKholbolt);
           var shiveeguiTuukhuud = await Uilchluulegch(tukhainKholbolt).find({
             ebarimtAvsanEsekh: { $ne: true },
             "tuukh.0.tulbur": { $exists: true, $not: { $size: 0 } },
             "tuukh.0.tulbur.ognoo": { $gt: new Date(moment(new Date()).add(-1, "day").format("YYYY-MM-DD 23:59:59")) },
           });
-          console.log("shiveeguiTuukhuud", shiveeguiTuukhuud);
           var uilchluulegchBulk = [];
           if (!!shiveeguiTuukhuud) {
             var niitDun = 0;
@@ -359,15 +353,13 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
                 null,
               );
             }
-            console.log("uilchluulegchBulk log ---->" + JSON.stringify(uilchluulegchBulk));
             if (uilchluulegchBulk)
               Uilchluulegch(tukhainKholbolt)
                 .bulkWrite(uilchluulegchBulk)
                   .then((bulkWriteOpResult) => {
-                    console.log("Uilchluulegch BULK update OK", bulkWriteOpResult);
                   })
                   .catch((err) => {
-                    console.log("Uilchluulegch BULK update error", err);
+                    throw err;
                   });
           }
         }
@@ -376,7 +368,7 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
   } catch (err) {
     if (!!next) {
       next(err);
-    } else console.log("err", err);
+    } 
   }
 };
 
@@ -402,10 +394,9 @@ module.exports.testCloudMongodb = async function testCloudMongodb() {
       }),
     })
     .catch((err) => {
-      console.log("error " + err.message);
+      throw err;
     });
-    console.log("khariu --->" + response);
   } catch (err) {
-    console.log("err", err);
+    throw err;
   }
 };

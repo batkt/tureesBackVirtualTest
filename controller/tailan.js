@@ -235,7 +235,6 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
             idnuud = [zardal._id];
             if (zardal.dedKhesguud && zardal.dedKhesguud.length > 0)
               zardal.dedKhesguud.forEach((a) => {
-                console.log(typeof a._id);
                 idnuud.push(a._id);
               });
             var shuugdsenZardluud = lodash.filter(zardliinDunguud, (a) =>
@@ -1055,7 +1054,6 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     },
   ]);
-  console.log("turluur", JSON.stringify(turluur, null, 4));
   Geree(req.body.tukhainBaaziinKholbolt)
     .aggregate(query)
     .then((result) => {
@@ -1974,7 +1972,6 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
     var matchGroup = {};
     if(!!req.body.khariltsagchiinId)
       matchGroup["_id.register"] = { $in: req.body.khariltsagchiinId};
-    console.log(match);
     var query = [
       {
         $match: match,
@@ -2033,8 +2030,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
       {
         $sort: { "_id.register":1, "_id.gereeniiDugaar":1 }
       },
-    ];  
-    console.log(query);
+    ];
     var zardluud = await AshiglaltiinZardluud(req.body.tukhainBaaziinKholbolt).find({ baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId });
     var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
     if(khariu?.length > 0)

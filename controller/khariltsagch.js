@@ -18,7 +18,6 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
       .catch((err) => {
         next(err);
       });
-    console.log("khariltsagch", khariltsagch);
     if (!khariltsagch)
       throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
     var ok = await khariltsagch.passwordShalgaya(req.body.nuutsUg);
@@ -43,7 +42,6 @@ exports.khariltsagchNuutsUgSolikh = asyncHandler(async (req, res, next) => {
       .catch((err) => {
         next(err);
       });
-    console.log("khariltsagch", khariltsagch);
     if (!khariltsagch)
       throw new aldaa("Хэрэглэгчийн утасны дугаар олдсонгүй!");
     var butsaakhObject = {
@@ -89,7 +87,6 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
     url = encodeURI(url);
     request(url, { json: true }, (err1, res1, body) => {
       if (err1) {
-        console.log("url", url);
         next(err1);
       } else {
         if (!!req && !!req.body) {
@@ -102,12 +99,9 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
           msg.save();
         }
         if (jagsaalt.length > index + 1) {
-          console.log("url", url);
-          console.log("body", body);
           khariu.push(body[0]);
           msgIlgeeye(jagsaalt, key, dugaar, khariu, index + 1, next, req, res);
         } else {
-          console.log("url", url);
           khariu.push(body[0]);
         }
       }
@@ -123,16 +117,13 @@ async function tulultiinMsgIlgeeye(baiguullagiinId, gereeniiDugaar, utas, dun) {
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       baiguullagiinId
     );
-    console.log("gereeniiDugaar ", gereeniiDugaar);
-    console.log("utas ", utas);
-    console.log("dun ", dun);
     var msgIlgeekhKey;
     var msgIlgeekhDugaar;
     try {
       msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
       msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
     } catch (error) {
-      console.log("msg tokhirgoo bxgui");
+      throw error;
     }
     if (!!msgIlgeekhKey && !!msgIlgeekhDugaar) {
     }
@@ -158,7 +149,7 @@ async function tulultiinMsgIlgeeye(baiguullagiinId, gereeniiDugaar, utas, dun) {
       null
     );
   } catch (err) {
-    console.log("tulburiin msg ilgeexed aldaa garsan " + err);
+    throw err;
   }
 }
 
@@ -265,7 +256,6 @@ exports.tokenoorKhariltsagchAvya = asyncHandler(async (req, res, next) => {
         res.send(urdunJson);
       })
       .catch((err) => {
-        console.log("aldaa");
         next(err);
       });
   } catch (error) {
@@ -400,20 +390,18 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
               Talbai(kholbolt)
                 .bulkWrite(talbainBulk)
                 .then((bulkWriteOpResult) => {
-                  console.log("Talbai BULK update OK", bulkWriteOpResult);
                 })
                 .catch((err) => {
-                  console.log("Talbai BULK update error", err);
+                  throw err;
                 });
 
             if (khariltsagchiinBulk)
               Khariltsagch(db.erunkhiiKholbolt)
                 .bulkWrite(khariltsagchiinBulk)
                 .then((bulkWriteOpResult) => {
-                  console.log("Khariltsagch BULK update OK", bulkWriteOpResult);
                 })
                 .catch((err) => {
-                  console.log("Khariltsagch BULK update error", err);
+                  throw err;
                 });
           }
         }

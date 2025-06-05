@@ -173,9 +173,9 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
     const { exec } = require("child_process");
     try {
       fs.unlinkSync("dump.tar");
-      console.log("removed");
+      
     } catch (err) {
-      console.error(err);
+      throw err;
     }
     const { db } = require("zevbackv2");
     var backupDB = exec(
@@ -188,15 +188,10 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
         " --archive=dump.tar" +
         "  --gzip",
       (err, stdout, stderr) => {
-        console.log("err -->", err);
-        console.log("stdout -->", stdout);
-        console.log("stderr -->", stderr);
         if (err) {
-          console.error(`exec error: ${err}`);
           res.send(err);
         }
         if (stdout) {
-          console.error(`exec stdout: ${stdout}`);
           if (stdout.includes("error"))
             res.send(new Error("Back авах боломжгүй байна!"));
           else {
@@ -205,7 +200,6 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
             var path = require("path");
             res.sendFile(path.resolve("file/tmp/dump.tar"), function (err) {
               if (err) {
-                console.log("err", err);
                 next(err);
               } else {
                 next();
@@ -214,7 +208,6 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
           }
         }
         if (stderr) {
-          console.error(`exec stderr: ${stderr}`);
           if (stderr.includes("error"))
             res.send(new Error("Back авах боломжгүй байна!"));
           else {
@@ -244,7 +237,6 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
             tuukh.save();
             res.sendFile(path.resolve("dump.tar"), function (err) {
               if (err) {
-                console.log("err", err);
                 next(err);
               } else {
                 next();
@@ -303,10 +295,8 @@ exports.khugatsaaguiTokenAvya = asyncHandler(async (req, res, next) => {
     }
     const token = req.headers.authorization.split(" ")[1];
     const tokenObject = jwt.verify(token, process.env.APP_SECRET, 401);
-    console.log(tokenObject);
     if (tokenObject.id == "zochin")
       throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
-    console.log("tokenObject", tokenObject);
     Ajiltan(db.erunkhiiKholbolt)
       .findById(tokenObject.id)
       .then(async (urDun) => {
@@ -314,7 +304,6 @@ exports.khugatsaaguiTokenAvya = asyncHandler(async (req, res, next) => {
         res.send(jwt);
       })
       .catch((err) => {
-        console.log("aldaa");
         next(err);
       });
   } catch (error) {
@@ -382,7 +371,6 @@ function msgIlgeeye(
     url = encodeURI(url);
     request(url, { json: true }, (err1, res1, body) => {
       if (err1) {
-        console.log("url", url);
         next(err1);
       } else {
         var msg = new MsgTuukh(tukhainBaaziinKholbolt)();
@@ -392,8 +380,6 @@ function msgIlgeeye(
         msg.msg = jagsaalt[index].text;
         msg.save();
         if (jagsaalt.length > index + 1) {
-          console.log("url", url);
-          console.log("body", body);
           khariu.push(body[0]);
           msgIlgeeye(
             jagsaalt,
@@ -405,7 +391,6 @@ function msgIlgeeye(
             baiguullagiinId
           );
         } else {
-          console.log("url", url);
           khariu.push(body[0]);
         }
       }
@@ -741,7 +726,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             text = text.slice(0, -2);
             text = text + " tus tus orlogo orson baina.";
             textuud.push(text);
-            console.log("text", text);
           }
         }
         if (
@@ -749,9 +733,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
           baiguullaga.tokhirgoo.msgAvakhTurul == "bugd"
         ) {
           var text = "";
-          console.log("kholbolt", kholbolt);
-          console.log("ekhlekhOgnoo", ekhlekhOgnoo);
-          console.log("duusakhOgnoo", duusakhOgnoo);
           var togloom = await TogloomiinTuv(kholbolt).aggregate([
             {
               $match: {
@@ -861,10 +842,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
               }
             ]);  
           }
-          console.log("togloom", togloom);
-          console.log("zogsool", zogsool);
-          console.log("turees", turees);
-          console.log("zurchil", zurchiluud);
           if (
             (togloom && togloom.length > 0) ||
             (zogsool && zogsool.length > 0) ||
@@ -872,31 +849,30 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             (zurchiluud && zurchiluud.length > 0)
           ) {
             text =
-              "Rently systemd " +
               moment(ekhlekhOgnoo).format("MM/DD") +
               " udur ";
             if (togloom && togloom.length > 0) {
               text =
                 text +
-                "Togloom- " +
+                "Togloom-" +
                 (await formatNumber(togloom[0].niitDun)) +
                 "₮,";
             }
             if (zogsool && zogsool.length > 0) {
               text =
                 text +
-                "Zogsool- " +
+                "Zogsool-" +
                 (await formatNumber(zogsool[0].niitDun)) +
                 "₮,";
             }
             if (turees && turees.length > 0) {
               text =
                 text +
-                "Turees- " +
+                "Turees-" +
                 (await formatNumber(turees[0].niitDun)) +
                 "₮,";
             }
-            text = text + " tus tus orlogo orson baina.";
+            text = text + " orlogo orson baina.";
             if(baiguullaga?.tokhirgoo?.zurchulMsgeerSanuulakh && zurchiluud?.length > 0)
               text = text + " Zurchiltei- " + (await formatNumber(zurchiluud[0].niitDun)) + "₮ avlaga uussen baina. ";
             if (zogsool && zogsool.length > 0 && zogsool[0].niitDun > 0) {
@@ -910,10 +886,10 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 .save()
                 .then((khadgalsanSession) => {
                   const dynamicUrl = `https://turees.zevtabs.mn/khyanalt/zogsooliinDelgerenguiTailan/${khadgalsanSession._id}`;
-                  text += `Ta zogsooliin dung delgerengui harahiig husvel doorh holboosoor orno uu: ${dynamicUrl}`;
+                  text += `Holboosoor orno uu: ${dynamicUrl}`;
                 })
                 .catch((error) => {
-                  console.error("session error:", error);
+                  throw error;
                 });
             }
             textuud.push(text);
@@ -948,13 +924,11 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
         }
       }
         catch (aldaaa) {
-          console.log("msg aldaa garlaa ==> ", aldaaa);
           continue;
         }
       }
     
     } catch (error) {
-      console.log(error);
     }
   }
 );
@@ -963,7 +937,6 @@ exports.baiguullagaIdgaarAvya = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
-    console.log("baiguullaga", baiguullaga);
     if (!baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     res.send(baiguullaga);
   } catch (error) {

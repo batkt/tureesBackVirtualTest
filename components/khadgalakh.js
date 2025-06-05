@@ -15,11 +15,9 @@ async function khadgalya(List, next) {
                 if (Array.isArray(turObject.data))
                     for (element in turObject.data) {
                         data = turObject.data[element];
-                        console.log("data", data);
                         if (Array.isArray(data))
                             for (a in data) {
                                 khadgalakhData = data[a];
-                                console.log("a", khadgalakhData);
                                 if ((typeof khadgalakhData) != "string" && (typeof khadgalakhData) != "number")
                                     await turObject.turul.updateOne({ _id: khadgalakhData._id }, khadgalakhData, { upsert: true });
                             }
@@ -35,7 +33,6 @@ async function khadgalya(List, next) {
             session.endSession();
         }
         catch (err1) {
-            console.log("err1", err1);
             await session.abortTransaction();
             next(err1);
         }

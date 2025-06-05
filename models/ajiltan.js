@@ -144,8 +144,7 @@ ajiltanSchema.methods.passwordShalgaya = async function (pass) {
 
 //const AjiltanModel = mongoose.model("ajiltan", ajiltanSchema);
 /*AjiltanModel.estimatedDocumentCount().then((count) => {
-  console.dir(count);
-
+  
   if (count == 0) {
     AjiltanModel.create(
       new AjiltanModel({

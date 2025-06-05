@@ -49,11 +49,7 @@ async function tokenAvya(
     );
     url.username = username;
     url.password = password;
-    console.log("url ---------->>" + url);
-    console.log("username ---------->>" + username);
-    console.log("password ---------->>" + password);
     const response = await instance.post(url).catch((err) => {
-      console.log("khanbank tokenAvya err " + err.message);
       throw err;
     });
     var qeury = { turul: "khaanCorporate", baiguullagiinId: baiguullagiinId };
@@ -67,14 +63,11 @@ async function tokenAvya(
         { upsert: true }
       )
       .then((x) => {
-        console.log(x);
       })
       .catch((e) => {
-        console.log(e);
       });
     return khariu;
   } catch (error) {
-    console.log("tokenAvya -> error ", error);
     if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!"));
   }
 }
@@ -104,7 +97,6 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
           json: { name: username, password: encryptedPass.toString() },
         })
         .catch((err) => {
-          console.log("error " + err.message);
           throw err;
         });
       var khariu = JSON.parse(response.body);
@@ -119,19 +111,14 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
           { upsert: true }
         )
         .then((x) => {
-          console.log(x);
         })
         .catch((e) => {
-          console.log(e);
         });
       tokenObject = khariu;
     } else if (
       tokenObject.ognoo < new Date(new Date().getTime() - 290000) //4min 50 sec-s umnu bwal sungax
     ) {
-      console.log("sungaxruu orloo");
       var url = process.env.GOLOMT_SERVER + "/v1/auth/refresh";
-      console.log("url", url);
-      console.log("tokenObject.refreshToken", tokenObject.refreshToken);
       const response = await got
         .get(url, {
           headers: {
@@ -140,10 +127,8 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
           },
         })
         .catch((err) => {
-          console.log("error " + err.message);
           throw err;
         });
-      console.log("response.body", response.body);
       var khariu = JSON.parse(response.body);
       Token(tukhainBaaziinKholbolt)
         .updateOne(
@@ -156,16 +141,13 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
           { upsert: true }
         )
         .then((x) => {
-          console.log(x);
         })
         .catch((e) => {
-          console.log(e);
         });
       tokenObject = khariu;
     }
     return tokenObject;
   } catch (error) {
-    console.log("tokenAvya -> error ", error);
     new Error("Банктай холбогдоход алдаа гарлаа!");
   }
 }
@@ -190,7 +172,6 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
             "client_secret": dans.corporateNuutsUg
         }})
         .catch((err) => {
-          console.log("error " + err.message);
           throw err;
         });
       var khariu = JSON.parse(response.body);
@@ -204,16 +185,13 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
           { upsert: true }
         )
         .then((x) => {
-          console.log(x);
         })
         .catch((e) => {
-          console.log(e);
         });
       tokenObject = khariu;
     }
     return tokenObject;
   } catch (error) {
-    console.log("tokenAvya -> error ", error);
     new Error("Банктай холбогдоход алдаа гарлаа!");
   }
 }
@@ -233,7 +211,6 @@ async function bogdTokentAvya(dans, tukhainBaaziinKholbolt){
       body: paramsVal.toString(), 
     })
     .catch((err) => {
-      console.log("error " + err.message);
       throw err;
     });
     var khariu = JSON.parse(response.body);
@@ -247,10 +224,8 @@ async function bogdTokentAvya(dans, tukhainBaaziinKholbolt){
           { upsert: true }
         )
         .then((x) => {
-          console.log(x);
         })
         .catch((e) => {
-          console.log(e);
         });
       return khariu.data.access_token;
     }
@@ -280,7 +255,6 @@ async function transTokenAvya(dans, tukhainBaaziinKholbolt) {
           },
         })
         .catch((err) => {
-          console.log("error " + err.message);
           throw err;
         });
       var khariu = JSON.parse(response.body);
@@ -295,15 +269,12 @@ async function transTokenAvya(dans, tukhainBaaziinKholbolt) {
           { upsert: true }
         )
         .then((x) => {
-          console.log(x);
         })
         .catch((e) => {
-          console.log(e);
         });
     }
     return tokenObject;
   } catch (error) {
-    console.log("tokenAvya -> error ", error);
     new Error("Банктай холбогдоход алдаа гарлаа!");
   }
 }
@@ -322,7 +293,6 @@ async function golomtServiceDuudya(
     var a = JSON.stringify(yawuulaxBody);
     var hash = CryptoJS.SHA256(a.toString());
     var hex = hash.toString(CryptoJS.enc.Hex);
-    console.log("sessionKey ------------>>>" + sessionKey);
     if(!sessionKey || !ivKey) return "";
     var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
     var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
@@ -342,7 +312,6 @@ async function golomtServiceDuudya(
         json: yawuulaxBody,
       })
       .catch((err) => {
-        console.log("aldaaaa ", JSON.stringify(err, null, 4));
         throw err;
       });
     var stringKhariu = response?.body;
@@ -362,7 +331,6 @@ async function golomtServiceDuudya(
     }
     return khariu;
   } catch (error) {
-    console.log("golomt service aldaa -> error ", error);
     if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!"));
   }
 }
@@ -389,11 +357,9 @@ async function dansniiKhuulgaAvya(token, next, body) {
     // if(body.baiguullagiinId === "6731b43bc23730ac1908da2d") // soyolj
     // {
     //   const responseShunuEsekh = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
-    //   console.log("sojolj state -------------------->>" + JSON.stringify(responseShunuEsekh?.body));
     //   url = "https://api.khanbank.com/v1/statements/" + (responseShunuEsekh?.body ? "corporate/" : "") + body.dansniiDugaar;
     //   if(body.record)
     //     url = url + (responseShunuEsekh?.body ? "/?record=" : "/record?record=") + body.record;
-    //   console.log("sojolj url -------------------->>" + JSON.stringify(url));
     // }
     // else
     // {
@@ -401,7 +367,6 @@ async function dansniiKhuulgaAvya(token, next, body) {
       if(body.record)
         url = url + "/record?record=" + body.record;
     // }
-    console.log("url -------------------->>" + JSON.stringify(url));
     const response = await instance.get(url, { context });
     if (!response.body) {
       if (next) next(new aldaa("Татах хуулга байхгүй"));
@@ -409,7 +374,6 @@ async function dansniiKhuulgaAvya(token, next, body) {
     }
     return JSON.parse(response?.body);
   } catch (error) {
-    console.log("error", error);
     if (next) next(error);
   }
 }
@@ -480,8 +444,6 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
       onFinish(result);
     });
   } catch (error) {
-    console.log("aldaatai!!");
-    console.log(error);
     if (next) next(error);
   }
 }
@@ -526,7 +488,6 @@ async function tdbDansniiUldegdelAvya(
       rootName: "Document",
     });
     var xmlObject = builder.buildObject(xmlObject);
-    console.log("xmlObject", xmlObject);
     var xml = {
       xml: xmlObject,
     };
@@ -550,10 +511,8 @@ async function tdbDansniiUldegdelAvya(
         baiguullagiinZam = "polaris";
     }
     var urlString = process.env.ZEV_TEST_SERVER + ":5000/" + baiguullagiinZam;
-    console.log("url", urlString);
     var url = new URL(urlString);
     const response = await instanceJson.post(url, { body: objectString });
-    console.log("response.body", response.body);
     var parseString = xml2js.parseString;
     parseString(response.body, async function (err, result) {
       onFinish(result);
@@ -622,11 +581,9 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
             }
           })
           .catch((err) => {
-            console.log("error " + err.message);
             throw err;
           });
         var khariu = JSON.parse(response.body);
-        console.log("khariu " + JSON.stringify(khariu, null, 4));
         res.send({ uldegdel: khariu.acntno.BALANCE});
       }
       else {
@@ -684,7 +641,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
               upsert: true,
             }
           )
-          .catch((err) => console.log(err));
+          .catch((err) => next(err));
         var textUseg = "A";
         if (dans.baiguullagiinId == "631595e9957b7d5ec013c076") textUseg = "U";
         else if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac")
@@ -752,7 +709,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           },
         })
         .catch((err) => {
-          console.log("error " + err.message);
           throw err;
         });
       var khariu = JSON.parse(response.body);
@@ -769,7 +725,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           },
         })
         .catch((err) => {
-          console.log("error " + err.message);
           throw err;
         });
       var khariu = JSON.parse(response.body);
@@ -863,7 +818,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   },
                 ];
                 var max = await BankniiGuilgee(kholbolt).aggregate(query);
-                console.log("max --------------->" + JSON.stringify(max));
                 var bodyKhuulga = {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
@@ -889,7 +843,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       if (res) res.send("Amjilttai");
                     })
                     .catch((err) => {
-                      console.log(err);
                       next(err);
                     });
                 }
@@ -934,7 +887,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate()
                   + "&page=0&size=100"
-                  console.log("urlurl " + url);
                   var response = await axios
                     .get(url, {
                       headers: {
@@ -943,12 +895,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       }
                     })
                     .catch((err) => {
-                      console.log("error " + err.message);
                       throw err;
                     });
-                  //console.log("response.data " + response.data);
                   var khariu = response.data;
-                  //console.log("khariu " + JSON.stringify(khariu, null, 4));
                   if (
                     !!khariu &&
                     !!khariu.txn &&
@@ -982,7 +931,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         if (res) res.send("Amjilttai");
                       })
                       .catch((err) => {
-                        console.log(err);
+                        next(err);
                       });
                   }
                 }
@@ -1037,8 +986,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         upsert: true,
                       }
                     )
-                    .then((resa) => console.log(resa))
-                    .catch((err) => console.log(err));
+                    .then((resa) => {})
+                    .catch((err) => next(err));
                   var textUseg = "A";
                   if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")
                     textUseg = "U";
@@ -1118,13 +1067,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                             if (res) res.send("Amjilttai");
                           })
                           .catch((err) => {
-                            console.log(err);
+                            next(err);
                           });
                       } else {
-                        console.log(
-                          "khariu.Document.GrpHdr ",
-                          JSON.stringify(khariu.Document.GrpHdr, null, 4)
-                        );
+                        
                       }
                     },
                     dans.baiguullagiinId
@@ -1161,7 +1107,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate(),
                 };
-                console.log("------   yawuulaxBody  --->>" + JSON.stringify(yawuulaxBody));
                 var khariu = await golomtServiceDuudya(
                   dans,
                   yawuulaxBody,
@@ -1207,7 +1152,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       if (res) res.send("Amjilttai");
                     })
                     .catch((err) => {
-                      console.log(err);
+                      next(err);
                     });
                 }
               } else if (dans.bank == "trans") {
@@ -1258,7 +1203,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     },
                   })
                   .catch((err) => {
-                    console.log("error " + err.message);
                     throw err;
                   });
                 var khariu = JSON.parse(response.body);
@@ -1308,7 +1252,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       if (res) res.send("Amjilttai");
                     })
                     .catch((err) => {
-                      console.log(err);
+                      next(err);
                     });
                 }
               } else if (dans.bank == "bogd") {
@@ -1336,7 +1280,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     body: paramsVal.toString(),
                   })
                   .catch((err) => {
-                    console.log("error " + err.message);
                     throw err;
                   });
                 var khariu = JSON.parse(response.body);
@@ -1399,11 +1342,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       if (res) res.send("Amjilttai");
                     })
                     .catch((err) => {
-                      console.log(err);
+                      next(err);
                     });
               }
             } catch (aldaaa) {
-              console.log("tatax ued aldaa garlaa ==> ", aldaaa);
               continue;
             }
           }
@@ -1471,7 +1413,7 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
         upsert: true,
       }
     )
-    .catch((err) => console.log(err));
+    .catch((err) => next(err));
   var textUseg = "A";
   if (dans.baiguullagiinId == "631595e9957b7d5ec013c076") textUseg = "U";
   else if (dans.baiguullagiinId == "64fe8edc54a669717ad657ac") textUseg = "K";
@@ -1643,11 +1585,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
-                      console.log("khaan xuulga tatsan");
                       // if (res) res.send("Amjilttai");
                     })
                     .catch((err) => {
-                      console.log(err);
+                      throw err;
                       // next(err);
                     });
                 }
@@ -1702,7 +1643,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       upsert: true,
                     }
                   )
-                  .catch((err) => console.log(err));
+                  .catch((err) => { throw err; });
                 var textUseg = "A";
                 if (dans.baiguullagiinId == "631595e9957b7d5ec013c076")
                   textUseg = "U";
@@ -1807,10 +1748,9 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       await BankniiGuilgee(kholbolt)
                         .insertMany(guilgeenuud)
                         .then((result) => {
-                          console.log("amjilttai");
                         })
                         .catch((err) => {
-                          console.log(err);
+                          throw err;
                         });
                     }
                   },
@@ -1923,10 +1863,9 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
-                      console.log("golomt xuulga tatsan");
                     })
                     .catch((err) => {
-                      console.log(err);
+                      throw err;
                     });
                 }
               } else if (dans.bank == "trans") {
@@ -1974,7 +1913,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     },
                   })
                   .catch((err) => {
-                    console.log("error " + err.message);
                     throw err;
                   });
                 var khariu = JSON.parse(response.body);
@@ -2055,10 +1993,9 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
-                      console.log("trans xuulga tatsan");
                     })
                     .catch((err) => {
-                      console.log(err);
+                      throw err;
                     });
                 }
               } else if (dans.bank == "bogd") {
@@ -2086,7 +2023,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     body: paramsVal.toString(),
                   })
                   .catch((err) => {
-                    console.log("error " + err.message);
                     throw err;
                   });
                 var khariu = JSON.parse(response.body);
@@ -2132,11 +2068,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       if (res) res.send("Amjilttai");
                     })
                     .catch((err) => {
-                      console.log(err);
+                      throw err;
                     });
               }
             } catch (aldaaa) {
-              console.log("tatax ued aldaa garlaa ==> ", aldaaa);
               continue;
             }
           }
@@ -2144,7 +2079,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
       }
     }
   } catch (err) {
-    console.log("oirxon xuulga tatya ==>", err);
+    throw err;
   }
 });
 
@@ -2269,13 +2204,10 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           }
         }
       }
-      console.log("-------- gadnaZogsoolDavhkardsanMashin ------->>  "+ JSON.stringify(result?.length));
-      console.log("-------- dotorZogsoolDavhkardsanMashin ------->>  "+ JSON.stringify(resultDotor?.length));
     }
     res?.send(resultDotor);
   }
   catch (err) {
-	  console.log("davkhardsan Mashin Tseverlye log err ==>", err);
-    if (next) next(err);
+	  if (next) next(err);
   }
 });

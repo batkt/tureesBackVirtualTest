@@ -113,8 +113,6 @@ router
           _id: req.body.id,
         })
         .then(async (result) => {
-          console.log("req.body.id", req.body.id);
-          console.log("result", result);
           var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
             tuluv: 1,
             register: result.register,

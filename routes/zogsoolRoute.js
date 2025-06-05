@@ -59,7 +59,6 @@ router.get("/zogsooloosTatya", async (req, res, next) => {
       "group by a.id, a.car_number, a.check_in_time " +
       "order by check_in_time",
     async (err, res1) => {
-      console.log(err, res1);
       if (err) throw err;
       var niitMur = 0;
       await pool.end();
@@ -67,7 +66,6 @@ router.get("/zogsooloosTatya", async (req, res, next) => {
         const objectString = JSON.stringify({ jagsaalt: res1.rows });
         var url = new URL("http://103.143.40.230:8081/zogsoolOlnoorKhadgalya/");
         const response = await instanceJson.post(url, { body: objectString });
-        console.log("response.body", response.body);
       }
       res.send("Amjilttai");
     }
@@ -90,11 +88,9 @@ router.post("/zogsoolOlnoorKhadgalya", async (req, res, next) => {
   });
   Zogsool.bulkWrite(bulkOps)
     .then((bulkWriteOpResult) => {
-      console.log("BULK update OK");
       res.send("Amjilttai");
     })
     .catch((err) => {
-      console.log("BULK update error");
       next(err);
     });
 });

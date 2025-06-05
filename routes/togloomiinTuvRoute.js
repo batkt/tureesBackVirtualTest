@@ -354,15 +354,12 @@ router
           return a.minut - b.minut;
         });
         maxTsag = khariu.tariffuud[khariu.tariffuud.length - 1].minut;
-        console.log("maxTsag", maxTsag);
         for await (const x of khariu.tariffuud) {
           dun = x.tariff;
           if (minut <= x.minut) break;
         }
         if (minut > maxTsag) {
           var tsag = Math.ceil((minut - maxTsag) / 60);
-          console.log("tsag", tsag);
-          console.log("khariu.undsenTariff", khariu.undsenTariff);
           dun = tsag * khariu.undsenTariff + dun;
         }
         if (asragchiinToo > 1) {
@@ -559,15 +556,12 @@ async function dunBoduulya(
       return a.minut - b.minut;
     });
     maxTsag = khariu.tariffuud[khariu.tariffuud.length - 1].minut;
-    console.log("maxTsag", maxTsag);
     for await (const x of khariu.tariffuud) {
       dun = x.tariff;
       if (minut <= x.minut) break;
     }
     if (minut > maxTsag) {
       var tsag = Math.ceil((minut - maxTsag) / 60);
-      console.log("tsag", tsag);
-      console.log("khariu.undsenTariff", khariu.undsenTariff);
       dun = tsag * khariu.undsenTariff + dun;
     }
     if (asragchiinToo > 1 && khuukhdiinToo < 2) {
@@ -691,10 +685,8 @@ router.route("/togloomiinTuvNiitDun").post(tokenShalgakh, async (req, res, next)
           },
         },
       ]);
-      console.log("---------------->>>" + khariu);
       
       khariu.forEach((data) => {
-        console.log("------------>>" + data.niitDun);
         TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
           .findByIdAndUpdate({ _id: data._id }, [
             {

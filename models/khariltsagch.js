@@ -65,7 +65,6 @@ khariltsagchSchema.pre("save", async function () {
 
 khariltsagchSchema.pre("updateOne", async function () {
   const salt = await bcrypt.genSalt(12);
-  console.log("update xiigdej baina ==>", this._update);
   if (this._update.nuutsUg && this._update.nuutsUg !== "123")
     this._update.nuutsUg = await bcrypt.hash(this._update.nuutsUg, salt);
   else delete this._update.nuutsUg;

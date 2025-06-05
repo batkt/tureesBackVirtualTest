@@ -34,7 +34,6 @@ router.post(
   async (req, res, next) => {
     var turul = req.body.turul;
     var id = require("uuid").v1().toString();
-    console.log("id", id);
     if (req.file)
       try {
         fs.access("./zurag/", (err) => {
@@ -81,7 +80,6 @@ router.post(
     try {
       var turul = req.body.turul;
       var id = require("uuid").v1().toString();
-      console.log("id", id);
       if (req.file) {
         fs.access("./file/", (err) => {
           if (err) {
@@ -100,7 +98,6 @@ router.post(
             if (err) {
               next(err);
             } else res.status(200).json({ id: id });
-            console.log(data);
           }
         );
       } else throw new Error("Хадгалах file алга байна!");

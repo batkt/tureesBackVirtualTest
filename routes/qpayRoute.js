@@ -20,8 +20,6 @@ router.get(
   "/qpaycallback/:baiguullagiinId/:zakhialgiinDugaar",
   async (req, res, next) => {
     try {
-      console.log("req.params", req.params);
-      console.log("req.query", req.query);
       const { db } = require("zevbackv2");
       const b = req.params.baiguullagiinId;
       var kholbolt = db.kholboltuud.find((a) => a.baiguullagiinId == b);
@@ -29,7 +27,6 @@ router.get(
         zakhialgiinDugaar: req.params.zakhialgiinDugaar,
         tulsunEsekh: false,
       });
-      console.log("qpayObject ", qpayObject);
 
       qpayObject.tulsunEsekh = true;
       qpayObject.isNew = false;
@@ -58,8 +55,6 @@ router.get(
   "/qpaycallbackGadaaSticker/:baiguullagiinId/:barilgiinId/:mashiniiDugaar/:cameraIP/:zakhialgiinDugaar",
   async (req, res, next) => {
     try {
-      console.log("req.params", req.params);
-      console.log("req.query", req.query);
       const { db } = require("zevbackv2");
       const b = req.params.baiguullagiinId;
       var kholbolt = db.kholboltuud.find((a) => a.baiguullagiinId == b);
@@ -67,7 +62,6 @@ router.get(
         zakhialgiinDugaar: req.params.zakhialgiinDugaar,
         tulsunEsekh: false,
       });
-      console.log("qpayObject ", qpayObject);
 
       qpayObject.tulsunEsekh = true;
       qpayObject.isNew = false;
@@ -210,7 +204,6 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
         }
       }
 
-      console.log("callback_url", callback_url);
       const khariu = await qpayGargaya(
         req.body,
         callback_url,
@@ -280,7 +273,6 @@ router.post("/qpayKhariltsagchAvay", tokenShalgakh, async (req, res, next) => {
     const baiguullaga = await qpayKhariltsagch.findOne({
       baiguullagiinId: req.body.baiguullagiinId,
     });
-    console.log("baiguullaga", baiguullaga);
     if (baiguullaga) res.send(baiguullaga);
     else res.send(undefined);
   } catch (err) {

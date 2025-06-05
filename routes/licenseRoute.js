@@ -15,7 +15,7 @@ router.get("/systemiinMedeelelAvya", (req, res, next) => {
       .then((data) => {
         res.send(data);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => { throw error; });
   } catch (error) {
     next(error);
   }

@@ -61,7 +61,7 @@ server.listen(8081);
     useFindAndModify: false,
   })
   .then((result) => )
-  .catch((err) => console.log(err));*/
+  .catch((err) => */
 
 process.env.TZ = "Asia/Ulaanbaatar";
 app.set("socketio", io);
@@ -112,7 +112,6 @@ app.use(aldaaBarigch);
 cron.schedule(
   "*/5 * * * * ",
   function () {
-    // console.log("xuulga tatlaa", new Date());
     cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
   },
   {
@@ -124,7 +123,6 @@ cron.schedule(
 // cron.schedule(
 //   "59 23 * * *",
 //   function () {
-//     console.log("ebarimt ilgeelee", new Date());
 //     ebarimtRoute.ebarimtIlgeeye("6115f350b35689cdbf1b9da3");
 //   },
 //   {
@@ -136,7 +134,6 @@ cron.schedule(
 cron.schedule(
   "*/4 * * * * * ",
   function () {
-    // console.log("xuulga tatlaa", new Date());
     cgw.bankniiKhuulgaTatyaOirkhon();
   },
   {
@@ -201,7 +198,6 @@ cron.schedule(
 cron.schedule(
   "02 10 * * * ",
   function () {
-    console.log("zogsoolMsgIlgeeye");
     zogsool.zogsoolMsgIlgeeye();
   },
   {
@@ -212,7 +208,6 @@ cron.schedule(
 // cron.schedule(
 //   "50 59 23 * * * ",
 //   function () {
-//     console.log("ebarimtDutuugShivye");
 //     zogsool.ebarimtDutuugShivye();
 //   },
 //   {
@@ -223,7 +218,6 @@ cron.schedule(
 cron.schedule(
   "30 13 * * * * ",
   function () {
-    console.log("zogsoolTseverlye");
     zogsool.zogsoolTseverlye();
   },
   {
@@ -234,7 +228,6 @@ cron.schedule(
 cron.schedule(
   "40 1 1 * * * ",
   function () {
-    console.log("zogsooloosUstgay");
     zogsool.zogsooloosUstgay();
   },
   {
@@ -310,7 +303,6 @@ cron.schedule(
 cron.schedule(
   "59 * * * * ",
   function () {
-    console.log("sarBuriinKhungulultBodoy ---", new Date());
     gereeRoute.sarBuriinKhungulultBodoy();
   },
   {
@@ -320,12 +312,8 @@ cron.schedule(
 );
 
 io.once("connection", (socket) => {
-  console.log("connected");
   socket.on("disconnect", () => {
-    console.log("disconnected");
   });
   socket.on("error", function (err) {
-    console.log("Socket.IO Error");
-    console.log(err.stack);
   });
 });

@@ -80,7 +80,6 @@ router.post("/eventTariffKhadgalya", tokenShalgakh, async (req, res, next) => {
     var davkhtssanTariff = await EventTariff(
       req.body.tukhainBaaziinKholbolt
     ).findOne({ ner: req.body.ner });
-    console.log(davkhtssanTariff);
     if (!davkhtssanTariff) {
       var eventTariff = await EventTariff(req.body.tukhainBaaziinKholbolt)(
         req.body

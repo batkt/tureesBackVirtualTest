@@ -79,7 +79,6 @@ async function gereeBaivalBugluy(
   mashiniiJagsaalt.forEach((a) => {
     utasnuud.push(a.ezemshigchiinUtas);
   });
-  console.log("utasnuud", utasnuud);
   var gereeniiJagsaalt = await Geree(tukhainBaaziinKholbolt).find(match);
   if (gereeniiJagsaalt.length !== 0) {
     var tukhainMashin;
@@ -135,7 +134,6 @@ async function khariltsagchBaigaaEskhiigShalgaya(
   barilgiinId,
   tukhainBaaziinKholbolt
 ) {
-  console.log("gereenuud", gereenuud);
   var jagsaalt = [];
   var shineAldaaniiMsg = "";
   if (gereenuud)
@@ -369,14 +367,10 @@ async function talbaiBaigaaEskhiigShalgaya(
   if (shineAldaaniiMsg) aldaaniiMsg = shineAldaaniiMsg;
   else {
     gereenuud.forEach((x) => {
-      console.log("end", x.talbainDugaar);
       if (x.talbainDugaar.includes(",")) {
         var tukhainTalbainuud = talbainJagsaalt.filter((a) =>
           x.talbainDugaar.split(",").includes(a.kod)
         );
-        console.log("tukhainTalbainuud", tukhainTalbainuud);
-        console.log("talbainJagsaalt", talbainJagsaalt);
-        console.log("x", x);
         tukhainTalbainuud.forEach((mur) => {
           x.davkhar = mur.davkhar;
           x.talbainNegjUne = mur.talbainNegjUne;
@@ -393,11 +387,9 @@ async function talbaiBaigaaEskhiigShalgaya(
             (x.baritsaaAvakhDun != null ? x.baritsaaAvakhDun : 0);
         });
       } else {
-        console.log(talbainJagsaalt);
         var tukhainTalbai = talbainJagsaalt.find(
           (a) => a.kod == x.talbainDugaar
         );
-        console.log("tukhainTalbai", tukhainTalbai);
         x.davkhar = tukhainTalbai.davkhar;
         x.talbainNegjUne = tukhainTalbai.talbainNegjUne;
         x.talbainNiitUne = tukhainTalbai.talbainNiitUne;
@@ -498,7 +490,6 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
         },
       },
     ]);
-    console.log("barilga", barilga);
     var tolgoinObject = {};
     var muriinDugaar = 1;
     if (
@@ -637,7 +628,6 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     const toFindDuplicates = (arry) =>
       arry.filter((item, index) => arry.indexOf(item) !== index);
     var davkhardsanKod = toFindDuplicates(kodnuud);
-    console.log("davkhardsanKod", davkhardsanKod);
     if (davkhardsanKod && davkhardsanKod.length > 0)
       throw new aldaa(
         "Дараах дугаартай талбайнууд давхардаж байна! " +
@@ -745,7 +735,6 @@ exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
 exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
   let workbook = new excel.Workbook();
   let worksheet = workbook.addWorksheet("Талбай");
-  console.log("req.body.baiguullagiinId", req.body.baiguullagiinId);
   var segmentuud = await Segment(req.body.tukhainBaaziinKholbolt).find({
     baiguullagiinId: req.body.baiguullagiinId,
     turul: "talbai",
@@ -806,9 +795,7 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
     var baganiiToo = 7;
     segmentuud.forEach((x) => {
       var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-      console.log("baganiiUseg", baganiiUseg);
       var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
-      console.log("bagana", bagana.toString());
       worksheet.dataValidations.add(bagana, {
         type: "list",
         allowBlank: false,
@@ -845,7 +832,6 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
     baiguullagiinId: req.body.baiguullagiinId,
     turul: "khariltsagch",
   });
-  console.log("segmentuud", segmentuud);
   var baganuud = [
     {
       header: "Код",
@@ -902,9 +888,7 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
   if (segmentuud && segmentuud.length > 0) {
     segmentuud.forEach((x) => {
       var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-      console.log("baganiiUseg", baganiiUseg);
       var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
-      console.log("bagana", bagana.toString());
       worksheet.dataValidations.add(bagana, {
         type: "list",
         allowBlank: false,
@@ -974,9 +958,7 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
   if (segmentuud && segmentuud.length > 0) {
     segmentuud.forEach((x) => {
       var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-      console.log("baganiiUseg", baganiiUseg);
       var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
-      console.log("bagana", bagana.toString());
       worksheet1.dataValidations.add(bagana, {
         type: "list",
         allowBlank: false,
@@ -1019,8 +1001,6 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
     baiguullagiinId: req.body.baiguullagiinId,
     barilgiinId: req.params.barilgiinId,
   });
-  console.log("zardluud", zardluud);
-  console.log("segmentuud", segmentuud);
   var baganuud = [
     {
       header: "Гэрээний дугаар",
@@ -1083,9 +1063,7 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     });
     var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-    console.log("baganiiUseg", baganiiUseg);
     var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
-    console.log("bagana", bagana.toString());
     worksheet.dataValidations.add(bagana, {
       type: "list",
       allowBlank: false,
@@ -1130,7 +1108,6 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       }
     });
   }
-  console.log("baganuud", baganuud);
   worksheet.columns = baganuud;
   worksheet30.columns = baganuud;
   
@@ -1138,9 +1115,7 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
     segmentuud.forEach((x) => {
       if (x.utguud) {
         var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-        console.log("baganiiUseg", baganiiUseg);
         var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
-        console.log("bagana", bagana.toString());
         worksheet.dataValidations.add(bagana, {
           type: "list",
           allowBlank: false,
@@ -1165,9 +1140,7 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
     zardluud.forEach((x) => {
       if (x.turul != "төг") {
         var baganiiUseg = toogUsegruuKhurvuulekh(baganiiToo);
-        console.log("baganiiUseg", baganiiUseg);
         var bagana = baganiiUseg + "2:" + baganiiUseg + "9999";
-        console.log("bagana", bagana.toString());
         worksheet.dataValidations.add(bagana, {
           type: "list",
           allowBlank: false,
@@ -1219,7 +1192,6 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       barilgiinId: req.body.barilgiinId,
     });
     const { db } = require("zevbackv2");
-    console.log("zardluud", zardluud);
     if (req.body.ognoo) ognoo = req.body.ognoo;
     else throw new aldaa("Огноо сонгоно уу!");
     if (!req.body.barilgiinId) throw new aldaa("Барилгаа сонгоно уу!");
@@ -1384,7 +1356,6 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     });
     var aldaaniiMsg = "";
     var muriinDugaar = 1;
-    console.log("tolgoinObject", tolgoinObject);
     try {
       data.forEach((mur) => {
         muriinDugaar++;
@@ -1471,7 +1442,6 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             }
           });
         }
-        console.log("tulukhUdur", object.tulukhUdur);
         if (
           !object.register ||
           !object.gereeniiOgnoo ||
@@ -1593,7 +1563,6 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             }
           });
         }
-        console.log("tulukhUdur", object.tulukhUdur);
         if (
           !object.register ||
           !object.gereeniiOgnoo ||
@@ -1741,20 +1710,16 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
       Talbai(req.body.tukhainBaaziinKholbolt)
         .bulkWrite(talbainBulk)
           .then((bulkWriteOpResult) => {
-            console.log("Talbai BULK update OK", bulkWriteOpResult);
           })
           .catch((err) => {
-            console.log("Talbai BULK update error", err);
             next(err);
           });
     if (khariltsagchBulk)
       Khariltsagch(db.erunkhiiKholbolt)
         .bulkWrite(khariltsagchBulk)
           .then((bulkWriteOpResult) => {
-            console.log("Khariltsagch BULK update OK", bulkWriteOpResult);
           })
           .catch((err) => {
-            console.log("Khariltsagch BULK update error", err);
             next(err);
           });      
     res.status(200).send("Amjilttai");
@@ -1764,8 +1729,6 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
 });
 
 function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
-  console.log("turOgnoo ----------->>>" + JSON.stringify(turOgnoo));
-  console.log("body ----------->>>" + JSON.stringify(body));
   if(moment(turOgnoo).format("YYYY/MM") === moment(ekhlekhOgnoo).format("YYYY/MM"))
   {
     var sariinNiitKhonog = body.guchKhonogOruulakhEsekh ? 30 : parseFloat(moment(ekhlekhOgnoo).endOf("month").format("DD"));
@@ -1790,7 +1753,6 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
   let worksheet = workbook.addWorksheet("Бусад");
   let worksheet1 = workbook.addWorksheet("Гэрээт");
   let worksheet2 = workbook.addWorksheet("Онцгой үйлчлүүлэгч");
-  console.log("here");
   worksheet.columns = [
     {
       header: "Машины дугаар",
@@ -2555,7 +2517,6 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             aldaaniiMsg = aldaaniiMsg + "'Улсын бүртгэлийн дугаар', ";
           if (!object.utas || !object.utas[0])
             aldaaniiMsg = aldaaniiMsg + "'Утас', ";
-          console.log("object", object);
           aldaaniiMsg = aldaaniiMsg.slice(0, -2);
           aldaaniiMsg = aldaaniiMsg + " ";
           aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
@@ -2890,7 +2851,6 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
                 : 0)  
             : ashiglaltiinZardal.turul === "кг" ? ((zoruuDun || 0) * ashiglaltiinZardal.togtmolUtga * ashiglaltiinZardal.tariff)
             : tsakhilgaanDun;
-        console.log("tempDun", tempDun);
         if(tempDun === 0)
           aldaaniiMsg =
                 aldaaniiMsg +
@@ -2940,7 +2900,6 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           updateObject["guilgeeKhiisenAjiltniiNer"] = req.body.nevtersenAjiltniiToken.ner;
           updateObject["guilgeeKhiisenAjiltniiId"] = req.body.nevtersenAjiltniiToken.id;
         }
-        console.log("updateObject", updateObject);
         tukhainZardal.gereeniiId = geree._id;
         tukhainZardal.zoruu = ashiglaltiinZardal.zoruuDun;
         tukhainZardal.niitDun = tempDun;
@@ -2962,14 +2921,12 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
       await Geree(req.body.tukhainBaaziinKholbolt)
         .bulkWrite(bulkOps)
         .then((bulkWriteOpResult) => {
-          console.log("BULK update OK", bulkWriteOpResult);
           AshiglaltiinExcel(req.body.tukhainBaaziinKholbolt).insertMany(
             jagsaalt
           );
           res.status(200).send("Amjilttai");
         })
         .catch((err) => {
-          console.log("BULK update error", err);
           next(err);
         });
   } catch (error) {
@@ -3012,7 +2969,6 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
   if(baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
   {
-    console.log("-------------->>" + baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh);
     var temp = [
       {
         header: "Гүйдлийн коэффициент",
@@ -3082,13 +3038,10 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
     if (workbook.SheetNames[0] !== "Эхний үлдэгдэл")
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    console.log("--------------->>>" + req.body.tureesEkhniiUldegdelEsekh);
-    console.log("--------------->>>" + req.body.ashiglaltiinId);
     var ashiglaltiinZardal = {};
     if(req.body.tureesEkhniiUldegdelEsekh === "false" && req.body.ashiglaltiinId)
     {
       ashiglaltiinZardal = await AshiglaltiinZardluud(req.body.tukhainBaaziinKholbolt).findById(req.body.ashiglaltiinId);
-      console.log("--------------->>>" + ashiglaltiinZardal?.ner);
     }
     
     const jagsaalt = [];
@@ -3298,14 +3251,12 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
       await Geree(req.body.tukhainBaaziinKholbolt)
         .bulkWrite(bulkOps)
         .then((bulkWriteOpResult) => {
-          console.log("BULK update OK", bulkWriteOpResult);
           EkhniiUldegdelExcel(req.body.tukhainBaaziinKholbolt).insertMany(
             jagsaalt
           );
           res.status(200).send("Amjilttai");
         })
         .catch((err) => {
-          console.log("BULK update error", err);
           next(err);
         });
     else

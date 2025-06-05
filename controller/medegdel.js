@@ -10,7 +10,6 @@ const jwt = require("jsonwebtoken");
 exports.uruunuudOlyo = asyncHandler((ajiltan, callback) => {
   try {
     Uruu.find({ "gishuud.id": ajiltan._id }).then((result) => {
-      console.log("result", result);
       callback(result);
     });
   } catch (err) {
@@ -56,7 +55,6 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
               var io = req.app.get("socketio");
               if (io)
                 io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
-              console.log("r 1----------------"+ JSON.stringify(r));
               res.send(r);
         //     },
         //     next
@@ -74,7 +72,7 @@ exports.sanalKharlaa = asyncHandler((req, res, next) => {
   try {
     SanalGomdol(req.body.tukhainBaaziinKholbolt)
       .updateMany({ _id: req.body.id }, { $set: { kharsanEsekh: true } })
-      .then((res) => console.log(res));
+      .then((res) => {});
     if (req.body.sonorduulgaId)
       Sonorduulga.sonorduulgauzsenbolgoyo(
         req.body.sonorduulgaId,
@@ -102,7 +100,7 @@ exports.sanalKhuleenAvlaa = asyncHandler((req, res, next) => {
   try {
     SanalGomdol(req.body.tukhainBaaziinKholbolt)
       .updateMany({ _id: req.body.id }, { $set: { tuluv: 1 } })
-      .then((res) => console.log(res));
+      .then((res) => res);
     res.sendStatus(200);
   } catch (err) {
     next(err);

@@ -46,7 +46,6 @@ router
         kod: req.query.talbainDugaar,
         barilgiinId: req.query.barilgiinId,
       });
-      console.log("talbai", talbai);
       var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
         talbainIdnuud: talbai._id,
         barilgiinId: req.query.barilgiinId,
@@ -213,7 +212,6 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
     var khuuchinTalbai = await Talbai(req.body.tukhainBaaziinKholbolt).findById(
       req.body._id
     );
-    console.log("khuuchinTalbai", khuuchinTalbai);
     if (
       talbai.talbainNiitUne != khuuchinTalbai.talbainNiitUne ||
       talbai.kod != khuuchinTalbai.kod

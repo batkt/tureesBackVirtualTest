@@ -28,10 +28,10 @@ async function toololt(io, baiguullagiinId, ajiltniiId) {
         Zakhialga.aggregate(query).then((result) => {
             io.emit("baiguullaga" + baiguullagiinId, result);
         }).catch((err) => {
-            console.log(err)
+            
         });
     } catch (error) {
-        console.log(err)
+        
     }
 }
 module.exports = { toololt }

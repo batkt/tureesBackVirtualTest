@@ -36,7 +36,6 @@ async function tokenAvya(
     url.password = password;
     const stringBody = JSON.stringify({ terminal_id: "95000059" });
     const response = await instance.post(url, { body: stringBody }).catch((err) => {
-      console.log("QPAY_MERCHANT_SERVER error " + err.message);
       throw err;
     });
     const khariu = JSON.parse(response.body);
@@ -51,12 +50,9 @@ async function tokenAvya(
         { upsert: true }
       )
       .then((x) => {
-        console.log(x);
       })
       .catch((e) => {
-        console.log(e);
       });
-    console.log("khariu", khariu);
     return khariu;
   } catch (error) {
     next(error);
@@ -75,7 +71,6 @@ async function tokenAvyaKhuuchin(
     url.username = username;
     url.password = password;
     const response = await instance.post(url).catch((err) => {
-      console.log("QPAY_SERVER err " + err.message);
       throw err;
     });
     var khariu = JSON.parse(response.body);
@@ -90,12 +85,10 @@ async function tokenAvyaKhuuchin(
         { upsert: true }
       )
       .then((x) => {
-        console.log(x);
       })
       .catch((e) => {
-        console.log(e);
+        throw e;
       });
-    console.log("khariu", khariu);
     return khariu;
   } catch (error) {
     next(error);
@@ -114,13 +107,11 @@ async function qpayMedeelelAvya(token, qpayObject, next) {
       context,
       body: qpayObjectString,
     }).catch((err) => {
-      console.log("QPAY_MERCHANT_SERVER err " + err.message);
       throw err;
     });
     if (!response.body) {
       if (next) {
         next(new aldaa("Алдаа гарлаа!"));
-        console.log("response =>", response);
       } else return null;
     }
     return JSON.parse(response.body);
@@ -137,18 +128,15 @@ async function tokenSungaya(token, next) {
       token: "Bearer " + token,
     };
     const response = await instance.post(url, { context }).catch((err) => {
-      console.log("tokenSungaya error " + err.message);
       throw err;
     });
     if (!response.body) {
       if (next) {
         next(new aldaa("Алдаа гарлаа!"));
-        console.log("response =>", response);
       } else return null;
     }
     return JSON.parse(response.body);
   } catch (error) {
-    console.log("error", error);
     if (next) next(error);
   }
 }
@@ -165,18 +153,15 @@ async function qpayShivye(token, qpayObject, next) {
       context,
       body: qpayObjectString,
     }).catch((err) => {
-      console.log("qpayShivye error " + err.message);
       throw err;
     });
     if (!response.body) {
       if (next) {
         next(new aldaa("Алдаа гарлаа!"));
-        console.log("response =>", response);
       } else return null;
     }
     return JSON.parse(response.body);
   } catch (error) {
-    console.log("error", error);
     if (next) next(error);
   }
 }
@@ -226,13 +211,11 @@ async function qpayObjectUusgeye(
     };
     return object;
   } catch (error) {
-    console.log("error", error);
     if (next) next(error);
   }
 }
 
 exports.qpayGargayaKhuuchin = asyncHandler(async (req, res, next) => {
-  console.log("qpayGargayaKhuuchin", req.body);
   var dans = await Dans(req.body.tukhainBaaziinKholbolt).findOne({
     dugaar: req.body.dansniiDugaar,
   });
@@ -252,7 +235,6 @@ exports.qpayGargayaKhuuchin = asyncHandler(async (req, res, next) => {
   });
   var token;
   if (!tokenObject) {
-    console.log("token bxgu");
     tokenObject = await tokenAvyaKhuuchin(
       dans.qpayUsername,
       dans.qpayPassword,
@@ -263,7 +245,6 @@ exports.qpayGargayaKhuuchin = asyncHandler(async (req, res, next) => {
     token = tokenObject.access_token;
   } else {
     var tokenO = await tokenSungaya(tokenObject.refreshToken, next);
-    console.log("tokenO", tokenO);
     token = tokenO.access_token;
   }
   var qpayObject = await qpayObjectUusgeye(
@@ -272,7 +253,6 @@ exports.qpayGargayaKhuuchin = asyncHandler(async (req, res, next) => {
     next,
     req.body.tukhainBaaziinKholbolt
   );
-  console.log("qpayObject", qpayObject);
   var khariu = await qpayShivye(token, qpayObject, next);
   if (khariu && khariu.invoice_id) qpayObject.invoice_id = khariu.invoice_id;
   var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)();
@@ -312,7 +292,6 @@ exports.qpayGuilgeeUtgaAvya = asyncHandler(async (req, res, next) => {
     });
     var token;
     if (!tokenObject) {
-      console.log("token bxgu");
       tokenObject = await tokenAvya(
         "ZEV_TABS1",
         "PB5RcI2g",
@@ -323,7 +302,6 @@ exports.qpayGuilgeeUtgaAvya = asyncHandler(async (req, res, next) => {
       token = tokenObject.access_token;
     } else {
       var tokenO = await tokenSungaya(tokenObject.refreshToken, next);
-      console.log("tokenO", tokenO);
       token = tokenO.access_token;
     }
     for await (const guilgee of guilgeenuud) {
@@ -365,7 +343,6 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       baiguullagiinId: req.params.baiguullagiinId,
       barilgiinId: req.params.barilgiinId,
     });
-    console.log("qpayBarimt", qpayBarimt);
     if (req.query && req.query.qpay_payment_id)
       qpayBarimt.payment_id = req.query.qpay_payment_id;
     qpayBarimt.tulsunEsekh = true;
@@ -383,7 +360,6 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       baiguullagiinId: req.params.baiguullagiinId,
       salbariinId: req.params.barilgiinId,
     });
-    console.log("qpayBarimt", qpayBarimt);
     if (!!qpayBarimt.zogsooliinId) {
       const body = {
         tukhainBaaziinKholbolt,
@@ -466,9 +442,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         })
         .then(async (result) => {
           qpayBarimt.save();
-          console.log("qpay tuluv:", result);
           try {
-            console.log("baina ilgeeye");
             tulultiinMsgIlgeeye(
               req.params.baiguullagiinId,
               result.gereeniiDugaar,
@@ -476,7 +450,6 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
               tulbur.tulsunDun
             );
           } catch (aldaa) {
-            console.log("aldaa garchlooo ", aldaa);
           }
           Tulbur.daraagiinTulukhOgnooZasya(
             qpayBarimt.gereeniiId,

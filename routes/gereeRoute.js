@@ -270,7 +270,6 @@ router
       .findById(req.params.gereeniiId)
       .select("avlaga")
       .then((result) => {
-        console.log("baritsaaTulultAvya", result);
         if (lodash.isArray(lodash.get(result, "avlaga.baritsaa"))) {
           var a = lodash.get(result, "avlaga.baritsaa");
           a = lodash.orderBy(a, ["ognoo"], ["asc"]);
@@ -291,7 +290,6 @@ router
         $gte: new Date(new Date().getFullYear(), 0, 1),
         $lte: new Date(new Date().getFullYear(), 11, 31),
       };
-      console.log(ognoo);
       await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
         .find({
           baiguullagiinId: req.body.baiguullagiinId,
@@ -450,7 +448,7 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     if (geree.avlaga.guilgeenuud && geree.avlaga.guilgeenuud.length > 0)
       daraagiinTulukhOgnoo = geree.avlaga.guilgeenuud[0].ognoo;
   } catch (err) {
-    console.log("daraagiin tulukh ognoonii aldaa ==>", err);
+    if(!!next) next(err)
   }
   geree.daraagiinTulukhOgnoo = daraagiinTulukhOgnoo;
   geree.tuluv = 1;
@@ -497,7 +495,6 @@ router
           uldegdel = uldegdel + (x.tulukhDun ? x.tulukhDun : 0) - (x.tulsunDun ? x.tulsunDun : 0) - (x.khyamdral ? x.khyamdral : 0);
         a.uldegdel = uldegdel;*/
           if (ekhlekhOgnoo && x.ognoo < ekhlekhOgnoo) {
-            console.log("if orow ");
             uldegdel =
               uldegdel +
               (x.tulukhDun ? x.tulukhDun : 0) -
@@ -505,7 +502,6 @@ router
               (x.khyamdral ? x.khyamdral : 0);
             butsaakhJagsaalt = [{ ognoo: ekhlekhOgnoo, tulukhDun: uldegdel }];
           } else {
-            console.log("else orow ");
             butsaakhJagsaalt.push(x);
           }
         }
@@ -559,10 +555,9 @@ router
               Talbai(req.body.tukhainBaaziinKholbolt)
                 .bulkWrite(talbainBulk)
                 .then((bulkWriteOpResult) => {
-                  console.log("Talbai idevkhiteiEsekh OK ----", bulkWriteOpResult);
                 })
                 .catch((err) => {
-                  console.log("Talbai BULK update error", err);
+                  next(err);
                 });
           }
           talbaiKhariltsagchiinTuluvUurchluy(
@@ -607,7 +602,6 @@ router
         }
         if (!!ustgakhJagsaalt) {
           for await (const key of ustgakhJagsaalt) {
-            console.log("---------->>>"+key);
             var filterAvlaga = oldAvlaga.filter(e => JSON.stringify(e._id) === key);
             changedUpdate.push(filterAvlaga[0]);
           }
@@ -643,10 +637,9 @@ router
       var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(req.body.gereeniiId).select("+avlaga");
       var val = geree.khugatsaa + req.body.sar;
       await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate({ _id: req.body.gereeniiId }, {khugatsaa: val}).then((xariu) => {
-        console.log(xariu);
       })
       .catch((err) => {
-        console.log(err);
+        next(err);
       });
       geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(req.body.gereeniiId).select("+avlaga");
       var shineDuusakhOgnoo = new Date(req.body.duusakhOgnoo);
@@ -832,7 +825,7 @@ router
           });
       }
     } catch (err) {
-      console.log(err);
+      next(err);
     }
   });
 
@@ -1047,20 +1040,18 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
       Talbai(tukhainBaaziinKholbolt)
         .bulkWrite(talbainBulk)
         .then((bulkWriteOpResult) => {
-          console.log("BULK update OK", bulkWriteOpResult);
         })
         .catch((err) => {
-          console.log("BULK update error", err);
+          throw err;
         });
 
     if (khariltsagchiinBulk)
       Khariltsagch(db.erunkhiiKholbolt)
         .bulkWrite(khariltsagchiinBulk)
         .then((bulkWriteOpResult) => {
-          console.log("BULK update OK", bulkWriteOpResult);
         })
         .catch((err) => {
-          console.log("BULK update error", err);
+          throw err;
         });
   }
 }
@@ -1084,7 +1075,6 @@ router
       ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
     };
-    console.log(tuukh);
     var avlagaMatch = req.body.udruurBodokhEsekh ? { ognoo: { $gte: new Date(moment(req.body.tsutslakhOgnoo).startOf("month")) }, tulsunDun: { $exists : false } } : { ognoo: { $gt: new Date() } };
     if (geree.gereeniiTuukhuud) {
       Geree(req.body.tukhainBaaziinKholbolt)
@@ -1113,7 +1103,6 @@ router
         });
     } else {
       tuukh = [tuukh];
-      console.log(tuukh);
       Geree(req.body.tukhainBaaziinKholbolt)
         .findOneAndUpdate(
           { _id: req.body.gereeniiId },
@@ -2105,9 +2094,7 @@ router
     }
   ]
   
-      console.log("gereenuud");
-      console.log(JSON.stringify(gereenuud, null, 4))
-  
+      
       if (gereenuud.length < 0 || gereenuud[0].eneSardTulukhDun.length < 1)
         res.send(null);
       else {
@@ -2124,7 +2111,6 @@ router
         body.query["gereeniiDugaar"] = { $in: turJagsaalt };
         body.lean = true;
   
-        console.log("body", body);
         khuudaslalt(Geree, body)
           .then((result) => {
             if (result && result.jagsaalt && result.jagsaalt.length > 0)
@@ -2450,7 +2436,6 @@ router
           },
         },
       ];
-      console.log("zadargaa query", JSON.stringify(query, null, 4));
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(
         query
       );
@@ -2650,7 +2635,6 @@ router
             var gereenuud = await Geree(
               req.body.tukhainBaaziinKholbolt
             ).aggregate(query);
-            console.log("gereenuud", JSON.stringify(gereenuud, null, 4));
             result.jagsaalt.forEach((x) => {
               x.eneSardTulukhDun =
                 gereenuud[0].eneSardTulukhDun.find(
@@ -2748,7 +2732,6 @@ async function turluurDunBugluy(
         $group: groupQuery,
       },
     ];
-    console.log(JSON.stringify(query, null, 4));
     var gereenuud = await Geree(tukhainBaaziinKholbolt).aggregate(query);
     jagsaalt.forEach((x) => {
       if (turul == "voucher")
@@ -2769,7 +2752,6 @@ router
   .route("/vouchertaiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo")
   .get(tokenShalgakh, async (req, res, next) => {
     try {
-      console.log("orj irlee", req.params);
       const body = req.query;
       if (!!body?.query) body.query = JSON.parse(body.query);
       if (!!body?.order) body.order = JSON.parse(body.order);
@@ -2817,7 +2799,6 @@ router
   .route("/guitsetgelteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo")
   .get(tokenShalgakh, async (req, res, next) => {
     try {
-      console.log("orj irlee", req.params);
       const body = req.query;
       if (!!body?.query) body.query = JSON.parse(body.query);
       if (!!body?.order) body.order = JSON.parse(body.order);
@@ -2867,7 +2848,6 @@ router
   .route("/khungulultteiJagsaaltAvya/:ekhlekhOgnoo/:duusakhOgnoo")
   .get(tokenShalgakh, async (req, res, next) => {
     try {
-      console.log("orj irlee", req.params);
       const body = req.query;
       if (!!body?.query) body.query = JSON.parse(body.query);
       if (!!body?.order) body.order = JSON.parse(body.order);
@@ -2893,8 +2873,6 @@ router
       body.query["tuluv"] = {
         $ne: -1,
       };
-      console.log("params", req.params);
-      console.log(JSON.stringify(body, null, 4));
       body.lean = true;
       khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
         .then(async (result) => {
@@ -2934,7 +2912,6 @@ router
   .route("/eneSardTuluuguiGereenuudAvya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      console.log("ene sard", req.body);
       var query = [
         {
           $match: {
@@ -3051,12 +3028,10 @@ router
         if (!!body?.khuudasniiKhemjee)
           body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
         if (!!body?.search) body.search = String(body.search);
-        console.log("turJagsaalt", turJagsaalt);
         body.query["gereeniiDugaar"] = { $in: turJagsaalt };
         body.query["tuluv"] = { $ne: -1 },
         body.lean = true;
 
-        console.log("body", body);
         khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
           .then((result) => {
             if (result && result.jagsaalt && result.jagsaalt.length > 0)
@@ -3236,16 +3211,11 @@ router
       }
       res.send(gereenuud);
     } catch (error) {
-      console.log("zoloo aldaa garlaa ==> ", error);
+      if(!!next) next(err);
     }
   });
 
 router.route("/testKhiie").post(async (req, res, next) => {
-  console.log("testKhiie");
-  console.log("req.body", req.body);
-  console.log("req.params", req.params);
-  console.log("req.query", req.query);
-  console.log("req.headers", req.headers);
   res.sendStatus(200);
 });
 
@@ -3300,7 +3270,6 @@ router
               }
             )
             .then(async (result) => {
-              console.log("result", result);
               khariu.push(result);
             });
         }
@@ -3337,10 +3306,8 @@ router
         Talbai(req.body.tukhainBaaziinKholbolt)
           .bulkWrite(talbainBulk)
             .then((bulkWriteOpResult) => {
-              console.log("Talbai BULK update OK", bulkWriteOpResult);
             })
             .catch((err) => {
-              console.log("Talbai BULK update error", err);
               next(err);
             });
       res.send(talbainBulk);
@@ -3414,7 +3381,6 @@ router
       session.endSession();
       res.send("Amjilttai");
     } catch (err1) {
-      console.log("err1", err1);
       await session.abortTransaction();
       next(err1);
     }
@@ -3556,7 +3522,6 @@ router
       }
         var xariu = await encrypt(getFormattedDate(1, new Date()));
         var dateFormatted = getFormattedDate(2, tatakhOgnoo);
-        console.log("xariu",xariu)
         const axios = require('axios');
         let config = {
           method: 'get',
@@ -3567,7 +3532,6 @@ router
     
         var khariu = await axios.request(config)
         .catch((error) => {
-          console.log(error);
           throw new Error(error.message)
         });
         butsaakhJagsaalt = [];
@@ -3716,7 +3680,6 @@ router
                 ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
                 : 0)
             : tsakhilgaanDun;
-        console.log("tempDun", tempDun);
         updateObject = {
           turul: "avlaga",
           tulsunDun: 0,
@@ -3759,7 +3722,6 @@ router
           updateObject["guilgeeKhiisenAjiltniiNer"] = req.body.nevtersenAjiltniiToken.ner;
           updateObject["guilgeeKhiisenAjiltniiId"] = req.body.nevtersenAjiltniiToken.id;
         }
-        console.log("updateObject", updateObject);
         tukhainZardal.gereeniiId = geree._id;
         tukhainZardal.zoruu = ashiglaltiinZardal.zoruuDun;
         tukhainZardal.niitDun = tempDun;
@@ -3783,14 +3745,12 @@ router
       await Geree(req.body.tukhainBaaziinKholbolt)
         .bulkWrite(bulkOps)
         .then((bulkWriteOpResult) => {
-          console.log("BULK update OK", bulkWriteOpResult);
           AshiglaltiinExcel(req.body.tukhainBaaziinKholbolt).insertMany(
             jagsaalt
           );
           res.status(200).send("Amjilttai");
         })
         .catch((err) => {
-          console.log("BULK update error", err);
           next(err);
         });
   
@@ -4038,7 +3998,6 @@ async function sarBuriinKhungulultBodoy() {
             }
             if(barilga?.tokhirgoo?.sarBurAutoKhungulultOruulakhEsekh && tulsunDun >= 0 && filteredTulsunDun?.length > 0)
             {
-              console.log("-f-->>" + JSON.stringify(geree?.gereeniiDugaar));
               var khungulultiinDun = 0;
               if (barilga?.tokhirgoo?.khungulukhSarBuriinTurul === "khuvi") {
                 khungulultiinDun = (niitDun * barilga?.tokhirgoo?.khungulukhSarBuriinUtga) / 100;
@@ -4079,7 +4038,7 @@ async function sarBuriinKhungulultBodoy() {
       }
     }
   } catch (error) {
-    console.log("sarBuriinKhungulultBodoy error", error);
+    throw error;
   }
 }
 
@@ -4127,7 +4086,7 @@ async function duusakhGereeAutomataarTalbainTulburNemekh() {
       }
     }
     } catch (error) {
-    console.log("duusakhGereeAutomataarTalbainTulburNemekh error", error);
+      throw error;
   }
 }
 
@@ -4150,7 +4109,7 @@ async function jilBurAutomataarTalbainTulburNemekh() {
       }
     }
   } catch (error) {
-    console.log("jilBurAutomataarTalbainTulburNemekh error", error);
+    throw error;
   }
 }
 module.exports = router;

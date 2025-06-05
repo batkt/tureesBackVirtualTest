@@ -20,25 +20,20 @@ exports.tdbcer = asyncHandler(async (req, res, next) => {
         var xmlObject = req.body
         var builder = new xml2js.Builder({ standalone: false, rootName: "Document" });
         var xmlObject = builder.buildObject(xmlObject);
-        console.log("xmlObject", xmlObject);
         var xml = {
             xml: xmlObject
         }
         const objectString = JSON.stringify(xml);
         var url = new URL(process.env.ZEV_TEST_SERVER + ":5000/")
         const response = await instance.post(url, { body: objectString }).catch((err) => {
-            console.log("tdbcer error " + err.message);
             throw err;
         });
-        console.log("response.body", response.body);
         var parseString = xml2js.parseString;
         parseString(response.body, function (err, result) {
             khariu = JSON.stringify(result);
             res.send(khariu);
         });
     } catch (error) {
-        console.log("aldaatai!!");
-        console.log(error);
         if (next)
             next(error);
     }
