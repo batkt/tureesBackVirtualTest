@@ -885,7 +885,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
               await shineSession
                 .save()
                 .then((khadgalsanSession) => {
-                  const dynamicUrl = `https://turees.zevtabs.mn/khyanalt/zogsooliinDelgerenguiTailan/${khadgalsanSession._id}`;
+                  const dynamicUrl = `https://turees.zevtabs.mn/khyanalt/zg/${khadgalsanSession._id}`;
                   text += `Holboosoor orno uu: ${dynamicUrl}`;
                 })
                 .catch((error) => {
