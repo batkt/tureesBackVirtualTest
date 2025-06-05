@@ -2210,20 +2210,23 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           for await (const data of mashinuud)
           {
             console.log("--------- log data ----------->" + JSON.stringify(data));
-            var tuukh = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.234");
-            var filtered = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.75");
-            if(filtered?.length > 1)
+            if(data.tuukh?.length > 0)
             {
-              tuukh.push(filtered[0]);
-              data.tuukh = tuukh;
-              await Uilchluulegch(kholbolt).findByIdAndUpdate(
-              data._id,
+              var tuukh = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.234");
+              var filtered = data.tuukh?.filter((e) => e.orsonKhaalga === "192.168.2.75");
+              if(filtered?.length > 1)
               {
-                $set: {
-                  "tuukh": tuukh,
-                },
-              });
-              resultDotor.push(data);
+                tuukh.push(filtered[0]);
+                data.tuukh = tuukh;
+                await Uilchluulegch(kholbolt).findByIdAndUpdate(
+                data._id,
+                {
+                  $set: {
+                    "tuukh": tuukh,
+                  },
+                });
+                resultDotor.push(data);
+              }
             }
           }
           var match = {
