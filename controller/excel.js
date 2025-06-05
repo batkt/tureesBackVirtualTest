@@ -2772,8 +2772,8 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         }
         console.log("--------------1 ------>>"+ JSON.stringify(umnukhZaalt, 2));
         console.log("--------------2------>>"+ JSON.stringify(tukhainZardal.umnukhZaalt, 2));
-        console.log("--------------1 ------>>"+ JSON.stringify(formatNumber(umnukhZaalt, 2)));
-        console.log("--------------2------>>"+ JSON.stringify(formatNumber(tukhainZardal.umnukhZaalt, 2)));
+        console.log("--------------1 ------>>"+ JSON.stringify(formatNumber(Number(umnukhZaalt))));
+        console.log("--------------2------>>"+ JSON.stringify(formatNumber(Number(tukhainZardal.umnukhZaalt))));
         if (umnukhZaalt > 0 && tukhainZardal.umnukhZaalt > 0 && parseFloat(formatNumber(umnukhZaalt, 2)) !== parseFloat(formatNumber(tukhainZardal.umnukhZaalt, 2))){
           if (!!tukhainZardal.register) {
             aldaaniiMsg =
