@@ -2208,6 +2208,29 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           },
         ];
       }
+    } else if (req.body.ajiltniiId === "68425acd7611dd8da7e7a7d2") {
+      if (req.body.paid_amount == 0) {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Хөнгөлөлт",
+            dun: req.body.khungulult,
+          },
+        ];
+      } else {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "Хөнгөлөлт",
+            dun: req.body.khungulult,
+          },
+          {
+            ognoo: new Date(),
+            turul: req.body.turul,
+            dun: req.body.paid_amount,
+          },
+        ];
+      }
     } else
       tulbur = [
         {
@@ -2285,7 +2308,11 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
               tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Хөнгөлөлт")
             )
               throw new Error("Хөнгөлөлт оруулсан байна!");
+          } else if (req.body.ajiltniiId === "68425acd7611dd8da7e7a7d2") {
+            if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul?.includes("Хөнгөлөлт")))
+              throw new Error("Хөнгөлөлт оруулсан байна!");
           }
+
           else if (req.body.barilgiinId === "67e0ca757d7ac716ef9c3cc5") {
             if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul === req.body.turul))
               throw new Error("Хөнгөлөлт оруулсан байна!");
