@@ -408,24 +408,28 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             var guilgeenuudQpay = await BankniiGuilgee(kholbolt).find(match);
             guilgeenuud.push(...guilgeenuudQpay);
             console.log("----------- qpay ------------>" + JSON.stringify(guilgeenuudQpay?.length))
-            // if(dans.bank == "golomt")
-            //   match["tranDesc"] = { $regex: "QPAY" }  
-            // else if(dans.bank == "tdb")
-            //   match["TxAddInf"] = { $regex: "QPAY" }  
-            // else
-            //   match["description"] = { $regex: "QPAY" }
-            // var guilgeenuudQPAY = await BankniiGuilgee(kholbolt).find(match);
-            // guilgeenuud.push(...guilgeenuudQPAY);
+            if(dans.bank == "golomt")
+              match["tranDesc"] = { $regex: "QPAY", $options: 'i' }  
+            else if(dans.bank == "tdb")
+              match["TxAddInf"] = { $regex: "QPAY", $options: 'i' }  
+            else
+              match["description"] = { $regex: "QPAY", $options: 'i' }
+            var guilgeenuudQPAY = await BankniiGuilgee(kholbolt).find(match);
+            guilgeenuud.push(...guilgeenuudQPAY);
+
+            console.log("----------- guilgeenuudQPAY ------------>" + JSON.stringify(guilgeenuudQPAY?.length))
             
-            // match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
-            // if(dans.bank == "golomt")
-            //   match["tranDesc"] = { $ne: { $regex: "qpay" } }
-            // else if(dans.bank == "tdb")
-            //   match["TxAddInf"] = { $ne: { $regex: "qpay" } }
-            // else
-            //   match["description"] = { $ne: { $regex: "qpay" } }
-            // var guilgeenuudBish = await BankniiGuilgee(kholbolt).find(match);
-            // guilgeenuud.push(...guilgeenuudBish);
+            match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
+            if(dans.bank == "golomt")
+              match["tranDesc"] = { $ne: { $regex: "qpay" } }
+            else if(dans.bank == "tdb")
+              match["TxAddInf"] = { $ne: { $regex: "qpay" } }
+            else
+              match["description"] = { $ne: { $regex: "qpay" } }
+            var guilgeenuudBish = await BankniiGuilgee(kholbolt).find(match);
+            guilgeenuud.push(...guilgeenuudBish);
+
+            console.log("----------- guilgeenuudBish ------------>" + JSON.stringify(guilgeenuudBish?.length))
 
             // match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
             // if(dans.bank == "golomt")
