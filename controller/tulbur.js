@@ -6,7 +6,7 @@ const { QuickQpayObject } = require("quickqpaypackv2");
 const Baiguullaga = require("../models/baiguullaga");
 const Talbai = require("../models/talbai");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
-const { UstsanBarimt, Dans } = require("zevbackv2");
+const { UstsanBarimt } = require("zevbackv2");
 const lodash = require("lodash");
 const moment = require("moment");
 const mongoose = require("mongoose");
@@ -496,7 +496,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
       }
     }
   } catch (e) {
-    
+    throw e;
   }
 }
 
