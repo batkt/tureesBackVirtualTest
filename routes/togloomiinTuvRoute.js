@@ -716,6 +716,7 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
       tuluv: {
         $ne: -1,
       },
+      niitTulbur: { $size: 2 },
     }
     if(req.body.utas)
       match["utas"] = req.body.utas;
@@ -728,7 +729,6 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
       },
       {
         $match: { 
-          "niitTulbur": { $size: 2 },
           "niitTulbur.turul": { $nin: ["khariult"] },
         }
       },
