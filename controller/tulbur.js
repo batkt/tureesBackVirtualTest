@@ -421,26 +421,26 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             
             match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
             if(dans.bank == "golomt")
-              match["tranDesc"] = { $ne: { $regex: "qpay" } }
+              match["tranDesc"] = { $not: { $regex: "qpay" } }
             else if(dans.bank == "tdb")
-              match["TxAddInf"] = { $ne: { $regex: "qpay" } }
+              match["TxAddInf"] = { $not: { $regex: "qpay" } }
             else
-              match["description"] = { $ne: { $regex: "qpay" } }
+              match["description"] = { $not: { $regex: "qpay" } }
             var guilgeenuudBish = await BankniiGuilgee(kholbolt).find(match);
             guilgeenuud.push(...guilgeenuudBish);
 
             console.log("----------- guilgeenuudBish ------------>" + JSON.stringify(guilgeenuudBish?.length))
 
-            // match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
-            // if(dans.bank == "golomt")
-            //   match["tranDesc"] = { $ne: { $regex: "QPAY" } }
-            // else if(dans.bank == "tdb")
-            //   match["TxAddInf"] = { $ne: { $regex: "QPAY" } }
-            // else
-            //   match["description"] = { $ne: { $regex: "QPAY" } }
-            // var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt).find(match);  
-            // console.log("----------- qpay ------------>" + JSON.stringify(guilgeenuudQPAYBish?.length))
-            // guilgeenuud.push(...guilgeenuudQPAYBish);
+            match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
+            if(dans.bank == "golomt")
+              match["tranDesc"] = { $not: { $regex: "QPAY" } }
+            else if(dans.bank == "tdb")
+              match["TxAddInf"] = { $not: { $regex: "QPAY" } }
+            else
+              match["description"] = { $not: { $regex: "QPAY" } }
+            var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt).find(match);  
+            console.log("----------- guilgeenuudQPAYBish ------------>" + JSON.stringify(guilgeenuudQPAYBish?.length))
+            guilgeenuud.push(...guilgeenuudQPAYBish);
             var khaikhNukhtsul;
             var tailbar = [];
             if(guilgeenuud?.length > 0){
