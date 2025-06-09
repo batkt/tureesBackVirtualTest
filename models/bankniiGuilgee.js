@@ -16,7 +16,9 @@ const bankniiGuilgeeSchema = new Schema(
     TxRt: String,
     CtAcct: String,
     CtActnName: String,
-    TxAddInf: String,
+    TxAddInf: {
+      type: String
+    },
     CtAcntOrg: String,
     CtBankNo: String,
     Amt: Number,
