@@ -708,7 +708,6 @@ router.route("/togloomiinTuvNiitDun").post(tokenShalgakh, async (req, res, next)
 router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, next) => {
   try
   {
-    console.log("---------togloomiinTuvDavkhardsan ---->>");
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
@@ -747,8 +746,6 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
     const togloomuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate(query);
     var khariu = [];
     for await (const togloom of togloomuud) {
-      console.log("------------->>"+ JSON.stringify(togloom.tulbur));
-      console.log("----niit dun--------->>"+ JSON.stringify(togloom._id?.niitDun));
       if(togloom.tulbur > togloom._id?.niitDun)
       {
         var data = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findById(togloom._id?.id);
@@ -771,7 +768,6 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
     }
     res.send(khariu);
   } catch (err) {
-    console.log("---------togloomiinTuvDavkhardsan ---->>"+ err);
     next(err);
   }
 });
