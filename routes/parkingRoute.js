@@ -1937,11 +1937,9 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
     };
     if (!tukhainObject) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
-      console.log("----- mashin -------->>" + JSON.stringify(tukhainObject));
     }
     else
     {
-      console.log("------------->>" + JSON.stringify(tukhainObject));
       bodsonDun = await zogsooliinDunAvya(
         tukhainZogsool,
         tukhainObject,
