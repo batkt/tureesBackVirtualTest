@@ -780,7 +780,7 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
   }
 });
 
-exports.togloomiinTuvDavkhardsan = asyncHandler(async () => {
+module.exports.togloomiinTuvDavkhardsan = asyncHandler(async () => {
   try 
   {
     const { db } = require("zevbackv2");
