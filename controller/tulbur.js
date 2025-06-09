@@ -378,6 +378,73 @@ function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
   return dun;
 }
 
+module.exports.tulultTaniyaQPay = async function tulultTaniya() {
+  try
+  {
+    console.log("------tulultTaniyaQPay--------------->>");
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud.find((a) => a.baiguullagiinId == "6644289a64b590e4c8df0224");
+    if (kholboltuud) {
+      for await (const kholbolt of kholboltuud) {
+        var dansnuud = await Dans(kholbolt).find({ corporateAshiglakhEsekh: true, oirkhonTatakhEsekh: { $exists: false } });  
+        for await (const dans of dansnuud) {
+          if(!!dans.bank)
+          {
+            var match = {
+              createdAt: { $lt: new Date(new Date().getTime() - 60000) },
+              dansniiDugaar: dans.dugaar,
+              baiguullagiinId: dans.baiguullagiinId,
+              barilgiinId: dans.barilgiinId,
+              bank: dans.bank,
+              kholbosonTalbainId: { $size: 0 }, 
+              magadlaltaiGereenuud: { $exists: false }
+            }
+            match[dans.bank == "golomt" ? "tranDesc" : dans.bank == "tdb" ? "TxAddInf" : "description"] = { $regex: "qpay" }
+            var guilgeenuud = await BankniiGuilgee(kholbolt).find(match);
+            console.log("------qpay--------------->>" + JSON.stringify(match));
+            match[dans.bank == "golomt" ? "tranDesc" : dans.bank == "tdb" ? "TxAddInf" : "description"] = { $regex: "QPAY" }
+            var guilgeenuudQPAY = await BankniiGuilgee(kholbolt).find(match);
+            console.log("------QPAY--------------->>" + JSON.stringify(match));
+            guilgeenuud.push(...guilgeenuudQPAY);
+            var khaikhNukhtsul;
+            var tailbar = [];
+            if(guilgeenuud?.length > 0){
+              guilgeenuud.forEach(async (x) => {
+                khaikhNukhtsul = [];
+                if (x.description) tailbar = x.description.split(/,| /);
+                else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
+                else if (x.tranDesc) tailbar = x.tranDesc.split(/,| /);
+                tailbar.forEach((y) => {
+                  khaikhNukhtsul.push({ gereeniiDugaar: y });
+                });
+                var oldsonGereenuud = await Geree(kholbolt).find({
+                  $or: khaikhNukhtsul,
+                  tuluv: 1,
+                  barilgiinId: x.barilgiinId,
+                });
+                if (oldsonGereenuud != null && oldsonGereenuud.length == 1) {
+                  var jagsaalt = [];
+                  var dugaar = oldsonGereenuud[0].talbainDugaar;
+                  if (dugaar.includes(",")) {
+                    jagsaalt = [...jagsaalt, ...dugaar.split(",")];
+                  } else jagsaalt.push(dugaar);  
+                  x.kholbosonGereeniiId = [oldsonGereenuud[0]._id];
+                  x.kholbosonTalbainId = jagsaalt;
+                  x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
+                  x.isNew = false;
+                  x.save();
+                }
+              });
+            }
+          }
+        }
+      }
+    }
+  } catch (e) {
+    throw new Error(e.message || e)
+  }
+}
+
 module.exports.tulultTaniya = async function tulultTaniya() {
   const { db } = require("zevbackv2");
   var kholboltuud = db.kholboltuud;

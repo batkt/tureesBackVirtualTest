@@ -300,6 +300,17 @@ cron.schedule(
   }
 );
 
+cron.schedule(
+  "*/10 * * * * * ",
+  function () {
+    tulbur.tulultTaniyaQPay();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
 // cron.schedule(
 //   "*/6 * * * * * ",
 //   function () {
