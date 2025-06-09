@@ -182,7 +182,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
             <p style="width:maxContent; text-align:left">Дүн:</p>
             <p style="width:maxContent; text-align:right; color: #999999; font-weight: bold">${
               uilchluulegch.tuukh[0].tulukhDun
-            } ₮</p>
+            } </p>
           </div>
           </span>`,
         };

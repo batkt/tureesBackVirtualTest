@@ -706,7 +706,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
               moment(ekhlekhOgnoo).format("MM/DD") +
               " udur " +
               (await formatNumber(niitDun)) +
-              "₮ orlogo burtgegdej ";
+              " orlogo burtgegdej ";
 
             for await (const a of result) {
               var barilgiinNer = "";
@@ -721,7 +721,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 barilgiinNer +
                 " - " +
                 (await formatNumber(a.dun)) +
-                "₮, ";
+                ", ";
             }
             text = text.slice(0, -2);
             text = text + " tus tus orlogo orson baina.";
@@ -856,25 +856,25 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 text +
                 "Togloom-" +
                 (await formatNumber(togloom[0].niitDun)) +
-                "₮,";
+                ",";
             }
             if (zogsool && zogsool.length > 0) {
               text =
                 text +
                 "Zogsool-" +
                 (await formatNumber(zogsool[0].niitDun)) +
-                "₮,";
+                ",";
             }
             if (turees && turees.length > 0) {
               text =
                 text +
                 "Turees-" +
                 (await formatNumber(turees[0].niitDun)) +
-                "₮,";
+                ",";
             }
             text = text + " orlogo orson baina.";
             if(baiguullaga?.tokhirgoo?.zurchulMsgeerSanuulakh && zurchiluud?.length > 0)
-              text = text + " Zurchiltei- " + (await formatNumber(zurchiluud[0].niitDun)) + "₮ avlaga uussen baina. ";
+              text = text + " Zurchiltei- " + (await formatNumber(zurchiluud[0].niitDun)) + " avlaga uussen baina. ";
             if (zogsool && zogsool.length > 0 && zogsool[0].niitDun > 0) {
               const shineSession = new session(db.erunkhiiKholbolt)();
               const gishuun = new Ajiltan(kholbolt)();

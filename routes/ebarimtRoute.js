@@ -602,7 +602,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
         var text =
           "Tanii zogsooliin barimt " + (d?.lottery || "") +
           " , " + (formatNumber(shivekhDun)) + 
-          "₮ ";
+          " ";
         msgnuud.push({ to: dugaar, text });
         if (msgnuud.length > 0) {
           var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
