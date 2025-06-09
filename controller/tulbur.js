@@ -399,9 +399,9 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               magadlaltaiGereenuud: { $exists: false }
             }
             if(dans.bank == "golomt")
-              match["tranDesc"] = { $regex: 'qpay', $options: 'i' }  
+              match["tranDesc"] = { $regex: 'qpay', $options: 'i' } 
             else if(dans.bank == "tdb")
-              match["TxAddInf"] = { $regex: 'qpay', $options: 'i' }  
+              match["TxAddInf"] = { $regex: 'qpay', $options: 'i' }
             else
               match["description"] = { $regex: 'qpay', $options: 'i' }
             var guilgeenuud = [];
