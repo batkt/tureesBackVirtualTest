@@ -746,7 +746,6 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
     const togloomuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate(query);
     var khariu = [];
     for await (const togloom of togloomuud) {
-      console.l
       if(togloom.tulbur > togloom._id?.niitDun)
       {
         console.log("------------->>"+ JSON.stringify(togloom.tulbur));
