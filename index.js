@@ -301,6 +301,17 @@ cron.schedule(
 );
 
 cron.schedule(
+  "*/6 * * * * * ",
+  function () {
+    togloomiinTuvRoute.togloomiinTuvDavkhardsan();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
   "59 * * * * ",
   function () {
     gereeRoute.sarBuriinKhungulultBodoy();

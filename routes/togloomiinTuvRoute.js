@@ -4,6 +4,7 @@ const { crud, UstsanBarimt, tokenShalgakh } = require("zevbackv2");
 const TogloomiinTariff = require("../models/togloomiinTariff");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const TogloomiinTulbur = require("../models/togloomiinTulbur");
+const Baiguullaga = require("../models/baiguullaga");
 const lodash = require("lodash");
 
 crud(router, "togloomiinTariff", TogloomiinTariff, UstsanBarimt);
@@ -404,65 +405,72 @@ router
       var togloomiinTuvTulbur = await TogloomiinTuv(
         req.body.tukhainBaaziinKholbolt
       ).findById(req.body.id);
-      if (
-        (togloomiinTuvTulbur?.dutuuDun
-          ? togloomiinTuvTulbur?.dutuuDun
-          : togloomiinTuvTulbur?.niitDun) ==
-        guilgeeniiTuukh.reduce((a, b) => a + b.dun, 0)
-      ) 
+      var dun = togloomiinTuvTulbur.niitTulbur?.reduce((a, b) => a + b.dun, 0);
+      dun += guilgeeniiTuukh?.reduce((a, b) => a + b.dun, 0);
+      if(togloomiinTuvTulbur?.niitDun > 0 && dun > 0 && dun > togloomiinTuvTulbur?.niitDun)
+        res.send("Tulugdsun");
+      else
       {
-        update.tulburTulsunEsekh = true;
-        // niitTulbur = togloomiinTuvTulbur?.niitTulbur;
-        // for await (const tulburShine of guilgeeniiTuukh) {
-        //   var index = niitTulbur.findIndex(
-        //     (a) => a.turul === tulburShine.turul
-        //   );
-        //   if (index > -1) {
-        //     niitTulbur[index].dun = niitTulbur[index].dun + tulburShine.dun;
-        //   } else niitTulbur.push(tulburShine);
-        // }
-        // update.niitTulbur = niitTulbur;
-      }
-      
-      if (togloomiinTuvTulbur?.dutuuDun) {
-        update.dutuuDun = togloomiinTuvTulbur.dutuuDun;
-      }
-      guilgeeniiTuukh.forEach((mur) => {
-        mur.ognoo = new Date();
-        if (mur.turul === "khungulult") {
-          update.khungulsunEsekh = true;
-          update.khungulsunDun = mur.dun;
-          // update.niitDun = niitDun - mur.dun;
-        } else if (mur.turul !== "khariult") {
-          update.ebarimtAvakhDun = update.ebarimtAvakhDun + mur.dun;
-        } else if (mur.turul === "khariult") {
-          update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
+        if (
+          (togloomiinTuvTulbur?.dutuuDun
+            ? togloomiinTuvTulbur?.dutuuDun
+            : togloomiinTuvTulbur?.niitDun) ==
+          guilgeeniiTuukh.reduce((a, b) => a + b.dun, 0)
+        ) 
+        {
+          update.tulburTulsunEsekh = true;
+          // niitTulbur = togloomiinTuvTulbur?.niitTulbur;
+          // for await (const tulburShine of guilgeeniiTuukh) {
+          //   var index = niitTulbur.findIndex(
+          //     (a) => a.turul === tulburShine.turul
+          //   );
+          //   if (index > -1) {
+          //     niitTulbur[index].dun = niitTulbur[index].dun + tulburShine.dun;
+          //   } else niitTulbur.push(tulburShine);
+          // }
+          // update.niitTulbur = niitTulbur;
         }
-      });
-      await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-        req.body.id,
-        update
-      );
-      var updateQuery = {
-        $push: {
-          [`niitTulbur`]: {
-            $each: guilgeeniiTuukh,
-          },
-          [`tulbur`]: {
-            $each: guilgeeniiTuukh,
-          },
-        },
-      };
-      await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-        req.body.id,
-        updateQuery
-      );
-      if (update.tulburTulsunEsekh === true) {
-        await TogloomiinTulbur(req.body.tukhainBaaziinKholbolt).insertMany(
-          guilgeeniiTuukh
+        
+        if (togloomiinTuvTulbur?.dutuuDun) {
+          update.dutuuDun = togloomiinTuvTulbur.dutuuDun;
+        }
+        guilgeeniiTuukh.forEach((mur) => {
+          mur.ognoo = new Date();
+          if (mur.turul === "khungulult") {
+            update.khungulsunEsekh = true;
+            update.khungulsunDun = mur.dun;
+            // update.niitDun = niitDun - mur.dun;
+          } else if (mur.turul !== "khariult") {
+            update.ebarimtAvakhDun = update.ebarimtAvakhDun + mur.dun;
+          } else if (mur.turul === "khariult") {
+            update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
+          }
+        });
+        await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+          req.body.id,
+          update
         );
-        res.send("Amjilttai");
-      } else res.send("TulburDutuu");
+        var updateQuery = {
+          $push: {
+            [`niitTulbur`]: {
+              $each: guilgeeniiTuukh,
+            },
+            [`tulbur`]: {
+              $each: guilgeeniiTuukh,
+            },
+          },
+        };
+        await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+          req.body.id,
+          updateQuery
+        );
+        if (update.tulburTulsunEsekh === true) {
+          await TogloomiinTulbur(req.body.tukhainBaaziinKholbolt).insertMany(
+            guilgeeniiTuukh
+          );
+          res.send("Amjilttai");
+        } else res.send("TulburDutuu");
+      }
     } catch (err) {
       next(err);
     }
@@ -769,6 +777,83 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
     res.send(khariu);
   } catch (err) {
     next(err);
+  }
+});
+
+exports.togloomiinTuvDavkhardsan = asyncHandler(async () => {
+  try 
+  {
+    const { db } = require("zevbackv2");
+    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({"tokhirgoo.togloomiinTuvDavkhardsanShalgakh": { $exists: true, } });
+    var result = [];
+    if(baiguullaguud?.length > 0)
+    {
+      for await (const baiguullaga of baiguullaguud) {
+        var kholboltuud = db.kholboltuud;
+        var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
+        for await (const barilga of baiguullaga.barilguud) {
+          var match = {
+            baiguullagiinId: baiguullaga._id.toString(),
+            barilgiinId: barilga._id.toString(),
+            niitDun: { $gt: 0 },
+            tuluv: {
+              $ne: -1,
+            },
+          }
+          var query = [
+            {
+              $match: match,
+            },
+            {
+              $unwind: "$niitTulbur"
+            },
+            {
+              $match: { 
+                "niitTulbur.turul": { $nin: ["khariult"] },
+              }
+            },
+            {
+              $group: {
+                _id: { 
+                  id: "$_id", 
+                  niitDun: "$niitDun",
+                },
+                tulbur: {
+                  $sum: "$niitTulbur.dun",
+                },
+              },
+            }
+          ]
+          const togloomuud = await TogloomiinTuv(kholbolt).aggregate(query);
+          for await (const togloom of togloomuud) {
+            if(togloom.tulbur > togloom._id?.niitDun)
+            {
+              var data = await TogloomiinTuv(kholbolt).findById(togloom._id?.id);
+              data.niitTulbur?.shift();
+              data.tulbur?.shift();
+              TogloomiinTuv(kholbolt)
+                .findByIdAndUpdate({ _id: togloom._id?.id }, [
+                  {
+                    $set: {
+                      niitTulbur: data.niitTulbur,
+                      tulbur: data.tulbur,
+                    },
+                  },
+                ])
+              .catch((err) => {
+                throw err;
+              });
+              result.push(togloom);
+            }
+          }
+        }
+      }
+    }
+    console.log("-------------> =---------------->" + JSON.stringify(result));
+  }
+  catch (err) {
+    console.log("------------- error ---------------->" + err);
+	  throw err;
   }
 });
   
