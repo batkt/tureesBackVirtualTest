@@ -406,7 +406,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               match["description"] = { $regex: 'qpay', $options: 'i' }
             var guilgeenuud = [];
             var guilgeenuudQpay = await BankniiGuilgee(kholbolt).find(match);
-            console.log("----------- guilgeenuudQpay ------------>" + JSON.stringify(guilgeenuudQpay?.length));
             guilgeenuud.push(...guilgeenuudQpay);
             if(dans.bank == "golomt")
               match["tranDesc"] = { $regex: "QPAY", $options: 'i' }  
@@ -415,7 +414,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             else
               match["description"] = { $regex: "QPAY", $options: 'i' }
             var guilgeenuudQPAY = await BankniiGuilgee(kholbolt).find(match);
-            console.log("----------- guilgeenuudQPAY ------------>" + JSON.stringify(guilgeenuudQPAY?.length));
             guilgeenuud.push(...guilgeenuudQPAY);
             if(dans.bank == "golomt")
               match["tranDesc"] = { $not: { $regex: "qpay" } }
@@ -425,10 +423,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               match["description"] = { $not: { $regex: "qpay" } }
             var guilgeenuudBish = await BankniiGuilgee(kholbolt).find(match);
             guilgeenuud.push(...guilgeenuudBish);
-
-            console.log("----------- guilgeenuudBish ------------>" + JSON.stringify(guilgeenuudBish?.length));
-
-            match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
             if(dans.bank == "golomt")
               match["tranDesc"] = { $not: { $regex: "QPAY" } }
             else if(dans.bank == "tdb")
@@ -436,7 +430,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             else
               match["description"] = { $not: { $regex: "QPAY" } }
             var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt).find(match);  
-            console.log("----------- guilgeenuudQPAYBish ------------>" + JSON.stringify(guilgeenuudQPAYBish?.length));
             guilgeenuud.push(...guilgeenuudQPAYBish);
             var khaikhNukhtsul;
             var tailbar = [];
@@ -517,7 +510,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
       }
     }
   } catch (e) {
-    console.log("----------ee---------->" + e);
   }
 }
 
