@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Baiguullaga = require("../models/baiguullaga");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 
-exports.togloomiinTuvDavkhardsan = asyncHandler(async () => {
+exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) => {
   try 
   {
     const { db } = require("zevbackv2");
@@ -63,7 +63,7 @@ exports.togloomiinTuvDavkhardsan = asyncHandler(async () => {
                   },
                 ])
               .catch((err) => {
-                throw err;
+                if(next) next(err);
               });
               result.push(togloom);
             }
@@ -75,7 +75,7 @@ exports.togloomiinTuvDavkhardsan = asyncHandler(async () => {
   }
   catch (err) {
     console.log("------------- error ---------------->" + err);
-	  throw err;
+	  if(next) next(err);
   }
 });
   
