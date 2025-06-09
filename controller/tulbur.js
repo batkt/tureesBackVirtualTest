@@ -400,11 +400,11 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               magadlaltaiGereenuud: { $exists: false }
             }
             if(dans.bank == "golomt")
-              match["tranDesc"] = { $regex: "qpay" }  
+              match["tranDesc"] = { $regex: /qpay/i }  
             else if(dans.bank == "tdb")
-              match["TxAddInf"] = { $regex: "qpay" }  
+              match["TxAddInf"] = { $regex: /qpay/i }  
             else
-              match["description"] = { $regex: "qpay" }
+              match["description"] = { $regex: /qpay/i }
             var guilgeenuud = [];
             var guilgeenuudQpay = await BankniiGuilgee(kholbolt).find(match);
             guilgeenuud.push(...guilgeenuudQpay);
