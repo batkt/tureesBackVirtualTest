@@ -290,27 +290,27 @@ cron.schedule(
   }
 );
 
-cron.schedule(
-  "*/10 * * * * * ",
-  function () {
-    tulbur.tulultTaniya();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
+// cron.schedule(
+//   "*/10 * * * * * ",
+//   function () {
+//     tulbur.tulultTaniya();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 
-cron.schedule(
-  "*/6 * * * * * ",
-  function () {
-    cgw.togloomiinTuvDavkhardsanShalgakh(null, null, null);
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
+// cron.schedule(
+//   "*/6 * * * * * ",
+//   function () {
+//     cgw.togloomiinTuvDavkhardsanShalgakh(null, null, null);
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 
 cron.schedule(
   "59 * * * * ",
