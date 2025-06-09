@@ -390,7 +390,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
           if(!!dans.bank)
           {
             var match = {
-              createdAt: { $lt: new Date(new Date().getTime() - 60000) },
+              createdAt: { $gt: new Date(new Date().getTime() - 60000), $lt: new Date() },
               dansniiDugaar: dans.dugaar,
               baiguullagiinId: dans.baiguullagiinId,
               barilgiinId: dans.barilgiinId,
@@ -406,8 +406,8 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               match["description"] = { $regex: 'qpay', $options: 'i' }
             var guilgeenuud = [];
             var guilgeenuudQpay = await BankniiGuilgee(kholbolt).find(match);
+            console.log("----------- guilgeenuudQpay ------------>" + JSON.stringify(guilgeenuudQpay?.length));
             guilgeenuud.push(...guilgeenuudQpay);
-            console.log("----------- qpay ------------>" + JSON.stringify(guilgeenuudQpay?.length))
             if(dans.bank == "golomt")
               match["tranDesc"] = { $regex: "QPAY", $options: 'i' }  
             else if(dans.bank == "tdb")
@@ -415,11 +415,8 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             else
               match["description"] = { $regex: "QPAY", $options: 'i' }
             var guilgeenuudQPAY = await BankniiGuilgee(kholbolt).find(match);
+            console.log("----------- guilgeenuudQPAY ------------>" + JSON.stringify(guilgeenuudQPAY?.length));
             guilgeenuud.push(...guilgeenuudQPAY);
-
-            console.log("----------- guilgeenuudQPAY ------------>" + JSON.stringify(guilgeenuudQPAY?.length))
-            
-            match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
             if(dans.bank == "golomt")
               match["tranDesc"] = { $not: { $regex: "qpay" } }
             else if(dans.bank == "tdb")
@@ -429,7 +426,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             var guilgeenuudBish = await BankniiGuilgee(kholbolt).find(match);
             guilgeenuud.push(...guilgeenuudBish);
 
-            console.log("----------- guilgeenuudBish ------------>" + JSON.stringify(guilgeenuudBish?.length))
+            console.log("----------- guilgeenuudBish ------------>" + JSON.stringify(guilgeenuudBish?.length));
 
             match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
             if(dans.bank == "golomt")
@@ -439,7 +436,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             else
               match["description"] = { $not: { $regex: "QPAY" } }
             var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt).find(match);  
-            console.log("----------- guilgeenuudQPAYBish ------------>" + JSON.stringify(guilgeenuudQPAYBish?.length))
+            console.log("----------- guilgeenuudQPAYBish ------------>" + JSON.stringify(guilgeenuudQPAYBish?.length));
             guilgeenuud.push(...guilgeenuudQPAYBish);
             var khaikhNukhtsul;
             var tailbar = [];
