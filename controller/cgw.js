@@ -2216,68 +2216,70 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
 exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) => {
   try 
   {
-    const { db } = require("zevbackv2");
-    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({"tokhirgoo.togloomiinTuvDavkhardsanShalgakh": true });
-    console.log("------------togloomiinTuvDavkhardsanShalgakh-> =---------------->" + JSON.stringify(baiguullaguud));
     var result = [];
-    if(baiguullaguud?.length > 0)
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+    if(kholboltuud)
     {
-      for await (const baiguullaga of baiguullaguud) {
-        var kholboltuud = db.kholboltuud;
-        var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
-        for await (const barilga of baiguullaga.barilguud) {
-          var match = {
-            baiguullagiinId: baiguullaga._id.toString(),
-            barilgiinId: barilga._id.toString(),
-            niitDun: { $gt: 0 },
-            tuluv: {
-              $ne: -1,
-            },
-          }
-          var query = [
-            {
-              $match: match,
-            },
-            {
-              $unwind: "$niitTulbur"
-            },
-            {
-              $match: { 
-                "niitTulbur.turul": { $nin: ["khariult"] },
-              }
-            },
-            {
-              $group: {
-                _id: { 
-                  id: "$_id", 
-                  niitDun: "$niitDun",
-                },
-                tulbur: {
-                  $sum: "$niitTulbur.dun",
-                },
+      for await (const kholbolt of kholboltuud) {
+        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
+        if(baiguullaga?.tokhirgoo?.togloomiinTuvDavkhardsanShalgakh)
+        {
+          console.log("------------togloomiinTuvDavkhardsanShalgakh-> =---------------->" + JSON.stringify(baiguullaga));
+          for await (const barilga of baiguullaga.barilguud) {
+            var match = {
+              baiguullagiinId: baiguullaga._id.toString(),
+              barilgiinId: barilga._id.toString(),
+              niitDun: { $gt: 0 },
+              tuluv: {
+                $ne: -1,
               },
             }
-          ]
-          const togloomuud = await TogloomiinTuv(kholbolt).aggregate(query);
-          for await (const togloom of togloomuud) {
-            if(togloom.tulbur > togloom._id?.niitDun)
-            {
-              var data = await TogloomiinTuv(kholbolt).findById(togloom._id?.id);
-              data.niitTulbur?.shift();
-              data.tulbur?.shift();
-              TogloomiinTuv(kholbolt)
-                .findByIdAndUpdate({ _id: togloom._id?.id }, [
-                  {
-                    $set: {
-                      niitTulbur: data.niitTulbur,
-                      tulbur: data.tulbur,
-                    },
+            var query = [
+              {
+                $match: match,
+              },
+              {
+                $unwind: "$niitTulbur"
+              },
+              {
+                $match: { 
+                  "niitTulbur.turul": { $nin: ["khariult"] },
+                }
+              },
+              {
+                $group: {
+                  _id: { 
+                    id: "$_id", 
+                    niitDun: "$niitDun",
                   },
-                ])
-              .catch((err) => {
-                
-              });
-              result.push(togloom);
+                  tulbur: {
+                    $sum: "$niitTulbur.dun",
+                  },
+                },
+              }
+            ]
+            const togloomuud = await TogloomiinTuv(kholbolt).aggregate(query);
+            for await (const togloom of togloomuud) {
+              if(togloom.tulbur > togloom._id?.niitDun)
+              {
+                var data = await TogloomiinTuv(kholbolt).findById(togloom._id?.id);
+                data.niitTulbur?.shift();
+                data.tulbur?.shift();
+                TogloomiinTuv(kholbolt)
+                  .findByIdAndUpdate({ _id: togloom._id?.id }, [
+                    {
+                      $set: {
+                        niitTulbur: data.niitTulbur,
+                        tulbur: data.tulbur,
+                      },
+                    },
+                  ])
+                .catch((err) => {
+                  
+                });
+                result.push(togloom);
+              }
             }
           }
         }
