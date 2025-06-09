@@ -2216,7 +2216,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
 exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) => {
   try 
   {
-    console.log("------------------------------>>");
+    console.log("---------togloomiinTuvDavkhardsanShalgakhs--------------------->>");
     const { db } = require("zevbackv2");
     var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({"tokhirgoo.togloomiinTuvDavkhardsanShalgakh": { $exists: true, } });
     var result = [];
@@ -2283,8 +2283,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
         }
       }
     }
-    console.log("-------------> =---------------->" + JSON.stringify(result));
-    res.send(result);
+    console.log("------------togloomiinTuvDavkhardsanShalgakh-> =---------------->" + JSON.stringify(result));
   }
   catch (err) {
     console.log("-------------------->" + err);
