@@ -1749,6 +1749,44 @@ router.route("/v1/pay").post(async (req, res, next) => {
             ],
           }
         );
+        if (!!req.body.manually_open) {
+          if (
+            !!tukhainZogsool.kamerDavkharAshiglakh &&
+            !tukhainObject?.tuukh[0]?.garsanKhaalga
+          ) {
+            var nemeltZogsool = await Parking(tukhainKholbolt).findOne({
+              _id: { $ne: tukhainZogsool._id },
+            });
+            var garsanObject = await Uilchluulegch(tukhainKholbolt).findOne({
+              mashiniiDugaar: req.body.plate_number,
+              "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
+              "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
+                $exists: true,
+              },
+              updatedAt: {
+                $gt: new Date(Date.now() - 300000), //5min dotor
+              },
+              "tuukh.0.tuluv": {
+                $ne: -2,
+              },
+            });
+            const io = req.app.get("socketio");
+            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
+              khaalgaTurul: "oroh",
+              turul: "toki",
+              mashiniiDugaar: req.body.plate_number,
+              cameraIP: garsanObject.tuukh[0].garsanKhaalga,
+            });
+          } else {
+            const io = req.app.get("socketio");
+            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
+              khaalgaTurul: "oroh",
+              turul: "toki",
+              mashiniiDugaar: req.body.plate_number,
+              cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
+            });
+          }
+        }
         tukhainObject.niitDun = req.body.paid_amount;
         var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
           tukhainObject.baiguullagiinId
@@ -1829,44 +1867,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
           butsaakhKhariu.success = true;
           butsaakhKhariu.message = "ИБаримт dll холболт хийгдээгүй байна!";
           res.send(butsaakhKhariu);
-        }
-        if (!!req.body.manually_open) {
-          if (
-            !!tukhainZogsool.kamerDavkharAshiglakh &&
-            !tukhainObject?.tuukh[0]?.garsanKhaalga
-          ) {
-            var nemeltZogsool = await Parking(tukhainKholbolt).findOne({
-              _id: { $ne: tukhainZogsool._id },
-            });
-            var garsanObject = await Uilchluulegch(tukhainKholbolt).findOne({
-              mashiniiDugaar: req.body.plate_number,
-              "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
-              "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
-                $exists: true,
-              },
-              updatedAt: {
-                $gt: new Date(Date.now() - 300000), //5min dotor
-              },
-              "tuukh.0.tuluv": {
-                $ne: -2,
-              },
-            });
-            const io = req.app.get("socketio");
-            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
-              khaalgaTurul: "oroh",
-              turul: "toki",
-              mashiniiDugaar: req.body.plate_number,
-              cameraIP: garsanObject.tuukh[0].garsanKhaalga,
-            });
-          } else {
-            const io = req.app.get("socketio");
-            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
-              khaalgaTurul: "oroh",
-              turul: "toki",
-              mashiniiDugaar: req.body.plate_number,
-              cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
-            });
-          }
         }
       }
     }
@@ -1985,73 +1985,6 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
             ],
           }
         );
-        tukhainObject.niitDun = req.body.tulukhDun;
-        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-          tukhainObject.baiguullagiinId
-        );
-        var tuxainSalbar = baiguullaga?.barilguud?.find(
-          (e) => e._id.toString() == tukhainObject.barilgiinId
-        )?.tokhirgoo;
-
-        var nuatTulukhEsekh = false;
-        nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
-        if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-        if (!!tuxainSalbar?.eBarimtShine) {
-          ebarimt = await zogsooloosEbarimtShineUusgye(
-            tukhainObject,
-            req.body.customerNo,
-            req.body.customerTin,
-            tuxainSalbar.merchantTin, //"37900846788",
-            tuxainSalbar.districtCode, //,"0023"
-            tukhainKholbolt,
-            nuatTulukhEsekh
-          );
-        } else {
-          var ebarimt = await zogsooloosEbarimtUusgye(
-            tukhainObject,
-            req.body.register,
-            req.body.register ? "3" : null,
-            tukhainKholbolt,
-            nuatTulukhEsekh
-          );
-        }
-        butsaakhMethod = function (d, khariuObject) {
-          try {
-            if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
-            var ebarimt;
-            if (!!tuxainSalbar.eBarimtShine)
-              ebarimt = new EbarimtShine(tukhainKholbolt)(d);
-            else ebarimt = new Ebarimt(tukhainKholbolt)(d);
-            ebarimt.zogsooliinId = tukhainObject._id;
-            ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
-            ebarimt.barilgiinId = khariuObject.barilgiinId;
-            ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
-            ebarimt.save().catch((err) => {
-              next(err);
-            });
-            var update = { ebarimtAvsanEsekh: true, ebarimtAvsanDun: (ebarimt.cashAmount || ebarimt.totalAmount) };
-            if (ebarimt.customerNo)
-              update = {
-                ...update,
-                ebarimtRegister: ebarimt.customerNo,
-              };
-            Uilchluulegch(tukhainKholbolt)
-              .findByIdAndUpdate(tukhainObject._id, update)
-              .then((xariu) => {
-              })
-              .catch((err) => {
-                next(err);
-              });
-            delete d.baiguullagiinId;
-            delete d.zogsooliinId;
-            delete d.barilgiinId;
-            delete d._id;
-            butsaakhKhariu.data = d;
-            res.send(butsaakhKhariu);
-          } catch (err) {
-            next(err);
-          }
-        };
         if (!!req.body.manually_open) {
           if (
             !!tukhainZogsool.kamerDavkharAshiglakh &&
@@ -2090,7 +2023,68 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
             });
           }
         }
-        ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
+        tukhainObject.niitDun = req.body.tulukhDun;
+        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+          tukhainObject.baiguullagiinId
+        );
+        var tuxainSalbar = baiguullaga?.barilguud?.find(
+          (e) => e._id.toString() == tukhainObject.barilgiinId
+        )?.tokhirgoo;
+
+        var nuatTulukhEsekh = false;
+        nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
+        if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
+        if (!!tuxainSalbar?.eBarimtShine) {
+          var ebarimt = await zogsooloosEbarimtShineUusgye(
+            tukhainObject,
+            req.body.customerNo,
+            req.body.customerTin,
+            tuxainSalbar.merchantTin, //"37900846788",
+            tuxainSalbar.districtCode, //,"0023"
+            tukhainKholbolt,
+            nuatTulukhEsekh
+          );
+          butsaakhMethod = function (d, khariuObject) {
+          try {
+              if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
+              var ebarimt;
+              if (!!tuxainSalbar.eBarimtShine)
+                ebarimt = new EbarimtShine(tukhainKholbolt)(d);
+              else ebarimt = new Ebarimt(tukhainKholbolt)(d);
+              ebarimt.zogsooliinId = tukhainObject._id;
+              ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
+              ebarimt.barilgiinId = khariuObject.barilgiinId;
+              ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
+              ebarimt.save().catch((err) => {
+                next(err);
+              });
+              var update = { ebarimtAvsanEsekh: true, ebarimtAvsanDun: (ebarimt.cashAmount || ebarimt.totalAmount) };
+              if (ebarimt.customerNo)
+                update = {
+                  ...update,
+                  ebarimtRegister: ebarimt.customerNo,
+                };
+              Uilchluulegch(tukhainKholbolt)
+                .findByIdAndUpdate(tukhainObject._id, update)
+                .then((xariu) => {
+                })
+                .catch((err) => {
+                  next(err);
+                });
+              delete d.baiguullagiinId;
+              delete d.zogsooliinId;
+              delete d.barilgiinId;
+              delete d._id;
+              butsaakhKhariu.data = d;
+              res.send(butsaakhKhariu);
+            } catch (err) {
+              next(err);
+            }
+          };
+          ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
+        }
+        else 
+          res.send({ success: true, message: "ИБаримт dll холболт хийгдээгүй байна!" });
       }
     }
   } catch (err) {
