@@ -407,7 +407,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             var guilgeenuud = [];
             var guilgeenuudQpay = await BankniiGuilgee(kholbolt).find(match);
             guilgeenuud.push(...guilgeenuudQpay);
-            
+            console.log("----------- qpay ------------>" + JSON.stringify(guilgeenuudQpay?.length))
             // if(dans.bank == "golomt")
             //   match["tranDesc"] = { $regex: "QPAY" }  
             // else if(dans.bank == "tdb")
