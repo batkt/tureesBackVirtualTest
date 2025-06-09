@@ -2225,7 +2225,6 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
         var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
         if(baiguullaga?.tokhirgoo?.togloomiinTuvDavkhardsanShalgakh)
         {
-          console.log("------------togloomiinTuvDavkhardsanShalgakh-> =---------------->" + JSON.stringify(baiguullaga));
           for await (const barilga of baiguullaga.barilguud) {
             var match = {
               baiguullagiinId: baiguullaga._id.toString(),
@@ -2285,10 +2284,8 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
         }
       }
     }
-    console.log("------------togloomiinTuvDavkhardsanShalgakh-> =---------------->" + JSON.stringify(result));
   }
   catch (err) {
-    console.log("------------togloomiinTuvDavkhardsanShalgakh-> =---------------->" + err);
     if(next) next(err);
   }
 });
