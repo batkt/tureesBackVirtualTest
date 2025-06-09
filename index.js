@@ -259,16 +259,6 @@ cron.schedule(
 );*/
 
 cron.schedule(
-  "21 * * * * ",
-  function () {
-    tulbur.tulultTaniya();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
-cron.schedule(
   "02 00 * * * ",
   function () {
     tulbur.gereeAutomataarSungaya();
@@ -303,7 +293,7 @@ cron.schedule(
 cron.schedule(
   "*/10 * * * * * ",
   function () {
-    tulbur.tulultTaniyaQPay();
+    tulbur.tulultTaniya();
   },
   {
     scheduled: true,
