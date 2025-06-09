@@ -33,7 +33,6 @@ const daalgavarRoute = require("./routes/daalgavarRoute");
 const zogsool = require("./controller/zogsool");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
-const togloom = require("./controller/togloom");
 const ajiltanController = require("./controller/ajiltan");
 const apiRoute = require("./routes/apiRoute");
 const qpayRoute = require("./routes/qpayRoute");
