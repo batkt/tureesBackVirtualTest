@@ -399,24 +399,25 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               kholbosonTalbainId: { $size: 0 }, 
               magadlaltaiGereenuud: { $exists: false }
             }
-            match[dans.bank == "golomt" ? "tranDesc" : dans.bank == "tdb" ? "TxAddInf" : "description"] = { $regex: "qpay", $options: "i" }
+            // dans.bank == "golomt" ? "tranDesc" : dans.bank == "tdb" ? "TxAddInf" : 
+            match["description"] = { $regex: "qpay" }
             var guilgeenuud = [];
             var guilgeenuudQpay = await BankniiGuilgee(kholbolt).find(match);
             guilgeenuud.push(...guilgeenuudQpay);
             
-            match[dans.bank == "golomt" ? "tranDesc" : dans.bank == "tdb" ? "TxAddInf" : "description"] = { $regex: "QPAY", $options: "i"}
-            var guilgeenuudQPAY = await BankniiGuilgee(kholbolt).find(match);
-            guilgeenuud.push(...guilgeenuudQPAY);
+            // match[dans.bank == "golomt" ? "tranDesc" : dans.bank == "tdb" ? "TxAddInf" : "description"] = { $regex: "QPAY", $options: "i"}
+            // var guilgeenuudQPAY = await BankniiGuilgee(kholbolt).find(match);
+            // guilgeenuud.push(...guilgeenuudQPAY);
             
-            match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
-            match[dans.bank == "golomt" ? "tranDesc" : dans.bank == "tdb" ? "TxAddInf" : "description"] = { $ne: { $regex: "qpay", $options: "i" } }
-            var guilgeenuudBish = await BankniiGuilgee(kholbolt).find(match);
-            guilgeenuud.push(...guilgeenuudBish);
+            // match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
+            // match[dans.bank == "golomt" ? "tranDesc" : dans.bank == "tdb" ? "TxAddInf" : "description"] = { $ne: { $regex: "qpay", $options: "i" } }
+            // var guilgeenuudBish = await BankniiGuilgee(kholbolt).find(match);
+            // guilgeenuud.push(...guilgeenuudBish);
 
-            match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
-            match[dans.bank == "golomt" ? "tranDesc" : dans.bank == "tdb" ? "TxAddInf" : "description"] = { $ne: { $regex: "QPAY", $options: "i" } }
-            var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt).find(match);  
-            guilgeenuud.push(...guilgeenuudQPAYBish);
+            // match["createdAt"] = { $gt: new Date(new Date().getTime() - 3 * 60000) }
+            // match[dans.bank == "golomt" ? "tranDesc" : dans.bank == "tdb" ? "TxAddInf" : "description"] = { $ne: { $regex: "QPAY", $options: "i" } }
+            // var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt).find(match);  
+            // guilgeenuud.push(...guilgeenuudQPAYBish);
             var khaikhNukhtsul;
             var tailbar = [];
             if(guilgeenuud?.length > 0){
