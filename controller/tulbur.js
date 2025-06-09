@@ -398,42 +398,86 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               kholbosonTalbainId: { $size: 0 }, 
               magadlaltaiGereenuud: { $exists: false }
             }
+            var match1 = match;
             if(dans.bank == "golomt")
             {
-              match["tranDesc"] = { $regex: 'qpay', $options: 'i' };
-              match["drOrCr"] = "Credit";
-              match["recNum"] = "1";
+              match1["tranDesc"] = { $regex: 'qpay', $options: 'i' };
+              match1["drOrCr"] = "Credit";
+              match1["recNum"] = "1";
+              match1["tranAmount"] = { $gt: 0 };
             }
             else if(dans.bank == "tdb")
-              match["TxAddInf"] = { $regex: 'qpay', $options: 'i' }
+            {
+              match1["Amt"] = { $gt: 0 };
+              match1["TxAddInf"] = { $regex: 'qpay', $options: 'i' }
+            }
             else
-              match["description"] = { $regex: 'qpay', $options: 'i' }
+            {
+              match1["description"] = { $regex: 'qpay', $options: 'i' }
+              match1["amount"] = { $gt: 0 };
+            }
             var guilgeenuud = [];
-            var guilgeenuudQpay = await BankniiGuilgee(kholbolt).find(match);
+            var guilgeenuudQpay = await BankniiGuilgee(kholbolt).find(match1);
             guilgeenuud.push(...guilgeenuudQpay);
+            var match2 = match;
             if(dans.bank == "golomt")
-              match["tranDesc"] = { $regex: "QPAY", $options: 'i' }  
+            {
+              match2["tranDesc"] = { $regex: "QPAY", $options: 'i' }  
+              match2["drOrCr"] = "Credit";
+              match2["recNum"] = "1";
+              match2["tranAmount"] = { $gt: 0 };
+            }
             else if(dans.bank == "tdb")
-              match["TxAddInf"] = { $regex: "QPAY", $options: 'i' }  
+            {
+              match2["TxAddInf"] = { $regex: "QPAY", $options: 'i' }  
+              match2["Amt"] = { $gt: 0 };
+            }
             else
-              match["description"] = { $regex: "QPAY", $options: 'i' }
-            var guilgeenuudQPAY = await BankniiGuilgee(kholbolt).find(match);
+            {
+              match2["description"] = { $regex: "QPAY", $options: 'i' }
+              match2["amount"] = { $gt: 0 };
+            }
+            var guilgeenuudQPAY = await BankniiGuilgee(kholbolt).find(match2);
             guilgeenuud.push(...guilgeenuudQPAY);
+            var match3 = match;
             if(dans.bank == "golomt")
-              match["tranDesc"] = { $not: { $regex: "qpay" } }
+            {
+              match3["tranDesc"] = { $not: { $regex: "qpay" } }
+              match3["drOrCr"] = "Credit";
+              match3["recNum"] = "1";
+              match3["tranAmount"] = { $gt: 0 };
+            }
             else if(dans.bank == "tdb")
-              match["TxAddInf"] = { $not: { $regex: "qpay" } }
+            {
+              match3["TxAddInf"] = { $not: { $regex: "qpay" } }
+              match3["Amt"] = { $gt: 0 };
+            }
             else
-              match["description"] = { $not: { $regex: "qpay" } }
-            var guilgeenuudBish = await BankniiGuilgee(kholbolt).find(match);
+            {
+              match3["description"] = { $not: { $regex: "qpay" } }
+              match3["amount"] = { $gt: 0 };
+            }
+            var guilgeenuudBish = await BankniiGuilgee(kholbolt).find(match3);
             guilgeenuud.push(...guilgeenuudBish);
+            var match4 = match;
             if(dans.bank == "golomt")
-              match["tranDesc"] = { $not: { $regex: "QPAY" } }
+            {
+              match4["tranDesc"] = { $not: { $regex: "QPAY" } }
+              match4["drOrCr"] = "Credit";
+              match4["recNum"] = "1";
+              match4["tranAmount"] = { $gt: 0 };
+            }
             else if(dans.bank == "tdb")
-              match["TxAddInf"] = { $not: { $regex: "QPAY" } }
+            {
+              match4["TxAddInf"] = { $not: { $regex: "QPAY" } }
+              match4["Amt"] = { $gt: 0 };
+            }
             else
-              match["description"] = { $not: { $regex: "QPAY" } }
-            var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt).find(match);  
+            {
+              match4["description"] = { $not: { $regex: "QPAY" } }
+              match4["amount"] = { $gt: 0 };
+            }
+            var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt).find(match4);  
             guilgeenuud.push(...guilgeenuudQPAYBish);
             var khaikhNukhtsul;
             var tailbar = [];
