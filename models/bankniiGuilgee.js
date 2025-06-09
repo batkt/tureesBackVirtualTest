@@ -99,7 +99,7 @@ const bankniiGuilgeeSchema = new Schema(
 bankniiGuilgeeSchema.pre('insertMany', function(next, docs) {
   for (let doc of docs) {
     var dugaar = doc.bank === "khanbank" ? doc.record : 
-                doc.bank === "golomt" ?  doc.tranId : 
+                doc.bank === "golomt" ? (doc.tranId + doc.recNum) : 
                   doc.bank === "bogd" ?  doc.recNum :
                     doc.bank === "tran" ? doc.jrno  :
                       doc.bank === "tdb" && !!doc.NtryRef ? doc.NtryRef : doc.refno
