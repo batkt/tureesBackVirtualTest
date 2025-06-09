@@ -2216,6 +2216,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
 exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) => {
   try 
   {
+    console.log("------------------------------>>");
     const { db } = require("zevbackv2");
     var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({"tokhirgoo.togloomiinTuvDavkhardsanShalgakh": { $exists: true, } });
     var result = [];
@@ -2274,7 +2275,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
                   },
                 ])
               .catch((err) => {
-                if(next) next(err);
+                
               });
               result.push(togloom);
             }
@@ -2286,7 +2287,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
     res.send(result);
   }
   catch (err) {
-    console.log("------------- error ---------------->" + err);
-	  if(next) next(err);
+    throw new Error("Хөнгөлөлт оруулсан байна!");
+	  // if(next) next(err);
   }
 });
