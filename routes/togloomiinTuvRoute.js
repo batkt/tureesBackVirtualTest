@@ -704,4 +704,72 @@ router.route("/togloomiinTuvNiitDun").post(tokenShalgakh, async (req, res, next)
       next(err);
     }
   });
+
+router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      niitDun: { $gt: 0 },
+      tuluv: {
+        $ne: -1,
+      },
+    }
+    if(req.body.utas)
+      match["utas"] = req.body.utas;
+    var query = [
+      {
+        $match: match,
+      },
+      {
+        $unwind: "$niitTulbur"
+      },
+      {
+        $match: { 
+          "niitTulbur": { $size: 2 },
+          "niitTulbur.turul": { $nin: ["khariult"] },
+        }
+      },
+      {
+        $group: {
+          _id: "$_id",
+          niitDun: {
+            $sum: "$niitDun",
+          },
+          tulbur: {
+            $sum: "$niitTulbur.dun",
+          },
+        },
+      }
+    ]
+    const togloomuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate(query);
+    var khariu = [];
+    for await (const togloom of togloomuud) {
+      if(togloom.tulbur > togloom.niitDun)
+      {
+        var data = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findById(togloom._id);
+        data.niitTulbur?.shift();
+        data.tulbur?.shift();
+        TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
+          .findByIdAndUpdate({ _id: togloom._id }, [
+            {
+              $set: {
+                niitTulbur: data.niitTulbur,
+                tulbur: data.tulbur,
+              },
+            },
+          ])
+        .catch((err) => {
+          next(err);
+        });
+        khariu.push(togloom);
+      }
+    }
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+});
+  
 module.exports = router;
