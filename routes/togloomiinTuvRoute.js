@@ -733,9 +733,9 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
       },
       {
         $group: {
-          _id: "$_id",
-          niitDun: {
-            $sum: "$niitDun",
+          _id: { 
+            id: "$_id", 
+            niitDun: "$niitDun",
           },
           tulbur: {
             $sum: "$niitTulbur.dun",
@@ -746,13 +746,16 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
     const togloomuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate(query);
     var khariu = [];
     for await (const togloom of togloomuud) {
-      if(togloom.tulbur > togloom.niitDun)
+      console.l
+      if(togloom.tulbur > togloom._id?.niitDun)
       {
-        var data = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findById(togloom._id);
+        console.log("------------->>"+ JSON.stringify(togloom.tulbur));
+        console.log("----niit dun--------->>"+ JSON.stringify(togloom._id?.niitDun));
+        var data = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findById(togloom._id?.id);
         data.niitTulbur?.shift();
         data.tulbur?.shift();
         TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
-          .findByIdAndUpdate({ _id: togloom._id }, [
+          .findByIdAndUpdate({ _id: togloom._id?.id }, [
             {
               $set: {
                 niitTulbur: data.niitTulbur,
