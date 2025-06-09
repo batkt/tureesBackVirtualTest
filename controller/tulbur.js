@@ -383,7 +383,7 @@ module.exports.tulultTaniyaQPay = async function tulultTaniya() {
   {
     console.log("------tulultTaniyaQPay--------------->>");
     const { db } = require("zevbackv2");
-    var kholboltuud = db.kholboltuud.find((a) => a.baiguullagiinId == "6644289a64b590e4c8df0224");
+    var kholboltuud = [db.kholboltuud.find((a) => a.baiguullagiinId == "6644289a64b590e4c8df0224")];
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
         var dansnuud = await Dans(kholbolt).find({ corporateAshiglakhEsekh: true, oirkhonTatakhEsekh: { $exists: false } });  
