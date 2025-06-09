@@ -2218,6 +2218,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
   {
     const { db } = require("zevbackv2");
     var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({"tokhirgoo.togloomiinTuvDavkhardsanShalgakh": true });
+    console.log("------------togloomiinTuvDavkhardsanShalgakh-> =---------------->" + JSON.stringify(baiguullaguud));
     var result = [];
     if(baiguullaguud?.length > 0)
     {
