@@ -2287,6 +2287,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
     res.send(result);
   }
   catch (err) {
+    console.log("-------------------->" + err);
 	  if(next) next(err);
   }
 });

@@ -496,7 +496,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
       }
     }
   } catch (e) {
-    
+    console.log("-------------------->" + e);
   }
 }
 
