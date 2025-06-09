@@ -143,6 +143,7 @@ const baiguullagaSchema = new Schema(
       guidliinKoepEsekh: Boolean,
       msgNegjUne: Number, /** мессеж нэгж үнэ тохируулах */
       gadaaStickerAshiglakhEsekh: Boolean, /** gadaa sticker ashiglakh esekh */ 
+      togloomiinTuvDavkhardsanShalgakh: Boolean,
     },
     erkhuud: [
       {
