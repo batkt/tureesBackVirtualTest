@@ -293,6 +293,7 @@ cron.schedule(
 cron.schedule(
   "*/8 * * * * * ",
   function () {
+    console.log("----------tulultTaniya ---------->");
     tulbur.tulultTaniya();
   },
   {
