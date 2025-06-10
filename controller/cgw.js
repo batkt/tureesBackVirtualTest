@@ -848,6 +848,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     });
                 }
               } else if (dans.bank == "tdb") {
+                console.log("tdb -------------------" + JSON.stringify(dans.dugaar));
                 if(
                   !!dans.corporateNevtrekhNer &&
                   !!dans.corporateNuutsUg && !dans.AnyBIC && !dans.RoleID &&
@@ -888,6 +889,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate()
                   + "&page=0&size=100"
+                  console.log("tdb  url -------------------" + JSON.stringify(url));
                   var response = await axios
                     .get(url, {
                       headers: {
@@ -899,6 +901,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       throw err;
                     });
                   var khariu = response.data;
+                  console.log("tdb  khariu -------------------" + JSON.stringify(khariu));
                   if (
                     !!khariu &&
                     !!khariu.txn &&
