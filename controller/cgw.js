@@ -848,13 +848,11 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     });
                 }
               } else if (dans.bank == "tdb") {
-                console.log("tdb -------------------" + JSON.stringify(dans.dugaar));
                 if(
                   !!dans.corporateNevtrekhNer &&
                   !!dans.corporateNuutsUg && !dans.AnyBIC && !dans.RoleID &&
                   !!dans.dugaar && (dans.dugaar.includes("mn") ||dans.dugaar.includes("MN")) )
                 {
-                  console.log("tdb -------------9------" + JSON.stringify(dans.dugaar));
                   var tokenObject = await tdbTokenAvya(
                     dans,
                     kholbolt
@@ -892,7 +890,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate()
                   + "&page=0&size=100";
-                  console.log("tdb  url -------------------" + JSON.stringify(url));
                   var response = await axios
                     .get(url, {
                       headers: {
@@ -901,10 +898,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       }
                     })
                     .catch((err) => {
-                      console.log("log ----->" + err);
                     });
                   var khariu = response.data;
-                  console.log("tdb  khariu -------------------" + JSON.stringify(khariu));
                   if (
                     !!khariu &&
                     !!khariu.txn &&
@@ -1360,7 +1355,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       }
     }
   } catch (err) {
-    console.log("error --------------->>" + err);
     if (next) next(err);
   }
 });
