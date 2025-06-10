@@ -302,7 +302,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "50 40 02 * * *",
+  "*/10 * * * *",
   function () {
     console.log("----------togloomiinTuvDavkhardsanShalgakh ---->");
     cgw.togloomiinTuvDavkhardsanShalgakh(null, null, null);
