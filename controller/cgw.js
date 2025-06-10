@@ -938,7 +938,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         if (res) res.send("Amjilttai");
                       })
                       .catch((err) => {
-                        next(err);
+                        if(next) next(err);
                       });
                   }
                 }
