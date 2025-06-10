@@ -488,7 +488,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                   (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay")) ||
                   (x.tranDesc && x.tranDesc.toLowerCase().includes("qpay"))
                 ) {
-                  console.log("log ----x-------------<"+ JSON.stringify(x));
                   if (x.description) tailbar = x.description.split(/,| /);
                   else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
                   else if (x.tranDesc) tailbar = x.tranDesc.split(/,| /);
@@ -512,7 +511,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                 } 
                 else 
                 {
-                  console.log("log ----xxx-------------<"+ JSON.stringify(x));
                   khaikhNukhtsul = [];
                   if (x.description) tailbar = x.description.split(" ");
                   else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
@@ -585,7 +583,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
       }
     }
   } catch (e) {
-    console.log("--------------->" + e);
   }
 }
 
