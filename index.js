@@ -301,16 +301,17 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "*/6 * * * * * ",
-//   function () {
-//     cgw.togloomiinTuvDavkhardsanShalgakh(null, null, null);
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "50 40 02 * * *",
+  function () {
+    console.log("----------togloomiinTuvDavkhardsanShalgakh ---->");
+    cgw.togloomiinTuvDavkhardsanShalgakh(null, null, null);
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 cron.schedule(
   "59 * * * * ",

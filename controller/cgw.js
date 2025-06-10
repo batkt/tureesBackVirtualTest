@@ -2291,6 +2291,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
         }
       }
     }
+    console.log("---------------------togloom --" + JSON.stringify(result));
   }
   catch (err) {
     if(next) next(err);
