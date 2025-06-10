@@ -2228,6 +2228,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
         {
           for await (const barilga of baiguullaga.barilguud) {
             var match = {
+              createdAt: { $gt: new Date(new Date().getTime() - 10 * 60000), $lt: new Date() },
               baiguullagiinId: baiguullaga._id.toString(),
               barilgiinId: barilga._id.toString(),
               niitDun: { $gt: 0 },
