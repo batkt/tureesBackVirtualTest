@@ -479,7 +479,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             }
             var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt).find(match4);  
             guilgeenuud.push(...guilgeenuudQPAYBish);
-            var khaikhNukhtsul;
+            // var khaikhNukhtsul;
             var tailbar = [];
             if(guilgeenuud?.length > 0){
               guilgeenuud.forEach(async (x) => {
@@ -488,13 +488,13 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                   (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay")) ||
                   (x.tranDesc && x.tranDesc.toLowerCase().includes("qpay"))
                 ) {
-                  khaikhNukhtsul = [];
+                  // khaikhNukhtsul = [];
                   if (x.description) tailbar = x.description.split(/,| /);
                   else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
                   else if (x.tranDesc) tailbar = x.tranDesc.split(/,| /);
-                  tailbar.forEach((y) => {
-                    khaikhNukhtsul.push({ gereeniiDugaar: y });
-                  });
+                  // tailbar.forEach((y) => {
+                  //   khaikhNukhtsul.push({ gereeniiDugaar: y });
+                  // });
                   var oldsonGereenuud = await Geree(kholbolt).find({
                     gereeniiDugaar: { $in: tailbar },
                     tuluv: 1,
