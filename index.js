@@ -304,7 +304,6 @@ cron.schedule(
 cron.schedule(
   "*/10 * * * *",
   function () {
-    console.log("----------togloomiinTuvDavkhardsanShalgakh ---->");
     cgw.togloomiinTuvDavkhardsanShalgakh(null, null, null);
   },
   {

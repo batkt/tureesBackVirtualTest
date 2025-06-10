@@ -479,7 +479,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             }
             var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt).find(match4);  
             guilgeenuud.push(...guilgeenuudQPAYBish);
-            // var khaikhNukhtsul;
+            var khaikhNukhtsul;
             var tailbar = [];
             if(guilgeenuud?.length > 0){
               guilgeenuud.forEach(async (x) => {
@@ -488,13 +488,10 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                   (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay")) ||
                   (x.tranDesc && x.tranDesc.toLowerCase().includes("qpay"))
                 ) {
-                  // khaikhNukhtsul = [];
+                  console.log("log ----x-------------<"+ JSON.stringify(x));
                   if (x.description) tailbar = x.description.split(/,| /);
                   else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
                   else if (x.tranDesc) tailbar = x.tranDesc.split(/,| /);
-                  // tailbar.forEach((y) => {
-                  //   khaikhNukhtsul.push({ gereeniiDugaar: y });
-                  // });
                   var oldsonGereenuud = await Geree(kholbolt).find({
                     gereeniiDugaar: { $in: tailbar },
                     tuluv: 1,
@@ -513,46 +510,74 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                     x.save();
                   }
                 } 
-                // else 
-                // {
-                //   khaikhNukhtsul = [];
-                //   if (x.description) tailbar = x.description.split(" ");
-                //   else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
-                //   else if (x.tranDesc) tailbar = x.tranDesc.split(" ");
-                //   if (x.relatedAccount != null)
-                //     khaikhNukhtsul.push({
-                //       "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
-                //     });
-                //   else if (x.CtAcntOrg != null)
-                //     khaikhNukhtsul.push({
-                //       "avlaga.guilgeenuud.dansniiDugaar": x.CtAcntOrg,
-                //     });
-                //   tailbar.forEach((y) => {
-                //     khaikhNukhtsul.push({ utas: y });
-                //     khaikhNukhtsul.push({ register: y });
-                //     y = y.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
-                //     khaikhNukhtsul.push({
-                //       talbainDugaar: { $regex: ".*" + y + ".*" },
-                //     });
-                //   });
-                //   var oldsonGereenuud = await Geree(kholbolt).find({
-                //     $or: khaikhNukhtsul,
-                //     tuluv: 1,
-                //     barilgiinId: x.barilgiinId,
-                //   });
-                //   if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
-                //     oldsonGereenuud.forEach((a) => {
-                //       if (
-                //         x.magadlaltaiGereenuud != null &&
-                //         !x.magadlaltaiGereenuud.includes(a._id)
-                //       )
-                //         x.magadlaltaiGereenuud.push(a._id);
-                //       else x.magadlaltaiGereenuud = [a._id];
-                //     });
-                //     x.isNew = false;
-                //     x.save();
-                //   }
-                // }
+                else 
+                {
+                  console.log("log ----xxx-------------<"+ JSON.stringify(x));
+                  khaikhNukhtsul = [];
+                  if (x.description) tailbar = x.description.split(" ");
+                  else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
+                  else if (x.tranDesc) tailbar = x.tranDesc.split(" ");
+                  var oldsonGereenuud = [];
+                  if (x.relatedAccount != null)
+                  {
+                    var oldsonGereenuudRelatedAccount = await Geree(kholbolt).find({
+                      "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
+                      tuluv: 1,
+                      barilgiinId: x.barilgiinId,
+                    });
+                    if(oldsonGereenuudRelatedAccount?.length > 0)
+                      oldsonGereenuud.push(...oldsonGereenuudRelatedAccount);
+                  }
+                  else if (x.CtAcntOrg != null)
+                  {
+                    var oldsonGereenuudCtAcntOrg = await Geree(kholbolt).find({
+                      "avlaga.guilgeenuud.dansniiDugaar": x.CtAcntOrg,
+                      tuluv: 1,
+                      barilgiinId: x.barilgiinId,
+                    });
+                    if(oldsonGereenuudCtAcntOrg?.length > 0)
+                      oldsonGereenuud.push(...oldsonGereenuudCtAcntOrg);
+                  }
+                  var oldsonGereenuudUtas = await Geree(kholbolt).find({
+                    utas: { $in: tailbar },
+                    tuluv: 1,
+                    barilgiinId: x.barilgiinId,
+                  });
+                  if(oldsonGereenuudUtas)
+                    oldsonGereenuud.push(...oldsonGereenuudUtas);
+                  var oldsonGereenuudRegister = await Geree(kholbolt).find({
+                    register: { $in: tailbar },
+                    tuluv: 1,
+                    barilgiinId: x.barilgiinId,
+                  });
+                  if(oldsonGereenuudRegister)
+                    oldsonGereenuud.push(...oldsonGereenuudRegister);
+
+                  tailbar.forEach((y) => {
+                    y = y.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
+                    khaikhNukhtsul.push({
+                      talbainDugaar: { $regex: ".*" + y + ".*" },
+                    });
+                  });
+                  
+                  var oldsonGereenuud = await Geree(kholbolt).find({
+                    $or: khaikhNukhtsul,
+                    tuluv: 1,
+                    barilgiinId: x.barilgiinId,
+                  });
+                  if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
+                    oldsonGereenuud.forEach((a) => {
+                      if (
+                        x.magadlaltaiGereenuud != null &&
+                        !x.magadlaltaiGereenuud.includes(a._id)
+                      )
+                        x.magadlaltaiGereenuud.push(a._id);
+                      else x.magadlaltaiGereenuud = [a._id];
+                    });
+                    x.isNew = false;
+                    x.save();
+                  }
+                }
               });
             }
           }
@@ -604,8 +629,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   ? barilga.tokhirgoo.aldangiChuluulukhKhonog
                   : 0;
               if (aldangiChuluulukhKhonog > 0) {
-                ognoo =
-                  new Date().getTime() - 86400000 * aldangiChuluulukhKhonog;
+                ognoo = new Date().getTime() - 86400000 * aldangiChuluulukhKhonog;
                 ognoo = new Date(ognoo);
               }
               var gereenuud = await Geree(kholbolt).aggregate([
