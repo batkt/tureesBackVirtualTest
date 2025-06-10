@@ -900,8 +900,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       }
                     })
                     .catch((err) => {
-                      throw err;
+                      console.log("log ----->" + err);
                     });
+                    console.log("tdb khariu khariu -------------------" + JSON.stringify(khariu));
                   var khariu = response.data;
                   console.log("tdb  khariu -------------------" + JSON.stringify(khariu));
                   if (
