@@ -872,7 +872,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     firstDay = new Date(max.TxDt);
                   }
                   else
-                    firstDay = new Date();
+                    firstDay = moment().startOf("month");
                   url = url + 
                   "?from=" +
                     firstDay.getFullYear() +
@@ -902,7 +902,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     .catch((err) => {
                       console.log("log ----->" + err);
                     });
-                    console.log("tdb khariu khariu -------------------" + JSON.stringify(khariu));
                   var khariu = response.data;
                   console.log("tdb  khariu -------------------" + JSON.stringify(khariu));
                   if (
