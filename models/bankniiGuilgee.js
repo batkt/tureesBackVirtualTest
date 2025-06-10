@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 mongoose.pluralize(null);
-// mongoose.set('strictQuery', false);
 const bankniiGuilgeeSchema = new Schema(
   {
     id: String,
@@ -99,7 +98,7 @@ const bankniiGuilgeeSchema = new Schema(
 bankniiGuilgeeSchema.pre('insertMany', function(next, docs) {
   for (let doc of docs) {
     var dugaar = doc.bank === "khanbank" ? doc.record : 
-                doc.bank === "golomt" ? (doc.tranId + doc.recNum) : 
+                doc.bank === "golomt" ? doc.tranId : 
                   doc.bank === "bogd" ?  doc.recNum :
                     doc.bank === "tran" ? doc.jrno  :
                       doc.bank === "tdb" && !!doc.NtryRef ? doc.NtryRef : doc.refno
