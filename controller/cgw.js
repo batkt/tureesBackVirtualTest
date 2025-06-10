@@ -890,7 +890,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     "/" +
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate()
-                  + "&page=0&size=100"
+                  + "&page=0&size=100";
                   console.log("tdb  url -------------------" + JSON.stringify(url));
                   var response = await axios
                     .get(url, {
