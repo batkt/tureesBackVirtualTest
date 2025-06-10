@@ -390,7 +390,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
           if(!!dans.bank)
           {
             var match = {
-              createdAt: { $gt: new Date(new Date().getTime() - 5 * 60000), $lt: new Date() },
+              createdAt: { $gt: new Date(new Date().getTime() - 60000), $lt: new Date() },
               dansniiDugaar: dans.dugaar,
               baiguullagiinId: dans.baiguullagiinId,
               barilgiinId: dans.barilgiinId,
@@ -496,7 +496,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                     khaikhNukhtsul.push({ gereeniiDugaar: y });
                   });
                   var oldsonGereenuud = await Geree(kholbolt).find({
-                    $or: khaikhNukhtsul,
+                    gereeniiDugaar: { $in: tailbar },
                     tuluv: 1,
                     barilgiinId: x.barilgiinId,
                   });
