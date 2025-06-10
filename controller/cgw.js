@@ -873,7 +873,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     firstDay = new Date(max.TxDt);
                   }
                   else
-                    firstDay = new Date(moment().startOf("month"));
+                    firstDay = new Date();
                   url = url + 
                   "?from=" +
                     firstDay.getFullYear() +
