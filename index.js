@@ -290,16 +290,16 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "*/8 * * * * * ",
-//   function () {
-//     tulbur.tulultTaniya();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "*/8 * * * * * ",
+  function () {
+    tulbur.tulultTaniya();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 cron.schedule(
   "*/6 * * * * * ",
