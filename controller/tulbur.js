@@ -390,7 +390,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
           if(!!dans.bank)
           {
             var match = {
-              createdAt: { $lt: new Date() }, // $gt: new Date(new Date().getTime() - 60000), 
+              createdAt: { $gt: new Date(new Date().getTime() - 60000), $lt: new Date() },
               dansniiDugaar: dans.dugaar,
               baiguullagiinId: dans.baiguullagiinId,
               barilgiinId: dans.barilgiinId,
