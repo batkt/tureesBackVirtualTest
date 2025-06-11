@@ -2944,10 +2944,11 @@ router.post("/mashiniiDugaarZasakh", tokenShalgakh, async (req, res, next) => {
       "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: false },
       "tuukh.0.tuluv": { $ne: -2, }
     }).sort({ createdAt: -1 }).limit(1);
-    if(!!uilchluulegch && !!uilchluulegch?._id && req.body.mashin)
+    if(!!uilchluulegch && !!uilchluulegch?._id && !!req.body.mashin)
     {
+      console.log("---------------mashiniiDugaarZasakh ----------"+JSON.stringify(req.body.mashin));
       await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-      uilchluulegch?._id,
+      uilchluulegch?._id.toString(),
       {
         $set: {
           "turul": req.body.mashin?.turul,
