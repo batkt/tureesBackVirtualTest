@@ -4119,7 +4119,7 @@ router
   try 
   {
     var zardal = req.body.zardal;
-    if(!!zardal && zardal.ognoonuud?.length > 0)
+    if(!!zardal)
     {
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
         baiguullagiinId: req.body.baiguullagiinId,
