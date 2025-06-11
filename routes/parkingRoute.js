@@ -2955,6 +2955,7 @@ router.post("/mashiniiDugaarZasakh", tokenShalgakh, async (req, res, next) => {
         },
       });
     }
+    res.send(uilchluulegch);
   }
   catch(error) {
     console.log("---------------mashiniiDugaarZasakh ----------"+error);
