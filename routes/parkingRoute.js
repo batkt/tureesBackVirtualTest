@@ -2944,6 +2944,8 @@ router.post("/mashiniiDugaarZasakh", tokenShalgakh, async (req, res, next) => {
       "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: false },
       "tuukh.0.tuluv": { $ne: -2, }
     }).sort({ createdAt: -1 }).limit(1);
+    console.log("---------------mashiniiDugaarZasakh ----------"+JSON.stringify(req.body.mashin));
+    console.log("---------------uilchluulegch ----------"+JSON.stringify(uilchluulegch));
     if(!!uilchluulegch && !!uilchluulegch?._id && !!req.body.mashin)
     {
       console.log("---------------mashiniiDugaarZasakh ----------"+JSON.stringify(req.body.mashin));
