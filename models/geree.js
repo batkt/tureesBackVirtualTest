@@ -160,6 +160,7 @@ const gereeSchema = new Schema(
         tsakhilgaanDemjikh: Number,
         suuriKhuraamj: String,
         nuatNemekhEsekh: Boolean,
+        ognoonuud: [Date],
       },
     ],
     segmentuud: [
