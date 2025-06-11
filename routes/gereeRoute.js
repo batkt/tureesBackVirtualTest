@@ -4126,16 +4126,122 @@ router
         barilgiinId: req.body.barilgiinId,
         tuluv: 1,
         "zardluud._id": zardal._id.toString(),
-      });
+      }).select("+avlaga");
       if(gereenuud?.length > 0)
       {
         for await (const geree of gereenuud) {
-          await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
-            { _id: geree._id },
-            {
-              $pull: { "avlaga.guilgeenuud": { tailbar: zardal.ner, turul: 'avlaga', tulukhDun: { $gt: 0 } , ognoo: { $gte: new Date(zardal.ognoonuud[0]), $lte: new Date(zardal.ognoonuud[1]) } } },
-            }
+          var khuvaariud = geree.avlaga.guilgeenuud;
+          khuvaariud = khuvaariud.filter(
+            (x) => x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
           );
+          var uusgekhZardluud = [];
+          var today = new Date();
+          var unuudur = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate(),
+            0,
+            0,
+            0
+          );
+          new Array((geree.khugatsaa || 0) + 12).fill("").map((mur, index) => {
+          geree.tulukhUdur.forEach((udur) => {
+            if (
+              moment(unuudur).add(index, "month").set("date", udur) <=
+                moment(geree.duusakhOgnoo) &&
+              moment(unuudur).add(index, "month").set("date", udur) >=
+                moment().startOf("month")
+            ) {
+                var tukhainUdur = moment(unuudur).add(index, "month").set("date", udur);
+                var baigaa;
+                if (zardal.turul == "1м3/талбай" && geree.talbainKhemjeeMetrKube > 0) {
+                  baigaa = khuvaariud.find((a) => {
+                    return (
+                      a.turul == "avlaga" &&
+                      a.tulukhDun ==
+                        tooZasyaSync(
+                          zardal.tariff * geree.talbainKhemjeeMetrKube
+                        ) &&
+                      moment(a.ognoo).isSame(tukhainUdur, "day") &&
+                      a.tailbar == zardal.ner
+                    );
+                  });
+                  if (!baigaa)
+                    uusgekhZardluud.push({
+                      ognoo: tukhainUdur,
+                      khyamdral: 0,
+                      turul: "avlaga",
+                      tailbar: zardal.ner,
+                      tulukhDun: tooZasyaSync(
+                        zardal.tariff * geree.talbainKhemjeeMetrKube
+                      ),
+                    });
+                } else if (
+                zardal.turul == "1м2" &&
+                geree.talbainKhemjee > 0
+              ) {
+                baigaa = khuvaariud.find((a) => {
+                  return (
+                    a.turul == "avlaga" &&
+                    a.tulukhDun ==
+                      tooZasyaSync(zardal.tariff * geree.talbainKhemjee) &&
+                    moment(a.ognoo).isSame(tukhainUdur, "day") &&
+                    a.tailbar == zardal.ner
+                  );
+                });
+                if (!baigaa)
+                  uusgekhZardluud.push({
+                    ognoo: tukhainUdur,
+                    khyamdral: 0,
+                    turul: "avlaga",
+                    tailbar: zardal.ner,
+                    tulukhDun: tooZasyaSync(
+                      zardal.tariff * geree.talbainKhemjee
+                    ),
+                  });
+              } else if (zardal.turul == "Тогтмол") {
+                baigaa = khuvaariud.find((a) => {
+                  return (
+                    a.turul == "avlaga" &&
+                    a.tulukhDun == zardal.tariff &&
+                    moment(a.ognoo).isSame(tukhainUdur, "day") &&
+                    a.tailbar == zardal.ner
+                  );
+                });
+                if (!baigaa)
+                  uusgekhZardluud.push({
+                    ognoo: tukhainUdur,
+                    khyamdral: 0,
+                    turul: "avlaga",
+                    tailbar: zardal.ner,
+                    tulukhDun: zardal.tariff,
+                  });
+                }
+              }
+            });
+          });
+          if(uusgekhZardluud?.length > 0)
+          {
+            await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+              { _id: geree._id },
+              {
+                $push: {
+                  [`avlaga.guilgeenuud`]: {
+                    $each: uusgekhZardluud,
+                  },
+                },
+              }
+            );
+          }
+          if(zardal.ognoonuud?.length > 0)
+          {
+            await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+              { _id: geree._id },
+              {
+                $pull: { "avlaga.guilgeenuud": { tailbar: zardal.ner, turul: 'avlaga', tulukhDun: { $gt: 0 } , ognoo: { $gte: new Date(zardal.ognoonuud[0]), $lte: new Date(zardal.ognoonuud[1]) } } },
+              }
+            );
+          }
           await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
             { _id: geree._id },
             {
@@ -4154,6 +4260,7 @@ router
     res.send("Amjilttai");
   } 
   catch (error) {
+    console.log("----------- gereeAshiglakhguiSaruud ------------>>>"+ error);
     if(next) next(error);
   }
 });
