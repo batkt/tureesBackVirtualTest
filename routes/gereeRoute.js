@@ -4134,7 +4134,6 @@ router
           khuvaariud = khuvaariud.filter(
             (x) => x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
           );
-          var uusgekhZardluud = [];
           var today = new Date();
           var unuudur = new Date(
             today.getFullYear(),
@@ -4167,7 +4166,7 @@ router
                     );
                   });
                   if (!baigaa)
-                    uusgekhZardluud.push({
+                    khuvaariud.push({
                       ognoo: tukhainUdur,
                       khyamdral: 0,
                       turul: "avlaga",
@@ -4190,7 +4189,7 @@ router
                   );
                 });
                 if (!baigaa)
-                  uusgekhZardluud.push({
+                  khuvaariud.push({
                     ognoo: tukhainUdur,
                     khyamdral: 0,
                     turul: "avlaga",
@@ -4209,7 +4208,7 @@ router
                   );
                 });
                 if (!baigaa)
-                  uusgekhZardluud.push({
+                  khuvaariud.push({
                     ognoo: tukhainUdur,
                     khyamdral: 0,
                     turul: "avlaga",
@@ -4220,15 +4219,13 @@ router
               }
             });
           });
-          if(uusgekhZardluud?.length > 0)
+          if(khuvaariud?.length > 0)
           {
             await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
               { _id: geree._id },
               {
-                $push: {
-                  [`avlaga.guilgeenuud`]: {
-                    $each: uusgekhZardluud,
-                  },
+                $set: {
+                  [`avlaga.guilgeenuud`]: khuvaariud,
                 },
               }
             );
