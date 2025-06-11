@@ -4112,6 +4112,52 @@ async function jilBurAutomataarTalbainTulburNemekh() {
     throw error;
   }
 }
+
+router
+  .route("/gereeAshiglakhguiSaruud")
+  .post(tokenShalgakh, async (req, res, next) => {
+  try 
+  {
+    var zardal = req.body.zardal;
+    if(!!zardal && zardal.ognoonuud?.length > 0)
+    {
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        tuluv: 1,
+        "zardluud._id": zardal._id.toString(),
+      });
+      if(gereenuud?.length > 0)
+      {
+        for await (const geree of gereenuud) {
+          await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+            { _id: geree._id },
+            {
+              $pull: { "avlaga.guilgeenuud": { tailbar: zardal.ner, turul: 'avlaga', tulukhDun: { $gt: 0 } , ognoo: { $gte: new Date(zardal.ognoonuud[0]), $lte: new Date(zardal.ognoonuud[1]) } } },
+            }
+          );
+          await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+            { _id: geree._id },
+            {
+              $pull: { "zardluud": { _id: zardal._id.toString() } },
+            }
+          );
+          await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+            { _id: geree._id },
+            {
+              $push: { "zardluud": zardal },
+            }
+          );
+        }
+      }
+    }
+    res.send("Amjilttai");
+  } 
+  catch (error) {
+    if(next) next(error);
+  }
+});
+
 module.exports = router;
 module.exports.sarBuriinKhungulultBodoy = sarBuriinKhungulultBodoy;
 module.exports.duusakhGereeAutomataarTalbainTulburNemekh = duusakhGereeAutomataarTalbainTulburNemekh;
