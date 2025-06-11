@@ -2932,4 +2932,33 @@ router.post("/zochinAjiltaniiIdTseverlekh", async (req, res, next) => {
     } 
   }
 );
+
+router.post("/mashiniiDugaarZasakh", tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var uilchluulegch = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findOne({
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      mashiniiDugaar: req.body.mashiniiDugaar,
+      "tuukh.garsanKhaalga" : { $exists: false },
+      "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: false },
+      "tuukh.0.tuluv": { $ne: -2, }
+    }).sort({ createdAt: -1 }).limit(1);
+    if(!!uilchluulegch && !!uilchluulegch?._id && req.body.mashin)
+    {
+      await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+      uilchluulegch?._id,
+      {
+        $set: {
+          "turul": req.body.mashin?.turul,
+          "mashin": req.body.mashin,
+        },
+      });
+    }
+  }
+  catch(error) {
+    console.log("---------------mashiniiDugaarZasakh ----------"+error);
+    if(next) next(error);
+  }
+});
 module.exports = router;
