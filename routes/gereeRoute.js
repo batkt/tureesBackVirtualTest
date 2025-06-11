@@ -4295,7 +4295,6 @@ router
     res.send("Amjilttai");
   } 
   catch (error) {
-    console.log("----------- gereeAshiglakhguiSaruud ------------>>>"+ error);
     if(next) next(error);
   }
 });
