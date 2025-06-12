@@ -872,6 +872,12 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   }
                   else
                     firstDay = new Date();
+                  if(dans.dugaar == "MN210004000416101548")
+                  {
+                    firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+                    console.log("-------dugaar ---------" + JSON.stringify(dans.dugaar));
+                    console.log("-------date ---------" + JSON.stringify(firstDay));
+                  }
                   url = url + 
                   "?from=" +
                     firstDay.getFullYear() +
