@@ -877,7 +877,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
                     console.log("-------dugaar ---------" + JSON.stringify(dans.dugaar));
                     console.log("-------date ---------" + JSON.stringify(firstDay));
-                    lastDay = new Date(max.TxDt);
+                    lastDay = new Date(new Date().getFullYear(), new Date().getMonth(), 2);
                     console.log("-------date ---------" + JSON.stringify(lastDay));
                   }
                   url = url + 
