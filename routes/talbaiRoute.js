@@ -487,9 +487,27 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
       },
       {
         $match: {
-          "avlaga.guilgeenuud.turul": { 
-            $nin: ["baritsaa", "aldangi"]
-          },
+          $or: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $nin: ["baritsaa", "aldangi"],
+              },
+            },
+            {
+              $and: [
+                {
+                  "avlaga.guilgeenuud.turul": {
+                    $in: ["baritsaa"],
+                  }
+                },
+                {
+                  "avlaga.guilgeenuud.tulsunDun": {
+                    $gt: 0,
+                  }
+                }
+              ]
+            }
+          ],
         }
       },
       {
