@@ -2265,8 +2265,16 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
               if(togloom.tulbur > togloom._id?.niitDun)
               {
                 var data = await TogloomiinTuv(kholbolt).findById(togloom._id?.id);
-                data.niitTulbur?.shift();
-                data.tulbur?.shift();
+                var count = data.tulbur?.length;
+                var i = 1;
+                while (i <= count) {
+                  var tulburuud = data.tulbur?.reduce((a, b) => a + b?.dun, 0);
+                  if(tulburuud > data.niitDun)
+                  {
+                    data.niitTulbur?.shift();
+                    data.tulbur?.shift();
+                  }
+                }
                 TogloomiinTuv(kholbolt)
                   .findByIdAndUpdate({ _id: togloom._id?.id }, [
                     {
