@@ -921,7 +921,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                           balance: mur?.balance,
                           CtAcntOrg: mur?.contacntno,
                           CtActnName: mur?.contacntname,
-                          curRate: mur?.curRate,
+                          curRate: mur?.currate,
                           CtBankNo: mur?.bankcode,
                         })
                       );
@@ -932,13 +932,14 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       x.baiguullagiinId = dans.baiguullagiinId;
                       x.barilgiinId = dans.barilgiinId;
                     });
+                    console.log("--------- guilgeenuud ---------->" + JSON.stringify(guilgeenuud));
                     BankniiGuilgee(kholbolt)
                       .insertMany(guilgeenuud)
                       .then((result) => {
                         if (res) res.send("Amjilttai");
                       })
                       .catch((err) => {
-                        console.log("error bank ---------->" + err);
+                        if(next) next(err);
                       });
                   }
                 }
