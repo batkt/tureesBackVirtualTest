@@ -304,7 +304,9 @@ cron.schedule(
 cron.schedule(
   "*/10 * * * *",
   function () {
-    cgw.togloomiinTuvDavkhardsanShalgakh(null, null, null);
+    cgw.togloomiinTuvDavkhardsanShalgakh(4, null, null);
+    cgw.togloomiinTuvDavkhardsanShalgakh(3, null, null);
+    cgw.togloomiinTuvDavkhardsanShalgakh(2, null, null);
   },
   {
     scheduled: true,

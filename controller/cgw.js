@@ -2214,9 +2214,10 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
   }
 });
 
-exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) => {
+exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (size, res, next) => {
   try 
   {
+    console.log("------ size ------>>>"+ JSON.stringify(size));
     var result = [];
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
@@ -2235,6 +2236,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (req, res, next) =
               tuluv: {
                 $ne: -1,
               },
+              niitTulbur: { $size: size },
             }
             var query = [
               {
