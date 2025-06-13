@@ -872,11 +872,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   }
                   else
                     firstDay = new Date();
-                  if(dans.dugaar == "MN210004000416101548")
-                  {
-                    firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-                    lastDay = new Date(new Date().getFullYear(), new Date().getMonth(), 9);
-                  }
                   url = url + 
                   "?from=" +
                     firstDay.getFullYear() +
@@ -895,7 +890,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate()
                   + "&page=0&size=100";
-                  console.log("log ----------------->" + JSON.stringify(url));
                   var response = await axios
                     .get(url, {
                       headers: {
@@ -904,10 +898,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       }
                     })
                     .catch((err) => {
-                      console.log("err ----------------->" + err);
+                      if(next) next(err);
                     });
                   var khariu = response.data;
-                  console.log("khariu ----------------->" + JSON.stringify(khariu));
                   if (
                     !!khariu &&
                     !!khariu.txn &&
@@ -935,7 +928,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       x.baiguullagiinId = dans.baiguullagiinId;
                       x.barilgiinId = dans.barilgiinId;
                     });
-                    console.log("--------- guilgeenuud ---------->" + JSON.stringify(guilgeenuud));
                     BankniiGuilgee(kholbolt)
                       .insertMany(guilgeenuud)
                       .then((result) => {
