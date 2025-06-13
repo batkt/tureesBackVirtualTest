@@ -935,10 +935,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     BankniiGuilgee(kholbolt)
                       .insertMany(guilgeenuud)
                       .then((result) => {
-                        if (res) res.send("Amjilttai");
+                        // if (res) res.send("Amjilttai");
                       })
                       .catch((err) => {
-                        if(next) next(err);
+                        //if(next) next(err);
                       });
                   }
                 }
