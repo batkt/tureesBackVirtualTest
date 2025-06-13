@@ -873,10 +873,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   else
                     firstDay = new Date();
                   if(dans.dugaar == "MN210004000416101548")
-                  {
                     firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-                    lastDay = new Date();
-                  }
                   url = url + 
                   "?from=" +
                     firstDay.getFullYear() +
@@ -895,6 +892,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate()
                   + "&page=0&size=100";
+                  console.log("log ----------------->" + JSON.stringify(url));
                   var response = await axios
                     .get(url, {
                       headers: {
@@ -903,8 +901,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       }
                     })
                     .catch((err) => {
+                      console.log("err ----------------->" + err);
                     });
                   var khariu = response.data;
+                  console.log("khariu ----------------->" + JSON.stringify(khariu));
                   if (
                     !!khariu &&
                     !!khariu.txn &&
