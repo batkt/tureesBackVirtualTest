@@ -395,46 +395,46 @@ router
       var togloomiinTuvTulbur = await TogloomiinTuv(
         req.body.tukhainBaaziinKholbolt
       ).findById(req.body.id);
-      if(togloomiinTuvTulbur.sungalt?.length > 0)
-        guilgeeniiTuukh.push(...togloomiinTuvTulbur.tulbur);
       var update = {
         tulburTulsunEsekh: false,
         tuluv: 1,
-        niitTulbur: guilgeeniiTuukh,
-        tulbur: guilgeeniiTuukh,
         dutuuDun: 0,
         ebarimtAvakhDun: 0,
       };
-      var dun = guilgeeniiTuukh?.reduce((a, b) => a + b.dun, 0);
-      if(togloomiinTuvTulbur?.niitDun > 0 && dun > 0 && dun > togloomiinTuvTulbur?.niitDun)
-        res.send("Tulugdsun");
-      else
-      {
-        if (
+      if (
           (togloomiinTuvTulbur?.dutuuDun
             ? togloomiinTuvTulbur?.dutuuDun
             : togloomiinTuvTulbur?.niitDun) ==
           guilgeeniiTuukh.reduce((a, b) => a + b.dun, 0)
         ) 
-        {
-          update.tulburTulsunEsekh = true;
+      {
+        update.tulburTulsunEsekh = true;
+      }
+      
+      if (togloomiinTuvTulbur?.dutuuDun) {
+        update.dutuuDun = togloomiinTuvTulbur.dutuuDun;
+      }
+      guilgeeniiTuukh.forEach((mur) => {
+        mur.ognoo = new Date();
+        if (mur.turul === "khungulult") {
+          update.khungulsunEsekh = true;
+          update.khungulsunDun = mur.dun;
+          // update.niitDun = niitDun - mur.dun;
+        } else if (mur.turul !== "khariult") {
+          update.ebarimtAvakhDun = update.ebarimtAvakhDun + mur.dun;
+        } else if (mur.turul === "khariult") {
+          update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
         }
-        
-        if (togloomiinTuvTulbur?.dutuuDun) {
-          update.dutuuDun = togloomiinTuvTulbur.dutuuDun;
-        }
-        guilgeeniiTuukh.forEach((mur) => {
-          mur.ognoo = new Date();
-          if (mur.turul === "khungulult") {
-            update.khungulsunEsekh = true;
-            update.khungulsunDun = mur.dun;
-            // update.niitDun = niitDun - mur.dun;
-          } else if (mur.turul !== "khariult") {
-            update.ebarimtAvakhDun = update.ebarimtAvakhDun + mur.dun;
-          } else if (mur.turul === "khariult") {
-            update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
-          }
-        });
+      });
+      if(togloomiinTuvTulbur.sungalt?.length > 0)
+        guilgeeniiTuukh.push(...togloomiinTuvTulbur.tulbur);
+      update["niitTulbur"] = guilgeeniiTuukh;
+      update["tulbur"] = guilgeeniiTuukh;
+      var dun = guilgeeniiTuukh?.reduce((a, b) => a + b.dun, 0);
+      if(togloomiinTuvTulbur?.niitDun > 0 && dun > 0 && dun > togloomiinTuvTulbur?.niitDun)
+        res.send("Tulugdsun");
+      else
+      {
         await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
           req.body.id,
           update
