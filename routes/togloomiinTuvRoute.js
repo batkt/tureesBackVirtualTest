@@ -758,10 +758,16 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
 router.post("/ebarimtAvsanDunOruulakhTogloom", tokenShalgakh, async (req, res, next) => {
   try
   {
+    var tuvuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      ebarimtAvsanEsekh: true, 
+      ebarimtAvsanDun: { $exists: false }
+    })
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
-      togloomiinId: { $exists: true }
+      togloomiinId: { $in: tuvuud?.map((a) => a._id) }
     }
     if(req.body.togloomiinId)
       match["togloomiinId"] = req.body.togloomiinId;
