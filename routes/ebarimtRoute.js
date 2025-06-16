@@ -684,7 +684,7 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.save().catch((err) => {
             next(err);
           });
-          var update = { ebarimtAvsanEsekh: true, ebarimtAvakhDun: 0 };
+          var update = { ebarimtAvsanEsekh: true, ebarimtAvakhDun: 0, ebarimtAvsanDun: ebarimt.totalAmount };
           if (ebarimt.customerNo) update.ebarimtRegister = ebarimt.customerNo;
           TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate({ _id: req.body.id }, update)

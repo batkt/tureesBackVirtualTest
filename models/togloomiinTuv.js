@@ -67,6 +67,7 @@ const togloomiinTuvSchema = new Schema(
     barilgiinId: String,
     tulburTulsunEsekh: Boolean,
     ebarimtAvsanEsekh: Boolean,
+    ebarimtAvsanDun: Number,
     burtgesenAjiltaniiId: String,
   },
   {
