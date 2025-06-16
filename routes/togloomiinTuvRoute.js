@@ -779,4 +779,35 @@ router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, n
   }
 });
 
+router.post("/ebarimtAvsanDunOruulakhTogloom", tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      togloomiinId: { $exists: true }
+    }
+    if(req.body.togloomiinId)
+      match["togloomiinId"] = req.body.togloomiinId;
+    var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(match);
+    if(ebarimtuud?.length > 0)
+    {
+      for await (const ebarimt of ebarimtuud)
+      {
+        var update = { ebarimtAvsanDun: ebarimt.totalAmount };
+        TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
+          .findByIdAndUpdate(ebarimt.togloomiinId, update)
+          .then((xariu) => {
+          })
+          .catch((err) => {
+            next(err);
+          });  
+      }
+    }
+    res.send("Амжилттай");
+  } catch (err) {
+    next(err);
+  }
+}); 
+
 module.exports = router;
