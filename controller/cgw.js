@@ -149,7 +149,8 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     }
     return tokenObject;
   } catch (error) {
-    new Error("Банктай холбогдоход алдаа гарлаа!");
+    new Error("Банктай холбогдоход алдаа гарлаа!" + error);
+    console.log("golomt token ------------->" + error);
   }
 }
 
@@ -332,7 +333,8 @@ async function golomtServiceDuudya(
     }
     return khariu;
   } catch (error) {
-    if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!"));
+    if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!" + error));
+    console.log("golomt token ------------->" + error);
   }
 }
 
