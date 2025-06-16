@@ -150,7 +150,6 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     return tokenObject;
   } catch (error) {
     new Error("Банктай холбогдоход алдаа гарлаа!" + error);
-    console.log("golomt token ------------->" + error);
   }
 }
 
@@ -334,7 +333,6 @@ async function golomtServiceDuudya(
     return khariu;
   } catch (error) {
     if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!" + error));
-    console.log("golomt token ------------->" + error);
   }
 }
 
@@ -2219,7 +2217,6 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
 exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(async (size, res, next) => {
   try 
   {
-    console.log("------ size ------>>>"+ JSON.stringify(size));
     var result = [];
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
