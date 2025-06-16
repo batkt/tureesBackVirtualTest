@@ -797,7 +797,7 @@ router.post("/ebarimtAvsanDunOruulakhTogloom", tokenShalgakh, async (req, res, n
       {
         var update = { ebarimtAvsanDun: ebarimt.totalAmount };
         TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
-          .findByIdAndUpdate(ebarimt.togloomiinId, update)
+          .findOneAndUpdate({ _id: ebarimt.togloomiinId, ebarimtAvsanEsekh: true, ebarimtAvsanDun: { $exists: false } }, update)
           .then((xariu) => {
           })
           .catch((err) => {
