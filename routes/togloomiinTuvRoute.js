@@ -4,6 +4,7 @@ const { crud, UstsanBarimt, tokenShalgakh } = require("zevbackv2");
 const TogloomiinTariff = require("../models/togloomiinTariff");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const TogloomiinTulbur = require("../models/togloomiinTulbur");
+const EbarimtShine = require("../models/ebarimtShine");
 const lodash = require("lodash");
 
 crud(router, "togloomiinTariff", TogloomiinTariff, UstsanBarimt);
@@ -806,7 +807,7 @@ router.post("/ebarimtAvsanDunOruulakhTogloom", tokenShalgakh, async (req, res, n
     }
     res.send("Амжилттай");
   } catch (err) {
-    next(err);
+    if(next) next(err);
   }
 }); 
 
