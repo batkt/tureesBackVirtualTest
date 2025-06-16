@@ -392,21 +392,20 @@ router
           )
         );
       }
-      var niitDun = lodash.sumBy(guilgeeniiTuukh, function (object) {
-        return object.dun;
-      });
-      // var niitTulbur = [];
-      var update = {
-        tulburTulsunEsekh: false,
-        tuluv: 1,
-        dutuuDun: 0,
-        ebarimtAvakhDun: 0,
-      };
       var togloomiinTuvTulbur = await TogloomiinTuv(
         req.body.tukhainBaaziinKholbolt
       ).findById(req.body.id);
-      var dun = togloomiinTuvTulbur.niitTulbur?.reduce((a, b) => a + b.dun, 0);
-      dun += guilgeeniiTuukh?.reduce((a, b) => a + b.dun, 0);
+      if(togloomiinTuvTulbur.sungalt?.length > 0)
+        guilgeeniiTuukh.push(...togloomiinTuvTulbur.tulbur);
+      var update = {
+        tulburTulsunEsekh: false,
+        tuluv: 1,
+        niitTulbur: guilgeeniiTuukh,
+        tulbur: guilgeeniiTuukh,
+        dutuuDun: 0,
+        ebarimtAvakhDun: 0,
+      };
+      var dun = guilgeeniiTuukh?.reduce((a, b) => a + b.dun, 0);
       if(togloomiinTuvTulbur?.niitDun > 0 && dun > 0 && dun > togloomiinTuvTulbur?.niitDun)
         res.send("Tulugdsun");
       else
@@ -419,16 +418,6 @@ router
         ) 
         {
           update.tulburTulsunEsekh = true;
-          // niitTulbur = togloomiinTuvTulbur?.niitTulbur;
-          // for await (const tulburShine of guilgeeniiTuukh) {
-          //   var index = niitTulbur.findIndex(
-          //     (a) => a.turul === tulburShine.turul
-          //   );
-          //   if (index > -1) {
-          //     niitTulbur[index].dun = niitTulbur[index].dun + tulburShine.dun;
-          //   } else niitTulbur.push(tulburShine);
-          // }
-          // update.niitTulbur = niitTulbur;
         }
         
         if (togloomiinTuvTulbur?.dutuuDun) {
