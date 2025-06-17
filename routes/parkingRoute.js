@@ -1081,55 +1081,55 @@ router.get("/v2/parking", async (req, res, next) => {
                   zogsool.dotorZogsooliinId
                 );
               }
-              var xariu = await Uilchluulegch(kholbolt).aggregate([
-                {
-                  $match: {
-                    createdAt: {
-                      $gte: ekhlekhOgnoo,
-                      $lte: duusakhOgnoo,
-                    },
-                    baiguullagiinId: zogsool.baiguullagiinId,
-                    barilgiinId: zogsool.barilgiinId,
-                  },
-                },
-                {
-                  $unwind: { path: "$tuukh" },
-                },
-                {
-                  $match: {
-                    "tuukh.garsanKhaalga": {
-                      $exists: false,
-                    }
-                  }
-                },
-                {
-                  $project: {
-                    zogsooliinId: "$tuukh.zogsooliinId",
-                  }
-                },
-                {
-                  $group: {
-                    _id: "$zogsooliinId",
-                    too: {
-                      $sum: 1,
-                    },
-                  },
-                },
-              ]);
+              // var xariu = await Uilchluulegch(kholbolt).aggregate([
+              //   {
+              //     $match: {
+              //       createdAt: {
+              //         $gte: ekhlekhOgnoo,
+              //         $lte: duusakhOgnoo,
+              //       },
+              //       baiguullagiinId: zogsool.baiguullagiinId,
+              //       barilgiinId: zogsool.barilgiinId,
+              //     },
+              //   },
+              //   {
+              //     $unwind: { path: "$tuukh" },
+              //   },
+              //   {
+              //     $match: {
+              //       "tuukh.garsanKhaalga": {
+              //         $exists: false,
+              //       }
+              //     }
+              //   },
+              //   {
+              //     $project: {
+              //       zogsooliinId: "$tuukh.zogsooliinId",
+              //     }
+              //   },
+              //   {
+              //     $group: {
+              //       _id: "$zogsooliinId",
+              //       too: {
+              //         $sum: 1,
+              //       },
+              //     },
+              //   },
+              // ]);
               var parked = 0;
               var inside = {};
-              if (xariu && xariu.length > 0) {
-                if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
-                  inside.total = dotorZogsool.too;
-                  inside.parked = xariu.find(
-                    (x) => x._id == dotorZogsool._id.toString()
-                  )?.too;
-                  if (!inside.parked) inside.parked = 0;
-                  parked = xariu.find((x) => x._id == zogsool._id.toString())?.too;
-                } else {
-                  parked = xariu[0].too;
-                }
-              }
+              // if (xariu && xariu.length > 0) {
+              //   if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
+              //     inside.total = dotorZogsool.too;
+              //     inside.parked = xariu.find(
+              //       (x) => x._id == dotorZogsool._id.toString()
+              //     )?.too;
+              //     if (!inside.parked) inside.parked = 0;
+              //     parked = xariu.find((x) => x._id == zogsool._id.toString())?.too;
+              //   } else {
+              //     parked = xariu[0].too;
+              //   }
+              // }
               var slot = {
                 outside: {
                   total: zogsool.too,
