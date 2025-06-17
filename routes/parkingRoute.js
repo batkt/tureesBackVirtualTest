@@ -1076,11 +1076,11 @@ router.get("/v2/parking", async (req, res, next) => {
           for await (const zogsool of zogsooluud) {
             if (!!zogsool) {
               var dotorZogsool;
-              if (!!zogsool.dotorZogsooliinId) {
-                dotorZogsool = await Parking(kholbolt).findById(
-                  zogsool.dotorZogsooliinId
-                );
-              }
+              // if (!!zogsool.dotorZogsooliinId) {
+              //   dotorZogsool = await Parking(kholbolt).findById(
+              //     zogsool.dotorZogsooliinId
+              //   );
+              // }
               var xariu = await Uilchluulegch(kholbolt).aggregate([
                 {
                   $match: {
