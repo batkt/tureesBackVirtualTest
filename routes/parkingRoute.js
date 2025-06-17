@@ -1057,6 +1057,18 @@ client.connect();
 
 client.on('error', (err) => console.error('Redis error:', err));
 
+async function getParkingFind(kholbolt, baiguullagiinId, query) {
+  const cacheKey = `parking:${baiguullagiinId}`;
+  const cached = await client.get(cacheKey);
+  if (cached) {
+    console.log('🔥 Cached-ээс авлаа getParkingFind');
+    return JSON.parse(cached);
+  }
+  const zogsooluud = await Parking(kholbolt).find(query);
+  await client.setEx(cacheKey, 24 * 60 * 60, JSON.stringify(zogsooluud));
+  return zogsooluud;
+}
+
 async function getDotorZogsoolById(kholbolt, id) {
   const cacheKey = `dotorZogsool:${id}`;
 
@@ -1097,7 +1109,7 @@ router.get("/v2/parking", async (req, res, next) => {
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
       for await (const kholbolt of kholboltuud) {
-        var zogsooluud = await Parking(kholbolt).find(query);
+        var zogsooluud = await getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
         if(zogsooluud?.length > 0)
           for await (const zogsool of zogsooluud) {
             if (!!zogsool) {
