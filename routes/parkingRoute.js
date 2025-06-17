@@ -1114,7 +1114,7 @@ router.post("/v2/parking", async (req, res, next) => {
                   },
                 },
               },
-            ]);
+            ]).explain("executionStats");
             var parked = 0;
             var inside = {};
             if (xariu && xariu.length > 0) {
@@ -1154,6 +1154,7 @@ router.post("/v2/parking", async (req, res, next) => {
     if (jagsaalt && jagsaalt.length > 0) butsaakhKhariu.data = jagsaalt;
     res.send(butsaakhKhariu);
   } catch (err) {
+    console.log("v2 parking -------------->" + err);
     next(err);
   }
 });
