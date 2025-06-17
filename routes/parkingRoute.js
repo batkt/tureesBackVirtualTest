@@ -1089,17 +1089,13 @@ router.post("/v2/parking", async (req, res, next) => {
                   },
                   baiguullagiinId: zogsool.baiguullagiinId,
                   barilgiinId: zogsool.barilgiinId,
+                  "tuukh.garsanKhaalga": {
+                    $exists: false,
+                  }
                 },
               },
               {
                 $unwind: { path: "$tuukh" },
-              },
-              {
-                $match: {
-                  "tuukh.garsanKhaalga": {
-                    $exists: false,
-                  },
-                },
               },
               {
                 $project: {
@@ -1114,7 +1110,7 @@ router.post("/v2/parking", async (req, res, next) => {
                   },
                 },
               },
-            ]).explain("executionStats");
+            ]);
             var parked = 0;
             var inside = {};
             if (xariu && xariu.length > 0) {
