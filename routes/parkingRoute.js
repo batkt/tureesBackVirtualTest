@@ -1103,7 +1103,7 @@ router.post("/v2/parking", async (req, res, next) => {
               },
               {
                 $project: {
-                  "$tuukh.zogsooliinId": 1,
+                  zogsooliinId: "$tuukh.zogsooliinId",
                 }
               },
               {
