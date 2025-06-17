@@ -1050,6 +1050,32 @@ router.get("/v1/parking", async (req, res, next) => {
   }
 });
 
+const redis = require('redis');
+const client = redis.createClient();
+
+client.connect();
+
+client.on('error', (err) => console.error('Redis error:', err));
+
+async function getDotorZogsoolById(kholbolt, id) {
+  const cacheKey = `dotorZogsool:${id}`;
+
+  // Redis-аас шалгах
+  const cached = await client.get(cacheKey);
+  if (cached) {
+    console.log('🔥 Cached-ээс авлаа');
+    return JSON.parse(cached);
+  }
+
+  // MongoDB-оос авах
+  const dotorZogsool = await Parking(kholbolt).findById(id);
+
+  // Redis-д хадгалах (60 секундийн хугацаатай)
+  await client.setEx(cacheKey, 24 * 60 * 60, JSON.stringify(dotorZogsool));
+
+  return dotorZogsool;
+}
+
 router.get("/v2/parking", async (req, res, next) => {
   try
   {
@@ -1077,9 +1103,7 @@ router.get("/v2/parking", async (req, res, next) => {
             if (!!zogsool) {
               var dotorZogsool;
               if (!!zogsool.dotorZogsooliinId) {
-                dotorZogsool = await Parking(kholbolt).findById(
-                  zogsool.dotorZogsooliinId
-                );
+                dotorZogsool = await getDotorZogsoolById(kholbolt, zogsool.dotorZogsooliinId);
               }
           //     var xariu = await Uilchluulegch(kholbolt).aggregate([
           //       {
