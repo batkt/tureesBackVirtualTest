@@ -1050,7 +1050,7 @@ router.get("/v1/parking", async (req, res, next) => {
   }
 });
 
-router.post("/v2/parking", async (req, res, next) => {
+router.get("/v2/parking", async (req, res, next) => {
   try
   {
     var jagsaalt = [];
@@ -1089,13 +1089,17 @@ router.post("/v2/parking", async (req, res, next) => {
                   },
                   baiguullagiinId: zogsool.baiguullagiinId,
                   barilgiinId: zogsool.barilgiinId,
-                  "tuukh.garsanKhaalga": {
-                    $exists: false,
-                  }
                 },
               },
               {
                 $unwind: { path: "$tuukh" },
+              },
+              {
+                $match: {
+                  "tuukh.garsanKhaalga": {
+                    $exists: false,
+                  }
+                }
               },
               {
                 $project: {
