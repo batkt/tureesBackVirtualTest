@@ -1078,7 +1078,7 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
     return JSON.parse(cached);
   }
   const zogsooluud = await Parking(kholbolt).find(query);
-  await client.setEx(cacheKey, 24 * 60 * 60, JSON.stringify(zogsooluud));
+  await client.setEx(cacheKey, 60, JSON.stringify(zogsooluud));
   return zogsooluud;
 }
 
@@ -1096,7 +1096,7 @@ async function getDotorZogsoolById(kholbolt, id) {
   const dotorZogsool = await Parking(kholbolt).findById(id);
 
   // Redis-д хадгалах (60 секундийн хугацаатай)
-  await client.setEx(cacheKey, 24 * 60 * 60, JSON.stringify(dotorZogsool));
+  await client.setEx(cacheKey, 60, JSON.stringify(dotorZogsool));
 
   return dotorZogsool;
 }
