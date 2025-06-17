@@ -1090,17 +1090,13 @@ router.get("/v2/parking", async (req, res, next) => {
                     },
                     baiguullagiinId: zogsool.baiguullagiinId,
                     barilgiinId: zogsool.barilgiinId,
+                    "tuukh.0.garsanKhaalga": {
+                      $exists: false,
+                    }
                   },
                 },
                 {
                   $unwind: { path: "$tuukh" },
-                },
-                {
-                  $match: {
-                    "tuukh.garsanKhaalga": {
-                      $exists: false,
-                    }
-                  }
                 },
                 {
                   $project: {
@@ -1142,6 +1138,7 @@ router.get("/v2/parking", async (req, res, next) => {
                 id: zogsool._id.toString(),
                 name: zogsool.ner,
                 baiguullagiinId: zogsool.baiguullagiinId,
+                slot,
               });
             }
           }
