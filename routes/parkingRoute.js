@@ -1071,81 +1071,81 @@ router.get("/v2/parking", async (req, res, next) => {
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
       for await (const kholbolt of kholboltuud) {
-        // var zogsooluud = await Parking(kholbolt).find(query);
+        var zogsooluud = await Parking(kholbolt).find(query);
         // if(zogsooluud?.length > 0)
-        //   for await (const zogsool of zogsooluud) {
-        //     if (!!zogsool) {
-        //       var dotorZogsool;
-        //       if (!!zogsool.dotorZogsooliinId) {
-        //         dotorZogsool = await Parking(kholbolt).findById(
-        //           zogsool.dotorZogsooliinId
-        //         );
-        //       }
-        //       var xariu = await Uilchluulegch(kholbolt).aggregate([
-        //         {
-        //           $match: {
-        //             createdAt: {
-        //               $gte: ekhlekhOgnoo,
-        //               $lte: duusakhOgnoo,
-        //             },
-        //             baiguullagiinId: zogsool.baiguullagiinId,
-        //             barilgiinId: zogsool.barilgiinId,
-        //           },
-        //         },
-        //         {
-        //           $unwind: { path: "$tuukh" },
-        //         },
-        //         {
-        //           $match: {
-        //             "tuukh.0.garsanKhaalga": {
-        //               $exists: false,
-        //             }
-        //           }
-        //         },
-        //         {
-        //           $project: {
-        //             zogsooliinId: "$tuukh.zogsooliinId",
-        //           }
-        //         },
-        //         {
-        //           $group: {
-        //             _id: "$zogsooliinId",
-        //             too: {
-        //               $sum: 1,
-        //             },
-        //           },
-        //         },
-        //       ]);
-        //       var parked = 0;
-        //       var inside = {};
-        //       if (xariu && xariu.length > 0) {
-        //         if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
-        //           inside.total = dotorZogsool.too;
-        //           inside.parked = xariu.find(
-        //             (x) => x._id == dotorZogsool._id.toString()
-        //           )?.too;
-        //           if (!inside.parked) inside.parked = 0;
-        //           parked = xariu.find((x) => x._id == zogsool._id.toString())?.too;
-        //         } else {
-        //           parked = xariu[0].too;
-        //         }
-        //       }
-        //       var slot = {
-        //         outside: {
-        //           total: zogsool.too,
-        //           parked,
-        //         },
-        //       };
-        //       if (!!dotorZogsool && !!zogsool.dotorZogsooliinId)
-        //         slot.inside = inside;
-        //       jagsaalt.push({
-        //         id: zogsool._id.toString(),
-        //         name: zogsool.ner,
-        //         baiguullagiinId: zogsool.baiguullagiinId,
-        //         slot,
-        //       });
-        //     }
-        //   }
+          // for await (const zogsool of zogsooluud) {
+          //   if (!!zogsool) {
+          //     var dotorZogsool;
+          //     if (!!zogsool.dotorZogsooliinId) {
+          //       dotorZogsool = await Parking(kholbolt).findById(
+          //         zogsool.dotorZogsooliinId
+          //       );
+          //     }
+          //     var xariu = await Uilchluulegch(kholbolt).aggregate([
+          //       {
+          //         $match: {
+          //           createdAt: {
+          //             $gte: ekhlekhOgnoo,
+          //             $lte: duusakhOgnoo,
+          //           },
+          //           baiguullagiinId: zogsool.baiguullagiinId,
+          //           barilgiinId: zogsool.barilgiinId,
+          //         },
+          //       },
+          //       {
+          //         $unwind: { path: "$tuukh" },
+          //       },
+          //       {
+          //         $match: {
+          //           "tuukh.0.garsanKhaalga": {
+          //             $exists: false,
+          //           }
+          //         }
+          //       },
+          //       {
+          //         $project: {
+          //           zogsooliinId: "$tuukh.zogsooliinId",
+          //         }
+          //       },
+          //       {
+          //         $group: {
+          //           _id: "$zogsooliinId",
+          //           too: {
+          //             $sum: 1,
+          //           },
+          //         },
+          //       },
+          //     ]);
+          //     var parked = 0;
+          //     var inside = {};
+          //     if (xariu && xariu.length > 0) {
+          //       if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
+          //         inside.total = dotorZogsool.too;
+          //         inside.parked = xariu.find(
+          //           (x) => x._id == dotorZogsool._id.toString()
+          //         )?.too;
+          //         if (!inside.parked) inside.parked = 0;
+          //         parked = xariu.find((x) => x._id == zogsool._id.toString())?.too;
+          //       } else {
+          //         parked = xariu[0].too;
+          //       }
+          //     }
+          //     var slot = {
+          //       outside: {
+          //         total: zogsool.too,
+          //         parked,
+          //       },
+          //     };
+          //     if (!!dotorZogsool && !!zogsool.dotorZogsooliinId)
+          //       slot.inside = inside;
+          //     jagsaalt.push({
+          //       id: zogsool._id.toString(),
+          //       name: zogsool.ner,
+          //       baiguullagiinId: zogsool.baiguullagiinId,
+          //       slot,
+          //     });
+          //   }
+          // }
       }
     }
     var butsaakhKhariu = {
