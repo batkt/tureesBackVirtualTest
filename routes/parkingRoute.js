@@ -1102,8 +1102,13 @@ router.get("/v2/parking", async (req, res, next) => {
                 },
               },
               {
+                $project: {
+                  zogsooliinId: "$tuukh.zogsooliinId",
+                }
+              },
+              {
                 $group: {
-                  _id: "$tuukh.zogsooliinId",
+                  _id: "$zogsooliinId",
                   too: {
                     $sum: 1,
                   },
