@@ -1050,6 +1050,108 @@ router.get("/v1/parking", async (req, res, next) => {
   }
 });
 
+router.post("/v2/parking", async (req, res, next) => {
+  try
+  {
+    var jagsaalt = [];
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+    var ekhlekhOgnoo = new Date(Date.now() - 86400000);
+    var duusakhOgnoo = new Date(Date.now() - 86400000);
+    ekhlekhOgnoo.setHours(0, 0, 0, 0);
+    duusakhOgnoo.setHours(23, 59, 59, 999);
+    var localEsekh = !!req.body.baiguullagiinId;
+    if (localEsekh) {
+      kholboltuud = kholboltuud.filter(
+        (a) => a.baiguullagiinId == req.body.baiguullagiinId
+      );
+    }
+    if (kholboltuud) {
+      var query = { tokiNer: { $exists: true } };
+      if (!!req.body.baiguullagiinId)
+        query["baiguullagiinId"] = req.body.baiguullagiinId;
+      for await (const kholbolt of kholboltuud) {
+        var zogsooluud = await Parking(kholbolt).find(query);
+        for await (const zogsool of zogsooluud) {
+          if (!!zogsool) {
+            var dotorZogsool;
+            if (!!zogsool.dotorZogsooliinId) {
+              dotorZogsool = await Parking(kholbolt).findById(
+                zogsool.dotorZogsooliinId
+              );
+            }
+            var xariu = await Uilchluulegch(kholbolt).aggregate([
+              {
+                $match: {
+                  createdAt: {
+                    $gte: ekhlekhOgnoo,
+                    $lte: duusakhOgnoo,
+                  },
+                  baiguullagiinId: zogsool.baiguullagiinId,
+                },
+              },
+              {
+                $unwind: { path: "$tuukh" },
+              },
+              {
+                $match: {
+                  "tuukh.garsanKhaalga": {
+                    $exists: false,
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: "$tuukh.zogsooliinId",
+                  too: {
+                    $sum: 1,
+                  },
+                },
+              },
+            ]);
+            var parked = 0;
+            var inside = {};
+            if (xariu && xariu.length > 0) {
+              if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
+                inside.total = dotorZogsool.too;
+                inside.parked = xariu.find(
+                  (x) => x._id == dotorZogsool._id.toString()
+                )?.too;
+                if (!inside.parked) inside.parked = 0;
+                parked = xariu.find((x) => x._id == zogsool._id.toString())?.too;
+              } else {
+                parked = xariu[0].too;
+              }
+            }
+            var slot = {
+              outside: {
+                total: zogsool.too,
+                parked,
+              },
+            };
+            if (!!dotorZogsool && !!zogsool.dotorZogsooliinId)
+              slot.inside = inside;
+            jagsaalt.push({
+              id: zogsool._id.toString(),
+              name: zogsool.ner,
+              baiguullagiinId: zogsool.baiguullagiinId,
+              slot,
+            });
+          }
+        }
+      }
+    }
+    var butsaakhKhariu = {
+      success: true,
+      message: "Amjilttai",
+    };
+    if (jagsaalt && jagsaalt.length > 0) butsaakhKhariu.data = jagsaalt;
+    res.send(butsaakhKhariu);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.get("/pass/zogsool", tokenShalgakh, async (req, res, next) => {
   try
   {
