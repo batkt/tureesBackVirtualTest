@@ -1072,15 +1072,15 @@ router.get("/v2/parking", async (req, res, next) => {
         query["baiguullagiinId"] = req.body.baiguullagiinId;
       for await (const kholbolt of kholboltuud) {
         var zogsooluud = await Parking(kholbolt).find(query);
-        // if(zogsooluud?.length > 0)
-          // for await (const zogsool of zogsooluud) {
-          //   if (!!zogsool) {
-          //     var dotorZogsool;
-          //     if (!!zogsool.dotorZogsooliinId) {
-          //       dotorZogsool = await Parking(kholbolt).findById(
-          //         zogsool.dotorZogsooliinId
-          //       );
-          //     }
+        if(zogsooluud?.length > 0)
+          for await (const zogsool of zogsooluud) {
+            if (!!zogsool) {
+              var dotorZogsool;
+              if (!!zogsool.dotorZogsooliinId) {
+                dotorZogsool = await Parking(kholbolt).findById(
+                  zogsool.dotorZogsooliinId
+                );
+              }
           //     var xariu = await Uilchluulegch(kholbolt).aggregate([
           //       {
           //         $match: {
@@ -1144,8 +1144,8 @@ router.get("/v2/parking", async (req, res, next) => {
           //       baiguullagiinId: zogsool.baiguullagiinId,
           //       slot,
           //     });
-          //   }
-          // }
+            }
+          }
       }
     }
     var butsaakhKhariu = {
