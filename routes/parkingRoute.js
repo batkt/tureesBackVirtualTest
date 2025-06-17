@@ -1050,7 +1050,7 @@ router.get("/v1/parking", async (req, res, next) => {
   }
 });
 
-router.post("/v2/parking", async (req, res, next) => {
+router.get("/v2/parking", async (req, res, next) => {
   try
   {
     var jagsaalt = [];
