@@ -1098,7 +1098,8 @@ async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId,
   }
 
   const xariu = await Uilchluulegch(kholbolt).aggregate(query);
-  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
+  if(xariu?.length > 0)
+    await client.setEx(cacheKey, 60, JSON.stringify(xariu));
   return xariu;
 }
 
