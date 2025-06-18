@@ -1169,7 +1169,7 @@ router.get("/v2/parking", async (req, res, next) => {
                   inside.total = dotorZogsool.too;
                   inside.parked = xariu.filter(
                     (x) => x._id == dotorZogsool._id.toString()
-                  )?.[0]?.too;
+                  )[0]?.too;
                   if (!inside.parked) inside.parked = 0;
                   parked = xariu.filter((x) => x._id == zogsool._id.toString())[0]?.too;
                 } else {
