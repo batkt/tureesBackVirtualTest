@@ -1163,7 +1163,7 @@ router.get("/v2/parking", async (req, res, next) => {
                   },
                 },
               ];
-              const xariu = await getAggregateUilchluulegch(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, query);
+             
               var parked = 0;
               var inside = {};
               var slot = {
