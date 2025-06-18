@@ -1,6 +1,6 @@
 const redis = require('redis');
 const client = redis.createClient();
 
-client.connect().catch(console.error);
+client.connect();
 
 module.exports = client;
