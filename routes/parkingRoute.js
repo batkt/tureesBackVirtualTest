@@ -1140,7 +1140,6 @@ router.get("/v2/parking", async (req, res, next) => {
                       $lte: duusakhOgnoo,
                     },
                     baiguullagiinId: zogsool.baiguullagiinId,
-                    barilgiinId: zogsool.barilgiinId,
                   },
                 },
                 {
