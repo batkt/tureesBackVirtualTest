@@ -1092,8 +1092,11 @@ async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId,
   }
 
   var xariu = await Uilchluulegch(kholbolt).aggregate(query);
-  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
-  console.log("xariu -------------->" + JSON.stringify(xariu));
+  // Store with RPUSH
+  for (const item of xariu) {
+    await client.rPush(cacheKey, item);
+  }
+  await client.lRange(cacheKey, 0, -1);
   return xariu;
 }
 
