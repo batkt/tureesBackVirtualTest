@@ -1161,17 +1161,15 @@ router.get("/v2/parking", async (req, res, next) => {
                   },
                 },
               ];
-              var xariu = await getAggregateUilchluulegch(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, query);
+              const xariu = await getAggregateUilchluulegch(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, query);
               var parked = 0;
               var inside = {};
               if (xariu && xariu.length > 0) {
                 if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
                   inside.total = dotorZogsool.too;
-                  inside.parked = xariu.filter(
-                    (x) => x._id == dotorZogsool._id.toString()
-                  )[0]?.too;
+                  inside.parked = xariu[0].too;
                   if (!inside.parked) inside.parked = 0;
-                  parked = xariu.filter((x) => x._id == zogsool._id.toString())[0]?.too;
+                  parked = xariu[0].too;
                 } else {
                   parked = xariu[0].too;
                 }
