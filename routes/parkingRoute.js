@@ -1092,8 +1092,8 @@ async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId,
   }
 
   var xariu = await Uilchluulegch(kholbolt).aggregate(query);
-  console.log("xariu -------------->" + JSON.stringify(xariu));
   await client.setEx(cacheKey, 60, JSON.stringify(xariu));
+  console.log("xariu -------------->" + JSON.stringify(xariu));
   return xariu;
 }
 
@@ -1164,16 +1164,6 @@ router.get("/v2/parking", async (req, res, next) => {
               const xariu = await getAggregateUilchluulegch(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, query);
               var parked = 0;
               var inside = {};
-              if (xariu && xariu.length > 0) {
-                if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
-                  inside.total = dotorZogsool.too;
-                  inside.parked = xariu[0].too;
-                  if (!inside.parked) inside.parked = 0;
-                  parked = xariu[0].too;
-                } else {
-                  parked = xariu[0].too;
-                }
-              }
               var slot = {
                 outside: {
                   total: zogsool.too,
