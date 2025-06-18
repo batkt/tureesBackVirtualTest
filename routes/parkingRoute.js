@@ -34,6 +34,7 @@ const Baiguullaga = require("../models/baiguullaga");
 const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
 const { msgIlgeeye } = require("../controller/khariltsagch");
 const MsgTuukh = require("../models/msgTuukh");
+const client = require('../routes/redisClient');
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
 });*/
 crud(router, "parking", Parking, UstsanBarimt);
@@ -1050,28 +1051,8 @@ router.get("/v1/parking", async (req, res, next) => {
   }
 });
 
-const redis = require('redis');
-const client = redis.createClient();
-
-client.connect();
-
-client.on('error', (err) => console.error('Redis error:', err));
-
-async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, query) {
-  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}`;
-  const cached = await client.get(cacheKey);
-  if (cached) {
-    console.log('🔥 Cached-ээс авлаа getParkingFind');
-    return JSON.parse(cached);
-  }
-
-  var xariu = await Uilchluulegch(kholbolt).aggregate(query);
-  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
-  return xariu;
-}
-
 async function getParkingFind(kholbolt, baiguullagiinId, query) {
-  const cacheKey = `parking:${baiguullagiinId}`;
+  const cacheKey = `parkingFind:${baiguullagiinId}`;
   const cached = await client.get(cacheKey);
   if (cached) {
     console.log('🔥 Cached-ээс авлаа getParkingFind');
@@ -1082,8 +1063,8 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
   return zogsooluud;
 }
 
-async function getDotorZogsoolById(kholbolt, id) {
-  const cacheKey = `dotorZogsool:${id}`;
+async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
+  const cacheKey = `dotorZogsoolFindById:${baiguullagiinId}:${barilgiinId}:${id}`;
 
   // Redis-аас шалгах
   const cached = await client.get(cacheKey);
@@ -1099,6 +1080,19 @@ async function getDotorZogsoolById(kholbolt, id) {
   await client.setEx(cacheKey, 60, JSON.stringify(dotorZogsool));
 
   return dotorZogsool;
+}
+
+async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId, query) {
+  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}`;
+  const cached = await client.get(cacheKey);
+  if (cached) {
+    console.log('🔥 Cached-ээс авлаа getAggregateUilchluulegch');
+    return JSON.parse(cached);
+  }
+
+  var xariu = await Uilchluulegch(kholbolt).aggregate(query);
+  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
+  return xariu;
 }
 
 router.get("/v2/parking", async (req, res, next) => {
@@ -1128,7 +1122,7 @@ router.get("/v2/parking", async (req, res, next) => {
             if (!!zogsool) {
               var dotorZogsool;
               if (!!zogsool.dotorZogsooliinId) {
-                dotorZogsool = await getDotorZogsoolById(kholbolt, zogsool.dotorZogsooliinId);
+                dotorZogsool = await getDotorZogsoolById(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, zogsool.dotorZogsooliinId);
               }
               var query = [
                 {
@@ -1165,7 +1159,7 @@ router.get("/v2/parking", async (req, res, next) => {
                   },
                 },
               ];
-              var xariu = await getAggregateUilchluulegch(kholbolt, kholbolt.baiguullagiinId, query);
+              var xariu = await getAggregateUilchluulegch(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, query);
               var parked = 0;
               var inside = {};
               if (xariu && xariu.length > 0) {
