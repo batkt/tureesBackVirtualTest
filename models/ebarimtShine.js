@@ -17,6 +17,8 @@ const ebarimtSchema = new Schema(
     gereeniiDugaar: String,
     utas: String,
     mashiniiDugaar: String,
+    togloomNer: String,
+    togloomUtas: [String],
 
     totalAmount: Number, //Багц баримтын гүйлгээний нийт дүн , Бүх төрлийн татвар шингэсэн дүн
     totalVAT: Number, //Багц баримтын НӨАТ-н нийт дүн

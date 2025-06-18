@@ -681,10 +681,13 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
           ebarimt.togloomiinId = khariuObject.togloomiinId;
+          ebarimt.togloomNer = khariuObject.ner;
+          ebarimt.togloomUtas = khariuObject.utas;
           ebarimt.save().catch((err) => {
             next(err);
           });
-          var update = { ebarimtAvsanEsekh: true, ebarimtAvakhDun: 0, ebarimtAvsanDun: ebarimt.totalAmount };
+          var ebarimtAmount = ebarimt.totalAmount + (khariuObject?.ebarimtAvsanDun || 0);
+          var update = { ebarimtAvsanEsekh: true, ebarimtAvakhDun: 0, ebarimtAvsanDun: ebarimtAmount };
           if (ebarimt.customerNo) update.ebarimtRegister = ebarimt.customerNo;
           TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate({ _id: req.body.id }, update)
