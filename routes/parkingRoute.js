@@ -1067,7 +1067,9 @@ async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
   const cacheKey = `dotorZogsoolFindById:${baiguullagiinId}:${barilgiinId}:${id}`;
 
   // Redis-аас шалгах
+  console.log('🔥 Cached-get ');
   const cached = await client.get(cacheKey);
+  console.log('🔥 Cached-get 1');
   if (cached) {
     console.log('🔥 Cached-ээс авлаа');
     return JSON.parse(cached);
@@ -1128,58 +1130,58 @@ router.get("/v2/parking", async (req, res, next) => {
               if (!!zogsool.dotorZogsooliinId) {
                 dotorZogsool = await getDotorZogsoolById(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, zogsool.dotorZogsooliinId);
               }
-              var query = [
-                {
-                  $match: {
-                    createdAt: {
-                      $gte: ekhlekhOgnoo,
-                      $lte: duusakhOgnoo,
-                    },
-                    baiguullagiinId: zogsool.baiguullagiinId,
-                    barilgiinId: zogsool.barilgiinId,
-                  },
-                },
-                {
-                  $unwind: { path: "$tuukh" },
-                },
-                {
-                  $match: {
-                    "tuukh.0.garsanKhaalga": {
-                      $exists: false,
-                    }
-                  }
-                },
-                {
-                  $project: {
-                    zogsooliinId: "$tuukh.zogsooliinId",
-                  }
-                },
-                {
-                  $group: {
-                    _id: "$zogsooliinId",
-                    too: {
-                      $sum: 1,
-                    },
-                  },
-                },
-              ];
+              // var query = [
+              //   {
+              //     $match: {
+              //       createdAt: {
+              //         $gte: ekhlekhOgnoo,
+              //         $lte: duusakhOgnoo,
+              //       },
+              //       baiguullagiinId: zogsool.baiguullagiinId,
+              //       barilgiinId: zogsool.barilgiinId,
+              //     },
+              //   },
+              //   {
+              //     $unwind: { path: "$tuukh" },
+              //   },
+              //   {
+              //     $match: {
+              //       "tuukh.0.garsanKhaalga": {
+              //         $exists: false,
+              //       }
+              //     }
+              //   },
+              //   {
+              //     $project: {
+              //       zogsooliinId: "$tuukh.zogsooliinId",
+              //     }
+              //   },
+              //   {
+              //     $group: {
+              //       _id: "$zogsooliinId",
+              //       too: {
+              //         $sum: 1,
+              //       },
+              //     },
+              //   },
+              // ];
              
-              var parked = 0;
-              var inside = {};
-              var slot = {
-                outside: {
-                  total: zogsool.too,
-                  parked,
-                },
-              };
-              if (!!dotorZogsool && !!zogsool.dotorZogsooliinId)
-                slot.inside = inside;
-              jagsaalt.push({
-                id: zogsool._id.toString(),
-                name: zogsool.ner,
-                baiguullagiinId: zogsool.baiguullagiinId,
-                slot,
-              });
+              // var parked = 0;
+              // var inside = {};
+              // var slot = {
+              //   outside: {
+              //     total: zogsool.too,
+              //     parked,
+              //   },
+              // };
+              // if (!!dotorZogsool && !!zogsool.dotorZogsooliinId)
+              //   slot.inside = inside;
+              // jagsaalt.push({
+              //   id: zogsool._id.toString(),
+              //   name: zogsool.ner,
+              //   baiguullagiinId: zogsool.baiguullagiinId,
+              //   slot,
+              // });
             }
           }
       }
