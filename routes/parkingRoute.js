@@ -1060,7 +1060,6 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
   const cacheKey = `parkingFind:${baiguullagiinId}`;
   const cached = await client.get(cacheKey);
   if (cached) {
-    console.log('🔥 Cached-ээс авлаа getParkingFind');
     return JSON.parse(cached);
   }
   const zogsooluud = await Parking(kholbolt).find(query);
@@ -1070,22 +1069,12 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
 
 async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
   const cacheKey = `dotorZogsoolFindById:${baiguullagiinId}:${barilgiinId}:${id}`;
-
-  // Redis-аас шалгах
-  console.log('🔥 Cached-get ');
   const cached = await client.get(cacheKey);
-  console.log('🔥 Cached-get 1');
   if (cached) {
-    console.log('🔥 Cached-ээс авлаа');
     return JSON.parse(cached);
   }
-
-  // MongoDB-оос авах
   const dotorZogsool = await Parking(kholbolt).findById(id);
-  console.log('🔥 Cached-ээс авлаа' + JSON.stringify(dotorZogsool));
-  // Redis-д хадгалах (60 секундийн хугацаатай)
   await client.setEx(cacheKey, 60, JSON.stringify(dotorZogsool));
-
   return dotorZogsool;
 }
 
@@ -1093,13 +1082,11 @@ async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId,
   const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}`;
   const cached = await client.get(cacheKey);
   if (cached) {
-    console.log("cached -------------->" + JSON.stringify(cached));
-    return cached;
+    return JSON.parse(cached);
   }
 
   const xariu = await Uilchluulegch(kholbolt).aggregate(query);
-  if(xariu?.length > 0)
-    await client.setEx(cacheKey, 60, JSON.stringify(xariu));
+  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
   return xariu;
 }
 
@@ -1207,7 +1194,6 @@ router.get("/v2/parking", async (req, res, next) => {
     if (jagsaalt && jagsaalt.length > 0) butsaakhKhariu.data = jagsaalt;
     res.send(butsaakhKhariu);
   } catch (err) {
-    console.log("v2 parking -------------->" + err);
     next(err);
   }
 });
