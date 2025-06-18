@@ -1169,7 +1169,7 @@ router.get("/v2/parking", async (req, res, next) => {
               ];
               var parked = 0;
               var inside = {};
-              var xariu = await Uilchluulegch(kholbolt).aggregate(query);
+              var xariu = await Uilchluulegch(kholbolt).aggregate(queryMatch);
               if (xariu && xariu.length > 0) {
                 if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
                   inside.total = dotorZogsool.too;
