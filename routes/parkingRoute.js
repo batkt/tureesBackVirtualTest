@@ -1075,7 +1075,7 @@ async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
 
   // MongoDB-оос авах
   const dotorZogsool = await Parking(kholbolt).findById(id);
-
+  console.log('🔥 Cached-ээс авлаа' + JSON.stringify(dotorZogsool));
   // Redis-д хадгалах (60 секундийн хугацаатай)
   await client.setEx(cacheKey, 60, JSON.stringify(dotorZogsool));
 
