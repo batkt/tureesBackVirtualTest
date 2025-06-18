@@ -683,8 +683,8 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
           ebarimt.togloomiinId = khariuObject.togloomiinId;
-          ebarimt.togloomNer = khariuObject.ner;
-          ebarimt.togloomUtas = khariuObject.utas;
+          ebarimt.togloomNer = khariuObject.togloomNer;
+          ebarimt.togloomUtas = khariuObject.togloomUtas;
           ebarimt.save().catch((err) => {
             next(err);
           });
