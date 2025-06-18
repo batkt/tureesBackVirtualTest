@@ -1083,7 +1083,7 @@ async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
 }
 
 async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId, query) {
-  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${bari}`;
+  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}`;
   const cached = await client.get(cacheKey);
   if (cached) {
     console.log("cached -------------->" + JSON.stringify(cached));
