@@ -1090,9 +1090,8 @@ async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
 }
 
 async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId, query) {
-  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}`;
-  await client.lPop(cacheKey);
-  await client.lPop(`parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}`);
+  await client.flushAll();
+  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}`;
   console.log("cached -------------->" + JSON.stringify(cacheKey));
   const cached = await client.lRange(cacheKey, 0, -1);
   if (cached) {
@@ -1103,7 +1102,7 @@ async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId,
   const xariu = await Uilchluulegch(kholbolt).aggregate(query);
   console.log("cached -------------->" + JSON.stringify(xariu?.length));
   for await(const item of xariu){
-    await client.rPush(cacheKey, 60, JSON.stringify(item));
+    await client.rPush(cacheKey, JSON.stringify(item));
   }
   return xariu;
 }
