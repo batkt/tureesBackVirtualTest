@@ -1059,7 +1059,7 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
     return JSON.parse(cached);
   }
   const zogsooluud = await Parking(kholbolt).find(query);
-  await client.setEx(cacheKey, 60, JSON.stringify(zogsooluud));
+  await client.setEx(cacheKey, 60, zogsooluud);
   return zogsooluud;
 }
 
@@ -1077,7 +1077,7 @@ async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
   const dotorZogsool = await Parking(kholbolt).findById(id);
 
   // Redis-д хадгалах (60 секундийн хугацаатай)
-  await client.setEx(cacheKey, 60, JSON.stringify(dotorZogsool));
+  await client.setEx(cacheKey, 60, dotorZogsool);
 
   return dotorZogsool;
 }
@@ -1091,7 +1091,7 @@ async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId,
   }
 
   const xariu = await Uilchluulegch(kholbolt).aggregate(query);
-  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
+  await client.setEx(cacheKey, 60, xariu);
   return xariu;
 }
 
@@ -1165,11 +1165,11 @@ router.get("/v2/parking", async (req, res, next) => {
               if (xariu && xariu.length > 0) {
                 if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
                   inside.total = dotorZogsool.too;
-                  inside.parked = xariu.filter(
+                  inside.parked = xariu.find(
                     (x) => x._id == dotorZogsool._id.toString()
                   )?.too;
                   if (!inside.parked) inside.parked = 0;
-                  parked = xariu.filter((x) => x._id == zogsool._id.toString())?.too;
+                  parked = xariu.find((x) => x._id == zogsool._id.toString())?.too;
                 } else {
                   parked = xariu[0].too;
                 }
