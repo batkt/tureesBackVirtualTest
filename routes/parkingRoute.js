@@ -34,7 +34,7 @@ const Baiguullaga = require("../models/baiguullaga");
 const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
 const { msgIlgeeye } = require("../controller/khariltsagch");
 const MsgTuukh = require("../models/msgTuukh");
-const client = require('../routes/redisClient');
+// const client = require('../routes/redisClient');
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
 });*/
 crud(router, "parking", Parking, UstsanBarimt);
@@ -1050,6 +1050,11 @@ router.get("/v1/parking", async (req, res, next) => {
     next(err);
   }
 });
+
+const redis = require('redis');
+const client = redis.createClient();
+
+client.connect().catch(console.error);
 
 async function getParkingFind(kholbolt, baiguullagiinId, query) {
   const cacheKey = `parkingFind:${baiguullagiinId}`;
