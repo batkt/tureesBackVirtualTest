@@ -248,6 +248,8 @@ async function togloomoosEbarimtShineUusgye(
   var unuudur = new Date().getDay();
   var amraltiinUdur = unuudur == 0 || unuudur == 6;
   ebarimt.togloomiinId = guilgee._id;
+  ebarimt.togloomNer = guilgee.ner;
+  ebarimt.togloomUtas = guilgee.utas;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
   ebarimt.utas = guilgee.utas[0];
@@ -678,8 +680,6 @@ async function ebarimtShivye(req, res, next) {
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
           else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
-          console.log(" ---->> " + JSON.stringify(khariuObject));
-          console.log(" guilgee ---->> " + JSON.stringify(guilgee));
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
           ebarimt.togloomiinId = khariuObject.togloomiinId;
