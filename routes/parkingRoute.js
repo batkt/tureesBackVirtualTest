@@ -1059,7 +1059,7 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
     return JSON.parse(cached);
   }
   const zogsooluud = await Parking(kholbolt).find(query);
-  await client.setEx(cacheKey, 60, zogsooluud);
+  await client.setEx(cacheKey, 60, JSON.stringify(zogsooluud));
   return zogsooluud;
 }
 
@@ -1077,13 +1077,13 @@ async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
   const dotorZogsool = await Parking(kholbolt).findById(id);
 
   // Redis-д хадгалах (60 секундийн хугацаатай)
-  await client.setEx(cacheKey, 60, dotorZogsool);
+  await client.setEx(cacheKey, 60, JSON.stringify(dotorZogsool));
 
   return dotorZogsool;
 }
 
 async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId, query) {
-  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}`;
+  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${bari}`;
   const cached = await client.get(cacheKey);
   if (cached) {
     console.log('🔥 Cached-ээс авлаа getAggregateUilchluulegch');
@@ -1091,7 +1091,7 @@ async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId,
   }
 
   const xariu = await Uilchluulegch(kholbolt).aggregate(query);
-  await client.setEx(cacheKey, 60, xariu);
+  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
   return xariu;
 }
 
@@ -1124,70 +1124,6 @@ router.get("/v2/parking", async (req, res, next) => {
               if (!!zogsool.dotorZogsooliinId) {
                 dotorZogsool = await getDotorZogsoolById(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, zogsool.dotorZogsooliinId);
               }
-              var query = [
-                {
-                  $match: {
-                    createdAt: {
-                      $gte: ekhlekhOgnoo,
-                      $lte: duusakhOgnoo,
-                    },
-                    baiguullagiinId: zogsool.baiguullagiinId,
-                    barilgiinId: zogsool.barilgiinId,
-                  },
-                },
-                {
-                  $unwind: { path: "$tuukh" },
-                },
-                {
-                  $match: {
-                    "tuukh.0.garsanKhaalga": {
-                      $exists: false,
-                    }
-                  }
-                },
-                {
-                  $project: {
-                    zogsooliinId: "$tuukh.zogsooliinId",
-                  }
-                },
-                {
-                  $group: {
-                    _id: "$zogsooliinId",
-                    too: {
-                      $sum: 1,
-                    },
-                  },
-                },
-              ];
-              var xariu = await getAggregateUilchluulegch(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, query);
-              var parked = 0;
-              var inside = {};
-              if (xariu && xariu.length > 0) {
-                if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
-                  inside.total = dotorZogsool.too;
-                  inside.parked = xariu.find(
-                    (x) => x._id == dotorZogsool._id.toString()
-                  )?.too;
-                  if (!inside.parked) inside.parked = 0;
-                  parked = xariu.find((x) => x._id == zogsool._id.toString())?.too;
-                } else {
-                  parked = xariu[0].too;
-                }
-              }
-              var slot = {
-                outside: {
-                  total: zogsool.too,
-                  parked,
-                },
-              };
-              if (!!dotorZogsool && !!zogsool.dotorZogsooliinId)
-                slot.inside = inside;
-              jagsaalt.push({
-                id: zogsool._id.toString(),
-                name: zogsool.ner,
-                baiguullagiinId: zogsool.baiguullagiinId,
-                slot,
-              });
             }
           }
       }
