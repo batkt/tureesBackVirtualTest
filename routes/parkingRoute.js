@@ -1140,6 +1140,7 @@ router.get("/v2/parking", async (req, res, next) => {
                       $lte: duusakhOgnoo,
                     },
                     baiguullagiinId: zogsool.baiguullagiinId,
+                    barilgiinId: zogsool.barilgiinId,
                   },
                 },
                 {
@@ -1147,7 +1148,7 @@ router.get("/v2/parking", async (req, res, next) => {
                 },
                 {
                   $match: {
-                    "tuukh.0.garsanKhaalga": {
+                    "tuukh.garsanKhaalga": {
                       $exists: false,
                     }
                   }
