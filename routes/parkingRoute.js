@@ -1130,7 +1130,7 @@ router.get("/v2/parking", async (req, res, next) => {
               if (!!zogsool.dotorZogsooliinId) {
                 dotorZogsool = await getDotorZogsoolById(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, zogsool.dotorZogsooliinId);
               }
-              var query = [
+              query = [
                 {
                   $match: {
                     createdAt: {
