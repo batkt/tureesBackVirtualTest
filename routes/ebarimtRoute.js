@@ -678,6 +678,8 @@ async function ebarimtShivye(req, res, next) {
           if (!!tuxainSalbar.eBarimtShine)
             ebarimt = new EbarimtShine(req.body.tukhainBaaziinKholbolt)(d);
           else ebarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(d);
+          console.log(" ---->> " + JSON.stringify(khariuObject));
+          console.log(" guilgee ---->> " + JSON.stringify(guilgee));
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
           ebarimt.togloomiinId = khariuObject.togloomiinId;
