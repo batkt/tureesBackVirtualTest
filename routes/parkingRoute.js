@@ -1166,7 +1166,7 @@ router.get("/v2/parking", async (req, res, next) => {
               var parked = 0;
               var inside = {};
               var xariu = await getAggregateUilchluulegch(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, queryMatch);
-              if (xariu && xariu.length > 0) {
+              if (xariu && xariu?.length > 0) {
                 if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
                   inside.total = dotorZogsool.too;
                   inside.parked = xariu.find(
