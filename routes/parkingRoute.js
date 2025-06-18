@@ -1090,7 +1090,7 @@ async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId,
     return JSON.parse(cached);
   }
 
-  var xariu = await Uilchluulegch(kholbolt).aggregate(query);
+  const xariu = await Uilchluulegch(kholbolt).aggregate(query);
   await client.setEx(cacheKey, 60, JSON.stringify(xariu));
   return xariu;
 }
