@@ -1063,8 +1063,8 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
   return zogsooluud;
 }
 
-async function getDotorZogsoolById(kholbolt, id) {
-  const cacheKey = `dotorZogsoolFindById:${id}`;
+async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
+  const cacheKey = `dotorZogsoolFindById:${baiguullagiinId}:${barilgiinId}:${id}`;
 
   // Redis-аас шалгах
   const cached = await client.get(cacheKey);
@@ -1083,7 +1083,7 @@ async function getDotorZogsoolById(kholbolt, id) {
 }
 
 async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId, query) {
-  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}`;
+  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}`;
   const cached = await client.get(cacheKey);
   if (cached) {
     console.log('🔥 Cached-ээс авлаа getAggregateUilchluulegch');
@@ -1121,9 +1121,9 @@ router.get("/v2/parking", async (req, res, next) => {
           for await (const zogsool of zogsooluud) {
             if (!!zogsool) {
               var dotorZogsool;
-              // if (!!zogsool.dotorZogsooliinId) {
-              //   dotorZogsool = await getDotorZogsoolById(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, zogsool.dotorZogsooliinId);
-              // }
+              if (!!zogsool.dotorZogsooliinId) {
+                dotorZogsool = await getDotorZogsoolById(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, zogsool.dotorZogsooliinId);
+              }
               var query = [
                 {
                   $match: {
@@ -1165,11 +1165,11 @@ router.get("/v2/parking", async (req, res, next) => {
               if (xariu && xariu.length > 0) {
                 if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
                   inside.total = dotorZogsool.too;
-                  inside.parked = xariu.find(
+                  inside.parked = xariu.filter(
                     (x) => x._id == dotorZogsool._id.toString()
                   )?.too;
                   if (!inside.parked) inside.parked = 0;
-                  parked = xariu.find((x) => x._id == zogsool._id.toString())?.too;
+                  parked = xariu.filter((x) => x._id == zogsool._id.toString())?.too;
                 } else {
                   parked = xariu[0].too;
                 }
