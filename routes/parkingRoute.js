@@ -955,8 +955,8 @@ router.get("/v1/parking", async (req, res, next) => {
     var jagsaalt = [];
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
-    var ekhlekhOgnoo = new Date(Date.now() - 86400000);
-    var duusakhOgnoo = new Date(Date.now() - 86400000);
+    var ekhlekhOgnoo = new Date();
+    var duusakhOgnoo = new Date();
     ekhlekhOgnoo.setHours(0, 0, 0, 0);
     duusakhOgnoo.setHours(23, 59, 59, 999);
     var localEsekh = !!req.body.baiguullagiinId;
@@ -970,16 +970,14 @@ router.get("/v1/parking", async (req, res, next) => {
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
       for await (const kholbolt of kholboltuud) {
-        var zogsooluud = await Parking(kholbolt).find(query);
+        var zogsooluud = await getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
             var dotorZogsool;
             if (!!zogsool.dotorZogsooliinId) {
-              dotorZogsool = await Parking(kholbolt).findById(
-                zogsool.dotorZogsooliinId
-              );
+              dotorZogsool = await getDotorZogsoolById(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, zogsool.dotorZogsooliinId);
             }
-            var xariu = await Uilchluulegch(kholbolt).aggregate([
+            var queryMatch = [
               {
                 $match: {
                   createdAt: {
@@ -987,6 +985,7 @@ router.get("/v1/parking", async (req, res, next) => {
                     $lte: duusakhOgnoo,
                   },
                   baiguullagiinId: zogsool.baiguullagiinId,
+                  barilgiinId: zogsool.barilgiinId,
                 },
               },
               {
@@ -996,20 +995,26 @@ router.get("/v1/parking", async (req, res, next) => {
                 $match: {
                   "tuukh.garsanKhaalga": {
                     $exists: false,
-                  },
-                },
+                  }
+                }
+              },
+              {
+                $project: {
+                  zogsooliinId: "$tuukh.zogsooliinId",
+                }
               },
               {
                 $group: {
-                  _id: "$tuukh.zogsooliinId",
+                  _id: "$zogsooliinId",
                   too: {
                     $sum: 1,
                   },
                 },
               },
-            ]);
+            ];
             var parked = 0;
             var inside = {};
+            var xariu = await getAggregateUilchluulegch(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, queryMatch);
             if (xariu && xariu.length > 0) {
               if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
                 inside.total = dotorZogsool.too;
