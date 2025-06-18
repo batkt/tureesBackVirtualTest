@@ -1095,6 +1095,7 @@ async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId,
 
   var xariu = await Uilchluulegch(kholbolt).aggregate(query);
   console.log("xariu -------------->" + JSON.stringify(xariu));
+  client.del(cacheKey);
   // Store with RPUSH
   for (const item of xariu) {
     await client.rPush(cacheKey, JSON.stringify(item));
@@ -1108,8 +1109,8 @@ router.get("/v2/parking", async (req, res, next) => {
     var jagsaalt = [];
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
-    var ekhlekhOgnoo = new Date();
-    var duusakhOgnoo = new Date();
+    var ekhlekhOgnoo = new Date(Date.now() - 86400000);
+    var duusakhOgnoo = new Date(Date.now() - 86400000);
     ekhlekhOgnoo.setHours(0, 0, 0, 0);
     duusakhOgnoo.setHours(23, 59, 59, 999);
     var localEsekh = !!req.body.baiguullagiinId;
