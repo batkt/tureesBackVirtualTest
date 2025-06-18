@@ -1086,16 +1086,16 @@ async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
 
 async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId, query) {
   const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}`;
-  const cached = await client.get(cacheKey, 0, -1);
+  const cached = await client.lRange(cacheKey, 0, -1);
   if (cached) {
     console.log("cached -------------->" + JSON.stringify(cached));
-    console.log('🔥 Cached-ээс авлаа getAggregateUilchluulegch');
     return cached;
   }
 
   const xariu = await Uilchluulegch(kholbolt).aggregate(query);
-  console.log("xariu -------------->" + JSON.stringify(xariu));
-  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
+  for await(const item of xariu){
+    await client.rPush(cacheKey, 60, JSON.stringify(item));
+  }
   return xariu;
 }
 
@@ -1166,7 +1166,7 @@ router.get("/v2/parking", async (req, res, next) => {
               var parked = 0;
               var inside = {};
               var xariu = await getAggregateUilchluulegch(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, queryMatch);
-              if (xariu != "[]" && xariu && xariu?.length > 0) {
+              if (xariu && xariu?.length > 0) {
                 if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
                   inside.total = dotorZogsool.too;
                   inside.parked = xariu?.find(
