@@ -40,7 +40,7 @@ const passRoute = require("./routes/passRoute");
 const parkingRoute = require("./routes/parkingRoute");
 const eventRoute = require("./routes/eventRoute");
 const tasalbarRoute = require("./routes/tasalbarRoute");
-const redisClient = require("./routes/redisClient");
+// const redisClient = require("./routes/redisClient");
 
 const { db } = require("zevbackv2");
 
@@ -106,7 +106,7 @@ app.use(passRoute);
 app.use(parkingRoute);
 app.use(eventRoute);
 app.use(tasalbarRoute);
-app.use(redisClient);
+// app.use(redisClient);
 zuragPack(app);
 
 app.use(aldaaBarigch);
