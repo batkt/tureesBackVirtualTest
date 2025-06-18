@@ -1091,8 +1091,8 @@ router.get("/v2/parking", async (req, res, next) => {
     var jagsaalt = [];
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
-    var ekhlekhOgnoo = new Date(Date.now() - 86400000);
-    var duusakhOgnoo = new Date(Date.now() - 86400000);
+    var ekhlekhOgnoo = new Date();
+    var duusakhOgnoo = new Date();
     ekhlekhOgnoo.setHours(0, 0, 0, 0);
     duusakhOgnoo.setHours(23, 59, 59, 999);
     var localEsekh = !!req.body.baiguullagiinId;
