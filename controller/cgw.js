@@ -354,20 +354,20 @@ async function dansniiKhuulgaAvya(token, next, body) {
     const context = {
       token: "Bearer " + token,
     };
-    // var url;
-    // if(body.baiguullagiinId === "6731b43bc23730ac1908da2d") // soyolj
-    // {
-    //   const responseShunuEsekh = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
-    //   url = "https://api.khanbank.com/v1/statements/" + (responseShunuEsekh?.body ? "corporate/" : "") + body.dansniiDugaar;
-    //   if(body.record)
-    //     url = url + (responseShunuEsekh?.body ? "/?record=" : "/record?record=") + body.record;
-    // }
-    // else
-    // {
-    var url = "https://api.khanbank.com/v1/statements/" + body.dansniiDugaar;
+    var url;
+    if(body.baiguullagiinId === "6731b43bc23730ac1908da2d") // soyolj
+    {
+      const responseShunuEsekh = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
+      url = "https://api.khanbank.com/v1/statements/" + (responseShunuEsekh?.body ? "corporate/" : "") + body.dansniiDugaar;
+      if(body.record)
+        url = url + (responseShunuEsekh?.body ? "/?record=" : "/record?record=") + body.record;
+    }
+    else
+    {
+      var url = "https://api.khanbank.com/v1/statements/" + body.dansniiDugaar;
       if(body.record)
         url = url + "/record?record=" + body.record;
-    // }
+    }
     const response = await instance.get(url, { context });
     if (!response.body) {
       if (next) next(new aldaa("Татах хуулга байхгүй"));
