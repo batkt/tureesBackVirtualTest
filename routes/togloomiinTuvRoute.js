@@ -792,4 +792,47 @@ router.post("/ebarimtAvsanDunOruulakhTogloom", tokenShalgakh, async (req, res, n
   }
 }); 
 
+router.post("/togloomNerUtasEBarimtOruulakh", tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var tuvuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      ebarimtAvsanEsekh: true, 
+    });
+    var result = [];
+    if(tuvuud?.length > 0)
+    {
+      for await (const tuv of tuvuud)
+      {
+        var match = {
+          baiguullagiinId: tuv.baiguullagiinId,
+          barilgiinId: tuv.barilgiinId,
+          togloomiinId: tuv._id,
+          togloomNer: { $exists: false }
+        }
+        var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(match);      
+        if(ebarimtuud?.length > 0)
+        {
+          for await (const ebarimt of ebarimtuud)
+          {
+            await EbarimtShine(req.body.tukhainBaaziinKholbolt)
+              .findByIdAndUpdate(
+                { _id: ebarimt._id },
+                { togloomNer: tuv.ner, togloomUtas: tuv.utas }
+              )
+              .catch((err) => {
+                next(err);
+              });
+            result.push(ebarimt);
+          }
+        }
+      }
+    }
+    res.send(result);
+  } catch (err) {
+    if(next) next(err);
+  }
+});
+
 module.exports = router;
