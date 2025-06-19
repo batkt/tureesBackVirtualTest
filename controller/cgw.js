@@ -359,6 +359,8 @@ async function dansniiKhuulgaAvya(token, next, body) {
     {
       const responseShunuEsekh = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
       url = "https://api.khanbank.com/v1/statements/" + (responseShunuEsekh?.body ? "corporate/" : "") + body.dansniiDugaar;
+      if(responseShunuEsekh?.body)
+        body.record = 1;
       if(body.record)
         url = url + (responseShunuEsekh?.body ? "/?record=" : "/record?record=") + body.record;
       console.log("--------true---------->>" + JSON.stringify(responseShunuEsekh?.body));
