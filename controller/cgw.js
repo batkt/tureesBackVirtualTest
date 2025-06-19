@@ -378,6 +378,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
     return JSON.parse(response?.body);
   } catch (error) {
     if (next) next(error);
+    console.log("dansniiKhuulgaAvya ---------------->>" + error);
   }
 }
 
