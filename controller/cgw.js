@@ -361,6 +361,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
       url = "https://api.khanbank.com/v1/statements/" + (JSON.stringify(responseShunuEsekh?.body) === "true" ? "corporate/" : "") + body.dansniiDugaar;
       if(body.record)
         url = url + (JSON.stringify(responseShunuEsekh?.body) === "true" ? "/?record=" : "/record?record=") + body.record;
+      console.log("--------true---------->>" + JSON.stringify(responseShunuEsekh?.body));
       console.log("--------url---------->>" + JSON.stringify(url));
     }
     else
