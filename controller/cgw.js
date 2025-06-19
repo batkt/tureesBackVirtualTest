@@ -363,10 +363,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
         body.record = 1;
       if(body.record)
         url = url + (responseShunuEsekh?.body === true ? "/?record=" : "/record?record=") + body.record;
-      console.log("--------true---------->>" + JSON.stringify(responseShunuEsekh?.body));
-      console.log("--------success---------->>" + JSON.stringify(responseShunuEsekh?.success));
-      console.log("--------url---------->>" + JSON.stringify(url));
-      console.log("--------record---------->>" + JSON.stringify(body.record));
+      console.log("--------typeof---------->>" + typeof responseShunuEsekh?.body)
     }
     else
     {
