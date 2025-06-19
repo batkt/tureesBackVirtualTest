@@ -358,11 +358,12 @@ async function dansniiKhuulgaAvya(token, next, body) {
     if(body.baiguullagiinId === "6731b43bc23730ac1908da2d") // soyolj
     {
       const responseShunuEsekh = await instance.get("https://api.khanbank.com/v1/statements/corporate/state", { context }); 
-      url = "https://api.khanbank.com/v1/statements/" + (responseShunuEsekh?.body === true ? "corporate/" : "") + body.dansniiDugaar;
-      if(responseShunuEsekh?.body === true)
+      const resultValue = JSON.parse(responseShunuEsekh?.body);
+      url = "https://api.khanbank.com/v1/statements/" + (resultValue ? "corporate/" : "") + body.dansniiDugaar;
+      if(resultValue)
         body.record = 1;
       if(body.record)
-        url = url + (responseShunuEsekh?.body === true ? "/?record=" : "/record?record=") + body.record;
+        url = url + (resultValue ? "/?record=" : "/record?record=") + body.record;
       console.log("--------typeof---------->>" + typeof responseShunuEsekh?.body)
     }
     else
