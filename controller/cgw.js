@@ -302,7 +302,6 @@ async function golomtServiceDuudya(
       iv: ivKey,
     });
     var url = process.env.GOLOMT_SERVER + url; //"/v1/account/balance/inq";
-    console.log("---------- dans --------->" + JSON.stringify(dans));
     const response = await got
       .post(url, {
         headers: {
@@ -333,7 +332,6 @@ async function golomtServiceDuudya(
     }
     return khariu;
   } catch (error) {
-    console.log("golomtServiceDuudya ---------------------->" + error);
     if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!" + error));
   }
 }
@@ -2086,7 +2084,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
       }
     }
   } catch (err) {
-    console.log("-------------------->>" + err);
   }
 });
 
