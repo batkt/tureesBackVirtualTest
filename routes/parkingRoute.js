@@ -1436,67 +1436,60 @@ router.get("/v2/search_car/:plate_number", async (req, res, next) => {
               tokiNer: { $exists: true },
             };
         var zogsooluud = await getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
-        // for await (const zogsool of zogsooluud) {
-        //   if (!!zogsool) {
-        //     oldsonMashin = await Uilchluulegch(kholbolt).findOne({
-        //       "tuukh.0.zogsooliinId": zogsool._id,
-        //       mashiniiDugaar: req.params.plate_number,
-        //       // "tuukh.0.tulbur": { $eq: [] },
-        //       $or: [
-        //         {
-        //           "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-        //             $gt: new Date(Date.now() - 15 * 100000), //1.30sec in dotor
-        //           },
-        //         },
-        //         {
-        //           "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-        //             $exists: false,
-        //           },
-        //         },
-        //       ],
-        //       "tuukh.0.tuluv": {
-        //         $nin: [-2, -3],
-        //       },
-        //     });
-        //     if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-        //       bodsonDun = await zogsooliinDunAvya(
-        //         zogsool,
-        //         oldsonMashin,
-        //         kholbolt
-        //       );
-        //     }
-        //   }
-        //   if (bodsonDun > 0) {
-        //     data = {
-        //       plate_number: req.params.plate_number,
-        //       enter_date: moment(
-        //         oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
-        //       ).format("YYYY/MM/DD HH:mm:ss"),
-        //       pay_amount: bodsonDun,
-        //       parking_id: zogsool._id,
-        //       parkingUndsenUne: zogsool.undsenUne,
-        //       session_id: oldsonMashin._id,
-        //       garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
-        //     };
-        //     tukhainKholbolt = kholbolt;
-        //     break;
-        //   } else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-        //     tukhainKholbolt = kholbolt;
-        //     data = {
-        //       plate_number: req.params.plate_number,
-        //       enter_date: moment(
-        //         oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
-        //       ).format("YYYY/MM/DD HH:mm:ss"),
-        //       pay_amount: 0,
-        //       parking_id: zogsool._id,
-        //       parkingUndsenUne: zogsool.undsenUne,
-        //       session_id: oldsonMashin._id,
-        //       garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
-        //     };
-        //     break;
-        //   }
-        // }
-        // if (data && data.plate_number) break;
+        for await (const zogsool of zogsooluud) {
+          if (!!zogsool) {
+            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+              mashiniiDugaar: req.params.plate_number,
+              tuukh: {
+                $elemMatch: {
+                  zogsooliinId: zogsool._id,
+                  tuluv: { $nin: [-2, -3] },
+                  $or: [
+                    { "tsagiinTuukh.0.garsanTsag": { $gt: new Date(Date.now() - 15 * 100000) } },
+                    { "tsagiinTuukh.0.garsanTsag": { $exists: false } }
+                  ]
+                }
+              }
+            });
+            if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+              bodsonDun = await zogsooliinDunAvya(
+                zogsool,
+                oldsonMashin,
+                kholbolt
+              );
+            }
+          }
+          if (bodsonDun > 0) {
+            data = {
+              plate_number: req.params.plate_number,
+              enter_date: moment(
+                oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
+              ).format("YYYY/MM/DD HH:mm:ss"),
+              pay_amount: bodsonDun,
+              parking_id: zogsool._id,
+              parkingUndsenUne: zogsool.undsenUne,
+              session_id: oldsonMashin._id,
+              garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
+            };
+            tukhainKholbolt = kholbolt;
+            break;
+          } else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+            tukhainKholbolt = kholbolt;
+            data = {
+              plate_number: req.params.plate_number,
+              enter_date: moment(
+                oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
+              ).format("YYYY/MM/DD HH:mm:ss"),
+              pay_amount: 0,
+              parking_id: zogsool._id,
+              parkingUndsenUne: zogsool.undsenUne,
+              session_id: oldsonMashin._id,
+              garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
+            };
+            break;
+          }
+        }
+        if (data && data.plate_number) break;
       }
     }
 
@@ -1504,14 +1497,14 @@ router.get("/v2/search_car/:plate_number", async (req, res, next) => {
       message = "Машины мэдээлэл олдсонгүй!";
       success = false;
     }
-    // if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
-    //   await Uilchluulegch(tukhainKholbolt).updateOne(
-    //     { _id: oldsonMashin._id },
-    //     {
-    //       freezeOgnoo: new Date(),
-    //     }
-    //   );
-    // }
+    if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
+      await Uilchluulegch(tukhainKholbolt).updateOne(
+        { _id: oldsonMashin._id },
+        {
+          freezeOgnoo: new Date(),
+        }
+      );
+    }
     var butsaakhKhariu = {
       success,
       message,
