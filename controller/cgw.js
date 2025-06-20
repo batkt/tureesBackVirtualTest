@@ -332,6 +332,7 @@ async function golomtServiceDuudya(
     }
     return khariu;
   } catch (error) {
+    console.log("golomtServiceDuudya ---------------------->" + error);
     if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!" + error));
   }
 }
