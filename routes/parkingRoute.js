@@ -1322,7 +1322,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
           : {
               tokiNer: { $exists: true },
             };
-        var zogsooluud = await Parking(kholbolt).find(query);
+        var zogsooluud = getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
             oldsonMashin = await Uilchluulegch(kholbolt).findOne({
@@ -1435,7 +1435,7 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
           : {
               tokiNer: { $exists: true },
             };
-        var zogsooluud = await Parking(kholbolt).find(query);
+        var zogsooluud = getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
             tukhainKholbolt = kholbolt;
@@ -1525,7 +1525,7 @@ router.get(
         var query = {
           passNer: { $exists: true },
         };
-        var zogsooluud = await Parking(kholbolt).find(query);
+        var zogsooluud = getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
             oldsonMashin = await Uilchluulegch(kholbolt).findOne({
@@ -1807,7 +1807,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
       for await (const kholbolt of kholboltuud) {
-        var zogsooluud = await Parking(kholbolt).find(query);
+        var zogsooluud = getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
             oldsonMashin = await Uilchluulegch(kholbolt).findOne({
@@ -2992,7 +2992,7 @@ router.get("/notTokiParking", async (req, res, next) => {
         var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
           kholbolt.baiguullagiinId
         );
-        var zogsooluud = await Parking(kholbolt).find(query);
+        var zogsooluud = getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
         if(zogsooluud?.length > 0)
           result.push({ner: baiguullaga.ner, register: baiguullaga.register});
       }
