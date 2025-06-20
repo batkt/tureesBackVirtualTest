@@ -2084,7 +2084,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
       }
     }
   } catch (err) {
-    throw err;
+    console.log("-------------------->>" + err);
   }
 });
 
