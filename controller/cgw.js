@@ -302,7 +302,7 @@ async function golomtServiceDuudya(
       iv: ivKey,
     });
     var url = process.env.GOLOMT_SERVER + url; //"/v1/account/balance/inq";
-    console.log("---------- url --------->" + JSON.stringify(url));
+    console.log("---------- dans --------->" + JSON.stringify(dans));
     const response = await got
       .post(url, {
         headers: {
