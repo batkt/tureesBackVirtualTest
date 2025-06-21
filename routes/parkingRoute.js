@@ -1098,7 +1098,7 @@ async function getUilchluulegchfindOne(kholbolt, baiguullagiinId, barilgiinId, q
   }
 
   const xariu = await Uilchluulegch(kholbolt).findOne(query);
-  await client.setEx(cacheKey, 3, JSON.stringify(xariu));
+  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
   return xariu;
 }
 
