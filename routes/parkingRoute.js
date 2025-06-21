@@ -2138,35 +2138,40 @@ router.route("/v2/pay").post(async (req, res, next) => {
         (a) => a.baiguullagiinId == req.body.baiguullagiinId
       );
     }
-    // if (kholboltuud) {
-    //   var query = { tokiNer: { $exists: true } };
-    //   if (!!req.body.baiguullagiinId)
-    //     query["baiguullagiinId"] = req.body.baiguullagiinId;
-    //   for await (const kholbolt of kholboltuud) {
-    //     var zogsooluud = await getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
-    //     for await (const zogsool of zogsooluud) {
-    //       if (!!zogsool) {
-    //         const plateNumber = req.body.plate_number;
-    //         const zogsoolId = zogsool._id;
-    //         const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-    //         oldsonMashin = await Uilchluulegch(kholbolt).findOne({
-    //           mashiniiDugaar: plateNumber,
-    //           "tuukh.0.zogsooliinId": zogsoolId,
-    //           "tuukh.0.tuluv": { $nin: [-2, -3] },
-    //           updatedAt: { $gt: fiveMinutesAgo },
-    //         });
-    //         if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-    //           tukhainKholbolt = kholbolt;
-    //           tukhainZogsool = zogsool;
-    //           tukhainObject = oldsonMashin;
-    //           break;
-    //         }
-    //       }
-    //       if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
-    //     }
-    //     if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
-    //   }
-    // }
+    if (kholboltuud) {
+      var query = { tokiNer: { $exists: true } };
+      if (!!req.body.baiguullagiinId)
+        query["baiguullagiinId"] = req.body.baiguullagiinId;
+      for await (const kholbolt of kholboltuud) {
+        var zogsooluud = await getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
+        for await (const zogsool of zogsooluud) {
+          if (!!zogsool) {
+            const plateNumber = req.body.plate_number;
+            const zogsoolId = zogsool._id;
+            const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+            const query = {
+              mashiniiDugaar: plateNumber,
+              updatedAt: { $gt: fiveMinutesAgo },
+              tuukh: {
+                $elemMatch: {
+                  zogsooliinId: zogsoolId,
+                  tuluv: { $nin: [-2, -3] },
+                }
+              }
+            };
+            oldsonMashin = await Uilchluulegch(kholbolt).findOne(query);
+            if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+              tukhainKholbolt = kholbolt;
+              tukhainZogsool = zogsool;
+              tukhainObject = oldsonMashin;
+              break;
+            }
+          }
+          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
+        }
+        if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
+      }
+    }
     var butsaakhKhariu = {
       success,
       message,
