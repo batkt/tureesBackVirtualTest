@@ -2147,15 +2147,14 @@ router.route("/v2/pay").post(async (req, res, next) => {
         var zogsooluud = await getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
+            const plateNumber = req.body.plate_number;
+            const zogsoolId = zogsool._id;
+            const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
             oldsonMashin = await Uilchluulegch(kholbolt).findOne({
-              "tuukh.0.zogsooliinId": zogsool._id,
-              mashiniiDugaar: req.body.plate_number,
-              "tuukh.0.tuluv": {
-                $nin: [-2, -3],
-              },
-              updatedAt: {
-                $gt: new Date(Date.now() - 300000), //5min dotor
-              },
+              mashiniiDugaar: plateNumber,
+              "tuukh.0.zogsooliinId": zogsoolId,
+              "tuukh.0.tuluv": { $nin: [-2, -3] },
+              updatedAt: { $gt: fiveMinutesAgo },
             });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
