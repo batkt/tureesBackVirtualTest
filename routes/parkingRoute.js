@@ -1090,6 +1090,18 @@ async function getAggregateUilchluulegch(kholbolt, baiguullagiinId, barilgiinId,
   return xariu;
 }
 
+async function getUilchluulegchfindOne(kholbolt, baiguullagiinId, barilgiinId, query) {
+  const cacheKey = `UilchluulegchFindOne:${baiguullagiinId}:${barilgiinId}`;
+  const cached = await client.get(cacheKey);
+  if (cached) {
+    return JSON.parse(cached);
+  }
+
+  const xariu = await Uilchluulegch(kholbolt).findOne(query);
+  await client.setEx(cacheKey, 3, JSON.stringify(xariu));
+  return xariu;
+}
+
 router.get("/v2/parking", async (req, res, next) => {
   try
   {
@@ -2149,12 +2161,13 @@ router.route("/v2/pay").post(async (req, res, next) => {
             const plateNumber = req.body.plate_number;
             const zogsoolId = zogsool._id;
             const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+            var queryOne = {
               mashiniiDugaar: plateNumber,
               "tuukh.0.zogsooliinId": zogsoolId,
               "tuukh.0.tuluv": { $nin: [-2, -3] },
               updatedAt: { $gt: fiveMinutesAgo },
-            });
+            };
+            oldsonMashin = await getUilchluulegchfindOne(kholbolt, zogsool.baiguullagiinId, zogsool.barilgiinId, queryOne);
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
