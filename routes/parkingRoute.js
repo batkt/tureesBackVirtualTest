@@ -2115,6 +2115,74 @@ router.route("/v1/pay").post(async (req, res, next) => {
   }
 });
 
+router.route("/v2/pay").post(async (req, res, next) => {
+  try {
+    let tulbur = [
+      {
+        ognoo: new Date(),
+        turul: "toki",
+        dun: req.body.paid_amount,
+      },
+    ];
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+    var message = "Amjilttai";
+    var oldsonMashin;
+    var tukhainKholbolt;
+    var tukhainObject;
+    var tukhainZogsool;
+    var success = true;
+    var bodsonDun = 0;
+    var localEsekh = !!req.body.baiguullagiinId;
+    if (localEsekh) {
+      kholboltuud = kholboltuud.filter(
+        (a) => a.baiguullagiinId == req.body.baiguullagiinId
+      );
+    }
+    if (kholboltuud) {
+      var query = { tokiNer: { $exists: true } };
+      if (!!req.body.baiguullagiinId)
+        query["baiguullagiinId"] = req.body.baiguullagiinId;
+      for await (const kholbolt of kholboltuud) {
+        var zogsooluud = await getParkingFind(kholbolt, kholbolt.baiguullagiinId, query);
+        for await (const zogsool of zogsooluud) {
+          if (!!zogsool) {
+            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+              "tuukh.0.zogsooliinId": zogsool._id,
+              mashiniiDugaar: req.body.plate_number,
+              "tuukh.0.tuluv": {
+                $nin: [-2, -3],
+              },
+              updatedAt: {
+                $gt: new Date(Date.now() - 300000), //5min dotor
+              },
+            });
+            if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+              tukhainKholbolt = kholbolt;
+              tukhainZogsool = zogsool;
+              tukhainObject = oldsonMashin;
+              break;
+            }
+          }
+          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
+        }
+        if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
+      }
+    }
+    var butsaakhKhariu = {
+      success,
+      message,
+    };
+    if (!tukhainObject) {
+      res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
+    }
+    else
+      res.send(butsaakhKhariu);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
   try {
     let tulbur = [
