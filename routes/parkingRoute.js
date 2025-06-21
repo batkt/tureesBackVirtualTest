@@ -3174,6 +3174,7 @@ router.post("/dotorZogsoolDavhkardsanMashin", tokenShalgakh, async (req, res, ne
       var match = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
+        tuukh: { $size: req.body.size },
         "tuukh.zogsooliinId": req.body.zogsooliinId,
         "tuukh.orsonKhaalga": req.body.cameraIP, 
         "tuukh.tsagiinTuukh.garsanTsag": {$exists: true}
