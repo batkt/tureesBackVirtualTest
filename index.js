@@ -122,17 +122,6 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "59 23 * * *",
-//   function () {
-//     ebarimtRoute.ebarimtIlgeeye("6115f350b35689cdbf1b9da3");
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
-
 cron.schedule(
   "*/4 * * * * * ",
   function () {
@@ -207,16 +196,7 @@ cron.schedule(
     timezone: "Asia/Ulaanbaatar",
   }
 );
-// cron.schedule(
-//   "50 59 23 * * * ",
-//   function () {
-//     zogsool.ebarimtDutuugShivye();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+
 cron.schedule(
   "30 13 * * * * ",
   function () {
@@ -248,17 +228,6 @@ cron.schedule(
     timezone: "Asia/Ulaanbaatar",
   }
 );
-/*
-cron.schedule(
-  "02 09 * * * ",
-  function () {
-    daalgavarRoute.tuluvluguuniiSanuulgaIlgeeye();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);*/
 
 cron.schedule(
   "02 00 * * * ",
@@ -296,17 +265,6 @@ cron.schedule(
   "*/8 * * * * * ",
   function () {
     tulbur.tulultTaniya();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
-
-cron.schedule(
-  "59 * * * * ",
-  function () {
-    gereeRoute.sarBuriinKhungulultBodoy();
   },
   {
     scheduled: true,
