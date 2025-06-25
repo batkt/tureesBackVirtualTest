@@ -616,7 +616,7 @@ async function ebarimtShivye(req, res, next) {
       var nuatTulukhEsekh = false;
       nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-      console.log("-------eBarimtShine -----------" + JSON.stringify(tuxainSalbar.eBarimtShine));
+      console.log("-------eBarimtShine -----------" + JSON.stringify(guilgee));
       if (!!tuxainSalbar.eBarimtShine)
         ebarimt = await togloomoosEbarimtShineUusgye(
           guilgee,
