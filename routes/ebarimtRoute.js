@@ -686,14 +686,8 @@ async function ebarimtShivye(req, res, next) {
           req.body.tukhainBaaziinKholbolt,
           nuatTulukhEsekh
         );
-      else
-        ebarimt = await zogsooloosEbarimtUusgye(
-          guilgee,
-          req.body.register,
-          req.body.turul,
-          req.body.tukhainBaaziinKholbolt,
-          nuatTulukhEsekh
-        );
+      else if(!!next)
+        next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
       butsaakhMethod = function (d, khariuObject) {
         try {
           if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
@@ -800,15 +794,8 @@ async function ebarimtShivye(req, res, next) {
           req.body.tukhainBaaziinKholbolt,
           nuatTulukhEsekh
         );
-      else
-        ebarimt = await guilgeeneesEbarimtUusgye(
-          guilgee,
-          geree,
-          req.body.register,
-          req.body.turul,
-          req.body.tukhainBaaziinKholbolt,
-          nuatTulukhEsekh
-        );
+      else if(!!next)
+        next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
     }
     ebarimtDuudya(ebarimt, butsaakhMethod, next, !!tuxainSalbar.eBarimtShine);
   } catch (error) {
