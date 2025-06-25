@@ -616,6 +616,7 @@ async function ebarimtShivye(req, res, next) {
       var nuatTulukhEsekh = false;
       nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
+      console.log("-------eBarimtShine -----------" + JSON.stringify(tuxainSalbar.eBarimtShine));
       if (!!tuxainSalbar.eBarimtShine)
         ebarimt = await togloomoosEbarimtShineUusgye(
           guilgee,
@@ -626,14 +627,8 @@ async function ebarimtShivye(req, res, next) {
           req.body.tukhainBaaziinKholbolt,
           nuatTulukhEsekh
         );
-      else
-        ebarimt = await togloomoosEbarimtUusgye(
-          guilgee,
-          req.body.register,
-          req.body.turul,
-          req.body.tukhainBaaziinKholbolt,
-          nuatTulukhEsekh
-        );
+      else if(!!next)
+        next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
       console.log("-------togloomoosEbarimtUusgye -----------" + JSON.stringify(ebarimt));  
       butsaakhMethod = function (d, khariuObject) {
         try {
