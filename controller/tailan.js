@@ -2099,7 +2099,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
               var filtered = khungulultuusKhassanJagsaalt?.filter((a) => moment(a.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && a.tailbar === tailbar && a.index === index);
               if(filtered?.length > 0)
               {
-                filtered[0]?.tulukhDun -= b.khyamdral;
+                filtered?.[0].tulukhDun -= b.khyamdral;
                 niitTulukhDun -= b.khyamdral;
               }
               else
