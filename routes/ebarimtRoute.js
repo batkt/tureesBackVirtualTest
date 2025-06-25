@@ -972,6 +972,8 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
         }
       });
     }
+    else
+      next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
   } catch (error) {
     next(error);
   }
