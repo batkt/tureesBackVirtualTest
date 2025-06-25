@@ -2093,15 +2093,27 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             b.tulukhDun = b.khyamdral;
             if(tempKhuvaari?.length > 0)
             {
-              var khassanTulkhDun = (tempKhuvaari?.reduce((a, b) => a + (b.tulukhDun || 0), 0) - b.khyamdral);
-              var khungulultuusKhassan = {
-                index: b.tailbar === "Хөнгөлөлт" ? 2 : b.index,
-                ognoo: b.ognoo,
-                turul: b.turul,
-                tailbar: (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт хассан дүн" : (b.tailbar + " хассан дүн")),
-                tulukhDun: khassanTulkhDun,
+              var khassanTulkhDun;
+              var tailbar = (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт хассан дүн" : (b.tailbar + " хассан дүн"));
+              var index = b.tailbar === "Хөнгөлөлт" ? 2 : b.index;
+              var filtered = khungulultuusKhassanJagsaalt?.filter((a) => moment(a.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && a.tailbar === tailbar && a.index === index);
+              if(filtered?.length > 0)
+              {
+                filtered[0]?.tulukhDun -= b.khyamdral;
+                niitTulukhDun -= b.khyamdral;
               }
-              khungulultuusKhassanJagsaalt.push(khungulultuusKhassan);
+              else
+              {
+                khassanTulkhDun = (tempKhuvaari?.reduce((a, b) => a + (b.tulukhDun || 0), 0) - b.khyamdral);
+                var khungulultuusKhassan = {
+                  index: index,
+                  ognoo: b.ognoo,
+                  turul: b.turul,
+                  tailbar: tailbar,
+                  tulukhDun: khassanTulkhDun,
+                }
+                khungulultuusKhassanJagsaalt.push(khungulultuusKhassan);
+              }
               niitTulukhDun += (khassanTulkhDun || 0);
             }
           }
