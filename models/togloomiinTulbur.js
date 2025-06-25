@@ -13,6 +13,7 @@ const togloomiinTulburSchema = new Schema(
     dun: Number,
     baiguullagiinId: String,
     barilgiinId: String,
+    ebarimtAvakhDun: Number,
   },
   {
     timestamps: true,
