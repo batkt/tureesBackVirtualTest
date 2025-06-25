@@ -421,23 +421,8 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
           onFinish(body, ugugdul);
         }
       });
-    } else {
-      var url = process.env.EBARIMT_IP + "/put";
-      if (ugugdul.barilgiinId)
-        url = url + "?lib=" + ugugdul.barilgiinId.toString();
-      request.post(
-        url,
-        { json: true, body: { data: ugugdul } },
-        (err, res1, body) => {
-          if (err) {
-            if(!!next)
-              next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
-          } else {
-            onFinish(body, ugugdul);
-          }
-        }
-      );
-    }
+    } else if(!!next)
+      next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
   } catch (aldaa) {
     if(!!next)
       next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
@@ -495,21 +480,8 @@ async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
         }
       }
     );
-  } else {
-    var url = process.env.EBARIMT_IP + "/returnBill";
-    if (ugugdul.barilgiinId)
-      url = url + "?lib=" + ugugdul.barilgiinId.toString();
-    request.post(
-      url,
-      { json: true, body: { data: ugugdul } },
-      (err, res1, body) => {
-        if (err) next(err);
-        else {
-          onFinish(body);
-        }
-      }
-    );
-  }
+  } else if(!!next)
+      next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
 }
 async function zogsoolNiitDungeerEbarimtShivye(
   kholbolt,
