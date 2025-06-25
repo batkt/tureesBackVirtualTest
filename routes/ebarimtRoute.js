@@ -458,17 +458,6 @@ async function ebarimtMedeelelAvya(ugugdul, onFinish, next, ebarimtShine = false
       }
     });
   }
-  else
-  {
-    var url = process.env.EBARIMT_IP + "/getInformation";
-    if (ugugdul) url = url + "?lib=" + ugugdul.toString();
-    request(url, { json: true }, (err, res1, body) => {
-      if (err) next(err);
-      else {
-        onFinish(body);
-      }
-    });
-  }
 }
 
 router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
@@ -982,17 +971,6 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
           res.send(body);
         }
       });
-    } else {
-      var url = process.env.EBARIMT_IP + "/sendData";
-      if (req.body.barilgiinId)
-        url = url + "?lib=" + req.body.barilgiinId.toString();
-      request.get(url, { json: true }, (err, res1, body) => {
-        if (err) {
-          next(err);
-        } else {
-          res.send(body);
-        }
-      });
     }
   } catch (error) {
     next(error);
@@ -1237,33 +1215,6 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
   }
 });
 
-async function ebarimtIlgeeye(baiguullagiinId) {
-  //olnoor xaij ilgeedeg bolgoj uurchluw
-  try {
-    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
-      "tokhirgoo.eBarimtAutomataarIlgeekh": true,
-    });
-    for await (const baiguullaga of baiguullaguud) {
-      for await (const barilga of baiguullaga.barilguud) {
-        var url = process.env.EBARIMT_IP + "/sendData";
-        try {
-          url = url + "?lib=" + barilga._id.toString();
-          request.get(url, { json: true }, (err, res1, body) => {
-            if (err) {
-              throw err;
-            } else {
-            }
-          });
-        } catch (aldaa) {
-          continue;
-        }
-      }
-    }
-  } catch (error) {
-    throw err;
-  }
-}
-
 router.get("/tatvariinAlba", tokenShalgakh, async (req, res, next) => {
   try {
     const body = req.query;
@@ -1371,7 +1322,6 @@ router.post(
 module.exports = router;
 module.exports.ebarimtShivye = ebarimtShivye;
 module.exports.ebarimtDuudya = ebarimtDuudya;
-module.exports.ebarimtIlgeeye = ebarimtIlgeeye;
 module.exports.zogsooloosEbarimtUusgye = zogsooloosEbarimtUusgye;
 module.exports.zogsooloosEbarimtShineUusgye = zogsooloosEbarimtShineUusgye;
 module.exports.zogsoolNiitDungeerEbarimtShivye =
