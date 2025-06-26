@@ -1742,6 +1742,16 @@ router
                             ],
                           },
                         },
+                        tulukhNUAT: {
+                          $sum: {
+                            $ifNull: ["$avlaga.tulukhNUAT", 0],
+                          },
+                        },
+                        tulukhNuatgui: {
+                          $sum: {
+                            $ifNull: ["$avlaga.tulukhNuatgui", 0],
+                          },
+                        },
                         khungulult: {
                           $sum: "$avlaga.khyamdral",
                         },
