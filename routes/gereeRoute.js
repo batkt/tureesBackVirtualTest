@@ -1623,7 +1623,7 @@ router
                         },
                         $or: [
                           {
-                            "avlaga.guilgeenuud.turul": { $in: ["avlaga", "khungulult"] },
+                            "avlaga.guilgeenuud.turul": { $in: ["avlaga", "khungulult", "torguuli"] },
                           },
                           {
                             $and: [
