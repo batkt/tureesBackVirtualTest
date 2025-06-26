@@ -62,7 +62,8 @@ var avlagiinTurul = new Schema({
       tureesiinDungeesKhungulukhEsekh: Boolean,
       ashiglaltDungeesKhungulukhEsekh: Boolean,
       togtmolUtga: Number,
-      tooluuriinDugaar : String
+      tooluuriinDugaar : String,
+      torguuliinKhuvi: String,
     },
   ],
   baritsaa: [
