@@ -616,7 +616,6 @@ async function ebarimtShivye(req, res, next) {
       var nuatTulukhEsekh = false;
       nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-      console.log("-------eBarimtShine -----------" + JSON.stringify(guilgee));
       if (!!tuxainSalbar.eBarimtShine)
         ebarimt = await togloomoosEbarimtShineUusgye(
           guilgee,
@@ -629,7 +628,6 @@ async function ebarimtShivye(req, res, next) {
         );
       else if(!!next)
         next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
-      console.log("-------togloomoosEbarimtUusgye -----------" + JSON.stringify(ebarimt));  
       butsaakhMethod = function (d, khariuObject) {
         try {
           if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
@@ -643,7 +641,6 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.togloomNer = khariuObject.togloomNer;
           ebarimt.togloomUtas = khariuObject.togloomUtas;
           ebarimt.save().catch((err) => {
-            console.log("-------save -----------" + JSON.stringify(error));
             next(err);
           });
           var ebarimtAmount = ebarimt.totalAmount + (khariuObject?.ebarimtAvsanDun || 0);
@@ -654,12 +651,10 @@ async function ebarimtShivye(req, res, next) {
             .then((xariu) => {
             })
             .catch((err) => {
-              console.log("-------TogloomiinTuv -----------" + JSON.stringify(error));
               next(err);
             });
           res.send(d);
         } catch (err) {
-          console.log("-------butsaakhMethod -----------" + JSON.stringify(error));
           next(err);
         }
       };
@@ -799,7 +794,6 @@ async function ebarimtShivye(req, res, next) {
     }
     ebarimtDuudya(ebarimt, butsaakhMethod, next, !!tuxainSalbar.eBarimtShine);
   } catch (error) {
-    console.log("-------ebarimt -----------" + JSON.stringify(error));
     next(error);
   }
 }
