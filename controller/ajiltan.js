@@ -282,7 +282,7 @@ exports.nuutsUgShalgakhAjiltan = asyncHandler(async (req, res, next) => {
     const { db } = require("zevbackv2");
     const ajiltan = await Ajiltan(db.erunkhiiKholbolt).findById(req.body.id).select("+nuutsUg");
     const ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
-    if (!ok) next(new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!"));
+    if (!ok) next(new aldaa("Хэрэглэгчийн одоо ашиглаж буй нууц үг буруу байна!"));
     res.send({ success: true });
   } catch (error) {
     next(error);
