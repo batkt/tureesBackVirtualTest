@@ -323,7 +323,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               });
             if (zardluud && zardluud.length > 0) {
               zardluud.forEach((zardal) => {
-                if(zardal.ognoonuud?.length > 0 && moment(turOgnoo) >= moment(zardal.ognoonuud[0]) && moment(turOgnoo) <= moment(zardal.ognoonuud[1])) return;
+                if(zardal.ognoonuud?.length > 0 && moment(turOgnoo).format("MM") > moment(zardal.ognoonuud[0]).format("MM") && moment(turOgnoo).format("MM") < moment(zardal.ognoonuud[1]).format("MM")) return;
                 if (zardal && (!zardal.ner?.includes("Цахилгаан") || (zardal.ner?.includes("Цахилгаан") && zardal.turul == "Тогтмол"))) {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
@@ -331,6 +331,18 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                     zardal.dun = tooZasyaSync(zardal.tariff * body.metrKube);
                   if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                   var zardalDun = ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, zardal.dun);
+                  if(zardal.ognoonuud?.length > 0 && moment(zardal.ognoonuud[0]).format("MM") == moment(turOgnoo).format("MM"))
+                  {
+                    var khonog = parseFloat(moment(zardal.ognoonuud[0]).format("DD"));
+                    var niitKhonog = parseFloat(moment(zardal.ognoonuud[0]).endOf("month").format("DD")); 
+                    zardalDun = (zardalDun * khonog)/ (niitKhonog || 1);
+                  }
+                  if(zardal.ognoonuud?.length > 0 && moment(zardal.ognoonuud[0]).format("MM") != moment(zardal.ognoonuud[1]).format("MM") && moment(zardal.ognoonuud[1]).format("MM") == moment(turOgnoo).format("MM"))
+                  {
+                    var niitKhonog = parseFloat(moment(zardal.ognoonuud[1]).endOf("month").format("DD")); 
+                    var khonog = niitKhonog - parseFloat(moment(zardal.ognoonuud[1]).format("DD")); 
+                    zardalDun = (zardalDun * khonog)/ (niitKhonog || 1);
+                  }
                   if(zardalDun > 0)
                     butsaakhJagsaalt.push({
                       turul: "avlaga",
