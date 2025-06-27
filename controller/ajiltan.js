@@ -283,11 +283,7 @@ exports.nuutsUgShalgakhAjiltan = asyncHandler(async (req, res, next) => {
     const ajiltan = await Ajiltan(db.erunkhiiKholbolt).findById(req.body.id).select("+nuutsUg");
     const ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
     if (!ok) next(new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!"));
-     var butsaakhObject = {
-      result: ajiltan,
-      success: true,
-    };
-    res.send(butsaakhObject);
+    res.send({ success: true });
   } catch (error) {
     next(error);
   }
