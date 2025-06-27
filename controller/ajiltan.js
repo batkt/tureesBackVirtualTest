@@ -280,8 +280,9 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
 exports.nuutsUgShalgakhAjiltan = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
-    var ajiltan = await Ajiltan(db.erunkhiiKholbolt).findById(req.body.id);
-    var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
+    const ajiltan = await Ajiltan(db.erunkhiiKholbolt).findById(req.body.id);
+    console.log("ajiltan --------- nuutsUgShalgakhAjiltan --------"+ JSON.stringify(ajiltan));
+    const ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
     console.log("ok --------- nuutsUgShalgakhAjiltan --------"+ JSON.stringify(ok));
     if (!ok) next(new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!"));
     res.status(200).json(ok);
