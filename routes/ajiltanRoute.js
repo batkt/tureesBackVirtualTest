@@ -17,6 +17,7 @@ const {
   ajiltanNevtrey,
   backAvya,
   tokenoorAjiltanAvya,
+  nuutsUgShalgakhAjiltan,
   zochiniiTokenAvya,
   erkhiinMedeelelAvya,
   khugatsaaguiTokenAvya,
@@ -80,6 +81,7 @@ router.get("/sessionAvya/:sessionId", async (req, res, next) => {
 
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);
+router.route("/nuutsUgShalgakhAjiltan").post(nuutsUgShalgakhAjiltan);
 router.route("/zochiniiTokenAvya/:baiguullagiinId").get(zochiniiTokenAvya);
 router.route("/khugatsaaguiTokenAvya").post(khugatsaaguiTokenAvya);
 router.route("/erkhiinMedeelelAvya").post(tokenShalgakh, erkhiinMedeelelAvya);

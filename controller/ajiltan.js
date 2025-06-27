@@ -17,7 +17,7 @@ const useragent = require("express-useragent");
 const { Uilchluulegch, ZurchilteiMashin } = require("parking-v1");
 const http = require("http");
 const lodash = require("lodash");
-const { formatNumber } = require("zevbackv2");
+const { formatNumber, tokenShalgakh } = require("zevbackv2");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const session = require("../models/session");
 
@@ -272,6 +272,18 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
       .catch((err) => {
         next(err);
       });
+  } catch (error) {
+    next(error);
+  }
+});
+
+exports.nuutsUgShalgakhAjiltan = asyncHandler(tokenShalgakh, async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    var ajiltan = await Ajiltan(db.erunkhiiKholbolt).findById(req.body.id);
+    var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
+    if (!ok) next(new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!"));
+    res.status(200).json(ok);
   } catch (error) {
     next(error);
   }
