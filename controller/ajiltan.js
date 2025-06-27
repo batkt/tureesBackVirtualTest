@@ -286,7 +286,7 @@ exports.nuutsUgShalgakhAjiltan = asyncHandler(async (req, res, next) => {
     if (!ok) next(new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!"));
     res.status(200).json(ok);
   } catch (error) {
-    console.log("error --------- nuutsUgShalgakhAjiltan --------"+ JSON.stringify(error));
+    console.log("error --------- nuutsUgShalgakhAjiltan --------"+error);
     next(error);
   }
 });
