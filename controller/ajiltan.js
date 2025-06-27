@@ -263,6 +263,7 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
       throw new Error("Энэ үйлдлийг хийх эрх байхгүй байна!", 401);
     Ajiltan(db.erunkhiiKholbolt)
       .findById(tokenObject.id)
+      .select("+nuutsUg")
       .then((urDun) => {
         var urdunJson = urDun.toJSON();
         urdunJson.duusakhOgnoo = tokenObject.duusakhOgnoo;
