@@ -280,7 +280,7 @@ exports.tokenoorAjiltanAvya = asyncHandler(async (req, res, next) => {
 exports.nuutsUgShalgakhAjiltan = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
-    const ajiltan = await Ajiltan(db.erunkhiiKholbolt).findById(req.body.id);
+    const ajiltan = await Ajiltan(db.erunkhiiKholbolt).findById(req.body.id).select("+nuutsUg");
     console.log("ajiltan --------- nuutsUgShalgakhAjiltan --------"+ JSON.stringify(ajiltan));
     const ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
     console.log("ok --------- nuutsUgShalgakhAjiltan --------"+ JSON.stringify(ok));
