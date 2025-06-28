@@ -4145,11 +4145,11 @@ router
           if(geree.baiguullagiinId === "63c0f31efe522048bf02086d")
           {
             var foodcityEkhlekhOgnoo = new Date(moment("2024-09-30").format("YYYY-MM-DD 00:00:00"))
-            var tempEkhlekhOgnoo = new Date(moment(moment(geree.gereeniiOgnoo) > moment(today.getFullYear() + "-04-01").startOf("month") ? geree.gereeniiOgnoo : moment("2025-04-01").startOf("month")).format("YYYY-MM-DD 00:00:00"))
+            var tempEkhlekhOgnoo = new Date(moment(moment(geree.gereeniiOgnoo) > moment(today.getFullYear() + "-04-01").startOf("month") ? geree.gereeniiOgnoo : moment(today.getFullYear() + "-04-01").startOf("month")).format("YYYY-MM-DD 00:00:00"))
             ekhlekhOgnoo = new Date(foodcityEkhlekhOgnoo > tempEkhlekhOgnoo ? foodcityEkhlekhOgnoo : tempEkhlekhOgnoo); 
           }
           else
-            ekhlekhOgnoo = new Date(moment(geree.gereeniiOgnoo) > moment(today.getFullYear() + "-04-01").startOf("month") ? geree.gereeniiOgnoo : moment("2025-04-01").startOf("month"));
+            ekhlekhOgnoo = new Date(moment(geree.gereeniiOgnoo) > moment(today.getFullYear() + "-04-01").startOf("month") ? geree.gereeniiOgnoo : moment(today.getFullYear() + "-04-01").startOf("month"));
           var khuvaariud = geree.avlaga.guilgeenuud;
           khuvaariud = khuvaariud.filter(
             (x) => x.ognoo < ekhlekhOgnoo || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
