@@ -4142,13 +4142,13 @@ router
         for await (const geree of gereenuud) {
           var khuvaariud = geree.avlaga.guilgeenuud;
           khuvaariud = khuvaariud.filter(
-            (x) => x.ognoo < moment("2025-04-01").startOf("month") || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
+            (x) => x.ognoo < moment("2025-03-30").startOf("month") || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
           );
           var today = new Date();
           var unuudur = new Date(
             2025,
-            4,
-            1,
+            3,
+            30,
             0,
             0,
             0
@@ -4159,7 +4159,7 @@ router
               moment(unuudur).add(index, "month").set("date", udur) <=
                 moment(geree.duusakhOgnoo) &&
               moment(unuudur).add(index, "month").set("date", udur) >=
-                moment("2025-04-01").startOf("month")
+                moment("2025-03-30").startOf("month")
             ) {
                 var tukhainUdur = moment(unuudur).add(index, "month").set("date", udur);
                 //undsen tulultiin xuwaari)
@@ -4188,7 +4188,7 @@ router
                       else if (zardal.turul == "1м2" && geree.talbainKhemjee > 0)
                         tulukhDun = tooZasyaSync(zardal.tariff * geree.talbainKhemjee);
                       else if (zardal.turul == "Тогтмол") 
-                        tulukhDun == zardal.tariff;
+                        tulukhDun = zardal.tariff;
                       if(zardal._id.toString() == zardalAvlaga._id.toString() && moment(zardalAvlaga.ognoonuud[0]).format("MM") == moment(tukhainUdur).format("MM"))
                       {
                         var khonog = parseFloat(moment(zardalAvlaga.ognoonuud[0]).format("DD"));
@@ -4201,8 +4201,6 @@ router
                         var khonog = niitKhonog - parseFloat(moment(zardalAvlaga.ognoonuud[1]).format("DD")); 
                         tulukhDun = (tulukhDun * khonog)/ (niitKhonog || 1);
                       }
-                      console.log("zardal" + JSON.stringify(zardal));
-                      console.log("tulukhDun" + JSON.stringify(tulukhDun));
                       khuvaariud.push({
                         ognoo: tukhainUdur,
                         khyamdral: 0,
