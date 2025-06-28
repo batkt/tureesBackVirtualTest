@@ -4201,6 +4201,7 @@ router
                       if(zardal._id.toString() == zardalAvlaga._id.toString() && moment(zardalAvlaga.ognoonuud[0]).format("MM") == moment(tukhainUdur).format("MM"))
                       {
                         var khonog = parseFloat(moment(zardalAvlaga.ognoonuud[0]).format("DD"));
+                        if(khonog == 1) return;
                         var niitKhonog = parseFloat(moment(zardalAvlaga.ognoonuud[0]).endOf("month").format("DD")); 
                         tulukhDun = (tulukhDun * khonog)/ (niitKhonog || 1);
                       }
