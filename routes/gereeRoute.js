@@ -4159,7 +4159,7 @@ router
               moment(unuudur).add(index, "month").set("date", udur) <=
                 moment(geree.duusakhOgnoo) &&
               moment(unuudur).add(index, "month").set("date", udur) >=
-                moment().startOf("month")
+                moment("2025-04-01").startOf("month")
             ) {
                 var tukhainUdur = moment(unuudur).add(index, "month").set("date", udur);
                 //undsen tulultiin xuwaari)
@@ -4182,14 +4182,14 @@ router
                   geree.zardluud.forEach((zardal) => {
                     if (zardal && (!zardal.ner?.includes("Цахилгаан") || (zardal.ner?.includes("Цахилгаан") && zardal.turul == "Тогтмол"))) {
                       if(zardal._id == zardalAvlaga._id && moment(tukhainUdur).format("MM") > moment(zardalAvlaga.ognoonuud[0]).format("MM") && moment(tukhainUdur).format("MM") < moment(zardalAvlaga.ognoonuud[1]).format("MM")) return;
+                      var tulukhDun = 0;
                       if (zardal.turul == "1м3/талбай" && geree.talbainKhemjeeMetrKube > 0)
-                        zardal.dun = tooZasyaSync(zardal.tariff * geree.talbainKhemjeeMetrKube);
+                        tulukhDun = tooZasyaSync(zardal.tariff * geree.talbainKhemjeeMetrKube);
                       else if (zardal.turul == "1м2" && geree.talbainKhemjee > 0)
-                        zardal.dun = tooZasyaSync(zardal.tariff * geree.talbainKhemjee);
+                        tulukhDun = tooZasyaSync(zardal.tariff * geree.talbainKhemjee);
                       else if (zardal.turul == "Тогтмол") 
-                        zardal.dun == zardal.tariff;
-                      var tulukhDun = zardal.dun;
-                      if(zardal._id == zardalAvlaga._id && moment(zardalAvlaga.ognoonuud[0]).format("MM") == moment(tukhainUdur).format("MM"))
+                        tulukhDun == zardal.tariff;
+                      if(zardal._id.toString() == zardalAvlaga._id.toString() && moment(zardalAvlaga.ognoonuud[0]).format("MM") == moment(tukhainUdur).format("MM"))
                       {
                         var khonog = parseFloat(moment(zardalAvlaga.ognoonuud[0]).format("DD"));
                         var niitKhonog = parseFloat(moment(zardalAvlaga.ognoonuud[0]).endOf("month").format("DD")); 
@@ -4201,22 +4201,13 @@ router
                         var khonog = niitKhonog - parseFloat(moment(zardalAvlaga.ognoonuud[1]).format("DD")); 
                         tulukhDun = (tulukhDun * khonog)/ (niitKhonog || 1);
                       }
-                      var baigaa = khuvaariud.find((a) => {
-                          return (
-                            a.turul == "avlaga" &&
-                            a.tulukhDun == tulukhDun &&
-                            moment(a.ognoo).isSame(tukhainUdur, "day") &&
-                            a.tailbar == zardal.ner
-                          );
-                        });
-                        if (!baigaa)
-                          khuvaariud.push({
-                            ognoo: tukhainUdur,
-                            khyamdral: 0,
-                            turul: "avlaga",
-                            tailbar: zardal.ner,
-                            tulukhDun: tulukhDun,
-                          });
+                      khuvaariud.push({
+                        ognoo: tukhainUdur,
+                        khyamdral: 0,
+                        turul: "avlaga",
+                        tailbar: zardal.ner,
+                        tulukhDun: tulukhDun,
+                      });
                     }
                   });
                 }
