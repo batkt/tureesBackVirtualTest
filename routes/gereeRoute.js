@@ -4140,15 +4140,24 @@ router
       if(gereenuud?.length > 0)
       {
         for await (const geree of gereenuud) {
+          var ekhlekhOgnoo;
+          if(geree.baiguullagiinId === "63c0f31efe522048bf02086d")
+          {
+            var foodcityEkhlekhOgnoo = new Date(moment("2024-09-30").format("YYYY-MM-DD 00:00:00"))
+            var tempEkhlekhOgnoo = new Date(moment(moment(geree.gereeniiOgnoo) > moment().startOf("month") ? geree.gereeniiOgnoo : moment("205-04-01").startOf("month")).format("YYYY-MM-DD 00:00:00"))
+            ekhlekhOgnoo = new Date(foodcityEkhlekhOgnoo > tempEkhlekhOgnoo ? foodcityEkhlekhOgnoo : tempEkhlekhOgnoo); 
+          }
+          else
+            ekhlekhOgnoo = new Date(moment(geree.gereeniiOgnoo) > moment().startOf("month") ? geree.gereeniiOgnoo : moment("205-04-01").startOf("month"));
           var khuvaariud = geree.avlaga.guilgeenuud;
           khuvaariud = khuvaariud.filter(
-            (x) => x.ognoo < moment("2025-03-30").startOf("month") || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
+            (x) => x.ognoo < ekhlekhOgnoo || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
           );
           var today = new Date();
           var unuudur = new Date(
-            2025,
-            3,
-            30,
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate(),
             0,
             0,
             0
@@ -4159,7 +4168,7 @@ router
               moment(unuudur).add(index, "month").set("date", udur) <=
                 moment(geree.duusakhOgnoo) &&
               moment(unuudur).add(index, "month").set("date", udur) >=
-                moment("2025-03-30")
+                ekhlekhOgnoo
             ) {
                 var tukhainUdur = moment(unuudur).add(index, "month").set("date", udur);
                 //undsen tulultiin xuwaari)
