@@ -4159,7 +4159,7 @@ router
               moment(unuudur).add(index, "month").set("date", udur) <=
                 moment(geree.duusakhOgnoo) &&
               moment(unuudur).add(index, "month").set("date", udur) >=
-                moment("2025-03-30").startOf("month")
+                moment("2025-03-30")
             ) {
                 var tukhainUdur = moment(unuudur).add(index, "month").set("date", udur);
                 //undsen tulultiin xuwaari)
@@ -4201,13 +4201,14 @@ router
                         var khonog = niitKhonog - parseFloat(moment(zardalAvlaga.ognoonuud[1]).format("DD")); 
                         tulukhDun = (tulukhDun * khonog)/ (niitKhonog || 1);
                       }
-                      khuvaariud.push({
-                        ognoo: tukhainUdur,
-                        khyamdral: 0,
-                        turul: "avlaga",
-                        tailbar: zardal.ner,
-                        tulukhDun: tulukhDun,
-                      });
+                      if(tulukhDun > 0)
+                        khuvaariud.push({
+                          ognoo: tukhainUdur,
+                          khyamdral: 0,
+                          turul: "avlaga",
+                          tailbar: zardal.ner,
+                          tulukhDun: tulukhDun,
+                        });
                     }
                   });
                 }
