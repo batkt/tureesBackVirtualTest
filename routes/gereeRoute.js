@@ -4146,9 +4146,9 @@ router
           );
           var today = new Date();
           var unuudur = new Date(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate(),
+            2025,
+            4,
+            1,
             0,
             0,
             0
@@ -4201,6 +4201,8 @@ router
                         var khonog = niitKhonog - parseFloat(moment(zardalAvlaga.ognoonuud[1]).format("DD")); 
                         tulukhDun = (tulukhDun * khonog)/ (niitKhonog || 1);
                       }
+                      console.log("zardal" + JSON.stringify(zardal));
+                      console.log("tulukhDun" + JSON.stringify(tulukhDun));
                       khuvaariud.push({
                         ognoo: tukhainUdur,
                         khyamdral: 0,
