@@ -331,16 +331,20 @@ router.post("/msgTuukhEBarimtZogsool", async (req, res, next) => {
     var result = [];
     if (kholboltuud && baiguullaguud?.length) {
       for await (const  baiguullaga of baiguullaguud) {
-        var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id);
-        var query = { baiguullagiinId: kholbolt.baiguullagiinId, mashiniiDugaar: { $exists: true } };
-        if(req.body.ekhlekhOgnoo)
-          query["createdAt"] = { $gte: new Date(req.body.ekhlekhOgnoo), $lte: new Date(req.body.duusakhOgnoo) };
-        var msgTuukhuud = await MsgTuukh(kholbolt).find(query);
-        result.push({ register: baiguullaga.register, ner: baiguullaga.ner, dotoodNer: baiguullaga.dotoodNer, msgCount: msgTuukhuud?.length })
+        var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
+        if(kholbolt)
+        {
+          var query = { baiguullagiinId: kholbolt.baiguullagiinId, mashiniiDugaar: { $exists: true } };
+          if(req.body.ekhlekhOgnoo)
+            query["createdAt"] = { $gte: new Date(req.body.ekhlekhOgnoo), $lte: new Date(req.body.duusakhOgnoo) };
+          var msgTuukhuud = await MsgTuukh(kholbolt).find(query);
+          result.push({ register: baiguullaga.register, ner: baiguullaga.ner, dotoodNer: baiguullaga.dotoodNer, msgCount: msgTuukhuud?.length })
+        }
       }
     }
     res.send(result);
   } catch (err) {
+    console.log("msgTuukhEBarimtZogsool ------------------>>>"+err);
     next(err);
   }
 });
