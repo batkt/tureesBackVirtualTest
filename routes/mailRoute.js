@@ -331,7 +331,7 @@ router.post("/msgTuukhEBarimtZogsool", async (req, res, next) => {
     var result = [];
     if (kholboltuud && baiguullaguud?.length) {
       for await (const  baiguullaga of baiguullaguud) {
-        var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id.toString());
+        var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga._id);
         var query = { baiguullagiinId: kholbolt.baiguullagiinId, mashiniiDugaar: { $exists: true } };
         if(req.body.ekhlekhOgnoo)
           query["createdAt"] = { $gte: new Date(req.body.ekhlekhOgnoo), $lte: new Date(req.body.duusakhOgnoo) };
