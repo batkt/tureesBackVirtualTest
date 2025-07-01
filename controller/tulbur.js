@@ -906,19 +906,22 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         },
       },
     ]);
-    var tuxainBaritsaa = ustgaxObject[0].avlaga?.baritsaa;
-    if (tuxainBaritsaa) {
-      tuxainBaritsaa.gereeniiDugaar = req.body.gereeniiDugaar;
-      var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
-      ustsanBarimt.class = "baritsaa";
-      ustsanBarimt.tailbar = req.body.tailbar;
-      ustsanBarimt.object = tuxainBaritsaa;
-      if (req.body.nevtersenAjiltniiToken) {
-        ustsanBarimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
-        ustsanBarimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+    if(ustgaxObject?.length > 0)
+    {
+      var tuxainBaritsaa = ustgaxObject[0].avlaga?.baritsaa;
+      if (tuxainBaritsaa) {
+        tuxainBaritsaa.gereeniiDugaar = req.body.gereeniiDugaar;
+        var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
+        ustsanBarimt.class = "baritsaa";
+        ustsanBarimt.tailbar = req.body.tailbar;
+        ustsanBarimt.object = tuxainBaritsaa;
+        if (req.body.nevtersenAjiltniiToken) {
+          ustsanBarimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+          ustsanBarimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+        }
+        ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
+        await ustsanBarimt.save();
       }
-      ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
-      await ustsanBarimt.save();
     }
     var ustgaxObject1 = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
       {
@@ -931,19 +934,22 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         },
       },
     ]);
-    var tuxainGuilgee = ustgaxObject1[0].avlaga?.guilgeenuud;
-    if (tuxainGuilgee) {
-      tuxainGuilgee.gereeniiDugaar = req.body.gereeniiDugaar;
-      var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
-      ustsanBarimt.class = "baritsaaGuilgee";
-      ustsanBarimt.tailbar = req.body.tailbar;
-      ustsanBarimt.object = tuxainGuilgee;
-      if (req.body.nevtersenAjiltniiToken) {
-        ustsanBarimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
-        ustsanBarimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+    if(ustgaxObject1?.length > 0)
+    {
+      var tuxainGuilgee = ustgaxObject1[0].avlaga?.guilgeenuud;
+      if (tuxainGuilgee) {
+        tuxainGuilgee.gereeniiDugaar = req.body.gereeniiDugaar;
+        var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
+        ustsanBarimt.class = "baritsaaGuilgee";
+        ustsanBarimt.tailbar = req.body.tailbar;
+        ustsanBarimt.object = tuxainGuilgee;
+        if (req.body.nevtersenAjiltniiToken) {
+          ustsanBarimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+          ustsanBarimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+        }
+        ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
+        await ustsanBarimt.save();
       }
-      ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
-      await ustsanBarimt.save();
     }
     await Geree(req.body.tukhainBaaziinKholbolt)
       .findByIdAndUpdate(
