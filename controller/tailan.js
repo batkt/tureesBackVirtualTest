@@ -1820,10 +1820,10 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                                     {
                                       $cond: [
                                         {
-                                          $eq: ["$avlaga.guilgeenuud.turul", "khuvaari"],
+                                          $eq: ["$avlaga.guilgeenuud.turul", "torguuli"],
                                         },
+                                        "torguuli",
                                         "turees",
-                                        "$avlaga.guilgeenuud.turul",
                                       ]
                                     }
                                   ]
