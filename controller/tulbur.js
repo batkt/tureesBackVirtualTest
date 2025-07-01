@@ -894,6 +894,57 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
   const session = await req.body.tukhainBaaziinKholbolt.kholbolt.startSession();
   session.startTransaction();
   try {
+    var ObjectId = require("mongodb").ObjectId;
+    var ustgaxObject = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      {
+        $unwind: "$avlaga.baritsaa",
+      },
+      {
+        $match: {
+          _id: new ObjectId(req.body.gereeniiId),
+          "avlaga.baritsaa._id": new ObjectId(req.body.objectiinId),
+        },
+      },
+    ]);
+    var tuxainBaritsaa = ustgaxObject[0].avlaga.baritsaa;
+    if (tuxainBaritsaa) {
+      tuxainBaritsaa.gereeniiDugaar = req.body.gereeniiDugaar;
+      var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
+      ustsanBarimt.class = "baritsaa";
+      ustsanBarimt.tailbar = req.body.tailbar;
+      ustsanBarimt.object = tuxainBaritsaa;
+      if (req.body.nevtersenAjiltniiToken) {
+        ustsanBarimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+        ustsanBarimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+      }
+      ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
+      await ustsanBarimt.save();
+    }
+    var ustgaxObject1 = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      {
+        $unwind: "$avlaga.guilgeenuud",
+      },
+      {
+        $match: {
+          _id: new ObjectId(req.body.gereeniiId),
+          "avlaga.guilgeenuud._id": new ObjectId(req.body.objectiinId),
+        },
+      },
+    ]);
+    var tuxainGuilgee = ustgaxObject1[0].avlaga.guilgeenuud;
+    if (tuxainGuilgee) {
+      tuxainGuilgee.gereeniiDugaar = req.body.gereeniiDugaar;
+      var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
+      ustsanBarimt.class = "baritsaaGuilgee";
+      ustsanBarimt.tailbar = req.body.tailbar;
+      ustsanBarimt.object = tuxainGuilgee;
+      if (req.body.nevtersenAjiltniiToken) {
+        ustsanBarimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+        ustsanBarimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+      }
+      ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
+      await ustsanBarimt.save();
+    }
     await Geree(req.body.tukhainBaaziinKholbolt)
       .findByIdAndUpdate(
         { _id: req.body.gereeniiId },
