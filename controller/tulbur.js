@@ -829,6 +829,7 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
       });
 
     if (tuxainGuilgee) {
+      tuxainGuilgee.gereeniiDugaar = req.body.gereeniiDugaar;
       var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
       ustsanBarimt.class = "gereeniiGuilgee";
       ustsanBarimt.tailbar = req.body.tailbar;
