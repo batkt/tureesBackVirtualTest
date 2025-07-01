@@ -355,8 +355,8 @@ async function zogsooloosEbarimtShineUusgye(
   } else {
     ebarimt.type = "B2C_RECEIPT";
   }
-
-  var tulukhDun = guilgee.niitDun;
+  console.log(" --------->> guilgee -----------zogsool -- ebarimtAvakhDun ->" + JSON.stringify(guilgee.ebarimtAvakhDun));
+  var tulukhDun = guilgee.ebarimtAvakhDun ? guilgee.ebarimtAvakhDun : guilgee.niitDun;
   ebarimt.zogsooliinId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
