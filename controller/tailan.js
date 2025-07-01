@@ -1817,7 +1817,15 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                                       ]
                                     },
                                     "ekhniiUldegdel",
-                                    "turees",
+                                    {
+                                      $cond: [
+                                        {
+                                          $eq: ["$avlaga.guilgeenuud.turul", "khuvaari"],
+                                        },
+                                        "turees",
+                                        "$avlaga.guilgeenuud.turul",
+                                      ]
+                                    }
                                   ]
                                 }
                               ]
