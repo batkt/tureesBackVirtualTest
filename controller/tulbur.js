@@ -906,7 +906,7 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         },
       },
     ]);
-    var tuxainBaritsaa = ustgaxObject[0].avlaga.baritsaa;
+    var tuxainBaritsaa = ustgaxObject[0].avlaga?.baritsaa;
     if (tuxainBaritsaa) {
       tuxainBaritsaa.gereeniiDugaar = req.body.gereeniiDugaar;
       var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
@@ -931,7 +931,7 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         },
       },
     ]);
-    var tuxainGuilgee = ustgaxObject1[0].avlaga.guilgeenuud;
+    var tuxainGuilgee = ustgaxObject1[0].avlaga?.guilgeenuud;
     if (tuxainGuilgee) {
       tuxainGuilgee.gereeniiDugaar = req.body.gereeniiDugaar;
       var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
