@@ -257,7 +257,9 @@ router
       var guilgeenuud = req.body.tulbur;
       if (Array.isArray(guilgeenuud)) {
         let tulbur = [];
+        var ebarimtAvakhDun = 0;
         guilgeenuud.map((guilgee) => {
+          ebarimtAvakhDun += (guilgee.turul == "khariult" || guilgee.turul == "khungulult") ? 0 : guilgee.dun;
           tulbur.push({
             ognoo: guilgee.ognoo,
             turul: guilgee.turul,
@@ -276,6 +278,7 @@ router
           },
           {
             $set: {
+              ebarimtAvakhDun: ebarimtAvakhDun,
               "tuukh.$.burtgesenAjiltaniiId":
                 guilgeenuud[0].burtgesenAjiltaniiId,
               "tuukh.$.burtgesenAjiltaniiNer":
