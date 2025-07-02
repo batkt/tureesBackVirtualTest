@@ -81,7 +81,7 @@ router.get(
         };
         await tulburUridchiljTulukh(body, res, next);
       }
-      if(!!req.params.mashiniiDugaar && !!req.params.cameraIP)
+      if(!!req.params.mashiniiDugaar && !!req.params.cameraIP && req.params.cameraIP != "dotor")
       {
         const io = req.app.get("socketio");
         if (io) {
