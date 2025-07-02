@@ -1814,6 +1814,8 @@ router
                   gereenuud[0].umnukhSariinUrTulbur.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;
+                console.log("umnukh ---->>" + JSON.stringify(x.umnukhSariinUrTulbur));
+                console.log("umnukhSariinTulsun ---->>" + JSON.stringify(x.umnukhSariinTulsun));
                 x.umnukhSariinUrTulbur = x.umnukhSariinUrTulbur - x.umnukhSariinTulsun;
                 x.niitUldegdel =
                   gereenuud[0].niitUldegdel.find(
