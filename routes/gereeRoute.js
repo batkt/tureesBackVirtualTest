@@ -1155,6 +1155,7 @@ router
   .route("/eneSardTulukhJagsaaltAvya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
+      if(moment(req.body.nekhemjlekhAvakhOgnoo).format("YYYY-MM-DD") == moment(req.body.ekhlekhOgnoo).format("YYYY-MM-DD")) req.body.nekhemjlekhAvakhOgnoo = req.body.ekhlekhOgnoo;
       const body = req.body.query;
       if (!!body?.khuudasniiDugaar)
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
