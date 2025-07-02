@@ -1764,6 +1764,7 @@ router
             var gereenuud = await Geree(
               req.body.tukhainBaaziinKholbolt
             ).aggregate(query);
+            console.log("geree--------------->>" + JSON.stringify(gereenuud));
             if (result && result.jagsaalt && result.jagsaalt.length > 0) {
               result.jagsaalt = result.jagsaalt.filter((a) =>
                 gereenuud[0].niitUldegdel.find((b) => b._id == a.gereeniiDugaar)
