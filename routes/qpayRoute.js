@@ -70,13 +70,12 @@ router.get(
       if (qpayObject.zogsooliinId) {
         const body = {
           tukhainBaaziinKholbolt: kholbolt,
-          turul: "qpay",
+          turul: req.params.cameraIP == "dotor" ? "qpayUridchilsan" : "qpay",
           uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
           paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
           plate_number: qpayObject.zogsoolUilchluulegch.plate_number,
           barilgiinId: qpayObject.salbariinId,
           ajiltniiNer: "qpaySticker",
-          ajiltniiId: "qpaySticker",
           zogsooliinId: qpayObject.zogsooliinId,
         };
         await tulburUridchiljTulukh(body, res, next);
