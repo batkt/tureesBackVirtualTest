@@ -1247,12 +1247,30 @@ router
                     },
                     {
                       $match: {
-                        "avlaga.guilgeenuud.turul": {
-                          $nin: ["baritsaa"],
-                        },
                         "avlaga.guilgeenuud.ognoo": {
-                          $lt: new Date(req.body.ekhlekhOgnoo),
+                          $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
                         },
+                        $or: [
+                          {
+                            "avlaga.guilgeenuud.turul": {
+                              $nin: ["baritsaa", "aldangi"],
+                            },
+                          },
+                          {
+                            $and: [
+                              {
+                              "avlaga.guilgeenuud.turul": {
+                                $in: ["baritsaa"],
+                              }
+                              },
+                              {
+                              "avlaga.guilgeenuud.tulsunDun": {
+                                $gt: 0,
+                              }
+                              }
+                            ]
+                          }
+                        ],
                       },
                     },
                     {
@@ -1764,7 +1782,6 @@ router
             var gereenuud = await Geree(
               req.body.tukhainBaaziinKholbolt
             ).aggregate(query);
-            console.log("geree--------------->>" + JSON.stringify(gereenuud));
             if (result && result.jagsaalt && result.jagsaalt.length > 0) {
               result.jagsaalt = result.jagsaalt.filter((a) =>
                 gereenuud[0].niitUldegdel.find((b) => b._id == a.gereeniiDugaar)
@@ -1797,8 +1814,6 @@ router
                   gereenuud[0].umnukhSariinUrTulbur.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;
-                console.log("umnukh ---->>" + JSON.stringify(x.umnukhSariinUrTulbur));
-                console.log("umnukhSariinTulsun ---->>" + JSON.stringify(x.umnukhSariinTulsun));
                 x.umnukhSariinUrTulbur = x.umnukhSariinUrTulbur - x.umnukhSariinTulsun;
                 x.niitUldegdel =
                   gereenuud[0].niitUldegdel.find(
