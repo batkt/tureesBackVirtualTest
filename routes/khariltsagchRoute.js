@@ -158,65 +158,61 @@ router
     try {
       const { db } = require("zevbackv2");
       var davkhar = req.body.davkhar;
-      var matchQuery = {};
+      var matchQuery = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+      };
+      if (req.body.query) matchQuery = req.body.query;
       var query = [
         {
-          $match: {
-            baiguullagiinId: req.body.baiguullagiinId,
-            barilgiinId: req.body.barilgiinId,
-          },
-        },
-        {
-          $lookup: {
-            from: "geree",
-            let: {
-              register: "$register",
-              baiguullagiinId: "$baiguullagiinId",
-              barilgiinId: "$barilgiinId",
-            },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      { $eq: ["$register", "$$register"] },
-                      { $eq: ["$baiguullagiinId", "$$baiguullagiinId"] },
-                      { $eq: ["$barilgiinId", "$$barilgiinId"] },
-                    ],
-                  },
-                  tuluv: {
-                    $ne: -1,
-                  },
-                },
-              },
-            ],
-            as: "geree",
-          },
-        },
-      ];
-      if (req.body.query) matchQuery = req.body.query;
-      if (davkhar?.length > 0) {
-        matchQuery["geree.davkhar"] = { $in: davkhar};
-      }
-      matchQuery["geree.gereeniiDugaar"] = { $exists: true };
-      matchQuery["geree.tuluv"] = { $nin: [-1] };
-      if (matchQuery)
-        query.push({
           $match: matchQuery,
-        });
-      query.push({
-        $addFields: {
-          talbainDugaar: "$geree.talbainDugaar",
-        },
-      });
-      query.push({
-        $project: {
-          geree: 0,
-        },
-      });
-      var result = await Khariltsagch(req.body.tukhainBaaziinKholbolt).aggregate(query);
+        }
+      ]
+      var result = [];
+      var jagsaalt = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
+      if(jagsaalt?.length > 0)
+      {
+        var matchGeree = {
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,  
+          gereeniiDugaar: { $exists: true },
+          tuluv: { $nin: [-1] },
+        }
+        if (davkhar?.length > 0) {
+          matchGeree["davkhar"] = { $in: davkhar};
+        }
+        query = [
+          {
+            $match: matchGeree,
+          }
+        ]
+        var gereeResult = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
+        if(gereeResult?.length > 0)
+        {
+          for await (const khariltsagch of jagsaalt){
+            var talbainDugaar = [];
+            var utas = [];
+            var filteredGeree = gereeResult?.find((a) => a.register == khariltsagch.register || a.register == khariltsagch.customerTin);
+            if(filteredGeree?.length)
+            {
+              for await (const geree of filteredGeree)
+              {
+                if (geree.talbainDugaar.includes(",")) {
+                  talbainDugaar = [...talbainDugaar, ...geree.talbainDugaar.split(",")];
+                } else talbainDugaar.push(geree.talbainDugaar);
+                utas = [...utas, ...geree.utas];
+              }
+              khariltsagch.talbainDugaar = talbainDugaar;
+              khariltsagch.utas = utas;
+              result.push(khariltsagch);
+            }
+          }
+        }
+      }
+      console.log("result length ---------------- " + JSON.stringify(result?.length));
       res.send(result);
     } catch (error) {
+      console.log("error ---------------- " + error);
       next(error);
     }
   });
