@@ -170,6 +170,7 @@ router
       ]
       var result = [];
       var jagsaalt = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
+      console.log("jagsaalt length ---------------- " + JSON.stringify(jagsaalt?.length));
       if(jagsaalt?.length > 0)
       {
         var matchGeree = {
@@ -187,12 +188,14 @@ router
           }
         ]
         var gereeResult = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
+        console.log("gereeResult length ---------------- " + JSON.stringify(gereeResult?.length));
         if(gereeResult?.length > 0)
         {
           for await (const khariltsagch of jagsaalt){
             var talbainDugaar = [];
             var utas = [];
             var filteredGeree = gereeResult?.find((a) => a.register == khariltsagch.register || a.register == khariltsagch.customerTin);
+            console.log("filteredGeree length ---------------- " + JSON.stringify(filteredGeree?.length));
             if(filteredGeree?.length)
             {
               for await (const geree of filteredGeree)
