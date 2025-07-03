@@ -4347,7 +4347,7 @@ router
             $gte: new Date(req.body.duusakhOgnoo),
             $lte: new Date(req.body.duusakhOgnoo),
           }, 
-          tailbar: req.body.tailbar,
+          tailbar: { $regex: req.body.tailbar, $options: "i" },
           turul: "avlaga",
         };
         await Geree(req.body.tukhainBaaziinKholbolt)
