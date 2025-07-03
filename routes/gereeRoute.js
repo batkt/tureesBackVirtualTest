@@ -4213,9 +4213,7 @@ router
                         if(zardal._id.toString() == zardalAvlaga._id.toString() && moment(zardalAvlaga.ognoonuud[0]).format("MM") == moment(turOgnoo).format("MM"))
                         {
                           var khonog = parseFloat(moment(zardalAvlaga.ognoonuud[0]).format("DD"));
-                          console.log("----------khonog-----1-------->");
                           if(khonog == 1) return;
-                          console.log("----------khonog------------->");
                           var niitKhonog = parseFloat(moment(zardalAvlaga.ognoonuud[0]).endOf("month").format("DD")); 
                           tulukhDun = (tulukhDun * khonog)/ (niitKhonog || 1);
                         }
@@ -4337,7 +4335,6 @@ router
       },
     ];
     var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query); 
-    console.log("-------gereenuud------>>" + JSON.stringify(gereenuud));
     if(gereenuud?.length > 0)
     {
       for await (const geree of gereenuud)    

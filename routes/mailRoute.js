@@ -344,7 +344,6 @@ router.post("/msgTuukhEBarimtZogsool", async (req, res, next) => {
     }
     res.send(result);
   } catch (err) {
-    console.log("msgTuukhEBarimtZogsool ------------------>>>"+err);
     next(err);
   }
 });

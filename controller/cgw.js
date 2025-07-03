@@ -439,7 +439,6 @@ async function tdbDansniiKhuulgaAvya(khuselt, next, onFinish, baiguullagiinId) {
       onFinish(result);
     });
   } catch (error) {
-    console.log("tdbDansniiKhuulgaAvya ---------->>>" + error);
     if (next) next(error);
   }
 }
@@ -514,7 +513,6 @@ async function tdbDansniiUldegdelAvya(
       onFinish(result);
     });
   } catch (error) {
-    console.log("tdbDansniiUldegdelAvya ---------->>>" + error);
     if (next) next(new Error("Дансны үлдэгдэл авахад алдаа гарлаа!"));
   }
 }
