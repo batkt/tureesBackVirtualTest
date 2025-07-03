@@ -1447,7 +1447,7 @@ router
                         $or: [
                           {
                             "avlaga.guilgeenuud.turul": {
-                              $nin: ["baritsaa"],
+                              $nin: ["baritsaa", "aldangi"],
                             },
                           },
                           {
