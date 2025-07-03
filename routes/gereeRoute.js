@@ -4358,7 +4358,7 @@ router
           }
         );
         var lastAvlaga = {
-          ognoo: geree.ognoo,
+          ognoo: new Date(req.body.duusakhOgnoo),
           tulukhDun: geree.tulukhDun,
           tailbar: geree.tailbar,
           turul: geree.turul,
