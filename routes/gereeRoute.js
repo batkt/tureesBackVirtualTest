@@ -4337,6 +4337,7 @@ router
       },
     ];
     var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query); 
+    console.log("-------gereenuud------>>" + JSON.stringify(gereenuud));
     if(gereenuud?.length > 0)
     {
       for await (const geree of gereenuud)    
