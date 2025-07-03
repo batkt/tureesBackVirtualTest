@@ -194,7 +194,7 @@ router
           for await (const khariltsagch of jagsaalt){
             var talbainDugaar = [];
             var utas = [];
-            var filteredGeree = gereeResult?.find((a) => a.register == khariltsagch.register || a.register == khariltsagch.customerTin);
+            var filteredGeree = gereeResult?.filter((a) => a.register == khariltsagch.register || a.register == khariltsagch.customerTin);
             console.log("filteredGeree length ---------------- " + JSON.stringify(filteredGeree?.length));
             if(filteredGeree?.length)
             {
