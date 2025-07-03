@@ -4292,6 +4292,92 @@ router
   }
 });
 
+router
+  .route("/menejmentZasay")
+  .post(tokenShalgakh, async (req, res, next) => {
+  try 
+  {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      tuluv: 1,
+    }
+    if(req.body.gereeniiDugaar)
+      match["gereeniiDugaar"] = req.body.gereeniiDugaar;
+    var query = [
+      {
+        $match: match,
+      },
+      {
+        $unwind: {
+          path: "$avlaga.guilgeenuud",
+        },
+      },
+      {
+        $match: {
+          "avlaga.guilgeenuud.ognoo": {
+            $gte: new Date(req.body.ekhlekhOgnoo),
+            $lte: new Date(req.body.ekhlekhOgnoo),
+          },
+          "avlaga.guilgeenuud.turul": {
+            $in: ["avlaga"],
+          },
+           "avlaga.guilgeenuud.tailbar": "Менежментийн төлбөр",
+        },
+      },
+      {
+        $project: {
+          id: "$_id",
+          gereeniiDugaar: "$gereeniiDugaar",
+          ognoo: "$avlaga.guilgeenuud.ognoo",
+          tulukhDun: "$avlaga.guilgeenuud.tulukhDun",
+          tailbar: "$avlaga.guilgeenuud.tailbar",
+          turul: "$avlaga.guilgeenuud.turul",
+        },
+      },
+    ];
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query); 
+    if(gereenuud?.length > 0)
+    {
+      for await (const geree of gereenuud)    
+      {
+        var avlagaMatch = {
+          ognoo: {
+            $gte: new Date(req.body.duusakhOgnoo),
+            $lte: new Date(req.body.duusakhOgnoo),
+          }, 
+          tailbar: req.body.tailbar,
+          turul: "avlaga",
+        };
+        await Geree(req.body.tukhainBaaziinKholbolt)
+        .findByIdAndUpdate(
+          { _id: geree?.id },
+          {
+            $pull: { "avlaga.guilgeenuud": avlagaMatch },
+          }
+        );
+        var lastAvlaga = {
+          ognoo: geree.ognoo,
+          tulukhDun: geree.tulukhDun,
+          tailbar: geree.tailbar,
+          turul: geree.turul,
+        }
+        await Geree(req.body.tukhainBaaziinKholbolt)
+        .findByIdAndUpdate(
+          { _id: geree?.id },
+          {
+            $push: { "avlaga.guilgeenuud": lastAvlaga },
+          }
+        );
+      }
+    }
+    res.send("Amjilttai");
+  } 
+  catch (error) {
+    if(next) next(error);
+  }
+});
+
 module.exports = router;
 module.exports.sarBuriinKhungulultBodoy = sarBuriinKhungulultBodoy;
 module.exports.duusakhGereeAutomataarTalbainTulburNemekh = duusakhGereeAutomataarTalbainTulburNemekh;
