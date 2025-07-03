@@ -4317,7 +4317,7 @@ router
         $match: {
           "avlaga.guilgeenuud.ognoo": {
             $gte: new Date(req.body.ekhlekhOgnoo),
-            $lte: new Date(req.body.duusakhOgnoo),
+            $lte: new Date(req.body.ekhlekhOgnoo),
           },
           "avlaga.guilgeenuud.turul": {
             $in: ["avlaga"],
@@ -4344,8 +4344,8 @@ router
       {
         var avlagaMatch = {
           ognoo: {
-            $gte: new Date(req.body.zasakhOgnoo),
-            $lte: new Date(req.body.zasakhOgnoo1),
+            $gte: new Date(req.body.duusakhOgnoo),
+            $lte: new Date(req.body.duusakhOgnoo),
           }, 
           tailbar: req.body.tailbar,
           turul: "avlaga",
