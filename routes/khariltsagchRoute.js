@@ -193,7 +193,6 @@ router
         {
           for await (const khariltsagch of jagsaalt){
             var talbainDugaar = [];
-            var utas = [];
             var filteredGeree = gereeResult?.filter((a) => a.register == khariltsagch.register || a.register == khariltsagch.customerTin);
             console.log("filteredGeree length ---------------- " + JSON.stringify(filteredGeree?.length));
             if(filteredGeree?.length)
@@ -203,10 +202,8 @@ router
                 if (geree.talbainDugaar.includes(",")) {
                   talbainDugaar = [...talbainDugaar, ...geree.talbainDugaar.split(",")];
                 } else talbainDugaar.push(geree.talbainDugaar);
-                utas = [...utas, ...geree.utas];
               }
               khariltsagch.talbainDugaar = talbainDugaar;
-              khariltsagch.utas = utas;
               result.push(khariltsagch);
             }
           }
