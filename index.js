@@ -3,7 +3,10 @@ const app = express();
 const http = require("http");
 const cors = require("cors");
 const server = http.Server(app);
-const io = require("socket.io")(server);
+const io = require('socket.io')(server, {
+  pingTimeout: 20000,      
+  pingInterval: 10000      
+});
 const cron = require("node-cron");
 const dotenv = require("dotenv");
 const { zuragPack } = require("zuragpack");
