@@ -276,5 +276,6 @@ io.once("connection", (socket) => {
   socket.on("disconnect", () => {
   });
   socket.on("error", function (err) {
+    socket.disconnect(true);
   });
 });
