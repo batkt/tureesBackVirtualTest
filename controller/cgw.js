@@ -362,6 +362,8 @@ async function dansniiKhuulgaAvya(token, next, body) {
       body.record = 1;
     if(body.record)
       url = url + (resultValue ? "/?record=" : "/record?record=") + body.record;
+    console.log("resultValue url ---------->>" + resultValue);
+    console.log("dansniiKhuulgaAvya url ---------->>" + url);
     const response = await instance.get(url, { context });
     if (!response.body) {
       if (next) next(new aldaa("Татах хуулга байхгүй"));
@@ -369,6 +371,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
     }
     return JSON.parse(response?.body);
   } catch (error) {
+    console.log("dansniiKhuulgaAvya ---------->>" + error);
     if (next) next(error);
   }
 }
