@@ -609,6 +609,8 @@ async function ebarimtShivye(req, res, next) {
       ).findById(req.body.id);
       if (guilgee.ebarimtAvsanEsekh)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
+      if(!guilgee.ebarimtAvakhDun)
+        throw new aldaa("Төлбөр төлөгдөж байна. Түр хүлээнэ үү!");
       tuxainSalbar = baiguullaga?.barilguud?.find(
         (e) => e._id.toString() == guilgee.barilgiinId
       )?.tokhirgoo;
