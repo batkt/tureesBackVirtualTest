@@ -2568,6 +2568,8 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
     var tukhainObject;
     var tukhainZogsool;
     var bodsonDun = 0;
+    console.log("req.body --------------->>" + JSON.stringify(req.body));
+    console.log("req.body.zogsooliinId --------------->>" + JSON.stringify(req.body.zogsooliinId));
     const zogsool = req.body.zogsooliinId
       ? await Parking(req.body.tukhainBaaziinKholbolt).findOne({
           _id: req.body.zogsooliinId,
@@ -2577,7 +2579,9 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           barilgiinId: req.body.barilgiinId,
           "khaalga.ajiltnuud.id": req.body.ajiltniiId,
         });
+    console.log("tulbur --------------->>" + JSON.stringify(tulbur));    
     if (!!zogsool) {
+      console.log("zogsool --------------->>" + JSON.stringify(zogsool));
       oldsonMashin = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt
       ).findOne({
@@ -2603,6 +2607,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
     if (!tukhainObject) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
     }
+    console.log("tukhainObject --------------->>" + JSON.stringify(tukhainObject));
     if (
       tukhainObject &&
       tukhainObject.tuukh &&
@@ -2681,7 +2686,8 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       res.send("Amjilttai");
     }
   } catch (err) {
-    next(err);
+    console.log("err --------------->>" + err);
+    if(next) next(err);
   }
 });
 
