@@ -1753,6 +1753,21 @@ router
                             $ifNull: ["$avlaga.tulukhNuatgui", 0],
                           },
                         },
+                        tsekhDun: {
+                          $sum: {
+                            $ifNull: ["$avlaga.tsekhDun", 0],
+                          },
+                        },
+                        chadalDun: {
+                          $sum: {
+                            $ifNull: ["$avlaga.chadalDun", 0],
+                          },
+                        },
+                        sekhDemjikhTulburDun: {
+                          $sum: {
+                            $ifNull: ["$avlaga.sekhDemjikhTulburDun", 0],
+                          },
+                        },
                         khungulult: {
                           $sum: "$avlaga.khyamdral",
                         },
