@@ -2568,7 +2568,6 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
     var tukhainObject;
     var tukhainZogsool;
     var bodsonDun = 0;
-    console.log("req.body --------------->>" + JSON.stringify(req.body));
     console.log("req.body.zogsooliinId --------------->>" + JSON.stringify(req.body.zogsooliinId));
     const zogsool = req.body.zogsooliinId
       ? await Parking(req.body.tukhainBaaziinKholbolt).findOne({
