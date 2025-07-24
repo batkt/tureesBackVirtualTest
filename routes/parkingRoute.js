@@ -2677,7 +2677,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         {
           arrayFilters: [
             {
-              "t.zogsooliinId": tukhainZogsool._id,
+              "t.zogsooliinId": tukhainZogsool.gadnaZogsooliinId ? tukhainZogsool.gadnaZogsooliinId : tukhainZogsool._id,
             },
           ],
         }
