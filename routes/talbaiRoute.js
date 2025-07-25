@@ -208,6 +208,12 @@ function tooZasyaSync(too) {
 router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
   try
   {
+    var talbaiShalgakh = await Talbai(req.body.tukhainBaaziinKholbolt).findOne({
+      kod: req.body.kod,
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+    });
+    if (talbaiShalgakh) throw new Error("Талбайн дугаар давхардаж байна!");
     var talbai = new Talbai(req.body.tukhainBaaziinKholbolt)(req.body);
     var khuuchinTalbai = await Talbai(req.body.tukhainBaaziinKholbolt).findById(
       req.body._id
