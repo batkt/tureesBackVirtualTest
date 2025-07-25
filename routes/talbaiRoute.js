@@ -214,9 +214,6 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
       barilgiinId: req.body.barilgiinId,
       _id: { $ne: req.body._id }
     });
-    console.log("_id ------------->>" + JSON.stringify(req.body._id));
-    console.log("kod ------------->>" + JSON.stringify(req.body.kod));
-    console.log("talbai ------------->>" + JSON.stringify(talbaiShalgakh?.length));
     if (talbaiShalgakh?.length > 0) throw new Error("Талбайн дугаар давхардаж байна!");
     var talbai = new Talbai(req.body.tukhainBaaziinKholbolt)(req.body);
     var khuuchinTalbai = await Talbai(req.body.tukhainBaaziinKholbolt).findById(
