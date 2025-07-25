@@ -213,6 +213,8 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
     });
+    console.log("kod ------------->>" + JSON.stringify(req.body.kod));
+    console.log("talbai ------------->>" + JSON.stringify(talbaiShalgakh?.length));
     if (talbaiShalgakh?.length > 1) throw new Error("Талбайн дугаар давхардаж байна!");
     var talbai = new Talbai(req.body.tukhainBaaziinKholbolt)(req.body);
     var khuuchinTalbai = await Talbai(req.body.tukhainBaaziinKholbolt).findById(
