@@ -374,8 +374,8 @@ async function talbaiBaigaaEskhiigShalgaya(
     gereeJagsaalt.forEach((x) => {
       shineAldaaniiMsg +=
         aldaaniiMsg +
-        "Дараах талбайн дугаар гэрээ байгуулсан байна! : " +
-        x.talbainDugaar +
+        "Дараах талбайн дугаар гэрээ байгуулсан байна! Гэрээний дугаар: " +
+        x.gereeniiDugaar +
         "<br/>";  
     })
   }
