@@ -345,6 +345,12 @@ async function talbaiBaigaaEskhiigShalgaya(
     baiguullagiinId: baiguullagiinId,
     barilgiinId: barilgiinId,
   });
+  var gereeJagsaalt = await Geree(tukhainBaaziinKholbolt).find({
+    talbainDugaar: { $in: jagsaalt },
+    baiguullagiinId: baiguullagiinId,
+    barilgiinId: barilgiinId,
+    tuluv: { $ne: -1 },
+  });
   if (talbainJagsaalt.length !== 0) {
     oldooguiJagsaalt = [];
     jagsaalt.forEach((x) => {
@@ -363,6 +369,16 @@ async function talbaiBaigaaEskhiigShalgaya(
       "Дараах дугаартай талбайнуудын мэдээлэл олдсонгүй! : " +
       jagsaalt +
       "<br/>";
+  if(gereeJagsaalt?.length > 0)    
+  {
+    gereeJagsaalt.forEach((x) => {
+      shineAldaaniiMsg +=
+        aldaaniiMsg +
+        "Дараах талбайн дугаар гэрээ байгуулсан байна! : " +
+        x.talbainDugaar +
+        "<br/>";  
+    })
+  }
 
   if (shineAldaaniiMsg) aldaaniiMsg = shineAldaaniiMsg;
   else {
