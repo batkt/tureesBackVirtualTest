@@ -381,7 +381,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
 });
 
 function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
-  if(body.shineGereeEsekh && turOgnoo.getMonth() == ekhlekhOgnoo.getMonth() && turOgnoo.getFullYear() == ekhlekhOgnoo.getFullYear())
+  if(turOgnoo.getMonth() == ekhlekhOgnoo.getMonth() && turOgnoo.getFullYear() == ekhlekhOgnoo.getFullYear())
   {
     var sariinNiitKhonog = body.guchKhonogOruulakhEsekh ? 30 : parseFloat(moment(ekhlekhOgnoo).endOf("month").format("DD"));
     var ashiglakhKhonog = body.garaasKhonogOruulakhEsekh ? body.ekhniiSariinKhonog : (moment(ekhlekhOgnoo).endOf("month").diff(body.gereeniiOgnoo, "d") + 1);
