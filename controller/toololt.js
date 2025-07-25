@@ -264,11 +264,16 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
     ];
     var avlagaAldangi = await gereeObject.aggregate(query);
-    console.log("-------- aldangi ----------->>>" + JSON.stringify(avlagaAldangi));
-    console.log("--------- avlaga ---------->>>" + JSON.stringify(avlaga));
-    if(avlaga?.length > 0 && avlagaAldangi?.length > 0)
-      for await (const val of avlaga)
-        val.dun += avlagaAldangi?.[0]?.dun;
+    if(avlagaAldangi?.length > 0)
+    {
+      if(avlaga?.length > 0)
+      {
+        for await (const val of avlaga)
+          val.dun += avlagaAldangi?.[0]?.dun;
+      }
+      else
+        avlaga = avlagaAldangi;
+    }
 
     match = {
       "avlaga.guilgeenuud.ognoo": {
