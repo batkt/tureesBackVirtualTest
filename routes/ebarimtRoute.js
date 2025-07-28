@@ -607,9 +607,10 @@ async function ebarimtShivye(req, res, next) {
       var guilgee = await TogloomiinTuv(
         req.body.tukhainBaaziinKholbolt
       ).findById(req.body.id);
-      if (guilgee.ebarimtAvsanEsekh)
+      var niitDun = guilgee.tulbur?.reduce((a, b) => a + (b.dun || 0), 0);
+      if (guilgee.ebarimtAvsanEsekh && formatNumber(niitDun) == formatNumber(guilgee.niitDun))
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
-      if(!guilgee.ebarimtAvakhDun)
+      if(!guilgee.ebarimtAvakhDun || guilgee.ebarimtAvakhDun == 0)
         throw new aldaa("Төлбөр төлөгдөж байна. Түр хүлээнэ үү!");
       tuxainSalbar = baiguullaga?.barilguud?.find(
         (e) => e._id.toString() == guilgee.barilgiinId
