@@ -440,6 +440,8 @@ router
       }
       else
       {
+        console.log("id ----" + JSON.stringify(req.body.id));
+        console.log("update ----" + JSON.stringify(update));
         await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
           req.body.id,
           update
