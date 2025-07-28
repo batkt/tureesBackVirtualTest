@@ -755,6 +755,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
         0
       );
     }
+    console.log("dansniiDugaar --->" + JSON.stringify(req.body.dansniiDugaar));
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
         if (!req)
@@ -771,6 +772,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
         }
         if (dansnuud)
           for await (const dans of dansnuud) {
+            console.log("dans log con --->" + JSON.stringify(dans.dugaar));
             try {
               if (dans.bank == "khanbank") {
                 var query = {
