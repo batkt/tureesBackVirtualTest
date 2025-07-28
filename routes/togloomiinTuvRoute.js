@@ -439,9 +439,6 @@ router
           update
         );
         if (update.tulburTulsunEsekh === true) {
-          await TogloomiinTulbur(req.body.tukhainBaaziinKholbolt).insertMany(
-            guilgeeniiTuukh
-          );
           res.send("Amjilttai");
         } else res.send("TulburDutuu");
       }
