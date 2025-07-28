@@ -426,22 +426,14 @@ router
           update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
         }
       });
-      if(togloomiinTuvTulbur.sungalt?.length > 0)
-        guilgeeniiTuukh.push(...togloomiinTuvTulbur.tulbur);
+      guilgeeniiTuukh.push(...togloomiinTuvTulbur.tulbur);
       update["niitTulbur"] = guilgeeniiTuukh;
       update["tulbur"] = guilgeeniiTuukh;
       var dun = guilgeeniiTuukh?.reduce((a, b) => a + b.dun, 0);
-      console.log("dun ------- togloom --- >" + JSON.stringify(dun));
-      console.log("niitDun ------- togloom --- >" + JSON.stringify(togloomiinTuvTulbur?.niitDun));
       if(togloomiinTuvTulbur?.niitDun > 0 && dun > 0 && dun > togloomiinTuvTulbur?.niitDun)
-      {
-        console.log("niitDun ------- togloom --- >" + JSON.stringify(togloomiinTuvTulbur?.niitDun));
         res.send("Tulugdsun");
-      }
       else
       {
-        console.log("id ----" + JSON.stringify(req.body.id));
-        console.log("update ----" + JSON.stringify(update));
         await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
           req.body.id,
           update
