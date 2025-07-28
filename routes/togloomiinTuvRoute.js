@@ -434,7 +434,10 @@ router
       console.log("dun ------- togloom --- >" + JSON.stringify(dun));
       console.log("niitDun ------- togloom --- >" + JSON.stringify(togloomiinTuvTulbur?.niitDun));
       if(togloomiinTuvTulbur?.niitDun > 0 && dun > 0 && dun > togloomiinTuvTulbur?.niitDun)
+      {
+        console.log("niitDun ------- togloom --- >" + JSON.stringify(togloomiinTuvTulbur?.niitDun));
         res.send("Tulugdsun");
+      }
       else
       {
         await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
