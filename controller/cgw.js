@@ -860,6 +860,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     })
                     .sort({ TxDt: -1 })
                     .limit(1);
+                  console.log("log con --->" + JSON.stringify(dans.dugaar));
                   if (!!max) {
                     firstDay = new Date(max.TxDt);
                   }
@@ -927,7 +928,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         if (res) res.send("Amjilttai");
                       })
                       .catch((err) => {
-                        if(next) next(err);
                       });
                   }
                 }
