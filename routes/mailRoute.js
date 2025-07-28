@@ -12,7 +12,7 @@ const FormData = require("form-data");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const { crud } = require('../components/crud');
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
+const { Dugaarlalt, tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const NekhemjlekhiinTuukh = require("../models/nekhemjlekhiinTuukh");
 
 
@@ -37,6 +37,12 @@ router.post("/duriinMailIlgeeye", tokenShalgakh, (req, res, next) => {
       next(err);
     });
 });
+
+async function pad(num, size) {
+  num = num.toString();
+  while (num.length < size) num = "0" + num;
+  return num;
+}
 
 router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
   const { db } = require("zevbackv2");
@@ -78,6 +84,8 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
   );
   if(req.body.subject === "Түрээсийн төлбөр" && !!req.body.gereenuud)
   {
+    if(!!req.body.dugaar)
+      await Dugaarlalt(req.body.tukhainBaaziinKholbolt).insertOne({ turul: "nekhemjlekhTurees", ognoo: new Date(), dugaar: req.body.dugaar, });
     for await (const tempData of req.body.gereenuud)
     {
       const tuukh = new NekhemjlekhiinTuukh(req.body.tukhainBaaziinKholbolt)();
@@ -143,6 +151,42 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
   }
   res.send("Amjilttai");
 });
+
+router.post("/maxDugaarAvya", tokenShalgakh, async (req, res, next) => {
+  try
+  {
+    var dugaar = 1;
+    var nekhemjlekhiinDugaar = "";
+          nekhemjlekhiinDugaar =
+            nekhemjlekhiinDugaar +
+            new Date().getFullYear().toString().slice(-2);
+          nekhemjlekhiinDugaar =
+            nekhemjlekhiinDugaar +
+            ("0" + (new Date().getMonth() + 1)).slice(-2);
+    var maxDugaar = await Dugaarlalt(req.body.tukhainBaaziinKholbolt).aggregate([
+      {
+        $match: {
+          turul: "nekhemjlekhTurees",
+        },
+      },
+      {
+        $group: {
+          _id: "aaa",
+          max: {
+            $max: {
+              $toDouble: "$dugaar",
+            },
+          },
+        },
+      },
+    ]);
+    if (maxDugaar && maxDugaar.length > 0) dugaar = maxDugaar[0].max + 1;
+    nekhemjlekhiinDugaar = nekhemjlekhiinDugaar + (await pad(dugaar, 3));
+    res.send({ nekhemjlekhiinDugaar, dugaar });
+  } catch (err) {
+    next(err);
+  }
+})
 
 router.post("/msgIlgeesenTooAvya", tokenShalgakh, async (req, res, next) => {
   MsgTuukh(req.body.tukhainBaaziinKholbolt)
