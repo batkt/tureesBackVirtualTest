@@ -608,7 +608,9 @@ async function ebarimtShivye(req, res, next) {
         req.body.tukhainBaaziinKholbolt
       ).findById(req.body.id);
       var niitDun = guilgee.tulbur?.reduce((a, b) => a + (b.dun || 0), 0);
-      if (guilgee.ebarimtAvsanEsekh && formatNumber(niitDun) == formatNumber(guilgee.niitDun))
+      console.log("niit -----> " + niitDun);
+      console.log("niitDun -----> " + guilgee.niitDun);
+      if (guilgee.ebarimtAvsanEsekh && niitDun == guilgee.niitDun)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
       if(!guilgee.ebarimtAvakhDun || guilgee.ebarimtAvakhDun == 0)
         throw new aldaa("Төлбөр төлөгдөж байна. Түр хүлээнэ үү!");
