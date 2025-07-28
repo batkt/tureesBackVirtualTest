@@ -861,7 +861,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     .sort({ TxDt: -1 })
                     .limit(1);
                   if (!!max) {
-                    firstDay = new Date("2025/07/22");
+                    firstDay = new Date(max.TxDt);
                   }
                   else
                     firstDay = new Date();
