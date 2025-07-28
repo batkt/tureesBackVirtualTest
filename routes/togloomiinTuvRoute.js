@@ -395,7 +395,6 @@ router
       var togloomiinTuvTulbur = await TogloomiinTuv(
         req.body.tukhainBaaziinKholbolt
       ).findById(req.body.id);
-      guilgeeniiTuukh.push(...togloomiinTuvTulbur.tulbur);
       var update = {
         tulburTulsunEsekh: false,
         tuluv: 1,
@@ -427,6 +426,8 @@ router
           update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
         }
       });
+      if(togloomiinTuvTulbur.sungalt?.length > 0)
+        guilgeeniiTuukh.push(...togloomiinTuvTulbur.tulbur);
       update["niitTulbur"] = guilgeeniiTuukh;
       update["tulbur"] = guilgeeniiTuukh;
       var dun = guilgeeniiTuukh?.reduce((a, b) => a + b.dun, 0);
@@ -439,6 +440,9 @@ router
           update
         );
         if (update.tulburTulsunEsekh === true) {
+          await TogloomiinTulbur(req.body.tukhainBaaziinKholbolt).insertMany(
+            guilgeeniiTuukh
+          );
           res.send("Amjilttai");
         } else res.send("TulburDutuu");
       }
