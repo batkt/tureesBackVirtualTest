@@ -1350,7 +1350,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       }
     }
   } catch (err) {
-    console.log("err ----------->" + JSON.stringify(err));
+    console.log("err ----------->" + err);
     if (next) next(err);
   }
 });
