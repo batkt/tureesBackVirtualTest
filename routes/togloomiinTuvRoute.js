@@ -395,6 +395,7 @@ router
       var togloomiinTuvTulbur = await TogloomiinTuv(
         req.body.tukhainBaaziinKholbolt
       ).findById(req.body.id);
+      guilgeeniiTuukh.push(...togloomiinTuvTulbur.tulbur);
       var update = {
         tulburTulsunEsekh: false,
         tuluv: 1,
@@ -426,7 +427,6 @@ router
           update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
         }
       });
-      guilgeeniiTuukh.push(...togloomiinTuvTulbur.tulbur);
       update["niitTulbur"] = guilgeeniiTuukh;
       update["tulbur"] = guilgeeniiTuukh;
       var dun = guilgeeniiTuukh?.reduce((a, b) => a + b.dun, 0);
