@@ -15,6 +15,7 @@ const {
   sonorduulgaKharlaa,
   sanalKhuleenAvlaa,
 } = require("../controller/medegdel");
+const Ajiltan = require("../models/ajiltan");
 
 crud(router, "sanalGomdol", SanalGomdol, UstsanBarimt);
 crud(router, "sonorduulga", Sonorduulga, UstsanBarimt);
