@@ -261,7 +261,8 @@ async function togloomoosEbarimtShineUusgye(
   ebarimt.posNo = "0001";
   ebarimt.merchantTin = merchantTin;
   ebarimt.customerNo = customerNo;
-
+  ebarimt.ebarimtAvsanDun = guilgee.ebarimtAvsanDun;
+  
   ebarimt.receipts = [
     {
       totalAmount: guilgee.ebarimtAvakhDun.toFixed(2),
