@@ -79,7 +79,7 @@ router
       if (!bearerToken) return res.status(401).send("Bearer token олдсонгүй.");
       console.log("log bearerToken ------>>" + JSON.stringify(bearerToken));
       var kholboltuud = db.kholboltuud;
-      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId);
+      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId?.toString());
       const medegdel = new Sonorduulga(kholbolt)();
       medegdel.baiguullagiinId = baiguullagiinId;
       medegdel.turul = req.body.turul || "medegdel";
