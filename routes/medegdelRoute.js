@@ -16,6 +16,7 @@ const {
   sanalKhuleenAvlaa,
 } = require("../controller/medegdel");
 const Ajiltan = require("../models/ajiltan");
+const Baiguullaga = require("../models/baiguullaga");
 
 crud(router, "sanalGomdol", SanalGomdol, UstsanBarimt);
 crud(router, "sonorduulga", Sonorduulga, UstsanBarimt);
@@ -72,16 +73,17 @@ router
   router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
-      const { medeelel, baiguullagiinId } = req.body;
-      console.log("log baiguullagiinId ------>>" + JSON.stringify(baiguullagiinId));
+      const { medeelel, baiguullagiinRegister } = req.body;
+      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({ register: baiguullagiinRegister, });
+      console.log("log baiguullagiinId ------>>" + JSON.stringify(baiguullaga?.baiguullagiinId));
       var zochin = new Ajiltan(db.erunkhiiKholbolt)();
-      var bearerToken = zochin.zochinTokenUusgye(baiguullagiinId);
+      var bearerToken = zochin.zochinTokenUusgye(baiguullaga?.baiguullagiinId);
       if (!bearerToken) return res.status(401).send("Bearer token олдсонгүй.");
       console.log("log bearerToken ------>>" + JSON.stringify(bearerToken));
       var kholboltuud = db.kholboltuud;
-      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId?.toString());
+      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga?.baiguullagiinId);
       const medegdel = new Sonorduulga(kholbolt)();
-      medegdel.baiguullagiinId = baiguullagiinId;
+      medegdel.baiguullagiinId = baiguullaga?.baiguullagiinId;
       medegdel.turul = req.body.turul || "medegdel";
       medegdel.title = medeelel.title;
       medegdel.message = medeelel.body;
@@ -90,7 +92,7 @@ router
       medegdel.save();
 
       const io = req.app.get("socketio");
-      if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullagiinId, medegdel);
+      if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullaga?.baiguullagiinId, medegdel);
       res.send("done");
     } catch (error) {
       console.log("log------AdminMedegellgeeye" + error);
