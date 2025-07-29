@@ -85,7 +85,7 @@ router
       for await (const barilga of baiguullaga.barilguud) {
         const medegdel = new Sonorduulga(kholbolt)();
         medegdel.baiguullagiinId = baiguullaga?.baiguullagiinId;
-        medeelel.barilgiinId = barilga._id.toString();
+        medegdel.barilgiinId = barilga._id.toString();
         medegdel.turul = req.body.turul || "medegdel";
         medegdel.title = medeelel.title;
         medegdel.message = medeelel.body;
