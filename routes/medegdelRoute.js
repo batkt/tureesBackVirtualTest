@@ -71,17 +71,19 @@ router
 
   router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
     try {
-      const { medeelel, baiguullagiinId, tukhainBaaziinKholbolt } = req.body;
+      const { medeelel, baiguullagiinId } = req.body;
       console.log("log baiguullagiinId ------>>" + JSON.stringify(baiguullagiinId));
       var zochin = new Ajiltan(db.erunkhiiKholbolt)();
       var bearerToken = zochin.zochinTokenUusgye(baiguullagiinId);
       if (!bearerToken) return res.status(401).send("Bearer token олдсонгүй.");
       console.log("log bearerToken ------>>" + JSON.stringify(bearerToken));
+      var kholboltuud = db.kholboltuud;
+      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId);
       khariltsagchidSonorduulgaIlgeeye(
         bearerToken,
         medeelel,
         async () => {
-          const medegdel = new Sonorduulga(tukhainBaaziinKholbolt)();
+          const medegdel = new Sonorduulga(kholbolt)();
           medegdel.baiguullagiinId = baiguullagiinId;
           medegdel.turul = req.body.turul || "medegdel";
           medegdel.title = medeelel.title;
