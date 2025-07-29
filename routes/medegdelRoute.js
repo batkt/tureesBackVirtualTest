@@ -68,4 +68,34 @@ router
     }  
   });
 
+  router.route("/AdminMedegellgeeye").post(tokenShalgakh, async (req, res, next) => {
+    try {
+      const { medeelel, baiguullagiinId, tukhainBaaziinKholbolt } = req.body;
+      var zochin = new Ajiltan(db.erunkhiiKholbolt)();
+      var bearerToken = zochin.zochinTokenUusgye(baiguullagiinId);
+      if (!bearerToken) return res.status(401).send("Bearer token олдсонгүй.");
+      khariltsagchidSonorduulgaIlgeeye(
+        bearerToken,
+        medeelel,
+        async () => {
+          const medegdel = new Sonorduulga(tukhainBaaziinKholbolt)();
+          medegdel.baiguullagiinId = baiguullagiinId;
+          medegdel.turul = req.body.turul || "medegdel";
+          medegdel.title = medeelel.title;
+          medegdel.message = medeelel.body;
+          medegdel.kharsanEsekh = false;
+          await medegdel.save();
+  
+          const io = req.app.get("socketio");
+          if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullagiinId, medegdel);
+          res.send("done");
+        },
+        next
+      );
+    } catch (error) {
+      console.log("log------AdminMedegellgeeye" + error);
+      next(error);
+    }
+  });
+
 module.exports = router;
