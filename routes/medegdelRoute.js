@@ -71,6 +71,7 @@ router
 
   router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
     try {
+      const { db } = require("zevbackv2");
       const { medeelel, baiguullagiinId } = req.body;
       console.log("log baiguullagiinId ------>>" + JSON.stringify(baiguullagiinId));
       var zochin = new Ajiltan(db.erunkhiiKholbolt)();
