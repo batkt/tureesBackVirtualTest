@@ -84,8 +84,6 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
   );
   if(req.body.subject === "Түрээсийн төлбөр" && !!req.body.gereenuud)
   {
-    if(!!req.body.dugaar)
-      await Dugaarlalt(req.body.tukhainBaaziinKholbolt).insertOne({ turul: "nekhemjlekhTurees", ognoo: new Date(), dugaar: req.body.dugaar, });
     for await (const tempData of req.body.gereenuud)
     {
       const tuukh = new NekhemjlekhiinTuukh(req.body.tukhainBaaziinKholbolt)();
@@ -134,6 +132,10 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       tuukh.nekhemjlekhiinBank = tempData.nekhemjlekhiinBank;
       tuukh.nekhemjlekhiinIbanDugaar = tempData.nekhemjlekhiinIbanDugaar;
       tuukh.nekhemjlekhiinOgnoo = req.body.ognoo;
+      tuukh.nekhemjlekhiinDugaar = tempData.nekhemjlekhiinDugaar;
+      tuukh.dugaalaltDugaar = tempData.dugaalaltDugaar;
+      if(tempData.dugaalaltDugaar > 0)
+        await Dugaarlalt(req.body.tukhainBaaziinKholbolt).insertOne({ turul: "nekhemjlekhTurees", ognoo: new Date(), dugaar: tempData.dugaalaltDugaar, });
       await tuukh.save()
       .then((result) => {
       })
