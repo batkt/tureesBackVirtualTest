@@ -89,6 +89,7 @@ router
           medegdel.title = medeelel.title;
           medegdel.message = medeelel.body;
           medegdel.kharsanEsekh = false;
+          console.log("log medegdel ------>>" + JSON.stringify(medegdel));
           await medegdel.save();
   
           const io = req.app.get("socketio");
