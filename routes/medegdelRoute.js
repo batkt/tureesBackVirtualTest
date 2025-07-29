@@ -82,15 +82,17 @@ router
       console.log("log bearerToken ------>>" + JSON.stringify(bearerToken));
       var kholboltuud = db.kholboltuud;
       var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga?.baiguullagiinId);
-      const medegdel = new Sonorduulga(kholbolt)();
-      medegdel.baiguullagiinId = baiguullaga?.baiguullagiinId;
-      medegdel.turul = req.body.turul || "medegdel";
-      medegdel.title = medeelel.title;
-      medegdel.message = medeelel.body;
-      medegdel.kharsanEsekh = false;
-      console.log("log medegdel ------>>" + JSON.stringify(medegdel));
-      await medegdel.save();
-
+      for await (const barilga of baiguullaga.barilguud) {
+        const medegdel = new Sonorduulga(kholbolt)();
+        medegdel.baiguullagiinId = baiguullaga?.baiguullagiinId;
+        medeelel.barilgiinId = barilga._id.toString();
+        medegdel.turul = req.body.turul || "medegdel";
+        medegdel.title = medeelel.title;
+        medegdel.message = medeelel.body;
+        medegdel.kharsanEsekh = false;
+        console.log("log medegdel ------>>" + JSON.stringify(medegdel));
+        await medegdel.save();
+      }
       const io = req.app.get("socketio");
       if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullaga?.baiguullagiinId, medegdel);
       res.send("done");
