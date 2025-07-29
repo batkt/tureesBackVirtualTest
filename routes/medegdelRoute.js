@@ -89,7 +89,7 @@ router
       medegdel.message = medeelel.body;
       medegdel.kharsanEsekh = false;
       console.log("log medegdel ------>>" + JSON.stringify(medegdel));
-      medegdel.save();
+      await medegdel.save();
 
       const io = req.app.get("socketio");
       if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullaga?.baiguullagiinId, medegdel);
