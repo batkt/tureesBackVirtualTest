@@ -75,15 +75,15 @@ router
       const { db } = require("zevbackv2");
       const { medeelel, baiguullagiinRegister } = req.body;
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({ register: baiguullagiinRegister, });
-      console.log("log baiguullagiinId ------>>" + JSON.stringify(baiguullaga?.baiguullagiinId));
+      console.log("log baiguullagiinId ------>>" + JSON.stringify(baiguullaga?._id.toString()));
       var zochin = new Ajiltan(db.erunkhiiKholbolt)();
-      var bearerToken = zochin.zochinTokenUusgye(baiguullaga?.baiguullagiinId);
+      var bearerToken = zochin.zochinTokenUusgye(baiguullaga?._id.toString());
       if (!bearerToken) return res.status(401).send("Bearer token олдсонгүй.");
       console.log("log bearerToken ------>>" + JSON.stringify(bearerToken));
       var kholboltuud = db.kholboltuud;
-      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga?.baiguullagiinId);
+      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga?._id.toString());
       const medegdel = new Sonorduulga(kholbolt)();
-      medegdel.baiguullagiinId = baiguullaga?.baiguullagiinId;
+      medegdel.baiguullagiinId = baiguullaga?._id.toString();
       medegdel.turul = req.body.turul || "medegdel";
       medegdel.title = medeelel.title;
       medegdel.message = medeelel.body;
@@ -94,7 +94,7 @@ router
         await medegdel.save();
       }
       const io = req.app.get("socketio");
-      if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullaga?.baiguullagiinId, medegdel);
+      if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullaga?._id.toString(), medegdel);
       res.send("done");
     } catch (error) {
       console.log("log------AdminMedegellgeeye" + error);
