@@ -84,23 +84,16 @@ router
       var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga?._id.toString());
       var medegdeluud = [];
       for await (const barilga of baiguullaga.barilguud) {
-        khariltsagchidSonorduulgaIlgeeye(
-          bearerToken,
-          medeelel,
-          async (r) => {
-              const medegdel = new Sonorduulga(kholbolt)();
-              medegdel.baiguullagiinId = baiguullaga?._id.toString();
-              medegdel.turul = req.body.turul || "medegdel";
-              medegdel.title = medeelel.title;
-              medegdel.message = medeelel.body;
-              medegdel.kharsanEsekh = false;
-              medegdel.barilgiinId = barilga._id.toString();  
-              console.log("log medegdel ------>>" + JSON.stringify(medegdel));
-              await medegdel.save();
-              medegdeluud.push(medegdel);
-            },
-            next
-          );
+        const medegdel = new Sonorduulga(kholbolt)();
+        medegdel.baiguullagiinId = baiguullaga?._id.toString();
+        medegdel.barilgiinId = barilga._id.toString();  
+        medegdel.turul = req.body.turul || "medegdel";
+        medegdel.title = medeelel.title;
+        medegdel.message = medeelel.body;
+        medegdel.kharsanEsekh = false;
+        console.log("log medegdel ------>>" + JSON.stringify(medegdel));
+        await medegdel.save();
+        medegdeluud.push(medegdel);
       }
       const io = req.app.get("socketio");
       if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullaga?._id.toString(), medegdeluud);
