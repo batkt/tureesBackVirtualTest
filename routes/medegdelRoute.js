@@ -82,7 +82,7 @@ router
       khariltsagchidSonorduulgaIlgeeye(
         bearerToken,
         medeelel,
-        async () => {
+        (r) => {
           const medegdel = new Sonorduulga(kholbolt)();
           medegdel.baiguullagiinId = baiguullagiinId;
           medegdel.turul = req.body.turul || "medegdel";
@@ -90,7 +90,7 @@ router
           medegdel.message = medeelel.body;
           medegdel.kharsanEsekh = false;
           console.log("log medegdel ------>>" + JSON.stringify(medegdel));
-          await medegdel.save();
+          medegdel.save();
   
           const io = req.app.get("socketio");
           if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullagiinId, medegdel);
