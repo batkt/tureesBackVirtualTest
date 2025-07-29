@@ -166,6 +166,8 @@ router.post("/maxDugaarAvya", tokenShalgakh, async (req, res, next) => {
     var maxDugaar = await Dugaarlalt(req.body.tukhainBaaziinKholbolt).aggregate([
       {
         $match: {
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
           turul: "nekhemjlekhTurees",
         },
       },
