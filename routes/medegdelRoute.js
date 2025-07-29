@@ -68,7 +68,7 @@ router
     }  
   });
 
-  router.route("/AdminMedegellgeeye").post(tokenShalgakh, async (req, res, next) => {
+  router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
     try {
       const { medeelel, baiguullagiinId, tukhainBaaziinKholbolt } = req.body;
       console.log("log baiguullagiinId ------>>" + JSON.stringify(baiguullagiinId));
