@@ -79,25 +79,18 @@ router
       console.log("log bearerToken ------>>" + JSON.stringify(bearerToken));
       var kholboltuud = db.kholboltuud;
       var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId);
-      khariltsagchidSonorduulgaIlgeeye(
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MyIsIm5lciI6IkNBZG1pbiIsImJhaWd1dWxsYWdpaW5JZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MSIsInNhbGJhcnV1ZCI6W3sic2FsYmFyaWluSWQiOiI2MjJjYTM5MzhlNjRlNWI0ZjBjMzZiZWQiLCJkdXVzYWtoT2dub28iOiIyMDI2LTAyLTEwVDE1OjU5OjU5LjAwMFoifSx7InNhbGJhcmlpbklkIjoiNjMzZTUyYmE5ZTU3ZTYyNjk3OGI3YzQ3IiwiZHV1c2FraE9nbm9vIjoiMjAyNi0wMi0xMFQxNTo1OTo1OS4wMDBaIn0seyJzYWxiYXJpaW5JZCI6IjYzZGIzMzYzMGE0N2RiMTVmODFkMThiMyIsImR1dXNha2hPZ25vbyI6IjIwMjYtMDItMTBUMTU6NTk6NTkuMDAwWiJ9LHsic2FsYmFyaWluSWQiOiI2M2UxYjVhYzMwMzljODE2YmMyODUyYTEiLCJkdXVzYWtoT2dub28iOiIyMDI2LTAyLTEwVDE1OjU5OjU5LjAwMFoifSx7InNhbGJhcmlpbklkIjoiNjZiNWJiOGI4OWFkZTRlOTUyN2ZlNzlkIiwiZHV1c2FraE9nbm9vIjoiMjAyNi0wMi0xMFQxNTo1OTo1OS4wMDBaIn1dLCJkdXVzYWtoT2dub28iOiIyMDI2LTAyLTEwVDE1OjU5OjU5LjAwMFoiLCJpYXQiOjE3NTM3NzYwNTUsImV4cCI6MTc1MzgxOTI1NX0.PyvES3JANHfe272Te89eBz5KCeSnYjOjcaBlYxqfoJ8",
-        medeelel,
-        (r) => {
-          const medegdel = new Sonorduulga(kholbolt)();
-          medegdel.baiguullagiinId = baiguullagiinId;
-          medegdel.turul = req.body.turul || "medegdel";
-          medegdel.title = medeelel.title;
-          medegdel.message = medeelel.body;
-          medegdel.kharsanEsekh = false;
-          console.log("log medegdel ------>>" + JSON.stringify(medegdel));
-          medegdel.save();
-  
-          const io = req.app.get("socketio");
-          if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullagiinId, medegdel);
-          res.send("done");
-        },
-        next
-      );
+      const medegdel = new Sonorduulga(kholbolt)();
+      medegdel.baiguullagiinId = baiguullagiinId;
+      medegdel.turul = req.body.turul || "medegdel";
+      medegdel.title = medeelel.title;
+      medegdel.message = medeelel.body;
+      medegdel.kharsanEsekh = false;
+      console.log("log medegdel ------>>" + JSON.stringify(medegdel));
+      medegdel.save();
+
+      const io = req.app.get("socketio");
+      if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullagiinId, medegdel);
+      res.send("done");
     } catch (error) {
       console.log("log------AdminMedegellgeeye" + error);
       next(error);
