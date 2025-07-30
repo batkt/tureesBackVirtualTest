@@ -75,11 +75,9 @@ router
       const { db } = require("zevbackv2");
       const { medeelel, baiguullagiinRegister, zurag } = req.body;
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({ register: baiguullagiinRegister, });
-      console.log("log baiguullagiinId ------>>" + JSON.stringify(baiguullaga?._id.toString()));
       var zochin = new Ajiltan(db.erunkhiiKholbolt)();
       var bearerToken = zochin.zochinTokenUusgye(baiguullaga?._id.toString());
       if (!bearerToken) return res.status(401).send("Bearer token олдсонгүй.");
-      console.log("log bearerToken ------>>" + JSON.stringify(bearerToken));
       var kholboltuud = db.kholboltuud;
       var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga?._id.toString());
       var medegdeluud = [];
@@ -90,9 +88,8 @@ router
         medegdel.turul = req.body.turul || "medegdelAdmin";
         medegdel.title = medeelel.title;
         medegdel.message = medeelel.body;
-        medegdel.zurag = zurag;
+        // medegdel.zurag = zurag;
         medegdel.kharsanEsekh = false;
-        console.log("log medegdel ------>>" + JSON.stringify(medegdel));
         await medegdel.save();
         medegdeluud.push(medegdel);
       }
@@ -100,7 +97,6 @@ router
       if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullaga?._id.toString(), medegdeluud);
       res.send("done");
     } catch (error) {
-      console.log("log------AdminMedegellgeeye" + error);
       next(error);
     }
   });

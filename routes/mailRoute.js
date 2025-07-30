@@ -136,8 +136,6 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         tuukh.nekhemjlekhiinOgnoo = req.body.ognoo;
         tuukh.nekhemjlekhiinDugaar = tempData.nekhemjlekhiinDugaar;
         tuukh.dugaalaltDugaar = tempData.dugaalaltDugaar;
-        console.log("---------nekhemjlekhiinDugaar------>>" + tempData.nekhemjlekhiinDugaar);
-        console.log("--------dugaalaltDugaar------->>" + tempData.dugaalaltDugaar);
         if(!!tempData.nekhemjlekhiinDugaar)
           await Dugaarlalt(req.body.tukhainBaaziinKholbolt).insertMany({ baiguullagiinId: tempData.baiguullagiinId, barilgiinId: tempData.barilgiinId, turul: "nekhemjlekhTurees", ognoo: new Date(), dugaar: tempData.dugaalaltDugaar, });
         await tuukh.save()
@@ -157,7 +155,6 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     }
     res.send("Amjilttai");
   } catch (err) {
-    console.log("--------next------->>" + err);
     next(err);
   }
 });
