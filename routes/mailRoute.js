@@ -139,7 +139,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         console.log("---------nekhemjlekhiinDugaar------>>" + tempData.nekhemjlekhiinDugaar);
         console.log("--------dugaalaltDugaar------->>" + tempData.dugaalaltDugaar);
         if(!!tempData.nekhemjlekhiinDugaar)
-          await Dugaarlalt(req.body.tukhainBaaziinKholbolt).insertMany({ turul: "nekhemjlekhTurees", ognoo: new Date(), dugaar: tempData.dugaalaltDugaar, });
+          await Dugaarlalt(req.body.tukhainBaaziinKholbolt).insertMany({ baiguullagiinId: tempData.baiguullagiinId, barilgiinId: tempData.barilgiinId, turul: "nekhemjlekhTurees", ognoo: new Date(), dugaar: tempData.dugaalaltDugaar, });
         await tuukh.save()
         .then((result) => {
         })
