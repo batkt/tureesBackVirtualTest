@@ -45,115 +45,121 @@ async function pad(num, size) {
 }
 
 router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
-  const { db } = require("zevbackv2");
-  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById({
-    _id: req.body.baiguullagiinId,
-  });
-  if (
-    !baiguullaga ||
-    !baiguullaga.tokhirgoo ||
-    !baiguullaga.tokhirgoo.mailNevtrekhNer ||
-    !baiguullaga.tokhirgoo.mailPassword
-  )
-    throw new aldaa("И-Мэйлын тохиргоо хийгдээгүй байна!");
-  
-  // for await (const mail of req.body.mailuud) {
-  //   await MailIlgeeye.duriinMailIlgeeye(
-  //     baiguullaga.tokhirgoo.mailNevtrekhNer,
-  //     baiguullaga.tokhirgoo.mailPassword,
-  //     baiguullaga.tokhirgoo.mailHost,
-  //     baiguullaga.tokhirgoo.mailPort,
-  //     mail.mail,
-  //     req.body.subject,
-  //     mail.content,
-  //     mail.gereeniiDugaar,
-  //   );
-  // }
-  var ilgeekhBody = {
-    mailuud: req.body.mailuud,
-    baiguullaga: baiguullaga,
-    subject: req.body.subject,
-  }
-  await request.post(
-    "http://103.143.40.43:8282/tureesMailIlgeeye",
-    // "http://192.168.1.241:8282/tureesMailIlgeeye",
-    { json: true, body: ilgeekhBody },
-    (err, res1, body) => {
-      if (err) next(err);
-    }
-  );
-  if(req.body.subject === "Түрээсийн төлбөр" && !!req.body.gereenuud)
+  try
   {
-    for await (const tempData of req.body.gereenuud)
-    {
-      const tuukh = new NekhemjlekhiinTuukh(req.body.tukhainBaaziinKholbolt)();
-      tuukh.baiguullagiinNer = tempData.baiguullagiinNer; 
-      tuukh.baiguullagiinId = tempData.baiguullagiinId;
-      tuukh.barilgiinId = tempData.barilgiinId;
-      tuukh.ovog = tempData.ovog;
-      tuukh.ner = tempData.ner;
-      tuukh.register = tempData.register;
-      tuukh.utas = tempData.utas;
-      tuukh.khayag = tempData.khayag;
-      tuukh.khugatsaa = tempData.khugatsaa;
-      tuukh.duusakhOgnoo = tempData.duusakhOgnoo;
-      tuukh.turul = tempData.turul;
-      tuukh.gereeniiOgnoo = tempData.gereeniiOgnoo;
-      tuukh.gereeniiId = tempData._id;
-      tuukh.gereeniiDugaar = tempData.gereeniiDugaar;
-      tuukh.talbainIdnuud = tempData.talbainIdnuud;
-      tuukh.talbainDugaar = tempData.talbainDugaar;
-      tuukh.talbainNegjUne = tempData.talbainNegjUne;
-      tuukh.talbainNiitUne = tempData.talbainNiitUne;
-      tuukh.talbainKhemjee = tempData.talbainKhemjee
-      tuukh.talbainKhemjeeMetrKube = tempData.talbainKhemjeeMetrKube;
-      tuukh.davkhar = tempData.davkhar;
-      tuukh.baritsaaAvakhDun = tempData.baritsaaAvakhDun;
-      tuukh.baritsaaniiUldegdel = tempData.baritsaaniiUldegdel;
-      tuukh.baritsaaAvakhKhugatsaa = tempData.baritsaaAvakhKhugatsaa;
-      tuukh.uldegdel = tempData.uldegdel;
-      tuukh.daraagiinTulukhOgnoo = tempData.daraagiinTulukhOgnoo;
-      tuukh.dansniiDugaar = tempData.dans;
-      tuukh.gereeniiZagvariinId = tempData.gereeniiZagvariinId;
-      tuukh.tulukhUdur = tempData.tulukhUdur;
-      tuukh.tuluv = tempData.tuluv;
-      tuukh.ognoo = tempData.ognoo;
-      tuukh.mailKhayagTo = tempData.mail;
-      tuukh.maililgeesenAjiltniiId = tempData.maililgeesenAjiltniiId;
-      tuukh.maililgeesenAjiltniiNer = tempData.maililgeesenAjiltniiNer;
-      tuukh.nekhemjlekhiinZagvarId = tempData.nekhemjlekhiinZagvarId;
-      tuukh.tsonkhniiNer = tempData.tsonkhniiNer;
-      tuukh.medeelel = tempData.medeelel;
-      tuukh.nekhemjlekh = tempData.nekhemjlekh;
-      tuukh.zagvariinNer = tempData.zagvariinNer;
-      tuukh.content = req.body.mailuud?.filter((a) => a.mail === tempData.mail && a.gereeniiDugaar === tempData.gereeniiDugaar)[0]?.content;
-      tuukh.nekhemjlekhiinDans = tempData.nekhemjlekhiinDans;
-      tuukh.nekhemjlekhiinDansniiNer = tempData.nekhemjlekhiinDansniiNer;
-      tuukh.nekhemjlekhiinBank = tempData.nekhemjlekhiinBank;
-      tuukh.nekhemjlekhiinIbanDugaar = tempData.nekhemjlekhiinIbanDugaar;
-      tuukh.nekhemjlekhiinOgnoo = req.body.ognoo;
-      tuukh.nekhemjlekhiinDugaar = tempData.nekhemjlekhiinDugaar;
-      tuukh.dugaalaltDugaar = tempData.dugaalaltDugaar;
-      console.log("---------nekhemjlekhiinDugaar------>>" + tempData.nekhemjlekhiinDugaar);
-      console.log("--------dugaalaltDugaar------->>" + tempData.dugaalaltDugaar);
-      if(!!tempData.nekhemjlekhiinDugaar)
-        await Dugaarlalt(req.body.tukhainBaaziinKholbolt).insertMany({ turul: "nekhemjlekhTurees", ognoo: new Date(), dugaar: tempData.dugaalaltDugaar, });
-      await tuukh.save()
-      .then((result) => {
-      })
-      .catch((err) => {
-        next(err);
-      });
-      var update = { 
-        nekhemjlekhiinOgnoo: req.body.ognoo
-      }
-      await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-        tempData._id,
-        update
-      );
+    const { db } = require("zevbackv2");
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById({
+      _id: req.body.baiguullagiinId,
+    });
+    if (
+      !baiguullaga ||
+      !baiguullaga.tokhirgoo ||
+      !baiguullaga.tokhirgoo.mailNevtrekhNer ||
+      !baiguullaga.tokhirgoo.mailPassword
+    )
+      throw new aldaa("И-Мэйлын тохиргоо хийгдээгүй байна!");
+    
+    // for await (const mail of req.body.mailuud) {
+    //   await MailIlgeeye.duriinMailIlgeeye(
+    //     baiguullaga.tokhirgoo.mailNevtrekhNer,
+    //     baiguullaga.tokhirgoo.mailPassword,
+    //     baiguullaga.tokhirgoo.mailHost,
+    //     baiguullaga.tokhirgoo.mailPort,
+    //     mail.mail,
+    //     req.body.subject,
+    //     mail.content,
+    //     mail.gereeniiDugaar,
+    //   );
+    // }
+    var ilgeekhBody = {
+      mailuud: req.body.mailuud,
+      baiguullaga: baiguullaga,
+      subject: req.body.subject,
     }
+    await request.post(
+      "http://103.143.40.43:8282/tureesMailIlgeeye",
+      // "http://192.168.1.241:8282/tureesMailIlgeeye",
+      { json: true, body: ilgeekhBody },
+      (err, res1, body) => {
+        if (err) next(err);
+      }
+    );
+    if(req.body.subject === "Түрээсийн төлбөр" && !!req.body.gereenuud)
+    {
+      for await (const tempData of req.body.gereenuud)
+      {
+        const tuukh = new NekhemjlekhiinTuukh(req.body.tukhainBaaziinKholbolt)();
+        tuukh.baiguullagiinNer = tempData.baiguullagiinNer; 
+        tuukh.baiguullagiinId = tempData.baiguullagiinId;
+        tuukh.barilgiinId = tempData.barilgiinId;
+        tuukh.ovog = tempData.ovog;
+        tuukh.ner = tempData.ner;
+        tuukh.register = tempData.register;
+        tuukh.utas = tempData.utas;
+        tuukh.khayag = tempData.khayag;
+        tuukh.khugatsaa = tempData.khugatsaa;
+        tuukh.duusakhOgnoo = tempData.duusakhOgnoo;
+        tuukh.turul = tempData.turul;
+        tuukh.gereeniiOgnoo = tempData.gereeniiOgnoo;
+        tuukh.gereeniiId = tempData._id;
+        tuukh.gereeniiDugaar = tempData.gereeniiDugaar;
+        tuukh.talbainIdnuud = tempData.talbainIdnuud;
+        tuukh.talbainDugaar = tempData.talbainDugaar;
+        tuukh.talbainNegjUne = tempData.talbainNegjUne;
+        tuukh.talbainNiitUne = tempData.talbainNiitUne;
+        tuukh.talbainKhemjee = tempData.talbainKhemjee
+        tuukh.talbainKhemjeeMetrKube = tempData.talbainKhemjeeMetrKube;
+        tuukh.davkhar = tempData.davkhar;
+        tuukh.baritsaaAvakhDun = tempData.baritsaaAvakhDun;
+        tuukh.baritsaaniiUldegdel = tempData.baritsaaniiUldegdel;
+        tuukh.baritsaaAvakhKhugatsaa = tempData.baritsaaAvakhKhugatsaa;
+        tuukh.uldegdel = tempData.uldegdel;
+        tuukh.daraagiinTulukhOgnoo = tempData.daraagiinTulukhOgnoo;
+        tuukh.dansniiDugaar = tempData.dans;
+        tuukh.gereeniiZagvariinId = tempData.gereeniiZagvariinId;
+        tuukh.tulukhUdur = tempData.tulukhUdur;
+        tuukh.tuluv = tempData.tuluv;
+        tuukh.ognoo = tempData.ognoo;
+        tuukh.mailKhayagTo = tempData.mail;
+        tuukh.maililgeesenAjiltniiId = tempData.maililgeesenAjiltniiId;
+        tuukh.maililgeesenAjiltniiNer = tempData.maililgeesenAjiltniiNer;
+        tuukh.nekhemjlekhiinZagvarId = tempData.nekhemjlekhiinZagvarId;
+        tuukh.tsonkhniiNer = tempData.tsonkhniiNer;
+        tuukh.medeelel = tempData.medeelel;
+        tuukh.nekhemjlekh = tempData.nekhemjlekh;
+        tuukh.zagvariinNer = tempData.zagvariinNer;
+        tuukh.content = req.body.mailuud?.filter((a) => a.mail === tempData.mail && a.gereeniiDugaar === tempData.gereeniiDugaar)[0]?.content;
+        tuukh.nekhemjlekhiinDans = tempData.nekhemjlekhiinDans;
+        tuukh.nekhemjlekhiinDansniiNer = tempData.nekhemjlekhiinDansniiNer;
+        tuukh.nekhemjlekhiinBank = tempData.nekhemjlekhiinBank;
+        tuukh.nekhemjlekhiinIbanDugaar = tempData.nekhemjlekhiinIbanDugaar;
+        tuukh.nekhemjlekhiinOgnoo = req.body.ognoo;
+        tuukh.nekhemjlekhiinDugaar = tempData.nekhemjlekhiinDugaar;
+        tuukh.dugaalaltDugaar = tempData.dugaalaltDugaar;
+        console.log("---------nekhemjlekhiinDugaar------>>" + tempData.nekhemjlekhiinDugaar);
+        console.log("--------dugaalaltDugaar------->>" + tempData.dugaalaltDugaar);
+        if(!!tempData.nekhemjlekhiinDugaar)
+          await Dugaarlalt(req.body.tukhainBaaziinKholbolt).insertMany({ turul: "nekhemjlekhTurees", ognoo: new Date(), dugaar: tempData.dugaalaltDugaar, });
+        await tuukh.save()
+        .then((result) => {
+        })
+        .catch((err) => {
+          next(err);
+        });
+        var update = { 
+          nekhemjlekhiinOgnoo: req.body.ognoo
+        }
+        await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+          tempData._id,
+          update
+        );
+      }
+    }
+    res.send("Amjilttai");
+  } catch (err) {
+    console.log("--------next------->>" + err);
+    next(err);
   }
-  res.send("Amjilttai");
 });
 
 router.post("/maxDugaarAvya", tokenShalgakh, async (req, res, next) => {
