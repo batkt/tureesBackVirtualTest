@@ -73,7 +73,7 @@ router
   router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
-      const { medeelel, baiguullagiinRegister } = req.body;
+      const { medeelel, baiguullagiinRegister, zurag } = req.body;
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({ register: baiguullagiinRegister, });
       console.log("log baiguullagiinId ------>>" + JSON.stringify(baiguullaga?._id.toString()));
       var zochin = new Ajiltan(db.erunkhiiKholbolt)();
@@ -90,6 +90,7 @@ router
         medegdel.turul = req.body.turul || "medegdelAdmin";
         medegdel.title = medeelel.title;
         medegdel.message = medeelel.body;
+        medegdel.zurag = zurag;
         medegdel.kharsanEsekh = false;
         console.log("log medegdel ------>>" + JSON.stringify(medegdel));
         await medegdel.save();

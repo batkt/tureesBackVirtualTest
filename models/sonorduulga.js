@@ -17,6 +17,9 @@ const sonorduulgaSchema = new Schema(
     message: String,
     kharsanEsekh: Boolean,
     object: Schema.Types.Mixed,
+    zurag: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
