@@ -134,7 +134,9 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       tuukh.nekhemjlekhiinOgnoo = req.body.ognoo;
       tuukh.nekhemjlekhiinDugaar = tempData.nekhemjlekhiinDugaar;
       tuukh.dugaalaltDugaar = tempData.dugaalaltDugaar;
-      if(tempData.dugaalaltDugaar > 0)
+      console.log("---------nekhemjlekhiinDugaar------>>" + tempData.nekhemjlekhiinDugaar);
+      console.log("--------dugaalaltDugaar------->>" + tempData.dugaalaltDugaar);
+      if(!!tempData.nekhemjlekhiinDugaar)
         await Dugaarlalt(req.body.tukhainBaaziinKholbolt).insertOne({ turul: "nekhemjlekhTurees", ognoo: new Date(), dugaar: tempData.dugaalaltDugaar, });
       await tuukh.save()
       .then((result) => {
