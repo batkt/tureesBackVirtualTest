@@ -87,7 +87,7 @@ router
         const medegdel = new Sonorduulga(kholbolt)();
         medegdel.baiguullagiinId = baiguullaga?._id.toString();
         medegdel.barilgiinId = barilga._id.toString();  
-        medegdel.turul = req.body.turul || "medegdel";
+        medegdel.turul = req.body.turul || "medegdelAdmin";
         medegdel.title = medeelel.title;
         medegdel.message = medeelel.body;
         medegdel.kharsanEsekh = false;
