@@ -218,6 +218,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       res.send(khariu);
     }
   } catch (err) {
+    console.log("err qpayGargaya -------------->>" + err);
     next(err);
   }
 });
