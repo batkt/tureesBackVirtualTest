@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Geree = require("../models/geree");
+const AldangiinZassanTuukh = require("../models/aldangiinZassanTuukh");
 const Talbai = require("../models/talbai");
 const Khariltsagch = require("../models/khariltsagch");
 //const Dugaarlalt = require("../models/dugaarlalt");
@@ -4400,9 +4401,20 @@ router
     .findByIdAndUpdate(
       { _id: req.body.gereeniiId },
       {
-        $set: { aldangiinUldegdel: req.body.aldangiinUldegdel },
+        $set: { aldangiinUldegdel: req.body.aldangiDun },
       }
     );
+    await AldangiinZassanTuukh(req.body.tukhainBaaziinKholbolt).insertMany({
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      gereeniiId: req.body.gereeniiId,
+      gereeniiDugaar: req.body.gereeniiDugaar,
+      tailbar: req.body.tailbar,
+      aldangiDun: req.body.aldangiDun,
+      ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
+      ajiltniiId: req.body.nevtersenAjiltniiToken.id,
+      ognoo: new Date(),
+    })
     res.send("Amjilttai");
   } 
 catch (error) {
