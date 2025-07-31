@@ -88,7 +88,7 @@ router
         medegdel.turul = req.body.turul || "medegdelAdmin";
         medegdel.title = medeelel.title;
         medegdel.message = medeelel.body;
-        // medegdel.zurag = zurag;
+        medegdel.zurag = zurag;
         medegdel.kharsanEsekh = false;
         await medegdel.save();
         medegdeluud.push(medegdel);
