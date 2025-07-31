@@ -88,6 +88,7 @@ const ZassanBarimtShalgakh = require("../components/zassanBarimtShalgakh");
 const testgeree = require("../models/testgeree");
 
 crud(router, "zassanBarimt", ZassanBarimt);
+crud(router, "aldangiinZassanTuukh", AldangiinZassanTuukh);
 
 router.route("/gereeniiToololtAvya").post(tokenShalgakh, gereeniiToololtAvya);
 router
