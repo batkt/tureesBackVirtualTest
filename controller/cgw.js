@@ -155,8 +155,9 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
 
 async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
   try {
+    var turul = "tdb" + (dans.corporateDansTusBur ? dans.dugaar : "");
     var tokenObject = await Token(tukhainBaaziinKholbolt).findOne({
-      turul: "tdb",
+      turul: turul,
       baiguullagiinId: dans.baiguullagiinId,
       ognoo: { $gte: new Date(new Date().getTime() - 50000) },
     });
@@ -178,7 +179,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
       var khariu = JSON.parse(response.body);
       Token(tukhainBaaziinKholbolt)
         .updateOne(
-          { turul: "tdb", baiguullagiinId: dans.baiguullagiinId },
+          { turul: turul, baiguullagiinId: dans.baiguullagiinId },
           {
             ognoo: new Date(),
             token: khariu.token
