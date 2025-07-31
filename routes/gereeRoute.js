@@ -4391,6 +4391,25 @@ router
   }
 });
 
+router
+  .route("/gereeniiAldangiZasya")
+  .post(tokenShalgakh, async (req, res, next) => {
+  try 
+  {
+    await Geree(req.body.tukhainBaaziinKholbolt)
+    .findByIdAndUpdate(
+      { _id: req.body.gereeniiId },
+      {
+        $set: { aldangiinUldegdel: req.body.aldangiinUldegdel },
+      }
+    );
+    res.send("Amjilttai");
+  } 
+catch (error) {
+  if(next) next(error);
+}
+});
+
 module.exports = router;
 module.exports.sarBuriinKhungulultBodoy = sarBuriinKhungulultBodoy;
 module.exports.duusakhGereeAutomataarTalbainTulburNemekh = duusakhGereeAutomataarTalbainTulburNemekh;
