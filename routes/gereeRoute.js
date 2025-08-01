@@ -4430,8 +4430,8 @@ router
       }
       ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
       ustsanBarimt.barilgiinId = req.body.barilgiinId;
+      await ustsanBarimt.save();
     }
-    await ustsanBarimt.save();
     res.send("Amjilttai");
   } 
 catch (error) {
