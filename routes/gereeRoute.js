@@ -4418,6 +4418,27 @@ router
       "turul": "aldangi",
     }
     await AldangiinZassanTuukh(req.body.tukhainBaaziinKholbolt).insertMany(aldangi);
+    var uurchlult = [];
+    var tempData = {
+        talbar: "aldangiinUldegdel",
+        talbarNer: "Алдангийн үлдэгдэл",
+        umnukhUtga: req.body.khuuchinAldangiDun,
+        shineUtga: req.body.aldangiDun,
+        utganiiTurul: "string",
+    }
+    uurchlult.push(tempData);
+    var barimt = new ZassanBarimt(req.body.tukhainBaaziinKholbolt)();
+    barimt.baiguullagiinId = aldangi.baiguullagiinId;
+    barimt.barilgiinId = aldangi.barilgiinId;
+    barimt.classId = aldangi.gereeniiId;
+    barimt.classDugaar = aldangi.gereeniiDugaar;
+    barimt.classOgnoo = aldangi.ognoo;
+    barimt.classType = "Geree";
+    barimt.className = "Алданги";
+    barimt.uurchlult = uurchlult;
+    barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+    barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+    await barimt.save(); 
     if(!req.body.aldangiDun || req.body.aldangiDun == 0)
     {
       var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
