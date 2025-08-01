@@ -97,6 +97,7 @@ router
       if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullaga?._id.toString(), medegdeluud);
       res.send("done");
     } catch (error) {
+      console.log("log ----- > AdminMedegellgeeye ----> " + error);
       next(error);
     }
   });
