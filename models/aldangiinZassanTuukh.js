@@ -6,6 +6,7 @@ const aldangiinZassanTuukhSchema = new Schema(
   {
     baiguullagiinId: String,
     barilgiinId: String,
+    turul: String,
     gereeniiId: String,
     gereeniiDugaar: String,
     tailbar: String,

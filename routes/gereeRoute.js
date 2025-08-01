@@ -4405,7 +4405,7 @@ router
         $set: { aldangiinUldegdel: req.body.aldangiDun },
       }
     );
-    await AldangiinZassanTuukh(req.body.tukhainBaaziinKholbolt).insertMany({
+    var aldangi = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
       gereeniiId: req.body.gereeniiId,
@@ -4415,7 +4415,23 @@ router
       ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
       ognoo: new Date(),
-    })
+      "turul": "aldangi",
+    }
+    await AldangiinZassanTuukh(req.body.tukhainBaaziinKholbolt).insertMany(aldangi);
+    if(!req.body.aldangiDun || req.body.aldangiDun == 0)
+    {
+      var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
+      ustsanBarimt.class = "gereeniiGuilgee";
+      ustsanBarimt.tailbar = req.body.tailbar;
+      ustsanBarimt.object = aldangi;
+      if (req.body.nevtersenAjiltniiToken) {
+        ustsanBarimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
+        ustsanBarimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
+      }
+      ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
+      ustsanBarimt.barilgiinId = req.body.barilgiinId;
+    }
+    await ustsanBarimt.save();
     res.send("Amjilttai");
   } 
 catch (error) {
