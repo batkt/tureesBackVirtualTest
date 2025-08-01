@@ -4412,6 +4412,7 @@ router
       gereeniiDugaar: req.body.gereeniiDugaar,
       tailbar: req.body.tailbar,
       aldangiDun: req.body.aldangiDun,
+      khuuchinAldangiDun: req.body.khuuchinAldangiDun,
       ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
       ajiltniiId: req.body.nevtersenAjiltniiToken.id,
       ognoo: new Date(),

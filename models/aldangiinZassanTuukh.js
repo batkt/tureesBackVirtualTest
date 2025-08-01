@@ -11,9 +11,11 @@ const aldangiinZassanTuukhSchema = new Schema(
     gereeniiDugaar: String,
     tailbar: String,
     aldangiDun: Number,
+    khuuchinAldangiDun: Number,
     ajiltniiId: String,
     ajiltniiNer: String,
     ognoo: Date,
+    turul: String,
   },
   {
     timestamps: true,
