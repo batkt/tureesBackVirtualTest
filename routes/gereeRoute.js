@@ -4433,7 +4433,7 @@ router
     barimt.classId = aldangi.gereeniiId;
     barimt.classDugaar = aldangi.gereeniiDugaar;
     barimt.classOgnoo = aldangi.ognoo;
-    barimt.classType = "Geree";
+    barimt.classType = "Aldangi";
     barimt.className = "Алданги";
     barimt.uurchlult = uurchlult;
     barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
