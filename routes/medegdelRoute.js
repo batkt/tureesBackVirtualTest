@@ -102,4 +102,22 @@ router
     }
   });
 
+  router.route("/adminMedegdelZasakh").post(async (req, res, next) => {
+    try 
+    {
+      if(!!req.body.sonorduulgaId)
+        await Sonorduulga(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+        req.body.sonorduulgaId,
+        {
+          $set: {
+            dakhijKharikhEsekh: true,
+          },
+        });
+      res.send("Амжилттай");
+    } catch (error) {
+      console.log("log ----- > adminMedegdelZasakh ----> " + error);
+      next(error);
+    }
+  });
+
 module.exports = router;
