@@ -102,7 +102,7 @@ router
     }
   });
 
-  router.route("/adminMedegdelZasakh").post(async (req, res, next) => {
+  router.route("/adminMedegdelZasakh").post(tokenShalgakh, async (req, res, next) => {
     try 
     {
       if(!!req.body.sonorduulgaId)
