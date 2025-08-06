@@ -7,7 +7,9 @@ const Khariltsagch = require("../models/khariltsagch");
 //const { crud } = require("../components/crud");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
-const { khariltsagchidSonorduulgaIlgeeye } = require("../controller/appNotification");
+const {
+  khariltsagchidSonorduulgaIlgeeye,
+} = require("../controller/appNotification");
 const { db } = require("zevbackv2");
 const {
   sanalKhadgalya,
@@ -28,21 +30,21 @@ router.route("/sanalKhuleenAvlaa").post(tokenShalgakh, sanalKhuleenAvlaa);
 router
   .route("/sonorduulgaIlgeeye")
   .post(tokenShalgakh, async (req, res, next) => {
-    try
-    {
+    try {
       const { medeelel } = req.body;
       var firebaseToken = req.body.firebaseToken;
       var kharilltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
         _id: req.body.khariltsagchiinId,
       });
       if (kharilltsagch) firebaseToken = kharilltsagch.firebaseToken;
-      if(!!firebaseToken)
-      {
+      if (!!firebaseToken) {
         khariltsagchidSonorduulgaIlgeeye(
           firebaseToken,
           medeelel,
           (r) => {
-            var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+            var sonorduulga = new Sonorduulga(
+              req.body.tukhainBaaziinKholbolt
+            )();
             sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
             sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
             sonorduulga.barilgiinId = req.body.barilgiinId;
@@ -61,58 +63,100 @@ router
           },
           next
         );
-      }
-      else
-        res.send("!fire token not found");
-    } 
-    catch (error) {
-      next(error);
-    }  
-  });
-
-  router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
-    try {
-      const { db } = require("zevbackv2");
-      const { medeelel, baiguullagiinRegister, zurag } = req.body;
-      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({ register: baiguullagiinRegister, });
-      var zochin = new Ajiltan(db.erunkhiiKholbolt)();
-      var bearerToken = zochin.zochinTokenUusgye(baiguullaga?._id.toString());
-      if (!bearerToken) return res.status(401).send("Bearer token олдсонгүй.");
-      var kholboltuud = db.kholboltuud;
-      var kholbolt = kholboltuud.find((a) => a.baiguullagiinId == baiguullaga?._id.toString());
-      var medegdeluud = [];
-      for await (const barilga of baiguullaga.barilguud) {
-        const medegdel = new Sonorduulga(kholbolt)();
-        medegdel.baiguullagiinId = baiguullaga?._id.toString();
-        medegdel.barilgiinId = barilga._id.toString();  
-        medegdel.turul = req.body.turul || "medegdelAdmin";
-        medegdel.title = medeelel.title;
-        medegdel.message = medeelel.body;
-        medegdel.zurag = zurag;
-        medegdel.kharsanEsekh = false;
-        await medegdel.save();
-        medegdeluud.push(medegdel);
-      }
-      const io = req.app.get("socketio");
-      if (io) io.emit("adminMedegdelilgeeyeSocket" + baiguullaga?._id.toString(), medegdeluud);
-      res.send("done");
+      } else res.send("!fire token not found");
     } catch (error) {
-      console.log("log ----- > AdminMedegellgeeye ----> " + error);
       next(error);
     }
   });
 
-  router.route("/adminMedegdelZasakh").post(tokenShalgakh, async (req, res, next) => {
-    try 
-    {
-      if(!!req.body.sonorduulgaId)
-        await Sonorduulga(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-        req.body.sonorduulgaId,
-        {
-          $set: {
-            dakhijKharikhEsekh: true,
-          },
-        });
+router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    const { medeelel, baiguullagiinRegister, zurag, adminMedegdelId } =
+      req.body;
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
+      register: baiguullagiinRegister,
+    });
+    var zochin = new Ajiltan(db.erunkhiiKholbolt)();
+    var bearerToken = zochin.zochinTokenUusgye(baiguullaga?._id.toString());
+    if (!bearerToken) return res.status(401).send("Bearer token олдсонгүй.");
+    var kholboltuud = db.kholboltuud;
+    var kholbolt = kholboltuud.find(
+      (a) => a.baiguullagiinId == baiguullaga?._id.toString()
+    );
+    var medegdeluud = [];
+    for await (const barilga of baiguullaga.barilguud) {
+      const medegdel = new Sonorduulga(kholbolt)();
+      medegdel.baiguullagiinId = baiguullaga?._id.toString();
+      medegdel.barilgiinId = barilga._id.toString();
+      medegdel.turul = req.body.turul || "medegdelAdmin";
+      medegdel.title = medeelel.title;
+      medegdel.message = medeelel.body;
+      medegdel.zurag = zurag;
+      medegdel.adminMedegdelId = adminMedegdelId;
+      medegdel.kharsanEsekh = false;
+      await medegdel.save();
+      medegdeluud.push(medegdel);
+    }
+    const io = req.app.get("socketio");
+    if (io)
+      io.emit(
+        "adminMedegdelilgeeyeSocket" + baiguullaga?._id.toString(),
+        medegdeluud
+      );
+    res.send("done");
+  } catch (error) {
+    console.log("log ----- > AdminMedegellgeeye ----> " + error);
+    next(error);
+  }
+});
+
+router
+  .route("/adminMedegdelZasakh")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      if (!!req.body.adminMedegdelId) {
+        var sonorduulguud = await Sonorduulga(
+          req.body.tukhainBaaziinKholbolt
+        ).find({ adminMedegdelId: req.body.adminMedegdelId });
+        for await (const sonorduulga of sonorduulguud) {
+          await Sonorduulga(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+            sonorduulga._id,
+            {
+              $set: {
+                dakhijKharikhEsekh: true,
+              },
+            }
+          );
+        }
+      }
+      res.send("Амжилттай");
+    } catch (error) {
+      console.log("log ----- > adminMedegdelZasakh ----> " + error);
+      next(error);
+    }
+  });
+
+router
+  .route("/adminMedegdelAllDakhijKharakhgui")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      const { db } = require("zevbackv2");
+      var kholboltuud = db.kholboltuud;
+      if (kholboltuud) {
+        for await (const kholbolt of kholboltuud) {
+          var sonorduulguud = await Sonorduulga(kholbolt).find({
+            turul: "medegdelAdmin",
+          });
+          for await (const sonorduulga of sonorduulguud) {
+            await Sonorduulga(kholbolt).findByIdAndUpdate(sonorduulga._id, {
+              $set: {
+                dakhijKharikhEsekh: true,
+              },
+            });
+          }
+        }
+      }
       res.send("Амжилттай");
     } catch (error) {
       console.log("log ----- > adminMedegdelZasakh ----> " + error);
