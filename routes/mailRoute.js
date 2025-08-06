@@ -69,21 +69,19 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     //     mail.gereeniiDugaar,
     //   );
     // }
-    for await (const objectMail of req.body.mailuud) {
-      var ilgeekhBody = {
-        mail: objectMail,
-        baiguullaga: baiguullaga,
-        subject: req.body.subject,
-      };
-      await request.post(
-        "http://103.143.40.43:8282/tureesMailIlgeeye",
-        // "http://192.168.1.241:8282/tureesMailIlgeeye",
-        { json: true, body: ilgeekhBody },
-        (err, res1, body) => {
-          if (err) next(err);
-        }
-      );
-    }
+    var ilgeekhBody = {
+      mailuud: req.body.mailuud,
+      baiguullaga: baiguullaga,
+      subject: req.body.subject,
+    };
+    await request.post(
+      "http://103.143.40.43:8282/tureesMailIlgeeye",
+      // "http://192.168.1.241:8282/tureesMailIlgeeye",
+      { json: true, body: ilgeekhBody },
+      (err, res1, body) => {
+        if (err) next(err);
+      }
+    );
 
     if (req.body.subject === "Түрээсийн төлбөр" && !!req.body.gereenuud) {
       for await (const tempData of req.body.gereenuud) {
