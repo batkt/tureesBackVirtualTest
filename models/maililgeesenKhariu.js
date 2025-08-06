@@ -10,6 +10,7 @@ const maililgeesenKhariuSchema = new Schema(
     message: String,
     mailKhayag: String,
     gereeniiDugaar: String,
+    ognoo: Date,
   },
   {
     timestamps: true,
