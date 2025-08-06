@@ -139,7 +139,7 @@ router
 
 router
   .route("/adminMedegdelAllDakhijKharakhgui")
-  .post(tokenShalgakh, async (req, res, next) => {
+  .post(async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
       var kholboltuud = db.kholboltuud;
