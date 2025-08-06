@@ -63,11 +63,11 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         baiguullaga: baiguullaga,
         subject: req.body.subject,
       };
-      const res = await axios.post(
+      const resIgeeye = await axios.post(
         "http://103.143.40.43:8282/tureesMailIlgeeye",
         ilgeekhBody
       );
-      const body = res.data;
+      const body = resIgeeye.data;
       if (body?.length > 0) {
         await MaililgeesenKhariu(req.body.tukhainBaaziinKholbolt).insertMany(
           body
