@@ -4,6 +4,7 @@ const MailiinZagvar = require("../models/mailiinZagvar");
 const Baiguullaga = require("../models/baiguullaga");
 const MsgTuukh = require("../models/msgTuukh");
 const Geree = require("../models/geree");
+const MaililgeesenKhariu = require("../models/maililgeesenKhariu");
 const aldaa = require("../components/aldaa");
 const MailIlgeeye = require("../components/mailIlgeeye");
 const request = require("request");
@@ -56,34 +57,22 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       !baiguullaga.tokhirgoo.mailPassword
     )
       throw new aldaa("И-Мэйлын тохиргоо хийгдээгүй байна!");
-
-    // for await (const mail of req.body.mailuud) {
-    //   await MailIlgeeye.duriinMailIlgeeye(
-    //     baiguullaga.tokhirgoo.mailNevtrekhNer,
-    //     baiguullaga.tokhirgoo.mailPassword,
-    //     baiguullaga.tokhirgoo.mailHost,
-    //     baiguullaga.tokhirgoo.mailPort,
-    //     mail.mail,
-    //     req.body.subject,
-    //     mail.content,
-    //     mail.gereeniiDugaar,
-    //   );
-    // }
-    var ilgeekhBody = {
-      mailuud: req.body.mailuud,
-      baiguullaga: baiguullaga,
-      subject: req.body.subject,
-    };
-    await request.post(
-      "http://103.143.40.43:8282/tureesMailIlgeeye",
-      // "http://192.168.1.241:8282/tureesMailIlgeeye",
-      { json: true, body: ilgeekhBody },
-      (err, res1, body) => {
-        if (err) next(err);
-      }
-    );
-
     if (req.body.subject === "Түрээсийн төлбөр" && !!req.body.gereenuud) {
+      var ilgeekhBody = {
+        mailuud: req.body.mailuud,
+        baiguullaga: baiguullaga,
+        subject: req.body.subject,
+      };
+      const res = await axios.post(
+        "http://103.143.40.43:8282/tureesMailIlgeeye",
+        ilgeekhBody
+      );
+      const body = res.data;
+      if (body?.length > 0) {
+        await MaililgeesenKhariu(req.body.tukhainBaaziinKholbolt).insertMany(
+          body
+        );
+      }
       for await (const tempData of req.body.gereenuud) {
         const tuukh = new NekhemjlekhiinTuukh(
           req.body.tukhainBaaziinKholbolt
@@ -161,8 +150,22 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
           update
         );
       }
+      res.send(body);
+    } else {
+      for await (const mail of req.body.mailuud) {
+        await MailIlgeeye.duriinMailIlgeeye(
+          baiguullaga.tokhirgoo.mailNevtrekhNer,
+          baiguullaga.tokhirgoo.mailPassword,
+          baiguullaga.tokhirgoo.mailHost,
+          baiguullaga.tokhirgoo.mailPort,
+          mail.mail,
+          req.body.subject,
+          mail.content,
+          mail.gereeniiDugaar
+        );
+      }
+      res.send("Amjilttai");
     }
-    res.send("Amjilttai");
   } catch (err) {
     next(err);
   }
