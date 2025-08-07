@@ -1434,7 +1434,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               },
             });
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
-              await Uilchluulegch(tukhainKholbolt).updateOne(
+              await Uilchluulegch(kholbolt).updateOne(
                 { _id: oldsonMashin._id },
                 {
                   freezeOgnoo: oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
