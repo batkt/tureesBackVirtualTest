@@ -115,7 +115,7 @@ router
   .route("/adminMedegdelZasakh")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      if (!!req.body.adminMedegdelId) {
+      if (!!req.body.adminMedegdelId && !!req.body.ajiltniiId) {
         var sonorduulguud = await Sonorduulga(
           req.body.tukhainBaaziinKholbolt
         ).find({ adminMedegdelId: req.body.adminMedegdelId });
@@ -123,8 +123,8 @@ router
           await Sonorduulga(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
             sonorduulga._id,
             {
-              $set: {
-                dakhijKharikhEsekh: true,
+              $push: {
+                dakhijKharakhguiAjiltniiIdnuud: req.body.ajiltniiId,
               },
             }
           );

@@ -19,6 +19,7 @@ const sonorduulgaSchema = new Schema(
     object: Schema.Types.Mixed,
     dakhijKharikhEsekh: Boolean,
     adminMedegdelId: String,
+    dakhijKharakhguiAjiltniiIdnuud: [String],
     zurag: {
       type: String,
     },
