@@ -1437,7 +1437,9 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               await Uilchluulegch(tukhainKholbolt).updateOne(
                 { _id: oldsonMashin._id },
                 {
-                  freezeOgnoo: new Date(),
+                  freezeOgnoo: oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+                    ? oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+                    : new Date(),
                 }
               );
             }
