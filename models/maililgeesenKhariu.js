@@ -23,4 +23,3 @@ module.exports = function a(conn) {
   conn = conn.kholbolt;
   return conn.model("maililgeesenKhariu", maililgeesenKhariuSchema);
 };
-//module.exports = mongoose.model("mailiinZagvar", mailiinZagvarSchema);
