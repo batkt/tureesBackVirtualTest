@@ -2040,7 +2040,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       throw new aldaa("Та загварын дагуу duriin бөглөөгүй байна!");
     }
     if (
-      !mashinSheetDotood["A1"].v.includes("Утас ") ||
+      !mashinSheetDotood["A1"].v.includes("Утас") ||
       !mashinSheetDotood["B1"].v.includes("Машины дугаар") ||
       !mashinSheetDotood["C1"].v.includes("Нэр") ||
       !mashinSheetDotood["D1"].v.includes("Тайлбар")
