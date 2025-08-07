@@ -1914,18 +1914,6 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
   ];
   worksheetSOKH.columns = [
     {
-      header: "Дотор камерын IP",
-      key: "Дотор камерын IP",
-      headerRow: true,
-      width: 30,
-    },
-    {
-      header: "Гадна камерын IP",
-      key: "Гадна камерын IP",
-      headerRow: true,
-      width: 30,
-    },
-    {
       header: "Утас",
       key: "Утас",
       headerRow: true,
@@ -1949,8 +1937,6 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       headerRow: true,
       width: 30,
     },
-  ];
-  worksheetTureeslegch.columns = [
     {
       header: "Төлөв",
       key: "Төлөв",
@@ -1958,6 +1944,14 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       width: 30,
     },
     {
+      header: "Камерын IP",
+      key: "Камерын IP",
+      headerRow: true,
+      width: 30,
+    },
+  ];
+  worksheetTureeslegch.columns = [
+    {
       header: "Утас",
       key: "Утас",
       headerRow: true,
@@ -1982,6 +1976,16 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       width: 30,
     },
   ];
+
+  worksheetSOKH.dataValidations.add("D2:D9999", {
+    type: "list",
+    allowBlank: false,
+    formulae: ['"Дотор, Гадна"'],
+    showErrorMessage: true,
+    errorStyle: "error",
+    error: "Тохирох утгыг сонгоно уу!",
+  });
+
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2018,20 +2022,20 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     var tolgoinObject3 = {};
     var tolgoinObject4 = {};
     if (
-      !mashinSheetDuriin["A1"].v.includes("Утас") ||
-      !mashinSheetDuriin["B1"].v.includes("Машины дугаар") ||
-      !mashinSheetDuriin["C1"].v.includes("Нэр") ||
-      !mashinSheetDuriin["D1"].v.includes("Тайлбар")
-    ) {
-      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
-    }
-    if (
       !mashinSheetGereet["A1"].v.includes("Утас") ||
       !mashinSheetGereet["B1"].v.includes("Машины дугаар") ||
       !mashinSheetGereet["C1"].v.includes("Нэр") ||
       !mashinSheetGereet["D1"].v.includes("Тайлбар") ||
       !mashinSheetGereet["E1"].v.includes("Эхлэх огноо") ||
       !mashinSheetGereet["F1"].v.includes("Дуусах огноо")
+    ) {
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+    }
+    if (
+      !mashinSheetDuriin["A1"].v.includes("Утас") ||
+      !mashinSheetDuriin["B1"].v.includes("Машины дугаар") ||
+      !mashinSheetDuriin["C1"].v.includes("Нэр") ||
+      !mashinSheetDuriin["D1"].v.includes("Тайлбар")
     ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
@@ -2044,21 +2048,20 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
     if (
-      !mashinSheetSOKH["A1"].v.includes("Дотор камерын IP") ||
-      !mashinSheetSOKH["B1"].v.includes("Гадна камерын IP") ||
-      !mashinSheetSOKH["C1"].v.includes("Утас") ||
-      !mashinSheetSOKH["D1"].v.includes("Машины дугаар") ||
-      !mashinSheetSOKH["E1"].v.includes("Нэр") ||
-      !mashinSheetSOKH["F1"].v.includes("Тайлбар")
+      !mashinSheetSOKH["A1"].v.includes("Утас") ||
+      !mashinSheetSOKH["B1"].v.includes("Машины дугаар") ||
+      !mashinSheetSOKH["C1"].v.includes("Нэр") ||
+      !mashinSheetSOKH["D1"].v.includes("Тайлбар") ||
+      !mashinSheetSOKH["E1"].v.includes("Төлөв") ||
+      !mashinSheetSOKH["F1"].v.includes("Камерын IP")
     ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
     if (
-      !mashinSheetTureeslegch["A1"].v.includes("Төлөв") ||
-      !mashinSheetTureeslegch["B1"].v.includes("Утас") ||
-      !mashinSheetTureeslegch["C1"].v.includes("Машины дугаар") ||
-      !mashinSheetTureeslegch["D1"].v.includes("Нэр") ||
-      !mashinSheetTureeslegch["E1"].v.includes("Тайлбар")
+      !mashinSheetTureeslegch["A1"].v.includes("Утас") ||
+      !mashinSheetTureeslegch["B1"].v.includes("Машины дугаар") ||
+      !mashinSheetTureeslegch["C1"].v.includes("Нэр") ||
+      !mashinSheetTureeslegch["D1"].v.includes("Тайлбар")
     ) {
       throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
@@ -2124,11 +2127,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!mashinSheetSOKH[cellAsString].v
       ) {
-        if (mashinSheetSOKH[cellAsString].v.includes("Дотор камерын IP"))
-          tolgoinObject3.dotorCamera = cellAsString[0];
-        else if (mashinSheetSOKH[cellAsString].v.includes("Гадна камерын IP"))
-          tolgoinObject3.gadnaCamera = cellAsString[0];
-        else if (mashinSheetSOKH[cellAsString].v.includes("Утас"))
+        if (mashinSheetSOKH[cellAsString].v.includes("Утас"))
           tolgoinObject3.utas = cellAsString[0];
         else if (mashinSheetSOKH[cellAsString].v.includes("Машины дугаар"))
           tolgoinObject3.dugaar = cellAsString[0];
@@ -2136,6 +2135,10 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject3.ner = cellAsString[0];
         else if (mashinSheetSOKH[cellAsString].v.includes("Тайлбар"))
           tolgoinObject3.temdeglel = cellAsString[0];
+        else if (mashinSheetSOKH[cellAsString].v.includes("Төлөв"))
+          tolgoinObject3.tuluv = cellAsString[0];
+        else if (mashinSheetSOKH[cellAsString].v.includes("Камерын IP"))
+          tolgoinObject3.cameraIp = cellAsString[0];
       }
     }
     for (let cell in mashinSheetTureeslegch) {
@@ -2145,9 +2148,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!mashinSheetTureeslegch[cellAsString].v
       ) {
-        if (mashinSheetTureeslegch[cellAsString].v.includes("Төлөв"))
-          tolgoinObject4.tuluv = cellAsString[0];
-        else if (mashinSheetTureeslegch[cellAsString].v.includes("Утас"))
+        if (mashinSheetTureeslegch[cellAsString].v.includes("Утас"))
           tolgoinObject4.ezemshigchiinUtas = cellAsString[0];
         else if (
           mashinSheetTureeslegch[cellAsString].v.includes("Машины дугаар")
@@ -2185,6 +2186,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     dataDuriin.forEach((mur) => {
       muriinDugaar++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
+      tolgoinObject.dugaar = tolgoinObject.dugaar.replace(/\s/g, "");
       object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar)];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ezemshigchiinUtas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
@@ -2235,8 +2237,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         jagsaalt.push(object);
       }
     });
-
-    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     dataGereet.forEach((mur) => {
       muriinDugaar++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
@@ -2384,15 +2384,13 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       muriinDugaar++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject3.dugaar)];
-      object.gadnaCamera =
-        mur[usegTooruuKhurvuulekh(tolgoinObject3.gadnaCamera)];
-      object.dotorCamera =
-        mut[usegTooruuKhurvuulekh(tolgoinObject3.dotorCamera)];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject3.ner)];
       object.ezemshigchiinUtas =
         mur[usegTooruuKhurvuulekh(tolgoinObject3.utas)];
       object.turul = "СӨХ";
       object.temdeglel = mur[usegTooruuKhurvuulekh(tolgoinObject3.temdeglel)];
+      object.tuluv = mur[usegTooruuKhurvuulekh(tolgoinObject3.tuluv)];
+      object.cameraIp = mur[usegTooruuKhurvuulekh(tolgoinObject3.camerIp)];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
       if (!object.dugaar || !object.turul || !object.ezemshigchiinUtas) {
@@ -2441,7 +2439,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       muriinDugaar++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject4.dugaar)];
-      object.tuluv = mur[usegTooruuKhurvuulekh(tolgoinObject4.tuluv)];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject4.ner)];
       object.ezemshigchiinUtas =
         mur[usegTooruuKhurvuulekh(tolgoinObject4.utas)];
@@ -2490,6 +2487,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         gereeniiDugaaruud.push(object.gereeniiDugaar);
       }
     });
+    if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     if (gereeniiDugaaruud?.length > 0) {
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
         gereeniiDugaaruud: { $in: gereeniiDugaaruud },
