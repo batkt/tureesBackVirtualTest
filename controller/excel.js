@@ -2009,7 +2009,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       workbook.SheetNames[3] !== "СӨХ" ||
       workbook.SheetNames[4] !== "Түрээслэгч"
     )
-      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу бөглөөгүй sheet name  байна!");
     const mashinSheetGereet = workbook.Sheets[workbook.SheetNames[0]];
     const mashinSheetDotood = workbook.Sheets[workbook.SheetNames[1]];
     const mashinSheetDuriin = workbook.Sheets[workbook.SheetNames[2]];
@@ -2029,7 +2029,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       !mashinSheetGereet["E1"].v.includes("Эхлэх огноо") ||
       !mashinSheetGereet["F1"].v.includes("Дуусах огноо")
     ) {
-      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу gereet бөглөөгүй байна!");
     }
     if (
       !mashinSheetDuriin["A1"].v.includes("Утас") ||
@@ -2037,7 +2037,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       !mashinSheetDuriin["C1"].v.includes("Нэр") ||
       !mashinSheetDuriin["D1"].v.includes("Тайлбар")
     ) {
-      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу duriin бөглөөгүй байна!");
     }
     if (
       !mashinSheetDotood["A1"].v.includes("Утас ") ||
@@ -2045,7 +2045,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       !mashinSheetDotood["C1"].v.includes("Нэр") ||
       !mashinSheetDotood["D1"].v.includes("Тайлбар")
     ) {
-      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу dotood бөглөөгүй байна!");
     }
     if (
       !mashinSheetSOKH["A1"].v.includes("Утас") ||
@@ -2055,7 +2055,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       !mashinSheetSOKH["E1"].v.includes("Төлөв") ||
       !mashinSheetSOKH["F1"].v.includes("Камерын IP")
     ) {
-      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу sokh бөглөөгүй байна!");
     }
     if (
       !mashinSheetTureeslegch["A1"].v.includes("Утас") ||
@@ -2063,7 +2063,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       !mashinSheetTureeslegch["C1"].v.includes("Нэр") ||
       !mashinSheetTureeslegch["D1"].v.includes("Тайлбар")
     ) {
-      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу tureeslegch бөглөөгүй байна!");
     }
     for (let cell in mashinSheetDuriin) {
       var cellAsString = cell.toString();
