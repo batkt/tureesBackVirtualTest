@@ -1911,6 +1911,12 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       headerRow: true,
       width: 30,
     },
+    {
+      header: "Цэнэглэх дүн",
+      key: "Цэнэглэх дүн",
+      headerRow: true,
+      width: 30,
+    },
   ];
   worksheetSOKH.columns = [
     {
@@ -1977,7 +1983,7 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
     },
   ];
 
-  worksheetSOKH.dataValidations.add("D2:D9999", {
+  worksheetSOKH.dataValidations.add("E2:E9999", {
     type: "list",
     allowBlank: false,
     formulae: ['"Дотор, Гадна"'],
@@ -1985,7 +1991,42 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
     errorStyle: "error",
     error: "Тохирох утгыг сонгоно уу!",
   });
+  worksheetGereet.dataValidations.add("E2:E9999", {
+    type: "date",
+    operator: "between",
+    formula1: "DATE(2000,1,1)",
+    formula2: "DATE(2100,12,31)",
+    showErrorMessage: true,
+    errorTitle: "Буруу утга",
+    error: "Гэрээний эхлэх огноог сонгоно уу!",
+  });
+  worksheetGereet.dataValidations.add("F2:F9999", {
+    type: "date",
+    operator: "between",
+    formula1: "DATE(2000,1,1)",
+    formula2: "DATE(2100,12,31)",
+    showErrorMessage: true,
+    errorTitle: "Буруу утга",
+    error: "Гэрээний дуусах огноог сонгоно уу!",
+  });
 
+  function styleHeaderRow(ws) {
+    ws.getRow(1).eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "darkVertical",
+        fgColor: { argb: "4ca64c" },
+      };
+      cell.font = { color: { argb: "FFFFFFFF" }, bold: true };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+    });
+  }
+
+  styleHeaderRow(worksheetGereet);
+  styleHeaderRow(worksheetDotood);
+  styleHeaderRow(worksheetTureeslegch);
+  styleHeaderRow(worksheetSOKH);
+  styleHeaderRow(worksheetDuriin);
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2009,7 +2050,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       workbook.SheetNames[3] !== "СӨХ" ||
       workbook.SheetNames[4] !== "Түрээслэгч"
     )
-      throw new aldaa("Та загварын дагуу бөглөөгүй sheet name  байна!");
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     const mashinSheetGereet = workbook.Sheets[workbook.SheetNames[0]];
     const mashinSheetDotood = workbook.Sheets[workbook.SheetNames[1]];
     const mashinSheetDuriin = workbook.Sheets[workbook.SheetNames[2]];
@@ -2029,23 +2070,24 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       !mashinSheetGereet["E1"].v.includes("Эхлэх огноо") ||
       !mashinSheetGereet["F1"].v.includes("Дуусах огноо")
     ) {
-      throw new aldaa("Та загварын дагуу gereet бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
     if (
       !mashinSheetDuriin["A1"].v.includes("Утас") ||
       !mashinSheetDuriin["B1"].v.includes("Машины дугаар") ||
       !mashinSheetDuriin["C1"].v.includes("Нэр") ||
-      !mashinSheetDuriin["D1"].v.includes("Тайлбар")
+      !mashinSheetDuriin["D1"].v.includes("Тайлбар") ||
+      !mashinSheetDuriin["E1"].v.includes("Цэнэглэх дүн")
     ) {
-      throw new aldaa("Та загварын дагуу duriin бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
     if (
-      !mashinSheetDotood["A1"].v.includes("Утас") ||
+      !mashinSheetDotood["A1"].v.includes("Утас ") ||
       !mashinSheetDotood["B1"].v.includes("Машины дугаар") ||
       !mashinSheetDotood["C1"].v.includes("Нэр") ||
       !mashinSheetDotood["D1"].v.includes("Тайлбар")
     ) {
-      throw new aldaa("Та загварын дагуу dotood бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
     if (
       !mashinSheetSOKH["A1"].v.includes("Утас") ||
@@ -2055,7 +2097,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       !mashinSheetSOKH["E1"].v.includes("Төлөв") ||
       !mashinSheetSOKH["F1"].v.includes("Камерын IP")
     ) {
-      throw new aldaa("Та загварын дагуу sokh бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
     if (
       !mashinSheetTureeslegch["A1"].v.includes("Утас") ||
@@ -2063,7 +2105,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       !mashinSheetTureeslegch["C1"].v.includes("Нэр") ||
       !mashinSheetTureeslegch["D1"].v.includes("Тайлбар")
     ) {
-      throw new aldaa("Та загварын дагуу tureeslegch бөглөөгүй байна!");
+      throw new aldaa("Та загварын дагуу бөглөөгүй байна!");
     }
     for (let cell in mashinSheetDuriin) {
       var cellAsString = cell.toString();
@@ -2080,6 +2122,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject.utas = cellAsString[0];
         else if (mashinSheetDuriin[cellAsString].v.includes("Тайлбар"))
           tolgoinObject.temdeglel = cellAsString[0];
+        else if (mashinSheetDuriin[cellAsString].v.includes("Цэнэглэх дүн"))
+          tolgoinObject.tsenegDun = cellAsString[0];
       }
     }
     for (let cell in mashinSheetDotood) {
@@ -2186,11 +2230,15 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     dataDuriin.forEach((mur) => {
       muriinDugaar++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
-      tolgoinObject.dugaar = tolgoinObject.dugaar.replace(/\s/g, "");
+      object.dugaar =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar.replace(/\s/g, ""))];
       object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar)];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ezemshigchiinUtas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
       object.turul = "Дурын";
+      object.tsenegDun = Number(
+        mur[usegTooruuKhurvuulekh(tolgoinObject.tsenegDun)]
+      )?.toLocaleString("en-US");
       object.temdeglel = mur[usegTooruuKhurvuulekh(tolgoinObject.temdeglel)];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
@@ -2240,7 +2288,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     dataGereet.forEach((mur) => {
       muriinDugaar++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
-      object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject2.dugaar)];
+      object.dugaar =
+        mur[usegTooruuKhurvuulekh(tolgoinObject2.dugaar.replace(/\s/g, ""))];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject2.ner)];
       object.ezemshigchiinUtas =
         mur[usegTooruuKhurvuulekh(tolgoinObject2.utas)];
@@ -2328,7 +2377,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     dataDotood.forEach((mur) => {
       muriinDugaar++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
-      object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject1.dugaar)];
+      object.dugaar =
+        mur[usegTooruuKhurvuulekh(tolgoinObject1.dugaar.replace(/\s/g, ""))];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject1.ner)];
       object.ezemshigchiinUtas =
         mur[usegTooruuKhurvuulekh(tolgoinObject1.utas)];
@@ -2383,7 +2433,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     dataSOKH.forEach((mur) => {
       muriinDugaar++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
-      object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject3.dugaar)];
+      object.dugaar =
+        mur[usegTooruuKhurvuulekh(tolgoinObject3.dugaar.replace(/\s/g, ""))];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject3.ner)];
       object.ezemshigchiinUtas =
         mur[usegTooruuKhurvuulekh(tolgoinObject3.utas)];
@@ -2438,7 +2489,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     dataTureeslegch.forEach((mur) => {
       muriinDugaar++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
-      object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject4.dugaar)];
+      object.dugaar =
+        mur[usegTooruuKhurvuulekh(tolgoinObject4.dugaar.replace(/\s/g, ""))];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject4.ner)];
       object.ezemshigchiinUtas =
         mur[usegTooruuKhurvuulekh(tolgoinObject4.utas)];
