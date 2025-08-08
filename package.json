@@ -25,7 +25,7 @@
     "nodemailer": "^6.10.0",
     "parking-v1": "^1.5.87",
     "pg": "^8.11.5",
-    "quickqpaypackv2": "^1.0.46",
+    "quickqpaypackv2": "^1.0.47",
     "redis": "^5.5.6",
     "sharp": "^0.30.7",
     "zevbackv2": "^1.1.44",
