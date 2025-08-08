@@ -2186,7 +2186,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         else if (mashinSheetSOKH[cellAsString].v.includes("Төлөв"))
           tolgoinObject3.tuluv = cellAsString[0];
         else if (mashinSheetSOKH[cellAsString].v.includes("Камерын IP"))
-          tolgoinObject3.cameraIp = cellAsString[0];
+          tolgoinObject3.cameraIP = cellAsString[0];
       }
     }
     for (let cell in mashinSheetTureeslegch) {
@@ -2238,8 +2238,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     dataDuriin.forEach((mur) => {
       muriinDugaarDuriin++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
-      object.dugaar =
-        mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar.replace(/\s/g, ""))];
+      object.dugaar = mur[tolgoinObject.dugaar.trim().replace(/\s/g, "")];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ezemshigchiinUtas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
       object.turul = "Дурын";
@@ -2296,7 +2295,9 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       muriinDugaarGereet++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar =
-        mur[usegTooruuKhurvuulekh(tolgoinObject2.dugaar.replace(/\s/g, ""))];
+        mur[
+          usegTooruuKhurvuulekh(tolgoinObject.dugaar.trim().replace(/\s/g, ""))
+        ];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject2.ner)];
       object.ezemshigchiinUtas =
         mur[usegTooruuKhurvuulekh(tolgoinObject2.utas)];
@@ -2370,7 +2371,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[1] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarGereet +
           " дугаар мөрөнд байгаа ";
         aldaaniiMsg = aldaaniiMsg + "эхлэх огноог шалгана уу, ";
       } else {
@@ -2385,7 +2386,9 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       muriinDugaarDotood++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar =
-        mur[usegTooruuKhurvuulekh(tolgoinObject1.dugaar.replace(/\s/g, ""))];
+        mur[
+          usegTooruuKhurvuulekh(tolgoinObject.dugaar.trim().replace(/\s/g, ""))
+        ];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject1.ner)];
       object.ezemshigchiinUtas =
         mur[usegTooruuKhurvuulekh(tolgoinObject1.utas)];
@@ -2441,14 +2444,16 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       muriinDugaarSOKH++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar =
-        mur[usegTooruuKhurvuulekh(tolgoinObject3.dugaar.replace(/\s/g, ""))];
+        mur[
+          usegTooruuKhurvuulekh(tolgoinObject.dugaar.trim().replace(/\s/g, ""))
+        ];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject3.ner)];
       object.ezemshigchiinUtas =
         mur[usegTooruuKhurvuulekh(tolgoinObject3.utas)];
       object.turul = "СӨХ";
       object.temdeglel = mur[usegTooruuKhurvuulekh(tolgoinObject3.temdeglel)];
       object.tuluv = mur[usegTooruuKhurvuulekh(tolgoinObject3.tuluv)];
-      object.cameraIp = mur[usegTooruuKhurvuulekh(tolgoinObject3.camerIp)];
+      object.cameraIP = mur[usegTooruuKhurvuulekh(tolgoinObject3.cameraIP)];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
       if (!object.dugaar || !object.turul || !object.ezemshigchiinUtas) {
@@ -2497,7 +2502,9 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       muriinDugaarTureeslegch++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar =
-        mur[usegTooruuKhurvuulekh(tolgoinObject4.dugaar.replace(/\s/g, ""))];
+        mur[
+          usegTooruuKhurvuulekh(tolgoinObject.dugaar.trim().replace(/\s/g, ""))
+        ];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject4.ner)];
       object.ezemshigchiinUtas =
         mur[usegTooruuKhurvuulekh(tolgoinObject4.utas)];
