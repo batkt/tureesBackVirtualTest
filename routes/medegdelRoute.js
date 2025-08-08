@@ -164,4 +164,27 @@ router
     }
   });
 
+router.route("/adminMedegdelUstgakh").post(async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+    if (kholboltuud) {
+      for await (const kholbolt of kholboltuud) {
+        var sonorduulguud = await Sonorduulga(kholbolt).find({
+          turul: "medegdelAdmin",
+        });
+        for await (const sonorduulga of sonorduulguud) {
+          await Sonorduulga(kholbolt).deleteOne({
+            _id: sonorduulga._id,
+          });
+        }
+      }
+    }
+    res.send("Амжилттай");
+  } catch (error) {
+    console.log("log ----- > adminMedegdelUstgakh ----> " + error);
+    next(error);
+  }
+});
+
 module.exports = router;
