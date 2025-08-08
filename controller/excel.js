@@ -1994,24 +1994,24 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
   worksheetGereet.dataValidations.add("E2:E9999", {
     type: "date",
     operator: "between",
-    showInputMessage: true,
-    formulae: ["2023-01-01", "2050-12-31"],
-    allowBlank: false,
-    promptTitle: "Огноо оруулах",
-    prompt: "Эхлэх огноог сонгоно уу",
+    allowBlank: true,
+    formulae: ["2024-01-01", "2030-12-31"],
     showErrorMessage: true,
-    errorTitle: "Алдаа",
-    error: "Зөв огноо оруулна уу",
+    errorTitle: "Буруу огноо",
+    error: "Огноо оруулна уу!",
+    promptTitle: "Огноо оруулах",
+    prompt: "Дуусах огноог оруулна уу!",
   });
-
   worksheetGereet.dataValidations.add("F2:F9999", {
     type: "date",
     operator: "between",
-    formula1: "DATE(2000,1,1)",
-    formula2: "DATE(2100,12,31)",
+    allowBlank: true,
+    formulae: ["2024-01-01", "2030-12-31"],
     showErrorMessage: true,
-    errorTitle: "Буруу утга",
-    error: "Гэрээний дуусах огноог сонгоно уу!",
+    errorTitle: "Буруу огноо",
+    error: "Огноо оруулна уу!",
+    promptTitle: "Огноо оруулах",
+    prompt: "Дуусах огноог оруулна уу!",
   });
 
   function styleHeaderRow(ws) {
@@ -2230,13 +2230,16 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     });
 
     var aldaaniiMsg = "";
-    var muriinDugaar = 1;
+    var muriinDugaarDuriin = 1;
+    var muriinDugaarDotood = 1;
+    var muriinDugaarGereet = 1;
+    var muriinDugaarSOKH = 1;
+    var muriinDugaarTureeslegch = 1;
     dataDuriin.forEach((mur) => {
-      muriinDugaar++;
+      muriinDugaarDuriin++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar =
         mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar.replace(/\s/g, ""))];
-      object.dugaar = mur[usegTooruuKhurvuulekh(tolgoinObject.dugaar)];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ezemshigchiinUtas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
       object.turul = "Дурын";
@@ -2256,7 +2259,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           `(${workbook.SheetNames[2]})` +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarDuriin +
           " дугаар мөрөнд ";
         if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
         if (!object.ezemshigchiinUtas) aldaaniiMsg = aldaaniiMsg + "'Утас', ";
@@ -2270,7 +2273,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[2] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarDuriin +
           " дугаар мөрөнд ";
         aldaaniiMsg =
           aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
@@ -2280,7 +2283,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[2] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarDuriin +
           " дугаар мөрөнд ";
         aldaaniiMsg =
           aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
@@ -2290,7 +2293,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       }
     });
     dataGereet.forEach((mur) => {
-      muriinDugaar++;
+      muriinDugaarGereet++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar =
         mur[usegTooruuKhurvuulekh(tolgoinObject2.dugaar.replace(/\s/g, ""))];
@@ -2319,7 +2322,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[0] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarGereet +
           " дугаар мөрөнд ";
         if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
         if (!object.ezemshigchiinNer)
@@ -2336,7 +2339,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[0] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarGereet +
           " дугаар мөрөнд ";
         aldaaniiMsg =
           aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
@@ -2346,7 +2349,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[0] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarGereet +
           " дугаар мөрөнд ";
         aldaaniiMsg =
           aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
@@ -2357,7 +2360,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[1] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarGereet +
           " дугаар мөрөнд байгаа ";
         aldaaniiMsg = aldaaniiMsg + "дуусах огноог шалгана уу, ";
       } else if (
@@ -2379,7 +2382,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     var gereeniiDugaaruud = [];
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     dataDotood.forEach((mur) => {
-      muriinDugaar++;
+      muriinDugaarDotood++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar =
         mur[usegTooruuKhurvuulekh(tolgoinObject1.dugaar.replace(/\s/g, ""))];
@@ -2398,7 +2401,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[1] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarDotood +
           " дугаар мөрөнд ";
         if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
         if (!object.gereeniiDugaar)
@@ -2413,7 +2416,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[1] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarDotood +
           " дугаар мөрөнд ";
         aldaaniiMsg =
           aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
@@ -2423,7 +2426,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[1] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarDotood +
           " дугаар мөрөнд ";
         aldaaniiMsg =
           aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
@@ -2435,7 +2438,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     });
     // СӨХ
     dataSOKH.forEach((mur) => {
-      muriinDugaar++;
+      muriinDugaarSOKH++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar =
         mur[usegTooruuKhurvuulekh(tolgoinObject3.dugaar.replace(/\s/g, ""))];
@@ -2454,7 +2457,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[3] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarSOKH +
           " дугаар мөрөнд ";
         if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
         if (!object.gereeniiDugaar)
@@ -2469,7 +2472,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[3] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarSOKH +
           " дугаар мөрөнд ";
         aldaaniiMsg =
           aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
@@ -2479,7 +2482,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[3] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarSOKH +
           " дугаар мөрөнд ";
         aldaaniiMsg =
           aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
@@ -2491,7 +2494,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     });
     //  Tureeslegch
     dataTureeslegch.forEach((mur) => {
-      muriinDugaar++;
+      muriinDugaarTureeslegch++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
       object.dugaar =
         mur[usegTooruuKhurvuulekh(tolgoinObject4.dugaar.replace(/\s/g, ""))];
@@ -2508,7 +2511,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[4] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarTureeslegch +
           " дугаар мөрөнд ";
         if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
         if (!object.gereeniiDugaar)
@@ -2523,7 +2526,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[4] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarTureeslegch +
           " дугаар мөрөнд ";
         aldaaniiMsg =
           aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
@@ -2533,7 +2536,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           "Алдаа! " +
           workbook.SheetNames[4] +
           " sheet-ны " +
-          muriinDugaar +
+          muriinDugaarTureeslegch +
           " дугаар мөрөнд ";
         aldaaniiMsg =
           aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
