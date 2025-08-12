@@ -1842,9 +1842,14 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   if (guilgeenuud) {
                     var ustgakhJagsaalt = [];
                     for await (const item of guilgeenuud) {
+                      var indexTalbar =
+                        item.barilgiinId +
+                        item.bank +
+                        item.dansniiDugaar +
+                        item.tranId +
+                        item.tranAmount.toString();
                       var guilgee = await BankniiGuilgee(kholbolt).findOne({
-                        tranId: item.tranId,
-                        barilgiinId: dans.barilgiinId,
+                        indexTalbar: indexTalbar,
                       });
                       if (guilgee) ustgakhJagsaalt.push(item);
                     }
