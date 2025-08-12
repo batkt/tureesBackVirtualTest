@@ -789,6 +789,23 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                     "date",
                     geree._id.tulukhUdur[0]
                   );
+                  console.log(
+                    "----- uusgexOgnoo -----> " + JSON.stringify(uusgexOgnoo)
+                  );
+                  console.log(
+                    "----- now date -----> " + JSON.stringify(new Date())
+                  );
+                  console.log(
+                    "---aldangiChuluulukhKhonog-------> " +
+                      JSON.stringify(
+                        new Date(
+                          moment(new Date(uusgexOgnoo)).add(
+                            aldangiChuluulukhKhonog,
+                            "days"
+                          )
+                        )
+                      )
+                  );
                   if (
                     geree._id.uldegdel > 0 &&
                     new Date() >
@@ -799,23 +816,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                         )
                       )
                   ) {
-                    console.log(
-                      "----- uusgexOgnoo -----> " + JSON.stringify(uusgexOgnoo)
-                    );
-                    console.log(
-                      "----- now date -----> " + JSON.stringify(new Date())
-                    );
-                    console.log(
-                      "---aldangiChuluulukhKhonog-------> " +
-                        JSON.stringify(
-                          new Date(
-                            moment(new Date(uusgexOgnoo)).add(
-                              aldangiChuluulukhKhonog,
-                              "days"
-                            )
-                          )
-                        )
-                    );
                     var bodogdsonKhuu = tooZasyaSync(
                       (geree._id.uldegdel * aldagiinKhuvi) / 100
                     );
