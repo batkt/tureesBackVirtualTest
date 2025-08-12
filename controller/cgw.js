@@ -1556,6 +1556,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         dans.dansniiDugaar +
                         item.record +
                         item.amount.toString();
+                      console.log(
+                        "------indexTalbar -------->" +
+                          JSON.stringify(indexTalbar)
+                      );
                       var guilgee = await BankniiGuilgee(kholbolt).findOne({
                         indexTalbar: indexTalbar,
                       });
