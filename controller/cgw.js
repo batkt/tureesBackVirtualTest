@@ -1530,6 +1530,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 };
                 if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
                 var khariu = await dansniiKhuulgaAvya(token, null, bodyKhuulga);
+                if (dans.dugaar === "5129048690") {
+                  console.log("body --------->" + JSON.stringify(bodyKhuulga));
+                  console.log("khariu --------->" + JSON.stringify(khariu));
+                }
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
                   khariu.transactions.forEach((mur) =>
@@ -1601,10 +1605,12 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
+                      if (dans.dugaar === "5129048690")
+                        console.log("result ------->" + result);
                       // if (res) res.send("Amjilttai");
                     })
                     .catch((err) => {
-                      throw err;
+                      console.log("err ----->" + err);
                       // next(err);
                     });
                 }
