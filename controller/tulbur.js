@@ -665,6 +665,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
   baiguullagiinId = null
 ) {
   try {
+    console.log("aldangiBodyo ------------->>>");
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     if (kholboltuud) {
@@ -783,8 +784,15 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 },
               ];
               var gereenuud = await Geree(kholbolt).aggregate(query);
+              console.log(
+                "aldangi ------------->>>" + JSON.stringify(gereenuud)
+              );
               if (gereenuud && gereenuud.length > 0) {
                 for (const geree of gereenuud) {
+                  console.log(
+                    "geree ------------->>>" +
+                      JSON.stringify(geree._id.gereeniiDugaar)
+                  );
                   var uusgexOgnoo = moment(ognoo).set(
                     "date",
                     geree._id.tulukhUdur[0]
