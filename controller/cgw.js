@@ -354,14 +354,12 @@ async function dansniiKhuulgaAvya(token, next, body) {
       { context }
     );
     const resultValue = JSON.parse(responseShunuEsekh?.body);
-    console.log("state ----------->" + JSON.stringify(resultValue));
     url =
       "https://api.khanbank.com/v1/statements/" +
       (resultValue ? "corporate/" : "") +
       body.dansniiDugaar;
     if (body.record)
       url = url + (resultValue ? "" : "/record?record=" + body.record);
-    console.log("url ----------->" + JSON.stringify(url));
     const response = await instance.get(url, { context });
     if (!response.body) {
       if (next) next(new aldaa("Татах хуулга байхгүй"));
@@ -1529,13 +1527,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   dansniiDugaar: dans.dugaar,
                 };
                 if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
-                if (dans.dugaar === "5129048690")
-                  bodyKhuulga["record"] = "63052";
                 var khariu = await dansniiKhuulgaAvya(token, null, bodyKhuulga);
-                if (dans.dugaar === "5129048690") {
-                  console.log("body --------->" + JSON.stringify(bodyKhuulga));
-                  console.log("khariu --------->" + JSON.stringify(khariu));
-                }
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
                   khariu.transactions.forEach((mur) =>
@@ -1556,10 +1548,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         item.dansniiDugaar +
                         item.record +
                         item.amount.toString();
-                      console.log(
-                        "------indexTalbar -------->" +
-                          JSON.stringify(indexTalbar)
-                      );
                       var guilgee = await BankniiGuilgee(kholbolt).findOne({
                         indexTalbar: indexTalbar,
                       });
@@ -1613,15 +1601,8 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   }
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
-                    .then((result) => {
-                      if (dans.dugaar === "5129048690")
-                        console.log("result ------->" + result);
-                      // if (res) res.send("Amjilttai");
-                    })
-                    .catch((err) => {
-                      console.log("err ----->" + err);
-                      // next(err);
-                    });
+                    .then((result) => {})
+                    .catch((err) => {});
                 }
               } else if (dans.bank == "tdb") {
                 var query = [
