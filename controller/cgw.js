@@ -1547,23 +1547,26 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
                   });
-                  // if (guilgeenuud) {
-                  //   var ustgakhJagsaalt = [];
-                  //   for await (const item of guilgeenuud) {
-                  //     var guilgee = await BankniiGuilgee(kholbolt).findOne({
-                  //       record: item.record,
-                  //       code: item.code,
-                  //       branch: item.branch,
-                  //       barilgiinId: dans.barilgiinId,
-                  //     });
-                  //     if (guilgee) ustgakhJagsaalt.push(item);
-                  //   }
-                  //   if (!!ustgakhJagsaalt) {
-                  //     guilgeenuud = guilgeenuud.filter(
-                  //       (el) => !ustgakhJagsaalt.includes(el)
-                  //     );
-                  //   }
-                  // }
+                  if (guilgeenuud) {
+                    var ustgakhJagsaalt = [];
+                    for await (const item of guilgeenuud) {
+                      var indexTalbar =
+                        dans.barilgiinId +
+                        dans.bank +
+                        dans.dansniiDugaar +
+                        item.record +
+                        item.amount.toString();
+                      var guilgee = await BankniiGuilgee(kholbolt).findOne({
+                        indexTalbar: indexTalbar,
+                      });
+                      if (guilgee) ustgakhJagsaalt.push(item);
+                    }
+                    if (!!ustgakhJagsaalt) {
+                      guilgeenuud = guilgeenuud.filter(
+                        (el) => !ustgakhJagsaalt.includes(el)
+                      );
+                    }
+                  }
                   for await (const item of guilgeenuud) {
                     if (!!dans.zogsooliinId) {
                       var url =
