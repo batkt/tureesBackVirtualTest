@@ -1551,9 +1551,9 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     var ustgakhJagsaalt = [];
                     for await (const item of guilgeenuud) {
                       var indexTalbar =
-                        dans.barilgiinId +
-                        dans.bank +
-                        dans.dansniiDugaar +
+                        item.barilgiinId +
+                        item.bank +
+                        item.dansniiDugaar +
                         item.record +
                         item.amount.toString();
                       console.log(
