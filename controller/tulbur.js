@@ -807,7 +807,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                       )
                   );
                   if (
-                    geree._id.uldegdel > 0 &&
+                    geree.uldegdel > 0 &&
                     new Date() >
                       new Date(
                         moment(new Date(uusgexOgnoo)).add(
@@ -817,7 +817,10 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                       )
                   ) {
                     var bodogdsonKhuu = tooZasyaSync(
-                      (geree._id.uldegdel * aldagiinKhuvi) / 100
+                      (geree.uldegdel * aldagiinKhuvi) / 100
+                    );
+                    console.log(
+                      "---uldegdel-------> " + JSON.stringify(geree.uldegdel)
                     );
                     console.log(
                       "---bodogdsonKhuu-------> " +
