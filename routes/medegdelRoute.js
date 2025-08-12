@@ -106,7 +106,6 @@ router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
       );
     res.send("done");
   } catch (error) {
-    console.log("log ----- > AdminMedegellgeeye ----> " + error);
     next(error);
   }
 });
@@ -132,7 +131,6 @@ router
       }
       res.send("Амжилттай");
     } catch (error) {
-      console.log("log ----- > adminMedegdelZasakh ----> " + error);
       next(error);
     }
   });
@@ -159,7 +157,6 @@ router
       }
       res.send("Амжилттай");
     } catch (error) {
-      console.log("log ----- > adminMedegdelZasakh ----> " + error);
       next(error);
     }
   });
@@ -182,7 +179,6 @@ router.route("/adminMedegdelUstgakh").post(async (req, res, next) => {
     }
     res.send("Амжилттай");
   } catch (error) {
-    console.log("log ----- > adminMedegdelUstgakh ----> " + error);
     next(error);
   }
 });

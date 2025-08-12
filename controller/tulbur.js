@@ -789,23 +789,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                     "date",
                     geree._id.tulukhUdur[0]
                   );
-                  console.log(
-                    "----- uusgexOgnoo -----> " + JSON.stringify(uusgexOgnoo)
-                  );
-                  console.log(
-                    "----- now date -----> " + JSON.stringify(new Date())
-                  );
-                  console.log(
-                    "---aldangiChuluulukhKhonog-------> " +
-                      JSON.stringify(
-                        new Date(
-                          moment(new Date(uusgexOgnoo)).add(
-                            aldangiChuluulukhKhonog,
-                            "days"
-                          )
-                        )
-                      )
-                  );
                   if (
                     geree.uldegdel > 0 &&
                     new Date() >
@@ -818,13 +801,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   ) {
                     var bodogdsonKhuu = tooZasyaSync(
                       (geree.uldegdel * aldagiinKhuvi) / 100
-                    );
-                    console.log(
-                      "---uldegdel-------> " + JSON.stringify(geree.uldegdel)
-                    );
-                    console.log(
-                      "---bodogdsonKhuu-------> " +
-                        JSON.stringify(bodogdsonKhuu)
                     );
                     let upsertDoc = {
                       updateOne: {

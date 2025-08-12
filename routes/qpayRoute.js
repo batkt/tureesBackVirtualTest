@@ -80,8 +80,11 @@ router.get(
         };
         await tulburUridchiljTulukh(body, res, next);
       }
-      if(!!req.params.mashiniiDugaar && !!req.params.cameraIP && req.params.cameraIP != "dotor")
-      {
+      if (
+        !!req.params.mashiniiDugaar &&
+        !!req.params.cameraIP &&
+        req.params.cameraIP != "dotor"
+      ) {
         const io = req.app.get("socketio");
         if (io) {
           io.emit(`qpayMobileSdk${req.params.baiguullagiinId}`, {
@@ -132,7 +135,10 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       req.body.burtgeliinDugaar = "6078893";
       await qpayGargayaKhuuchin(req, res, next);
     } else {
-      var tailbar = "Төлбөр " + (req.body.mashiniiDugaar ? req.body.mashiniiDugaar : "") + (req.body.turul ? req.body.turul : "");
+      var tailbar =
+        "Төлбөр " +
+        (req.body.mashiniiDugaar ? req.body.mashiniiDugaar : "") +
+        (req.body.turul ? req.body.turul : "");
       if (!!req.body.gereeniiId) {
         var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
           req.body.gereeniiId
@@ -147,7 +153,8 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
         !req.body.dansniiDugaar
       )
         req.body.dansniiDugaar = "5129057717";
-      if (req.body.baiguullagiinId == "65cf2f027fbc788f85e50b90") // sakura khaan dans
+      if (req.body.baiguullagiinId == "65cf2f027fbc788f85e50b90")
+        // sakura khaan dans
         req.body.dansniiDugaar = "5112418947";
       req.body.tailbar = tailbar;
       /*Төлбөр callback url*/
@@ -161,7 +168,11 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
         "/" +
         req.body?.zakhialgiinDugaar;
       // zogsool gadaa sticker qr
-      if(req.body.turul === "QRGadaa" && !!req.body.mashiniiDugaar && !!req.body.cameraIP) {
+      if (
+        req.body.turul === "QRGadaa" &&
+        !!req.body.mashiniiDugaar &&
+        !!req.body.cameraIP
+      ) {
         callback_url =
           "http://" +
           process.env.UNDSEN_IP +
@@ -195,11 +206,18 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
 
         req.body.zakhialgiinDugaar = maxDugaar.toString();
         //gereetei ued mungun dun 300tugrug nemex
-        if(req.body.tulukhDun > 0)
-        {
-          var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
-          if(!!baiguullaga && baiguullaga.tokhirgoo?.qpayShimtgelTusdaa == true)
-          req.body.tulukhDun = await Math.round((req.body.tulukhDun + 300 + Number.EPSILON) * 100) / 100
+        if (req.body.tulukhDun > 0) {
+          var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+            req.body.baiguullagiinId
+          );
+          if (
+            !!baiguullaga &&
+            baiguullaga.tokhirgoo?.qpayShimtgelTusdaa == true
+          )
+            req.body.tulukhDun =
+              (await Math.round(
+                (req.body.tulukhDun + 300 + Number.EPSILON) * 100
+              )) / 100;
         }
       }
 
@@ -218,7 +236,6 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       res.send(khariu);
     }
   } catch (err) {
-    console.log("err qpayGargaya -------------->>" + err);
     next(err);
   }
 });
