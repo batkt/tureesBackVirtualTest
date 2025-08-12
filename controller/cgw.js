@@ -1529,6 +1529,8 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   dansniiDugaar: dans.dugaar,
                 };
                 if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
+                if (dans.dugaar === "5129048690")
+                  bodyKhuulga["record"] = "63054";
                 var khariu = await dansniiKhuulgaAvya(token, null, bodyKhuulga);
                 if (dans.dugaar === "5129048690") {
                   console.log("body --------->" + JSON.stringify(bodyKhuulga));
