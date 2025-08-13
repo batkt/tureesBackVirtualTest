@@ -2736,7 +2736,6 @@ module.exports.aldangiTegBolgoy = async function aldangiTegBolgoy(
                   $match: {
                     baiguullagiinId: baiguullaga._id.toString(),
                     barilgiinId: barilga._id.toString(),
-                    tuluv: { $nin: [-1] },
                   },
                 },
                 {
