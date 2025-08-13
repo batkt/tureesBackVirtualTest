@@ -50,7 +50,7 @@ const baiguullagaSchema = new Schema(
           districtCode: String,
           nuatTulukhEsekh: Boolean,
           zogsoolMsgIlgeekh: Boolean,
-          tooluurAutomatTatakhToken : String,
+          tooluurAutomatTatakhToken: String,
           /**Сар бүрийн тогтмол өдөр хөнгөлөлт боломж олгоно */
           sarBurAutoKhungulultOruulakhEsekh: Boolean,
           khungulukhSarBuriinShalguurDun: Number,
@@ -60,10 +60,13 @@ const baiguullagaSchema = new Schema(
           khungulukhSarBuriinTulburDuusakhUdur: Number,
           tureesiinDungeesKhungulukhEsekh: Boolean,
           ashiglaltDungeesKhungulukhEsekh: Boolean,
-          jilBurTalbaiTulburNemekhEsekh: Boolean, /** жил бүр талбайн төлбөр нэмэх эсэх */
+          jilBurTalbaiTulburNemekhEsekh:
+            Boolean /** жил бүр талбайн төлбөр нэмэх эсэх */,
           jilBurTulbur: Number,
-          gereeDuusakhTalbaiTulburNemekhEsekh: Boolean, /** гэрээ дуусах үед талбайн төлбөр нэмэх эсэх */
+          gereeDuusakhTalbaiTulburNemekhEsekh:
+            Boolean /** гэрээ дуусах үед талбайн төлбөр нэмэх эсэх */,
           gereeDuusakhTulbur: Number,
+          zochinUrikhUneguiMinut: Number,
         },
         davkharuud: [
           {
@@ -137,12 +140,13 @@ const baiguullagaSchema = new Schema(
       udruurBodokhEsekh: Boolean,
       baritsaaUneAdiltgakhEsekh: Boolean,
       zogsoolNer: String,
-      qpayShimtgelTusdaa : Boolean,
+      qpayShimtgelTusdaa: Boolean,
       davkharsanMDTSDavtamjSecond: Number,
-      zurchulMsgeerSanuulakh: Boolean, /** Зогсоолын зөрчил сануулах жагсаалт харуулах тохируулах */
+      zurchulMsgeerSanuulakh:
+        Boolean /** Зогсоолын зөрчил сануулах жагсаалт харуулах тохируулах */,
       guidliinKoepEsekh: Boolean,
-      msgNegjUne: Number, /** мессеж нэгж үнэ тохируулах */
-      gadaaStickerAshiglakhEsekh: Boolean, /** gadaa sticker ashiglakh esekh */ 
+      msgNegjUne: Number /** мессеж нэгж үнэ тохируулах */,
+      gadaaStickerAshiglakhEsekh: Boolean /** gadaa sticker ashiglakh esekh */,
       togloomiinTuvDavkhardsanShalgakh: Boolean,
     },
     erkhuud: [
