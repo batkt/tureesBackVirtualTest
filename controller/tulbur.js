@@ -2667,3 +2667,155 @@ exports.ashiglakhKhonogTootsoolokh = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+module.exports.aldangiTegBolgoy = async function aldangiTegBolgoy(
+  baiguullagiinId = null
+) {
+  try {
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+    if (kholboltuud) {
+      var query = {
+        "barilguud.tokhirgoo.aldangiinKhuvi": { $gt: 0 },
+      };
+      if (!!baiguullagiinId) {
+        var ObjectId = require("mongodb").ObjectId;
+        query["_id"] = new ObjectId(baiguullagiinId);
+      }
+      var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt)
+        .find(query)
+        .lean();
+      if (baiguullaguud && baiguullaguud.length > 0) {
+        for await (const baiguullaga of baiguullaguud) {
+          var kholbolt = kholboltuud.find(
+            (a) => a.baiguullagiinId == baiguullaga._id.toString()
+          );
+          var bulkOps = [];
+          for await (const barilga of baiguullaga.barilguud) {
+            if (
+              barilga.tokhirgoo &&
+              barilga.tokhirgoo.aldangiinKhuvi &&
+              barilga.tokhirgoo.aldangiBodojEkhlekhOgnoo &&
+              barilga.tokhirgoo.aldangiBodojEkhlekhOgnoo < new Date()
+            ) {
+              var ognoo = new Date();
+              var aldagiinKhuvi =
+                barilga.tokhirgoo && barilga.tokhirgoo.aldangiinKhuvi
+                  ? barilga.tokhirgoo.aldangiinKhuvi
+                  : 0.5;
+              var aldangiChuluulukhKhonog =
+                barilga.tokhirgoo && barilga.tokhirgoo.aldangiChuluulukhKhonog
+                  ? barilga.tokhirgoo.aldangiChuluulukhKhonog
+                  : 0;
+              var match = {
+                "avlaga.guilgeenuud.ognoo": { $lte: new Date() },
+                $or: [
+                  {
+                    "avlaga.guilgeenuud.turul": {
+                      $nin: ["aldangi", "baritsaa"],
+                    },
+                  },
+                  {
+                    $and: [
+                      {
+                        "avlaga.guilgeenuud.turul": {
+                          $in: ["baritsaa"],
+                        },
+                      },
+                      {
+                        "avlaga.guilgeenuud.tulsunDun": {
+                          $gt: 0,
+                        },
+                      },
+                    ],
+                  },
+                ],
+              };
+              var query = [
+                {
+                  $match: {
+                    baiguullagiinId: baiguullaga._id.toString(),
+                    barilgiinId: barilga._id.toString(),
+                    tuluv: { $nin: [-1] },
+                  },
+                },
+                {
+                  $unwind: {
+                    path: "$avlaga.guilgeenuud",
+                  },
+                },
+                {
+                  $match: match,
+                },
+                {
+                  $group: {
+                    _id: {
+                      id: "$_id",
+                      gereeniiDugaar: "$gereeniiDugaar",
+                      tulukhUdur: "$tulukhUdur",
+                    },
+                    tulukh: {
+                      $sum: {
+                        $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                      },
+                    },
+                    khyamdral: {
+                      $sum: {
+                        $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                      },
+                    },
+                    tulsun: {
+                      $sum: {
+                        $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                      },
+                    },
+                  },
+                },
+                {
+                  $project: {
+                    uldegdel: {
+                      $subtract: [
+                        "$tulukh",
+                        {
+                          $sum: ["$tulsun", "$khyamdral"],
+                        },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $match: {
+                    uldegdel: { $lte: 0 },
+                  },
+                },
+              ];
+              var gereenuud = await Geree(kholbolt).aggregate(query);
+              if (gereenuud && gereenuud.length > 0) {
+                for (const geree of gereenuud) {
+                  let upsertDoc = {
+                    updateOne: {
+                      filter: { _id: geree._id.id },
+                      update: [
+                        {
+                          $set: {
+                            aldangiinUldegdel: 0,
+                          },
+                        },
+                      ],
+                    },
+                  };
+                  bulkOps.push(upsertDoc);
+                }
+              }
+            }
+          }
+          if (bulkOps && bulkOps.length > 0)
+            await Geree(kholbolt)
+              .bulkWrite(bulkOps)
+              .then((bulkWriteOpResult) => {})
+              .catch((err) => {});
+        }
+      }
+    }
+  } catch (error) {}
+};
