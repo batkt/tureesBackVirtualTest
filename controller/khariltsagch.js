@@ -42,8 +42,7 @@ exports.khariltsagchNuutsUgSolikh = asyncHandler(async (req, res, next) => {
       .catch((err) => {
         next(err);
       });
-    if (!khariltsagch)
-      throw new aldaa("Хэрэглэгчийн утасны дугаар олдсонгүй!");
+    if (!khariltsagch) throw new aldaa("Хэрэглэгчийн утасны дугаар олдсонгүй!");
     var butsaakhObject = {
       result: khariltsagch,
       success: true,
@@ -96,6 +95,8 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
           msg.dugaar = jagsaalt[index].to;
           msg.gereeniiId = jagsaalt[index].gereeniiId;
           msg.msg = jagsaalt[index].text;
+          msg.msgIlgeekhKey = key;
+          msg.msgIlgeekhDugaar = dugaar;
           msg.save();
         }
         if (jagsaalt.length > index + 1) {
@@ -297,23 +298,20 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
             for await (const id of gereeniiIdnuud) {
               let geree = await Geree(kholbolt).findById(id);
               let busadGereenuud;
-              if(!!geree.register)
-              {
+              if (!!geree.register) {
                 busadGereenuud = await Geree(kholbolt).findOne({
                   register: geree.register,
                   barilgiinId: geree.barilgiinId,
                   tuluv: { $ne: -1 },
-                });    
-              }
-              else if(!!geree.customerTin)
-              {
+                });
+              } else if (!!geree.customerTin) {
                 busadGereenuud = await Geree(kholbolt).findOne({
                   customerTin: geree.customerTin,
                   barilgiinId: geree.barilgiinId,
                   tuluv: { $ne: -1 },
-                }); 
+                });
               }
-              
+
               var talbainuud = await Talbai(kholbolt).find({
                 _id: { $in: geree.talbainIdnuud },
               });
@@ -355,8 +353,7 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
                 }
 
                 let upsertKhariltsagch;
-                if(!!geree.register)
-                {
+                if (!!geree.register) {
                   upsertKhariltsagch = {
                     updateOne: {
                       filter: {
@@ -367,10 +364,8 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
                         idevkhiteiEsekh: busadGereenuud ? true : false,
                       },
                     },
-                  };    
-                }
-                else if(!!geree.customerTin)
-                {
+                  };
+                } else if (!!geree.customerTin) {
                   upsertKhariltsagch = {
                     updateOne: {
                       filter: {
@@ -389,8 +384,7 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
             if (talbainBulk)
               Talbai(kholbolt)
                 .bulkWrite(talbainBulk)
-                .then((bulkWriteOpResult) => {
-                })
+                .then((bulkWriteOpResult) => {})
                 .catch((err) => {
                   throw err;
                 });
@@ -398,8 +392,7 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
             if (khariltsagchiinBulk)
               Khariltsagch(db.erunkhiiKholbolt)
                 .bulkWrite(khariltsagchiinBulk)
-                .then((bulkWriteOpResult) => {
-                })
+                .then((bulkWriteOpResult) => {})
                 .catch((err) => {
                   throw err;
                 });

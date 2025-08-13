@@ -262,6 +262,8 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
         msg.dugaar = jagsaalt[index].to;
         msg.gereeniiId = jagsaalt[index].gereeniiId;
         msg.msg = jagsaalt[index].text;
+        msg.msgIlgeekhKey = key;
+        msg.msgIlgeekhDugaar = dugaar;
         msg.save();
         if (jagsaalt.length > index + 1) {
           khariu.push(body[0]);
@@ -311,6 +313,8 @@ function msgIlgeeyeUnitel(
             msg.dugaar = jagsaalt[index].to;
             msg.gereeniiId = jagsaalt[index].gereeniiId;
             msg.msg = jagsaalt[index].text;
+            msg.msgIlgeekhKey = key;
+            msg.msgIlgeekhDugaar = dugaar;
             msg.save();
           }
           if (jagsaalt.length > index + 1) {

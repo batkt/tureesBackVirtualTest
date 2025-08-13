@@ -11,6 +11,8 @@ const msgTuukhSchema = new Schema(
     turul: String,
     dugaar: [String],
     msg: String,
+    msgIlgeekhKey: String,
+    msgIlgeekhDugaar: String,
   },
   { timestamps: true }
 );
