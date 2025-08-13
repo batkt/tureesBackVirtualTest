@@ -260,7 +260,13 @@ router
         var ebarimtAvakhDun = 0;
         guilgeenuud.map((guilgee) => {
           ebarimtAvakhDun +=
-            guilgee.turul == "khariult" || guilgee.turul == "khungulult"
+            guilgee.turul == "khariult" ||
+            guilgee.turul == "khungulult" ||
+            guilgee.turul?.includes("Божон") ||
+            guilgee.turul == "Соёолж Ц/Д" ||
+            guilgee.turul == "Хөнгөлөлт/ 24 цаг" ||
+            guilgee.turul == "Хөнгөлөлт/ 2 цаг" ||
+            guilgee.turul == "Fitness"
               ? 0
               : guilgee.dun;
           tulbur.push({
