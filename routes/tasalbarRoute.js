@@ -8,6 +8,7 @@ const Ebarimt = require("../models/ebarimt");
 const EbarimtShine = require("../models/ebarimtShine");
 const aldaa = require("../components/aldaa");
 const { ebarimtDuudya } = require("../routes/ebarimtRoute");
+const TogloomiinTuv = require("../models/togloomiinTuv");
 crud(router, "tasalbar", Tasalbar, UstsanBarimt);
 
 const { jsPDF } = require("jspdf");
@@ -155,6 +156,39 @@ router
           req.body.tukhainBaaziinKholbolt
         )(tempData);
         await tempGuilgee.save();
+
+        var togloomiinTuv = new TogloomiinTuv(req.body.tukhainBaaziinKholbolt)({
+          ovog: "киоск",
+          ner: "киоск",
+          utas: tempData.barCodes,
+          ognoo: tempData.ognoo,
+          tariff: tempData.tasalbarTariff,
+          niitDun: tempData.tasalbarDun,
+          ebarimtAvakhDun: tempData.tasalbarDun,
+          khuukhdiinToo: tempData.tasalbarShirkheg,
+          niitTulbur: [
+            {
+              turul: "qpay",
+              tailbar: "kiosk",
+              dun: tempData.tasalbarDun,
+            },
+          ],
+          tulbur: [
+            {
+              turul: "qpay",
+              tailbar: "kiosk",
+              dun: tempData.tasalbarDun,
+            },
+          ],
+          baiguullagiinId: tempData.baiguullagiinId,
+          barilgiinId: tempData.barilgiinId,
+          tulburTulsunEsekh: true,
+          burtgesenAjiltaniiId: tempData.burtgesenAjiltaniiId,
+          burtgesenAjiltaniiNer: tempData.burtgesenAjiltaniiNer,
+          tasalbariinGuilgeeniiId: tempGuilgee._id,
+        });
+        await togloomiinTuv.save();
+
         res.send(tempGuilgee._id);
       }
     } catch (err) {
@@ -222,11 +256,25 @@ router
             };
           TasalbariinGuilgee(tukhainKholbolt)
             .findByIdAndUpdate(tukhainObject._id, update)
-            .then((xariu) => {
-            })
+            .then((xariu) => {})
             .catch((err) => {
               next(err);
             });
+          var ebarimtAmount =
+            ebarimt.totalAmount + (khariuObject?.ebarimtAvsanDun || 0);
+          var update = {
+            ebarimtAvsanEsekh: true,
+            ebarimtAvakhDun: 0,
+            ebarimtAvsanDun: ebarimtAmount,
+          };
+          if (ebarimt.customerNo) update.ebarimtRegister = ebarimt.customerNo;
+          TogloomiinTuv(tukhainKholbolt)
+            .findOneAndUpdate({ tasalbariinGuilgeeniiId: req.body.id }, update)
+            .then((xariu) => {})
+            .catch((err) => {
+              next(err);
+            });
+
           delete d.baiguullagiinId;
           delete d.barilgiinId;
           delete d.tasalbariinGuilgeeniiId;
@@ -253,7 +301,7 @@ router
     try {
       // var temPath  = process.cwd() + "/file";
       var temPath = __dirname;
-      
+
       if (!fs.existsSync(path.join(temPath, "tasalbarKhevlekh")))
         fs.mkdirSync(path.join(temPath, "tasalbarKhevlekh"), true);
 
@@ -261,7 +309,6 @@ router
       // doc.html(req.body.htmlData);
       doc.text("Hello world BATAA!", 10, 10);
       doc.save(temPath + "/tasalbarKhevlekh/khevlekh.pdf");
-
 
       fs.readFile(
         path.join(temPath + "/tasalbarKhevlekh", "khevlekh.pdf"),
