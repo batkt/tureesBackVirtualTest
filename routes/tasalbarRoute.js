@@ -262,7 +262,7 @@ router
             });
           var ebarimtAmount =
             ebarimt.totalAmount + (khariuObject?.ebarimtAvsanDun || 0);
-          var update = {
+          update = {
             ebarimtAvsanEsekh: true,
             ebarimtAvakhDun: 0,
             ebarimtAvsanDun: ebarimtAmount,
