@@ -141,55 +141,67 @@ router
     try {
       if (!!req.body.tulbur && req.body.tulbur?.length > 0) {
         const tulbur = req.body.tulbur[0];
-        const tempData = {
+        var filteredTasalbar = await TasalbariinGuilgee(
+          req.body.tukhainBaaziinKholbolt
+        ).find({
           baiguullagiinId: tulbur.baiguullagiinId,
           barilgiinId: tulbur.barilgiinId,
-          ognoo: tulbur.ognoo,
-          burtgesenAjiltaniiId: tulbur.burtgesenAjiltaniiId,
-          burtgesenAjiltaniiNer: tulbur.burtgesenAjiltaniiNer,
           barCodes: tulbur.barCodes,
-          tasalbarTariff: tulbur.tasalbarTariff,
-          tasalbarDun: tulbur.tasalbarDun,
-          tasalbarShirkheg: tulbur.tasalbarShirkheg,
-        };
-        var tempGuilgee = new TasalbariinGuilgee(
-          req.body.tukhainBaaziinKholbolt
-        )(tempData);
-        await tempGuilgee.save();
-
-        var togloomiinTuv = new TogloomiinTuv(req.body.tukhainBaaziinKholbolt)({
-          ovog: "киоск",
-          ner: "киоск",
-          utas: tempData.barCodes,
-          ognoo: tempData.ognoo,
-          tariff: tempData.tasalbarTariff,
-          niitDun: tempData.tasalbarDun,
-          ebarimtAvakhDun: tempData.tasalbarDun,
-          khuukhdiinToo: tempData.tasalbarShirkheg,
-          niitTulbur: [
-            {
-              turul: "qpay",
-              tailbar: "kiosk",
-              dun: tempData.tasalbarDun,
-            },
-          ],
-          tulbur: [
-            {
-              turul: "qpay",
-              tailbar: "kiosk",
-              dun: tempData.tasalbarDun,
-            },
-          ],
-          baiguullagiinId: tempData.baiguullagiinId,
-          barilgiinId: tempData.barilgiinId,
-          tulburTulsunEsekh: true,
-          burtgesenAjiltaniiId: tempData.burtgesenAjiltaniiId,
-          burtgesenAjiltaniiNer: tempData.burtgesenAjiltaniiNer,
-          tasalbariinGuilgeeniiId: tempGuilgee._id,
         });
-        await togloomiinTuv.save();
+        if (filteredTasalbar?.length > 0) res.send(filteredTasalbar[0]._id);
+        else {
+          const tempData = {
+            baiguullagiinId: tulbur.baiguullagiinId,
+            barilgiinId: tulbur.barilgiinId,
+            ognoo: tulbur.ognoo,
+            burtgesenAjiltaniiId: tulbur.burtgesenAjiltaniiId,
+            burtgesenAjiltaniiNer: tulbur.burtgesenAjiltaniiNer,
+            barCodes: tulbur.barCodes,
+            tasalbarTariff: tulbur.tasalbarTariff,
+            tasalbarDun: tulbur.tasalbarDun,
+            tasalbarShirkheg: tulbur.tasalbarShirkheg,
+          };
+          var tempGuilgee = new TasalbariinGuilgee(
+            req.body.tukhainBaaziinKholbolt
+          )(tempData);
+          await tempGuilgee.save();
 
-        res.send(tempGuilgee._id);
+          var togloomiinTuv = new TogloomiinTuv(
+            req.body.tukhainBaaziinKholbolt
+          )({
+            ovog: "kiosk",
+            ner: "kiosk",
+            barCodes: tempData.barCodes,
+            ognoo: tempData.ognoo,
+            tariff: tempData.tasalbarTariff,
+            niitDun: tempData.tasalbarDun,
+            ebarimtAvakhDun: tempData.tasalbarDun,
+            khuukhdiinToo: tempData.tasalbarShirkheg,
+            niitTulbur: [
+              {
+                turul: "qpay",
+                tailbar: "kiosk",
+                dun: tempData.tasalbarDun,
+              },
+            ],
+            tulbur: [
+              {
+                turul: "qpay",
+                tailbar: "kiosk",
+                dun: tempData.tasalbarDun,
+              },
+            ],
+            baiguullagiinId: tempData.baiguullagiinId,
+            barilgiinId: tempData.barilgiinId,
+            tulburTulsunEsekh: true,
+            burtgesenAjiltaniiId: tempData.burtgesenAjiltaniiId,
+            burtgesenAjiltaniiNer: tempData.burtgesenAjiltaniiNer,
+            tasalbariinGuilgeeniiId: tempGuilgee._id,
+          });
+          await togloomiinTuv.save();
+
+          res.send(tempGuilgee._id);
+        }
       }
     } catch (err) {
       next(err);

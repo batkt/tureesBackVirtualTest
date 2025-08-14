@@ -70,6 +70,7 @@ const togloomiinTuvSchema = new Schema(
     ebarimtAvsanDun: Number,
     burtgesenAjiltaniiId: String,
     tasalbariinGuilgeeniiId: String,
+    barCodes: [String],
   },
   {
     timestamps: true,
