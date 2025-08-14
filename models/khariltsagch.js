@@ -26,6 +26,12 @@ const khariltsagchSchema = new Schema(
     zurgiinId: String,
     idevkhiteiEsekh: Boolean,
     temdeglel: String,
+    zochinUrikhEsekh: Boolean,
+    zochinTurul: String,
+    mashiniiDugaar: String,
+    zochinTailbar: String,
+    zochinErkhiinToo: Number,
+    zochinNiitUneguiMinut: Number,
     segmentuud: [
       {
         ner: String,
