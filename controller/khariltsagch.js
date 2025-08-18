@@ -8,6 +8,7 @@ const request = require("request");
 const Geree = require("../models/geree");
 const Talbai = require("../models/talbai");
 const { formatNumber } = require("zevbackv2");
+const { Mashin } = require("parking-v1");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {
@@ -22,7 +23,12 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
       throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
     var ok = await khariltsagch.passwordShalgaya(req.body.nuutsUg);
     if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+    var kholbolt = db.kholboltuud.find(
+      (a) => a.baiguullagiinId == khariltsagch.baiguullagiinId
+    );
+    var oldsonMashin = await Mashin(kholbolt).find({ dugaar: req.body.utas });
     var butsaakhObject = {
+      mashinuud: oldsonMashin,
       result: khariltsagch,
       success: true,
     };
