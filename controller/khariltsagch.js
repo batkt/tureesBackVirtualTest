@@ -26,7 +26,9 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
     var kholbolt = db.kholboltuud.find(
       (a) => a.baiguullagiinId == khariltsagch.baiguullagiinId
     );
-    var oldsonMashin = await Mashin(kholbolt).find({ dugaar: req.body.utas });
+    var oldsonMashin = await Mashin(kholbolt).find({
+      ezemshigchiinUtas: req.body.utas,
+    });
     var butsaakhObject = {
       mashinuud: oldsonMashin,
       result: khariltsagch,
