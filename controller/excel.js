@@ -2506,15 +2506,15 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         }
       });
     }
-    if (oldooguiGeree?.length > 0) {
-      throw new aldaa(
-        `${oldooguiGeree.map((a, i) => {
-          return `${a}${oldooguiGeree.length - 1 > i ? ", " : ""}`;
-        })} дугаартай ${
-          oldooguiGeree.length > 1 ? "гэрээнүүд" : "гэрээ"
-        } олдсонгүй`
-      );
-    }
+    // if (oldooguiGeree?.length > 0) {
+    //   throw new aldaa(
+    //     `${oldooguiGeree.map((a, i) => {
+    //       return `${a}${oldooguiGeree.length - 1 > i ? ", " : ""}`;
+    //     })} дугаартай ${
+    //       oldooguiGeree.length > 1 ? "гэрээнүүд" : "гэрээ"
+    //     } олдсонгүй`
+    //   );
+    // }
     var oldsonMashin = await Mashin(req.body.tukhainBaaziinKholbolt).find({
       dugaar: { $in: jagsaalt.map((a) => a.dugaar) },
     });
