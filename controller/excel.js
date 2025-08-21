@@ -2376,7 +2376,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         mur[usegTooruuKhurvuulekh(tolgoinObject1.gereeniiDugaar)];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      if (!object.dugaar || !object.turul || !object.ezemshigchiinUtas) {
+      if (!object.dugaar) {
         aldaaniiMsg =
           aldaaniiMsg +
           "Алдаа! " +
@@ -2385,32 +2385,9 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           muriinDugaarDotood +
           " дугаар мөрөнд ";
         if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
-        if (!object.gereeniiDugaar)
-          aldaaniiMsg = aldaaniiMsg + "'Гэрээний дугаар', ";
-        if (!object.ezemshigchiinUtas) aldaaniiMsg = aldaaniiMsg + "'Утас', ";
         aldaaniiMsg = aldaaniiMsg.slice(0, -2);
         aldaaniiMsg = aldaaniiMsg + " ";
         aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
-      } else if (!/[0-9]{4}[А-Я|а-я|ө|Ө|ү|Ү]{3}/.test(object.dugaar)) {
-        aldaaniiMsg =
-          aldaaniiMsg +
-          "Алдаа! " +
-          workbook.SheetNames[1] +
-          " sheet-ны " +
-          muriinDugaarDotood +
-          " дугаар мөрөнд ";
-        aldaaniiMsg =
-          aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
-      } else if (!/[0-9]{8}/.test(object.ezemshigchiinUtas)) {
-        aldaaniiMsg =
-          aldaaniiMsg +
-          "Алдаа! " +
-          workbook.SheetNames[1] +
-          " sheet-ны " +
-          muriinDugaarDotood +
-          " дугаар мөрөнд ";
-        aldaaniiMsg =
-          aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
       } else {
         object.dugaar = String(object.dugaar).toUpperCase();
         jagsaalt.push(object);
@@ -2434,7 +2411,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       object.cameraIP = mur[usegTooruuKhurvuulekh(tolgoinObject3.cameraIP)];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      if (!object.dugaar || !object.turul || !object.ezemshigchiinUtas) {
+      if (!object.dugaar) {
         aldaaniiMsg =
           aldaaniiMsg +
           "Алдаа! " +
@@ -2449,26 +2426,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         aldaaniiMsg = aldaaniiMsg.slice(0, -2);
         aldaaniiMsg = aldaaniiMsg + " ";
         aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
-      } else if (!/[0-9]{4}[А-Я|а-я|ө|Ө|ү|Ү]{3}/.test(object.dugaar)) {
-        aldaaniiMsg =
-          aldaaniiMsg +
-          "Алдаа! " +
-          workbook.SheetNames[3] +
-          " sheet-ны " +
-          muriinDugaarSOKH +
-          " дугаар мөрөнд ";
-        aldaaniiMsg =
-          aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
-      } else if (!/[0-9]{8}/.test(object.ezemshigchiinUtas)) {
-        aldaaniiMsg =
-          aldaaniiMsg +
-          "Алдаа! " +
-          workbook.SheetNames[3] +
-          " sheet-ны " +
-          muriinDugaarSOKH +
-          " дугаар мөрөнд ";
-        aldaaniiMsg =
-          aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
       } else {
         object.dugaar = String(object.dugaar).toUpperCase();
         jagsaalt.push(object);
