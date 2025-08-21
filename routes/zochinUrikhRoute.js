@@ -1,5 +1,6 @@
 const Mashin = require("../models/mashin");
 const Khariltsagch = require("../models/khariltsagch");
+const Geree = require("../models/geree");
 
 // Харилцагчийн мэдээллийг шинээр хадгалах буюу засварлах функц
 async function khariltsagchKhadgalya(
@@ -203,6 +204,18 @@ router.post("/zochinHadgalya", tokenShalgakh, async (req, res, next) => {
         createdAt: new Date(),
         updatedAt: new Date(),
       };
+
+      var gereeObject = await Geree(tukhainBaaziinKholbolt).findOne({
+        baiguullagiinId: baiguullagiinId,
+        utas: ezemshigchiinUtas,
+        tuluv: { $ne: -1 },
+      });
+      if (gereeObject) {
+        newVehicleData.ezemshigchiinRegister = gereeObject.register;
+        newVehicleData.ezemshigchiinTalbainDugaar =
+          gereeObject.ezemshigchiinTalbainDugaar || "";
+        newVehicleData.gereeniiDugaar = gereeObject.gereeniiDugaar || "";
+      }
 
       const newMashin = new Mashin(tukhainBaaziinKholbolt)(newVehicleData);
       mashinResult = await newMashin.save();
