@@ -1,3 +1,4 @@
+const express = require("express");
 const Mashin = require("../models/mashin");
 const Khariltsagch = require("../models/khariltsagch");
 const Geree = require("../models/geree");
