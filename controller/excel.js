@@ -2119,12 +2119,12 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!mashinSheetDuriin[cellAsString].v
       ) {
+        if (mashinSheetDuriin[cellAsString].v.includes("Утас"))
+          tolgoinObject.utas = cellAsString[0];
         if (mashinSheetDuriin[cellAsString].v.includes("Машины дугаар"))
           tolgoinObject.dugaar = cellAsString[0];
-        else if (mashinSheetDuriin[cellAsString].v.includes("Эзэмшигчийн нэр"))
+        else if (mashinSheetDuriin[cellAsString].v.includes("Нэр"))
           tolgoinObject.ner = cellAsString[0];
-        else if (mashinSheetDuriin[cellAsString].v.includes("Эзэмшигчийн утас"))
-          tolgoinObject.utas = cellAsString[0];
         else if (mashinSheetDuriin[cellAsString].v.includes("Тайлбар"))
           tolgoinObject.temdeglel = cellAsString[0];
         else if (mashinSheetDuriin[cellAsString].v.includes("Цэнэглэх дүн"))
@@ -2239,11 +2239,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     dataDuriin.forEach((mur) => {
       muriinDugaarDuriin++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
-      console.log(
-        "------dugaar ---->>>" + JSON.stringify(tolgoinObject.dugaar)
-      );
-      console.log("---------->>>" + JSON.stringify(mur[tolgoinObject.dugaar]));
-      object.dugaar = mur[tolgoinObject.dugaar];
+      object.dugaar = mur[tolgoinObject.dugaar.trim().replace(/\s/g, "")];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ezemshigchiinUtas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
       object.turul = "Дурын";
