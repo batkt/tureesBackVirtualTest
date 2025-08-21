@@ -626,7 +626,6 @@ router.post(
             barilgiinId: !!req.body.barilgiinId
               ? req.body.barilgiinId
               : { $exists: true },
-            zurchil: { $exists: true },
           },
         },
         {
@@ -645,7 +644,7 @@ router.post(
           $group: {
             _id: "Зөрчилтэй",
             niitDun: {
-              $sum: "$niitDun",
+              $sum: "$tuukh.tulukhDun",
             },
             niitToo: { $sum: 1 },
           },
