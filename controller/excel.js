@@ -2391,7 +2391,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       } else {
         object.dugaar = String(object.dugaar).toUpperCase();
         jagsaalt.push(object);
-        gereeniiDugaaruud.push(object.gereeniiDugaar);
+        if (!!object.gereeniiDugaar)
+          gereeniiDugaaruud.push(object.gereeniiDugaar);
       }
     });
     // СӨХ
@@ -2426,7 +2427,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       } else {
         object.dugaar = String(object.dugaar).toUpperCase();
         jagsaalt.push(object);
-        gereeniiDugaaruud.push(object.gereeniiDugaar);
+        if (!!object.gereeniiDugaar)
+          gereeniiDugaaruud.push(object.gereeniiDugaar);
       }
     });
     //  Tureeslegch
@@ -2482,7 +2484,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       } else {
         object.dugaar = String(object.dugaar).toUpperCase();
         jagsaalt.push(object);
-        gereeniiDugaaruud.push(object.gereeniiDugaar);
+        if (!!object.gereeniiDugaar)
+          gereeniiDugaaruud.push(object.gereeniiDugaar);
       }
     });
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
