@@ -2264,26 +2264,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         aldaaniiMsg = aldaaniiMsg.slice(0, -2);
         aldaaniiMsg = aldaaniiMsg + " ";
         aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
-      } else if (!/[0-9]{4}[А-Я|а-я|ө|Ө|ү|Ү]{3}/.test(object.dugaar)) {
-        aldaaniiMsg =
-          aldaaniiMsg +
-          "Алдаа! " +
-          workbook.SheetNames[2] +
-          " sheet-ны " +
-          muriinDugaarDuriin +
-          " дугаар мөрөнд ";
-        aldaaniiMsg =
-          aldaaniiMsg + "машины дугаар буруу бичигдсэн байна! <br/>";
-      } else if (!/[0-9]{8}/.test(object.ezemshigchiinUtas)) {
-        aldaaniiMsg =
-          aldaaniiMsg +
-          "Алдаа! " +
-          workbook.SheetNames[2] +
-          " sheet-ны " +
-          muriinDugaarDuriin +
-          " дугаар мөрөнд ";
-        aldaaniiMsg =
-          aldaaniiMsg + "Утасны дугаар буруу бичигдсэн байна! <br/>";
       } else {
         object.dugaar = String(object.dugaar).toUpperCase();
         jagsaalt.push(object);
