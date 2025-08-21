@@ -3,6 +3,7 @@ const Mashin = require("../models/mashin");
 const Khariltsagch = require("../models/khariltsagch");
 const Geree = require("../models/geree");
 const router = express.Router();
+const { tokenShalgakh } = require("zevbackv2");
 
 // Харилцагчийн мэдээллийг шинээр хадгалах буюу засварлах функц
 async function khariltsagchKhadgalya(
