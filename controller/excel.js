@@ -2239,7 +2239,10 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     dataDuriin.forEach((mur) => {
       muriinDugaarDuriin++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
-      object.dugaar = mur[tolgoinObject.dugaar.trim().replace(/\s/g, "")];
+      object.dugaar =
+        mur[
+          usegTooruuKhurvuulekh(tolgoinObject.dugaar.trim().replace(/\s/g, ""))
+        ];
       object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject.ner)];
       object.ezemshigchiinUtas = mur[usegTooruuKhurvuulekh(tolgoinObject.utas)];
       object.turul = "Дурын";
