@@ -3,9 +3,9 @@ const app = express();
 const http = require("http");
 const cors = require("cors");
 const server = http.Server(app);
-const io = require('socket.io')(server, {
-  pingTimeout: 20000,      
-  pingInterval: 10000      
+const io = require("socket.io")(server, {
+  pingTimeout: 20000,
+  pingInterval: 10000,
 });
 const cron = require("node-cron");
 const dotenv = require("dotenv");
@@ -43,6 +43,7 @@ const passRoute = require("./routes/passRoute");
 const parkingRoute = require("./routes/parkingRoute");
 const eventRoute = require("./routes/eventRoute");
 const tasalbarRoute = require("./routes/tasalbarRoute");
+const zochinUrikhRoute = require("./routes/zochinUrikhRoute");
 // const redisClient = require("./routes/redisClient");
 
 const { db } = require("zevbackv2");
@@ -109,6 +110,7 @@ app.use(passRoute);
 app.use(parkingRoute);
 app.use(eventRoute);
 app.use(tasalbarRoute);
+app.use(zochinUrikhRoute);
 // app.use(redisClient);
 zuragPack(app);
 
@@ -276,8 +278,7 @@ cron.schedule(
 );
 
 io.once("connection", (socket) => {
-  socket.on("disconnect", () => {
-  });
+  socket.on("disconnect", () => {});
   socket.on("error", function (err) {
     socket.disconnect(true);
   });
