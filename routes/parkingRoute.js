@@ -626,6 +626,7 @@ router.post(
             barilgiinId: !!req.body.barilgiinId
               ? req.body.barilgiinId
               : { $exists: true },
+            zurchil: { $exists: true },
           },
         },
         {
