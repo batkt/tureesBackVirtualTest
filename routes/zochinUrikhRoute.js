@@ -1,6 +1,7 @@
 const Mashin = require("../models/mashin");
 const Khariltsagch = require("../models/khariltsagch");
 const Geree = require("../models/geree");
+const router = express.Router();
 
 // Харилцагчийн мэдээллийг шинээр хадгалах буюу засварлах функц
 async function khariltsagchKhadgalya(
