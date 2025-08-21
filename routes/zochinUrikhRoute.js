@@ -1,5 +1,5 @@
 const express = require("express");
-const Mashin = require("../models/mashin");
+const { Mashin } = require("parking-v1");
 const Khariltsagch = require("../models/khariltsagch");
 const Geree = require("../models/geree");
 const router = express.Router();
@@ -135,6 +135,7 @@ async function mashinHadgalya(mashinMedeelel, tukhainBaaziinKholbolt) {
 // Үндсэн route функц
 router.post("/zochinHadgalya", tokenShalgakh, async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     const {
       mashiniiDugaar,
       baiguullagiinId,
@@ -161,7 +162,7 @@ router.post("/zochinHadgalya", tokenShalgakh, async (req, res, next) => {
         khariltsagchResult = await khariltsagchKhadgalya(
           khariltsagchMedeelel,
           ezemshigchiinUtas,
-          tukhainBaaziinKholbolt
+          db.erunkhiiKholbolt
         );
       } catch (error) {
         return res.status(400).json({
