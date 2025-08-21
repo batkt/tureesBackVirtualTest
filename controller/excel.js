@@ -2420,9 +2420,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           muriinDugaarSOKH +
           " дугаар мөрөнд ";
         if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
-        if (!object.gereeniiDugaar)
-          aldaaniiMsg = aldaaniiMsg + "'Гэрээний дугаар', ";
-        if (!object.ezemshigchiinUtas) aldaaniiMsg = aldaaniiMsg + "'Утас', ";
         aldaaniiMsg = aldaaniiMsg.slice(0, -2);
         aldaaniiMsg = aldaaniiMsg + " ";
         aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
