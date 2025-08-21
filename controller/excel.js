@@ -2121,7 +2121,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       ) {
         if (mashinSheetDuriin[cellAsString].v.includes("Утас"))
           tolgoinObject.utas = cellAsString[0];
-        if (mashinSheetDuriin[cellAsString].v.includes("Машины дугаар"))
+        else if (mashinSheetDuriin[cellAsString].v.includes("Машины дугаар"))
           tolgoinObject.dugaar = cellAsString[0];
         else if (mashinSheetDuriin[cellAsString].v.includes("Нэр"))
           tolgoinObject.ner = cellAsString[0];
