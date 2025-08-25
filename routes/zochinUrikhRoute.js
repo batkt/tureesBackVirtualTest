@@ -252,61 +252,21 @@ router.post("/zochinHadgalya", tokenShalgakh, async (req, res, next) => {
 
 router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
   try {
-    // var ezenJagsaalt = await EzenUrisanMashin(
-    //   req.body.tukhainBaaziinKholbolt
-    // ).find({});
-    // if (ezenJagsaalt?.length > 0) {
-    //   for await (const ezen of ezenJagsaalt) {
-    //     ezen.oldsonMashinuud = await Uilchluulegch(
-    //       req.body.tukhainBaaziinKholbolt
-    //     ).find({
-    //       mashiniiDugaar: ezen.urisanMashiniiDugaar,
-    //     });
-    //   }
-    // }
-    var query = [
-      {
-        $match: {
-          baiguullagiinId: req.body.baiguullagiinId,
-          ezenId: req.body.ezenId,
-        },
-      },
-      {
-        $facet: {
-          khariltsagch: [
-            {
-              $lookup: {
-                from: "uilchluulegch",
-                let: {
-                  mashiniiDugaar: "$mashiniiDugaar",
-                  baiguullagiinId: "$baiguullagiinId",
-                },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $and: [
-                          {
-                            $eq: ["$$urisanMashiniiDugaar", "$mashiniiDugaar"],
-                          },
-                          {
-                            $eq: ["$baiguullagiinId", "$$baiguullagiinId"],
-                          },
-                        ],
-                      },
-                    },
-                  },
-                ],
-                as: "uilchluulegch",
-              },
-            },
-          ],
-        },
-      },
-    ];
     var ezenJagsaalt = await EzenUrisanMashin(
       req.body.tukhainBaaziinKholbolt
-    ).aggregate(query);
+    ).find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      ezenId: req.body.ezenId,
+    });
+    if (ezenJagsaalt?.length > 0) {
+      for await (const ezen of ezenJagsaalt) {
+        ezen.oldsonMashinuud = await Uilchluulegch(
+          req.body.tukhainBaaziinKholbolt
+        ).find({
+          mashiniiDugaar: ezen.urisanMashiniiDugaar,
+        });
+      }
+    }
     res.send(ezenJagsaalt);
   } catch (error) {
     console.error("ezenUrisanTuukh алдаа:", error);
