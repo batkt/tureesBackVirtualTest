@@ -643,10 +643,15 @@ router.post(
         {
           $group: {
             _id: "Зөрчилтэй",
-            niitDun: {
-              $sum: "$tuukh.tulukhDun",
-            },
-            niitToo: { $sum: 1 },
+            niitDun: { $sum: "$niitDun" },
+            ids: { $addToSet: "$_id" },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            niitDun: 1,
+            niitToo: { $size: "$ids" },
           },
         },
       ]);

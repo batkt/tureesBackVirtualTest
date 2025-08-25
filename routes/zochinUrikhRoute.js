@@ -1,7 +1,8 @@
 const express = require("express");
-const { Mashin } = require("parking-v1");
+const { Mashin, Uilchluulegch } = require("parking-v1");
 const Khariltsagch = require("../models/khariltsagch");
 const Geree = require("../models/geree");
+const EzenUrisanMashin = require("../models/ezenUrisanMashin");
 const router = express.Router();
 const { tokenShalgakh } = require("zevbackv2");
 
@@ -242,6 +243,34 @@ router.post("/zochinHadgalya", tokenShalgakh, async (req, res, next) => {
     res.status(500).json({
       success: false,
       message: "Серверийн алдаа гарлаа",
+    });
+    if (next) next(error);
+  }
+});
+
+router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
+  try {
+    var ezenJagsaalt = await EzenUrisanMashin(
+      req.body.tukhainBaaziinKholbolt
+    ).find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      ezenId: req.body.ezenId,
+    });
+    if (ezenJagsaalt?.length > 0) {
+      for await (const ezen of ezenJagsaalt) {
+        ezen.oldsonMashinuud = await Uilchluulegch(
+          req.body.tukhainBaaziinKholbolt
+        ).find({
+          mashiniiDugaar: ezen.urisanMashiniiDugaar,
+        });
+      }
+    }
+    res.send(ezenJagsaalt);
+  } catch (error) {
+    console.error("ezenUrisanTuukh алдаа:", error);
+    res.status(500).json({
+      success: false,
+      message: "ezenUrisanTuukh алдаа гарлаа",
     });
     if (next) next(error);
   }
