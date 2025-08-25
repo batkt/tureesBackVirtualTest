@@ -4,7 +4,7 @@ const Khariltsagch = require("../models/khariltsagch");
 const Geree = require("../models/geree");
 const EzenUrisanMashin = require("../models/ezenUrisanMashin");
 const router = express.Router();
-const { tokenShalgakh, UstsanBarimt } = require("zevbackv2");
+const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 
 crud(router, "ezenUrisanMashin", EzenUrisanMashin, UstsanBarimt);
 
