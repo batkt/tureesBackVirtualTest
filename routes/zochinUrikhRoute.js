@@ -287,7 +287,7 @@ router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
                       $expr: {
                         $and: [
                           {
-                            $eq: ["$mashiniiDugaar", "$$urisanMashiniiDugaar"],
+                            $eq: ["$$urisanMashiniiDugaar", "$mashiniiDugaar"],
                           },
                           {
                             $eq: ["$baiguullagiinId", "$$baiguullagiinId"],
