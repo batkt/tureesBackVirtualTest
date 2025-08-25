@@ -258,16 +258,15 @@ router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
       baiguullagiinId: req.body.baiguullagiinId,
       ezenId: req.body.ezenId,
     });
+    var jagsaalt = [];
     if (ezenJagsaalt?.length > 0) {
-      for await (const ezen of ezenJagsaalt) {
-        ezen.oldsonMashinuud = await Uilchluulegch(
-          req.body.tukhainBaaziinKholbolt
-        ).find({
-          mashiniiDugaar: ezen.urisanMashiniiDugaar,
-        });
-      }
+      jagsaalt = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).find({
+        mashiniiDugaar: {
+          $in: ezenJagsaalt?.map((e) => e.urisanMashiniiDugaar),
+        },
+      });
     }
-    res.send(ezenJagsaalt);
+    res.send({ ezenJagsaalt, jagsaalt });
   } catch (error) {
     console.error("ezenUrisanTuukh алдаа:", error);
     res.status(500).json({
