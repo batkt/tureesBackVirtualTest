@@ -3487,4 +3487,49 @@ router.post("/mashiniiDugaarZasakh", tokenShalgakh, async (req, res, next) => {
     if (next) next(error);
   }
 });
+
+router.post(
+  "/mashiniiDugaarZaiArilgakh",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      var mashinuud = await Mashin(req.body.tukhainBaaziinKholbolt).find({
+        baiguullagiinId: req.body.baiguullagiinId,
+      });
+      if (mashinuud?.length > 0) {
+        for await (const mashin of mashinuud) {
+          await Mashin(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+            mashin?._id.toString(),
+            {
+              $set: {
+                dugaar: mashin.dugaar?.trim().replace(/\s/g, ""),
+              },
+            }
+          );
+        }
+      }
+      // var uilchluulegchuud = await Uilchluulegch(
+      //   req.body.tukhainBaaziinKholbolt
+      // ).find({
+      //   baiguullagiinId: req.body.baiguullagiinId,
+      // });
+      // if (uilchluulegchuud?.length > 0) {
+      //   for await (const data of uilchluulegchuud) {
+      //     await Uilchluulegch(
+      //       req.body.tukhainBaaziinKholbolt
+      //     ).findByIdAndUpdate(data?._id.toString(), {
+      //       $set: {
+      //         dugaar: data.mashiniiDugaar?.trim().replace(/\s/g, ""),
+      //       },
+      //     });
+      //   }
+      // }
+      res.send("Амжилттай");
+    } catch (error) {
+      console.log("mashiniiDugaarZaiArilgakh --->" + error);
+      if (next) next(error);
+    }
+  }
+);
+
 module.exports = router;
