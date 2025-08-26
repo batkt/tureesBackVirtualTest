@@ -216,11 +216,10 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
             !!baiguullaga &&
             baiguullaga.tokhirgoo?.qpayShimtgelTusdaa == true
           ) {
-            req.body.dun = formatNumber(Number(req.body.dun) + 300);
+            req.body.dun = Number(req.body.dun) + 300 + "";
           }
           console.log(
-            "-----format ------>>" +
-              JSON.stringify(formatNumber(Number(req.body.dun) + 300))
+            "-----format ------>>" + JSON.stringify(Number(req.body.dun) + 300)
           );
           console.log("-------dun ---->>" + JSON.stringify(req.body.dun));
         }
