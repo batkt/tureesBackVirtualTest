@@ -1,8 +1,7 @@
 const express = require("express");
-const { Mashin, Uilchluulegch } = require("parking-v1");
+const { Mashin, Uilchluulegch, EzenUrisanMashin } = require("parking-v1");
 const Khariltsagch = require("../models/khariltsagch");
 const Geree = require("../models/geree");
-const EzenUrisanMashin = require("../models/ezenUrisanMashin");
 const router = express.Router();
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 
