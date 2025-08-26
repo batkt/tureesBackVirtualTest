@@ -13,6 +13,7 @@ const {
 const { db } = require("zevbackv2");
 const {
   sanalKhadgalya,
+  appWebDuudlagaKhadgalya,
   sanalKharlaa,
   sonorduulgaKharlaa,
   sanalKhuleenAvlaa,
@@ -24,6 +25,9 @@ crud(router, "sanalGomdol", SanalGomdol, UstsanBarimt);
 crud(router, "sonorduulga", Sonorduulga, UstsanBarimt);
 
 router.route("/sanalKhadgalya").post(tokenShalgakh, sanalKhadgalya);
+router
+  .route("/appWebDuudlagaKhadgalya")
+  .post(tokenShalgakh, appWebDuudlagaKhadgalya);
 router.route("/sanalKharlaa").post(tokenShalgakh, sanalKharlaa);
 router.route("/sonorduulgaKharlaa").post(tokenShalgakh, sonorduulgaKharlaa);
 router.route("/sanalKhuleenAvlaa").post(tokenShalgakh, sanalKhuleenAvlaa);

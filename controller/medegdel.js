@@ -4,7 +4,10 @@ const SanalGomdol = require("../models/sanalGomdol");
 const Khariltsagch = require("../models/khariltsagch");
 const SonorduulgaObject = require("../models/sonorduulga");
 const Sonorduulga = require("../components/sonorduulga");
-const { sonorduulgaIlgeeye, khariltsagchidSonorduulgaIlgeeye } = require("../controller/appNotification");
+const {
+  sonorduulgaIlgeeye,
+  khariltsagchidSonorduulgaIlgeeye,
+} = require("../controller/appNotification");
 const jwt = require("jsonwebtoken");
 
 exports.uruunuudOlyo = asyncHandler((ajiltan, callback) => {
@@ -42,25 +45,25 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
         //     firebaseToken,
         //     { title: khariu.title, body: khariu.body },
         //     (r) => {
-              var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
-              sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
-              sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
-              sonorduulga.barilgiinId = req.body.barilgiinId;
-              if (req.body.khariltsagchiinId)
-                sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
-              sonorduulga.title = khariu.title;
-              sonorduulga.message = khariu.body;
-              sonorduulga.kharsanEsekh = false;
-              sonorduulga.save();
-              var io = req.app.get("socketio");
-              if (io)
-                io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
-              res.send(r);
+        var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+        sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
+        sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+        sonorduulga.barilgiinId = req.body.barilgiinId;
+        if (req.body.khariltsagchiinId)
+          sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
+        sonorduulga.title = khariu.title;
+        sonorduulga.message = khariu.body;
+        sonorduulga.kharsanEsekh = false;
+        sonorduulga.save();
+        var io = req.app.get("socketio");
+        if (io)
+          io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
+        res.send(r);
         //     },
         //     next
         //   );
         // else
-        //   res.send("!fire token not found");  
+        //   res.send("!fire token not found");
       }
     });
   } catch (err) {
@@ -103,6 +106,27 @@ exports.sanalKhuleenAvlaa = asyncHandler((req, res, next) => {
       .then((res) => res);
     res.sendStatus(200);
   } catch (err) {
+    next(err);
+  }
+});
+
+exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
+  try {
+    var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+    sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
+    sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+    sonorduulga.barilgiinId = req.body.barilgiinId;
+    sonorduulga.title = req.body.title;
+    sonorduulga.message = req.body.message;
+    sonorduulga.turul = "duudlaga";
+    sonorduulga.duudlagiinTurul = req.body.duudlagiinTurul;
+    sonorduulga.kharsanEsekh = false;
+    sonorduulga.save();
+    var io = req.app.get("socketio");
+    if (io) io.emit("appWebDuudlaga" + req.body.khariltsagchiinId, sonorduulga);
+    res.send(r);
+  } catch (err) {
+    console.log("appWebDuudlagaKhadgalya ------------------->" + err);
     next(err);
   }
 });
