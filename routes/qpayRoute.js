@@ -116,6 +116,7 @@ router.get("/qpayObjectAvya", tokenShalgakh, async (req, res, next) => {
 
 router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     var maxDugaar = 1;
     await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
       .find({
