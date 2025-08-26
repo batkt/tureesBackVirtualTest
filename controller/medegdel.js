@@ -112,7 +112,7 @@ exports.sanalKhuleenAvlaa = asyncHandler((req, res, next) => {
 
 exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
   try {
-    var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+    var sonorduulga = new SonorduulgaObject(req.body.tukhainBaaziinKholbolt)();
     sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
     sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
     sonorduulga.barilgiinId = req.body.barilgiinId;
