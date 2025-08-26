@@ -125,7 +125,7 @@ exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
     sonorduulga.save();
     var io = req.app.get("socketio");
     if (io) io.emit("appWebDuudlaga" + req.body.khariltsagchiinId, sonorduulga);
-    res.send(r);
+    res.send(sonorduulga);
   } catch (err) {
     console.log("appWebDuudlagaKhadgalya ------------------->" + err);
     next(err);
