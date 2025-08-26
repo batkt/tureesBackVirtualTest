@@ -121,6 +121,7 @@ exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
     sonorduulga.turul = "duudlaga";
     sonorduulga.duudlagiinTurul = req.body.duudlagiinTurul;
     sonorduulga.kharsanEsekh = false;
+    sonorduulga.tuluv = 0;
     sonorduulga.save();
     var io = req.app.get("socketio");
     if (io) io.emit("appWebDuudlaga" + req.body.khariltsagchiinId, sonorduulga);
