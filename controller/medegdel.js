@@ -127,7 +127,6 @@ exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
     if (io) io.emit("appWebDuudlaga" + req.body.baiguullagiinId, sonorduulga);
     res.send(sonorduulga);
   } catch (err) {
-    console.log("appWebDuudlagaKhadgalya ------------------->" + err);
     next(err);
   }
 });

@@ -3526,7 +3526,6 @@ router.post(
       // }
       res.send("Амжилттай");
     } catch (error) {
-      console.log("mashiniiDugaarZaiArilgakh --->" + error);
       if (next) next(error);
     }
   }

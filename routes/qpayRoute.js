@@ -15,7 +15,6 @@ const {
   qpayShalgay,
 } = require("quickqpaypackv2");
 const { tulburUridchiljTulukh } = require("../controller/zogsool");
-const lodash = require("lodash");
 
 router.get(
   "/qpaycallback/:baiguullagiinId/:zakhialgiinDugaar",
@@ -218,10 +217,6 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
           ) {
             req.body.dun = Number(req.body.dun) + 300 + "";
           }
-          console.log(
-            "-----format ------>>" + JSON.stringify(Number(req.body.dun) + 300)
-          );
-          console.log("-------dun ---->>" + JSON.stringify(req.body.dun));
         }
       }
 
@@ -300,21 +295,5 @@ router.post("/qpayKhariltsagchAvay", tokenShalgakh, async (req, res, next) => {
     next(err);
   }
 });
-
-function formatNumber(num, fixed = 2) {
-  if (num === undefined || num === null || num === "")
-    return formatNumber("0.00", fixed);
-  var fixedNum = parseFloat(num).toFixed(fixed).toString();
-  var numSplit = fixedNum.split(".");
-  if (numSplit === null || numSplit.length === 0) {
-    return formatNumber("0.00", fixed);
-  }
-  var firstFormatNum = numSplit[0]
-    .toString()
-    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-  if (lodash.isNaN(firstFormatNum)) firstFormatNum = "0";
-  if (fixed === 0) return firstFormatNum;
-  return firstFormatNum + "." + numSplit[1];
-}
 
 module.exports = router;
