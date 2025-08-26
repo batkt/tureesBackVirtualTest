@@ -221,6 +221,9 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
               )) / 100;
         }
         if (req.body.dun > 0) {
+          console.log(
+            "-----req.body.dun------->" + JSON.stringify(req.body.dun)
+          );
           var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
             req.body.baiguullagiinId
           );
@@ -231,6 +234,9 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
             req.body.dun =
               (await Math.round((req.body.dun + 300 + Number.EPSILON) * 100)) /
               100;
+          console.log(
+            "----end-req.body.dun------->" + JSON.stringify(req.body.dun)
+          );
         }
       }
 
