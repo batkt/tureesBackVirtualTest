@@ -21,6 +21,7 @@ const sonorduulgaSchema = new Schema(
     dakhijKharikhEsekh: Boolean,
     adminMedegdelId: String,
     tuluv: Number,
+    tailbar: String,
     dakhijKharakhguiAjiltniiIdnuud: [String],
     zurag: {
       type: String,
