@@ -353,7 +353,9 @@ async function dansniiKhuulgaAvya(token, next, body) {
       "https://api.khanbank.com/v1/statements/corporate/state",
       { context }
     );
-    const resultValue = JSON.parse(responseShunuEsekh?.body);
+    const resultValue = body.corporateShunuUntraakhEsekh
+      ? false
+      : JSON.parse(responseShunuEsekh?.body);
     url =
       "https://api.khanbank.com/v1/statements/" +
       (resultValue ? "corporate/" : "") +
@@ -826,6 +828,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
                   dansniiDugaar: dans.dugaar,
+                  corporateShunuUntraakhEsekh: dans.corporateShunuUntraakhEsekh,
                 };
                 if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
                 var khariu = await dansniiKhuulgaAvya(token, next, bodyKhuulga);
@@ -1525,6 +1528,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
                   dansniiDugaar: dans.dugaar,
+                  corporateShunuUntraakhEsekh: dans.corporateShunuUntraakhEsekh,
                 };
                 if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
                 var khariu = await dansniiKhuulgaAvya(token, null, bodyKhuulga);
