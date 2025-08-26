@@ -207,36 +207,16 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
 
         req.body.zakhialgiinDugaar = maxDugaar.toString();
         //gereetei ued mungun dun 300tugrug nemex
-        if (req.body.tulukhDun > 0) {
-          var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-            req.body.baiguullagiinId
-          );
-          if (
-            !!baiguullaga &&
-            baiguullaga.tokhirgoo?.qpayShimtgelTusdaa == true
-          )
-            req.body.tulukhDun =
-              (await Math.round(
-                (req.body.tulukhDun + 300 + Number.EPSILON) * 100
-              )) / 100;
-        }
         if (req.body.dun > 0) {
-          console.log(
-            "-----req.body.dun------->" + JSON.stringify(req.body.dun)
-          );
           var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
             req.body.baiguullagiinId
           );
           if (
             !!baiguullaga &&
             baiguullaga.tokhirgoo?.qpayShimtgelTusdaa == true
-          )
-            req.body.dun =
-              (await Math.round((req.body.dun + 300 + Number.EPSILON) * 100)) /
-              100;
-          console.log(
-            "----end-req.body.dun------->" + JSON.stringify(req.body.dun)
-          );
+          ) {
+            req.body.dun = formatNumber(Number(req.body.dun) + 300);
+          }
         }
       }
 
@@ -315,5 +295,21 @@ router.post("/qpayKhariltsagchAvay", tokenShalgakh, async (req, res, next) => {
     next(err);
   }
 });
+
+function formatNumber(num, fixed = 2) {
+  if (num === undefined || num === null || num === "")
+    return formatNumber("0.00", fixed);
+  var fixedNum = parseFloat(num).toFixed(fixed).toString();
+  var numSplit = fixedNum.split(".");
+  if (numSplit === null || numSplit.length === 0) {
+    return formatNumber("0.00", fixed);
+  }
+  var firstFormatNum = numSplit[0]
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  if (lodash.isNaN(firstFormatNum)) firstFormatNum = "0";
+  if (fixed === 0) return firstFormatNum;
+  return firstFormatNum + "." + numSplit[1];
+}
 
 module.exports = router;
