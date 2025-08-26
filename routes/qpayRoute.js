@@ -218,6 +218,11 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
           ) {
             req.body.dun = formatNumber(Number(req.body.dun) + 300);
           }
+          console.log(
+            "-----format ------>>" +
+              JSON.stringify(formatNumber(Number(req.body.dun) + 300))
+          );
+          console.log("-------dun ---->>" + JSON.stringify(req.body.dun));
         }
       }
 
