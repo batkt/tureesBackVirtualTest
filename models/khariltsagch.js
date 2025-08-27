@@ -28,7 +28,7 @@ const khariltsagchSchema = new Schema(
     temdeglel: String,
     zochinUrikhEsekh: Boolean,
     zochinTurul: String,
-    davtamjiinTurul: Number,
+    davtamjiinTurul: String,
     mashiniiDugaar: String,
     zochinTailbar: String,
     zochinErkhiinToo: Number,
