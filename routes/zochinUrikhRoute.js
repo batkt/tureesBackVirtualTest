@@ -265,7 +265,7 @@ router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
         },
       });
     }
-    var ezenList = ezenJagsaalt?.find((a) => a.tuluv == 0);
+    var ezenList = ezenJagsaalt?.filter((a) => a.tuluv == 0);
     res.send({ ezenList, jagsaalt });
   } catch (error) {
     console.error("ezenUrisanTuukh алдаа:", error);
