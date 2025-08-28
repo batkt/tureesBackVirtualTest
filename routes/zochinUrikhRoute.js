@@ -256,7 +256,6 @@ router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
     ).find({
       baiguullagiinId: req.body.baiguullagiinId,
       ezenId: req.body.ezenId,
-      tuluv: 0,
     });
     var jagsaalt = [];
     if (ezenJagsaalt?.length > 0) {
@@ -266,7 +265,8 @@ router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
         },
       });
     }
-    res.send({ ezenJagsaalt, jagsaalt });
+    var ezenList = ezenJagsaalt?.find((a) => a.tuluv == 0);
+    res.send({ ezenList, jagsaalt });
   } catch (error) {
     console.error("ezenUrisanTuukh алдаа:", error);
     res.status(500).json({
