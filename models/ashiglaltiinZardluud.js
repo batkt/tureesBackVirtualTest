@@ -22,6 +22,7 @@ const ashiglaltiinZardluudSchema = new Schema(
     togtmolUtga: Number,
     dun: Number,
     ognoonuud: [Date],
+    nuatBodokhEsekh: Boolean,
   },
   {
     timestamps: true,
