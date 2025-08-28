@@ -256,6 +256,7 @@ router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
     ).find({
       baiguullagiinId: req.body.baiguullagiinId,
       ezenId: req.body.ezenId,
+      tuluv: 0,
     });
     var jagsaalt = [];
     if (ezenJagsaalt?.length > 0) {
