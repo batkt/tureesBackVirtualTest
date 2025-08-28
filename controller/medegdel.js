@@ -117,6 +117,10 @@ exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
     sonorduulga.khariltsagchiinNer = req.body.khariltsagchiinNer;
     sonorduulga.khariltsagchiinUtas = req.body.khariltsagchiinUtas;
     sonorduulga.khariltsagchiinRegister = req.body.khariltsagchiinRegister;
+    sonorduulga.khariltsagchiinGereeniiDugaar =
+      req.body.khariltsagchiinGereeniiDugaar;
+    sonorduulga.khariltsagchiinTalbainDugaar =
+      req.body.khariltsagchiinTalbainDugaar;
     sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
     sonorduulga.barilgiinId = req.body.barilgiinId;
     sonorduulga.title = req.body.title;
