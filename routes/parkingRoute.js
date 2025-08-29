@@ -1455,11 +1455,18 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               );
             }
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-              bodsonDun = await zogsooliinDunAvya(
-                zogsool,
-                oldsonMashin,
-                kholbolt
-              );
+              if (
+                zogsool?.togtmolTulburEsekh &&
+                zogsool?.togtmolTulburiinDun > 0 &&
+                oldsonMashin?.turul == "Дурын"
+              )
+                bodsonDun = zogsool.togtmolTulburiinDun;
+              else
+                bodsonDun = await zogsooliinDunAvya(
+                  zogsool,
+                  oldsonMashin,
+                  kholbolt
+                );
             }
           }
           if (bodsonDun > 0) {
