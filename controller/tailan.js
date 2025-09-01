@@ -480,9 +480,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
           ],
         };
         res.send(data);
-      }
-      else
-        res.send(result);
+      } else res.send(result);
     })
     .catch((err) => {
       next(err);
@@ -1535,8 +1533,8 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       var registeruud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
         {
           $match: {
-            tuluv: { $ne: -1, },  
-          }  
+            tuluv: { $ne: -1 },
+          },
         },
         {
           $unwind: {
@@ -1564,8 +1562,8 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       dunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
         {
           $match: {
-            tuluv: { $ne: -1, },  
-          }  
+            tuluv: { $ne: -1 },
+          },
         },
         {
           $unwind: {
@@ -1599,8 +1597,8 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       var bankDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
         {
           $match: {
-            tuluv: { $ne: -1, },  
-          }  
+            tuluv: { $ne: -1 },
+          },
         },
         {
           $unwind: {
@@ -1623,27 +1621,51 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
         {
           $group: {
-            _id: { turul: "$avlaga.guilgeenuud.turul", dansniiDugaar: "$avlaga.guilgeenuud.dansniiDugaar", register: "$register" },
+            _id: {
+              turul: "$avlaga.guilgeenuud.turul",
+              dansniiDugaar: "$avlaga.guilgeenuud.dansniiDugaar",
+              register: "$register",
+            },
             dun: {
               $sum: "$avlaga.guilgeenuud.tulsunDun",
             },
           },
         },
       ]);
-      for (const bankDun of bankDunguud)
-      {
-        if(!!bankDun?._id?.dansniiDugaar)
-        {
-          var filterDans = await Dans(req.body.tukhainBaaziinKholbolt).findOne({dugaar: bankDun._id.dansniiDugaar});
+      for (const bankDun of bankDunguud) {
+        if (!!bankDun?._id?.dansniiDugaar) {
+          var filterDans = await Dans(req.body.tukhainBaaziinKholbolt).findOne({
+            dugaar: bankDun._id.dansniiDugaar,
+          });
           bankDun._id.turul = filterDans?.bank;
         }
       }
 
-      var aldangiDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      var aldangiDunguud = await Geree(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
         {
           $match: {
-            tuluv: { $ne: -1, },  
-          }  
+            tuluv: { $ne: -1 },
+          },
+        },
+        {
+          $group: {
+            _id: { turul: "aldangi", register: "$register" },
+            dun: {
+              $sum: "$aldangiinUldegdel",
+            },
+          },
+        },
+      ]);
+
+      var aldangiTulsunDunguud = await Geree(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
+        {
+          $match: {
+            tuluv: { $ne: -1 },
+          },
         },
         {
           $unwind: {
@@ -1666,7 +1688,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
         {
           $group: {
-            _id: { turul: "$avlaga.guilgeenuud.turul", register: "$register" },
+            _id: { turul: "tulsunAldangi", register: "$register" },
             dun: {
               $sum: "$avlaga.guilgeenuud.tulsunAldangi",
             },
@@ -1674,11 +1696,13 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
       ]);
 
-      var khungulultiinDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      var khungulultiinDunguud = await Geree(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
         {
           $match: {
-            tuluv: { $ne: -1, },  
-          }  
+            tuluv: { $ne: -1 },
+          },
         },
         {
           $unwind: {
@@ -1709,11 +1733,13 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
       ]);
 
-      var tulukhDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      var tulukhDunguud = await Geree(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
         {
           $match: {
-            tuluv: { $ne: -1, },  
-          }  
+            tuluv: { $ne: -1 },
+          },
         },
         {
           $unwind: {
@@ -1736,108 +1762,153 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
         {
           $group: {
-            _id: { turul: { 
-              $cond: [
-                {
-                  $or: [
-                    {
-                      $regexMatch: { input: "$avlaga.guilgeenuud.tailbar", regex: "Менежментийн төлбөр" }
-                    },
-                    {
-                      $regexMatch: { input: "$avlaga.guilgeenuud.tailbar", regex: "Менежмент" }
-                    },
-                    {
-                      $eq: ["$avlaga.guilgeenuud.zardliinTurul", "management"],
-                    },
-                  ]
-                },
-                "management",
-                {
-                  $cond: [
-                    {
-                      $or: [
-                        {
-                          $regexMatch: { input: "$avlaga.guilgeenuud.tailbar", regex: "Дулаан" }
+            _id: {
+              turul: {
+                $cond: [
+                  {
+                    $or: [
+                      {
+                        $regexMatch: {
+                          input: "$avlaga.guilgeenuud.tailbar",
+                          regex: "Менежментийн төлбөр",
                         },
-                        {
-                          $eq: ["$avlaga.guilgeenuud.zardliinTurul", "dulaan"],
+                      },
+                      {
+                        $regexMatch: {
+                          input: "$avlaga.guilgeenuud.tailbar",
+                          regex: "Менежмент",
                         },
-                      ]
-                    },  
-                    "dulaan",
-                    {
-                      $cond: [
-                        {
-                          $or: [
-                            {
-                              $regexMatch: { input: "$avlaga.guilgeenuud.tailbar", regex: "Цахилгаан" }
+                      },
+                      {
+                        $eq: [
+                          "$avlaga.guilgeenuud.zardliinTurul",
+                          "management",
+                        ],
+                      },
+                    ],
+                  },
+                  "management",
+                  {
+                    $cond: [
+                      {
+                        $or: [
+                          {
+                            $regexMatch: {
+                              input: "$avlaga.guilgeenuud.tailbar",
+                              regex: "Дулаан",
                             },
-                            {
-                              $eq: ["$avlaga.guilgeenuud.zardliinTurul", "tsakhilgaan"],
-                            },
-                          ]
-                        },  
-                        "tsahilgaan",
-                        {
-                          $cond: [
-                            {
-                              $or: [
-                                {
-                                  $regexMatch: { input: "$avlaga.guilgeenuud.tailbar", regex: "Халуун ус" }
+                          },
+                          {
+                            $eq: [
+                              "$avlaga.guilgeenuud.zardliinTurul",
+                              "dulaan",
+                            ],
+                          },
+                        ],
+                      },
+                      "dulaan",
+                      {
+                        $cond: [
+                          {
+                            $or: [
+                              {
+                                $regexMatch: {
+                                  input: "$avlaga.guilgeenuud.tailbar",
+                                  regex: "Цахилгаан",
                                 },
-                                {
-                                  $eq: ["$avlaga.guilgeenuud.zardliinTurul", "khulaanUs"],
-                                },
-                              ]
-                            },  
-                            "khaluunUs",
-                            {
-                              $cond: [
-                                {
-                                  $or: [
-                                    {
-                                      $regexMatch: { input: "$avlaga.guilgeenuud.tailbar", regex: "Хүйтэн ус" }
-                                    }, 
-                                    {
-                                      $eq: ["$avlaga.guilgeenuud.zardliinTurul", "khuitenUs"],
+                              },
+                              {
+                                $eq: [
+                                  "$avlaga.guilgeenuud.zardliinTurul",
+                                  "tsakhilgaan",
+                                ],
+                              },
+                            ],
+                          },
+                          "tsahilgaan",
+                          {
+                            $cond: [
+                              {
+                                $or: [
+                                  {
+                                    $regexMatch: {
+                                      input: "$avlaga.guilgeenuud.tailbar",
+                                      regex: "Халуун ус",
                                     },
-                                  ]
-                                },  
-                                "khuitenUs",
-                                {
-                                  $cond: [
-                                    {
-                                      $and: [
-                                        {
-                                          $eq: ["$avlaga.guilgeenuud.zardliinTurul", "turees"],
+                                  },
+                                  {
+                                    $eq: [
+                                      "$avlaga.guilgeenuud.zardliinTurul",
+                                      "khulaanUs",
+                                    ],
+                                  },
+                                ],
+                              },
+                              "khaluunUs",
+                              {
+                                $cond: [
+                                  {
+                                    $or: [
+                                      {
+                                        $regexMatch: {
+                                          input: "$avlaga.guilgeenuud.tailbar",
+                                          regex: "Хүйтэн ус",
                                         },
-                                        {
-                                          $eq: ["$avlaga.guilgeenuud.ekhniiUldegdelEsekh", true],
-                                        }, 
-                                      ]
-                                    },
-                                    "ekhniiUldegdel",
-                                    {
-                                      $cond: [
-                                        {
-                                          $eq: ["$avlaga.guilgeenuud.turul", "torguuli"],
-                                        },
-                                        "torguuli",
-                                        "turees",
-                                      ]
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-              ],
-            }, register: "$register" },
+                                      },
+                                      {
+                                        $eq: [
+                                          "$avlaga.guilgeenuud.zardliinTurul",
+                                          "khuitenUs",
+                                        ],
+                                      },
+                                    ],
+                                  },
+                                  "khuitenUs",
+                                  {
+                                    $cond: [
+                                      {
+                                        $and: [
+                                          {
+                                            $eq: [
+                                              "$avlaga.guilgeenuud.zardliinTurul",
+                                              "turees",
+                                            ],
+                                          },
+                                          {
+                                            $eq: [
+                                              "$avlaga.guilgeenuud.ekhniiUldegdelEsekh",
+                                              true,
+                                            ],
+                                          },
+                                        ],
+                                      },
+                                      "ekhniiUldegdel",
+                                      {
+                                        $cond: [
+                                          {
+                                            $eq: [
+                                              "$avlaga.guilgeenuud.turul",
+                                              "torguuli",
+                                            ],
+                                          },
+                                          "torguuli",
+                                          "turees",
+                                        ],
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+              register: "$register",
+            },
             tulukhDun: {
               $sum: "$avlaga.guilgeenuud.tulukhDun",
             },
@@ -1845,42 +1916,49 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
       ]);
       if (registeruud && registeruud.length > 0) {
-        var data = []
+        var data = [];
         for (const register of registeruud) {
-          if(!!register?._id)
-          {
+          if (!!register?._id) {
             var mur = {
               registerNo: register?._id,
             };
-            var filterDunguud = dunguud?.filter((a) => a._id?.register === register?._id);
-            if(filterDunguud?.length > 0)
-            {
-              for (const row of filterDunguud)
-                mur[row._id.turul] = row.dun;
+            var filterDunguud = dunguud?.filter(
+              (a) => a._id?.register === register?._id
+            );
+            if (filterDunguud?.length > 0) {
+              for (const row of filterDunguud) mur[row._id.turul] = row.dun;
             }
-            var filterBankuud = bankDunguud?.filter((a) => a._id?.register === register?._id);
-            if(filterBankuud?.length > 0)
-            {
-              for (const row of filterBankuud)
-                mur[row._id.turul] = row.dun;
+            var filterBankuud = bankDunguud?.filter(
+              (a) => a._id?.register === register?._id
+            );
+            if (filterBankuud?.length > 0) {
+              for (const row of filterBankuud) mur[row._id.turul] = row.dun;
             }
-            var filterKhungulult = khungulultiinDunguud?.filter((a) => a._id?.register === register?._id);
-            if(filterKhungulult?.length > 0)
-            {
-              for (const row of filterKhungulult)
-                mur[row._id.turul] = row.dun;
+            var filterKhungulult = khungulultiinDunguud?.filter(
+              (a) => a._id?.register === register?._id
+            );
+            if (filterKhungulult?.length > 0) {
+              for (const row of filterKhungulult) mur[row._id.turul] = row.dun;
             }
-            var filterTulukhDun = tulukhDunguud.filter((a) => a._id?.register === register?._id);
-            if(filterTulukhDun?.length > 0)
-            {
-              for( const row of filterTulukhDun)
+            var filterTulukhDun = tulukhDunguud.filter(
+              (a) => a._id?.register === register?._id
+            );
+            if (filterTulukhDun?.length > 0) {
+              for (const row of filterTulukhDun)
                 mur[row._id.turul] = row.tulukhDun;
             }
 
-            var filterAldangi = aldangiDunguud?.filter((a) => a._id?.register === register?._id);
-            if(filterAldangi?.length > 0)
-            {
-              for( const row of filterAldangi)
+            var filterAldangi = aldangiDunguud?.filter(
+              (a) => a._id?.register === register?._id
+            );
+            if (filterAldangi?.length > 0) {
+              for (const row of filterAldangi) mur[row._id.turul] = row.dun;
+            }
+            var filterTulsunAldangi = aldangiTulsunDunguud?.filter(
+              (a) => a._id?.register === register?._id
+            );
+            if (filterTulsunAldangi?.length > 0) {
+              for (const row of filterTulsunAldangi)
                 mur[row._id.turul] = row.dun;
             }
             data.push(mur);
@@ -1888,7 +1966,6 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         }
         butsaakhKhariu.data = data;
       } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
-      
     } else if (req.params.turul == "Parking") {
       dunguud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).aggregate([
         {
@@ -1946,8 +2023,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
       ]);
     }
-    if(req.params.turul !== "Rent")
-    {
+    if (req.params.turul !== "Rent") {
       if (dunguud && dunguud.length > 0) {
         data = {
           currency: "MNT",
@@ -1964,10 +2040,8 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
   }
 });
 
-
 exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
-  try
-  {
+  try {
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
@@ -1975,17 +2049,16 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
         $ne: -1,
       },
     };
-    if(req.body.query)
-      match["$or"] = req.body.query["$or"];
+    if (req.body.query) match["$or"] = req.body.query["$or"];
     var matchGroup = {};
-    if(!!req.body.khariltsagchiinId)
-      matchGroup["_id.register"] = { $in: req.body.khariltsagchiinId};
+    if (!!req.body.khariltsagchiinId)
+      matchGroup["_id.register"] = { $in: req.body.khariltsagchiinId };
     var query = [
       {
         $match: match,
       },
       {
-        $unwind: "$avlaga.guilgeenuud"
+        $unwind: "$avlaga.guilgeenuud",
       },
       {
         $match: {
@@ -1993,8 +2066,10 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             $gte: new Date(req.body.ekhlekhOgnoo),
             $lte: new Date(req.body.duusakhOgnoo),
           },
-          "avlaga.guilgeenuud.turul": { $in: ["avlaga", "khuvaari", "khungulult"]},
-        }
+          "avlaga.guilgeenuud.turul": {
+            $in: ["avlaga", "khuvaari", "khungulult"],
+          },
+        },
       },
       {
         $project: {
@@ -2025,7 +2100,7 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             ner: "$ner",
             talbainKhemjee: "$talbainKhemjee",
             talbainNegjUne: "$talbainNegjUne",
-            talbainNiitUne: "$talbainNiitUne"
+            talbainNiitUne: "$talbainNiitUne",
           },
           avlaga: {
             $push: "$avlaga",
@@ -2036,100 +2111,124 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
         $match: matchGroup,
       },
       {
-        $sort: { "_id.register":1, "_id.gereeniiDugaar":1 }
+        $sort: { "_id.register": 1, "_id.gereeniiDugaar": 1 },
       },
     ];
-    var zardluud = await AshiglaltiinZardluud(req.body.tukhainBaaziinKholbolt).find({ baiguullagiinId: req.body.baiguullagiinId, barilgiinId: req.body.barilgiinId });
+    var zardluud = await AshiglaltiinZardluud(
+      req.body.tukhainBaaziinKholbolt
+    ).find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+    });
     var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
-    if(khariu?.length > 0)
-    {
+    if (khariu?.length > 0) {
       khariu?.forEach((a) => {
         var niitTulukhDun = 0;
         var khungulultuusKhassanJagsaalt = [];
         var tempJagsaaltAvlaga = a.avlaga;
         var indexTemp = 3;
         a.avlaga?.forEach((b) => {
-          if(b.zardliinTurul === "dulaan") 
-            b.tailbar = "Дулаан";
-          if(b.zardliinTurul === "tsakhilgaan") 
-            b.tailbar = "Цахилгаан";
-          if(b.zardliinTurul === "khulaanUs") 
-            b.tailbar = "Халуун ус";
-          if(b.zardliinTurul === "khuitenUs") 
-            b.tailbar = "Хүйтэн ус";
-          if(b.zardliinTurul === "busad") 
-            b.tailbar = "Бусад авлага";
-          if(b.tailbar === "Management" || b.zardliinTurul === "management")
+          if (b.zardliinTurul === "dulaan") b.tailbar = "Дулаан";
+          if (b.zardliinTurul === "tsakhilgaan") b.tailbar = "Цахилгаан";
+          if (b.zardliinTurul === "khulaanUs") b.tailbar = "Халуун ус";
+          if (b.zardliinTurul === "khuitenUs") b.tailbar = "Хүйтэн ус";
+          if (b.zardliinTurul === "busad") b.tailbar = "Бусад авлага";
+          if (b.tailbar === "Management" || b.zardliinTurul === "management")
             b.tailbar = "Менежментийн төлбөр";
-          if(!!b.zardliinNer)
-            b.tailbar = b.zardliinNer;
-          if(!b.zardliinTurul && !b.zardliinNer && b.turul != "khungulult")
-          {
+          if (!!b.zardliinNer) b.tailbar = b.zardliinNer;
+          if (!b.zardliinTurul && !b.zardliinNer && b.turul != "khungulult") {
             var filteredZardal = zardluud?.filter((a) => a.ner === b.tailbar);
-            if(filteredZardal?.length === 0)
-              b.tailbar = "Бусад авлага";
+            if (filteredZardal?.length === 0) b.tailbar = "Бусад авлага";
           }
-          
-          var tempkhungulult = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khungulult" && e.tailbar === (b.turul === "khuvaari" ? "Хөнгөлөлт" : b.tailbar));
-          if(tempkhungulult?.length === 0)
-            niitTulukhDun += (b.tulukhDun || 0);
+
+          var tempkhungulult = tempJagsaaltAvlaga?.filter(
+            (e) =>
+              moment(e.ognoo).format("YYYY-MM") ===
+                moment(b.ognoo).format("YYYY-MM") &&
+              e.turul === "khungulult" &&
+              e.tailbar === (b.turul === "khuvaari" ? "Хөнгөлөлт" : b.tailbar)
+          );
+          if (tempkhungulult?.length === 0) niitTulukhDun += b.tulukhDun || 0;
           b.index = indexTemp;
           indexTemp++;
-          if(b.turul === "avlaga" && (b.tailbar?.includes("Менежментийн төлбөр") || b.tailbar === "Менежментийн зардал" || b.tailbar === "Менежмент"))
+          if (
+            b.turul === "avlaga" &&
+            (b.tailbar?.includes("Менежментийн төлбөр") ||
+              b.tailbar === "Менежментийн зардал" ||
+              b.tailbar === "Менежмент")
+          )
             b.talbainKhemjee = a._id?.talbainKhemjee;
-          if(b.turul === "khuvaari")
-          {
+          if (b.turul === "khuvaari") {
             b.index = 0;
             b.tailbar = "Түрээсийн төлбөр";
             b.talbainKhemjee = a._id?.talbainKhemjee;
             b.talbainNegjUne = a._id?.talbainNegjUne;
           }
-          if(b.turul === "khungulult")
-          {
+          if (b.turul === "khungulult") {
             var tempKhuvaari = [];
-            if(b.tailbar === "Хөнгөлөлт")
-            {
-              tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "khuvaari");
+            if (b.tailbar === "Хөнгөлөлт") {
+              tempKhuvaari = tempJagsaaltAvlaga?.filter(
+                (e) =>
+                  moment(e.ognoo).format("YYYY-MM") ===
+                    moment(b.ognoo).format("YYYY-MM") && e.turul === "khuvaari"
+              );
               b.index = 1;
+            } else {
+              tempKhuvaari = tempJagsaaltAvlaga?.filter(
+                (e) =>
+                  moment(e.ognoo).format("YYYY-MM") ===
+                    moment(b.ognoo).format("YYYY-MM") &&
+                  e.turul === "avlaga" &&
+                  e.tailbar === b.tailbar
+              );
+              b.index =
+                tempKhuvaari?.length > 0 ? tempKhuvaari[0].index : b.index;
             }
-            else
-            {
-              tempKhuvaari = tempJagsaaltAvlaga?.filter((e) => moment(e.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && e.turul === "avlaga" && e.tailbar === b.tailbar);
-              b.index = tempKhuvaari?.length > 0 ? tempKhuvaari[0].index : b.index;
-            }
-            b.tailbar = (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт" : (b.tailbar + "/ хөнгөлөлт"));
+            b.tailbar =
+              b.tailbar === "Хөнгөлөлт"
+                ? "Хөнгөлөлт"
+                : b.tailbar + "/ хөнгөлөлт";
             b.tulukhDun = b.khyamdral;
-            if(tempKhuvaari?.length > 0)
-            {
+            if (tempKhuvaari?.length > 0) {
               var khassanTulkhDun;
-              var tailbar = (b.tailbar === "Хөнгөлөлт" ? "Хөнгөлөлт хассан дүн" : (b.tailbar + " хассан дүн"));
+              var tailbar =
+                b.tailbar === "Хөнгөлөлт"
+                  ? "Хөнгөлөлт хассан дүн"
+                  : b.tailbar + " хассан дүн";
               var index = b.tailbar === "Хөнгөлөлт" ? 2 : b.index;
-              var filtered = khungulultuusKhassanJagsaalt?.filter((a) => moment(a.ognoo).format("YYYY-MM") === moment(b.ognoo).format("YYYY-MM") && a.tailbar === tailbar && a.index === index);
-              if(filtered?.length > 0)
-              {
+              var filtered = khungulultuusKhassanJagsaalt?.filter(
+                (a) =>
+                  moment(a.ognoo).format("YYYY-MM") ===
+                    moment(b.ognoo).format("YYYY-MM") &&
+                  a.tailbar === tailbar &&
+                  a.index === index
+              );
+              if (filtered?.length > 0) {
                 filtered?.forEach((e) => {
                   e.tulukhDun -= b.khyamdral;
-                })
+                });
                 niitTulukhDun -= b.khyamdral;
-              }
-              else
-              {
-                khassanTulkhDun = (tempKhuvaari?.reduce((a, b) => a + (b.tulukhDun || 0), 0) - b.khyamdral);
+              } else {
+                khassanTulkhDun =
+                  tempKhuvaari?.reduce((a, b) => a + (b.tulukhDun || 0), 0) -
+                  b.khyamdral;
                 var khungulultuusKhassan = {
                   index: index,
                   ognoo: b.ognoo,
                   turul: b.turul,
                   tailbar: tailbar,
                   tulukhDun: khassanTulkhDun,
-                }
+                };
                 khungulultuusKhassanJagsaalt.push(khungulultuusKhassan);
               }
-              niitTulukhDun += (khassanTulkhDun || 0);
+              niitTulukhDun += khassanTulkhDun || 0;
             }
           }
         });
         a.avlaga.push(...khungulultuusKhassanJagsaalt);
-        a.avlaga?.sort(function (a, b) { return a.index - b.index; });
+        a.avlaga?.sort(function (a, b) {
+          return a.index - b.index;
+        });
         a.niitTulukhDun = niitTulukhDun;
       });
     }
