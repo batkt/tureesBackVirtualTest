@@ -4787,6 +4787,50 @@ router
     }
   });
 
+router
+  .route("/niitTulsunAldangiBodoy")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var aldangiTulsunDunguud = await Geree(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
+        {
+          $unwind: {
+            path: "$avlaga.guilgeenuud",
+          },
+        },
+        {
+          $match: {
+            "avlaga.guilgeenuud.turul": {
+              $in: ["bank", "aldangi"],
+            },
+            "avlaga.guilgeenuud.tulsunAldangi": {
+              $gt: 0,
+            },
+          },
+        },
+        {
+          $group: {
+            id: "$_id",
+            dun: {
+              $sum: "$avlaga.guilgeenuud.tulsunAldangi",
+            },
+          },
+        },
+      ]);
+      for await (const geree of aldangiTulsunDunguud) {
+        await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+          { _id: geree?.id },
+          {
+            $set: { niitTulsunAldangi: geree.dun || 0 },
+          }
+        );
+      }
+      res.send("Amjilttai");
+    } catch (error) {
+      if (next) next(error);
+    }
+  });
 module.exports = router;
 module.exports.sarBuriinKhungulultBodoy = sarBuriinKhungulultBodoy;
 module.exports.duusakhGereeAutomataarTalbainTulburNemekh =

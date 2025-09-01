@@ -35,9 +35,11 @@ async function tokenAvya(
     url.username = username;
     url.password = password;
     const stringBody = JSON.stringify({ terminal_id: "95000059" });
-    const response = await instance.post(url, { body: stringBody }).catch((err) => {
-      throw err;
-    });
+    const response = await instance
+      .post(url, { body: stringBody })
+      .catch((err) => {
+        throw err;
+      });
     const khariu = JSON.parse(response.body);
     Token(tukhainBaaziinKholbolt)
       .updateOne(
@@ -49,10 +51,8 @@ async function tokenAvya(
         },
         { upsert: true }
       )
-      .then((x) => {
-      })
-      .catch((e) => {
-      });
+      .then((x) => {})
+      .catch((e) => {});
     return khariu;
   } catch (error) {
     next(error);
@@ -84,8 +84,7 @@ async function tokenAvyaKhuuchin(
         },
         { upsert: true }
       )
-      .then((x) => {
-      })
+      .then((x) => {})
       .catch((e) => {
         throw e;
       });
@@ -103,12 +102,14 @@ async function qpayMedeelelAvya(token, qpayObject, next) {
       token: "Bearer " + token,
     };
     const qpayObjectString = JSON.stringify(qpayObject);
-    const response = await instance.post(url, {
-      context,
-      body: qpayObjectString,
-    }).catch((err) => {
-      throw err;
-    });
+    const response = await instance
+      .post(url, {
+        context,
+        body: qpayObjectString,
+      })
+      .catch((err) => {
+        throw err;
+      });
     if (!response.body) {
       if (next) {
         next(new aldaa("Алдаа гарлаа!"));
@@ -149,12 +150,14 @@ async function qpayShivye(token, qpayObject, next) {
       token: "Bearer " + token,
     };
     const qpayObjectString = JSON.stringify(qpayObject);
-    const response = await instance.post(url, {
-      context,
-      body: qpayObjectString,
-    }).catch((err) => {
-      throw err;
-    });
+    const response = await instance
+      .post(url, {
+        context,
+        body: qpayObjectString,
+      })
+      .catch((err) => {
+        throw err;
+      });
     if (!response.body) {
       if (next) {
         next(new aldaa("Алдаа гарлаа!"));
@@ -411,6 +414,9 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           ognoo: qpayBarimt.ognoo,
           guilgeeKhiisenOgnoo: new Date(),
         });
+        var niitTulsunAldangi = tulbur
+          ?.filter((a) => a.turul == "aldangi")
+          .reduce((a, b) => a + b.tulsunAldangi, 0);
         updateQuery = {
           $push: {
             [`avlaga.guilgeenuud`]: {
@@ -419,6 +425,9 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           },
           $set: {
             aldangiinUldegdel: geree.aldangiinUldegdel,
+            niitTulsunAldangi: {
+              $add: [{ $ifNull: ["$niitTulsunAldangi", 0] }, niitTulsunAldangi],
+            },
           },
         };
       } else {
@@ -449,8 +458,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
               result.utas[0],
               tulbur.tulsunDun
             );
-          } catch (aldaa) {
-          }
+          } catch (aldaa) {}
           Tulbur.daraagiinTulukhOgnooZasya(
             qpayBarimt.gereeniiId,
             tukhainBaaziinKholbolt
@@ -458,7 +466,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           res.sendStatus(200);
         })
         .catch((err) => {
-          if(next) next(err);
+          if (next) next(err);
         });
     }
   }

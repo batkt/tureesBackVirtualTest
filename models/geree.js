@@ -62,7 +62,7 @@ var avlagiinTurul = new Schema({
       tureesiinDungeesKhungulukhEsekh: Boolean,
       ashiglaltDungeesKhungulukhEsekh: Boolean,
       togtmolUtga: Number,
-      tooluuriinDugaar : String,
+      tooluuriinDugaar: String,
       tulukhNUAT: Number,
       tulukhNuatgui: Number,
     },
@@ -114,7 +114,7 @@ const gereeSchema = new Schema(
     talbainNiitUne: Number,
     talbainKhemjee: Number,
     talbainKhemjeeMetrKube: Number,
-    tooluuriinDugaar : String,// odooxondoo gantsaar awchixya tsaashid olshirwol yaaxaa shiidne
+    tooluuriinDugaar: String, // odooxondoo gantsaar awchixya tsaashid olshirwol yaaxaa shiidne
     davkhar: String,
     baritsaaAvakhDun: Number,
     baritsaaniiUldegdel: {
@@ -139,6 +139,7 @@ const gereeSchema = new Schema(
     daraagiinKhuleekhOgnoo: Date,
     uldegdel: Number,
     aldangiinUldegdel: Number,
+    niitTulsunAldangi: Number,
     avlaga: { type: avlagiinTurul, select: false },
     dans: String,
     turGereeEsekh: Boolean,
@@ -186,7 +187,7 @@ const gereeSchema = new Schema(
         tulukhDun: Number,
         khungulultiinDun: Number,
         key: String,
-      }
+      },
     ],
   },
   {

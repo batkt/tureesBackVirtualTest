@@ -32,8 +32,10 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
       var inc = {
         uldegdel: -(tulbur?.tulsunDun || 0),
       };
-      if (tulbur.tulsunAldangi && tulbur.tulsunAldangi > 0)
+      if (tulbur.tulsunAldangi && tulbur.tulsunAldangi > 0) {
         inc["aldangiinUldegdel"] = -tulbur.tulsunAldangi;
+        inc["niitTulsunAldangi"] = +tulbur.tulsunAldangi;
+      }
       var tempGeree = await Geree(req.body.tukhainBaaziinKholbolt)
         .findById(tulbur.gereeniiId)
         .select("avlaga");
