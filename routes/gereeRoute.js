@@ -4464,6 +4464,7 @@ router
                               zardal.turul == "Тогтмол"))
                         ) {
                           if (
+                            zardalAvlaga.ognoonuud?.length > 0 &&
                             zardal._id == zardalAvlaga._id &&
                             moment(turOgnoo).format("MM") >
                               moment(zardalAvlaga.ognoonuud[0]).format("MM") &&
@@ -4489,6 +4490,7 @@ router
                           else if (zardal.turul == "Тогтмол")
                             tulukhDun = zardal.tariff;
                           if (
+                            zardalAvlaga.ognoonuud?.length > 0 &&
                             zardal._id.toString() ==
                               zardalAvlaga._id.toString() &&
                             moment(zardalAvlaga.ognoonuud[0]).format("MM") ==
@@ -4498,6 +4500,9 @@ router
                               moment(zardalAvlaga.ognoonuud[0]).format("DD")
                             );
                             if (khonog == 1) return;
+                            console.log(
+                              "khonog --------------->" + JSON.stringify(khonog)
+                            );
                             var niitKhonog = parseFloat(
                               moment(zardalAvlaga.ognoonuud[0])
                                 .endOf("month")
@@ -4507,6 +4512,7 @@ router
                               (tulukhDun * khonog) / (niitKhonog || 1);
                           }
                           if (
+                            zardalAvlaga.ognoonuud?.length > 0 &&
                             zardal._id == zardalAvlaga._id &&
                             moment(zardalAvlaga.ognoonuud[0]).format("MM") !=
                               moment(zardalAvlaga.ognoonuud[1]).format("MM") &&
