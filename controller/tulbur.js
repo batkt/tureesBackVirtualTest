@@ -239,8 +239,10 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
     var inc = {
       uldegdel: -(guilgee?.tulsunDun || 0),
     };
-    if (guilgee.turul == "aldangi")
+    if (guilgee.turul == "aldangi") {
       inc["aldangiinUldegdel"] = -guilgee.tulsunAldangi;
+      inc["niitTulsunAldangi"] = +guilgee.tulsunAldangi;
+    }
     Geree(req.body.tukhainBaaziinKholbolt)
       .findByIdAndUpdate(
         { _id: guilgee.gereeniiId },
