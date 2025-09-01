@@ -4811,7 +4811,7 @@ router
         },
         {
           $group: {
-            id: "$_id",
+            _id: "$_id",
             dun: {
               $sum: "$avlaga.guilgeenuud.tulsunAldangi",
             },
@@ -4820,7 +4820,7 @@ router
       ]);
       for await (const geree of aldangiTulsunDunguud) {
         await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-          { _id: geree?.id },
+          { _id: geree?._id },
           {
             $set: { niitTulsunAldangi: geree.dun || 0 },
           }
