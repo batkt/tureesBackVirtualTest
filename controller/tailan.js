@@ -2039,6 +2039,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
               data.push(mur);
             }
           }
+          butsaakhKhariu.data = data;
         } else {
           data = {
             currency: "MNT",
