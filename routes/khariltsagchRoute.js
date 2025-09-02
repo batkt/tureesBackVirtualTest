@@ -164,8 +164,7 @@ router
         barilgiinId: req.body.barilgiinId,
       };
       if (req.body.query) matchQuery = req.body.query;
-      if (req.body.idevkhiteiEsekh == 1)
-        matchQuery["idevkhiteiEsekh"] = req.body.idevkhiteiEsekh;
+      if (req.body.idevkhiteiEsekh == 1) matchQuery["idevkhiteiEsekh"] = true;
       else if (req.body.idevkhiteiEsekh == 0)
         matchQuery["idevkhiteiEsekh"] = {
           $or: [
