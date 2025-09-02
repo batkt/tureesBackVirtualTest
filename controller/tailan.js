@@ -1967,6 +1967,11 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         butsaakhKhariu.data = data;
       } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
     } else if (req.params.turul == "Parking") {
+      var groups = {
+        turul: "$tuukh.tulbur.turul",
+      };
+      if (req.params.ajiltnaarAvakhEsekh)
+        groups.burtgesenAjiltaniiNer = "$tuukh.burtgesenAjiltaniiNer";
       dunguud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).aggregate([
         {
           $unwind: "$tuukh",
@@ -1984,7 +1989,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
         {
           $group: {
-            _id: "$tuukh.tulbur.turul",
+            _id: groups,
             dun: {
               $sum: "$tuukh.tulbur.dun",
             },
