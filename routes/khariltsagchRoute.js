@@ -44,10 +44,12 @@ crud(
   async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
-      if (!req.body.register && !req.body.customerTin) throw new Error("Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!");
+      if (!req.body.register && !req.body.customerTin)
+        throw new Error(
+          "Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!"
+        );
       else {
-        if(!!req.body.register)
-        {
+        if (!!req.body.register) {
           var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
             register: req.body.register,
             baiguullagiinId: req.body.baiguullagiinId,
@@ -58,8 +60,7 @@ crud(
               "Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!"
             );
         }
-        if(!!req.body.customerTin)
-        {
+        if (!!req.body.customerTin) {
           var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
             customerTin: req.body.customerTin,
             baiguullagiinId: req.body.baiguullagiinId,
@@ -163,41 +164,48 @@ router
         barilgiinId: req.body.barilgiinId,
       };
       if (req.body.query) matchQuery = req.body.query;
+      if (req.body.idevkhiteiEsekh)
+        matchQuery["idevkhiteiEsekh"] = req.body.idevkhiteiEsekh;
       var query = [
         {
           $match: matchQuery,
-        }
-      ]
+        },
+      ];
       var result = [];
       var jagsaalt = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
-      if(jagsaalt?.length > 0)
-      {
+      if (jagsaalt?.length > 0) {
         var matchGeree = {
           baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,  
+          barilgiinId: req.body.barilgiinId,
           gereeniiDugaar: { $exists: true },
           tuluv: { $nin: [-1] },
-        }
+        };
         if (davkhar?.length > 0) {
-          matchGeree["davkhar"] = { $in: davkhar};
+          matchGeree["davkhar"] = { $in: davkhar };
         }
         query = [
           {
             $match: matchGeree,
-          }
-        ]
-        var gereeResult = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
-        if(gereeResult?.length > 0)
-        {
-          for await (const khariltsagch of jagsaalt){
+          },
+        ];
+        var gereeResult = await Geree(
+          req.body.tukhainBaaziinKholbolt
+        ).aggregate(query);
+        if (gereeResult?.length > 0) {
+          for await (const khariltsagch of jagsaalt) {
             var talbainDugaar = [];
-            var filteredGeree = gereeResult?.filter((a) => a.register == khariltsagch.register || a.register == khariltsagch.customerTin);
-            if(filteredGeree?.length)
-            {
-              for await (const geree of filteredGeree)
-              {
+            var filteredGeree = gereeResult?.filter(
+              (a) =>
+                a.register == khariltsagch.register ||
+                a.register == khariltsagch.customerTin
+            );
+            if (filteredGeree?.length) {
+              for await (const geree of filteredGeree) {
                 if (geree.talbainDugaar.includes(",")) {
-                  talbainDugaar = [...talbainDugaar, ...geree.talbainDugaar.split(",")];
+                  talbainDugaar = [
+                    ...talbainDugaar,
+                    ...geree.talbainDugaar.split(","),
+                  ];
                 } else talbainDugaar.push(geree.talbainDugaar);
               }
               khariltsagch.talbainDugaar = talbainDugaar;
@@ -212,34 +220,41 @@ router
     }
   });
 
-  router
+router
   .route("/khariltsagchInsert")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
       var jagsaalt = [];
       var matchQuery = { baiguullagiinId: req.body.baiguullagiinId };
-      if(!!req.body.barilgiinId)
-        matchQuery["barilgiinId"] = req.body.barilgiinId
-      var resultTukhain = await Khariltsagch(db.erunkhiiKholbolt).find(matchQuery);
-      if(resultTukhain?.length > 0)
-      {
-        for await (const data of resultTukhain)
-        {
-          matchQuery = { baiguullagiinId: req.body.baiguullagiinId, register: data?.register };
-          if(!!req.body.barilgiinId)
-            matchQuery["barilgiinId"] = req.body.barilgiinId
-          var result = await Khariltsagch(req.body.tukhainBaaziinKholbolt).find(matchQuery);
-          if(result?.length === 0)  
-            jagsaalt.push(data);
+      if (!!req.body.barilgiinId)
+        matchQuery["barilgiinId"] = req.body.barilgiinId;
+      var resultTukhain = await Khariltsagch(db.erunkhiiKholbolt).find(
+        matchQuery
+      );
+      if (resultTukhain?.length > 0) {
+        for await (const data of resultTukhain) {
+          matchQuery = {
+            baiguullagiinId: req.body.baiguullagiinId,
+            register: data?.register,
+          };
+          if (!!req.body.barilgiinId)
+            matchQuery["barilgiinId"] = req.body.barilgiinId;
+          var result = await Khariltsagch(req.body.tukhainBaaziinKholbolt).find(
+            matchQuery
+          );
+          if (result?.length === 0) jagsaalt.push(data);
         }
       }
-      Khariltsagch(req.body.tukhainBaaziinKholbolt).insertMany(jagsaalt, function (err) {
-        if (err) {
-          next(err);
+      Khariltsagch(req.body.tukhainBaaziinKholbolt).insertMany(
+        jagsaalt,
+        function (err) {
+          if (err) {
+            next(err);
+          }
+          res.status(200).send("Amjilttai");
         }
-        res.status(200).send("Amjilttai");
-      });
+      );
     } catch (error) {
       next(error);
     }
