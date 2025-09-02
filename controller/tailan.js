@@ -2028,7 +2028,17 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
       ]);
     }
-    if (req.params.turul !== "Rent") {
+    if (req.params.turul == "Parking") {
+      if (dunguud && dunguud.length > 0) {
+        data = {
+          currency: "MNT",
+        };
+        for await (const dun of dunguud) {
+          data[dun._id.turul] = dun.dun;
+        }
+        butsaakhKhariu.data = data;
+      } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
+    } else if (req.params.turul !== "Rent") {
       if (dunguud && dunguud.length > 0) {
         data = {
           currency: "MNT",
