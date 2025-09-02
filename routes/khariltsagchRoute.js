@@ -209,8 +209,8 @@ router
                 } else talbainDugaar.push(geree.talbainDugaar);
               }
               khariltsagch.talbainDugaar = talbainDugaar;
-              result.push(khariltsagch);
             }
+            result.push(khariltsagch);
           }
         }
       }
