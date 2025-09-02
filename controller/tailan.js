@@ -1970,7 +1970,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       var groups = {
         turul: "$tuukh.tulbur.turul",
       };
-      if (req.params.ajiltnaarAvakhEsekh)
+      if (req.body.ajiltnaarAvakhEsekh)
         groups.burtgesenAjiltaniiNer = "$tuukh.burtgesenAjiltaniiNer";
       dunguud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).aggregate([
         {
