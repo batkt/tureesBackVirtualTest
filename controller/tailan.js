@@ -1967,6 +1967,32 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         butsaakhKhariu.data = data;
       } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
     } else if (req.params.turul == "Parking") {
+      var ajiltnuud = [];
+      if (req.body.ajiltnaarAvakhEsekh) {
+        ajiltnuud = await Uilchluulegch(
+          req.body.tukhainBaaziinKholbolt
+        ).aggregate([
+          {
+            $unwind: "$tuukh",
+          },
+          {
+            $unwind: "$tuukh.tulbur",
+          },
+          {
+            $match: {
+              "tuukh.tulbur.ognoo": {
+                $gte: new Date(req.params.ekhlekhOgnoo),
+                $lte: new Date(req.params.duusakhOgnoo),
+              },
+            },
+          },
+          {
+            $group: {
+              _id: "$tuukh.burtgesenAjiltaniiNer",
+            },
+          },
+        ]);
+      }
       var groups = {
         turul: "$tuukh.tulbur.turul",
       };
@@ -1996,6 +2022,33 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
           },
         },
       ]);
+      if (dunguud && dunguud.length > 0) {
+        if (req.body.ajiltnaarAvakhEsekh) {
+          var data = [];
+          for (const ajiltan of ajiltnuud) {
+            if (!!ajiltan?._id) {
+              var mur = {
+                ajiltan: ajiltan?._id,
+              };
+              var filterDunguud = dunguud?.filter(
+                (a) => a._id?.burtgesenAjiltaniiNer === ajiltan?._id
+              );
+              if (filterDunguud?.length > 0) {
+                for (const row of filterDunguud) mur[row._id.turul] = row.dun;
+              }
+              data.push(mur);
+            }
+          }
+        } else {
+          data = {
+            currency: "MNT",
+          };
+          for await (const dun of dunguud) {
+            data[dun._id.turul] = dun.dun;
+          }
+          butsaakhKhariu.data = data;
+        }
+      } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
     } else if (req.params.turul == "Toyland") {
       dunguud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate([
         {
@@ -2027,18 +2080,6 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
           },
         },
       ]);
-    }
-    if (req.params.turul == "Parking") {
-      if (dunguud && dunguud.length > 0) {
-        data = {
-          currency: "MNT",
-        };
-        for await (const dun of dunguud) {
-          data[dun._id.turul] = dun.dun;
-        }
-        butsaakhKhariu.data = data;
-      } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
-    } else if (req.params.turul !== "Rent") {
       if (dunguud && dunguud.length > 0) {
         data = {
           currency: "MNT",
