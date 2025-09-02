@@ -168,14 +168,16 @@ router
         "-------req.body.idevkhiteiEsekh--------->>" +
           JSON.stringify(req.body.idevkhiteiEsekh)
       );
-      if (req.body.idevkhiteiEsekh == 1) matchQuery["idevkhiteiEsekh"] = true;
-      else if (req.body.idevkhiteiEsekh == 0)
-        matchQuery["idevkhiteiEsekh"] = {
-          $or: [
-            { idevkhiteiEsekh: { $exists: false } },
-            { idevkhiteiEsekh: false },
-          ],
-        };
+
+      if (req.body.idevkhiteiEsekh == 1) {
+        matchQuery.idevkhiteiEsekh = true;
+      } else if (req.body.idevkhiteiEsekh == 0) {
+        matchQuery.$or = [
+          { idevkhiteiEsekh: { $exists: false } },
+          { idevkhiteiEsekh: false },
+        ];
+      }
+
       var query = [
         {
           $match: matchQuery,
