@@ -40,8 +40,7 @@ router.route("/talbainZagvarAvya").get(tokenShalgakh, talbainZagvarAvya);
 router
   .route("/talbainSulEskhiigShalgay")
   .get(tokenShalgakh, async (req, res, next) => {
-    try
-    {
+    try {
       var talbai = await Talbai(req.body.tukhainBaaziinKholbolt).findOne({
         kod: req.query.talbainDugaar,
         barilgiinId: req.query.barilgiinId,
@@ -61,12 +60,11 @@ router
 
 router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
   try {
-    var barilgiinId= req.query.barilgiinId
+    var barilgiinId = req.query.barilgiinId;
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
-    }
-    if(!!barilgiinId)
-      match["barilgiinId"] = barilgiinId
+    };
+    if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     let query = [
       {
         $match: match,
@@ -87,9 +85,8 @@ router.route("/talbainTooAvya").get(tokenShalgakh, async (req, res, next) => {
     match = {
       baiguullagiinId: req.body.baiguullagiinId,
       niitiinTalbaiEsekh: true,
-    }
-    if(!!barilgiinId)
-      match["barilgiinId"] = barilgiinId
+    };
+    if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
       {
         $match: match,
@@ -206,15 +203,15 @@ function tooZasyaSync(too) {
 }
 
 router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
-  try
-  {
+  try {
     var talbaiShalgakh = await Talbai(req.body.tukhainBaaziinKholbolt).find({
       kod: req.body.kod,
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
-      _id: { $ne: req.body._id }
+      _id: { $ne: req.body._id },
     });
-    if (talbaiShalgakh?.length > 0) throw new Error("Талбайн дугаар давхардаж байна!");
+    if (talbaiShalgakh?.length > 0)
+      throw new Error("Талбайн дугаар давхардаж байна!");
     var talbai = new Talbai(req.body.tukhainBaaziinKholbolt)(req.body);
     var khuuchinTalbai = await Talbai(req.body.tukhainBaaziinKholbolt).findById(
       req.body._id
@@ -251,7 +248,10 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
           var khuvaariud = geree.avlaga.guilgeenuud;
           khuvaariud = khuvaariud.filter(
             (x) =>
-              x.ognoo < moment().startOf("month") || x.turul == "khyamdral" || !!x.guilgeeKhiisenAjiltniiId || !!x.guilgeeKhiisenOgnoo
+              x.ognoo < moment().startOf("month") ||
+              x.turul == "khyamdral" ||
+              !!x.guilgeeKhiisenAjiltniiId ||
+              !!x.guilgeeKhiisenOgnoo
           );
           var today = new Date();
           var unuudur = new Date(
@@ -324,7 +324,9 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                         return (
                           a.turul == "avlaga" &&
                           a.tulukhDun ==
-                            tooZasyaSync(zardal.tariff * talbai.talbainKhemjee) &&
+                            tooZasyaSync(
+                              zardal.tariff * talbai.talbainKhemjee
+                            ) &&
                           moment(a.ognoo).isSame(tukhainUdur, "day") &&
                           a.tailbar == zardal.ner
                         );
@@ -359,12 +361,29 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                     }
                   });
                 }
-                if(geree?.khungulultuud?.length > 0)
-                {
+                if (geree?.khungulultuud?.length > 0) {
                   geree?.khungulultuud.forEach((data) => {
                     data.tulukhDun = talbai.talbainNiitUne;
-                    data.khungulultiinDun = Math.round((((talbai.talbainNiitUne * data.khungulukhKhuvi) / 100) + Number.EPSILON) * 10000)/ 10000;
-                    if (moment(tukhainUdur) >= moment(moment(data.ognoonuud[0]).format("YYYY-MM-DD 00:00:00")) && moment(tukhainUdur) <= moment(moment(data.ognoonuud[1]).format("YYYY-MM-DD 23:59:59"))) {
+                    data.khungulultiinDun =
+                      Math.round(
+                        ((talbai.talbainNiitUne * data.khungulukhKhuvi) / 100 +
+                          Number.EPSILON) *
+                          10000
+                      ) / 10000;
+                    if (
+                      moment(tukhainUdur) >=
+                        moment(
+                          moment(data.ognoonuud[0]).format(
+                            "YYYY-MM-DD 00:00:00"
+                          )
+                        ) &&
+                      moment(tukhainUdur) <=
+                        moment(
+                          moment(data.ognoonuud[1]).format(
+                            "YYYY-MM-DD 23:59:59"
+                          )
+                        )
+                    ) {
                       khuvaariud.push({
                         tulukhDun: 0,
                         ognoo: tukhainUdur,
@@ -372,15 +391,17 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                         khyamdral: data.khungulultiinDun,
                         nemeltTailbar: "Гэрээ",
                         tailbar: "Хөнгөлөлт",
-                      });  
+                      });
                     }
-                  });            
+                  });
                 }
               }
             });
           });
           const { db } = require("zevbackv2");
-          var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
+          var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+            req.body.baiguullagiinId
+          );
           var setMatch = {
             khungulultuud: geree?.khungulultuud,
             "avlaga.guilgeenuud": khuvaariud,
@@ -391,8 +412,8 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
             talbainKhemjee: talbai.talbainKhemjee,
             talbainKhemjeeMetrKube: talbai.talbainKhemjeeMetrKube,
             davkhar: talbai.davkhar,
-          }
-          if(baiguullaga?.tokhirgoo?.baritsaaUneAdiltgakhEsekh)
+          };
+          if (baiguullaga?.tokhirgoo?.baritsaaUneAdiltgakhEsekh)
             setMatch["baritsaaAvakhDun"] = talbai.talbainNiitUne;
           await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
             { _id: geree._id },
@@ -406,7 +427,14 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
       }
     }
     talbai.isNew = false;
-    ZassanBarimtShalgakh.zassanBarimtShalgakh(khuuchinTalbai, talbai, talbai.kod, "Talbai", "Талбай", req.body);
+    ZassanBarimtShalgakh.zassanBarimtShalgakh(
+      khuuchinTalbai,
+      talbai,
+      talbai.kod,
+      "Talbai",
+      "Талбай",
+      req.body
+    );
     talbai.save();
     res.send("Amjilttai");
   } catch (err) {
@@ -472,17 +500,14 @@ router
   });
 
 router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
-  try 
-  {  
+  try {
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
       tuluv: { $ne: -1 },
-    }
-    if(req.body.query)
-      match["$or"] = req.body.query["$or"];
-    if(req.body.registeruud)
-      match["register"] = { $in: req.body.registeruud }
+    };
+    if (req.body.query) match["$or"] = req.body.query["$or"];
+    if (req.body.registeruud) match["register"] = { $in: req.body.registeruud };
     var query = [
       {
         $match: match,
@@ -505,17 +530,17 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   "avlaga.guilgeenuud.turul": {
                     $in: ["baritsaa"],
-                  }
+                  },
                 },
                 {
                   "avlaga.guilgeenuud.tulsunDun": {
                     $gt: 0,
-                  }
-                }
-              ]
-            }
+                  },
+                },
+              ],
+            },
           ],
-        }
+        },
       },
       {
         $group: {
@@ -531,16 +556,19 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.duusakhOgnoo)],
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(req.body.duusakhOgnoo),
+                      ],
                     },
                   ],
                 },
                 {
                   $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
                 },
-                0
-              ]
-            }
+                0,
+              ],
+            },
           },
           avalaga0: {
             $sum: {
@@ -548,10 +576,20 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(30, "days").startOf("day"))],
+                      $gte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(
+                          moment(req.body.duusakhOgnoo)
+                            .subtract(30, "days")
+                            .startOf("day")
+                        ),
+                      ],
                     },
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).endOf("day"))],
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(moment(req.body.duusakhOgnoo).endOf("day")),
+                      ],
                     },
                   ],
                 },
@@ -572,9 +610,9 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                0
-              ]
-            }
+                0,
+              ],
+            },
           },
           avlaga31: {
             $sum: {
@@ -582,10 +620,24 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(60, "days").startOf("day"))],
+                      $gte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(
+                          moment(req.body.duusakhOgnoo)
+                            .subtract(60, "days")
+                            .startOf("day")
+                        ),
+                      ],
                     },
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(31, "days").endOf("day"))],
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(
+                          moment(req.body.duusakhOgnoo)
+                            .subtract(31, "days")
+                            .endOf("day")
+                        ),
+                      ],
                     },
                   ],
                 },
@@ -606,9 +658,9 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                0
-              ]
-            }
+                0,
+              ],
+            },
           },
           avlaga61: {
             $sum: {
@@ -616,10 +668,24 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(90, "days").startOf("day"))],
+                      $gte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(
+                          moment(req.body.duusakhOgnoo)
+                            .subtract(90, "days")
+                            .startOf("day")
+                        ),
+                      ],
                     },
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(61, "days").endOf("day"))],
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(
+                          moment(req.body.duusakhOgnoo)
+                            .subtract(61, "days")
+                            .endOf("day")
+                        ),
+                      ],
                     },
                   ],
                 },
@@ -640,9 +706,9 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                0
-              ]
-            }
+                0,
+              ],
+            },
           },
           avlaga91: {
             $sum: {
@@ -650,10 +716,24 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $gte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(120, "days").startOf("day"))],
+                      $gte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(
+                          moment(req.body.duusakhOgnoo)
+                            .subtract(120, "days")
+                            .startOf("day")
+                        ),
+                      ],
                     },
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(91, "days").endOf("day"))],
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(
+                          moment(req.body.duusakhOgnoo)
+                            .subtract(91, "days")
+                            .endOf("day")
+                        ),
+                      ],
                     },
                   ],
                 },
@@ -674,9 +754,9 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                0
-              ]
-            }
+                0,
+              ],
+            },
           },
           avlaga120: {
             $sum: {
@@ -684,7 +764,14 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(moment(req.body.duusakhOgnoo).subtract(121, "days").endOf("day"))],
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(
+                          moment(req.body.duusakhOgnoo)
+                            .subtract(121, "days")
+                            .endOf("day")
+                        ),
+                      ],
                     },
                   ],
                 },
@@ -705,9 +792,9 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                     },
                   ],
                 },
-                0
-              ]
-            }
+                0,
+              ],
+            },
           },
           avlaga: {
             $sum: {
@@ -715,14 +802,17 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.duusakhOgnoo)],
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(req.body.duusakhOgnoo),
+                      ],
                     },
                   ],
                 },
                 "$avlaga.guilgeenuud.tulukhDun",
-                0
-              ]
-            }
+                0,
+              ],
+            },
           },
           khungulult: {
             $sum: {
@@ -730,16 +820,19 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.duusakhOgnoo)],
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(req.body.duusakhOgnoo),
+                      ],
                     },
                   ],
                 },
                 "$avlaga.guilgeenuud.khyamdral",
-                0
-              ]
-            }
+                0,
+              ],
+            },
           },
-        }
+        },
       },
       {
         $project: {
@@ -747,20 +840,60 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
           talbainDugaar: "$_id.talbainDugaar",
           ner: "$_id.ner",
           register: "$_id.register",
-          avalaga0: "$avalaga0",
-          avlaga31: "$avlaga31",
-          avlaga61: "$avlaga61",
-          avlaga91: "$avlaga91",
-          avlaga120: "$avlaga120",
+          avalaga0: {
+            $cond: [
+              {
+                $lt: ["$avalaga0", 0],
+              },
+              0,
+              "$avalaga0",
+            ],
+          },
+          avlaga31: {
+            $cond: [
+              {
+                $lt: ["$avlaga31", 0],
+              },
+              0,
+              "$avlaga31",
+            ],
+          },
+          avlaga61: {
+            $cond: [
+              {
+                $lt: ["$avlaga61", 0],
+              },
+              0,
+              "$avlaga61",
+            ],
+          },
+          avlaga91: {
+            $cond: [
+              {
+                $lt: ["$avlaga91", 0],
+              },
+              0,
+              "$avlaga91",
+            ],
+          },
+          avlaga120: {
+            $cond: [
+              {
+                $lt: ["$avlaga120", 0],
+              },
+              0,
+              "$avlaga120",
+            ],
+          },
           tulsunDun: "$tulsunDun",
           niitDun: "$avlaga",
           khungulult: "$khungulult",
           tulukhDun: {
             $subtract: [
-              { 
-                $ifNull: ["$avlaga", 0] 
-              }, 
-              { 
+              {
+                $ifNull: ["$avlaga", 0],
+              },
+              {
                 $add: [
                   {
                     $ifNull: ["$tulsunDun", 0],
@@ -768,13 +901,13 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                   {
                     $ifNull: ["$khungulult", 0],
                   },
-                ] 
-              }
+                ],
+              },
             ],
           },
         },
       },
-    ]
+    ];
     var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
     res.send(khariu);
   } catch (err) {
