@@ -764,7 +764,7 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
                 {
                   $and: [
                     {
-                      $lte: [
+                      $lt: [
                         "$avlaga.guilgeenuud.ognoo",
                         new Date(
                           moment(req.body.duusakhOgnoo)
