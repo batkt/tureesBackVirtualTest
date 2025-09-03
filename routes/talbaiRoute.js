@@ -840,51 +840,11 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
           talbainDugaar: "$_id.talbainDugaar",
           ner: "$_id.ner",
           register: "$_id.register",
-          avalaga0: {
-            $cond: [
-              {
-                $lt: ["$avalaga0", 0],
-              },
-              0,
-              "$avalaga0",
-            ],
-          },
-          avlaga31: {
-            $cond: [
-              {
-                $lt: ["$avlaga31", 0],
-              },
-              0,
-              "$avlaga31",
-            ],
-          },
-          avlaga61: {
-            $cond: [
-              {
-                $lt: ["$avlaga61", 0],
-              },
-              0,
-              "$avlaga61",
-            ],
-          },
-          avlaga91: {
-            $cond: [
-              {
-                $lt: ["$avlaga91", 0],
-              },
-              0,
-              "$avlaga91",
-            ],
-          },
-          avlaga120: {
-            $cond: [
-              {
-                $lt: ["$avlaga120", 0],
-              },
-              0,
-              "$avlaga120",
-            ],
-          },
+          avalaga0: "$avalaga0",
+          avlaga31: "$avlaga31",
+          avlaga61: "$avlaga61",
+          avlaga91: "$avlaga91",
+          avlaga120: "$avlaga120",
           tulsunDun: "$tulsunDun",
           niitDun: "$avlaga",
           khungulult: "$khungulult",
