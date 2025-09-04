@@ -416,11 +416,11 @@ router
       }
       guilgeeniiTuukh.forEach((mur) => {
         mur.ognoo = new Date();
-        if (mur.turul === "khungulult") {
+        if (mur.turul === "khungulult" || mur.turul === "erkhiinBichig") {
           update.khungulsunEsekh = true;
           update.khungulsunDun = mur.dun;
           // update.niitDun = niitDun - mur.dun;
-        } else if (mur.turul !== "khariult") {
+        } else if (mur.turul !== "khariult" && mur.turul !== "erkhiinBichig") {
           update.ebarimtAvakhDun = update.ebarimtAvakhDun + mur.dun;
         } else if (mur.turul === "khariult") {
           update.ebarimtAvakhDun = update.ebarimtAvakhDun - mur.dun;
