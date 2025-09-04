@@ -612,7 +612,7 @@ async function ebarimtShivye(req, res, next) {
       if (guilgee.ebarimtAvsanEsekh && niitDun == guilgee.niitDun)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
       if(!guilgee.ebarimtAvakhDun || guilgee.ebarimtAvakhDun == 0)
-        throw new aldaa("Төлбөр төлөгдөж байна. Түр хүлээнэ үү!");
+        throw new aldaa("Ибаримтын дүн авах шаардлагагүй!");
       tuxainSalbar = baiguullaga?.barilguud?.find(
         (e) => e._id.toString() == guilgee.barilgiinId
       )?.tokhirgoo;
