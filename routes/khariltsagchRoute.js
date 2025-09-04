@@ -172,10 +172,7 @@ router
       if (req.body.idevkhiteiEsekh == 1) {
         matchQuery.idevkhiteiEsekh = true;
       } else if (req.body.idevkhiteiEsekh == 0) {
-        matchQuery.$or = [
-          { idevkhiteiEsekh: { $exists: false } },
-          { idevkhiteiEsekh: false },
-        ];
+        matchQuery.idevkhiteiEsekh = false;
       }
 
       var query = [
