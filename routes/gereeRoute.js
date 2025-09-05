@@ -4837,6 +4837,29 @@ router
       if (next) next(error);
     }
   });
+
+  router
+  .route("/gereeniiZurguudKhadgalakh")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      if (!req.body.gereeniiId)
+        throw new Error("Гэрээ олдсонгүй!");
+      if (!Array.isArray(req.body.zurguud))
+        throw new Error("Зургууд массив хэлбэртэй байх ёстой!");
+      if (req.body.zurguud.length > 5)
+        throw new Error("Зургуудын тоо 5-с их байж болохгүй!");
+      await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+          { _id: req.body.gereeniiId },
+          {
+            $set: { zurguud: req.body.zurguud  || [] },
+          }
+        );
+      res.send("Amjilttai");
+    } catch (error) {
+      if (next) next(error);
+    }
+  });
+
 module.exports = router;
 module.exports.sarBuriinKhungulultBodoy = sarBuriinKhungulultBodoy;
 module.exports.duusakhGereeAutomataarTalbainTulburNemekh =
