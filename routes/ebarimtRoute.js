@@ -413,11 +413,15 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
       if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
         var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
       else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
+      console.log("dateOgnoo --------->" + JSON.stringify(ugugdul?.dateOgnoo));
+      console.log("date --------->" + JSON.stringify(ugugdul?.date));
       request.post(url, { json: true, body: ugugdul }, (err, res1, body) => {
         if (err) {
           if(!!next)
             next(err);
         } else {
+          console.log("body dateOgnoo --------->" + JSON.stringify(body?.dateOgnoo));
+          console.log("body date --------->" + JSON.stringify(body?.date));
           onFinish(body, ugugdul);
         }
       });
