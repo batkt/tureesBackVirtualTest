@@ -114,7 +114,7 @@ async function guilgeeneesEbarimtShineUusgye(
   nuatTulukhEsekh = true
 ) {
   var dun = guilgee.amount ? guilgee.amount : (guilgee.Amt || guilgee.tranAmount);
-  var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
+  var ognoo = guilgee.bank === "tdb" ? (guilgee.TxDt ? guilgee.TxDt : guilgee.TxPostDate) : guilgee.tranDate;
   var ebarimt = new EbarimtShine(tukhainBaaziinKholbolt)();
   if (!!customerTin) {
     ebarimt.type = "B2B_RECEIPT";
