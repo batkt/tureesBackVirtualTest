@@ -127,8 +127,8 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           butsaakhObject.token = jwt;
           //doorxiig zogsooliinPos-d zoriulj oruulaw
           if (!!baiguullaga?.tokhirgoo?.zogsoolNer)
-            butsaakhObject.result.baiguullagaNer = baiguullaga?.tokhirgoo?.zogsoolNer;
-          else butsaakhObject.result.baiguullagaNer = baiguullaga.ner;
+            butsaakhObject.result.zogsoolNer = baiguullaga?.tokhirgoo?.zogsoolNer;
+          else butsaakhObject.result.zogsoolNer = baiguullaga.ner;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
           var tuukh = new NevtreltiinTuukh(db.erunkhiiKholbolt)();

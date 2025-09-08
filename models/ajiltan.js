@@ -35,6 +35,7 @@ const ajiltanSchema = new Schema(
     albanTushaal: String,
     zurgiinId: String,
     nevtrekhNer: String,
+    zogsoolNer: String,
     indexTalbar: {
       type: String,
       unique: true,
