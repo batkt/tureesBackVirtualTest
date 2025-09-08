@@ -125,7 +125,7 @@ async function guilgeeneesEbarimtShineUusgye(
   var today = new Date();
   var guilgeeniiSar = new Date(ognoo).getMonth();
   if (
-    // today.getDate() < 8 &&
+    today.getDate() < 8 &&
     (guilgeeniiSar < today.getMonth() ||
       (guilgeeniiSar == 11 && today.getMonth() == 0))
   ) {
