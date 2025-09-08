@@ -786,10 +786,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
               {
                 $match: {
                   baiguullagiinId: baiguullaga._id.toString(),
-                  "tuukh.tsagiinTuukh.garsanTsag": {
-                    $gte: ekhlekhOgnoo,
-                    $lte: duusakhOgnoo,
-                  },
                 },
               },
               {
@@ -797,6 +793,14 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
               },
               {
                 $unwind: "$tuukh.tulbur",
+              },
+              {
+                $match: {
+                  "tuukh.tulbur.ognoo": {
+                    $gte: ekhlekhOgnoo,
+                    $lte: duusakhOgnoo,
+                  },
+                },
               },
               {
                 $group: {
