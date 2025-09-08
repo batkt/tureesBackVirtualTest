@@ -78,7 +78,6 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   );
   var butsaakhObject = {
     result: ajiltan,
-    baiguullagaNer: baiguullaga?.tokhirgoo?.zogsoolNer ? baiguullaga?.tokhirgoo?.zogsoolNer : baiguullaga.ner, 
     success: true,
   };
   if (ajiltan.nevtrekhNer !== "CAdmin1") {
@@ -126,6 +125,10 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
             butsaakhObject.result.duusakhOgnoo = khariu.duusakhOgnoo;
           }
           butsaakhObject.token = jwt;
+          //doorxiig zogsooliinPos-d zoriulj oruulaw
+          if (!!baiguullaga?.tokhirgoo?.zogsoolNer)
+            butsaakhObject.result.baiguullagaNer = baiguullaga?.tokhirgoo?.zogsoolNer;
+          else butsaakhObject.result.baiguullagaNer = baiguullaga.ner;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
           var tuukh = new NevtreltiinTuukh(db.erunkhiiKholbolt)();
