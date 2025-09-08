@@ -624,8 +624,8 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
   async (tsag, baiguullagiinId = null) => {
     try {
       const { db } = require("zevbackv2");
-      var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
-      var msgIlgeekhDugaar = "72002002";
+      var msgIlgeekhKey = "";
+      var msgIlgeekhDugaar = "";
       var baiguullaguud;
       if (!!baiguullagiinId) {
         baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).findById(
@@ -653,6 +653,16 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
       duusakhOgnoo.setHours(23, 59, 59, 999);
       for await (const baiguullaga of baiguullaguud) {
         try {
+          if(!!baiguullaga.tokhirgoo.msgIlgeekhDugaar && !!baiguullaga.tokhirgoo.msgIlgeekhKey)
+          {
+            msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
+            msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
+          }
+          else
+          {
+            msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
+            msgIlgeekhDugaar = "72002002";
+          }
           var kholboltuud = db.kholboltuud;
           var kholbolt = kholboltuud.find(
             (a) => a.baiguullagiinId == baiguullaga._id.toString()
