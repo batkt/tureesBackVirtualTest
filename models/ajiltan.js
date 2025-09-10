@@ -89,7 +89,8 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo, salbaruud = null) {
         this.baiguullagiinId == "67b5a998b72a35321ebdbd87" ||
         this.baiguullagiinId == "6800b91480a007fe5ab34436" ||
         this.baiguullagiinId == "682ee56b9be2cfa362f99888" ||
-        this.baiguullagiinId == "674044a9640d59bcf2ee6c5b"
+        this.baiguullagiinId == "674044a9640d59bcf2ee6c5b" ||
+        this.baiguullagiinId == "68abc22410228a7454bdf5e9"
           ? "7d"
           : "12h",
     }
