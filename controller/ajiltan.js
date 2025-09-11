@@ -971,11 +971,10 @@ exports.baiguullagaIdgaarAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.licenseOgnooShalgakh = asyncHandler(
-  async (baiguullagiinId = null) => {
+  async (io, baiguullagiinId = null) => {
     try {
       const { db } = require("zevbackv2");
       console.log("license cron ajillaa 1 ---------------->>>");
-      var io = req.app.get("socketio");
       var kholboltuud = db.kholboltuud;
       if(!!baiguullagiinId)
         kholboltuud = [kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId)];
@@ -1010,6 +1009,6 @@ exports.licenseOgnooShalgakh = asyncHandler(
       }
     }catch (error) {
       console.log("licenseOgnooShalgakh ---------------->>>" + error);
-    next(error);
+    if(next) next(error);
   }
 });

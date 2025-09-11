@@ -281,7 +281,7 @@ cron.schedule(
   "*/6 * * * * * ",
   function () {
     console.log("license cron ajillaa");
-    ajiltanController.licenseOgnooShalgakh("612f457d185280db676d0b51");
+    ajiltanController.licenseOgnooShalgakh(io, "612f457d185280db676d0b51");
   },
   {
     scheduled: true,
