@@ -1821,6 +1821,7 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
   let worksheetDuriin = workbook.addWorksheet("Дурын");
   let worksheetSOKH = workbook.addWorksheet("СӨХ");
   let worksheetTureeslegch = workbook.addWorksheet("Түрээслэгч");
+  let worksheetBaiguullaga = workbook.addWorksheet("Байгууллага");
   worksheetGereet.columns = [
     {
       header: "Утас",
@@ -1983,11 +1984,51 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
       width: 30,
     },
   ];
+  worksheetBaiguullaga.columns = [
+    {
+      header: "Хөнгөлөлт төрөл",
+      key: "Хөнгөлөлт төрөл",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Хугацаа/мин",
+      key: "Хугацаа/мин",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Нэр",
+      key: "Нэр",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Тайлбар",
+      key: "Тайлбар",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Машины дугаар",
+      key: "Машины дугаар",
+      headerRow: true,
+      width: 20,
+    },
+  ];
 
   worksheetSOKH.dataValidations.add("E2:E9999", {
     type: "list",
     allowBlank: false,
     formulae: ['"Дотор, Гадна"'],
+    showErrorMessage: true,
+    errorStyle: "error",
+    error: "Тохирох утгыг сонгоно уу!",
+  });
+  worksheetBaiguullaga.dataValidations.add("A2:A9999", {
+    type: "list",
+    allowBlank: false,
+    formulae: ['"Сараар, Доолоо хоног"'],
     showErrorMessage: true,
     errorStyle: "error",
     error: "Тохирох утгыг сонгоно уу!",
@@ -2027,6 +2068,7 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
     });
   }
 
+  styleHeaderRow(worksheetBaiguullaga);
   styleHeaderRow(worksheetGereet);
   styleHeaderRow(worksheetDotood);
   styleHeaderRow(worksheetTureeslegch);
@@ -2053,7 +2095,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       workbook.SheetNames[1] !== "Дотоод" ||
       workbook.SheetNames[2] !== "Дурын" ||
       workbook.SheetNames[3] !== "СӨХ" ||
-      workbook.SheetNames[4] !== "Түрээслэгч"
+      workbook.SheetNames[4] !== "Түрээслэгч" ||
+      workbook.SheetNames[5] !== "Байгууллага"
     )
       throw new aldaa("Та загварын workbook дагуу бөглөөгүй байна!");
     const mashinSheetGereet = workbook.Sheets[workbook.SheetNames[0]];
@@ -2061,12 +2104,14 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     const mashinSheetDuriin = workbook.Sheets[workbook.SheetNames[2]];
     const mashinSheetSOKH = workbook.Sheets[workbook.SheetNames[3]];
     const mashinSheetTureeslegch = workbook.Sheets[workbook.SheetNames[4]];
+    const mashinSheetBaiguullaga = workbook.Sheets[workbook.SheetNames[5]];
     var jagsaalt = [];
     var tolgoinObject = {};
     var tolgoinObject1 = {};
     var tolgoinObject2 = {};
     var tolgoinObject3 = {};
     var tolgoinObject4 = {};
+    var tolgoinObject5 = {};
     if (
       !mashinSheetGereet["A1"].v.includes("Утас") ||
       !mashinSheetGereet["B1"].v.includes("Машины дугаар") ||
@@ -2111,6 +2156,15 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       !mashinSheetTureeslegch["D1"].v.includes("Тайлбар")
     ) {
       throw new aldaa("Та загварын tureeslegch дагуу бөглөөгүй байна!");
+    }
+    if (
+      !mashinSheetBaiguullaga["A1"].v.includes("Хөнгөлөлт төрөл") ||
+      !mashinSheetBaiguullaga["B1"].v.includes("Хугацаа/мин") ||
+      !mashinSheetBaiguullaga["C1"].v.includes("Нэр") ||
+      !mashinSheetBaiguullaga["D1"].v.includes("Тайлбар") ||
+      !mashinSheetBaiguullaga["E1"].v.includes("Машины дугаар")
+    ) {
+      throw new aldaa("Та загварын baiguullaga дагуу бөглөөгүй байна!");
     }
     for (let cell in mashinSheetDuriin) {
       var cellAsString = cell.toString();
@@ -2209,6 +2263,24 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         tolgoinObject4.temdeglel = cellAsString[0];
       }
     }
+    for (let cell in mashinSheetBaiguullaga) {
+      var cellAsString = cell.toString();
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!mashinSheetBaiguullaga[cellAsString].v
+      ) {
+        if (mashinSheetBaiguullaga[cellAsString].v.includes("Хөнгөлөлт төрөл"))
+          tolgoinObject5.khungulultTurul = cellAsString[0];
+      } else if (mashinSheetBaiguullaga[cellAsString].v.includes("Хугацаа/мин"))
+        tolgoinObject5.khungulukhKhugatsaa = cellAsString[0];
+      else if (mashinSheetBaiguullaga[cellAsString].v.includes("Нэр"))
+        tolgoinObject5.ner = cellAsString[0];
+      else if (mashinSheetBaiguullaga[cellAsString].v.includes("Тайлбар"))
+        tolgoinObject5.tailbar = cellAsString[0];
+      else if (mashinSheetBaiguullaga[cellAsString].v.includes("Машины дугаар"))
+        tolgoinObject5.masniniiDugaar = cellAsString[0];
+    }
     var dataDuriin = xlsx.utils.sheet_to_json(mashinSheetDuriin, {
       header: 1,
       range: 1,
@@ -2229,13 +2301,18 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
-
+    var dataBaiguullaga = xlsx.utils.sheet_to_json(mashinSheetBaiguullaga, {
+      header: 1,
+      range: 1,
+    });
+    // end ywsan
     var aldaaniiMsg = "";
     var muriinDugaarDuriin = 1;
     var muriinDugaarDotood = 1;
     var muriinDugaarGereet = 1;
     var muriinDugaarSOKH = 1;
     var muriinDugaarTureeslegch = 1;
+    var muriinDugaarBaiguullaga = 1;
     dataDuriin.forEach((mur) => {
       muriinDugaarDuriin++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
@@ -2487,6 +2564,26 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         if (!!object.gereeniiDugaar)
           gereeniiDugaaruud.push(object.gereeniiDugaar);
       }
+    });
+    // baiguullaga
+    dataBaiguullaga.forEach((mur) => {
+      muriinDugaarBaiguullaga++;
+      let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
+      object.dugaar =
+        mur[
+          usegTooruuKhurvuulekh(tolgoinObject.dugaar.trim().replace(/\s/g, ""))
+        ];
+      object.turul = "Байгууллага";
+      object.baiguullagiinId = req.body.baiguullagiinId;
+      object.barilgiinId = req.body.barilgiinId;
+      object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject5.ner)];
+      object.khungulultTurul =
+        mur[usegTooruuKhurvuulekh(tolgoinObject5.khungulultTurul)];
+      object.khungulukhKhugatsaa =
+        mur[usegTooruuKhurvuulekh(tolgoinObject5.khungulukhKhugatsaa)];
+      object.uldegdelKhungulukhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject5.khungulukhKhugatsaa)];
+      object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject5.tailbar)];
+      jagsaalt.push(object);
     });
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     if (gereeniiDugaaruud?.length > 0) {
