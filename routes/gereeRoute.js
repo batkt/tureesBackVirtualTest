@@ -4506,9 +4506,6 @@ router
       //                         moment(zardalAvlaga.ognoonuud[0]).format("DD")
       //                       );
       //                       if (khonog == 1) return;
-      //                       console.log(
-      //                         "khonog --------------->" + JSON.stringify(khonog)
-      //                       );
       //                       var niitKhonog = parseFloat(
       //                         moment(zardalAvlaga.ognoonuud[0])
       //                           .endOf("month")

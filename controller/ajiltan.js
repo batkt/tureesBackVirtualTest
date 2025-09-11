@@ -974,7 +974,6 @@ exports.licenseOgnooShalgakh = asyncHandler(
   async (io, baiguullagiinId = null) => {
     try {
       const { db } = require("zevbackv2");
-      console.log("license cron ajillaa 1 ---------------->>>");
       var kholboltuud = db.kholboltuud;
       if(!!baiguullagiinId)
         kholboltuud = [kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId)];
@@ -982,7 +981,6 @@ exports.licenseOgnooShalgakh = asyncHandler(
         for await (const kholbolt of kholboltuud) {
           var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
           if (!!baiguullaga) {
-            console.log("register ---------------->>>" + JSON.stringify(baiguullaga.register));
             duusakhOgnooAvya(
               { register: baiguullaga.register, system: "Turees" },
               async (khariu) => { 
@@ -991,11 +989,7 @@ exports.licenseOgnooShalgakh = asyncHandler(
                     var odooOgnoo = new Date();
                     odooOgnoo.setHours(23, 59, 59, 0);
                     if (io && moment(odooOgnoo).isSameOrAfter(moment(khariu.duusakhOgnoo)))
-                    {
-                      console.log("autoLogout 1 duusakhOgnoo---------------->>>" + JSON.stringify(khariu.duusakhOgnoo));
-                      console.log("autoLogout 1 odooOgnoo ---------------->>>" + JSON.stringify(odooOgnoo));
                       io.emit(`autoLogout${baiguullagiinId}`, khariu);
-                    }
                   }
                 } 
                   catch (err) {
@@ -1006,7 +1000,6 @@ exports.licenseOgnooShalgakh = asyncHandler(
         }
       }
     }catch (error) {
-      console.log("licenseOgnooShalgakh ---------------->>>" + error);
     if(next) next(error);
   }
 });

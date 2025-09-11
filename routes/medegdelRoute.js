@@ -103,7 +103,6 @@ router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
       medegdeluud.push(medegdel);
     }
     const io = req.app.get("socketio");
-    console.log("req.body.turul --->", req.body.turul);
     if (io && req.body.turul == "medegdelAdmin")
       io.emit(
         "adminMedegdelilgeeyeSocket" + baiguullaga?._id.toString(),
