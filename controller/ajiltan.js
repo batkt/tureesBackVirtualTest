@@ -989,10 +989,8 @@ exports.licenseOgnooShalgakh = asyncHandler(
                 try {
                   if (khariu.success) {
                     var odooOgnoo = new Date();
-                    odooOgnoo.setHours(0, 0, 0, 0);
-                    console.log("success 1 duusakhOgnoo---------------->>>" + JSON.stringify(khariu.duusakhOgnoo));
-                    console.log("success 1 odooOgnoo ---------------->>>" + JSON.stringify(odooOgnoo));
-                    if (io)
+                    odooOgnoo.setHours(23, 59, 59, 0);
+                    if (io && moment(odooOgnoo).isAfter(moment(khariu.duusakhOgnoo)))
                     {
                       console.log("autoLogout 1 duusakhOgnoo---------------->>>" + JSON.stringify(khariu.duusakhOgnoo));
                       console.log("autoLogout 1 odooOgnoo ---------------->>>" + JSON.stringify(odooOgnoo));
