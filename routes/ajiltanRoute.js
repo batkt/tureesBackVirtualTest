@@ -339,4 +339,20 @@ router.get("/ustsanBarimtTurees", tokenShalgakh, async (req, res, next) => {
   }
 });
 
+router.get("/licenseOgnooAvya", tokenShalgakh, async (req, res, next) => {
+  try {
+     request.get(
+        "http://103.143.40.43:8282/baiguullagiinDuusakhKhugatsaaAvya",
+        { json: true, body: { register: req.body.register, system: "Turees" } },
+        (err, res1, body) => {
+          if (err) next(err);
+          else {
+            res.send(body);
+          }
+        }
+      );
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;
