@@ -117,6 +117,7 @@ async function mashinHadgalya(mashinMedeelel, tukhainBaaziinKholbolt) {
       // Давхцах эсэхийг шалгана
       const existingMashin = await Mashin(tukhainBaaziinKholbolt).findOne({
         dugaar: mashinData.dugaar,
+        barilgiinId: mashinData.barilgiinId,
         baiguullagiinId: mashinData.baiguullagiinId,
       });
       if (existingMashin) {
