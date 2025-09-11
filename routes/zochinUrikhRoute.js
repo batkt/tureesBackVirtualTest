@@ -56,6 +56,7 @@ async function khariltsagchKhadgalya(
       const existingByUtas = await Khariltsagch(tukhainBaaziinKholbolt).findOne(
         {
           utas: { $in: [utas] },
+          barilgiinId: khariltsagchMedeelel.barilgiinId,
         }
       );
       if (existingByUtas) {
