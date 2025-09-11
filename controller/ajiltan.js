@@ -992,7 +992,7 @@ exports.licenseOgnooShalgakh = asyncHandler(
                     odooOgnoo.setHours(0, 0, 0, 0);
                     console.log("success 1 duusakhOgnoo---------------->>>" + JSON.stringify(khariu.duusakhOgnoo));
                     console.log("success 1 odooOgnoo ---------------->>>" + JSON.stringify(odooOgnoo));
-                    if (io && khariu.duusakhOgnoo < odooOgnoo)
+                    if (io)
                     {
                       console.log("autoLogout 1 duusakhOgnoo---------------->>>" + JSON.stringify(khariu.duusakhOgnoo));
                       console.log("autoLogout 1 odooOgnoo ---------------->>>" + JSON.stringify(odooOgnoo));
