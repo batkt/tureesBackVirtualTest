@@ -969,3 +969,47 @@ exports.baiguullagaIdgaarAvya = asyncHandler(async (req, res, next) => {
     next(error);
   }
 });
+
+exports.licenseOgnooShalgakh = asyncHandler(
+  async (baiguullagiinId = null) => {
+    try {
+      const { db } = require("zevbackv2");
+      console.log("license cron ajillaa 1 ---------------->>>");
+      var io = req.app.get("socketio");
+      var kholboltuud = db.kholboltuud;
+      if(!!baiguullagiinId)
+        kholboltuud = [kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId)];
+      if (kholboltuud) {
+        for await (const kholbolt of kholboltuud) {
+          var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
+          if (!!baiguullaga) {
+            console.log("register ---------------->>>" + JSON.stringify(baiguullaga.register));
+            duusakhOgnooAvya(
+              { register: baiguullaga.register, system: "Turees" },
+              async (khariu) => { 
+                try {
+                  if (khariu.success) {
+                    var odooOgnoo = new Date();
+                    odooOgnoo.setHours(0, 0, 0, 0);
+                    console.log("success 1 duusakhOgnoo---------------->>>" + JSON.stringify(khariu.duusakhOgnoo));
+                    console.log("success 1 odooOgnoo ---------------->>>" + JSON.stringify(odooOgnoo));
+                    if (io && khariu.duusakhOgnoo < odooOgnoo)
+                    {
+                      console.log("autoLogout 1 duusakhOgnoo---------------->>>" + JSON.stringify(khariu.duusakhOgnoo));
+                      console.log("autoLogout 1 odooOgnoo ---------------->>>" + JSON.stringify(odooOgnoo));
+                      io.emit(`autoLogout${baiguullagiinId}`, khariu);
+                    }
+                  }
+                } 
+                  catch (err) {
+                  next(err);
+                }        
+              });
+          }
+        }
+      }
+    }catch (error) {
+      console.log("licenseOgnooShalgakh ---------------->>>" + error);
+    next(error);
+  }
+});
