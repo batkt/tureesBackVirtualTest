@@ -2028,7 +2028,7 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
   worksheetBaiguullaga.dataValidations.add("A2:A9999", {
     type: "list",
     allowBlank: false,
-    formulae: ['"Сараар, Доолоо хоног"'],
+    formulae: ['"Сараар, Долоо хоног"'],
     showErrorMessage: true,
     errorStyle: "error",
     error: "Тохирох утгыг сонгоно уу!",
@@ -2279,7 +2279,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       else if (mashinSheetBaiguullaga[cellAsString].v.includes("Тайлбар"))
         tolgoinObject5.tailbar = cellAsString[0];
       else if (mashinSheetBaiguullaga[cellAsString].v.includes("Машины дугаар"))
-        tolgoinObject5.masniniiDugaar = cellAsString[0];
+        tolgoinObject5.mashiniiDugaar = cellAsString[0];
     }
     var dataDuriin = xlsx.utils.sheet_to_json(mashinSheetDuriin, {
       header: 1,
@@ -2566,23 +2566,67 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       }
     });
     // baiguullaga
+
+    const groupMap = new Map();
+    function createGroupKey(khungulultTurul, khungulukhKhugatsaa, ner) {
+      return `${khungulultTurul || ""}_${khungulukhKhugatsaa || ""}_${
+        ner || ""
+      }`;
+    }
     dataBaiguullaga.forEach((mur) => {
+      const khungulultTurul =
+        mur[usegTooruuKhurvuulekh(tolgoinObject5.khungulultTurul)];
+      const khungulukhKhugatsaa =
+        mur[usegTooruuKhurvuulekh(tolgoinObject5.khungulukhKhugatsaa)];
+      const ner = mur[usegTooruuKhurvuulekh(tolgoinObject5.ner)];
+      const mashiniiDugaar =
+        mur[
+          usegTooruuKhurvuulekh(
+            tolgoinObject5.mashiniiDugaar.trim().replace(/\s/g, "")
+          )
+        ];
+      const tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject5.tailbar)];
+
+      const groupKey = createGroupKey(
+        khungulultTurul,
+        khungulukhKhugatsaa,
+        ner
+      );
+
+      if (!groupMap.has(groupKey)) {
+        groupMap.set(groupKey, {
+          khungulultTurul: khungulultTurul,
+          khungulukhKhugatsaa: khungulukhKhugatsaa,
+          uldegdelKhungulukhKhugatsaa: khungulukhKhugatsaa,
+          ner: ner,
+          tailbar: tailbar,
+          mashinuud: [],
+        });
+      }
+
+      if (mashiniiDugaar) {
+        groupMap.get(groupKey).mashinuud.push(mashiniiDugaar);
+      }
+    });
+
+    groupMap.forEach((groupData, groupKey) => {
       muriinDugaarBaiguullaga++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
-      object.dugaar =
-        mur[
-          usegTooruuKhurvuulekh(tolgoinObject.dugaar.trim().replace(/\s/g, ""))
-        ];
+
       object.turul = "Байгууллага";
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      object.ner = mur[usegTooruuKhurvuulekh(tolgoinObject5.ner)];
-      object.khungulultTurul =
-        mur[usegTooruuKhurvuulekh(tolgoinObject5.khungulultTurul)];
-      object.khungulukhKhugatsaa =
-        mur[usegTooruuKhurvuulekh(tolgoinObject5.khungulukhKhugatsaa)];
-      object.uldegdelKhungulukhKhugatsaa = mur[usegTooruuKhurvuulekh(tolgoinObject5.khungulukhKhugatsaa)];
-      object.tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject5.tailbar)];
+      object.khungulultTurul = groupData.khungulultTurul;
+      object.khungulukhKhugatsaa = groupData.khungulukhKhugatsaa;
+      object.uldegdelKhungulukhKhugatsaa =
+        groupData.uldegdelKhungulukhKhugatsaa;
+      object.ner = groupData.ner;
+      object.tailbar = groupData.tailbar;
+
+      object.mashinuud = groupData.mashinuud;
+      object.dugaar = muriinDugaarBaiguullaga;
+
+      jagsaalt.push(object);
       jagsaalt.push(object);
     });
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
