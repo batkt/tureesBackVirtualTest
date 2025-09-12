@@ -981,12 +981,12 @@ exports.licenseOgnooShalgakh = asyncHandler(
         for await (const kholbolt of kholboltuud) {
           var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
           if (!!baiguullaga && !!baiguullaga.register) {
+            console.log("License shalgakh ajil amjilttai duuslaa. " + baiguullaga?.register);
             duusakhOgnooAvya(
               { register: baiguullaga.register, system: "Turees" },
               async (khariu) => { 
                 try {
                   if (khariu.success) {
-                    console.log("License shalgakh ajil amjilttai duuslaa. " + baiguullaga.register);
                     var odooOgnoo = new Date();
                     odooOgnoo.setHours(23, 59, 59, 0);
                     if (io && moment(odooOgnoo).isSameOrAfter(moment(khariu.duusakhOgnoo)))
