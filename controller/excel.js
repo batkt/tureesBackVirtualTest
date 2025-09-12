@@ -2670,12 +2670,19 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     );
 
     if (!!oldsonMashin && oldsonMashin.length > 0) {
+      const existingVehicles = [];
+
+      oldsonMashin.forEach((record) => {
+        if (record.dugaar) {
+          existingVehicles.push(record.dugaar);
+        }
+        if (record.mashinuud && record.mashinuud.length > 0) {
+          existingVehicles.push(...record.mashinuud);
+        }
+      });
+
       throw new aldaa(
-        `${oldsonMashin?.map((a, i) => {
-          return `${a.dugaar}${oldsonMashin.length - 1 > i ? ", " : ""}`;
-        })} дугаартай ${
-          oldsonMashin?.length > 0 ? "машинууд" : "машин"
-        } бүртгэлтэй байна!`
+        `${existingVehicles.join(", ")} дугаартай машин бүртгэлтэй байна!`
       );
     }
     if (jagsaalt)
