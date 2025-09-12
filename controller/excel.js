@@ -2622,7 +2622,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       console.log("forEach -------->" + JSON.stringify(object));
       jagsaalt.push(object);
     });
-    console.log("jagsaalt -------->" + JSON.stringify(jagsaalt));
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     if (gereeniiDugaaruud?.length > 0) {
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
@@ -2650,8 +2649,19 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     //     } олдсонгүй`
     //   );
     // }
+
+    const allMachineNumbers = [];
+    jagsaalt.forEach((item) => {
+      if (item.mashinuud && Array.isArray(item.mashinuud)) {
+        allMachineNumbers.push(...item.mashinuud);
+      }
+    });
+    const uniqueMachineNumbers = [...new Set(allMachineNumbers)];
     var oldsonMashin = await Mashin(req.body.tukhainBaaziinKholbolt).find({
-      dugaar: { $in: jagsaalt.map((a) => a.dugaar) },
+      $or: [
+        { dugaar: { $in: jagsaalt.map((a) => a.dugaar) } },
+        { mashinuud: { $in: uniqueMachineNumbers } },
+      ],
     });
     if (!!oldsonMashin && oldsonMashin.length > 0) {
       throw new aldaa(
