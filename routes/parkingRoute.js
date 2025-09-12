@@ -1490,7 +1490,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               enter_date: moment(
                 oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
               ).format("YYYY/MM/DD HH:mm:ss"),
-              pay_amount: 0,
+              pay_amount: oldsonMashin.niitDun ? oldsonMashin.niitDun : 0,
               parking_id: zogsool._id,
               parkingUndsenUne: zogsool.undsenUne,
               session_id: oldsonMashin._id,
