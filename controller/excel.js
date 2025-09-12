@@ -2657,12 +2657,18 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       }
     });
     const uniqueMachineNumbers = [...new Set(allMachineNumbers)];
-    var oldsonMashin = await Mashin(req.body.tukhainBaaziinKholbolt).find({
-      $or: [
-        { dugaar: { $in: jagsaalt.map((a) => a.dugaar) } },
-        { mashinuud: { $in: uniqueMachineNumbers } },
-      ],
-    });
+
+    let query;
+    if (uniqueMachineNumbers.length > 0) {
+      query = { mashinuud: { $in: uniqueMachineNumbers } };
+    } else {
+      query = { dugaar: { $in: jagsaalt.map((a) => a.dugaar) } };
+    }
+
+    var oldsonMashin = await Mashin(req.body.tukhainBaaziinKholbolt).find(
+      query
+    );
+
     if (!!oldsonMashin && oldsonMashin.length > 0) {
       throw new aldaa(
         `${oldsonMashin?.map((a, i) => {
