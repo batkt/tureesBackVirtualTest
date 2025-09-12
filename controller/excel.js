@@ -2270,16 +2270,18 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!mashinSheetBaiguullaga[cellAsString].v
       ) {
-      if (mashinSheetBaiguullaga[cellAsString].v.includes("Хөнгөлөлт төрөл"))
-        tolgoinObject5.khungulultTurul = cellAsString[0];
-      else if (mashinSheetBaiguullaga[cellAsString].v.includes("Хугацаа/мин"))
-        tolgoinObject5.khungulukhKhugatsaa = cellAsString[0];
-      else if (mashinSheetBaiguullaga[cellAsString].v.includes("Нэр"))
-        tolgoinObject5.ner = cellAsString[0];
-      else if (mashinSheetBaiguullaga[cellAsString].v.includes("Тайлбар"))
-        tolgoinObject5.tailbar = cellAsString[0];
-      else if (mashinSheetBaiguullaga[cellAsString].v.includes("Машины дугаар"))
-        tolgoinObject5.mashiniiDugaar = cellAsString[0];
+        if (mashinSheetBaiguullaga[cellAsString].v.includes("Хөнгөлөлт төрөл"))
+          tolgoinObject5.khungulultTurul = cellAsString[0];
+        else if (mashinSheetBaiguullaga[cellAsString].v.includes("Хугацаа/мин"))
+          tolgoinObject5.khungulukhKhugatsaa = cellAsString[0];
+        else if (mashinSheetBaiguullaga[cellAsString].v.includes("Нэр"))
+          tolgoinObject5.ner = cellAsString[0];
+        else if (mashinSheetBaiguullaga[cellAsString].v.includes("Тайлбар"))
+          tolgoinObject5.tailbar = cellAsString[0];
+        else if (
+          mashinSheetBaiguullaga[cellAsString].v.includes("Машины дугаар")
+        )
+          tolgoinObject5.mashiniiDugaar = cellAsString[0];
       }
     }
     var dataDuriin = xlsx.utils.sheet_to_json(mashinSheetDuriin, {
@@ -2575,19 +2577,13 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       }`;
     }
     dataBaiguullaga.forEach((mur) => {
-      const khungulultTurul =
-        mur[usegTooruuKhurvuulekh(tolgoinObject5.khungulultTurul)];
-      const khungulukhKhugatsaa =
-        mur[usegTooruuKhurvuulekh(tolgoinObject5.khungulukhKhugatsaa)];
-      const ner = mur[usegTooruuKhurvuulekh(tolgoinObject5.ner)];
-      const mashiniiDugaar =
-        mur[
-          usegTooruuKhurvuulekh(
-            tolgoinObject5.mashiniiDugaar.trim().replace(/\s/g, "")
-          )
-        ];
-      const tailbar = mur[usegTooruuKhurvuulekh(tolgoinObject5.tailbar)];
-
+      const khungulultTurul = mur[0];
+      const khungulukhKhugatsaa = mur[1];
+      const ner = mur[2];
+      const tailbar = mur[3];
+      const mashiniiDugaar = mur[4];
+      console.log("tailbar -------->" + JSON.stringify(tailbar));
+      console.log("mashiniiDugaar -------->" + JSON.stringify(mashiniiDugaar));
       const groupKey = createGroupKey(
         khungulultTurul,
         khungulukhKhugatsaa,
@@ -2609,7 +2605,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         groupMap.get(groupKey).mashinuud.push(mashiniiDugaar);
       }
     });
-    console.log("groupMap -------->" + JSON.stringify(groupMap));
     groupMap.forEach((groupData, groupKey) => {
       muriinDugaarBaiguullaga++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
@@ -2623,7 +2618,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         groupData.uldegdelKhungulukhKhugatsaa;
       object.ner = groupData.ner;
       object.tailbar = groupData.tailbar;
-
       object.mashinuud = groupData.mashinuud;
       console.log("forEach -------->" + JSON.stringify(object));
       jagsaalt.push(object);
@@ -2635,7 +2629,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       });
       var oldooguiGeree = [];
       jagsaalt.forEach((a) => {
-        console.log("jagsaalt -------->" + JSON.stringify(a));
         if (!!a?.gereeniiDugaar) {
           var oldsonGeree = gereenuud.find(
             (b) => b.gereeniiDugaar === a.gereeniiDugaar
