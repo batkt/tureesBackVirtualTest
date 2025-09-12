@@ -2673,13 +2673,13 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       const matchingVehicles = [];
 
       oldsonMashin.forEach((record) => {
-        if (record.dugaar && inputVehicleNumbers.includes(record.dugaar)) {
+        if (record.dugaar && allMachineNumbers.includes(record.dugaar)) {
           matchingVehicles.push(record.dugaar);
         }
 
         if (record.mashinuud && record.mashinuud.length > 0) {
           const matchingFromArray = record.mashinuud.filter((vehicle) =>
-            inputVehicleNumbers.includes(vehicle)
+            allMachineNumbers.includes(vehicle)
           );
           matchingVehicles.push(...matchingFromArray);
         }
