@@ -280,7 +280,7 @@ cron.schedule(
 cron.schedule(
   "*/6 * * * * * ",
   function () {
-    ajiltanController.licenseOgnooShalgakh(io, "612f457d185280db676d0b51");
+    ajiltanController.licenseOgnooShalgakh(io, null); // "612f457d185280db676d0b51" CAdmin
   },
   {
     scheduled: true,
