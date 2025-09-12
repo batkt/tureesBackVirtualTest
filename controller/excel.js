@@ -2609,7 +2609,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         groupMap.get(groupKey).mashinuud.push(mashiniiDugaar);
       }
     });
-
+    console.log("groupMap -------->" + JSON.stringify(groupMap));
     groupMap.forEach((groupData, groupKey) => {
       muriinDugaarBaiguullaga++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
@@ -2625,6 +2625,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       object.tailbar = groupData.tailbar;
 
       object.mashinuud = groupData.mashinuud;
+      console.log("forEach -------->" + JSON.stringify(object));
       jagsaalt.push(object);
     });
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
@@ -2634,6 +2635,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       });
       var oldooguiGeree = [];
       jagsaalt.forEach((a) => {
+        console.log("jagsaalt -------->" + JSON.stringify(a));
         if (!!a?.gereeniiDugaar) {
           var oldsonGeree = gereenuud.find(
             (b) => b.gereeniiDugaar === a.gereeniiDugaar
