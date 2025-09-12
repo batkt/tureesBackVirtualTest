@@ -981,7 +981,6 @@ exports.licenseOgnooShalgakh = asyncHandler(
         for await (const kholbolt of kholboltuud) {
           var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
           if (!!baiguullaga && !!baiguullaga.register) {
-            console.log("License shalgakh ajil amjilttai duuslaa. " + baiguullaga?.register);
             duusakhOgnooAvya(
               { register: baiguullaga.register, system: "Turees" },
               async (khariu) => { 
@@ -994,7 +993,6 @@ exports.licenseOgnooShalgakh = asyncHandler(
                   }
                 } 
                   catch (err) {
-                    console.log("err. " + err);
                 }        
               });
           }

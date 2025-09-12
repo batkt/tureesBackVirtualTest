@@ -72,10 +72,7 @@ async function khariltsagchKhadgalya(
       });
       return await newKhariltsagch.save();
     }
-  } catch (error) {
-    console.error("Харилцагч хадгалах/засварлах алдаа:", error);
-    throw error;
-  }
+  } catch (error) {}
 }
 
 // Машины мэдээллийг шинээр хадгалах буюу засварлах функц
@@ -131,8 +128,6 @@ async function mashinHadgalya(mashinMedeelel, tukhainBaaziinKholbolt) {
       return await newMashin.save();
     }
   } catch (error) {
-    console.error("Машин хадгалах/засварлах алдаа:", error);
-    throw error;
   }
 }
 
@@ -242,7 +237,6 @@ router.post("/zochinHadgalya", tokenShalgakh, async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.error("Зочин хадгалах алдаа:", error);
     res.status(500).json({
       success: false,
       message: "Серверийн алдаа гарлаа",
@@ -270,7 +264,6 @@ router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
     var ezenList = ezenJagsaalt?.filter((a) => a.tuluv == 0);
     res.send({ ezenList, jagsaalt });
   } catch (error) {
-    console.error("ezenUrisanTuukh алдаа:", error);
     res.status(500).json({
       success: false,
       message: "ezenUrisanTuukh алдаа гарлаа",

@@ -2625,9 +2625,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       object.tailbar = groupData.tailbar;
 
       object.mashinuud = groupData.mashinuud;
-      object.dugaar = muriinDugaarBaiguullaga;
-
-      jagsaalt.push(object);
       jagsaalt.push(object);
     });
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
