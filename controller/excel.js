@@ -2270,9 +2270,9 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!mashinSheetBaiguullaga[cellAsString].v
       ) {
-        if (mashinSheetBaiguullaga[cellAsString].v.includes("Хөнгөлөлт төрөл"))
-          tolgoinObject5.khungulultTurul = cellAsString[0];
-      } else if (mashinSheetBaiguullaga[cellAsString].v.includes("Хугацаа/мин"))
+      if (mashinSheetBaiguullaga[cellAsString].v.includes("Хөнгөлөлт төрөл"))
+        tolgoinObject5.khungulultTurul = cellAsString[0];
+      else if (mashinSheetBaiguullaga[cellAsString].v.includes("Хугацаа/мин"))
         tolgoinObject5.khungulukhKhugatsaa = cellAsString[0];
       else if (mashinSheetBaiguullaga[cellAsString].v.includes("Нэр"))
         tolgoinObject5.ner = cellAsString[0];
@@ -2280,6 +2280,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
         tolgoinObject5.tailbar = cellAsString[0];
       else if (mashinSheetBaiguullaga[cellAsString].v.includes("Машины дугаар"))
         tolgoinObject5.mashiniiDugaar = cellAsString[0];
+      }
     }
     var dataDuriin = xlsx.utils.sheet_to_json(mashinSheetDuriin, {
       header: 1,
