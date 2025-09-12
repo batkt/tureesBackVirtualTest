@@ -994,7 +994,7 @@ exports.licenseOgnooShalgakh = asyncHandler(
                   }
                 } 
                   catch (err) {
-                  next(err);
+                  if(next) next(err);
                 }        
               });
           }
