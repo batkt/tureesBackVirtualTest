@@ -986,6 +986,7 @@ exports.licenseOgnooShalgakh = asyncHandler(
               async (khariu) => { 
                 try {
                   if (khariu.success) {
+                    console.log("License shalgakh ajil amjilttai duuslaa. " + baiguullaga.ner);
                     var odooOgnoo = new Date();
                     odooOgnoo.setHours(23, 59, 59, 0);
                     if (io && moment(odooOgnoo).isSameOrAfter(moment(khariu.duusakhOgnoo)))
