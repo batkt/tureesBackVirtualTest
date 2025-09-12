@@ -2622,6 +2622,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       console.log("forEach -------->" + JSON.stringify(object));
       jagsaalt.push(object);
     });
+    console.log("jagsaalt -------->" + JSON.stringify(jagsaalt));
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     if (gereeniiDugaaruud?.length > 0) {
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
