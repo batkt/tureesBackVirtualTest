@@ -164,7 +164,7 @@ router
         barilgiinId: req.body.barilgiinId,
       };
       if (req.body.query) matchQuery = req.body.query;
-      
+
       if (req.body.idevkhiteiEsekh == 1) {
         matchQuery.idevkhiteiEsekh = true;
       } else if (req.body.idevkhiteiEsekh == 0) {
@@ -178,6 +178,7 @@ router
       ];
       var result = [];
       var jagsaalt = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
+
       if (jagsaalt?.length > 0) {
         var matchGeree = {
           baiguullagiinId: req.body.baiguullagiinId,
@@ -185,36 +186,57 @@ router
           gereeniiDugaar: { $exists: true },
           tuluv: { $nin: [-1] },
         };
-        if (davkhar?.length > 0) {
-          matchGeree["davkhar"] = { $in: davkhar };
-        }
+
         query = [
           {
             $match: matchGeree,
           },
         ];
+
         var gereeResult = await Geree(
           req.body.tukhainBaaziinKholbolt
         ).aggregate(query);
-        if (gereeResult?.length > 0) {
-          for await (const khariltsagch of jagsaalt) {
-            var talbainDugaar = [];
-            var filteredGeree = gereeResult?.filter(
-              (a) =>
-                a.register == khariltsagch.register ||
-                a.register == khariltsagch.customerTin
-            );
-            if (filteredGeree?.length) {
-              for await (const geree of filteredGeree) {
-                if (geree.talbainDugaar.includes(",")) {
-                  talbainDugaar = [
-                    ...talbainDugaar,
-                    ...geree.talbainDugaar.split(","),
-                  ];
-                } else talbainDugaar.push(geree.talbainDugaar);
+
+        for await (const khariltsagch of jagsaalt) {
+          var talbainDugaar = [];
+          var khariltsagchDavkhar = [];
+
+          var filteredGeree = gereeResult?.filter(
+            (a) =>
+              a.register == khariltsagch.register ||
+              a.register == khariltsagch.customerTin
+          );
+
+          if (filteredGeree?.length) {
+            for await (const geree of filteredGeree) {
+              if (geree.talbainDugaar.includes(",")) {
+                talbainDugaar = [
+                  ...talbainDugaar,
+                  ...geree.talbainDugaar.split(","),
+                ];
+              } else {
+                talbainDugaar.push(geree.talbainDugaar);
               }
-              khariltsagch.talbainDugaar = talbainDugaar;
+
+              if (geree.davkhar) {
+                khariltsagchDavkhar.push(geree.davkhar);
+              }
             }
+
+            khariltsagch.talbainDugaar = [...new Set(talbainDugaar)];
+            khariltsagch.davkhar = [...new Set(khariltsagchDavkhar)];
+
+            if (davkhar?.length > 0) {
+              var hasMatchingDavkhar = khariltsagchDavkhar.some((d) =>
+                davkhar.includes(d)
+              );
+              if (hasMatchingDavkhar) {
+                result.push(khariltsagch);
+              }
+            } else {
+              result.push(khariltsagch);
+            }
+          } else if (!davkhar || davkhar.length === 0) {
             result.push(khariltsagch);
           }
         }
