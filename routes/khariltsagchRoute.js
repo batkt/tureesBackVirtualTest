@@ -178,7 +178,6 @@ router
       ];
       var result = [];
       var jagsaalt = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
-
       if (jagsaalt?.length > 0) {
         var matchGeree = {
           baiguullagiinId: req.body.baiguullagiinId,
@@ -189,7 +188,6 @@ router
         if (davkhar?.length > 0) {
           matchGeree["davkhar"] = { $in: davkhar };
         }
-
         query = [
           {
             $match: matchGeree,
@@ -198,52 +196,29 @@ router
         var gereeResult = await Geree(
           req.body.tukhainBaaziinKholbolt
         ).aggregate(query);
-
         if (gereeResult?.length > 0) {
           for await (const khariltsagch of jagsaalt) {
-            var assignedDavkhar = [];
-
-            var khariltsagchTalbainDugaar = [];
-            if (khariltsagch.talbainDugaar) {
-              if (khariltsagch.talbainDugaar.includes(",")) {
-                khariltsagchTalbainDugaar = khariltsagch.talbainDugaar
-                  .split(",")
-                  .map((t) => t.trim());
-              } else {
-                khariltsagchTalbainDugaar.push(
-                  khariltsagch.talbainDugaar.trim()
-                );
+            var talbainDugaar = [];
+            var filteredGeree = gereeResult?.filter(
+              (a) =>
+                a.register == khariltsagch.register ||
+                a.register == khariltsagch.customerTin
+            );
+            if (filteredGeree?.length) {
+              for await (const geree of filteredGeree) {
+                if (geree.talbainDugaar.includes(",")) {
+                  talbainDugaar = [
+                    ...talbainDugaar,
+                    ...geree.talbainDugaar.split(","),
+                  ];
+                } else talbainDugaar.push(geree.talbainDugaar);
               }
+              khariltsagch.talbainDugaar = talbainDugaar;
+              result.push(khariltsagch);
+            } else {
+              result.push(khariltsagch);
             }
-
-            for await (const geree of gereeResult) {
-              var gereeeTalbainDugaar = [];
-              if (geree.talbainDugaar.includes(",")) {
-                gereeeTalbainDugaar = geree.talbainDugaar
-                  .split(",")
-                  .map((t) => t.trim());
-              } else {
-                gereeeTalbainDugaar.push(geree.talbainDugaar.trim());
-              }
-
-              var taarakhEsekh = khariltsagchTalbainDugaar.some((kt) =>
-                gereeeTalbainDugaar.includes(kt)
-              );
-
-              if (taarakhEsekh && geree.davkhar) {
-                if (Array.isArray(geree.davkhar)) {
-                  assignedDavkhar = [...assignedDavkhar, ...geree.davkhar];
-                } else {
-                  assignedDavkhar.push(geree.davkhar);
-                }
-              }
-            }
-
-            khariltsagch.davkhar = [...new Set(assignedDavkhar)];
-            result.push(khariltsagch);
           }
-        } else {
-          result = jagsaalt.map((k) => ({ ...k, davkhar: [] }));
         }
       }
       res.send(result);
