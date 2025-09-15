@@ -200,37 +200,33 @@ router
         if (gereeResult?.length > 0) {
           for await (const khariltsagch of jagsaalt) {
             var talbainDugaar = [];
-            var hasMatchingDavkhar = false;
+            var shouldInclude = false;
 
             var filteredGeree = gereeResult?.filter(
-              (a) =>
-                a.register == khariltsagch.register ||
-                a.register == khariltsagch.customerTin
+              (geree) =>
+                geree.register == khariltsagch.register ||
+                geree.register == khariltsagch.customerTin ||
+                geree.customerTin == khariltsagch.register
             );
 
             if (filteredGeree?.length) {
-              for await (const geree of filteredGeree) {
-                if (geree.talbainDugaar && geree.talbainDugaar.includes(",")) {
-                  talbainDugaar = [
-                    ...talbainDugaar,
-                    ...geree.talbainDugaar.split(","),
-                  ];
-                } else if (geree.talbainDugaar) {
-                  talbainDugaar.push(geree.talbainDugaar);
+              for (const geree of filteredGeree) {
+                if (geree.talbainDugaar) {
+                  if (geree.talbainDugaar.includes(",")) {
+                    talbainDugaar = [
+                      ...talbainDugaar,
+                      ...geree.talbainDugaar.split(",").map((t) => t.trim()),
+                    ];
+                  } else {
+                    talbainDugaar.push(geree.talbainDugaar.trim());
+                  }
                 }
 
                 if (davkhar?.length > 0 && geree.davkhar) {
-                  const gereeDavkharArray = Array.isArray(geree.davkhar)
-                    ? geree.davkhar
-                    : [geree.davkhar.toString()];
-
+                  const gereeDavkharStr = geree.davkhar.toString();
                   const requestDavkharArray = davkhar.map((d) => d.toString());
 
-                  const davkharMatch = gereeDavkharArray.some((gd) =>
-                    requestDavkharArray.includes(gd)
-                  );
-
-                  if (davkharMatch) {
+                  if (requestDavkharArray.includes(gereeDavkharStr)) {
                     if (
                       khariltsagch.talbainDugaar &&
                       khariltsagch.talbainDugaar.length > 0
@@ -240,23 +236,31 @@ router
                         : [geree.talbainDugaar.trim()];
 
                       const talbainMatch = gereeNumbers.some((num) =>
-                        khariltsagch.talbainDugaar.includes(num)
+                        khariltsagch.talbainDugaar.some(
+                          (kNum) => kNum.toString().trim() === num
+                        )
                       );
 
                       if (talbainMatch) {
-                        hasMatchingDavkhar = true;
-
-                        khariltsagch.davkhar = gereeDavkharArray;
+                        shouldInclude = true;
+                        khariltsagch.matchedDavkhar = gereeDavkharStr;
+                        break;
                       }
+                    } else {
+                      shouldInclude = true;
+                      khariltsagch.matchedDavkhar = gereeDavkharStr;
+                      break;
                     }
                   }
                 }
               }
 
-              khariltsagch.talbainDugaar = talbainDugaar;
+              if (talbainDugaar.length > 0) {
+                khariltsagch.talbainDugaar = [...new Set(talbainDugaar)];
+              }
 
               if (davkhar?.length > 0) {
-                if (hasMatchingDavkhar) {
+                if (shouldInclude) {
                   result.push(khariltsagch);
                 }
               } else {
