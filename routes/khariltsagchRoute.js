@@ -248,7 +248,7 @@ router
                       }
                     } else {
                       shouldInclude = true;
-                      khariltsagch.matchedDavkhar = gereeDavkharStr;
+                      khariltsagch.davkhar = gereeDavkharStr;
                       break;
                     }
                   }
