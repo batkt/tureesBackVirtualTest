@@ -211,6 +211,7 @@ router
 
             if (filteredGeree?.length) {
               for (const geree of filteredGeree) {
+                khariltsagch.talbainDugaar = [];
                 if (geree.talbainDugaar) {
                   if (geree.talbainDugaar.includes(",")) {
                     talbainDugaar = [
@@ -220,6 +221,12 @@ router
                   } else {
                     talbainDugaar.push(geree.talbainDugaar.trim());
                   }
+                  khariltsagch.talbainDugaar = [
+                    ...new Set([
+                      ...(khariltsagch.talbainDugaar || []),
+                      ...talbainDugaar,
+                    ]),
+                  ];
                 }
 
                 if (davkhar?.length > 0 && geree.davkhar) {
@@ -253,11 +260,7 @@ router
                     }
                   }
                 }
-                if (talbainDugaar.length > 0) {
-                  khariltsagch.talbainDugaar = [...new Set(talbainDugaar)];
-                }
               }
-
               if (davkhar?.length > 0) {
                 if (shouldInclude) {
                   result.push(khariltsagch);
