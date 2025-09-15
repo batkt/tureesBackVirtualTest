@@ -178,6 +178,7 @@ router
       ];
       var result = [];
       var jagsaalt = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
+
       if (jagsaalt?.length > 0) {
         var matchGeree = {
           baiguullagiinId: req.body.baiguullagiinId,
@@ -185,42 +186,95 @@ router
           gereeniiDugaar: { $exists: true },
           tuluv: { $nin: [-1] },
         };
-        if (davkhar?.length > 0) {
-          matchGeree["davkhar"] = { $in: davkhar };
-        }
+
         query = [
           {
             $match: matchGeree,
           },
         ];
+
         var gereeResult = await Geree(
           req.body.tukhainBaaziinKholbolt
         ).aggregate(query);
+
         if (gereeResult?.length > 0) {
           for await (const khariltsagch of jagsaalt) {
             var talbainDugaar = [];
+            var hasMatchingDavkhar = false;
+
             var filteredGeree = gereeResult?.filter(
               (a) =>
                 a.register == khariltsagch.register ||
                 a.register == khariltsagch.customerTin
             );
+
             if (filteredGeree?.length) {
               for await (const geree of filteredGeree) {
-                if (geree.talbainDugaar.includes(",")) {
+                if (geree.talbainDugaar && geree.talbainDugaar.includes(",")) {
                   talbainDugaar = [
                     ...talbainDugaar,
                     ...geree.talbainDugaar.split(","),
                   ];
-                } else talbainDugaar.push(geree.talbainDugaar);
+                } else if (geree.talbainDugaar) {
+                  talbainDugaar.push(geree.talbainDugaar);
+                }
+
+                if (davkhar?.length > 0 && geree.davkhar) {
+                  const gereeDavkharArray = Array.isArray(geree.davkhar)
+                    ? geree.davkhar
+                    : [geree.davkhar.toString()];
+
+                  const requestDavkharArray = davkhar.map((d) => d.toString());
+
+                  const davkharMatch = gereeDavkharArray.some((gd) =>
+                    requestDavkharArray.includes(gd)
+                  );
+
+                  if (davkharMatch) {
+                    if (
+                      khariltsagch.talbainDugaar &&
+                      khariltsagch.talbainDugaar.length > 0
+                    ) {
+                      const gereeNumbers = geree.talbainDugaar.includes(",")
+                        ? geree.talbainDugaar.split(",").map((n) => n.trim())
+                        : [geree.talbainDugaar.trim()];
+
+                      const talbainMatch = gereeNumbers.some((num) =>
+                        khariltsagch.talbainDugaar.includes(num)
+                      );
+
+                      if (talbainMatch) {
+                        hasMatchingDavkhar = true;
+
+                        khariltsagch.davkhar = gereeDavkharArray;
+                      }
+                    }
+                  }
+                }
               }
+
               khariltsagch.talbainDugaar = talbainDugaar;
-              result.push(khariltsagch);
+
+              if (davkhar?.length > 0) {
+                if (hasMatchingDavkhar) {
+                  result.push(khariltsagch);
+                }
+              } else {
+                result.push(khariltsagch);
+              }
             } else {
-              result.push(khariltsagch);
+              if (!davkhar?.length) {
+                result.push(khariltsagch);
+              }
             }
+          }
+        } else {
+          if (!davkhar?.length) {
+            result = jagsaalt;
           }
         }
       }
+
       res.send(result);
     } catch (error) {
       next(error);
