@@ -243,7 +243,7 @@ router
 
                       if (talbainMatch) {
                         shouldInclude = true;
-                        khariltsagch.matchedDavkhar = gereeDavkharStr;
+                        khariltsagch.davkhar = gereeDavkharStr;
                         break;
                       }
                     } else {
@@ -253,10 +253,9 @@ router
                     }
                   }
                 }
-              }
-
-              if (talbainDugaar.length > 0) {
-                khariltsagch.talbainDugaar = [...new Set(talbainDugaar)];
+                if (talbainDugaar.length > 0) {
+                  khariltsagch.talbainDugaar = [...new Set(talbainDugaar)];
+                }
               }
 
               if (davkhar?.length > 0) {
