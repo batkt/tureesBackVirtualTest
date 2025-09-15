@@ -87,7 +87,7 @@ router.get(
       ) {
         const io = req.app.get("socketio");
         if (io) {
-          io.emit(`qpayMobileSdk${req.params.baiguullagiinId}`, {
+          io.emit(`qpayMobileSdk${req.params.baiguullagiinId}${req.params.cameraIP}`, {
             khaalgaTurul: "Гарах",
             turul: "qpayMobile",
             mashiniiDugaar: req.params.mashiniiDugaar,
