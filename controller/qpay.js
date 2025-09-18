@@ -419,15 +419,17 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           ?.filter((a) => a.turul == "aldangi")
           .reduce((a, b) => a + b.tulsunAldangi, 0);
         updateQuery = {
-          $push: {
-            [`avlaga.guilgeenuud`]: {
-              $each: tulbur,
-            },
-          },
           $set: {
             aldangiinUldegdel: geree.aldangiinUldegdel,
             niitTulsunAldangi: {
               $add: [{ $ifNull: ["$niitTulsunAldangi", 0] }, niitTulsunAldangi],
+            },
+          },
+        },
+        {
+          $push: {
+            "avlaga.guilgeenuud": {
+              $each: tulbur,
             },
           },
         };
