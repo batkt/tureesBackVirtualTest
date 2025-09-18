@@ -1431,6 +1431,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               mashiniiDugaar: req.params.plate_number,
               "tuukh.0.zogsooliinId": zogsool._id,
               "tuukh.0.tuluv": 0,
+              zurchil: { $exists: false },
             });
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
               await Uilchluulegch(kholbolt).updateOne(
