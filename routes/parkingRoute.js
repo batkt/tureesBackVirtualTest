@@ -1432,7 +1432,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               "tuukh.0.zogsooliinId": zogsool._id,
               "tuukh.0.tuluv": 0,
               zurchil: { $exists: false },
-            });
+            }).sort({ createdAt: -1 }).limit(1);
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
               await Uilchluulegch(kholbolt).updateOne(
                 { _id: oldsonMashin._id },
