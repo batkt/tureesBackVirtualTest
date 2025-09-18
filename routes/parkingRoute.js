@@ -1429,21 +1429,8 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
           if (!!zogsool) {
             oldsonMashin = await Uilchluulegch(kholbolt).findOne({
               mashiniiDugaar: req.params.plate_number,
-              tuukh: {
-                $elemMatch: {
-                  zogsooliinId: zogsool._id,
-                  tuluv: { $nin: [-2, -3] },
-                  $or: [
-                    {
-                      "tsagiinTuukh.0.garsanTsag": {
-                        $gt: new Date(Date.now() - 15 * 100000),
-                      },
-                    },
-                    { "tsagiinTuukh.0.garsanTsag": { $exists: false } },
-                  ],
-                },
-              },
-              zurchil: { $exists: false }
+              "tuukh.0.zogsooliinId": zogsool._id,
+              "tuukh.0.tuluv": 0,
             });
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
               await Uilchluulegch(kholbolt).updateOne(
