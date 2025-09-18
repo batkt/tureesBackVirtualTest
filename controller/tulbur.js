@@ -2822,3 +2822,7 @@ module.exports.aldangiTegBolgoy = async function aldangiTegBolgoy(
     }
   } catch (error) {}
 };
+
+exports.daraagiinTulukhOgnooZasya = async function (gereeniiId, tukhainBaaziinKholbolt) {
+  await daraagiinTulukhOgnooZasya(gereeniiId, tukhainBaaziinKholbolt);
+};

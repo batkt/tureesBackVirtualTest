@@ -10,6 +10,9 @@ const got = require("got");
 const { QuickQpayObject } = require("quickqpaypackv2");
 const { tulburUridchiljTulukh } = require("../controller/zogsool");
 const { URL } = require("url");
+const {
+  daraagiinTulukhOgnooZasya
+} = require("../controller/tulbur");
 const instance = got.extend({
   hooks: {
     beforeRequest: [
@@ -461,7 +464,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
               tulbur.tulsunDun
             );
           } catch (aldaa) {}
-          Tulbur.daraagiinTulukhOgnooZasya(
+          daraagiinTulukhOgnooZasya(
             qpayBarimt.gereeniiId,
             tukhainBaaziinKholbolt
           );
