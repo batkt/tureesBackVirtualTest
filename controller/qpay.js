@@ -418,12 +418,11 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         var niitTulsunAldangi = tulbur
           ?.filter((a) => a.turul == "aldangi")
           .reduce((a, b) => a + b.tulsunAldangi, 0);
+        const niitTulsun = (geree.niitTulsunAldangi || 0) + niitTulsunAldangi;  
         updateQuery = {
           $set: {
             aldangiinUldegdel: geree.aldangiinUldegdel,
-            niitTulsunAldangi: {
-              $add: [{ $ifNull: ["$niitTulsunAldangi", 0] }, niitTulsunAldangi],
-            },
+            niitTulsunAldangi: niitTulsun,
           },
         },
         {
