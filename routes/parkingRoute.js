@@ -1443,6 +1443,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
                   ],
                 },
               },
+              zurchil: { $exists: false }
             });
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
               await Uilchluulegch(kholbolt).updateOne(
