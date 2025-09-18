@@ -171,6 +171,7 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
         tukhainObject = oldsonMashin;
       }
     }
+    console.log("tukhainObject ------------>", JSON.stringify(tukhainObject));
     bodsonDun = await zogsooliinDunAvya(
       tukhainZogsool,
       tukhainObject,
