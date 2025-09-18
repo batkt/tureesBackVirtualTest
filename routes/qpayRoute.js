@@ -92,6 +92,7 @@ router.get(
             turul: "qpayMobile",
             mashiniiDugaar: req.params.mashiniiDugaar,
             cameraIP: req.params.cameraIP,
+            uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
           });
         }
       }
