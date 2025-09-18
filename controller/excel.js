@@ -2582,8 +2582,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       const ner = mur[2];
       const tailbar = mur[3];
       const mashiniiDugaar = mur[4];
-      console.log("tailbar -------->" + JSON.stringify(tailbar));
-      console.log("mashiniiDugaar -------->" + JSON.stringify(mashiniiDugaar));
       const groupKey = createGroupKey(
         khungulultTurul,
         khungulukhKhugatsaa,
@@ -2619,7 +2617,6 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       object.ner = groupData.ner;
       object.tailbar = groupData.tailbar;
       object.mashinuud = groupData.mashinuud;
-      console.log("forEach -------->" + JSON.stringify(object));
       jagsaalt.push(object);
     });
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);

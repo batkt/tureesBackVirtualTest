@@ -43,7 +43,6 @@ router.get(
           ajiltniiNer: "zochin",
           zogsooliinId: qpayObject.zogsooliinId,
         };
-        console.log("body ----->", body);
         await tulburUridchiljTulukh(body, res, next);
       }
       res.sendStatus(200);

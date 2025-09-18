@@ -171,7 +171,6 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
         tukhainObject = oldsonMashin;
       }
     }
-    console.log("tukhainObject ------------>", JSON.stringify(tukhainObject));
     bodsonDun = await zogsooliinDunAvya(
       tukhainZogsool,
       tukhainObject,
@@ -193,31 +192,21 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
           tukhainObject.tuukh[0].tulbur.push(...tulbur);
         else tukhainObject.tuukh[0].tulbur = tulbur;
       var set = {
-        "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
-        "tuukh.$[t].tuluv": (body.turul == "qpayUridchilsan" ? 0 : 1),
-        "tuukh.$[t].tulukhDun": 0,
+        "tuukh.0.tulbur": tukhainObject?.tuukh?.[0]?.tulbur || 0,
+        "tuukh.0.tuluv": (body.turul === "qpayUridchilsan" ? 0 : 1),
+        "tuukh.0.tulukhDun": 0,
       };
-      if (bodsonDun > 0) {
-        if (bodsonDun == body.paid_amount) {
-          set["tuukh.$[t].burtgesenAjiltaniiId"] = body.ajiltniiId;
-          set["tuukh.$[t].burtgesenAjiltaniiNer"] = body.ajiltniiNer;
-          set["garakhTsag"] = new Date(
-            new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000
-          );
-        }
+      if (bodsonDun > 0 && bodsonDun === body.paid_amount) {
+        set["tuukh.0.burtgesenAjiltaniiId"] = body.ajiltniiId;
+        set["tuukh.0.burtgesenAjiltaniiNer"] = body.ajiltniiNer;
+        set["garakhTsag"] = new Date(
+          Date.now() + (tukhainZogsool?.garakhTsag || 30) * 60000
+        );
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
         tukhainObject._id,
-        {
-          $set: set,
-        },
-        {
-          arrayFilters: [
-            {
-              "t.zogsooliinId": tukhainZogsool._id,
-            },
-          ],
-        }
+        { $set: set },
+        { new: true }
       );
       return "Amjilttai";
     }
