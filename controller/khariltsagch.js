@@ -129,26 +129,26 @@ async function tulultiinMsgIlgeeye(baiguullagiinId, gereeniiDugaar, utas, dun, a
     var msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
     var msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
     if (!!msgIlgeekhKey && !!msgIlgeekhDugaar) {
+      var text = gereeniiDugaar + " gereenii tureesiin tulbur " + (await formatNumber(dun));
+      if (aldangi > 0)
+        text = text + " aldangi " + (await formatNumber(aldangi));
+      text = text + " tulugdluu";
+      msgIlgeeye(
+        [
+          {
+            to: utas,
+            text,
+          },
+        ],
+        msgIlgeekhKey,
+        msgIlgeekhDugaar,
+        [],
+        0,
+        null,
+        null,
+        null
+      );
     }
-    var text = gereeniiDugaar + " gereenii tureesiin tulbur " + (await formatNumber(dun));
-    if (aldangi > 0)
-      text = text + " aldangi " + (await formatNumber(aldangi));
-    text = text + " tulugdluu";
-    msgIlgeeye(
-      [
-        {
-          to: utas,
-          text,
-        },
-      ],
-      msgIlgeekhKey,
-      msgIlgeekhDugaar,
-      [],
-      0,
-      null,
-      null,
-      null
-    );
   } catch (err) {
     throw err;
   }
