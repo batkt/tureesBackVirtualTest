@@ -120,28 +120,20 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
   }
 }
 
-async function tulultiinMsgIlgeeye(baiguullagiinId, gereeniiDugaar, utas, dun) {
+async function tulultiinMsgIlgeeye(baiguullagiinId, gereeniiDugaar, utas, dun, aldangi) {
   try {
     const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       baiguullagiinId
     );
-    var msgIlgeekhKey;
-    var msgIlgeekhDugaar;
-    try {
-      msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
-      msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
-    } catch (error) {
-      throw error;
-    }
+    var msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
+    var msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
     if (!!msgIlgeekhKey && !!msgIlgeekhDugaar) {
     }
-    var text =
-      gereeniiDugaar +
-      " дугаартай гэрээний түрээсийн төлбөр " +
-      (await formatNumber(dun)) +
-      " төлөгдлөө";
-    dun;
+    var text = gereeniiDugaar + " gereenii tureesiin tulbur " + (await formatNumber(dun));
+    if (aldangi > 0)
+      text = text + "" + (await formatNumber(aldangi)) + " aldangi ";
+    text = text + " tulugdluu";
     msgIlgeeye(
       [
         {
