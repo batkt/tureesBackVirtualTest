@@ -391,6 +391,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         qpayBarimt.isNew = false;
         var tulbur = [];
         var updateQuery = {};
+        var updatePush = {};
         var geree = await Geree(tukhainBaaziinKholbolt).findOne({
           _id: qpayBarimt.gereeniiId,
         });
@@ -429,8 +430,8 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
               aldangiinUldegdel: geree.aldangiinUldegdel,
               niitTulsunAldangi: niitTulsun,
             },
-          },
-          {
+          }
+          updatePush = {
             $push: {
               "avlaga.guilgeenuud": {
                 $each: tulbur,
@@ -452,6 +453,12 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
             },
           };
         }
+        await Geree(tukhainBaaziinKholbolt).findByIdAndUpdate(
+          { _id: qpayBarimt.gereeniiId },
+          updatePush,
+          { new: true }
+        ); 
+
         const result = await Geree(tukhainBaaziinKholbolt).findByIdAndUpdate(
           { _id: qpayBarimt.gereeniiId },
           updateQuery,

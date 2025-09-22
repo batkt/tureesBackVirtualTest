@@ -132,7 +132,7 @@ async function tulultiinMsgIlgeeye(baiguullagiinId, gereeniiDugaar, utas, dun, a
     }
     var text = gereeniiDugaar + " gereenii tureesiin tulbur " + (await formatNumber(dun));
     if (aldangi > 0)
-      text = text + "" + (await formatNumber(aldangi)) + " aldangi ";
+      text = text + " aldangi " (await formatNumber(aldangi));
     text = text + " tulugdluu";
     msgIlgeeye(
       [
