@@ -826,7 +826,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                       },
                     };
                     bulkOps.push(upsertDoc);
-                    console.log("aldangiinTuukh --->" + JSON.stringify(geree.uldegdel));
                     var mur = {
                       baiguullagiinId: baiguullaga._id.toString(),
                       barilgiinId: barilga._id.toString(),
@@ -843,6 +842,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                       tulukhUdur: geree._id.tulukhUdur[0],
                     };
                     aldangiinTuukh.push(new AldangiinTuukh(kholbolt)(mur));
+                    console.log("aldangiinTuukh --->" + JSON.stringify(aldangiinTuukh));
                   } else continue;
                 }
               }
@@ -853,7 +853,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               .bulkWrite(bulkOps)
               .then((bulkWriteOpResult) => {})
               .catch((err) => {});
-          if (aldangiinTuukh && aldangiinTuukh.length > 0)    
+          if (aldangiinTuukh?.length > 0)    
               await AldangiinTuukh(kholbolt).insertMany(aldangiinTuukh);
         }
       }
