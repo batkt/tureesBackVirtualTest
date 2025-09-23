@@ -12,6 +12,7 @@ const moment = require("moment");
 const mongoose = require("mongoose");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const TogloomiinTuv = require("../models/togloomiinTuv");
+const AldangiinTuukh = require("../models/aldangiinTuukh");
 
 exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
   var guilgeenuud = req.body.guilgeenuud;
@@ -850,6 +851,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               .bulkWrite(bulkOps)
               .then((bulkWriteOpResult) => {})
               .catch((err) => {});
+          if (aldangiinTuukh && aldangiinTuukh.length > 0)    
+              await AldangiinTuukh(kholbolt).insertMany(aldangiinTuukh);
         }
       }
     }
