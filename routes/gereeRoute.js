@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Geree = require("../models/geree");
 const AldangiinZassanTuukh = require("../models/aldangiinZassanTuukh");
+const AldangiinTuukh = require("../models/aldangiinTuukh");
 const Talbai = require("../models/talbai");
 const Khariltsagch = require("../models/khariltsagch");
 //const Dugaarlalt = require("../models/dugaarlalt");
@@ -90,6 +91,7 @@ const testgeree = require("../models/testgeree");
 
 crud(router, "zassanBarimt", ZassanBarimt);
 crud(router, "aldangiinZassanTuukh", AldangiinZassanTuukh);
+crud(router, "aldangiinTuukh", AldangiinTuukh);
 
 router.route("/gereeniiToololtAvya").post(tokenShalgakh, gereeniiToololtAvya);
 router
