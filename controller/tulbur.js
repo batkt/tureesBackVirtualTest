@@ -787,6 +787,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 },
               ];
               var gereenuud = await Geree(kholbolt).aggregate(query);
+              var aldangiinTuukh = [];
               if (gereenuud && gereenuud.length > 0) {
                 for (const geree of gereenuud) {
                   var uusgexOgnoo = moment(ognoo).set(
@@ -824,6 +825,21 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                       },
                     };
                     bulkOps.push(upsertDoc);
+                    aldangiinTuukh.push({
+                      baiguullagiinId: baiguullaga._id.toString(),
+                      barilgiinId: barilga._id.toString(),
+                      turul: "qpay",
+                      gereeniiId: geree._id.id,
+                      gereeniiDugaar: geree._id.gereeniiDugaar,
+                      ognoo: uusgexOgnoo,
+                      uldegdel: geree.uldegdel,
+                      aldangiChuluulukhOgnoo: new Date(moment(new Date(uusgexOgnoo)).add(aldangiChuluulukhKhonog, "days")),
+                      aldangiBodsonOgnoo: ognoo,
+                      aldangiinKhuvi: aldagiinKhuvi,
+                      aldangiChuluulukhKhonog: aldangiChuluulukhKhonog,
+                      aldangi: bodogdsonKhuu,
+                      tulukhUdur: geree._id.tulukhUdur[0],
+                    })
                   } else continue;
                 }
               }
