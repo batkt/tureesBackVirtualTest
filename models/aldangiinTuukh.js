@@ -27,5 +27,5 @@ module.exports = function a(conn) {
   if (!conn || !conn.kholbolt)
     throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
   conn = conn.kholbolt;
-  return conn.model("aldangiinTuukhSchema", aldangiinTuukhSchema);
+  return conn.model("aldangiinTuukh", aldangiinTuukhSchema);
 };

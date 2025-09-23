@@ -848,10 +848,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             }
           }
           if (bulkOps && bulkOps.length > 0)
-            await Geree(kholbolt)
-              .bulkWrite(bulkOps)
-              .then((bulkWriteOpResult) => {})
-              .catch((err) => {});
+            await Geree(kholbolt).bulkWrite(bulkOps);
           if (aldangiinTuukh?.length > 0)    
               await AldangiinTuukh(kholbolt).insertMany(aldangiinTuukh);
         }
