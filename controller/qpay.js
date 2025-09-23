@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const aldaa = require("../components/aldaa");
+const Baiguullaga = require("../models/baiguullaga");
 const Tulbur = require("./tulbur");
 //const Dugaarlalt = require("../models/dugaarlalt");
 const { Dugaarlalt, Token, Dans, db } = require("zevbackv2");
@@ -396,6 +397,9 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           _id: qpayBarimt.gereeniiId,
         });
         var qpayAmount = parseFloat(qpayBarimt.qpay.amount);
+        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.params.baiguullagiinId);
+        if (baiguullaga?.tokhirgoo?.qpayShimtgelTusdaa == true)
+            qpayAmount -= 300;
         if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
           var tulsunDun = 0;
           if (geree.aldangiinUldegdel >= qpayAmount) {
