@@ -211,6 +211,10 @@ router
 
             if (filteredGeree?.length) {
               for (const geree of filteredGeree) {
+                if (!khariltsagch.gereenuud) khariltsagch.gereenuud = [];
+                var filteredGeree = khariltsagch.gereenuud?.find((a) => a._id == geree._id);
+                if (!filteredGeree)
+                  khariltsagch.gereenuud?.push(geree);  
                 khariltsagch.talbainDugaar = [];
                 if (geree.talbainDugaar) {
                   if (geree.talbainDugaar.includes(",")) {
