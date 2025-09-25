@@ -1970,8 +1970,8 @@ exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(async (req, res, ne
             tulukhDun: zoruu < 0 ? zoruu * -1 : 0,
             tulsunDun: zoruu > 0 ? zoruu : 0,
             ognoo: new Date(),
-            tailbar: "Залруулга гүйлгээ",
-            turul: "System",
+            tailbar: "Систем залруулга гүйлгээ",
+            turul: "zalruulga",
             guilgeeKhiisenAjiltniiNer: "систем",
             khyamdral: 0,
           };
