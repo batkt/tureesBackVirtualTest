@@ -236,9 +236,7 @@ router
           for await (const khariltsagch of jagsaalt) {
             var filteredGeree = gereeResult?.filter(
               (geree) =>
-                geree.register == khariltsagch.register ||
-                geree.register == khariltsagch.customerTin ||
-                geree.customerTin == khariltsagch.register
+                geree.register === khariltsagch.register || geree.customerTin === khariltsagch.customerTin
             );
             for (const geree of filteredGeree) {
               const talbainDugaarList = geree.talbainDugaar?.split(',').length > 0
