@@ -186,102 +186,69 @@ router
           gereeniiDugaar: { $exists: true },
           tuluv: { $nin: [-1] },
         };
+         if (davkhar?.length > 0) {
+          matchGeree["davkhar"] = { $in: davkhar };
+        }
 
         query = [
           {
             $match: matchGeree,
           },
         ];
-
         var gereeResult = await Geree(
           req.body.tukhainBaaziinKholbolt
         ).aggregate(query);
+        if (davkhar?.length > 0 && gereeResult?.length > 0) {
+          const tempKhariltsagch = [];
+          for (const geree of gereeResult) {
+            const filtered = tempKhariltsagch?.filter(a =>
+              a.register === geree.register ||
+              a.register === geree.customerTin ||
+              a.customerTin === geree.register
+            );
 
-        if (gereeResult?.length > 0) {
+            const talbainDugaarList = geree.talbainDugaar?.split(',').length > 0
+              ? geree.talbainDugaar?.split(',').map(t => t.trim())
+              : [geree.talbainDugaar?.trim()];
+
+            if (filtered?.length > 0) {
+              const data = filtered[0];
+              data.talbainDugaar = data.talbainDugaar || [];
+              data.talbainDugaar.push(...talbainDugaarList);
+            } else {
+              const filteredData = jagsaalt?.filter(a =>
+                a.register === geree.register ||
+                a.register === geree.customerTin ||
+                a.customerTin === geree.register
+              );
+
+              if (filteredData?.length > 0) {
+                const data = { ...filteredData[0] };
+                data.talbainDugaar = talbainDugaarList;
+                tempKhariltsagch.push(data);
+              }
+            }
+          }
+          result = tempKhariltsagch;
+        }
+        else
+        {
           for await (const khariltsagch of jagsaalt) {
-            var talbainDugaar = [];
-            var shouldInclude = false;
-
             var filteredGeree = gereeResult?.filter(
               (geree) =>
                 geree.register == khariltsagch.register ||
                 geree.register == khariltsagch.customerTin ||
                 geree.customerTin == khariltsagch.register
             );
-
-            if (filteredGeree?.length) {
-              for (const geree of filteredGeree) {
-                if (!khariltsagch.gereenuud) khariltsagch.gereenuud = [];
-                var filteredGeree = khariltsagch.gereenuud?.find((a) => a._id == geree._id);
-                if (!filteredGeree)
-                  khariltsagch.gereenuud?.push(geree);  
-                khariltsagch.talbainDugaar = [];
-                if (geree.talbainDugaar) {
-                  if (geree.talbainDugaar.includes(",")) {
-                    talbainDugaar = [
-                      ...talbainDugaar,
-                      ...geree.talbainDugaar.split(",").map((t) => t.trim()),
-                    ];
-                  } else {
-                    talbainDugaar.push(geree.talbainDugaar.trim());
-                  }
-                  khariltsagch.talbainDugaar = [
-                    ...new Set([
-                      ...(khariltsagch.talbainDugaar || []),
-                      ...talbainDugaar,
-                    ]),
-                  ];
-                }
-
-                if (davkhar?.length > 0 && geree.davkhar) {
-                  const gereeDavkharStr = geree.davkhar.toString();
-                  const requestDavkharArray = davkhar.map((d) => d.toString());
-
-                  if (requestDavkharArray.includes(gereeDavkharStr)) {
-                    if (
-                      khariltsagch.talbainDugaar &&
-                      khariltsagch.talbainDugaar.length > 0
-                    ) {
-                      const gereeNumbers = geree.talbainDugaar.includes(",")
-                        ? geree.talbainDugaar.split(",").map((n) => n.trim())
-                        : [geree.talbainDugaar.trim()];
-
-                      const talbainMatch = gereeNumbers.some((num) =>
-                        khariltsagch.talbainDugaar.some(
-                          (kNum) => kNum.toString().trim() === num
-                        )
-                      );
-
-                      if (talbainMatch) {
-                        shouldInclude = true;
-                        khariltsagch.davkhar = gereeDavkharStr;
-                        break;
-                      }
-                    } else {
-                      shouldInclude = true;
-                      khariltsagch.davkhar = gereeDavkharStr;
-                      break;
-                    }
-                  }
-                }
-              }
-              if (davkhar?.length > 0) {
-                if (shouldInclude) {
-                  result.push(khariltsagch);
-                }
-              } else {
-                result.push(khariltsagch);
-              }
-            } else {
-              if (!davkhar?.length) {
-                result.push(khariltsagch);
-              }
+            for (const geree of filteredGeree) {
+              const talbainDugaarList = geree.talbainDugaar?.split(',').length > 0
+                    ? geree.talbainDugaar?.split(',').map(t => t.trim())
+                    : [geree.talbainDugaar?.trim()];
+              khariltsagch.talbainDugaar = khariltsagch.talbainDugaar || [];
+              khariltsagch.talbainDugaar.push(...talbainDugaarList);      
             }
           }
-        } else {
-          if (!davkhar?.length) {
-            result = jagsaalt;
-          }
+          result = jagsaalt;
         }
       }
 
