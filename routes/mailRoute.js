@@ -169,6 +169,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
           body
         );
       }
+      console.log("-----------ilgeekhBody ---------->" + JSON.stringify(ilgeekhBody));
       for await (const tempData of req.body.gereenuud) {
         const tod = new TodorkhoiloltiinTuukh(req.body.tukhainBaaziinKholbolt)();
         tod.baiguullagiinNer = tempData.baiguullagiinNer;
