@@ -202,9 +202,9 @@ router
           const tempKhariltsagch = [];
           for (const geree of gereeResult) {
             const filtered = tempKhariltsagch?.filter(a =>
-              a.register === geree.register ||
-              a.register === geree.customerTin ||
-              a.customerTin === geree.register
+              (!!a.register && geree.register === a.register) ||
+                (!!a.register && geree.customerTin === a.register) ||
+                (!!a.customerTin && geree.register === a.customerTin)
             );
 
             const talbainDugaarList = geree.talbainDugaar?.split(',').length > 0
@@ -236,9 +236,9 @@ router
           for await (const khariltsagch of jagsaalt) {
             var filteredGeree = gereeResult?.filter(
               (geree) =>
-                (!!khariltsagch.register && geree.register == khariltsagch.register) ||
-                (!!khariltsagch.register && geree.customerTin == khariltsagch.register) ||
-                (!!khariltsagch.customerTin && geree.register == khariltsagch.customerTin)
+                (!!khariltsagch.register && geree.register === khariltsagch.register) ||
+                (!!khariltsagch.register && geree.customerTin === khariltsagch.register) ||
+                (!!khariltsagch.customerTin && geree.register === khariltsagch.customerTin)
             );
             for (const geree of filteredGeree) {
               const talbainDugaarList = geree.talbainDugaar?.split(',').length > 0
