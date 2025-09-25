@@ -21,6 +21,7 @@ crud(router, "mailiinZagvar", MailiinZagvar, UstsanBarimt);
 crud(router, "msgTuukh", MsgTuukh, UstsanBarimt);
 crud(router, "nekhemjlekhiinTuukh", NekhemjlekhiinTuukh, UstsanBarimt);
 crud(router, "maililgeesenKhariu", MaililgeesenKhariu, UstsanBarimt);
+crud(router, "todorkhoiloltiinTuukh", TodorkhoiloltiinTuukh, UstsanBarimt);
 
 router.post("/duriinMailIlgeeye", tokenShalgakh, (req, res, next) => {
   let id = req.body.id;
