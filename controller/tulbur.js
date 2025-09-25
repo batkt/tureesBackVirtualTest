@@ -1917,46 +1917,75 @@ exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(async (req, res, ne
     var match = {
       baiguullagiinId: baiguullagiinId,
       barilgiinId: barilgiinId,
-      tuluv: -1,
+      tuluv: { $in: [-1] },
+    };
+    var match1 = {
+      "avlaga.guilgeenuud.ognoo": { $lte: new Date() },
+      $or: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["aldangi", "baritsaa"],
+          },
+        },
+        {
+          $and: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $in: ["baritsaa"],
+              },
+            },
+            {
+              "avlaga.guilgeenuud.tulsunDun": {
+                $gt: 0,
+              },
+            },
+          ],
+        },
+      ],
     };
     if(req.body?.gereeniiDugaar)
       match["gereeniiDugaar"] = req.body?.gereeniiDugaar;
     var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      {
+        $match: match,
+      },
       {
         $unwind: {
           path: "$avlaga.guilgeenuud",
         },
       },
       {
-        $match: match,
-      },
-      {
-        $project: {
-          id: "$_id",
-          tulukhDun: {
-            $subtract: [
-              {
-                $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
-              },
-              {
-                $sum: [
-                  {
-                    $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                  },
-                  {
-                    $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
-                  },
-                ],
-              },
-            ],
-          },
-        },
+        $match: match1,
       },
       {
         $group: {
           _id: "$id",
+          tulukh: {
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+            },
+          },
+          khyamdral: {
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+            },
+          },
+          tulsun: {
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+            },
+          },
+        },
+      },
+      {
+        $project: {
           uldegdel: {
-            $sum: "$tulukhDun",
+            $subtract: [
+              "$tulukh",
+              {
+                $sum: ["$tulsun", "$khyamdral"],
+              },
+            ],
           },
         },
       },
