@@ -217,6 +217,8 @@ router
               data.talbainDugaar.push(...talbainDugaarList);
               data.davkhar = data.davkhar || []; 
               data.davkhar.push(geree.davkhar);
+              data.gereenuud = data.gereenuud || [] 
+              data.gereenuud.push(geree);
             } else {
               const filteredData = jagsaalt?.filter(a =>
                 (!!a.register && geree.register === a.register) ||
@@ -229,6 +231,8 @@ router
                 data.talbainDugaar = talbainDugaarList;
                 data.davkhar = data.davkhar || []; 
                 data.davkhar.push(geree.davkhar);
+                data.gereenuud = data.gereenuud || [] 
+                data.gereenuud.push(geree);
                 tempKhariltsagch.push(data);
               }
             }
@@ -252,6 +256,8 @@ router
               khariltsagch.talbainDugaar.push(...talbainDugaarList);      
               khariltsagch.davkhar = khariltsagch.davkhar || []; 
               khariltsagch.davkhar.push(geree.davkhar);
+              khariltsagch.gereenuud = khariltsagch.gereenuud || [] 
+              khariltsagch.gereenuud.push(geree);
             }
           }
           result = jagsaalt;

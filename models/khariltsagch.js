@@ -36,7 +36,6 @@ const khariltsagchSchema = new Schema(
     zochinErkhiinToo: Number,
     zochinTusBurUneguiMinut: Number,
     zochinNiitUneguiMinut: Number,
-    gereenuud: [Schema.Types.Mixed],
     segmentuud: [
       {
         ner: String,
