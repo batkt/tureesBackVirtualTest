@@ -1918,9 +1918,6 @@ exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(async (req, res, ne
       baiguullagiinId: baiguullagiinId,
       barilgiinId: barilgiinId,
       tuluv: -1,
-      "avlaga.guilgeenuud.turul": {
-        $nin: ["baritsaa"],
-      },
     };
     if(req.body?.gereeniiDugaar)
       match["gereeniiDugaar"] = req.body?.gereeniiDugaar;
