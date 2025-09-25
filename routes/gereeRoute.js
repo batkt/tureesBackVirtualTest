@@ -56,6 +56,7 @@ const {
   qpayGuilgeeTalbainDugaarOnooyo,
   tukhainOgnoogoorBukhAvlagaBodojOruulya,
   gereenuudedZalruulgaOruulya,
+  tsutsalsanGereenuudedZalruulgaOruulya,
   tsutsalgdanGuilgeeZasya,
   khungulultKhadgalya,
   khungulultUstgaya,
