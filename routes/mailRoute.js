@@ -170,25 +170,25 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         );
       }
       console.log("-----------ilgeekhBody ---------->" + JSON.stringify(ilgeekhBody));
-      for await (const tempData of req.body.gereenuud) {
-        const tod = new TodorkhoiloltiinTuukh(req.body.tukhainBaaziinKholbolt)();
-        tod.baiguullagiinNer = tempData.baiguullagiinNer;
-        tod.baiguullagiinId = tempData.baiguullagiinId;
-        tod.barilgiinId = tempData.barilgiinId;
-        tod.ovog = tempData.ovog;
-        tod.ner = tempData.ner;
-        tod.register = tempData.register;
-        tod.utas = tempData.utas;
-        tod.gereeniiId = tempData._id;
-        tod.gereeniiDugaar = tempData.gereeniiDugaar;
-        tod.talbainIdnuud = tempData.talbainIdnuud;
-        tod.talbainDugaar = tempData.talbainDugaar;
-        tod.mailiinZagvariinId = tempData.mailiinZagvariinId;
-        tod.mailKhayagTo = tempData.mail;
-        tod.maililgeesenAjiltniiId = tempData.maililgeesenAjiltniiId;
-        tod.maililgeesenAjiltniiNer = tempData.maililgeesenAjiltniiNer;
-        await tod.save();
-      }
+      // for await (const tempData of req.body.gereenuud) {
+      //   const tod = new TodorkhoiloltiinTuukh(req.body.tukhainBaaziinKholbolt)();
+      //   tod.baiguullagiinNer = tempData.baiguullagiinNer;
+      //   tod.baiguullagiinId = tempData.baiguullagiinId;
+      //   tod.barilgiinId = tempData.barilgiinId;
+      //   tod.ovog = tempData.ovog;
+      //   tod.ner = tempData.ner;
+      //   tod.register = tempData.register;
+      //   tod.utas = tempData.utas;
+      //   tod.gereeniiId = tempData._id;
+      //   tod.gereeniiDugaar = tempData.gereeniiDugaar;
+      //   tod.talbainIdnuud = tempData.talbainIdnuud;
+      //   tod.talbainDugaar = tempData.talbainDugaar;
+      //   tod.mailiinZagvariinId = tempData.mailiinZagvariinId;
+      //   tod.mailKhayagTo = tempData.mail;
+      //   tod.maililgeesenAjiltniiId = tempData.maililgeesenAjiltniiId;
+      //   tod.maililgeesenAjiltniiNer = tempData.maililgeesenAjiltniiNer;
+      //   await tod.save();
+      // }
       res.send(body);
     }
     else {
