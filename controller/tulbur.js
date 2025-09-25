@@ -1959,7 +1959,7 @@ exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(async (req, res, ne
       },
       {
         $group: {
-          _id: "$id",
+          _id: "$_id",
           tulukh: {
             $sum: {
               $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
