@@ -839,6 +839,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                       aldangiinKhuvi: aldagiinKhuvi,
                       aldangiChuluulukhKhonog: aldangiChuluulukhKhonog,
                       aldangi: bodogdsonKhuu,
+                      umnukhAldangi: geree.aldangiinUldegdel || 0, 
+                      niitAldangi: (geree.aldangiinUldegdel || 0) + bodogdsonKhuu,
                       tulukhUdur: geree._id.tulukhUdur[0],
                     };
                     aldangiinTuukh.push(new AldangiinTuukh(kholbolt)(mur));

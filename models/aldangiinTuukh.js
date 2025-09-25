@@ -16,6 +16,8 @@ const aldangiinTuukhSchema = new Schema(
     aldangiinKhuvi: Number,
     aldangiChuluulukhKhonog: Number,
     aldangi: Number,
+    niitAldangi: Number,
+    umnukhAldangi: Number,
     tulukhUdur: Number,
   },
   {
