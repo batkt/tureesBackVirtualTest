@@ -1908,6 +1908,93 @@ exports.gereenuudedZalruulgaOruulya = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(async (req, res, next) => {
+  try 
+  {
+    var baiguullagiinId = req.body.baiguullagiinId;
+    var barilgiinId = req.body.barilgiinId;
+    var khariu = [];
+    var match = {
+      baiguullagiinId: baiguullagiinId,
+      barilgiinId: barilgiinId,
+      tuluv: -1,
+    };
+    if(req.body?.gereeniiDugaar)
+      match["gereeniiDugaar"] = req.body?.gereeniiDugaar;
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      {
+        $unwind: {
+          path: "$avlaga.guilgeenuud",
+        },
+      },
+      {
+        $match: match,
+      },
+      {
+        $project: {
+          id: "$_id",
+          tulukhDun: {
+            $subtract: [
+              {
+                $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+              },
+              {
+                $sum: [
+                  {
+                    $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                  },
+                  {
+                    $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$id",
+          uldegdel: {
+            $sum: "$tulukhDun",
+          },
+        },
+      },
+    ]);
+    if (gereenuud && gereenuud?.length > 0) {
+      for await (const geree of gereenuud) {
+        var zoruu = geree.uldegdel || 0;
+        var object;
+        if (zoruu !== 0) {
+          object = {
+            tulukhDun: zoruu < 0 ? zoruu * -1 : 0,
+            tulsunDun: zoruu > 0 ? zoruu : 0,
+            ognoo: new Date(),
+            tailbar: "Залруулга гүйлгээ",
+            turul: "System",
+            guilgeeKhiisenAjiltniiNer: "систем",
+            khyamdral: 0,
+          };
+          await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+              { _id: geree._id },
+              {
+                $push: {
+                  ["avlaga.guilgeenuud"]: object,
+                },
+              }
+            )
+            .then(async (result) => {
+              khariu.push(result);
+            });    
+        }
+      }
+    }
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+});
+
 exports.tsutsalgdanGuilgeeZasya = asyncHandler(async (req, res, next) => {
   try {
     var query = [

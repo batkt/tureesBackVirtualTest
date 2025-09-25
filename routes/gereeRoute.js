@@ -163,6 +163,9 @@ router
   .route("/gereenuudedZalruulgaOruulya")
   .post(tokenShalgakh, gereenuudedZalruulgaOruulya);
 router
+  .route("/tsutsalsanGereenuudedZalruulgaOruulya")
+  .post(tokenShalgakh, tsutsalsanGereenuudedZalruulgaOruulya);  
+router
   .route("/gereenuudedAvlagaOruulya")
   .post(tokenShalgakh, gereenuudedAvlagaOruulya);
 router
