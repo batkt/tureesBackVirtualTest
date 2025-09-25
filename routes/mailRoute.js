@@ -153,7 +153,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         );
       }
       res.send(body);
-    } if (req.body.subject === "Тодорхойлолт" && !!req.body.gereenuud) {
+    } else if (req.body.subject === "Тодорхойлолт" && !!req.body.gereenuud) {
       var ilgeekhBody = {
         mailuud: req.body.mailuud,
         baiguullaga: baiguullaga,
