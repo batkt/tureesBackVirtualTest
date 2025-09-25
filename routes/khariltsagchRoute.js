@@ -198,7 +198,7 @@ router
         var gereeResult = await Geree(
           req.body.tukhainBaaziinKholbolt
         ).aggregate(query);
-        if (davkhar?.length > 0 && gereeResult?.length > 0) {
+        if (davkhar?.length > 0) {
           const tempKhariltsagch = [];
           for (const geree of gereeResult) {
             const filtered = tempKhariltsagch?.filter(a =>
@@ -215,6 +215,8 @@ router
               const data = filtered[0];
               data.talbainDugaar = data.talbainDugaar || [];
               data.talbainDugaar.push(...talbainDugaarList);
+              data.davkhar = data.davkhar || []; 
+              data.davkhar.push(geree.davkhar);
             } else {
               const filteredData = jagsaalt?.filter(a =>
                 (!!a.register && geree.register === a.register) ||
@@ -225,6 +227,8 @@ router
               if (filteredData?.length > 0) {
                 const data = { ...filteredData[0] };
                 data.talbainDugaar = talbainDugaarList;
+                data.davkhar = data.davkhar || []; 
+                data.davkhar.push(geree.davkhar);
                 tempKhariltsagch.push(data);
               }
             }
@@ -246,6 +250,8 @@ router
                     : [geree.talbainDugaar?.trim()];
               khariltsagch.talbainDugaar = khariltsagch.talbainDugaar || [];
               khariltsagch.talbainDugaar.push(...talbainDugaarList);      
+              khariltsagch.davkhar = khariltsagch.davkhar || []; 
+              khariltsagch.davkhar.push(geree.davkhar);
             }
           }
           result = jagsaalt;
