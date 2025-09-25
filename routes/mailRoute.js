@@ -188,6 +188,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         tod.maililgeesenAjiltniiNer = tempData.maililgeesenAjiltniiNer;
         await tod.save();
       }
+      res.send(body);
     }
     else {
       for await (const mail of req.body.mailuud) {
@@ -206,6 +207,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     }
   } catch (err) {
     next(err);
+    console.log("mailOlnoorIlgeeye ---->" + err);
   }
 });
 
