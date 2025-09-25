@@ -1923,12 +1923,12 @@ exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(async (req, res, ne
       match["gereeniiDugaar"] = req.body?.gereeniiDugaar;
     var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
       {
+        $match: match,
+      },
+      {
         $unwind: {
           path: "$avlaga.guilgeenuud",
         },
-      },
-      {
-        $match: match,
       },
       {
         $project: {
