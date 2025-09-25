@@ -1932,7 +1932,7 @@ exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(async (req, res, ne
       },
       {
         $project: {
-          id: "$_id",
+          gereeniiDugaar: "$gereeniiDugaar",
           tulukhDun: {
             $subtract: [
               {
@@ -1954,7 +1954,7 @@ exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(async (req, res, ne
       },
       {
         $group: {
-          _id: "$id",
+          _id: "$gereeniiDugaar",
           uldegdel: {
             $sum: "$tulukhDun",
           },
@@ -1975,8 +1975,8 @@ exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(async (req, res, ne
             guilgeeKhiisenAjiltniiNer: "систем",
             khyamdral: 0,
           };
-          await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-              { _id: geree._id },
+          await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
+              { gereeniiDugaar: geree._id },
               {
                 $push: {
                   ["avlaga.guilgeenuud"]: object,
