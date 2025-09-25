@@ -217,9 +217,9 @@ router
               data.talbainDugaar.push(...talbainDugaarList);
             } else {
               const filteredData = jagsaalt?.filter(a =>
-                a.register === geree.register ||
-                a.register === geree.customerTin ||
-                a.customerTin === geree.register
+                (!!a.register && geree.register === a.register) ||
+                (!!a.register && geree.customerTin === a.register) ||
+                (!!a.customerTin && geree.register === a.customerTin)
               );
 
               if (filteredData?.length > 0) {
