@@ -15,6 +15,7 @@ const FormData = require("form-data");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { Dugaarlalt, tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const NekhemjlekhiinTuukh = require("../models/nekhemjlekhiinTuukh");
+const TodorkhoiloltiinTuukh = require("../models/todorkhoiloltiinTuukh");
 
 crud(router, "mailiinZagvar", MailiinZagvar, UstsanBarimt);
 crud(router, "msgTuukh", MsgTuukh, UstsanBarimt);
@@ -152,7 +153,43 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         );
       }
       res.send(body);
-    } else {
+    } if (req.body.subject === "Тодорхойлолт" && !!req.body.gereenuud) {
+      var ilgeekhBody = {
+        mailuud: req.body.mailuud,
+        baiguullaga: baiguullaga,
+        subject: req.body.subject,
+      };
+      const resIgeeye = await axios.post(
+        "http://103.143.40.43:8282/tureesMailIlgeeye",
+        ilgeekhBody
+      );
+      const body = resIgeeye.data;
+      if (body?.length > 0) {
+        await MaililgeesenKhariu(req.body.tukhainBaaziinKholbolt).insertMany(
+          body
+        );
+      }
+      for await (const tempData of req.body.gereenuud) {
+        const tod = new TodorkhoiloltiinTuukh(req.body.tukhainBaaziinKholbolt)();
+        tod.baiguullagiinNer = tempData.baiguullagiinNer;
+        tod.baiguullagiinId = tempData.baiguullagiinId;
+        tod.barilgiinId = tempData.barilgiinId;
+        tod.ovog = tempData.ovog;
+        tod.ner = tempData.ner;
+        tod.register = tempData.register;
+        tod.utas = tempData.utas;
+        tod.gereeniiId = tempData._id;
+        tod.gereeniiDugaar = tempData.gereeniiDugaar;
+        tod.talbainIdnuud = tempData.talbainIdnuud;
+        tod.talbainDugaar = tempData.talbainDugaar;
+        tod.mailiinZagvariinId = tempData.mailiinZagvariinId;
+        tod.mailKhayagTo = tempData.mail;
+        tod.maililgeesenAjiltniiId = tempData.maililgeesenAjiltniiId;
+        tod.maililgeesenAjiltniiNer = tempData.maililgeesenAjiltniiNer;
+        await tod.save();
+      }
+    }
+    else {
       for await (const mail of req.body.mailuud) {
         await MailIlgeeye.duriinMailIlgeeye(
           baiguullaga.tokhirgoo.mailNevtrekhNer,
