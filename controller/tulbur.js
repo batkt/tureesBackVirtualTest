@@ -752,7 +752,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                       id: "$_id",
                       gereeniiDugaar: "$gereeniiDugaar",
                       tulukhUdur: "$tulukhUdur",
-                      aldangiinUldegdel: "$aldangiinUldegdel"
                     },
                     tulukh: {
                       $sum: {
@@ -827,6 +826,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                       },
                     };
                     bulkOps.push(upsertDoc);
+                    var data = await Geree(kholbolt).findById(geree._id.id);
                     var mur = {
                       baiguullagiinId: baiguullaga._id.toString(),
                       barilgiinId: barilga._id.toString(),
@@ -840,8 +840,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                       aldangiinKhuvi: aldagiinKhuvi,
                       aldangiChuluulukhKhonog: aldangiChuluulukhKhonog,
                       aldangi: bodogdsonKhuu,
-                      umnukhAldangi: geree._id.aldangiinUldegdel || 0, 
-                      niitAldangi: (geree._id.aldangiinUldegdel || 0) + bodogdsonKhuu,
+                      umnukhAldangi: data.aldangiinUldegdel || 0, 
+                      niitAldangi: (data.aldangiinUldegdel || 0) + bodogdsonKhuu,
                       tulukhUdur: geree._id.tulukhUdur[0],
                     };
                     aldangiinTuukh.push(new AldangiinTuukh(kholbolt)(mur));
