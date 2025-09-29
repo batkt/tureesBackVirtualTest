@@ -17,6 +17,7 @@ const todorkhoiloltiinTuukhSchema = new Schema(
     maililgeesenAjiltniiNer: String,
     maililgeesenAjiltniiId: String,
     mailuud: [Schema.Types.Mixed],
+    turul: String,
   },
   {
     timestamps: true,
