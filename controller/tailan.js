@@ -1688,7 +1688,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
         {
           $group: {
-            _id: { turul: "tulsunAldangi", register: "$register" },
+            _id: { turul: { $ifNull: ["$avlaga.guilgeenuud.aldangiinTurul", "tulsunAldangi"] }, register: "$register" },
             dun: {
               $sum: "$avlaga.guilgeenuud.tulsunAldangi",
             },
