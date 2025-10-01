@@ -23,7 +23,7 @@ const session = require("../models/session");
 
 function duusakhOgnooAvya(ugugdul, onFinish, next) {
   request.get(
-    "http://103.143.40.43:8282/baiguullagiinDuusakhKhugatsaaAvya",
+    "http://103.143.40.123:8282/baiguullagiinDuusakhKhugatsaaAvya",
     { json: true, body: ugugdul },
     (err, res1, body) => {
       if (err) next(err);
@@ -336,7 +336,7 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
     );
     if (!baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     request.post(
-      "http://103.143.40.43:8282/erkhiinMedeelelAvya",
+      "http://103.143.40.123:8282/erkhiinMedeelelAvya",
       {
         json: true,
         body: { system: "Turees", register: baiguullaga.register },

@@ -67,7 +67,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         subject: req.body.subject,
       };
       const resIgeeye = await axios.post(
-        "http://103.143.40.43:8282/tureesMailIlgeeye",
+        "http://103.143.40.123:8282/tureesMailIlgeeye",
         ilgeekhBody
       );
       const body = resIgeeye.data;
@@ -161,7 +161,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         subject: req.body.subject,
       };
       const resIgeeye = await axios.post(
-        "http://103.143.40.43:8282/tureesMailIlgeeye",
+        "http://103.143.40.123:8282/tureesMailIlgeeye",
         ilgeekhBody
       );
       const body = resIgeeye.data;
