@@ -2675,7 +2675,10 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
             allMachineNumbers.includes(vehicle)
           );
           matchingVehicles.push(...matchingFromArray);
-        } else if (!!record.dugaar) {
+        } else if (
+          !!record.dugaar &&
+          !matchingVehicles.includes(record.dugaar)
+        ) {
           matchingVehicles.push(record.dugaar);
         }
       });
