@@ -255,7 +255,6 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      console.log("khariu -----------> body " + JSON.stringify(req.body));
       const { db } = require("zevbackv2");
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
         register: req.body.register,
@@ -266,6 +265,7 @@ router.post(
       req.body.baiguullagiinId = baiguullaga._id;
       delete req.body.tukhainBaaziinKholbolt;
       delete req.body.erunkhiiKholbolt;
+      console.log("khariu -----------> body " + JSON.stringify(req.body.register));
       var khariu = await qpayKhariltsagchUusgey(req.body, kholbolt);
       console.log("khariu -----------> " + JSON.stringify(khariu));
       if (khariu === "Amjilttai") {
