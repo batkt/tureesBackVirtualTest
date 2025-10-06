@@ -195,7 +195,6 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     }
   } catch (err) {
     next(err);
-    console.log("mailOlnoorIlgeeye ---->" + err);
   }
 });
 

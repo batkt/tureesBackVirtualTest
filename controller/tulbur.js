@@ -1995,8 +1995,7 @@ exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(async (req, res, ne
       for await (const geree of gereenuud) {
         var zoruu = geree.uldegdel || 0;
         var object;
-        if (zoruu !== 0) {
-          console.log("Geree: ", geree._id, " zoruu: ", zoruu); 
+        if (zoruu !== 0) { 
           object = {
             tulukhDun: zoruu < 0 ? zoruu * -1 : 0,
             tulsunDun: zoruu > 0 ? zoruu : 0,
