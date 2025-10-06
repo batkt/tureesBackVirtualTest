@@ -417,7 +417,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
             geree.aldangiinUldegdel = 0;
           }
           tulbur.push({
-            tailbar: "алданги qpay ээр төлсөн",
+            tailbar: "систем алданги qpay ээр төлсөн",
             turul: "aldangi",
             aldangiinTurul: "qpay",
             tulukhAldangi: geree.aldangiinUldegdel,
