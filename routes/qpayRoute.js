@@ -255,8 +255,8 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      const { db } = require("zevbackv2");
       console.log("khariu -----------> body " + JSON.stringify(req.body));
+      const { db } = require("zevbackv2");
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
         register: req.body.register_number,
       });
