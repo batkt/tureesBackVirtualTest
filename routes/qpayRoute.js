@@ -258,7 +258,7 @@ router.post(
       console.log("khariu -----------> body " + JSON.stringify(req.body));
       const { db } = require("zevbackv2");
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
-        register: req.body.register_number,
+        register: req.body.register,
       });
       var kholbolt = db.kholboltuud.find(
         (a) => a.baiguullagiinId == baiguullaga._id
