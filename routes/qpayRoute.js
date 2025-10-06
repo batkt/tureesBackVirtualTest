@@ -267,7 +267,6 @@ router.post(
       delete req.body.erunkhiiKholbolt;
       console.log("khariu -----------> body " + JSON.stringify(req.body.register));
       var khariu = await qpayKhariltsagchUusgey(req.body, kholbolt);
-      console.log("khariu -----------> " + JSON.stringify(khariu));
       if (khariu === "Amjilttai") {
         res.send(khariu);
       } else throw new Error(khariu);
