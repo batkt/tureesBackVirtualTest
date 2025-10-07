@@ -3134,7 +3134,7 @@ router
           },
         },
       ];
-      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
         query
       );
       if (gereenuud.length < 0 || gereenuud[0].tuluvluguut.length < 1)
@@ -3153,7 +3153,7 @@ router
         body.query["gereeniiDugaar"] = { $in: turJagsaalt };
         (body.query["tuluv"] = { $ne: -1 }), (body.lean = true);
 
-        khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt), body)
+        khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt, true), body)
           .then((result) => {
             if (result && result.jagsaalt && result.jagsaalt.length > 0)
               result.jagsaalt.forEach((x) => {

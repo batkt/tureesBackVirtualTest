@@ -197,10 +197,11 @@ const gereeSchema = new Schema(
   }
 );
 
-module.exports = function a(conn) {
+module.exports = function a(conn, read = false) {
   if (!conn || !conn.kholbolt)
     throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
-  conn = conn.kholbolt;
+  console.log("geree model --------->", read);
+  conn = read && !!conn.kholboltRead ? conn.kholboltRead : conn.kholbolt;
   return conn.model("geree", gereeSchema);
 };
 // mongoose.model("geree", gereeSchema);
