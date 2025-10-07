@@ -200,7 +200,6 @@ const gereeSchema = new Schema(
 module.exports = function a(conn, read = false) {
   if (!conn || !conn.kholbolt)
     throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
-  console.log("geree model --------->", JSON.stringify(conn));
   conn = read && !!conn.kholboltRead ? conn.kholboltRead : conn.kholbolt;
   return conn.model("geree", gereeSchema);
 };
