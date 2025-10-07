@@ -811,7 +811,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
             ]);
-            var turees = await Geree(kholbolt).aggregate([
+            var turees = await Geree(kholbolt, true).aggregate([
               {
                 $match: {
                   baiguullagiinId: baiguullaga._id.toString(),

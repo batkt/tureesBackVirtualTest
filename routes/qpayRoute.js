@@ -142,7 +142,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
         (req.body.mashiniiDugaar ? req.body.mashiniiDugaar : "") +
         (req.body.turul ? req.body.turul : "");
       if (!!req.body.gereeniiId) {
-        var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
+        var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findById(
           req.body.gereeniiId
         );
         tailbar = " " + geree.gereeniiDugaar;

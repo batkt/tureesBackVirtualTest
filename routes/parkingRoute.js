@@ -44,6 +44,7 @@ crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
 crud(router, "mashin", Mashin, UstsanBarimt);
 crud(router, "blockMashin", BlockMashin, UstsanBarimt);
 crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
+crud(router, "uilchluulegch", Uilchluulegch, UstsanBarimt);
 /*
 crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
 });

@@ -45,7 +45,7 @@ router
         kod: req.query.talbainDugaar,
         barilgiinId: req.query.barilgiinId,
       });
-      var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
+      var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
         talbainIdnuud: talbai._id,
         barilgiinId: req.query.barilgiinId,
         tuluv: 1,
@@ -157,7 +157,7 @@ router.route("/talbaiUstgaya").post(tokenShalgakh, async (req, res, next) => {
         _id: req.body.id,
       })
       .then(async (result) => {
-        var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
+        var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
           tuluv: { $ne: -1 },
           talbainIdnuud: result._id,
           barilgiinId: result.barilgiinId,
@@ -220,7 +220,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
       talbai.talbainNiitUne != khuuchinTalbai.talbainNiitUne ||
       talbai.kod != khuuchinTalbai.kod
     ) {
-      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .find({
           talbainDugaar: khuuchinTalbai.kod,
           barilgiinId: khuuchinTalbai.barilgiinId,
@@ -448,7 +448,7 @@ router
     try {
       if (!req.body.barilgiinId)
         throw new aldaa("barilgiinId buglugduugui baina!");
-      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .find({
           barilgiinId: req.body.barilgiinId,
         })
@@ -856,7 +856,7 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
         },
       },
     ];
-    var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
+    var khariu = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(query);
     res.send(khariu);
   } catch (err) {
     next(err);

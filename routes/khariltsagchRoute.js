@@ -114,7 +114,7 @@ router
           _id: req.body.id,
         })
         .then(async (result) => {
-          var geree = await Geree(req.body.tukhainBaaziinKholbolt).findOne({
+          var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
             tuluv: 1,
             register: result.register,
             barilgiinId: result.barilgiinId,
@@ -196,7 +196,7 @@ router
           },
         ];
         var gereeResult = await Geree(
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt, true
         ).aggregate(query);
         if (davkhar?.length > 0) {
           const tempKhariltsagch = [];

@@ -208,7 +208,7 @@ router.post("/zochinHadgalya", tokenShalgakh, async (req, res, next) => {
         updatedAt: new Date(),
       };
 
-      var gereeObject = await Geree(tukhainBaaziinKholbolt).findOne({
+      var gereeObject = await Geree(tukhainBaaziinKholbolt, true).findOne({
         baiguullagiinId: baiguullagiinId,
         utas: ezemshigchiinUtas,
         tuluv: { $ne: -1 },

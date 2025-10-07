@@ -435,7 +435,7 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       query["uldegdel"] = { $gt: 0 };
     }
 
-    const gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+    const gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
       .find(query)
       .lean();
     var msgnuud = [];
