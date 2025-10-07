@@ -43,7 +43,7 @@ crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
 crud(router, "mashin", Mashin, UstsanBarimt);
 crud(router, "blockMashin", BlockMashin, UstsanBarimt);
-crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
+crud(router, "zogsoolUilchluulegch", (conn) => Uilchluulegch(conn, true), UstsanBarimt);
 /*
 crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
 });
@@ -476,7 +476,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         query["tuukh.0.garsanKhaalga"] = "192.168.2.237";
       }
     }
-    var oldsonData = await Uilchluulegch(kholbolt).findOne(query);
+    var oldsonData = await Uilchluulegch(kholbolt, true).findOne(query);
     if (oldsonData) {
       await Uilchluulegch(kholbolt).findByIdAndUpdate(
         oldsonData._id,
@@ -588,7 +588,7 @@ router.post(
       if (!!req.body.burtgesenAjiltaniiId)
         match["tuukh.burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
       var udriinTailan = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt, true
       ).aggregate([
         {
           $match: {
@@ -618,7 +618,7 @@ router.post(
         },
       ]);
       var zurchiltei = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt, true
       ).aggregate([
         {
           $match: {
@@ -657,7 +657,7 @@ router.post(
       ]);
 
       var unegui = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt, true
       ).aggregate([
         {
           $match: {
@@ -938,7 +938,7 @@ router.post(
         },
       ];
       const khariu = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt, true
       ).aggregate(query);
       res.send(khariu);
     } catch (err) {
@@ -1150,7 +1150,7 @@ async function getAggregateUilchluulegch(
     return JSON.parse(cached);
   }
 
-  const xariu = await Uilchluulegch(kholbolt).aggregate(query);
+  const xariu = await Uilchluulegch(kholbolt, true).aggregate(query);
   await client.setEx(cacheKey, 60, JSON.stringify(xariu));
   return xariu;
 }
@@ -1167,7 +1167,7 @@ async function getUilchluulegchfindOne(
     return JSON.parse(cached);
   }
 
-  const xariu = await Uilchluulegch(kholbolt).findOne(query);
+  const xariu = await Uilchluulegch(kholbolt, true).findOne(query);
   await client.setEx(cacheKey, 60, JSON.stringify(xariu));
   return xariu;
 }
@@ -1317,7 +1317,7 @@ router.get("/pass/zogsool", tokenShalgakh, async (req, res, next) => {
                 zogsool.dotorZogsooliinId
               );
             }
-            var xariu = await Uilchluulegch(kholbolt).aggregate([
+            var xariu = await Uilchluulegch(kholbolt, true).aggregate([
               {
                 $match: {
                   createdAt: {
@@ -1538,7 +1538,7 @@ router.get("/v2/search_car/:plate_number", async (req, res, next) => {
         );
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
               mashiniiDugaar: req.params.plate_number,
               tuukh: {
                 $elemMatch: {
@@ -1652,7 +1652,7 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
             tukhainKholbolt = kholbolt;
-            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
               mashiniiDugaar: req.params.plate_number,
               tuukh: {
                 $elemMatch: {
@@ -1744,7 +1744,7 @@ router.get(
         );
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
               "tuukh.0.zogsooliinId": zogsool._id,
               mashiniiDugaar: req.params.dugaar,
               $or: [
@@ -1836,7 +1836,7 @@ router.get("/v1/car/:session_id", async (req, res, next) => {
       });
       for await (const zogsool of zogsooluud) {
         if (!!zogsool) {
-          oldsonMashin = await Uilchluulegch(kholbolt).findById(
+          oldsonMashin = await Uilchluulegch(kholbolt, true).findById(
             req.params.session_id
           );
           if (!oldsonMashin) {
@@ -1950,7 +1950,7 @@ router.post("/v1/tulburMedeelelAvya", async (req, res, next) => {
       for await (const kholbolt of kholboltuud) {
         var zogsool = await Parking(kholbolt).findById(parking_id);
         if (!!zogsool) {
-          oldsonMashin = await Uilchluulegch(kholbolt).findById(session_id);
+          oldsonMashin = await Uilchluulegch(kholbolt, true).findById(session_id);
           if (!oldsonMashin) {
             message = "Мэдээлэл олдсонгүй!";
             success = false;
@@ -2033,7 +2033,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
             const plateNumber = req.body.plate_number;
             const zogsoolId = zogsool._id;
             const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
               mashiniiDugaar: plateNumber,
               "tuukh.0.zogsooliinId": zogsoolId,
               "tuukh.0.tuluv": { $nin: [-2, -3] },
@@ -2131,7 +2131,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
             var nemeltZogsool = await Parking(tukhainKholbolt).findOne({
               _id: { $ne: tukhainZogsool._id },
             });
-            var garsanObject = await Uilchluulegch(tukhainKholbolt).findOne({
+            var garsanObject = await Uilchluulegch(tukhainKholbolt, true).findOne({
               mashiniiDugaar: req.body.plate_number,
               "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
               "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
@@ -2353,7 +2353,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
         });
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            oldsonMashin = await Uilchluulegch(kholbolt).findOne({
+            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
               "tuukh.0.zogsooliinId": zogsool._id,
               mashiniiDugaar: req.body.dugaar,
               $or: [
@@ -2443,7 +2443,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
             var nemeltZogsool = await Parking(tukhainKholbolt).findOne({
               _id: { $ne: tukhainZogsool._id },
             });
-            var garsanObject = await Uilchluulegch(tukhainKholbolt).findOne({
+            var garsanObject = await Uilchluulegch(tukhainKholbolt, true).findOne({
               mashiniiDugaar: req.body.plate_number,
               "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
               "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
@@ -2721,7 +2721,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         });
     if (!!zogsool) {
       oldsonMashin = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt, true
       ).findOne({
         _id: req.body.uilchluulegchiinId,
       });
@@ -2844,7 +2844,7 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       var tukhainKholbolt = req.body.tukhainBaaziinKholbolt;
-      var tukhainObject = await Uilchluulegch(tukhainKholbolt).findById(
+      var tukhainObject = await Uilchluulegch(tukhainKholbolt, true).findById(
         req.body.uilchluulegchiinId
       );
       if (!!tukhainObject) {
@@ -2979,7 +2979,7 @@ router.post(
       if (!!req.body.mashiniiDugaar)
         match["mashiniiDugaar"] = req.body.mashiniiDugaar;
       var uilchluulegchuud = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt, true
       ).find(match);
       var ebarimtuud = [];
       if (uilchluulegchuud?.length > 0) {
@@ -3073,7 +3073,7 @@ router.post("/davkharBarimtZasakh", tokenShalgakh, async (req, res, next) => {
     if (!!req.body.mashiniiDugaar)
       match["mashiniiDugaar"] = req.body.mashiniiDugaar;
     var uilchluulegchuud = await Uilchluulegch(
-      req.body.tukhainBaaziinKholbolt
+      req.body.tukhainBaaziinKholbolt, true
     ).find(match);
     if (uilchluulegchuud?.length > 0) {
       for await (const data of uilchluulegchuud) {
@@ -3112,7 +3112,7 @@ router.post(
       );
       if (zogsool?.zurchulMsgeerSanuulakh) {
         const zurchilteiUilchluulegch = await Uilchluulegch(
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt, true
         ).find({
           baiguullagiinId: zogsool?.baiguullagiinId,
           barilgiinId: zogsool.barilgiinId,
@@ -3371,7 +3371,7 @@ router.post(
       };
       if (req.body.mashiniiDugaar)
         match["mashiniiDugaar"] = req.body.mashiniiDugaar;
-      var mashinuud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).find(
+      var mashinuud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt, true).find(
         match
       );
       var result = [];
@@ -3416,7 +3416,7 @@ router.post("/zochinAjiltaniiIdTseverlekh", async (req, res, next) => {
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
       for await (const kholbolt of kholboltuud) {
-        var mashinuud = await Uilchluulegch(kholbolt).find(query);
+        var mashinuud = await Uilchluulegch(kholbolt, true).find(query);
         if (mashinuud?.length > 0) {
           for await (const data of mashinuud) {
             await Uilchluulegch(kholbolt).findByIdAndUpdate(data._id, {
@@ -3437,7 +3437,7 @@ router.post("/zochinAjiltaniiIdTseverlekh", async (req, res, next) => {
 
 router.post("/mashiniiDugaarZasakh", tokenShalgakh, async (req, res, next) => {
   try {
-    var uilchluulegch = await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+    var uilchluulegch = await Uilchluulegch(req.body.tukhainBaaziinKholbolt, true)
       .findOne({
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,

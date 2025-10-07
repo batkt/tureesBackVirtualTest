@@ -17,13 +17,8 @@ const lodash = require("lodash");
 const excel = require("exceljs");
 const mongoose = require("mongoose");
 const {
-  Parking,
   Mashin,
   BlockMashin,
-  Uilchluulegch,
-  ZogsooliinTulbur,
-  uilchluulegchdiinToo,
-  sdkData,
 } = require("parking-v1");
 
 function formatNumber(num, fixed = 2) {

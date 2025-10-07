@@ -782,7 +782,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
             ]);
-            var zogsool = await Uilchluulegch(kholbolt).aggregate([
+            var zogsool = await Uilchluulegch(kholbolt, true).aggregate([
               {
                 $match: {
                   baiguullagiinId: baiguullaga._id.toString(),

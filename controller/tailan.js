@@ -1970,7 +1970,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       var ajiltnuud = [];
       if (req.body.ajiltnaarAvakhEsekh) {
         ajiltnuud = await Uilchluulegch(
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt, true
         ).aggregate([
           {
             $unwind: "$tuukh",
@@ -1998,7 +1998,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       };
       if (req.body.ajiltnaarAvakhEsekh)
         groups.burtgesenAjiltaniiNer = "$tuukh.burtgesenAjiltaniiNer";
-      dunguud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).aggregate([
+      dunguud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt, true).aggregate([
         {
           $unwind: "$tuukh",
         },

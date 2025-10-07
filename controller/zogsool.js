@@ -162,7 +162,7 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
           "khaalga.ajiltnuud.id": body.ajiltniiId,
         });
     if (!!zogsool) {
-      oldsonMashin = await Uilchluulegch(body.tukhainBaaziinKholbolt).findOne({
+      oldsonMashin = await Uilchluulegch(body.tukhainBaaziinKholbolt, true).findOne({
         _id: body.uilchluulegchiinId,
       });
       if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
@@ -304,7 +304,7 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
           var tukhainKholbolt = kholboltuud.find(
             (x) => x.baiguullagiinId == baiguullaga._id.toString()
           );
-          var shiveeguiTuukhuud = await Uilchluulegch(tukhainKholbolt).find({
+          var shiveeguiTuukhuud = await Uilchluulegch(tukhainKholbolt, true).find({
             ebarimtAvsanEsekh: { $ne: true },
             "tuukh.0.tulbur": { $exists: true, $not: { $size: 0 } },
             "tuukh.0.tulbur.ognoo": { $gt: new Date(moment(new Date()).add(-1, "day").format("YYYY-MM-DD 23:59:59")) },

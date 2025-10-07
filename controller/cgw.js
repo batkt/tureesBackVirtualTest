@@ -2173,7 +2173,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           };
           if (req?.body?.mashiniiDugaar)
             match["mashiniiDugaar"] = req?.body?.mashiniiDugaar;
-          var mashinuud = await Uilchluulegch(kholbolt).find(match);
+          var mashinuud = await Uilchluulegch(kholbolt, true).find(match);
           for await (const data of mashinuud) {
             if (data.tuukh?.length > 0) {
               var tuukh = data.tuukh?.filter(
@@ -2212,7 +2212,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
             };
             if (req?.body?.mashiniiDugaar)
               match["mashiniiDugaar"] = req?.body?.mashiniiDugaar;
-            var groupCounts = await Uilchluulegch(kholbolt).aggregate([
+            var groupCounts = await Uilchluulegch(kholbolt, true).aggregate([
               {
                 $unwind: "$tuukh",
               },
@@ -2233,7 +2233,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
               if (filterGroupCounts?.length > 0) {
                 for await (const groupCount of filterGroupCounts) {
                   match["mashiniiDugaar"] = groupCount._id;
-                  const uilchluulegchuud = await Uilchluulegch(kholbolt)
+                  const uilchluulegchuud = await Uilchluulegch(kholbolt, true)
                     .find(match)
                     .sort({ createdAt: -1 });
                   uilchluulegchuud?.shift();

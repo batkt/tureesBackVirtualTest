@@ -255,7 +255,7 @@ router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
     });
     var jagsaalt = [];
     if (ezenJagsaalt?.length > 0) {
-      jagsaalt = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).find({
+      jagsaalt = await Uilchluulegch(req.body.tukhainBaaziinKholbolt, true).find({
         mashiniiDugaar: {
           $in: ezenJagsaalt?.map((e) => e.urisanMashiniiDugaar),
         },

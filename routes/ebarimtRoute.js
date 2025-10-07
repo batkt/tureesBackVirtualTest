@@ -662,7 +662,7 @@ async function ebarimtShivye(req, res, next) {
         }
       };
     } else if (ebarimtiinTurul == "zogsool") {
-      var guilgee = await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+      var guilgee = await Uilchluulegch(req.body.tukhainBaaziinKholbolt, true)
         .findById(req.body.id)
         .lean();
       if (guilgee.tuukh?.length > 0 && guilgee.tuukh[0].ebarimtAvsanEsekh)
