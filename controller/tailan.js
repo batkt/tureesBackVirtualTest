@@ -40,7 +40,7 @@ const chartUnguud = [
 
 exports.analitikTailanAvya = asyncHandler(async (req, res, next) => {
   try {
-    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+    var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
       .find({
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
@@ -369,7 +369,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
       $sort: sort,
     },
   ];
-  var turluur = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+  var turluur = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate([
     {
       $unwind: {
         path: "$avlaga.guilgeenuud",
@@ -407,7 +407,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     },
   ]);
-  Geree(req.body.tukhainBaaziinKholbolt)
+  Geree(req.body.tukhainBaaziinKholbolt, true)
     .aggregate(query)
     .then((result) => {
       if (result && result.length > 0) {
@@ -864,7 +864,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
   var umnukhSar = moment(new Date(req.body.ekhlekhOgnoo))
     .add(-1, "month")
     .set("date", 1);
-  var turluur = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+  var turluur = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate([
     {
       $match: {
         barilgiinId: req.body.barilgiinId,
@@ -1052,7 +1052,7 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     },
   ]);
-  Geree(req.body.tukhainBaaziinKholbolt)
+  Geree(req.body.tukhainBaaziinKholbolt, true)
     .aggregate(query)
     .then((result) => {
       if (result && result.length > 0) {
@@ -1205,7 +1205,9 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
       $group: group,
     },
   ];
-  var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
+  var khariu = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
+    query
+  );
   var niitAvlaga = 0;
   var labels = [];
   var series = [];
@@ -1291,7 +1293,9 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
       $group: group,
     },
   ];
-  var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
+  var khariu = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
+    query
+  );
   var labels = [];
   var series = [];
   khariu.forEach((a) => {
@@ -1422,7 +1426,9 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
         $group: group,
       },
     ];
-    var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
+    var khariu = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
+      query
+    );
     var categories = [];
     const chartData = {
       series: baiguullaga?.barilguud.map((mur, index) => ({
@@ -1530,7 +1536,10 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
     };
     var dunguud;
     if (req.params.turul == "Rent") {
-      var registeruud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      var registeruud = await Geree(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate([
         {
           $match: {
             tuluv: { $ne: -1 },
@@ -1559,7 +1568,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
       ]);
 
-      dunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      dunguud = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate([
         {
           $match: {
             tuluv: { $ne: -1 },
@@ -1594,7 +1603,10 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
       ]);
 
-      var bankDunguud = await Geree(req.body.tukhainBaaziinKholbolt).aggregate([
+      var bankDunguud = await Geree(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate([
         {
           $match: {
             tuluv: { $ne: -1 },
@@ -1642,7 +1654,8 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       }
 
       var aldangiDunguud = await Geree(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).aggregate([
         {
           $match: {
@@ -1660,7 +1673,8 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       ]);
 
       var aldangiTulsunDunguud = await Geree(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).aggregate([
         {
           $match: {
@@ -1688,7 +1702,17 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
         {
           $group: {
-            _id: { turul: { $ifNull: [{ $concat: ["$avlaga.guilgeenuud.aldangiinTurul", "Aldangi"] }, "tulsunAldangi"] }, register: "$register" },
+            _id: {
+              turul: {
+                $ifNull: [
+                  {
+                    $concat: ["$avlaga.guilgeenuud.aldangiinTurul", "Aldangi"],
+                  },
+                  "tulsunAldangi",
+                ],
+              },
+              register: "$register",
+            },
             dun: {
               $sum: "$avlaga.guilgeenuud.tulsunAldangi",
             },
@@ -1697,7 +1721,8 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       ]);
 
       var khungulultiinDunguud = await Geree(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).aggregate([
         {
           $match: {
@@ -1734,7 +1759,8 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       ]);
 
       var tulukhDunguud = await Geree(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).aggregate([
         {
           $match: {
@@ -1970,7 +1996,8 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       var ajiltnuud = [];
       if (req.body.ajiltnaarAvakhEsekh) {
         ajiltnuud = await Uilchluulegch(
-          req.body.tukhainBaaziinKholbolt, true
+          req.body.tukhainBaaziinKholbolt,
+          true
         ).aggregate([
           {
             $unwind: "$tuukh",
@@ -1998,7 +2025,10 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       };
       if (req.body.ajiltnaarAvakhEsekh)
         groups.burtgesenAjiltaniiNer = "$tuukh.burtgesenAjiltaniiNer";
-      dunguud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt, true).aggregate([
+      dunguud = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate([
         {
           $unwind: "$tuukh",
         },
@@ -2177,7 +2207,9 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
     });
-    var khariu = await Geree(req.body.tukhainBaaziinKholbolt).aggregate(query);
+    var khariu = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
+      query
+    );
     if (khariu?.length > 0) {
       khariu?.forEach((a) => {
         var niitTulukhDun = 0;

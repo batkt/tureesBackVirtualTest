@@ -120,7 +120,13 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
   }
 }
 
-async function tulultiinMsgIlgeeye(baiguullagiinId, gereeniiDugaar, utas, dun, aldangi) {
+async function tulultiinMsgIlgeeye(
+  baiguullagiinId,
+  gereeniiDugaar,
+  utas,
+  dun,
+  aldangi
+) {
   try {
     const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
@@ -129,7 +135,10 @@ async function tulultiinMsgIlgeeye(baiguullagiinId, gereeniiDugaar, utas, dun, a
     var msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
     var msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
     if (!!msgIlgeekhKey && !!msgIlgeekhDugaar) {
-      var text = gereeniiDugaar + " gereenii tureesiin tulbur " + (await formatNumber(dun));
+      var text =
+        gereeniiDugaar +
+        " gereenii tureesiin tulbur " +
+        (await formatNumber(dun));
       if (aldangi > 0)
         text = text + " aldangi " + (await formatNumber(aldangi));
       text = text + " tulugdluu";
@@ -271,7 +280,7 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
       var kholboltuud = db.kholboltuud;
       if (kholboltuud) {
         for await (const kholbolt of kholboltuud) {
-          let gereeniiIdnuud = await Geree(kholbolt).aggregate([
+          let gereeniiIdnuud = await Geree(kholbolt, true).aggregate([
             {
               $project: {
                 _id: "$_id",
@@ -296,16 +305,16 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
             var talbainBulk = [];
             var khariltsagchiinBulk = [];
             for await (const id of gereeniiIdnuud) {
-              let geree = await Geree(kholbolt).findById(id);
+              let geree = await Geree(kholbolt, true).findById(id);
               let busadGereenuud;
               if (!!geree.register) {
-                busadGereenuud = await Geree(kholbolt).findOne({
+                busadGereenuud = await Geree(kholbolt, true).findOne({
                   register: geree.register,
                   barilgiinId: geree.barilgiinId,
                   tuluv: { $ne: -1 },
                 });
               } else if (!!geree.customerTin) {
-                busadGereenuud = await Geree(kholbolt).findOne({
+                busadGereenuud = await Geree(kholbolt, true).findOne({
                   customerTin: geree.customerTin,
                   barilgiinId: geree.barilgiinId,
                   tuluv: { $ne: -1 },
@@ -317,7 +326,10 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
               });
               for await (const talbai of talbainuud) {
                 if (talbai.niitiinTalbaiEsekh) {
-                  let tukhainTalbainGereenuud = await Geree(kholbolt).find({
+                  let tukhainTalbainGereenuud = await Geree(
+                    kholbolt,
+                    true
+                  ).find({
                     barilgiinId: geree.barilgiinId,
                     tuluv: { $ne: -1 },
                     talbainIdnuud: talbai._id,

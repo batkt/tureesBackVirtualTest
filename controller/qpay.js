@@ -11,9 +11,7 @@ const got = require("got");
 const { QuickQpayObject } = require("quickqpaypackv2");
 const { tulburUridchiljTulukh } = require("../controller/zogsool");
 const { URL } = require("url");
-const {
-  daraagiinTulukhOgnooZasya
-} = require("../controller/tulbur");
+const { daraagiinTulukhOgnooZasya } = require("../controller/tulbur");
 const instance = got.extend({
   hooks: {
     beforeRequest: [
@@ -340,8 +338,7 @@ exports.qpayGuilgeeUtgaAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.qpayTulye = asyncHandler(async (req, res, next) => {
-  try
-  {
+  try {
     var kholboltuud = db.kholboltuud;
     var tukhainBaaziinKholbolt = kholboltuud.find(
       (a) => a.baiguullagiinId == req.params.baiguullagiinId
@@ -393,13 +390,15 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         var tulbur = [];
         var updateQuery = {};
         var updatePush = {};
-        var geree = await Geree(tukhainBaaziinKholbolt).findOne({
+        var geree = await Geree(tukhainBaaziinKholbolt, true).findOne({
           _id: qpayBarimt.gereeniiId,
         });
         var qpayAmount = parseFloat(qpayBarimt.qpay.amount);
-        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.params.baiguullagiinId);
+        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+          req.params.baiguullagiinId
+        );
         if (baiguullaga?.tokhirgoo?.qpayShimtgelTusdaa == true)
-            qpayAmount -= 300;
+          qpayAmount -= 300;
         if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
           var tulsunDun = 0;
           if (geree.aldangiinUldegdel >= qpayAmount) {
@@ -428,13 +427,13 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           var niitTulsunAldangi = tulbur
             ?.filter((a) => a.turul == "aldangi")
             .reduce((a, b) => a + b.tulsunAldangi, 0);
-          const niitTulsun = (geree.niitTulsunAldangi || 0) + niitTulsunAldangi;  
+          const niitTulsun = (geree.niitTulsunAldangi || 0) + niitTulsunAldangi;
           updateQuery = {
             $set: {
               aldangiinUldegdel: geree.aldangiinUldegdel,
               niitTulsunAldangi: niitTulsun,
             },
-          }
+          };
           updatePush = {
             $push: {
               "avlaga.guilgeenuud": {
@@ -461,7 +460,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           { _id: qpayBarimt.gereeniiId },
           updatePush,
           { new: true }
-        ); 
+        );
 
         const result = await Geree(tukhainBaaziinKholbolt).findByIdAndUpdate(
           { _id: qpayBarimt.gereeniiId },
@@ -476,20 +475,20 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
 
         var tulsunAldangi = tulbur
           .filter((a) => a.turul == "aldangi")
-          .reduce((a, b) => a + b.tulsunAldangi, 0);  
+          .reduce((a, b) => a + b.tulsunAldangi, 0);
 
         await tulultiinMsgIlgeeye(
           req.params.baiguullagiinId,
           result.gereeniiDugaar,
           result.utas[0],
           tulsunDun,
-          tulsunAldangi,
+          tulsunAldangi
         );
 
         await daraagiinTulukhOgnooZasya(
           qpayBarimt.gereeniiId,
           tukhainBaaziinKholbolt
-        )
+        );
         res.sendStatus(200);
       }
     }

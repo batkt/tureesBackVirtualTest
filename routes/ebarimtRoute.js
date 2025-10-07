@@ -54,7 +54,7 @@ async function guilgeeneesEbarimtUusgye(
   tukhainBaaziinKholbolt,
   nuatTulukhEsekh = true
 ) {
-  var dun = guilgee.amount ? guilgee.amount : (guilgee.Amt || guilgee.tranAmount);
+  var dun = guilgee.amount ? guilgee.amount : guilgee.Amt || guilgee.tranAmount;
   var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
   var ebarimt = new Ebarimt(tukhainBaaziinKholbolt)();
   if (register) {
@@ -113,8 +113,13 @@ async function guilgeeneesEbarimtShineUusgye(
   tukhainBaaziinKholbolt,
   nuatTulukhEsekh = true
 ) {
-  var dun = guilgee.amount ? guilgee.amount : (guilgee.Amt || guilgee.tranAmount);
-  var ognoo = guilgee.bank === "tdb" ? (guilgee.TxDt ? guilgee.TxDt : guilgee.TxPostDate) : guilgee.tranDate;
+  var dun = guilgee.amount ? guilgee.amount : guilgee.Amt || guilgee.tranAmount;
+  var ognoo =
+    guilgee.bank === "tdb"
+      ? guilgee.TxDt
+        ? guilgee.TxDt
+        : guilgee.TxPostDate
+      : guilgee.tranDate;
   var ebarimt = new EbarimtShine(tukhainBaaziinKholbolt)();
   if (!!customerTin) {
     ebarimt.type = "B2B_RECEIPT";
@@ -262,7 +267,7 @@ async function togloomoosEbarimtShineUusgye(
   ebarimt.merchantTin = merchantTin;
   ebarimt.customerNo = customerNo;
   ebarimt.ebarimtAvsanDun = guilgee.ebarimtAvsanDun;
-  
+
   ebarimt.receipts = [
     {
       totalAmount: guilgee.ebarimtAvakhDun.toFixed(2),
@@ -356,7 +361,9 @@ async function zogsooloosEbarimtShineUusgye(
   } else {
     ebarimt.type = "B2C_RECEIPT";
   }
-  var tulukhDun = guilgee.ebarimtAvakhDun ? guilgee.ebarimtAvakhDun : guilgee.niitDun;
+  var tulukhDun = guilgee.ebarimtAvakhDun
+    ? guilgee.ebarimtAvakhDun
+    : guilgee.niitDun;
   ebarimt.zogsooliinId = guilgee._id;
   ebarimt.baiguullagiinId = guilgee.baiguullagiinId;
   ebarimt.barilgiinId = guilgee.barilgiinId;
@@ -415,21 +422,23 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
       else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
       request.post(url, { json: true, body: ugugdul }, (err, res1, body) => {
         if (err) {
-          if(!!next)
-            next(err);
+          if (!!next) next(err);
         } else {
           onFinish(body, ugugdul);
         }
       });
-    } else if(!!next)
-      next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+    } else if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
   } catch (aldaa) {
-    if(!!next)
-      next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+    if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
   }
 }
 
-async function ebarimtMedeelelAvya(ugugdul, onFinish, next, ebarimtShine = false) {
+async function ebarimtMedeelelAvya(
+  ugugdul,
+  onFinish,
+  next,
+  ebarimtShine = false
+) {
   if (!!ebarimtShine) {
     var url = "";
     if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
@@ -446,17 +455,20 @@ async function ebarimtMedeelelAvya(ugugdul, onFinish, next, ebarimtShine = false
 }
 
 router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
-  try 
-  {
-    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(req.body.baiguullagiinId);
-    var tuxainSalbar = baiguullaga?.barilguud?.find((e) => e._id.toString() == req.body.barilgiinId)?.tokhirgoo;
+  try {
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      req.body.baiguullagiinId
+    );
+    var tuxainSalbar = baiguullaga?.barilguud?.find(
+      (e) => e._id.toString() == req.body.barilgiinId
+    )?.tokhirgoo;
     ebarimtMedeelelAvya(
       req.body.barilgiinId,
       (d) => {
         res.send(d);
       },
       next,
-      tuxainSalbar?.eBarimtShine,
+      tuxainSalbar?.eBarimtShine
     );
   } catch (error) {
     next(error);
@@ -480,8 +492,7 @@ async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
         }
       }
     );
-  } else if(!!next)
-      next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+  } else if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
 }
 async function zogsoolNiitDungeerEbarimtShivye(
   kholbolt,
@@ -489,7 +500,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
   barilgiinId,
   next,
   shiveeguiTuukhuud,
-  dugaar,
+  dugaar
 ) {
   var guilgee = {
     niitDun: shivekhDun,
@@ -497,7 +508,9 @@ async function zogsoolNiitDungeerEbarimtShivye(
     baiguullagiinId: kholbolt.baiguullagiinId,
     barilgiinId,
   };
-  guilgee["mashiniiDugaar"] = !!dugaar ? shiveeguiTuukhuud[0]?.mashiniiDugaar : "0000ЮЮЮ";
+  guilgee["mashiniiDugaar"] = !!dugaar
+    ? shiveeguiTuukhuud[0]?.mashiniiDugaar
+    : "0000ЮЮЮ";
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     kholbolt.baiguullagiinId
   );
@@ -540,10 +553,9 @@ async function zogsoolNiitDungeerEbarimtShivye(
       ebarimt.barilgiinId = khariuObject.barilgiinId;
       ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
       ebarimt.save().catch((err) => {
-        if(next) next(err);
+        if (next) next(err);
       });
-      if(!!shiveeguiTuukhuud && shiveeguiTuukhuud?.length > 0)
-      {
+      if (!!shiveeguiTuukhuud && shiveeguiTuukhuud?.length > 0) {
         for (const object of shiveeguiTuukhuud) {
           var update = { ebarimtAvsanEsekh: true };
           if (ebarimt.customerNo)
@@ -553,18 +565,17 @@ async function zogsoolNiitDungeerEbarimtShivye(
             };
           Uilchluulegch(kholbolt)
             .findByIdAndUpdate(object._id, update)
-            .then((xariu) => {
-            })
-            .catch((err) => {
-            });
+            .then((xariu) => {})
+            .catch((err) => {});
         }
       }
-      if(!!dugaar)
-      {
+      if (!!dugaar) {
         var msgnuud = [];
         var text =
-          "Tanii zogsooliin barimt " + (d?.lottery || "") +
-          " , " + (formatNumber(shivekhDun)) + 
+          "Tanii zogsooliin barimt " +
+          (d?.lottery || "") +
+          " , " +
+          formatNumber(shivekhDun) +
           " ";
         msgnuud.push({ to: dugaar, text });
         if (msgnuud.length > 0) {
@@ -589,7 +600,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
         }
       }
     } catch (err) {
-      if(next) next(err);
+      if (next) next(err);
     }
   };
   ebarimtDuudya(ebarimt, butsaakhMethod, next, !!tuxainSalbar.eBarimtShine);
@@ -611,7 +622,7 @@ async function ebarimtShivye(req, res, next) {
       var niitDun = guilgee.tulbur?.reduce((a, b) => a + (b.dun || 0), 0);
       if (guilgee.ebarimtAvsanEsekh && niitDun == guilgee.niitDun)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
-      if(!guilgee.ebarimtAvakhDun || guilgee.ebarimtAvakhDun == 0)
+      if (!guilgee.ebarimtAvakhDun || guilgee.ebarimtAvakhDun == 0)
         throw new aldaa("Ибаримтын дүн авах шаардлагагүй!");
       tuxainSalbar = baiguullaga?.barilguud?.find(
         (e) => e._id.toString() == guilgee.barilgiinId
@@ -629,8 +640,7 @@ async function ebarimtShivye(req, res, next) {
           req.body.tukhainBaaziinKholbolt,
           nuatTulukhEsekh
         );
-      else if(!!next)
-        next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+      else if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
       butsaakhMethod = function (d, khariuObject) {
         try {
           if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
@@ -646,13 +656,17 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.save().catch((err) => {
             next(err);
           });
-          var ebarimtAmount = ebarimt.totalAmount + (khariuObject?.ebarimtAvsanDun || 0);
-          var update = { ebarimtAvsanEsekh: true, ebarimtAvakhDun: 0, ebarimtAvsanDun: ebarimtAmount };
+          var ebarimtAmount =
+            ebarimt.totalAmount + (khariuObject?.ebarimtAvsanDun || 0);
+          var update = {
+            ebarimtAvsanEsekh: true,
+            ebarimtAvakhDun: 0,
+            ebarimtAvsanDun: ebarimtAmount,
+          };
           if (ebarimt.customerNo) update.ebarimtRegister = ebarimt.customerNo;
           TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate({ _id: req.body.id }, update)
-            .then((xariu) => {
-            })
+            .then((xariu) => {})
             .catch((err) => {
               next(err);
             });
@@ -684,8 +698,7 @@ async function ebarimtShivye(req, res, next) {
           req.body.tukhainBaaziinKholbolt,
           nuatTulukhEsekh
         );
-      else if(!!next)
-        next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+      else if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
       butsaakhMethod = function (d, khariuObject) {
         try {
           if (d?.status != "SUCCESS" && !d.success) throw new Error(d.message);
@@ -700,7 +713,10 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.save().catch((err) => {
             next(err);
           });
-          var update = { ebarimtAvsanEsekh: true, ebarimtAvsanDun: (ebarimt.cashAmount || ebarimt.totalAmount) };
+          var update = {
+            ebarimtAvsanEsekh: true,
+            ebarimtAvsanDun: ebarimt.cashAmount || ebarimt.totalAmount,
+          };
           if (ebarimt.customerNo)
             update = {
               ...update,
@@ -713,8 +729,7 @@ async function ebarimtShivye(req, res, next) {
             };
           Uilchluulegch(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(req.body.id, update)
-            .then((xariu) => {
-            })
+            .then((xariu) => {})
             .catch((err) => {
               next(err);
             });
@@ -729,7 +744,7 @@ async function ebarimtShivye(req, res, next) {
       ).findById(req.body.id);
       if (guilgee.ebarimtAvsanEsekh)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
-      var geree = await Geree(req.body.tukhainBaaziinKholbolt).findById(
+      var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findById(
         guilgee.kholbosonGereeniiId[0]
       );
       if (!geree)
@@ -767,10 +782,9 @@ async function ebarimtShivye(req, res, next) {
               { _id: req.body.id },
               { ebarimtAvsanEsekh: true }
             )
-            .then((xariu) => {
-            })
+            .then((xariu) => {})
             .catch((err) => {
-              next(err);    
+              next(err);
             });
           res.send(d);
         } catch (err) {
@@ -792,8 +806,7 @@ async function ebarimtShivye(req, res, next) {
           req.body.tukhainBaaziinKholbolt,
           nuatTulukhEsekh
         );
-      else if(!!next)
-        next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+      else if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
     }
     ebarimtDuudya(ebarimt, butsaakhMethod, next, !!tuxainSalbar.eBarimtShine);
   } catch (error) {
@@ -877,7 +890,8 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
               { _id: butsaakhBarimt.togloomiinId },
               {
                 ebarimtAvsanEsekh: false,
-                ebarimtAvakhDun: butsaakhBarimt.amount || butsaakhBarimt.totalAmount,
+                ebarimtAvakhDun:
+                  butsaakhBarimt.amount || butsaakhBarimt.totalAmount,
               }
             )
             .catch((err) => {
@@ -927,9 +941,7 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
           res.send(body);
         }
       });
-    }
-    else
-      next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
+    } else next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
   } catch (error) {
     next(error);
   }
@@ -1225,48 +1237,48 @@ router.post(
         barilgiinId: req.body.barilgiinId,
         mashiniiDugaar: { $exists: true },
         ustgasanOgnoo: { $exists: false },
-        createdAt: { $gt: new Date(req.body.ognoo) }
-      }
-      if(!!req.body.mashiniiDugaar)
+        createdAt: { $gt: new Date(req.body.ognoo) },
+      };
+      if (!!req.body.mashiniiDugaar)
         match["mashiniiDugaar"] = req.body.mashiniiDugaar;
       // var query = [
       //   {
       //     $match: match,
       //   },
-        // {
-        //   $group: {
-        //     _id: "$zogsooliinId",
-        //     too: {
-        //       $sum: 1,
-        //     }
-        //   }
-        // },
-        // {
-        //   $match: { "too": { $gt: 1 } }
-        // }
+      // {
+      //   $group: {
+      //     _id: "$zogsooliinId",
+      //     too: {
+      //       $sum: 1,
+      //     }
+      //   }
+      // },
+      // {
+      //   $match: { "too": { $gt: 1 } }
+      // }
       // ];
-      var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(match);
-      if(ebarimtuud?.length > 0)
-      {
-        for await (const butsaakhBarimt of ebarimtuud)
-        {
+      var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(
+        match
+      );
+      if (ebarimtuud?.length > 0) {
+        for await (const butsaakhBarimt of ebarimtuud) {
           // var ebarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find({_id: barimt?._id});
           // ebarimt?.shift();
           // for await (const butsaakhBarimt of ebarimt)
           // {
-            ebarimtButsaaya(
-              butsaakhBarimt,
-              async (d) => {
-                butsaakhBarimt.ustgasanOgnoo = new Date();
-                butsaakhBarimt.isNew = false;
-                await butsaakhBarimt.save().catch((err) => {
-                  next(err);
-                });
-                // res.send("Amjilttai");
-              },
-              next,
-              true
-            );
+          ebarimtButsaaya(
+            butsaakhBarimt,
+            async (d) => {
+              butsaakhBarimt.ustgasanOgnoo = new Date();
+              butsaakhBarimt.isNew = false;
+              await butsaakhBarimt.save().catch((err) => {
+                next(err);
+              });
+              // res.send("Amjilttai");
+            },
+            next,
+            true
+          );
           // }
         }
       }

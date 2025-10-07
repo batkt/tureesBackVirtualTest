@@ -16,10 +16,7 @@ const moment = require("moment");
 const lodash = require("lodash");
 const excel = require("exceljs");
 const mongoose = require("mongoose");
-const {
-  Mashin,
-  BlockMashin,
-} = require("parking-v1");
+const { Mashin, BlockMashin } = require("parking-v1");
 
 function formatNumber(num, fixed = 2) {
   if (num === undefined || num === null || num === "")
@@ -74,7 +71,7 @@ async function gereeBaivalBugluy(
   mashiniiJagsaalt.forEach((a) => {
     utasnuud.push(a.ezemshigchiinUtas);
   });
-  var gereeniiJagsaalt = await Geree(tukhainBaaziinKholbolt).find(match);
+  var gereeniiJagsaalt = await Geree(tukhainBaaziinKholbolt, true).find(match);
   if (gereeniiJagsaalt.length !== 0) {
     var tukhainMashin;
     gereeniiJagsaalt.forEach((x) => {
@@ -103,7 +100,7 @@ async function gereeBaigaaEskhiigShalgaya(
   gereenuud.forEach((a) => {
     jagsaalt.push(a.gereeniiDugaar);
   });
-  var gereeniiJagsaalt = await Geree(tukhainBaaziinKholbolt).find({
+  var gereeniiJagsaalt = await Geree(tukhainBaaziinKholbolt, true).find({
     gereeniiDugaar: { $in: jagsaalt },
     baiguullagiinId: baiguullagiinId,
   });
@@ -328,7 +325,7 @@ async function talbaiBaigaaEskhiigShalgaya(
     baiguullagiinId: baiguullagiinId,
     barilgiinId: barilgiinId,
   });
-  var gereeJagsaalt = await Geree(tukhainBaaziinKholbolt).find({
+  var gereeJagsaalt = await Geree(tukhainBaaziinKholbolt, true).find({
     talbainDugaar: { $in: jagsaalt },
     baiguullagiinId: baiguullagiinId,
     barilgiinId: barilgiinId,
@@ -2616,7 +2613,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     });
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
     if (gereeniiDugaaruud?.length > 0) {
-      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt).find({
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true).find({
         gereeniiDugaaruud: { $in: gereeniiDugaaruud },
       });
       var oldooguiGeree = [];
@@ -3057,7 +3054,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
     var niitGereenuud = [];
     var oldooguiGeree = [];
     if (registeruud.length > 0) {
-      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .find({
           register: { $in: registeruud },
           barilgiinId: req.body.barilgiinId,
@@ -3078,7 +3075,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
       }
     }
     if (talbainDugaaruud.length > 0) {
-      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .find({
           talbainDugaar: { $in: talbainDugaaruud },
           barilgiinId: req.body.barilgiinId,
@@ -3100,7 +3097,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
       }
     }
     if (gereeniiDugaaruud.length > 0) {
-      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .find({
           gereeniiDugaar: { $in: gereeniiDugaaruud },
           barilgiinId: req.body.barilgiinId,
@@ -3584,7 +3581,7 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
     var niitGereenuud = [];
     var oldooguiGeree = [];
     if (registeruud.length > 0) {
-      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt ,true)
         .find({
           register: { $in: registeruud },
           barilgiinId: req.body.barilgiinId,
@@ -3605,7 +3602,7 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
       }
     }
     if (talbainDugaaruud.length > 0) {
-      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .find({
           talbainDugaar: { $in: talbainDugaaruud },
           barilgiinId: req.body.barilgiinId,
@@ -3627,7 +3624,7 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
       }
     }
     if (gereeniiDugaaruud.length > 0) {
-      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt)
+      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt,true)
         .find({
           gereeniiDugaar: { $in: gereeniiDugaaruud },
           barilgiinId: req.body.barilgiinId,
