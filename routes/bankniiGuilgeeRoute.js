@@ -84,7 +84,7 @@ router
         },
       },
     ];
-    BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+    BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true)
       .aggregate(query)
       .then((result) => {
         res.send(result);
@@ -134,7 +134,7 @@ router
         },
       }]
 
-    var result = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).aggregate(query);
+    var result = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true).aggregate(query);
     var filterResult = result?.filter((e) => e.countRef > 1);
     for await (const val of filterResult)
     {
@@ -152,7 +152,7 @@ router
         match["jrno"] = val?._id;
       else if(bank === "tdb")
         match["NtryRef"] = val?._id;
-      var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
+      var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true).find(match);
       if(resultRef?.length > 0)
       {
         if(req.body.type === 1) // ebarimtAvsanEsekh true baival uldeekh
@@ -201,7 +201,7 @@ router
     if(!!req.body.record)  
       match["record"] = req.body.record;
     
-    var result = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
+    var result = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true).find(match);
     for await (const val of result)
     {
       match = {
@@ -210,7 +210,7 @@ router
         dansniiDugaar: req.body.dansniiDugaar,
         record: val.record,
       }
-      var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).find(match);
+      var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true).find(match);
       if(resultRef?.length === 0)
       {
         var guilgee = new BankniiGuilgee(req.body.tukhainBaaziinKholbolt)();
@@ -253,7 +253,7 @@ router
       }
       if (kholboltuud) {
         for await (const kholbolt of kholboltuud) {
-          var guilgeenuud = await BankniiGuilgee(kholbolt).find({ baiguullagiinId: kholbolt.baiguullagiinId, bank: { $exists: false }});
+          var guilgeenuud = await BankniiGuilgee(kholbolt, true).find({ baiguullagiinId: kholbolt.baiguullagiinId, bank: { $exists: false }});
           for await (const guilgee of guilgeenuud)
           {
             var dans = await Dans(kholbolt).findOne({ baiguullagiinId: kholbolt.baiguullagiinId, dugaar: guilgee.dansniiDugaar });
@@ -282,7 +282,7 @@ router
       }
       if (kholboltuud) {
         for await (const kholbolt of kholboltuud) {
-          var guilgeenuud = await BankniiGuilgee(kholbolt).find({ baiguullagiinId: kholbolt.baiguullagiinId });
+          var guilgeenuud = await BankniiGuilgee(kholbolt, true).find({ baiguullagiinId: kholbolt.baiguullagiinId });
           for await (const guilgee of guilgeenuud)
           {
             var dugaar = guilgee.bank === "khanbank" ? guilgee.record : 

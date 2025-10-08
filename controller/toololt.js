@@ -866,7 +866,7 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
         },
       },
     ];
-  BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+  BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true)
     .aggregate(query)
     .then((result) => {
       if (result && result.length > 0) {

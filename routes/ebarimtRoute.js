@@ -740,7 +740,7 @@ async function ebarimtShivye(req, res, next) {
       };
     } else {
       var guilgee = await BankniiGuilgee(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt, true
       ).findById(req.body.id);
       if (guilgee.ebarimtAvsanEsekh)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
@@ -1132,7 +1132,7 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
         },
       },
     ];
-    var result1 = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+    var result1 = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true)
       .aggregate(query)
       .catch((err) => {
         next(err);

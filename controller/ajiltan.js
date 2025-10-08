@@ -715,7 +715,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
             ];
-            var result = await BankniiGuilgee(kholbolt).aggregate(query);
+            var result = await BankniiGuilgee(kholbolt, true).aggregate(query);
             if (result && result.length > 0) {
               var niitDun = lodash.sumBy(result, function (object) {
                 return object.dun;

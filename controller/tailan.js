@@ -147,7 +147,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
     })
     .lean();
   var zardliinDunguud = await BankniiGuilgee(
-    req.body.tukhainBaaziinKholbolt
+    req.body.tukhainBaaziinKholbolt, true
   ).aggregate([
     {
       $match: {
@@ -205,7 +205,7 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     },
   ]);
-  BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+  BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true)
     .aggregate(query)
     .then(async (result) => {
       if (result && result.length > 0) {
@@ -577,7 +577,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     ];
     var zardluud = await BankniiGuilgee(
-      req.body.tukhainBaaziinKholbolt
+      req.body.tukhainBaaziinKholbolt, true
     ).aggregate(query);
     query = [
       {
@@ -635,7 +635,7 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     ];
     var orloguud = await BankniiGuilgee(
-      req.body.tukhainBaaziinKholbolt
+      req.body.tukhainBaaziinKholbolt, true
     ).aggregate(query);
     var niitZardal = 0;
     var niitOrlogo = 0;
