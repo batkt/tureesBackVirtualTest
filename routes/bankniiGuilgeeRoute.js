@@ -8,7 +8,7 @@ const { tokenShalgakh, crud, UstsanBarimt, Dans } = require("zevbackv2");
 //const { crud } = require('../components/crud');
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 
-crud(router, "bankniiGuilgee", BankniiGuilgee, UstsanBarimt);
+crud(router, "bankniiGuilgee", (conn) => BankniiGuilgee(conn, true), UstsanBarimt);
 router.post(
   "/bankniiGuilgeeToololtAvya",
   tokenShalgakh,
