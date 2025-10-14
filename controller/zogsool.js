@@ -194,7 +194,7 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
       var set = {
         "tuukh.0.tulbur": tukhainObject?.tuukh?.[0]?.tulbur || 0,
         "tuukh.0.tuluv": (body.turul === "qpayUridchilsan" ? 0 : 1),
-        "tuukh.0.tulukhDun": 0,
+        "tuukh.0.tulukhDun": (body.turul === "qpayUridchilsan" ? body.paid_amount : 0),
       };
       if (bodsonDun > 0 && bodsonDun === body.paid_amount) {
         set["tuukh.0.burtgesenAjiltaniiId"] = body.ajiltniiId;
