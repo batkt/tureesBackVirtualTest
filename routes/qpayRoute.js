@@ -176,10 +176,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
         !!req.body.cameraIP
       ) {
         callback_url =
-          "http://" +
-          process.env.UNDSEN_IP +
-          ":" +
-          process.env.PORT +
+          process.env.UNDSEN_SERVER +
           "/qpaycallbackGadaaSticker/" +
           req.body.baiguullagiinId +
           "/" +

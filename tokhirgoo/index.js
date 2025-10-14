@@ -12,4 +12,5 @@ module.exports = {
   TOKI_USERNAME: process.env.TOKI_USERNAME,
   TOKI_PASSWORD: process.env.TOKI_PASSWORD,
   TOKI_3RD_PARTY: process.env.TOKI_3RD_PARTY,
+  UNDSEN_SERVER: process.env.UNDSEN_SERVER,
 };
