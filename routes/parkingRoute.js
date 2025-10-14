@@ -478,11 +478,12 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         query["tuukh.0.garsanKhaalga"] = "192.168.2.237";
       }
     }
+    let regex = /\b\d{4}[А-ЯӨҮ]{2,3}\b/gu;
+    let result = nemeltUtga?.match(regex);
     console.log("QR gadaa ----------------999 ->>" + JSON.stringify(nemeltUtga));
-    if (nemeltUtga?.endsWith("QRGadaa"))
-    {
-      console.log("QR gadaa ------------------>>" + JSON.stringify(nemeltUtga));
-      query["mashiniiDugaar"] = nemeltUtga.split("QRGadaa")[0];
+    if (result) {
+      console.log("Машины дугаар: " + result[0]);
+      query["mashiniiDugaar"] = result[0];
     }
     var oldsonData = await Uilchluulegch(kholbolt, true).findOne(query);
     if (oldsonData) {
