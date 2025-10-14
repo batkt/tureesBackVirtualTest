@@ -2738,6 +2738,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
 
     const allMachineNumbers = [];
     jagsaalt.forEach((item) => {
+      item.burtgesenAjiltaniiNer = req.body.nevtersenAjiltniiToken.ner;
       if (item.mashinuud && Array.isArray(item.mashinuud)) {
         allMachineNumbers.push(...item.mashinuud);
       }
