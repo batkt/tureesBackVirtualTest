@@ -1814,6 +1814,7 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
   let worksheetSOKH = workbook.addWorksheet("СӨХ");
   let worksheetTureeslegch = workbook.addWorksheet("Түрээслэгч");
   let worksheetBaiguullaga = workbook.addWorksheet("Байгууллага");
+  let worksheetVIP = workbook.addWorksheet("VIP");
   worksheetGereet.columns = [
     {
       header: "Утас",
@@ -1855,6 +1856,32 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
     },
   ];
   worksheetDotood.columns = [
+    {
+      header: "Утас",
+      key: "Утас",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Машины дугаар",
+      key: "Машины дугаар",
+      headerRow: true,
+      width: 20,
+    },
+    {
+      header: "Нэр",
+      key: "Нэр",
+      headerRow: true,
+      width: 30,
+    },
+    {
+      header: "Тайлбар",
+      key: "Тайлбар",
+      headerRow: true,
+      width: 30,
+    },
+  ];
+  worksheetVIP.columns = [
     {
       header: "Утас",
       key: "Утас",
@@ -2066,6 +2093,7 @@ exports.mashiniiExcelAvya = asyncHandler(async (req, res, next) => {
   styleHeaderRow(worksheetTureeslegch);
   styleHeaderRow(worksheetSOKH);
   styleHeaderRow(worksheetDuriin);
+  styleHeaderRow(worksheetVIP);
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -2088,7 +2116,8 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       workbook.SheetNames[2] !== "Дурын" ||
       workbook.SheetNames[3] !== "СӨХ" ||
       workbook.SheetNames[4] !== "Түрээслэгч" ||
-      workbook.SheetNames[5] !== "Байгууллага"
+      workbook.SheetNames[5] !== "Байгууллага" ||
+      workbook.SheetNames[6] !== "VIP"
     )
       throw new aldaa("Та загварын workbook дагуу бөглөөгүй байна!");
     const mashinSheetGereet = workbook.Sheets[workbook.SheetNames[0]];
@@ -2097,6 +2126,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     const mashinSheetSOKH = workbook.Sheets[workbook.SheetNames[3]];
     const mashinSheetTureeslegch = workbook.Sheets[workbook.SheetNames[4]];
     const mashinSheetBaiguullaga = workbook.Sheets[workbook.SheetNames[5]];
+    const mashinSheetVIP = workbook.Sheets[workbook.SheetNames[6]];
     var jagsaalt = [];
     var tolgoinObject = {};
     var tolgoinObject1 = {};
@@ -2104,6 +2134,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     var tolgoinObject3 = {};
     var tolgoinObject4 = {};
     var tolgoinObject5 = {};
+    var tolgoinObject6 = {};
     if (
       !mashinSheetGereet["A1"].v.includes("Утас") ||
       !mashinSheetGereet["B1"].v.includes("Машины дугаар") ||
@@ -2130,6 +2161,14 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       !mashinSheetDotood["D1"].v.includes("Тайлбар")
     ) {
       throw new aldaa("Та загварын dotood дагуу бөглөөгүй байна!");
+    }
+    if (
+      !mashinSheetVIP["A1"].v.includes("Утас") ||
+      !mashinSheetVIP["B1"].v.includes("Машины дугаар") ||
+      !mashinSheetVIP["C1"].v.includes("Нэр") ||
+      !mashinSheetVIP["D1"].v.includes("Тайлбар")
+    ) {
+      throw new aldaa("Та загварын VIP дагуу бөглөөгүй байна!");
     }
     if (
       !mashinSheetSOKH["A1"].v.includes("Утас") ||
@@ -2192,6 +2231,23 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
           tolgoinObject1.ner = cellAsString[0];
         else if (mashinSheetDotood[cellAsString].v.includes("Тайлбар"))
           tolgoinObject1.temdeglel = cellAsString[0];
+      }
+    }
+    for (let cell in mashinSheetVIP) {
+      var cellAsString = cell.toString();
+      if (
+        cellAsString[1] === "1" &&
+        cellAsString.length == 2 &&
+        !!mashinSheetVIP[cellAsString].v
+      ) {
+        if (mashinSheetVIP[cellAsString].v.includes("Утас"))
+          tolgoinObject6.utas = cellAsString[0];
+        else if (mashinSheetVIP[cellAsString].v.includes("Машины дугаар"))
+          tolgoinObject6.dugaar = cellAsString[0];
+        else if (mashinSheetVIP[cellAsString].v.includes("Нэр"))
+          tolgoinObject6.ner = cellAsString[0];
+        else if (mashinSheetVIP[cellAsString].v.includes("Тайлбар"))
+          tolgoinObject6.temdeglel = cellAsString[0];
       }
     }
     for (let cell in mashinSheetGereet) {
@@ -2300,7 +2356,11 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
-    // end ywsan
+    var dataVIP = xlsx.utils.sheet_to_json(mashinSheetVIP, {
+      header: 1,
+      range: 1,
+    });
+
     var aldaaniiMsg = "";
     var muriinDugaarDuriin = 1;
     var muriinDugaarDotood = 1;
@@ -2308,6 +2368,7 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
     var muriinDugaarSOKH = 1;
     var muriinDugaarTureeslegch = 1;
     var muriinDugaarBaiguullaga = 1;
+    var muriinDugaarVIP = 1;
     dataDuriin.forEach((mur) => {
       muriinDugaarDuriin++;
       let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
@@ -2446,6 +2507,42 @@ exports.mashiniiExcelTatya = asyncHandler(async (req, res, next) => {
       object.temdeglel = mur[usegTooruuKhurvuulekh(tolgoinObject1.temdeglel)];
       object.gereeniiDugaar =
         mur[usegTooruuKhurvuulekh(tolgoinObject1.gereeniiDugaar)];
+      object.baiguullagiinId = req.body.baiguullagiinId;
+      object.barilgiinId = req.body.barilgiinId;
+      if (!object.dugaar) {
+        aldaaniiMsg =
+          aldaaniiMsg +
+          "Алдаа! " +
+          workbook.SheetNames[1] +
+          " sheet-ны " +
+          muriinDugaarDotood +
+          " дугаар мөрөнд ";
+        if (!object.dugaar) aldaaniiMsg = aldaaniiMsg + "'Машины дугаар', ";
+        aldaaniiMsg = aldaaniiMsg.slice(0, -2);
+        aldaaniiMsg = aldaaniiMsg + " ";
+        aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
+      } else {
+        object.dugaar = String(object.dugaar).toUpperCase();
+        jagsaalt.push(object);
+        if (!!object.gereeniiDugaar)
+          gereeniiDugaaruud.push(object.gereeniiDugaar);
+      }
+    });
+    //VIP
+    dataVIP.forEach((mur) => {
+      muriinDugaarDotood++;
+      let object = new Mashin(req.body.tukhainBaaziinKholbolt)();
+      object.dugaar =
+        mur[
+          usegTooruuKhurvuulekh(tolgoinObject6.dugaar.trim().replace(/\s/g, ""))
+        ];
+      object.ezemshigchiinNer = mur[usegTooruuKhurvuulekh(tolgoinObject6.ner)];
+      object.ezemshigchiinUtas =
+        mur[usegTooruuKhurvuulekh(tolgoinObject6.utas)];
+      object.turul = "VIP";
+      object.temdeglel = mur[usegTooruuKhurvuulekh(tolgoinObject6.temdeglel)];
+      object.gereeniiDugaar =
+        mur[usegTooruuKhurvuulekh(tolgoinObject6.gereeniiDugaar)];
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
       if (!object.dugaar) {
@@ -3581,7 +3678,7 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
     var niitGereenuud = [];
     var oldooguiGeree = [];
     if (registeruud.length > 0) {
-      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt ,true)
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .find({
           register: { $in: registeruud },
           barilgiinId: req.body.barilgiinId,
@@ -3624,7 +3721,7 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
       }
     }
     if (gereeniiDugaaruud.length > 0) {
-      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt,true)
+      gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .find({
           gereeniiDugaar: { $in: gereeniiDugaaruud },
           barilgiinId: req.body.barilgiinId,
