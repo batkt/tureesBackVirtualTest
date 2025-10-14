@@ -3343,7 +3343,7 @@ router.get("/notTokiParking", async (req, res, next) => {
     }
     var result = [];
     if (kholboltuud) {
-      var query = { tokiNer: { $exists: true } };
+      var query = { tokiNer: { $exists: false } };
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
       for await (const kholbolt of kholboltuud) {
