@@ -203,10 +203,7 @@ async function qpayObjectUusgeye(
       maximum_amount: null,
       amount: body.dun,
       callback_url:
-        "http://" +
-        process.env.UNDSEN_IP +
-        ":" +
-        process.env.PORT +
+        process.env.UNDSEN_SERVER +
         "/qpayTulye/" +
         body.baiguullagiinId.toString() +
         "/" +

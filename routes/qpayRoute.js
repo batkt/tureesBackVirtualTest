@@ -161,10 +161,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       req.body.tailbar = tailbar;
       /*Төлбөр callback url*/
       var callback_url =
-        "http://" +
-        process.env.UNDSEN_IP +
-        ":" +
-        process.env.PORT +
+        process.env.UNDSEN_SERVER +
         "/qpaycallback/" +
         req.body.baiguullagiinId +
         "/" +
@@ -192,10 +189,7 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
       /*Түрээсийн төлбөр callback url*/
       if (req.body.gereeniiId && req.body.dansniiDugaar) {
         callback_url =
-          "http://" +
-          process.env.UNDSEN_IP +
-          ":" +
-          process.env.PORT +
+          process.env.UNDSEN_SERVER +
           "/qpayTulye/" +
           req.body.baiguullagiinId.toString() +
           "/" +

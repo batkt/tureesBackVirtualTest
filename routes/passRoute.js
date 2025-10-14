@@ -119,10 +119,7 @@ router.post("/passGargaya", tokenShalgakh, async (req, res, next) => {
     const requestTime = new Date().toISOString(); // Request time in ISO format
     var dun = req.body.dun;
     var callback_url =
-      "http://" +
-      process.env.UNDSEN_IP +
-      ":" +
-      process.env.PORT +
+      process.env.UNDSEN_SERVER +
       "/passcallback/" +
       req.body.baiguullagiinId +
       "/" +

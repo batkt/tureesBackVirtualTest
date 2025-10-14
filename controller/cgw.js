@@ -1566,10 +1566,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   for await (const item of guilgeenuud) {
                     if (!!dans.zogsooliinId) {
                       var url =
-                        "http://" +
-                        process.env.UNDSEN_IP +
-                        ":" +
-                        process.env.PORT +
+                        process.env.UNDSEN_SERVER +
                         "/zogsooliinTulburOrjIrlee";
                       axios
                         .post(url, {
@@ -1587,10 +1584,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     ) {
                       // GTHub dotor garakh
                       var url =
-                        "http://" +
-                        process.env.UNDSEN_IP +
-                        ":" +
-                        process.env.PORT +
+                        process.env.UNDSEN_SERVER +
                         "/zogsooliinTulburOrjIrlee";
                       axios
                         .post(url, {
@@ -1736,10 +1730,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         for await (const item of guilgeenuud) {
                           if (!!dans.zogsooliinId) {
                             var url =
-                              "http://" +
-                              process.env.UNDSEN_IP +
-                              ":" +
-                              process.env.PORT +
+                              process.env.UNDSEN_SERVER +
                               "/zogsooliinTulburOrjIrlee";
                             axios
                               .post(url, {
@@ -1866,10 +1857,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   for await (const item of guilgeenuud) {
                     if (!!dans.zogsooliinId) {
                       var url =
-                        "http://" +
-                        process.env.UNDSEN_IP +
-                        ":" +
-                        process.env.PORT +
+                        process.env.UNDSEN_SERVER +
                         "/zogsooliinTulburOrjIrlee";
                       axios
                         .post(url, {
@@ -1994,10 +1982,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     for await (const item of guilgeenuud) {
                       if (!!dans.zogsooliinId && item.income > 0) {
                         var url =
-                          "http://" +
-                          process.env.UNDSEN_IP +
-                          ":" +
-                          process.env.PORT +
+                          process.env.UNDSEN_SERVER +
                           "/zogsooliinTulburOrjIrlee";
                         axios
                           .post(url, {
