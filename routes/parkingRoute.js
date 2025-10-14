@@ -480,11 +480,8 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     }
     let regex = /\b\d{4}[А-ЯӨҮ]{2,3}\b/gu;
     let result = nemeltUtga?.match(regex);
-    console.log("QR gadaa ----------------999 ->>" + JSON.stringify(nemeltUtga));
-    if (result) {
-      console.log("Машины дугаар: " + result[0]);
+    if (result)
       query["mashiniiDugaar"] = result[0];
-    }
     var oldsonData = await Uilchluulegch(kholbolt, true).findOne(query);
     if (oldsonData) {
       await Uilchluulegch(kholbolt).findByIdAndUpdate(
