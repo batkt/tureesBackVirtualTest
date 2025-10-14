@@ -478,6 +478,8 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         query["tuukh.0.garsanKhaalga"] = "192.168.2.237";
       }
     }
+    if (nemeltUtga?.endsWith("QRGadaa"))
+      query["mashiniiDugaar"] = nemeltUtga.split("QRGadaa")[0];
     var oldsonData = await Uilchluulegch(kholbolt, true).findOne(query);
     if (oldsonData) {
       await Uilchluulegch(kholbolt).findByIdAndUpdate(
