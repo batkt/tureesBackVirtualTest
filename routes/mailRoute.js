@@ -331,23 +331,19 @@ function msgIlgeeyeUnitel(
       headers: { ...form.getHeaders() },
       })
         .then((err1, res1, body) => {
-          if (err1) {
-            next(err1);
-          } else {
-            if (!!req && !!req.body) {
-              var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
-              msg.baiguullagiinId = req.body.baiguullagiinId;
-              msg.barilgiinId = req.body.barilgiinId;
-              msg.dugaar = data.to;
-              msg.gereeniiId = data.gereeniiId;
-              msg.msg = data.text;
-              msg.msgIlgeekhKey = key;
-              msg.msgIlgeekhDugaar = dugaar;
-              msg.save();
-            }
-            console.log("--- status ----------->>" + body);
-            khariu.push(body);
+          if (!!req && !!req.body) {
+            var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
+            msg.baiguullagiinId = req.body.baiguullagiinId;
+            msg.barilgiinId = req.body.barilgiinId;
+            msg.dugaar = data.to;
+            msg.gereeniiId = data.gereeniiId;
+            msg.msg = data.text;
+            msg.msgIlgeekhKey = key;
+            msg.msgIlgeekhDugaar = dugaar;
+            msg.save();
           }
+          console.log("--- status ----------->>" + body);
+          khariu.push(body);
         })
         .catch((error) => {});
     });
