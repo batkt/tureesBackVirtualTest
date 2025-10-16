@@ -340,7 +340,8 @@ async function msgIlgeeyeUnitel(
         msg.msgIlgeekhDugaar = dugaar;
         msg.save();
         response.Result = response.status;
-        console.log( "--- status SUCCESS ----------->>" + JSON.stringify(response));
+        console.log( "--- status SUCCESS ----------->>" + JSON.stringify(response.status));
+        console.log( "--- status data ----------->>" + JSON.stringify(response.data));
         khariu.push(response);
       }
     };
