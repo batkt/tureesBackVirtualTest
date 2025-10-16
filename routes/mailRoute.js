@@ -329,8 +329,8 @@ async function msgIlgeeyeUnitel(
         form,
         { headers: form.getHeaders() }
       );
-      // console.log( "--- status SUCCESS ----------->>" + JSON.stringify(resp?.data.status));
-      // console.log( "--- status data ----------->>" + JSON.stringify(resp?.data));
+      console.log( "--- status SUCCESS ----------->>" + JSON.stringify(resp?.data.status));
+      console.log( "--- status data ----------->>" + JSON.stringify(resp?.data));
       if (!!req && !!req.body && resp?.data?.status === "SUCCESS") {
         var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
         msg.baiguullagiinId = req.body.baiguullagiinId;
@@ -342,8 +342,8 @@ async function msgIlgeeyeUnitel(
         msg.msgIlgeekhDugaar = dugaar;
         msg.save();
         // resp?.data.Result = resp?.data.status;
-        // console.log( "--- status SUCCESS ----------->>" + JSON.stringify(resp?.data.status));
-        // console.log( "--- status data ----------->>" + JSON.stringify(resp?.data));
+        console.log( "--- status SUCCESS ----------->>" + JSON.stringify(resp?.data.status));
+        console.log( "--- status data ----------->>" + JSON.stringify(resp?.data));
         khariu.push(resp?.data);
       }
     };
