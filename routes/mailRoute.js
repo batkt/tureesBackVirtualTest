@@ -330,7 +330,7 @@ function msgIlgeeyeUnitel(
       data: form,
       headers: { ...form.getHeaders() },
       })
-        .then((err1, res1, body) => {
+        .then((data) => {
           if (!!req && !!req.body) {
             var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
             msg.baiguullagiinId = req.body.baiguullagiinId;
@@ -342,9 +342,8 @@ function msgIlgeeyeUnitel(
             msg.msgIlgeekhDugaar = dugaar;
             msg.save();
           }
-          console.log("--- status ------d----->>" + res1);
-          console.log("--- status ------d----->>" + err1);
-          khariu.push(body);
+          console.log("--- status ------d----->>" + JSON.stringify(data));
+          khariu.push([data]);
         })
         .catch((error) => {});
     });
