@@ -344,7 +344,7 @@ function msgIlgeeyeUnitel(
               msg.msgIlgeekhDugaar = dugaar;
               msg.save();
             }
-            console.log("-------------->>" + JSON.stringify(body));
+            console.log("--- status ----------->>" + JSON.stringify(body.status));
             khariu.push(body);
           }
         })
