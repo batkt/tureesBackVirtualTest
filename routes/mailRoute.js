@@ -329,6 +329,7 @@ function msgIlgeeyeUnitel(
         form,
         { headers: form.getHeaders() }
       );
+      console.log( "--- response 99 ----------->>" + JSON.stringify(response));
       if (!!req && !!req.body && response.status == "SUCCESS") {
         var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
         msg.baiguullagiinId = req.body.baiguullagiinId;
