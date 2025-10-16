@@ -329,7 +329,7 @@ function msgIlgeeyeUnitel(
         form,
         { headers: form.getHeaders() }
       );
-      if (!!req && !!req.body && response.status == 200) {
+      if (!!req && !!req.body && response.status == "SUCCESS") {
         var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
         msg.baiguullagiinId = req.body.baiguullagiinId;
         msg.barilgiinId = req.body.barilgiinId;
@@ -340,7 +340,7 @@ function msgIlgeeyeUnitel(
         msg.msgIlgeekhDugaar = dugaar;
         msg.save();
         response.Result = response.status;
-        console.log( "--- status 222 ----------->>" + JSON.stringify(response));
+        console.log( "--- status SUCCESS ----------->>" + JSON.stringify(response));
         khariu.push(response);
       }
     });
