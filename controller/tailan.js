@@ -2061,8 +2061,10 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         if (req.body.ajiltnaarAvakhEsekh) {
           var data = [];
           for (const ajiltan of ajiltnuud) {
-            if (!!ajiltan?._id?.burtgesenAjiltaniiNer && ajiltan?._id?.burtgesenAjiltaniiId !== 0) {
-              var ajiltanData = await Ajiltan(db.erunkhiiKholbolt).findById(ajiltan?._id?.burtgesenAjiltaniiId);
+            if (!!ajiltan?._id?.burtgesenAjiltaniiNer) {
+              var ajiltanData;
+              if(ajiltan?._id?.burtgesenAjiltaniiId !== 0)
+                ajiltanData = await Ajiltan(db.erunkhiiKholbolt).findById(ajiltan?._id?.burtgesenAjiltaniiId);
               var mur = {
                 ajiltanRegister: ajiltanData?.register ? ajiltanData?.register : ajiltan?._id?.burtgesenAjiltaniiNer,
                 ajiltanNer: ajiltan?._id?.burtgesenAjiltaniiNer,
