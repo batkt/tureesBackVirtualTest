@@ -2066,7 +2066,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
               if(ajiltan?._id?.burtgesenAjiltaniiId !== 0)
                 ajiltanData = await Ajiltan(db.erunkhiiKholbolt).findById(ajiltan?._id?.burtgesenAjiltaniiId);
               var mur = {
-                ajiltanRegister: ajiltanData?.register ? ajiltanData?.register : ajiltan?._id?.burtgesenAjiltaniiNer,
+                ajiltanRegister: ajiltan?._id?.burtgesenAjiltaniiId !== 0 ? ajiltanData?.register : ajiltan?._id?.burtgesenAjiltaniiNer,
                 ajiltanNer: ajiltan?._id?.burtgesenAjiltaniiNer,
               };
               var filterDunguud = dunguud?.filter(
