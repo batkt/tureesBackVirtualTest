@@ -324,12 +324,14 @@ async function msgIlgeeyeUnitel(
       form.append("to", data.to.toString());
       form.append("body", data.text.toString());
       console.log("--- status ----------->>" + JSON.stringify(data));
-      const response = await axios.post(
+      const resp = await axios.post(
         "https://pbxuc.unitel.mn/hodupbx_api/v1.4/sendSms",
         form,
         { headers: form.getHeaders() }
       );
-      if (!!req && !!req.body && response.status == "SUCCESS") {
+      console.log( "--- status SUCCESS ----------->>" + JSON.stringify(resp?.data.status));
+      console.log( "--- status data ----------->>" + JSON.stringify(resp?.data));
+      if (!!req && !!req.body && resp?.data?.status === "SUCCESS") {
         var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
         msg.baiguullagiinId = req.body.baiguullagiinId;
         msg.barilgiinId = req.body.barilgiinId;
@@ -339,10 +341,10 @@ async function msgIlgeeyeUnitel(
         msg.msgIlgeekhKey = key;
         msg.msgIlgeekhDugaar = dugaar;
         msg.save();
-        response.Result = response.status;
-        console.log( "--- status SUCCESS ----------->>" + JSON.stringify(response.status));
-        console.log( "--- status data ----------->>" + JSON.stringify(response.data));
-        khariu.push(response);
+        resp?.data.Result = resp?.data.status;
+        console.log( "--- status SUCCESS ----------->>" + JSON.stringify(resp?.data.status));
+        console.log( "--- status data ----------->>" + JSON.stringify(resp?.data));
+        khariu.push(resp?.data);
       }
     };
     res.send(khariu);
