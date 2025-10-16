@@ -324,29 +324,25 @@ function msgIlgeeyeUnitel(
       form.append("to", data.to.toString());
       form.append("body", data.text.toString());
       console.log("--- status ----------->>" + JSON.stringify(data));
-      axios({
-      method: "post",
-      url: "https://pbxuc.unitel.mn/hodupbx_api/v1.4/sendSms",
-      data: form,
-      headers: { ...form.getHeaders() },
-      })
-        .then((data) => {
-          if (!!req && !!req.body) {
-            var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
-            msg.baiguullagiinId = req.body.baiguullagiinId;
-            msg.barilgiinId = req.body.barilgiinId;
-            msg.dugaar = data.to;
-            msg.gereeniiId = data.gereeniiId;
-            msg.msg = data.text;
-            msg.msgIlgeekhKey = key;
-            msg.msgIlgeekhDugaar = dugaar;
-            msg.save();
-          }
-          data.Result = data.status;
-          console.log("--- status ------d----->>" + JSON.stringify(data));
-          khariu.push([data]);
-        })
-        .catch((error) => {});
+      const response = axios.post(
+        "https://pbxuc.unitel.mn/hodupbx_api/v1.4/sendSms",
+        form,
+        { headers: form.getHeaders() }
+      );
+      if (!!req && !!req.body && response.status == 200) {
+        var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
+        msg.baiguullagiinId = req.body.baiguullagiinId;
+        msg.barilgiinId = req.body.barilgiinId;
+        msg.dugaar = data.to;
+        msg.gereeniiId = data.gereeniiId;
+        msg.msg = data.text;
+        msg.msgIlgeekhKey = key;
+        msg.msgIlgeekhDugaar = dugaar;
+        msg.save();
+        response.Result = response.status;
+        console.log( "--- status 222 ----------->>" + JSON.stringify(response));
+        khariu.push(response);
+      }
     });
     res.send(khariu);
   } catch (err) {
