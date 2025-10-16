@@ -323,7 +323,6 @@ async function msgIlgeeyeUnitel(
       form.append("sms_number", dugaar);
       form.append("to", data.to.toString());
       form.append("body", data.text.toString());
-      console.log("--- status ----------->>" + JSON.stringify(data));
       const resp = await axios.post(
         "https://pbxuc.unitel.mn/hodupbx_api/v1.4/sendSms",
         form,
@@ -342,7 +341,6 @@ async function msgIlgeeyeUnitel(
         if (resp && resp.data) {
           resp.data.Result = resp.data.status;
         }
-        console.log( "--- status SUCCESS 9----------->>" + JSON.stringify(resp?.data.status));
         khariu.push(resp?.data);
       }
     };
