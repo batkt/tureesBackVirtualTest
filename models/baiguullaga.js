@@ -68,13 +68,6 @@ const baiguullagaSchema = new Schema(
             Boolean /** гэрээ дуусах үед талбайн төлбөр нэмэх эсэх */,
           gereeDuusakhTulbur: Number,
           zochinUrikhUneguiMinut: Number,
-
-          /**Хөнгөлөлт ажилтан харгалзахгүй өгөх боломж олгоно */
-          bukhAjiltanKhungulultOruulakhEsekh: Boolean,
-          /**Хоногоор хөнгөлөлт боломж олгоно */
-          khonogKhungulultOruulakhEsekh: Boolean,
-          /**Тухайн байгууллагын хөнгөлж болох дээд хувь байна */
-          deedKhungulultiinKhuvi: Number,
         },
         davkharuud: [
           {
