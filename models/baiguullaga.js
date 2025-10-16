@@ -73,6 +73,8 @@ const baiguullagaSchema = new Schema(
           bukhAjiltanKhungulultOruulakhEsekh: Boolean,
           /**Хоногоор хөнгөлөлт боломж олгоно */
           khonogKhungulultOruulakhEsekh: Boolean,
+          /**Тухайн байгууллагын хөнгөлж болох дээд хувь байна */
+          deedKhungulultiinKhuvi: Number,
         },
         davkharuud: [
           {
