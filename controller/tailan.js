@@ -9,6 +9,7 @@ const lodash = require("lodash");
 const moment = require("moment");
 const { Dans } = require("zevbackv2");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
+const Ajiltan = require("../models/ajiltan");
 
 const unguud = [
   "rgba(255, 99, 132, 0.5)",
@@ -1527,6 +1528,7 @@ exports.orlogiinChartSalbarKhugatsaagaarAvya = asyncHandler(
 
 exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
   try {
+    const { db } = require("zevbackv2");
     var butsaakhKhariu = {
       msg: "Амжилттай",
       turul: req.params.turul,
@@ -2015,7 +2017,10 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
           },
           {
             $group: {
-              _id: "$tuukh.burtgesenAjiltaniiNer",
+              _id: {
+                burtgesenAjiltaniiId: { $ifNull: ["$tuukh.burtgesenAjiltaniiId", ""] },
+                burtgesenAjiltaniiNer: "$tuukh.burtgesenAjiltaniiNer" 
+              },
             },
           },
         ]);
@@ -2057,11 +2062,13 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
           var data = [];
           for (const ajiltan of ajiltnuud) {
             if (!!ajiltan?._id) {
+              var ajiltanData = await Ajiltan(db.erunkhiiKholbolt).findById(ajiltan?._id?.burtgesenAjiltaniiId);
               var mur = {
-                ajiltan: ajiltan?._id,
+                ajiltanRegister: ajiltanData?.register ? ajiltanData?.register : ajiltan?._id?.burtgesenAjiltaniiNer,
+                ajiltanNer: ajiltan?._id?.burtgesenAjiltaniiNer,
               };
               var filterDunguud = dunguud?.filter(
-                (a) => a._id?.burtgesenAjiltaniiNer === ajiltan?._id
+                (a) => a._id?.burtgesenAjiltaniiNer === ajiltan?._id?.burtgesenAjiltaniiNer
               );
               if (filterDunguud?.length > 0) {
                 for (const row of filterDunguud) mur[row._id.turul] = row.dun;
