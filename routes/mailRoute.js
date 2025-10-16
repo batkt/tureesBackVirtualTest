@@ -305,7 +305,7 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
     next(err);
   }
 }
-function msgIlgeeyeUnitel(
+async function msgIlgeeyeUnitel(
   jagsaalt,
   key,
   dugaar,
@@ -316,7 +316,7 @@ function msgIlgeeyeUnitel(
   res
 ) {
   try {
-    jagsaalt.forEach((data) => {
+    for await (const data of jagsaalt) {
       const form = new FormData();
       form.append("token_id", key);
       form.append("extension_number", "11");
@@ -324,7 +324,7 @@ function msgIlgeeyeUnitel(
       form.append("to", data.to.toString());
       form.append("body", data.text.toString());
       console.log("--- status ----------->>" + JSON.stringify(data));
-      const response = axios.post(
+      const response = await axios.post(
         "https://pbxuc.unitel.mn/hodupbx_api/v1.4/sendSms",
         form,
         { headers: form.getHeaders() }
@@ -344,7 +344,7 @@ function msgIlgeeyeUnitel(
         console.log( "--- status SUCCESS ----------->>" + JSON.stringify(response));
         khariu.push(response);
       }
-    });
+    };
     res.send(khariu);
   } catch (err) {
     next(err);
