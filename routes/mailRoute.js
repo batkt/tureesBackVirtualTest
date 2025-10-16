@@ -316,39 +316,39 @@ function msgIlgeeyeUnitel(
   res
 ) {
   try {
-    for await (const data of jagsaalt) {
-      const form = new FormData();
-      form.append("token_id", key);
-      form.append("extension_number", "11");
-      form.append("sms_number", dugaar);
-      form.append("to", data.to.toString());
-      form.append("body", data.text.toString());
-      axios({
-      method: "post",
-      url: "https://pbxuc.unitel.mn/hodupbx_api/v1.4/sendSms",
-      data: form,
-      headers: { ...form.getHeaders() },
-      })
-        .then((err1, res1, body) => {
-          if (err1) {
-            next(err1);
-          } else {
-            if (!!req && !!req.body) {
-              var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
-              msg.baiguullagiinId = req.body.baiguullagiinId;
-              msg.barilgiinId = req.body.barilgiinId;
-              msg.dugaar = data.to;
-              msg.gereeniiId = data.gereeniiId;
-              msg.msg = data.text;
-              msg.msgIlgeekhKey = key;
-              msg.msgIlgeekhDugaar = dugaar;
-              msg.save();
-            }
-            khariu.push(body);
-          }
-        })
-        .catch((error) => {});
-    }
+    // for await (const data of jagsaalt) {
+    //   const form = new FormData();
+    //   form.append("token_id", key);
+    //   form.append("extension_number", "11");
+    //   form.append("sms_number", dugaar);
+    //   form.append("to", data.to.toString());
+    //   form.append("body", data.text.toString());
+    //   axios({
+    //   method: "post",
+    //   url: "https://pbxuc.unitel.mn/hodupbx_api/v1.4/sendSms",
+    //   data: form,
+    //   headers: { ...form.getHeaders() },
+    //   })
+    //     .then((err1, res1, body) => {
+    //       if (err1) {
+    //         next(err1);
+    //       } else {
+    //         if (!!req && !!req.body) {
+    //           var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
+    //           msg.baiguullagiinId = req.body.baiguullagiinId;
+    //           msg.barilgiinId = req.body.barilgiinId;
+    //           msg.dugaar = data.to;
+    //           msg.gereeniiId = data.gereeniiId;
+    //           msg.msg = data.text;
+    //           msg.msgIlgeekhKey = key;
+    //           msg.msgIlgeekhDugaar = dugaar;
+    //           msg.save();
+    //         }
+    //         khariu.push(body);
+    //       }
+    //     })
+    //     .catch((error) => {});
+    // }
     res.send(khariu);
   } catch (err) {
     next(err);
