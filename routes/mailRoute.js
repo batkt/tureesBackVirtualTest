@@ -341,7 +341,9 @@ async function msgIlgeeyeUnitel(
         msg.msgIlgeekhKey = key;
         msg.msgIlgeekhDugaar = dugaar;
         msg.save();
-        // resp?.data.Result = resp?.data.status;
+        if (resp && resp.data) {
+          resp.data.Result = resp.data.status;
+        }
         console.log( "--- status SUCCESS ----------->>" + JSON.stringify(resp?.data.status));
         console.log( "--- status data ----------->>" + JSON.stringify(resp?.data));
         khariu.push(resp?.data);
