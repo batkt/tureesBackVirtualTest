@@ -356,7 +356,9 @@ router
         });
         maxTsag = khariu.tariffuud[khariu.tariffuud.length - 1].minut;
         for await (const x of khariu.tariffuud) {
-          dun = x.tariff;
+          if (minut > 0) {
+            dun = x.tariff;
+          }
           if (minut <= x.minut) break;
         }
         if (minut > maxTsag) {
@@ -402,15 +404,14 @@ router
         ebarimtAvakhDun: 0,
       };
       if (
-          (togloomiinTuvTulbur?.dutuuDun
-            ? togloomiinTuvTulbur?.dutuuDun
-            : togloomiinTuvTulbur?.niitDun) ==
-          guilgeeniiTuukh.reduce((a, b) => a + b.dun, 0)
-        ) 
-      {
+        (togloomiinTuvTulbur?.dutuuDun
+          ? togloomiinTuvTulbur?.dutuuDun
+          : togloomiinTuvTulbur?.niitDun) ==
+        guilgeeniiTuukh.reduce((a, b) => a + b.dun, 0)
+      ) {
         update.tulburTulsunEsekh = true;
       }
-      
+
       if (togloomiinTuvTulbur?.dutuuDun) {
         update.dutuuDun = togloomiinTuvTulbur.dutuuDun;
       }
@@ -430,11 +431,17 @@ router
       update["niitTulbur"] = guilgeeniiTuukh;
       update["tulbur"] = guilgeeniiTuukh;
       var dun = guilgeeniiTuukh?.reduce((a, b) => a + b.dun, 0);
-      if(togloomiinTuvTulbur?.niitDun > 0 && dun > 0 && dun > togloomiinTuvTulbur?.niitDun)
+      if (
+        togloomiinTuvTulbur?.niitDun > 0 &&
+        dun > 0 &&
+        dun > togloomiinTuvTulbur?.niitDun
+      )
         res.send("Tulugdsun");
-      else
-      {
-        update.dutuuDun = dun < togloomiinTuvTulbur?.niitDun ? (togloomiinTuvTulbur?.niitDun - dun) : 0;
+      else {
+        update.dutuuDun =
+          dun < togloomiinTuvTulbur?.niitDun
+            ? togloomiinTuvTulbur?.niitDun - dun
+            : 0;
         await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
           req.body.id,
           update
@@ -634,10 +641,13 @@ router
     }
   });
 
-router.route("/togloomiinTuvNiitDun").post(tokenShalgakh, async (req, res, next) => {
-    try
-    {
-      const khariu = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate([
+router
+  .route("/togloomiinTuvNiitDun")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      const khariu = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
         {
           $match: {
             baiguullagiinId: req.body.baiguullagiinId,
@@ -649,12 +659,12 @@ router.route("/togloomiinTuvNiitDun").post(tokenShalgakh, async (req, res, next)
           },
         },
         {
-          $unwind: "$niitTulbur"
+          $unwind: "$niitTulbur",
         },
         {
-          $match: { 
+          $match: {
             "niitTulbur.turul": { $nin: ["khariult"] },
-          }
+          },
         },
         {
           $group: {
@@ -665,7 +675,7 @@ router.route("/togloomiinTuvNiitDun").post(tokenShalgakh, async (req, res, next)
           },
         },
       ]);
-      
+
       khariu.forEach((data) => {
         TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
           .findByIdAndUpdate({ _id: data._id }, [
@@ -675,9 +685,9 @@ router.route("/togloomiinTuvNiitDun").post(tokenShalgakh, async (req, res, next)
               },
             },
           ])
-        .catch((err) => {
-          next(err);
-        });
+          .catch((err) => {
+            next(err);
+          });
       });
       res.send(khariu);
     } catch (err) {
@@ -685,151 +695,163 @@ router.route("/togloomiinTuvNiitDun").post(tokenShalgakh, async (req, res, next)
     }
   });
 
-router.route("/togloomiinTuvDavkhardsan").post(tokenShalgakh, async (req, res, next) => {
-  try
-  {
-    var match = {
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      niitDun: { $gt: 0 },
-      tuluv: {
-        $ne: -1,
-      },
-      niitTulbur: { $size: req.body.size },
-    }
-    if(req.body.utas)
-      match["utas"] = req.body.utas;
-    var query = [
-      {
-        $match: match,
-      },
-      {
-        $unwind: "$niitTulbur"
-      },
-      {
-        $match: { 
-          "niitTulbur.turul": { $nin: ["khariult"] },
-        }
-      },
-      {
-        $group: {
-          _id: { 
-            id: "$_id", 
-            niitDun: "$niitDun",
-          },
-          tulbur: {
-            $sum: "$niitTulbur.dun",
+router
+  .route("/togloomiinTuvDavkhardsan")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try {
+      var match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        niitDun: { $gt: 0 },
+        tuluv: {
+          $ne: -1,
+        },
+        niitTulbur: { $size: req.body.size },
+      };
+      if (req.body.utas) match["utas"] = req.body.utas;
+      var query = [
+        {
+          $match: match,
+        },
+        {
+          $unwind: "$niitTulbur",
+        },
+        {
+          $match: {
+            "niitTulbur.turul": { $nin: ["khariult"] },
           },
         },
-      }
-    ]
-    const togloomuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate(query);
-    var khariu = [];
-    for await (const togloom of togloomuud) {
-      if(togloom.tulbur > togloom._id?.niitDun)
-      {
-        var data = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findById(togloom._id?.id);
-        data.niitTulbur?.shift();
-        data.tulbur?.shift();
-        TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
-          .findByIdAndUpdate({ _id: togloom._id?.id }, [
-            {
-              $set: {
-                niitTulbur: data.niitTulbur,
-                tulbur: data.tulbur,
-              },
-            },
-          ])
-        .catch((err) => {
-          next(err);
-        });
-        khariu.push(togloom);
-      }
-    }
-    res.send(khariu);
-  } catch (err) {
-    next(err);
-  }
-});
-
-router.post("/ebarimtAvsanDunOruulakhTogloom", tokenShalgakh, async (req, res, next) => {
-  try
-  {
-    var tuvuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).find({
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      ebarimtAvsanEsekh: true, 
-      ebarimtAvsanDun: { $exists: false }
-    })
-    var match = {
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      togloomiinId: { $in: tuvuud?.map((a) => a._id) }
-    }
-    if(req.body.togloomiinId)
-      match["togloomiinId"] = req.body.togloomiinId;
-    var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(match);
-    if(ebarimtuud?.length > 0)
-    {
-      for await (const ebarimt of ebarimtuud)
-      {
-        var update = { ebarimtAvsanDun: ebarimt.totalAmount };
-        TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
-          .findOneAndUpdate({ _id: ebarimt.togloomiinId, ebarimtAvsanEsekh: true, ebarimtAvsanDun: { $exists: false } }, update)
-          .then((xariu) => {
-          })
-          .catch((err) => {
-            next(err);
-          });  
-      }
-    }
-    res.send("Амжилттай");
-  } catch (err) {
-    if(next) next(err);
-  }
-}); 
-
-router.post("/togloomNerUtasEBarimtOruulakh", tokenShalgakh, async (req, res, next) => {
-  try
-  {
-    var tuvuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).find({
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      ebarimtAvsanEsekh: true, 
-    });
-    var result = [];
-    if(tuvuud?.length > 0)
-    {
-      for await (const tuv of tuvuud)
-      {
-        var match = {
-          baiguullagiinId: tuv.baiguullagiinId,
-          barilgiinId: tuv.barilgiinId,
-          togloomiinId: tuv._id,
-          togloomNer: { $exists: false }
-        }
-        var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(match);      
-        if(ebarimtuud?.length > 0)
         {
-          for await (const ebarimt of ebarimtuud)
-          {
-            await EbarimtShine(req.body.tukhainBaaziinKholbolt)
-              .findByIdAndUpdate(
-                { _id: ebarimt._id },
-                { togloomNer: tuv.ner, togloomUtas: tuv.utas }
-              )
-              .catch((err) => {
-                next(err);
-              });
-            result.push(ebarimt);
+          $group: {
+            _id: {
+              id: "$_id",
+              niitDun: "$niitDun",
+            },
+            tulbur: {
+              $sum: "$niitTulbur.dun",
+            },
+          },
+        },
+      ];
+      const togloomuud = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate(query);
+      var khariu = [];
+      for await (const togloom of togloomuud) {
+        if (togloom.tulbur > togloom._id?.niitDun) {
+          var data = await TogloomiinTuv(
+            req.body.tukhainBaaziinKholbolt
+          ).findById(togloom._id?.id);
+          data.niitTulbur?.shift();
+          data.tulbur?.shift();
+          TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
+            .findByIdAndUpdate({ _id: togloom._id?.id }, [
+              {
+                $set: {
+                  niitTulbur: data.niitTulbur,
+                  tulbur: data.tulbur,
+                },
+              },
+            ])
+            .catch((err) => {
+              next(err);
+            });
+          khariu.push(togloom);
+        }
+      }
+      res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+router.post(
+  "/ebarimtAvsanDunOruulakhTogloom",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      var tuvuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).find({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        ebarimtAvsanEsekh: true,
+        ebarimtAvsanDun: { $exists: false },
+      });
+      var match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        togloomiinId: { $in: tuvuud?.map((a) => a._id) },
+      };
+      if (req.body.togloomiinId) match["togloomiinId"] = req.body.togloomiinId;
+      var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(
+        match
+      );
+      if (ebarimtuud?.length > 0) {
+        for await (const ebarimt of ebarimtuud) {
+          var update = { ebarimtAvsanDun: ebarimt.totalAmount };
+          TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
+            .findOneAndUpdate(
+              {
+                _id: ebarimt.togloomiinId,
+                ebarimtAvsanEsekh: true,
+                ebarimtAvsanDun: { $exists: false },
+              },
+              update
+            )
+            .then((xariu) => {})
+            .catch((err) => {
+              next(err);
+            });
+        }
+      }
+      res.send("Амжилттай");
+    } catch (err) {
+      if (next) next(err);
+    }
+  }
+);
+
+router.post(
+  "/togloomNerUtasEBarimtOruulakh",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      var tuvuud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).find({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        ebarimtAvsanEsekh: true,
+      });
+      var result = [];
+      if (tuvuud?.length > 0) {
+        for await (const tuv of tuvuud) {
+          var match = {
+            baiguullagiinId: tuv.baiguullagiinId,
+            barilgiinId: tuv.barilgiinId,
+            togloomiinId: tuv._id,
+            togloomNer: { $exists: false },
+          };
+          var ebarimtuud = await EbarimtShine(
+            req.body.tukhainBaaziinKholbolt
+          ).find(match);
+          if (ebarimtuud?.length > 0) {
+            for await (const ebarimt of ebarimtuud) {
+              await EbarimtShine(req.body.tukhainBaaziinKholbolt)
+                .findByIdAndUpdate(
+                  { _id: ebarimt._id },
+                  { togloomNer: tuv.ner, togloomUtas: tuv.utas }
+                )
+                .catch((err) => {
+                  next(err);
+                });
+              result.push(ebarimt);
+            }
           }
         }
       }
+      res.send(result);
+    } catch (err) {
+      if (next) next(err);
     }
-    res.send(result);
-  } catch (err) {
-    if(next) next(err);
   }
-});
+);
 
 module.exports = router;
