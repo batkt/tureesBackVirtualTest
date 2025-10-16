@@ -323,6 +323,7 @@ function msgIlgeeyeUnitel(
       form.append("sms_number", dugaar);
       form.append("to", data.to.toString());
       form.append("body", data.text.toString());
+      console.log("--- status ----------->>" + JSON.stringify(data));
       axios({
       method: "post",
       url: "https://pbxuc.unitel.mn/hodupbx_api/v1.4/sendSms",
@@ -344,7 +345,7 @@ function msgIlgeeyeUnitel(
               msg.msgIlgeekhDugaar = dugaar;
               msg.save();
             }
-            console.log("--- status ----------->>" + JSON.stringify(body.status));
+            console.log("--- status ----------->>" + body);
             khariu.push(body);
           }
         })
