@@ -2018,7 +2018,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
           {
             $group: {
               _id: {
-                burtgesenAjiltaniiId: { $ifNull: ["$tuukh.burtgesenAjiltaniiId", ""] },
+                burtgesenAjiltaniiId: { $ifNull: ["$tuukh.burtgesenAjiltaniiId", 0] },
                 burtgesenAjiltaniiNer: "$tuukh.burtgesenAjiltaniiNer" 
               },
             },
