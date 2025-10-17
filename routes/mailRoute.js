@@ -344,7 +344,7 @@ async function msgIlgeeyeUnitel(
         khariu.push(resp?.data);
       }
     };
-    res.send(khariu);
+    res.send(khariu?.length > 0 ? [khariu[0]] : []);
   } catch (err) {
     next(err);
   }
