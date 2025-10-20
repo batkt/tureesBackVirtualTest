@@ -36,6 +36,9 @@ router.route("/analitikTailanAvya").post(tokenShalgakh, analitikTailanAvya);
 router
   .route("/negtgelMedeelelAvya/:turul/:ekhlekhOgnoo/:duusakhOgnoo")
   .get(tokenShalgakh, negtgelMedeelelAvya);
+router
+  .route("/negtgelMedeelelAvya/:turul/:ekhlekhOgnoo/:duusakhOgnoo/:barilgiinId")
+  .get(tokenShalgakh, negtgelMedeelelAvya);
 router.get("/ognooAvya", tokenShalgakh, async (req, res, next) => {
   res.send(new Date());
 });

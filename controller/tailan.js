@@ -1538,14 +1538,17 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
     };
     var dunguud;
     if (req.params.turul == "Rent") {
+      var matchQuery = {
+        tuluv: { $ne: -1 },
+      }
+      if(!!req.params.barilgiinId)
+        matchQuery["barilgiinId"] = req.params.barilgiinId;
       var registeruud = await Geree(
         req.body.tukhainBaaziinKholbolt,
         true
       ).aggregate([
         {
-          $match: {
-            tuluv: { $ne: -1 },
-          },
+          $match: matchQuery,
         },
         {
           $unwind: {
@@ -1572,9 +1575,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
 
       dunguud = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate([
         {
-          $match: {
-            tuluv: { $ne: -1 },
-          },
+          $match: matchQuery,
         },
         {
           $unwind: {
@@ -1610,9 +1611,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         true
       ).aggregate([
         {
-          $match: {
-            tuluv: { $ne: -1 },
-          },
+          $match: matchQuery,
         },
         {
           $unwind: {
@@ -1660,9 +1659,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         true
       ).aggregate([
         {
-          $match: {
-            tuluv: { $ne: -1 },
-          },
+          $match: matchQuery,
         },
         {
           $group: {
@@ -1679,9 +1676,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         true
       ).aggregate([
         {
-          $match: {
-            tuluv: { $ne: -1 },
-          },
+          $match: matchQuery,
         },
         {
           $unwind: {
@@ -1727,9 +1722,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         true
       ).aggregate([
         {
-          $match: {
-            tuluv: { $ne: -1 },
-          },
+          $match: matchQuery,
         },
         {
           $unwind: {
@@ -1765,9 +1758,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         true
       ).aggregate([
         {
-          $match: {
-            tuluv: { $ne: -1 },
-          },
+          $match: matchQuery,
         },
         {
           $unwind: {
