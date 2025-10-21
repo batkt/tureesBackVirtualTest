@@ -355,4 +355,15 @@ router.get("/licenseOgnooAvya", tokenShalgakh, async (req, res, next) => {
     next(error);
   }
 });
+
+router.post("/ekhniiNevtersenOgnooAvya", tokenShalgakh, async (req, res, next) => {
+  try 
+  {
+    const { db } = require("zevbackv2");
+    const nevtreltiinTuukh = await NevtreltiinTuukh(db.erunkhiiKholbolt).find({ baiguullagiinId: req.body.baiguullagiinId, ajiltniiId: req.body.ajiltniiId, ognoo: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }}).sort({ ognoo: 1 }).limit(1);
+    res.send(nevtreltiinTuukh?.length > 0 ? nevtreltiinTuukh[0]: null);
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;
