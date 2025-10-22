@@ -377,6 +377,7 @@ router.post(
 
       var nevtersenOgnoo =
         nevtreltiinTuukh?.length > 0 ? nevtreltiinTuukh[0].ognoo : null;
+      console.log("nevtersenOgnoo-------->", nevtersenOgnoo);  
       const kassCameraKhaalt = await KassCameraKhaalt(req.body.tukhainBaaziinKholbolt)
         .find({
           baiguullagiinId: req.body.baiguullagiinId,
