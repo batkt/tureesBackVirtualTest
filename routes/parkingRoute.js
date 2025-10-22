@@ -26,6 +26,7 @@ const Khariltsagch = require("../models/khariltsagch");
 const Sonorduulga = require("../models/sonorduulga");
 const Ebarimt = require("../models/ebarimt");
 const EbarimtShine = require("../models/ebarimtShine");
+const KassCameraKhaalt = require("../models/kassCameraKhaalt");
 
 const {
   khariltsagchidSonorduulgaIlgeeye,
@@ -46,6 +47,7 @@ crud(router, "blockMashin", BlockMashin, UstsanBarimt);
 crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
 // crud(router, "zogsoolUilchluulegch", (conn) => Uilchluulegch(conn, true), UstsanBarimt);
 crud(router, "uilchluulegch", Uilchluulegch, UstsanBarimt);
+crud(router, "kassCameraKhaalt", KassCameraKhaalt, UstsanBarimt);
 /*
 crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
 });
