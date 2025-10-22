@@ -11,7 +11,7 @@ const kassCameraKhaaltSchema = new Schema(
     nevtersenOgnoo: Date,
     khaaltOgnoo: Date,
     garsanCameraIp: String,
-    ajiltaniiId: String,
+    ajiltniiId: String,
     ajiltaniiNer: String,
     zogsooliinId: String,
     tulbur: [
