@@ -4,6 +4,7 @@ const Ajiltan = require("../models/ajiltan");
 const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 const BackTuukh = require("../models/backTuukh");
 const Baiguullaga = require("../models/baiguullaga");
+const KassCameraKhaalt = require("../models/kassCameraKhaalt");
 const request = require("request");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const {
@@ -85,7 +86,9 @@ router.route("/nuutsUgShalgakhAjiltan").post(nuutsUgShalgakhAjiltan);
 router.route("/zochiniiTokenAvya/:baiguullagiinId").get(zochiniiTokenAvya);
 router.route("/khugatsaaguiTokenAvya").post(khugatsaaguiTokenAvya);
 router.route("/erkhiinMedeelelAvya").post(tokenShalgakh, erkhiinMedeelelAvya);
-router.route("/baiguullagaIdgaarAvya").post(tokenShalgakh, baiguullagaIdgaarAvya);
+router
+  .route("/baiguullagaIdgaarAvya")
+  .post(tokenShalgakh, baiguullagaIdgaarAvya);
 router.get("/ajiltniiZuragAvya/:baiguullaga/:ner", (req, res, next) => {
   const fileName = req.params.ner;
   const directoryPath = "zurag/ajiltan/" + req.params.baiguullaga + "/";
@@ -319,9 +322,9 @@ router.get("/ustsanBarimtTurees", tokenShalgakh, async (req, res, next) => {
       .collation(body.collation ? body.collation : {})
       .skip((body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee)
       .limit(body.khuudasniiKhemjee);
-    let niitMur = await UstsanBarimt(
-      db.erunkhiiKholbolt
-    ).countDocuments(body.query);
+    let niitMur = await UstsanBarimt(db.erunkhiiKholbolt).countDocuments(
+      body.query
+    );
     let niitKhuudas =
       niitMur % khuudasniiKhemjee == 0
         ? Math.floor(niitMur / khuudasniiKhemjee)
@@ -341,29 +344,66 @@ router.get("/ustsanBarimtTurees", tokenShalgakh, async (req, res, next) => {
 
 router.get("/licenseOgnooAvya", tokenShalgakh, async (req, res, next) => {
   try {
-     request.get(
-        "http://103.143.40.123:8282/baiguullagiinDuusakhKhugatsaaAvya",
-        { json: true, body: { register: req.body.register, system: "Turees" } },
-        (err, res1, body) => {
-          if (err) next(err);
-          else {
-            res.send(body);
-          }
+    request.get(
+      "http://103.143.40.123:8282/baiguullagiinDuusakhKhugatsaaAvya",
+      { json: true, body: { register: req.body.register, system: "Turees" } },
+      (err, res1, body) => {
+        if (err) next(err);
+        else {
+          res.send(body);
         }
-      );
+      }
+    );
   } catch (error) {
     next(error);
   }
 });
 
-router.post("/ekhniiNevtersenOgnooAvya", tokenShalgakh, async (req, res, next) => {
-  try 
-  {
-    const { db } = require("zevbackv2");
-    const nevtreltiinTuukh = await NevtreltiinTuukh(db.erunkhiiKholbolt).find({ baiguullagiinId: req.body.baiguullagiinId, ajiltniiId: req.body.ajiltniiId, ognoo: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) }}).sort({ ognoo: 1 }).limit(1);
-    res.send(nevtreltiinTuukh?.length > 0 ? nevtreltiinTuukh[0]: null);
-  } catch (error) {
-    next(error);
+router.post(
+  "/ekhniiNevtersenOgnooAvya",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const { db } = require("zevbackv2");
+
+      const nevtreltiinTuukh = await NevtreltiinTuukh(db.erunkhiiKholbolt)
+        .find({
+          baiguullagiinId: req.body.baiguullagiinId,
+          ajiltniiId: req.body.ajiltniiId,
+          ognoo: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+        })
+        .sort({ ognoo: 1 })
+        .limit(1);
+
+      var nevtersenOgnoo =
+        nevtreltiinTuukh?.length > 0 ? nevtreltiinTuukh[0].ognoo : null;
+      const kassCameraKhaalt = await KassCameraKhaalt(db.erunkhiiKholbolt)
+        .find({
+          baiguullagiinId: req.body.baiguullagiinId,
+          ajiltaniiId: req.body.ajiltniiId,
+          garsanCameraIp: req.body.garsanCameraIp,
+          barilgiinId: req.body.barilgiinId,
+          zogsooliinId: req.body.zogsooliinId,
+          nevtersenOgnoo: nevtersenOgnoo,
+        })
+        .sort({ nevtersenOgnoo: 1 })
+        .limit(1);
+
+      var khaaltOgnoo =
+        kassCameraKhaalt?.length > 0 ? kassCameraKhaalt[0].khaaltOgnoo : null;
+
+      res.json({
+        success: true,
+        data: {
+          nevtreltiinTuukh: nevtreltiinTuukh,
+          kassCameraKhaalt: kassCameraKhaalt,
+          nevtersenOgnoo: nevtersenOgnoo,
+          khaaltOgnoo: khaaltOgnoo,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 module.exports = router;
