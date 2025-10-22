@@ -16,7 +16,7 @@ const togloomiinTuvSchema = new Schema(
     garsanTsag: Date,
     asragchiinTurul: [String],
     khungulsunShaltgaan: String,
-    khungulsunDun: Number,
+    khungulsunDun: String,
     khungulsunEsekh: Boolean,
     tuluv: {
       type: Number,
