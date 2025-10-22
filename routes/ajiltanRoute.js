@@ -375,17 +375,11 @@ router.post(
         .sort({ ognoo: 1 })
         .limit(1);
 
-      var nevtersenOgnoo =
-        nevtreltiinTuukh?.length > 0 ? nevtreltiinTuukh[0].ognoo : null;
-<<<<<<< HEAD
+      var nevtersenOgnoo = nevtreltiinTuukh?.length > 0 ? nevtreltiinTuukh[0].ognoo : null;
       console.log("nevtersenOgnoo-------->", nevtersenOgnoo);  
-      const kassCameraKhaalt = await KassCameraKhaalt(req.body.tukhainBaaziinKholbolt)
-=======
       const kassCameraKhaalt = await KassCameraKhaalt(
         req.body.tukhainBaaziinKholbolt
-      )
->>>>>>> 5687075a438b3420eada25b9a643a4cba1d1d773
-        .find({
+      ).find({
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
           ajiltniiId: req.body.ajiltniiId,
