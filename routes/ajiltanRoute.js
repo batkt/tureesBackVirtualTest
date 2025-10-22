@@ -377,12 +377,18 @@ router.post(
 
       var nevtersenOgnoo =
         nevtreltiinTuukh?.length > 0 ? nevtreltiinTuukh[0].ognoo : null;
+<<<<<<< HEAD
       console.log("nevtersenOgnoo-------->", nevtersenOgnoo);  
       const kassCameraKhaalt = await KassCameraKhaalt(req.body.tukhainBaaziinKholbolt)
+=======
+      const kassCameraKhaalt = await KassCameraKhaalt(
+        req.body.tukhainBaaziinKholbolt
+      )
+>>>>>>> 5687075a438b3420eada25b9a643a4cba1d1d773
         .find({
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
-          ajiltaniiId: req.body.ajiltniiId,
+          ajiltniiId: req.body.ajiltniiId,
           garsanCameraIp: req.body.garsanCameraIp,
           zogsooliinId: req.body.zogsooliinId,
           nevtersenOgnoo: nevtersenOgnoo,
