@@ -1031,6 +1031,27 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         },
       },
     ]);
+    console.log(" ---------->>> ustgaxObject",JSON.stringify(ustgaxObject));
+    if(ustgaxObject[0].avlaga?.baritsaa?.guilgeeniiId)
+    {
+      console.log(" ---------->>> guilgeeniiId",ustgaxObject[0].avlaga?.baritsaa?.guilgeeniiId);
+      var ustgaxObjectAvlaga = await Geree(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate([
+        {
+          $unwind: "$avlaga.guilgeenuud",
+        },
+        {
+          $match: {
+            _id: new ObjectId(req.body.gereeniiId),
+            "avlaga.guilgeenuud.guilgeeniiId": new ObjectId(ustgaxObject[0].avlaga?.baritsaa?.guilgeeniiId),
+          },
+        },
+      ]);
+      if(ustgaxObjectAvlaga?.length > 0)
+        throw new Error("Гүйлгээний түүхээс устгах үйлдэл хийнэ үү!");
+    }
     if (ustgaxObject?.length > 0) {
       var tuxainBaritsaa = ustgaxObject[0].avlaga?.baritsaa;
       if (tuxainBaritsaa) {
