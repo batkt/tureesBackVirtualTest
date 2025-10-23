@@ -936,9 +936,6 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
             [`avlaga.guilgeenuud`]: {
               _id: req.body.objectiinId,
             },
-            [`avlaga.baritsaa`]: {
-              _id: req.body.objectiinId,
-            },
           },
           $inc: inc,
         }
