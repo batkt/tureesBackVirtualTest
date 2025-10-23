@@ -919,6 +919,26 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
       },
     ]);
     var tuxainGuilgee = ustgaxObject[0].avlaga.guilgeenuud;
+    if(!req.body.gereeniiDugaar && tuxainGuilgee.tulsunAldangi && tuxainGuilgee.guilgeeniiId)
+    {
+      console.log(" ---------->>> guilgeeniiId",tuxainGuilgee.guilgeeniiId);
+      var ustgaxObjectAvlaga = await Geree(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate([
+        {
+          $unwind: "$avlaga.guilgeenuud",
+        },
+        {
+          $match: {
+            _id: new ObjectId(req.body.gereeniiId),
+            "avlaga.guilgeenuud.guilgeeniiId": tuxainGuilgee.guilgeeniiId,
+          },
+        },
+      ]);
+      if(ustgaxObjectAvlaga?.length > 0)
+        throw new Error("Гүйлгээний түүхээс устгах үйлдэл хийнэ үү!");
+    }
     var inc = {
       uldegdel: tuxainGuilgee?.tulsunDun || 0,
     };
