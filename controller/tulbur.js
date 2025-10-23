@@ -465,7 +465,9 @@ function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
     var sariinNiitKhonog = body.guchKhonogOruulakhEsekh
       ? 30
       : parseFloat(moment(ekhlekhOgnoo).endOf("month").format("DD"));
-    var ashiglakhKhonog = body.garaasKhonogOruulakhEsekh
+    var ashiglakhKhonog = body.garaasKhonogOruulakhEsekh &&
+    body.gereeniiOgnoo.getMonth() == ekhlekhOgnoo.getMonth() &&
+    body.gereeniiOgnoo.getFullYear() == ekhlekhOgnoo.getFullYear()
       ? body.ekhniiSariinKhonog
       : moment(ekhlekhOgnoo).endOf("month").diff(body.gereeniiOgnoo, "d") + 1;
     ashiglakhKhonog =
