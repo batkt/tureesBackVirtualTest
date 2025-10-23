@@ -888,6 +888,7 @@ function tooZasyaSync(too) {
 }
 
 exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
+  console.log(" ---------->>> tulultUstgaya");
   if (!req.body.tailbar) throw new Error("Тайлбар заавал оруулна уу?");
   if (req.body.guilgeeniiId) {
     var bankGuilgee = await BankniiGuilgee(
@@ -1033,6 +1034,7 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
 });
 
 exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
+  console.log(" ---------->>> baritsaaniiGuilgeeUstgaya");
   const session = await req.body.tukhainBaaziinKholbolt.kholbolt.startSession();
   session.startTransaction();
   try {
