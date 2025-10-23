@@ -1052,7 +1052,7 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
       },
     ]);
     console.log(" ---------->>> ustgaxObject",JSON.stringify(ustgaxObject));
-    if(ustgaxObject[0].avlaga?.baritsaa?.guilgeeniiId)
+    if(ustgaxObject[0].avlaga?.baritsaa?.guilgeeniiId && req.body.guilgeeniiId)
     {
       console.log(" ---------->>> guilgeeniiId",ustgaxObject[0].avlaga?.baritsaa?.guilgeeniiId);
       var ustgaxObjectAvlaga = await Geree(
