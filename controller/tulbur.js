@@ -923,7 +923,10 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
       uldegdel: tuxainGuilgee?.tulsunDun || 0,
     };
     if (tuxainGuilgee.tulsunAldangi && tuxainGuilgee.tulsunAldangi > 0)
+    {
       inc["aldangiinUldegdel"] = tuxainGuilgee.tulsunAldangi;
+      inc["niitTulsunAldangi"] = -tuxainGuilgee.tulsunAldangi;
+    }
 
     await Geree(req.body.tukhainBaaziinKholbolt)
       .findByIdAndUpdate(
