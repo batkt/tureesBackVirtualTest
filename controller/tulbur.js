@@ -1045,7 +1045,7 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         {
           $match: {
             _id: new ObjectId(req.body.gereeniiId),
-            "avlaga.guilgeenuud.guilgeeniiId": new ObjectId(ustgaxObject[0].avlaga?.baritsaa?.guilgeeniiId),
+            "avlaga.guilgeenuud.guilgeeniiId": ustgaxObject[0].avlaga?.baritsaa?.guilgeeniiId,
           },
         },
       ]);
