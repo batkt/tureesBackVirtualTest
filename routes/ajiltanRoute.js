@@ -366,31 +366,64 @@ router.post(
     try {
       const { db } = require("zevbackv2");
 
-      const nevtreltiinTuukh = await NevtreltiinTuukh(db.erunkhiiKholbolt)
+      const unuudurEhkelsenee = new Date();
+      unuudurEhkelsenee.setHours(0, 0, 0, 0);
+
+      let nevtreltiinTuukh = await NevtreltiinTuukh(db.erunkhiiKholbolt)
         .find({
           baiguullagiinId: req.body.baiguullagiinId,
           ajiltniiId: req.body.ajiltniiId,
-          ognoo: { $gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+          ognoo: { $gte: unuudurEhkelsenee },
         })
         .sort({ ognoo: 1 })
         .limit(1);
 
-      var nevtersenOgnoo = nevtreltiinTuukh?.length > 0 ? nevtreltiinTuukh[0].ognoo : null;
-      const kassCameraKhaalt = await KassCameraKhaalt(
-        req.body.tukhainBaaziinKholbolt
-      ).find({
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-          ajiltniiId: req.body.ajiltniiId,
-          garsanCameraIp: req.body.garsanCameraIp,
-          zogsooliinId: req.body.zogsooliinId,
-          nevtersenOgnoo: nevtersenOgnoo,
-        })
-        .sort({ nevtersenOgnoo: -1 })
-        .limit(1);
+      let nevtersenOgnoo =
+        nevtreltiinTuukh?.length > 0 ? nevtreltiinTuukh[0].ognoo : null;
+      let kassCameraKhaalt = [];
+      let khaaltOgnoo = null;
 
-      var khaaltOgnoo =
-        kassCameraKhaalt?.length > 0 ? kassCameraKhaalt[0].khaaltOgnoo : null;
+      if (nevtersenOgnoo) {
+        kassCameraKhaalt = await KassCameraKhaalt(
+          req.body.tukhainBaaziinKholbolt
+        )
+          .find({
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+            ajiltniiId: req.body.ajiltniiId,
+            garsanCameraIp: req.body.garsanCameraIp,
+            zogsooliinId: req.body.zogsooliinId,
+            nevtersenOgnoo: nevtersenOgnoo,
+          })
+          .sort({ nevtersenOgnoo: -1 })
+          .limit(1);
+
+        khaaltOgnoo =
+          kassCameraKhaalt?.length > 0 ? kassCameraKhaalt[0].khaaltOgnoo : null;
+
+        if (khaaltOgnoo) {
+          const daraagiinNevtrelt = await NevtreltiinTuukh(db.erunkhiiKholbolt)
+            .find({
+              baiguullagiinId: req.body.baiguullagiinId,
+              ajiltniiId: req.body.ajiltniiId,
+              ognoo: { $gt: new Date(khaaltOgnoo) },
+            })
+            .sort({ ognoo: 1 })
+            .limit(1);
+
+          if (daraagiinNevtrelt?.length > 0) {
+            nevtreltiinTuukh = daraagiinNevtrelt;
+            nevtersenOgnoo = daraagiinNevtrelt[0].ognoo;
+            kassCameraKhaalt = [];
+            khaaltOgnoo = null;
+          } else {
+            nevtreltiinTuukh = [];
+            nevtersenOgnoo = null;
+            kassCameraKhaalt = [];
+            khaaltOgnoo = null;
+          }
+        }
+      }
 
       res.json({
         success: true,
