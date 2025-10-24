@@ -402,11 +402,12 @@ router.post(
           kassCameraKhaalt?.length > 0 ? kassCameraKhaalt[0].khaaltOgnoo : null;
 
         if (khaaltOgnoo) {
+          const khaaltOgnooDate = new Date(khaaltOgnoo);
           const daraagiinNevtrelt = await NevtreltiinTuukh(db.erunkhiiKholbolt)
             .find({
               baiguullagiinId: req.body.baiguullagiinId,
               ajiltniiId: req.body.ajiltniiId,
-              ognoo: { $gt: new Date(khaaltOgnoo) },
+              ognoo: { $gt: khaaltOgnooDate },
             })
             .sort({ ognoo: 1 })
             .limit(1);
@@ -414,8 +415,27 @@ router.post(
           if (daraagiinNevtrelt?.length > 0) {
             nevtreltiinTuukh = daraagiinNevtrelt;
             nevtersenOgnoo = daraagiinNevtrelt[0].ognoo;
-            kassCameraKhaalt = [];
-            khaaltOgnoo = null;
+            const daraagiinKassCameraKhaalt = await KassCameraKhaalt(
+              req.body.tukhainBaaziinKholbolt
+            )
+              .find({
+                baiguullagiinId: req.body.baiguullagiinId,
+                barilgiinId: req.body.barilgiinId,
+                ajiltniiId: req.body.ajiltniiId,
+                garsanCameraIp: req.body.garsanCameraIp,
+                zogsooliinId: req.body.zogsooliinId,
+                nevtersenOgnoo: { $gte: nevtersenOgnoo },
+              })
+              .sort({ nevtersenOgnoo: 1 })
+              .limit(1);
+            if (daraagiinKassCameraKhaalt?.length > 0) {
+              kassCameraKhaalt = daraagiinKassCameraKhaalt;
+              khaaltOgnoo =
+                daraagiinKassCameraKhaalt[0].khaaltOgnoo ?? null;
+            } else {
+              kassCameraKhaalt = [];
+              khaaltOgnoo = null;
+            }
           } else {
             nevtreltiinTuukh = [];
             nevtersenOgnoo = null;
