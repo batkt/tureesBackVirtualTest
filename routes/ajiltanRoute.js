@@ -426,12 +426,11 @@ router.post(
                 zogsooliinId: req.body.zogsooliinId,
                 nevtersenOgnoo: { $gte: nevtersenOgnoo },
               })
-              .sort({ nevtersenOgnoo: 1 })
+              .sort({ nevtersenOgnoo: -1 })
               .limit(1);
             if (daraagiinKassCameraKhaalt?.length > 0) {
               kassCameraKhaalt = daraagiinKassCameraKhaalt;
-              khaaltOgnoo =
-                daraagiinKassCameraKhaalt[0].khaaltOgnoo ?? null;
+              khaaltOgnoo = daraagiinKassCameraKhaalt[0].khaaltOgnoo ?? null;
             } else {
               kassCameraKhaalt = [];
               khaaltOgnoo = null;
