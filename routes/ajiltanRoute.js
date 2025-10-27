@@ -365,6 +365,12 @@ router.post(
   async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
+
+      const unuudurEhkelsenee = new Date();
+      unuudurEhkelsenee.setHours(0, 0, 0, 0);
+      const endOfToday = new Date(unuudurEhkelsenee);
+      endOfToday.setDate(endOfToday.getDate() + 1);
+
       const {
         baiguullagiinId,
         ajiltniiId,
@@ -372,97 +378,102 @@ router.post(
         garsanCameraIp,
         zogsooliinId,
         tukhainBaaziinKholbolt,
+        nevtersenOgnoo: huselteeNevtersenOgnoo,
       } = req.body;
 
-      const startOfToday = new Date();
-      startOfToday.setHours(0, 0, 0, 0);
-      const endOfToday = new Date(startOfToday);
-      endOfToday.setDate(endOfToday.getDate() + 1);
+      const Nevtreltiin = NevtreltiinTuukh(db.erunkhiiKholbolt);
+      const Kass = KassCameraKhaalt(tukhainBaaziinKholbolt);
 
-      const findFirstLoginAfter = async (afterDate) => {
-        return await NevtreltiinTuukh(db.erunkhiiKholbolt)
-          .find({
-            baiguullagiinId,
-            ajiltniiId,
-            ognoo: { $gt: afterDate, $lt: endOfToday },
-          })
+      let haikhTses = unuudurEhkelsenee;
+      const tsikliinMedeelel = [];
+      let davtaltToo = 0;
+      const MAX_DAVTALT = 50;
+
+      while (davtaltToo < MAX_DAVTALT) {
+        const odoogiinNevtrelt = await Nevtreltiin.findOne({
+          baiguullagiinId,
+          ajiltniiId,
+          ognoo: { $gte: haikhTses, $lt: endOfToday },
+        })
           .sort({ ognoo: 1 })
-          .limit(1)
+          .select({ ognoo: 1, _id: 0 })
           .lean();
-      };
 
-      const findFirstLoginFromToday = async () => {
-        return await NevtreltiinTuukh(db.erunkhiiKholbolt)
-          .find({
-            baiguullagiinId,
-            ajiltniiId,
-            ognoo: { $gte: startOfToday, $lt: endOfToday },
-          })
-          .sort({ ognoo: 1 })
-          .limit(1)
-          .lean();
-      };
+        if (!odoogiinNevtrelt) break;
 
-      const findKassForLogin = async (loginOgnoo) => {
-        return await KassCameraKhaalt(tukhainBaaziinKholbolt)
-          .find({
-            baiguullagiinId,
-            barilgiinId,
-            ajiltniiId,
-            garsanCameraIp,
-            zogsooliinId,
-            nevtersenOgnoo: { $gte: loginOgnoo, $lt: endOfToday },
-          })
-          .sort({ nevtersenOgnoo: -1 })
-          .limit(1)
-          .lean();
-      };
+        const odoogiinNevtersenOgnoo = odoogiinNevtrelt.ognoo;
 
-      let firstLogin = await findFirstLoginFromToday();
-      let currentLoginOgnoo = firstLogin?.[0]?.ognoo ?? null;
+        const odoogiinKassCamera = await Kass.findOne({
+          baiguullagiinId,
+          barilgiinId,
+          ajiltniiId,
+          garsanCameraIp,
+          zogsooliinId,
+          nevtersenOgnoo: { $eq: odoogiinNevtersenOgnoo },
+        }).lean();
 
-      const cycles = [];
-      let safetyCounter = 0;
+        const odoogiinKhaaltOgnoo = odoogiinKassCamera?.khaaltOgnoo ?? null;
 
-      while (currentLoginOgnoo && safetyCounter < 50) {
-        safetyCounter++;
-
-        const kassDocs = await findKassForLogin(currentLoginOgnoo);
-        const kassDoc = kassDocs?.[0] ?? null;
-        const khaaltOgnoo = kassDoc?.khaaltOgnoo ?? null;
-
-        cycles.push({
-          nevtersenOgnoo: currentLoginOgnoo,
-          khaaltOgnoo: khaaltOgnoo ?? null,
-          kassDoc: kassDoc ?? null,
+        tsikliinMedeelel.push({
+          nevtreltiinTuukh: [{ ognoo: odoogiinNevtersenOgnoo }],
+          kassCameraKhaalt: odoogiinKassCamera ? [odoogiinKassCamera] : [],
+          nevtersenOgnoo: odoogiinNevtersenOgnoo,
+          khaaltOgnoo: odoogiinKhaaltOgnoo,
         });
 
-        if (!khaaltOgnoo) {
-          break;
+        if (odoogiinKhaaltOgnoo) {
+          const daraagiinEhlel = new Date(odoogiinKhaaltOgnoo);
+          daraagiinEhlel.setMilliseconds(daraagiinEhlel.getMilliseconds() + 1);
+          haikhTses = daraagiinEhlel;
+          davtaltToo++;
+          continue;
         }
 
-        const nextLogin = await findFirstLoginAfter(new Date(khaaltOgnoo));
-        if (nextLogin?.length) {
-          currentLoginOgnoo = nextLogin[0].ognoo;
-        } else {
-          currentLoginOgnoo = null;
-        }
+        break;
       }
 
-      const lastCycle = cycles.length ? cycles[cycles.length - 1] : null;
+      if (davtaltToo >= MAX_DAVTALT) {
+        return res.status(400).json({
+          success: false,
+          message: "Мөчлөг хэт урт байна (MAX_DAVTALT). Өгөгдлөө шалгана уу.",
+        });
+      }
+
+      let nevtreltiinTuukh = [];
+      let kassCameraKhaalt = [];
+      let nevtersenOgnoo = null;
+      let khaaltOgnoo = null;
+
+      if (tsikliinMedeelel.length > 0) {
+        let songogdsonTsig = null;
+
+        if (huselteeNevtersenOgnoo) {
+          const target = new Date(huselteeNevtersenOgnoo).getTime();
+          if (!isNaN(target)) {
+            songogdsonTsig = tsikliinMedeelel.find((it) => {
+              const t = new Date(it.nevtersenOgnoo).getTime();
+              return Math.abs(t - target) < 1000;
+            });
+          }
+        }
+
+        if (!songogdsonTsig) {
+          songogdsonTsig = tsikliinMedeelel[tsikliinMedeelel.length - 1];
+        }
+
+        nevtreltiinTuukh = songogdsonTsig.nevtreltiinTuukh;
+        kassCameraKhaalt = songogdsonTsig.kassCameraKhaalt;
+        nevtersenOgnoo = songogdsonTsig.nevtersenOgnoo ?? null;
+        khaaltOgnoo = songogdsonTsig.khaaltOgnoo ?? null;
+      }
 
       res.json({
         success: true,
         data: {
-          cycles,
-          lastCycle,
-
-          nevtreltiinTuukh: lastCycle
-            ? [{ ognoo: lastCycle.nevtersenOgnoo }]
-            : [],
-          kassCameraKhaalt: lastCycle?.kassDoc ? [lastCycle.kassDoc] : [],
-          nevtersenOgnoo: lastCycle?.nevtersenOgnoo ?? null,
-          khaaltOgnoo: lastCycle?.khaaltOgnoo ?? null,
+          nevtreltiinTuukh,
+          kassCameraKhaalt,
+          nevtersenOgnoo,
+          khaaltOgnoo,
         },
       });
     } catch (error) {
@@ -471,103 +482,4 @@ router.post(
   }
 );
 
-// router.post(
-//   "/ekhniiNevtersenOgnooAvya",
-//   tokenShalgakh,
-//   async (req, res, next) => {
-//     try {
-//       const { db } = require("zevbackv2");
-
-//       const unuudurEhkelsenee = new Date();
-//       unuudurEhkelsenee.setHours(0, 0, 0, 0);
-
-//       let nevtreltiinTuukh = await NevtreltiinTuukh(db.erunkhiiKholbolt)
-//         .find({
-//           baiguullagiinId: req.body.baiguullagiinId,
-//           ajiltniiId: req.body.ajiltniiId,
-//           ognoo: { $gte: unuudurEhkelsenee },
-//         })
-//         .sort({ ognoo: 1 })
-//         .limit(1);
-
-//       let nevtersenOgnoo =
-//         nevtreltiinTuukh?.length > 0 ? nevtreltiinTuukh[0].ognoo : null;
-//       let kassCameraKhaalt = [];
-//       let khaaltOgnoo = null;
-
-//       if (nevtersenOgnoo) {
-//         kassCameraKhaalt = await KassCameraKhaalt(
-//           req.body.tukhainBaaziinKholbolt
-//         )
-//           .find({
-//             baiguullagiinId: req.body.baiguullagiinId,
-//             barilgiinId: req.body.barilgiinId,
-//             ajiltniiId: req.body.ajiltniiId,
-//             garsanCameraIp: req.body.garsanCameraIp,
-//             zogsooliinId: req.body.zogsooliinId,
-//             nevtersenOgnoo: nevtersenOgnoo,
-//           })
-//           .sort({ nevtersenOgnoo: -1 })
-//           .limit(1);
-
-//         khaaltOgnoo =
-//           kassCameraKhaalt?.length > 0 ? kassCameraKhaalt[0].khaaltOgnoo : null;
-
-//         if (khaaltOgnoo) {
-//           const khaaltOgnooDate = new Date(khaaltOgnoo);
-//           const daraagiinNevtrelt = await NevtreltiinTuukh(db.erunkhiiKholbolt)
-//             .find({
-//               baiguullagiinId: req.body.baiguullagiinId,
-//               ajiltniiId: req.body.ajiltniiId,
-//               ognoo: { $gt: khaaltOgnooDate },
-//             })
-//             .sort({ ognoo: 1 })
-//             .limit(1);
-
-//           if (daraagiinNevtrelt?.length > 0) {
-//             nevtreltiinTuukh = daraagiinNevtrelt;
-//             nevtersenOgnoo = daraagiinNevtrelt[0].ognoo;
-//             const daraagiinKassCameraKhaalt = await KassCameraKhaalt(
-//               req.body.tukhainBaaziinKholbolt
-//             )
-//               .find({
-//                 baiguullagiinId: req.body.baiguullagiinId,
-//                 barilgiinId: req.body.barilgiinId,
-//                 ajiltniiId: req.body.ajiltniiId,
-//                 garsanCameraIp: req.body.garsanCameraIp,
-//                 zogsooliinId: req.body.zogsooliinId,
-//                 nevtersenOgnoo: { $gte: nevtersenOgnoo },
-//               })
-//               .sort({ nevtersenOgnoo: -1 })
-//               .limit(1);
-//             if (daraagiinKassCameraKhaalt?.length > 0) {
-//               kassCameraKhaalt = daraagiinKassCameraKhaalt;
-//               khaaltOgnoo = daraagiinKassCameraKhaalt[0].khaaltOgnoo ?? null;
-//             } else {
-//               kassCameraKhaalt = [];
-//               khaaltOgnoo = null;
-//             }
-//           } else {
-//             nevtreltiinTuukh = [];
-//             nevtersenOgnoo = null;
-//             kassCameraKhaalt = [];
-//             khaaltOgnoo = null;
-//           }
-//         }
-//       }
-
-//       res.json({
-//         success: true,
-//         data: {
-//           nevtreltiinTuukh: nevtreltiinTuukh,
-//           kassCameraKhaalt: kassCameraKhaalt,
-//           nevtersenOgnoo: nevtersenOgnoo,
-//           khaaltOgnoo: khaaltOgnoo,
-//         },
-//       });
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
 module.exports = router;
