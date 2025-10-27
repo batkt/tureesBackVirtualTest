@@ -1466,7 +1466,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
                 );
             }
           }
-          console.log("bodsonDun -------------111", bodsonDun);
           if (bodsonDun > 0) {
             data = {
               plate_number: req.params.plate_number,
@@ -1482,7 +1481,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             tukhainKholbolt = kholbolt;
             break;
           } else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-            console.log("niitDun -------------", oldsonMashin.niitDun);
             tukhainKholbolt = kholbolt;
             data = {
               plate_number: req.params.plate_number,

@@ -881,7 +881,6 @@ function tooZasyaSync(too) {
 }
 
 exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
-  console.log(" ---------->>> tulultUstgaya");
   if (!req.body.tailbar) throw new Error("Тайлбар заавал оруулна уу?");
   if (req.body.guilgeeniiId) {
     var bankGuilgee = await BankniiGuilgee(
@@ -915,7 +914,6 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
     var tuxainGuilgee = ustgaxObject[0].avlaga.guilgeenuud;
     // if(!req.body.gereeniiDugaar && tuxainGuilgee.tulsunAldangi && tuxainGuilgee.guilgeeniiId)
     // {
-    //   console.log(" ---------->>> guilgeeniiId",tuxainGuilgee.guilgeeniiId);
     //   var ustgaxObjectAvlaga = await Geree(
     //     req.body.tukhainBaaziinKholbolt,
     //     true
@@ -1027,7 +1025,6 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
 });
 
 exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
-  console.log(" ---------->>> baritsaaniiGuilgeeUstgaya");
   const session = await req.body.tukhainBaaziinKholbolt.kholbolt.startSession();
   session.startTransaction();
   try {
@@ -1046,10 +1043,8 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         },
       },
     ]);
-    // console.log(" ---------->>> ustgaxObject",JSON.stringify(ustgaxObject));
     // if(ustgaxObject[0].avlaga?.baritsaa?.guilgeeniiId && req.body.guilgeeniiId)
     // {
-    //   console.log(" ---------->>> guilgeeniiId",ustgaxObject[0].avlaga?.baritsaa?.guilgeeniiId);
     //   var ustgaxObjectAvlaga = await Geree(
     //     req.body.tukhainBaaziinKholbolt,
     //     true
