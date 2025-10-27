@@ -804,16 +804,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                     "date",
                     geree._id.tulukhUdur[0]
                   );
-                  if (
-                    geree.uldegdel > 0 &&
-                    new Date() >
-                      new Date(
-                        moment(new Date(uusgexOgnoo)).add(
-                          aldangiChuluulukhKhonog,
-                          "days"
-                        )
-                      )
-                  ) {
+                  const hariuOgnoo = moment(uusgexOgnoo).startOf("day").add(aldangiChuluulukhKhonog, "days").subtract(1, "day");
+                  if (geree.uldegdel > 0 && moment().startOf("day").isAfter(hariuOgnoo))
+                  {
                     var bodogdsonKhuu = tooZasyaSync(
                       (geree.uldegdel * aldagiinKhuvi) / 100
                     );
