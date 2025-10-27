@@ -2810,6 +2810,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         if (bodsonDun == req.body.paid_amount) {
           if (!!tukhainObject.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag) {
             set["tuukh.$[t].tuluv"] = 1;
+            set["garakhTsag"] = new Date(new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000);
             if (!!tukhainObject.tuukh[0]?.garsanKhaalga) {
               const io = req.app.get("socketio");
               io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
@@ -2820,9 +2821,6 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           }
           set["tuukh.$[t].burtgesenAjiltaniiId"] = req.body.ajiltniiId;
           set["tuukh.$[t].burtgesenAjiltaniiNer"] = req.body.ajiltniiNer;
-          set["garakhTsag"] = new Date(
-            new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000
-          );
         }
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
