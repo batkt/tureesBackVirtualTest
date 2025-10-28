@@ -384,55 +384,70 @@ router.post(
       const Nevtreltiin = NevtreltiinTuukh(db.erunkhiiKholbolt);
       const Kass = KassCameraKhaalt(tukhainBaaziinKholbolt);
 
-      let haikhTses = unuudurEhkelsenee;
-      const tsikliinMedeelel = [];
-      let davtaltToo = 0;
-      const MAX_DAVTALT = 50;
+      const nevtreltiinJagsaalt = await Nevtreltiin.find({
+        baiguullagiinId,
+        ajiltniiId,
+        ognoo: { $gte: unuudurEhkelsenee, $lt: endOfToday },
+      })
+        .sort({ ognoo: 1 })
+        .select({ ognoo: 1, _id: 0 })
+        .lean();
 
-      while (davtaltToo < MAX_DAVTALT) {
-        const odoogiinNevtrelt = await Nevtreltiin.findOne({
-          baiguullagiinId,
-          ajiltniiId,
-          ognoo: { $gte: haikhTses, $lt: endOfToday },
-        })
-          .sort({ ognoo: 1 })
-          .select({ ognoo: 1, _id: 0 })
-          .lean();
+      const kassByNevtersenOgnoo = new Map();
 
-        if (!odoogiinNevtrelt) break;
-
-        const odoogiinNevtersenOgnoo = odoogiinNevtrelt.ognoo;
-
-        const odoogiinKassCamera = await Kass.findOne({
+      if (nevtreltiinJagsaalt.length > 0) {
+        const kassJagsaalt = await Kass.find({
           baiguullagiinId,
           barilgiinId,
           ajiltniiId,
           garsanCameraIp,
           zogsooliinId,
-          nevtersenOgnoo: { $eq: odoogiinNevtersenOgnoo },
+          nevtersenOgnoo: { $in: nevtreltiinJagsaalt.map((it) => it.ognoo) },
         }).lean();
 
-        const odoogiinKhaaltOgnoo = odoogiinKassCamera?.khaaltOgnoo ?? null;
+        for (const mur of kassJagsaalt) {
+          const tulkhuur = new Date(mur.nevtersenOgnoo).getTime();
+          if (!kassByNevtersenOgnoo.has(tulkhuur)) {
+            kassByNevtersenOgnoo.set(tulkhuur, mur);
+          }
+        }
+      }
+
+      const MAX_DAVTALT = 50;
+      const tsikliinMedeelel = [];
+
+      let haikhTsesMs = unuudurEhkelsenee.getTime();
+      let davtaltToo = 0;
+      let maxDavtaltDavsan = false;
+
+      for (const nevtrelt of nevtreltiinJagsaalt) {
+        const nevtersenMs = new Date(nevtrelt.ognoo).getTime();
+        if (nevtersenMs < haikhTsesMs) continue;
+
+        const kassMur = kassByNevtersenOgnoo.get(nevtersenMs) ?? null;
+        const odoogiinKhaaltOgnoo = kassMur?.khaaltOgnoo ?? null;
 
         tsikliinMedeelel.push({
-          nevtreltiinTuukh: [{ ognoo: odoogiinNevtersenOgnoo }],
-          kassCameraKhaalt: odoogiinKassCamera ? [odoogiinKassCamera] : [],
-          nevtersenOgnoo: odoogiinNevtersenOgnoo,
+          nevtreltiinTuukh: [{ ognoo: nevtrelt.ognoo }],
+          kassCameraKhaalt: kassMur ? [kassMur] : [],
+          nevtersenOgnoo: nevtrelt.ognoo,
           khaaltOgnoo: odoogiinKhaaltOgnoo,
         });
 
-        if (odoogiinKhaaltOgnoo) {
-          const daraagiinEhlel = new Date(odoogiinKhaaltOgnoo);
-          daraagiinEhlel.setMilliseconds(daraagiinEhlel.getMilliseconds() + 1);
-          haikhTses = daraagiinEhlel;
-          davtaltToo++;
-          continue;
-        }
+        if (!odoogiinKhaaltOgnoo) break;
 
-        break;
+        const daraagiinEhlel = new Date(odoogiinKhaaltOgnoo);
+        daraagiinEhlel.setMilliseconds(daraagiinEhlel.getMilliseconds() + 1);
+        haikhTsesMs = daraagiinEhlel.getTime();
+
+        davtaltToo++;
+        if (davtaltToo >= MAX_DAVTALT) {
+          maxDavtaltDavsan = true;
+          break;
+        }
       }
 
-      if (davtaltToo >= MAX_DAVTALT) {
+      if (maxDavtaltDavsan) {
         return res.status(400).json({
           success: false,
           message: "Мөчлөг хэт урт байна (MAX_DAVTALT). Өгөгдлөө шалгана уу.",
