@@ -802,8 +802,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 for (const geree of gereenuud) {
                   var uusgexOgnoo = moment(ognoo).set(
                     "date",
-                    parseFloat(geree._id.tulukhUdur[0])
+                    geree._id.tulukhUdur[0]
                   );
+                  // parseFloat()
                   const hariuOgnoo = moment(uusgexOgnoo).startOf("day").add(aldangiChuluulukhKhonog, "days").subtract(1, "day");
                   if (geree.uldegdel > 0 && moment().startOf("day").isAfter(hariuOgnoo))
                   {
