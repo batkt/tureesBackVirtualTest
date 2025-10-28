@@ -2818,8 +2818,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
               });
             }
           }
-          if(!req.body.uridchilsanEsekh)
-            set["garakhTsag"] = new Date(new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000);
+          set["garakhTsag"] = new Date(new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000);
           set["tuukh.$[t].burtgesenAjiltaniiId"] = req.body.ajiltniiId;
           set["tuukh.$[t].burtgesenAjiltaniiNer"] = req.body.ajiltniiNer;
         }
