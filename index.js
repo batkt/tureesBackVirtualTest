@@ -44,6 +44,7 @@ const parkingRoute = require("./routes/parkingRoute");
 const eventRoute = require("./routes/eventRoute");
 const tasalbarRoute = require("./routes/tasalbarRoute");
 const zochinUrikhRoute = require("./routes/zochinUrikhRoute");
+const testRoute = require("./routes/testRoute");
 // const redisClient = require("./routes/redisClient");
 
 const { db } = require("zevbackv2");
@@ -111,6 +112,7 @@ app.use(parkingRoute);
 app.use(eventRoute);
 app.use(tasalbarRoute);
 app.use(zochinUrikhRoute);
+app.use(testRoute);
 // app.use(redisClient);
 zuragPack(app);
 
