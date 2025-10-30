@@ -44,8 +44,6 @@ const parkingRoute = require("./routes/parkingRoute");
 const eventRoute = require("./routes/eventRoute");
 const tasalbarRoute = require("./routes/tasalbarRoute");
 const zochinUrikhRoute = require("./routes/zochinUrikhRoute");
-// const testRoute = require("./routes/testRoute");
-// const redisClient = require("./routes/redisClient");
 
 const { db } = require("zevbackv2");
 
@@ -55,19 +53,7 @@ const {
 } = require("./controller/khariltsagch");
 process.setMaxListeners(0);
 process.env.UV_THREADPOOL_SIZE = 20;
-//require("events").EventEmitter.prototype._maxListeners = 15;
-//require("events").EventEmitter.defaultMaxListeners = 0;
 server.listen(8081);
-
-/*mongoose
-  .connect(dbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-  })
-  .then((result) => )
-  .catch((err) => */
 
 process.env.TZ = "Asia/Ulaanbaatar";
 app.set("socketio", io);
@@ -112,8 +98,6 @@ app.use(parkingRoute);
 app.use(eventRoute);
 app.use(tasalbarRoute);
 app.use(zochinUrikhRoute);
-// app.use(testRoute);
-// app.use(redisClient);
 zuragPack(app);
 
 app.use(aldaaBarigch);
