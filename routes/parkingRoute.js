@@ -1547,7 +1547,7 @@ router.get("/v2/search_car/:plate_number", async (req, res, next) => {
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
             oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
-              mashiniiDugaar: req.params.plate_number,
+              mashiniiDugaar: { $regex: req.params.plate_number, $options: "i" },
               tuukh: {
                 $elemMatch: {
                   zogsooliinId: zogsool._id,
