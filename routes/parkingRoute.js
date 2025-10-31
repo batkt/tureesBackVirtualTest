@@ -1467,7 +1467,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
                 );
             }
           }
-          console.log("bodsonDun -------------->", bodsonDun);
           if (bodsonDun > 0) {
             data = {
               plate_number: req.params.plate_number,
