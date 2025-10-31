@@ -1442,6 +1442,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               zurchil: { $exists: false },
             }).sort({ createdAt: -1 }).limit(1);
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
+              oldsonMashin.freezeOgnoo = oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag;
               await Uilchluulegch(kholbolt).updateOne(
                 { _id: oldsonMashin._id },
                 {
@@ -1466,6 +1467,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
                 );
             }
           }
+          console.log("bodsonDun -------------->", bodsonDun);
           if (bodsonDun > 0) {
             data = {
               plate_number: req.params.plate_number,
