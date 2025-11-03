@@ -1478,6 +1478,11 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               parkingUndsenUne: zogsool.undsenUne,
               session_id: oldsonMashin._id,
               garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
+              garsanTsag: oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+                ? moment(
+                    oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+                  ).format("YYYY/MM/DD HH:mm:ss")
+                : null,
             };
             tukhainKholbolt = kholbolt;
             break;
@@ -1493,6 +1498,11 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               parkingUndsenUne: zogsool.undsenUne,
               session_id: oldsonMashin._id,
               garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
+              garsanTsag: oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+                ? moment(
+                    oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+                  ).format("YYYY/MM/DD HH:mm:ss")
+                : null,
             };
             break;
           }
