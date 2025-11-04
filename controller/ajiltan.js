@@ -652,7 +652,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
       ekhlekhOgnoo.setHours(0, 0, 0, 0);
       duusakhOgnoo.setHours(23, 59, 59, 999);
       for await (const baiguullaga of baiguullaguud) {
-        console.log("orlogiin msg ilgeej bna: ", JSON.stringify(baiguullaga));
         try {
           var kholboltuud = db.kholboltuud;
           var kholbolt = kholboltuud.find(
@@ -663,7 +662,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             baiguullaga.tokhirgoo.msgAvakhTurul == "dans" ||
             baiguullaga.tokhirgoo.msgAvakhTurul == "bugd"
           ) {
-            console.log("orlogo dansaar shalgaj bna...");
             var text = "";
             let query = [
               {
@@ -753,7 +751,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             baiguullaga.tokhirgoo.msgAvakhTurul == "system" ||
             baiguullaga.tokhirgoo.msgAvakhTurul == "bugd"
           ) {
-            console.log("orlogo dansaar TogloomiinTuv shalgaj bna...");
             var text = "";
             var togloom = await TogloomiinTuv(kholbolt).aggregate([
               {
@@ -785,7 +782,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
             ]);
-            console.log("orlogo dansaar Uilchluulegch shalgaj bna...", ekhlekhOgnoo, duusakhOgnoo);
             var zogsool = await Uilchluulegch(kholbolt, true).aggregate([
               {
                 $match: {
@@ -815,7 +811,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
             ]);
-            console.log("orlogo dansaar Turees shalgaj bna..." + JSON.stringify(zogsool));
             var turees = await Geree(kholbolt, true).aggregate([
               {
                 $match: {
@@ -928,7 +923,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             }
           }
           if (textuud.length > 0) {
-            console.log("ilgeej bgaa msg textuud: ", JSON.stringify(textuud));
             var ilgeexList = [];
             for await (const dugaar of baiguullaga.tokhirgoo.msgAvakhDugaar)
               for await (const text of textuud)
@@ -945,7 +939,6 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             to: "88043808",
             text,
           }];*/
-            console.log("ilgeehed belen msg: ", JSON.stringify(ilgeexList));
             msgIlgeeye(
               ilgeexList,
               msgIlgeekhKey,
