@@ -652,6 +652,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
       ekhlekhOgnoo.setHours(0, 0, 0, 0);
       duusakhOgnoo.setHours(23, 59, 59, 999);
       for await (const baiguullaga of baiguullaguud) {
+        console.log("orlogiin msg ilgeej bna: ", JSON.stringify(baiguullaga));
         try {
           var kholboltuud = db.kholboltuud;
           var kholbolt = kholboltuud.find(
@@ -923,6 +924,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             }
           }
           if (textuud.length > 0) {
+            console.log("ilgeej bgaa msg textuud: ", JSON.stringify(textuud));
             var ilgeexList = [];
             for await (const dugaar of baiguullaga.tokhirgoo.msgAvakhDugaar)
               for await (const text of textuud)
