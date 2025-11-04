@@ -1537,6 +1537,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       data: req.params.turul == "Rent" ? [] : {},
     };
     var dunguud;
+    var dunguudAjiltan;
     if (req.params.turul == "Rent") {
       var matchQuery = {
         tuluv: { $ne: -1 },
@@ -1986,41 +1987,36 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         butsaakhKhariu.data = data;
       } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
     } else if (req.params.turul == "Parking") {
-      var ajiltnuud = [];
-      if (req.body.ajiltnaarAvakhEsekh) {
-        ajiltnuud = await Uilchluulegch(
-          req.body.tukhainBaaziinKholbolt,
-          true
-        ).aggregate([
-          {
-            $unwind: "$tuukh",
-          },
-          {
-            $unwind: "$tuukh.tulbur",
-          },
-          {
-            $match: {
-              "tuukh.tulbur.ognoo": {
-                $gte: new Date(req.params.ekhlekhOgnoo),
-                $lte: new Date(req.params.duusakhOgnoo),
-              },
+      var ajiltnuud = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate([
+        {
+          $unwind: "$tuukh",
+        },
+        {
+          $unwind: "$tuukh.tulbur",
+        },
+        {
+          $match: {
+            "tuukh.tulbur.ognoo": {
+              $gte: new Date(req.params.ekhlekhOgnoo),
+              $lte: new Date(req.params.duusakhOgnoo),
             },
           },
-          {
-            $group: {
-              _id: {
-                burtgesenAjiltaniiId: { $ifNull: ["$tuukh.burtgesenAjiltaniiId", 0] },
-                burtgesenAjiltaniiNer: "$tuukh.burtgesenAjiltaniiNer" 
-              },
+        },
+        {
+          $group: {
+            _id: {
+              burtgesenAjiltaniiId: { $ifNull: ["$tuukh.burtgesenAjiltaniiId", 0] },
+              burtgesenAjiltaniiNer: "$tuukh.burtgesenAjiltaniiNer" 
             },
           },
-        ]);
-      }
+        },
+      ]);
       var groups = {
         turul: "$tuukh.tulbur.turul",
       };
-      if (req.body.ajiltnaarAvakhEsekh)
-        groups.burtgesenAjiltaniiNer = "$tuukh.burtgesenAjiltaniiNer";
       dunguud = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt,
         true
@@ -2048,37 +2044,62 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
           },
         },
       ]);
+      groups.burtgesenAjiltaniiNer = "$tuukh.burtgesenAjiltaniiNer";
+      dunguudAjiltan = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate([
+        {
+          $unwind: "$tuukh",
+        },
+        {
+          $unwind: "$tuukh.tulbur",
+        },
+        {
+          $match: {
+            "tuukh.tulbur.ognoo": {
+              $gte: new Date(req.params.ekhlekhOgnoo),
+              $lte: new Date(req.params.duusakhOgnoo),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: groups,
+            dun: {
+              $sum: "$tuukh.tulbur.dun",
+            },
+          },
+        },
+      ]);
       if (dunguud && dunguud.length > 0) {
-        if (req.body.ajiltnaarAvakhEsekh) {
-          var data = [];
-          for (const ajiltan of ajiltnuud) {
-            if (!!ajiltan?._id?.burtgesenAjiltaniiNer) {
-              var ajiltanData;
-              if(ajiltan?._id?.burtgesenAjiltaniiId !== 0)
-                ajiltanData = await Ajiltan(db.erunkhiiKholbolt).findById(ajiltan?._id?.burtgesenAjiltaniiId);
-              var mur = {
-                ajiltanRegister: ajiltan?._id?.burtgesenAjiltaniiId !== 0 ? ajiltanData?.register : ajiltan?._id?.burtgesenAjiltaniiNer,
-                ajiltanNer: ajiltan?._id?.burtgesenAjiltaniiNer,
-              };
-              var filterDunguud = dunguud?.filter(
-                (a) => a._id?.burtgesenAjiltaniiNer === ajiltan?._id?.burtgesenAjiltaniiNer
-              );
-              if (filterDunguud?.length > 0) {
-                for (const row of filterDunguud) mur[row._id.turul] = row.dun;
-              }
-              data.push(mur);
+        var data = [];
+        for (const ajiltan of ajiltnuud) {
+          if (!!ajiltan?._id?.burtgesenAjiltaniiNer) {
+            var ajiltanData;
+            if(ajiltan?._id?.burtgesenAjiltaniiId !== 0)
+              ajiltanData = await Ajiltan(db.erunkhiiKholbolt).findById(ajiltan?._id?.burtgesenAjiltaniiId);
+            var mur = {
+              ajiltanRegister: ajiltan?._id?.burtgesenAjiltaniiId !== 0 ? ajiltanData?.register : ajiltan?._id?.burtgesenAjiltaniiNer,
+              ajiltanNer: ajiltan?._id?.burtgesenAjiltaniiNer,
+            };
+            var filterDunguud = dunguudAjiltan?.filter(
+              (a) => a._id?.burtgesenAjiltaniiNer === ajiltan?._id?.burtgesenAjiltaniiNer
+            );
+            if (filterDunguud?.length > 0) {
+              for (const row of filterDunguud) mur[row._id.turul] = row.dun;
             }
+            data.push(mur);
           }
-          butsaakhKhariu.data = data;
-        } else {
-          data = {
-            currency: "MNT",
-          };
-          for await (const dun of dunguud) {
-            data[dun._id.turul] = dun.dun;
-          }
-          butsaakhKhariu.data = data;
         }
+        butsaakhKhariu.dataAjiltan = data;
+        data = {
+          currency: "MNT",
+        };
+        for await (const dun of dunguud) {
+          data[dun._id.turul] = dun.dun;
+        }
+        butsaakhKhariu.data = data;
       } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
     } else if (req.params.turul == "Toyland") {
       dunguud = await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).aggregate([
