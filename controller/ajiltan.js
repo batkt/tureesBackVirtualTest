@@ -939,13 +939,14 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             to: "88043808",
             text,
           }];*/
+            console.log("ilgeehed belen msg: ", JSON.stringify(ilgeexList));
             msgIlgeeye(
               ilgeexList,
               msgIlgeekhKey,
               msgIlgeekhDugaar,
               [],
               0,
-              db.erunkhiiKholbolt,
+              kholbolt,
               baiguullaga._id
             );
           }
