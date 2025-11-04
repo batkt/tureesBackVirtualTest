@@ -1460,11 +1460,15 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               )
                 bodsonDun = zogsool.togtmolTulburiinDun;
               else
+              {
+                console.log('Calculating parking fee for', oldsonMashin.mashiniiDugaar);
                 bodsonDun = await zogsooliinDunAvya(
                   zogsool,
                   oldsonMashin,
                   kholbolt
                 );
+                console.log('Calculating parking fee for bodsonDun --->', bodsonDun);
+              }
             }
           }
           if (bodsonDun > 0) {
