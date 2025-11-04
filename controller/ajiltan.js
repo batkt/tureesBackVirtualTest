@@ -785,8 +785,8 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
             ]);
-            console.log("orlogo dansaar Uilchluulegch shalgaj bna...");
-            var zogsool = await Uilchluulegch(kholbolt).aggregate([
+            console.log("orlogo dansaar Uilchluulegch shalgaj bna...", ekhlekhOgnoo, duusakhOgnoo);
+            var zogsool = await Uilchluulegch(kholbolt, true).aggregate([
               {
                 $match: {
                   baiguullagiinId: baiguullaga._id.toString(),
