@@ -663,6 +663,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             baiguullaga.tokhirgoo.msgAvakhTurul == "dans" ||
             baiguullaga.tokhirgoo.msgAvakhTurul == "bugd"
           ) {
+            console.log("orlogo dansaar shalgaj bna...");
             var text = "";
             let query = [
               {
@@ -752,6 +753,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             baiguullaga.tokhirgoo.msgAvakhTurul == "system" ||
             baiguullaga.tokhirgoo.msgAvakhTurul == "bugd"
           ) {
+            console.log("orlogo dansaar TogloomiinTuv shalgaj bna...");
             var text = "";
             var togloom = await TogloomiinTuv(kholbolt).aggregate([
               {
@@ -783,6 +785,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
             ]);
+            console.log("orlogo dansaar Uilchluulegch shalgaj bna...");
             var zogsool = await Uilchluulegch(kholbolt, true).aggregate([
               {
                 $match: {
@@ -812,6 +815,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
             ]);
+            console.log("orlogo dansaar Turees shalgaj bna..." + JSON.stringify(zogsool));
             var turees = await Geree(kholbolt, true).aggregate([
               {
                 $match: {
