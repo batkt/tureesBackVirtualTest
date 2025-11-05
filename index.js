@@ -210,7 +210,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "33 10 * * *",
+  "0 0 1 * *",
   function () {
     zogsool.khungulultKhugatsaaShinechlyaSar();
   },
@@ -221,9 +221,9 @@ cron.schedule(
 );
 
 cron.schedule(
-  "0 0 * * *",
+  "46 10 * * *",
   function () {
-    zogsool.khungulultKhugatsaaShinechlya();
+    zogsool.khungulultKhugatsaaShinechlyaUdur();
   },
   {
     scheduled: true,

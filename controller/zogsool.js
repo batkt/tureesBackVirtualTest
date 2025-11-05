@@ -18,7 +18,7 @@ module.exports.khungulultKhugatsaaShinechlyaSar =
     const kholboltuud = db.kholboltuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        const mashinuud = await ParkingMashin(kholbolt).find({baiguullagiinId: "63c0f31efe522048bf02086d", uldegdelKhungulukhKhugatsaa: { $lt: 4000 }, turul: "Түрээслэгч", khungulultTurul: "togtmolTsag", tsagiinTurul: "Сараар"});
+        const mashinuud = await ParkingMashin(kholbolt).find({turul: "Түрээслэгч", khungulultTurul: "togtmolTsag", tsagiinTurul: "Сараар"});
         var bulkOps = [];
         if(mashinuud?.length > 0)
         {
@@ -54,63 +54,36 @@ module.exports.khungulultKhugatsaaShinechlyaSar =
     }
   };
 
-module.exports.khungulultKhugatsaaShinechlya =
-  async function khungulultKhugatsaaShinechlya() {
+module.exports.khungulultKhugatsaaShinechlyaUdur =
+  async function khungulultKhugatsaaShinechlyaUdur() {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        const mashinuud = await ParkingMashin(kholbolt).find();
+        const mashinuud = await ParkingMashin(kholbolt).find({baiguullagiinId: "612f457d185280db676d0b51", turul: "Түрээслэгч", khungulultTurul: "togtmolTsag", tsagiinTurul: "Өдрөөр"});
         var bulkOps = [];
         mashinuud.forEach((mashin) => {
           if (
             mashin.turul === "Түрээслэгч" &&
             (mashin.tuluv === "Хөнгөлөлттэй" ||
               mashin.nemeltTuluv === "Хөнгөлөлттэй") &&
-            mashin.khungulultTurul === "togtmolTsag"
+            mashin.khungulultTurul === "togtmolTsag" &&
+            mashin.tsagiinTurul === "Өдрөөр"
           ) {
-            if (
-              mashin.khungulujEkhlesenOgnoo &&
-              mashin.tsagiinTurul === "Сараар"
-            ) {
-              if (
-                moment(new Date()).month() !==
-                moment(mashin.khungulujEkhlesenOgnoo).month()
-              ) {
-                mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
-                mashin.khungulujEkhlesenOgnoo = moment();
-                var updateOperation = {
-                  updateOne: {
-                    filter: { _id: mashin._id },
-                    update: {
-                      $set: {
-                        uldegdelKhungulukhKhugatsaa: mashin.khungulukhKhugatsaa,
-                        khungulujEkhlesenOgnoo: mashin.khungulujEkhlesenOgnoo,
-                      },
-                    },
-                  },
-                };
-                bulkOps.push(updateOperation);
-              }
-            } else if (
-              mashin.khungulujEkhlesenOgnoo &&
-              mashin.tsagiinTurul === "Өдрөөр"
-            ) {
-              mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
-              mashin.khungulujEkhlesenOgnoo = moment();
-              var updateOperation = {
-                updateOne: {
-                  filter: { _id: mashin._id },
-                  update: {
-                    $set: {
-                      uldegdelKhungulukhKhugatsaa: mashin.khungulukhKhugatsaa,
-                      khungulujEkhlesenOgnoo: mashin.khungulujEkhlesenOgnoo,
-                    },
+            mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
+            mashin.khungulujEkhlesenOgnoo = moment();
+            var updateOperation = {
+              updateOne: {
+                filter: { _id: mashin._id },
+                update: {
+                  $set: {
+                    uldegdelKhungulukhKhugatsaa: mashin.khungulukhKhugatsaa,
+                    khungulujEkhlesenOgnoo: mashin.khungulujEkhlesenOgnoo,
                   },
                 },
-              };
-              bulkOps.push(updateOperation);
-            }
+              },
+            };
+            bulkOps.push(updateOperation);
           }
         });
         if (bulkOps.length > 0) {
