@@ -366,7 +366,7 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
       if (!!qpayBarimt.zogsooliinId) {
         const body = {
           tukhainBaaziinKholbolt,
-          turul: "qpayUridchilsan",
+          turul: "DotorQR",
           uilchluulegchiinId: qpayBarimt.zogsoolUilchluulegch.uId,
           paid_amount: qpayBarimt.zogsoolUilchluulegch.pay_amount,
           plate_number: qpayBarimt.zogsoolUilchluulegch.plate_number,

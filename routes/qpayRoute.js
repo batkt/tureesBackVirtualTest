@@ -35,7 +35,7 @@ router.get(
       if (qpayObject.zogsooliinId) {
         const body = {
           tukhainBaaziinKholbolt: kholbolt,
-          turul: "qpayUridchilsan",
+          turul: "DotorQR",
           uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
           paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
           plate_number: qpayObject.zogsoolUilchluulegch.plate_number,

@@ -208,10 +208,10 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
         else tukhainObject.tuukh[0].tulbur = tulbur;
       var set = {
         "tuukh.0.tulbur": tukhainObject?.tuukh?.[0]?.tulbur || 0,
-        "tuukh.0.tuluv": (body.turul === "qpayUridchilsan" || body.turul === "DotorQR" ? 0 : 1),
+        "tuukh.0.tuluv": (body.turul === "DotorQR" ? 0 : 1),
         "tuukh.0.tulukhDun": 0,
       };
-      if(body.turul === "qpayUridchilsan" || body.turul === "DotorQR")
+      if(body.turul === "DotorQR")
         set["garakhTsag"] = new Date(Date.now() + (tukhainZogsool?.garakhTsag || 30) * 60000);
       if (bodsonDun > 0 && bodsonDun === body.paid_amount) {
         set["tuukh.0.burtgesenAjiltaniiId"] = body.ajiltniiId;
