@@ -12,6 +12,48 @@ const moment = require("moment");
 const got = require("got");
 const FormData = require("form-data");
 
+module.exports.khungulultKhugatsaaShinechlyaSar =
+  async function khungulultKhugatsaaShinechlyaSar() {
+    const { db } = require("zevbackv2");
+    const kholboltuud = db.kholboltuud;
+    if (kholboltuud) {
+      for await (const kholbolt of kholboltuud) {
+        const mashinuud = await ParkingMashin(kholbolt).find({baiguullagiinId: "612f457d185280db676d0b51", turul: "Түрээслэгч", khungulultTurul: "togtmolTsag", tsagiinTurul: "Сараар"});
+        var bulkOps = [];
+        if(mashinuud?.length > 0)
+        {
+          mashinuud.forEach((mashin) => {
+            if (
+              mashin.turul === "Түрээслэгч" &&
+              (mashin.tuluv === "Хөнгөлөлттэй" ||
+                mashin.nemeltTuluv === "Хөнгөлөлттэй") &&
+              mashin.khungulultTurul === "togtmolTsag" &&
+              mashin.tsagiinTurul === "Сараар"
+            ) {
+              mashin.uldegdelKhungulukhKhugatsaa = mashin.khungulukhKhugatsaa;
+              mashin.khungulujEkhlesenOgnoo = moment();
+              var updateOperation = {
+                updateOne: {
+                  filter: { _id: mashin._id },
+                  update: {
+                    $set: {
+                      uldegdelKhungulukhKhugatsaa: mashin.khungulukhKhugatsaa,
+                      khungulujEkhlesenOgnoo: mashin.khungulujEkhlesenOgnoo,
+                    },
+                  },
+                },
+              };
+              bulkOps.push(updateOperation);
+            }
+          });
+        }
+        if (bulkOps.length > 0) {
+          await ParkingMashin(kholbolt).bulkWrite(bulkOps);
+        }
+      }
+    }
+  };
+
 module.exports.khungulultKhugatsaaShinechlya =
   async function khungulultKhugatsaaShinechlya() {
     const { db } = require("zevbackv2");

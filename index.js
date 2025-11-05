@@ -210,6 +210,17 @@ cron.schedule(
 );
 
 cron.schedule(
+  "4 10 * * *",
+  function () {
+    zogsool.khungulultKhugatsaaShinechlyaSar();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
   "0 0 * * *",
   function () {
     zogsool.khungulultKhugatsaaShinechlya();
