@@ -221,7 +221,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "46 10 * * *",
+  "51 10 * * *",
   function () {
     zogsool.khungulultKhugatsaaShinechlyaUdur();
   },
