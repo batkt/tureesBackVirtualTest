@@ -18,7 +18,7 @@ module.exports.khungulultKhugatsaaShinechlyaSar =
     const kholboltuud = db.kholboltuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        const mashinuud = await ParkingMashin(kholbolt).find({baiguullagiinId: "612f457d185280db676d0b51", turul: "Түрээслэгч", khungulultTurul: "togtmolTsag", tsagiinTurul: "Сараар"});
+        const mashinuud = await ParkingMashin(kholbolt).find({baiguullagiinId: "63c0f31efe522048bf02086d", uldegdelKhungulukhKhugatsaa: { $lt: 4000 }, turul: "Түрээслэгч", khungulultTurul: "togtmolTsag", tsagiinTurul: "Сараар"});
         var bulkOps = [];
         if(mashinuud?.length > 0)
         {
