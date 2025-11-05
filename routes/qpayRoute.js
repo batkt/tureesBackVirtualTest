@@ -70,7 +70,7 @@ router.get(
       if (qpayObject.zogsooliinId) {
         const body = {
           tukhainBaaziinKholbolt: kholbolt,
-          turul: req.params.cameraIP == "dotor" ? "qpayUridchilsan" : "qpay",
+          turul: req.params.cameraIP == "dotor" ? "DotorQR" : "GadaaQR",
           uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
           paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
           plate_number: qpayObject.zogsoolUilchluulegch.plate_number,
