@@ -210,7 +210,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "4 10 * * *",
+  "33 10 * * *",
   function () {
     zogsool.khungulultKhugatsaaShinechlyaSar();
   },
