@@ -85,6 +85,8 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
                 kholbosonDun: {
                   $add: [{ $ifNull: ["$kholbosonDun", 0] }, dun],
                 },
+                burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
+                burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
               },
             },
           ])
@@ -186,6 +188,8 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
                   guilgee.orlogo - guilgee.zarlaga,
                 ],
               },
+              burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
+              burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
             },
           },
         ])
@@ -216,7 +220,8 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
     var guilgee = req.body.guilgee;
     if (guilgee.guilgeeniiId) {
       var shalguur = await BankniiGuilgee(
-        req.body.tukhainBaaziinKholbolt, true
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).findOne({
         "guilgee.guilgeeniiId": guilgee.guilgeeniiId,
         kholbosonGereeniiId: guilgee.gereeniiId,
@@ -465,11 +470,12 @@ function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
     var sariinNiitKhonog = body.guchKhonogOruulakhEsekh
       ? 30
       : parseFloat(moment(ekhlekhOgnoo).endOf("month").format("DD"));
-    var ashiglakhKhonog = body.garaasKhonogOruulakhEsekh &&
-    moment(body?.gereeniiOgnoo).isSame(ekhlekhOgnoo, "month") &&
+    var ashiglakhKhonog =
+      body.garaasKhonogOruulakhEsekh &&
+      moment(body?.gereeniiOgnoo).isSame(ekhlekhOgnoo, "month") &&
       moment(body?.gereeniiOgnoo).isSame(ekhlekhOgnoo, "year")
-      ? body.ekhniiSariinKhonog
-      : moment(ekhlekhOgnoo).endOf("month").diff(body.gereeniiOgnoo, "d") + 1;
+        ? body.ekhniiSariinKhonog
+        : moment(ekhlekhOgnoo).endOf("month").diff(body.gereeniiOgnoo, "d") + 1;
     ashiglakhKhonog =
       sariinNiitKhonog < ashiglakhKhonog ? sariinNiitKhonog : ashiglakhKhonog; // 28 < 30
     dun = (dun * ashiglakhKhonog) / (sariinNiitKhonog || 1);
@@ -515,7 +521,9 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               match1["amount"] = { $gt: 0 };
             }
             var guilgeenuud = [];
-            var guilgeenuudQpay = await BankniiGuilgee(kholbolt, true).find(match1);
+            var guilgeenuudQpay = await BankniiGuilgee(kholbolt, true).find(
+              match1
+            );
             guilgeenuud.push(...guilgeenuudQpay);
             var match2 = match;
             if (dans.bank == "golomt") {
@@ -530,7 +538,9 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               match2["description"] = { $regex: "QPAY", $options: "i" };
               match2["amount"] = { $gt: 0 };
             }
-            var guilgeenuudQPAY = await BankniiGuilgee(kholbolt, true).find(match2);
+            var guilgeenuudQPAY = await BankniiGuilgee(kholbolt, true).find(
+              match2
+            );
             guilgeenuud.push(...guilgeenuudQPAY);
             var match3 = match;
             if (dans.bank == "golomt") {
@@ -545,7 +555,9 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               match3["description"] = { $not: { $regex: "qpay" } };
               match3["amount"] = { $gt: 0 };
             }
-            var guilgeenuudBish = await BankniiGuilgee(kholbolt, true).find(match3);
+            var guilgeenuudBish = await BankniiGuilgee(kholbolt, true).find(
+              match3
+            );
             guilgeenuud.push(...guilgeenuudBish);
             var match4 = match;
             if (dans.bank == "golomt") {
@@ -805,9 +817,14 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                     geree._id.tulukhUdur[0]
                   );
                   // parseFloat()
-                  const hariuOgnoo = moment(uusgexOgnoo).startOf("day").add(aldangiChuluulukhKhonog, "days").subtract(1, "day");
-                  if (geree.uldegdel > 0 && moment().startOf("day").isAfter(hariuOgnoo))
-                  {
+                  const hariuOgnoo = moment(uusgexOgnoo)
+                    .startOf("day")
+                    .add(aldangiChuluulukhKhonog, "days")
+                    .subtract(1, "day");
+                  if (
+                    geree.uldegdel > 0 &&
+                    moment().startOf("day").isAfter(hariuOgnoo)
+                  ) {
                     var bodogdsonKhuu = tooZasyaSync(
                       (geree.uldegdel * aldagiinKhuvi) / 100
                     );
@@ -885,7 +902,8 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
   if (!req.body.tailbar) throw new Error("Тайлбар заавал оруулна уу?");
   if (req.body.guilgeeniiId) {
     var bankGuilgee = await BankniiGuilgee(
-      req.body.tukhainBaaziinKholbolt, true
+      req.body.tukhainBaaziinKholbolt,
+      true
     ).findOne({
       _id: req.body.guilgeeniiId,
     });
@@ -935,8 +953,7 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
     var inc = {
       uldegdel: tuxainGuilgee?.tulsunDun || 0,
     };
-    if (tuxainGuilgee.tulsunAldangi && tuxainGuilgee.tulsunAldangi > 0)
-    {
+    if (tuxainGuilgee.tulsunAldangi && tuxainGuilgee.tulsunAldangi > 0) {
       inc["aldangiinUldegdel"] = tuxainGuilgee.tulsunAldangi;
       inc["niitTulsunAldangi"] = -tuxainGuilgee.tulsunAldangi;
     }
@@ -1626,7 +1643,8 @@ exports.bankniiGuilgeegeerOruulya = asyncHandler(async (req, res, next) => {
     var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
     var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
     var guilgeenuud = await BankniiGuilgee(
-      req.body.tukhainBaaziinKholbolt, true
+      req.body.tukhainBaaziinKholbolt,
+      true
     ).find({
       "kholbosonGereeniiId.0": { $exists: true },
       TxPostDate: { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
@@ -1652,7 +1670,8 @@ exports.aldaataiBankniiGuilgeeZasya = asyncHandler(async (req, res, next) => {
     var idnuud = req.body.idnuud;
     var ObjectId = require("mongodb").ObjectId;
     var guilgeenuud = await BankniiGuilgee(
-      req.body.tukhainBaaziinKholbolt, true
+      req.body.tukhainBaaziinKholbolt,
+      true
     ).find({ _id: { $in: idnuud } });
     for await (const guilgee of guilgeenuud) {
       var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
@@ -1691,7 +1710,8 @@ exports.aldaataiBankniiGuilgeeZasya = asyncHandler(async (req, res, next) => {
 exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
   try {
     var qpayGuilgeenuud = await BankniiGuilgee(
-      req.body.tukhainBaaziinKholbolt, true
+      req.body.tukhainBaaziinKholbolt,
+      true
     ).find({
       $and: [
         {
@@ -1756,7 +1776,8 @@ exports.qpayGuilgeeTalbainDugaarOnooyo = asyncHandler(
   async (req, res, next) => {
     try {
       var guilgeenuud = await BankniiGuilgee(
-        req.body.tukhainBaaziinKholbolt, true
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).find({
         $and: [
           {
@@ -2158,7 +2179,8 @@ exports.tukhainOgnoogoorGuilgeegOruulya = asyncHandler(
   async (req, res, next) => {
     try {
       var guilgeenuud = await BankniiGuilgee(
-        req.body.tukhainBaaziinKholbolt, true
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).find({
         tranDate: {
           $gte: new Date(req.body.ekhlekhOgnoo),
@@ -2225,7 +2247,8 @@ exports.testiinBankniiGuilgee = asyncHandler(async (req, res, next) => {
     if (!req.body.dans || !req.body.barilgiinId)
       throw new Error("dans, barilgiinId alga!");
     var guilgeenuud = await BankniiGuilgee(
-      req.body.tukhainBaaziinKholbolt, true
+      req.body.tukhainBaaziinKholbolt,
+      true
     ).find({
       createdAt: {
         $gte: new Date(req.body.ekhlekhOgnoo),
@@ -2788,9 +2811,10 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
       },
       description: { $regex: "qpay", $options: "i" },
     };
-    var tempData = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true).find(
-      match
-    );
+    var tempData = await BankniiGuilgee(
+      req.body.tukhainBaaziinKholbolt,
+      true
+    ).find(match);
     if (tempData?.length > 0) {
       var bulkAvlaga = [];
       for (const data of tempData) {
