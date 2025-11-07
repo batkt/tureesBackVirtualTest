@@ -482,8 +482,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     }
     let regex = /\b\d{4}[А-ЯӨҮ]{2,3}\b/gu;
     let result = nemeltUtga?.match(regex);
-    if (result)
-      query["mashiniiDugaar"] = result[0];
+    if (result) query["mashiniiDugaar"] = result[0];
     var oldsonData = await Uilchluulegch(kholbolt, true).findOne(query);
     if (oldsonData) {
       await Uilchluulegch(kholbolt).findByIdAndUpdate(
@@ -573,6 +572,212 @@ router.post(
 );
 
 router.post(
+  "/zogsooliinAjiltniiUdriinTailanAvya",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+      const duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+
+      const baseMatch = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId
+          ? req.body.barilgiinId
+          : { $exists: true },
+      };
+
+      const ajiltanDateMatch = req.body.garsanKhaalga
+        ? {
+            "tuukh.garsanKhaalga": req.body.garsanKhaalga,
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              $gte: ekhlekhOgnoo,
+              $lte: duusakhOgnoo,
+            },
+          }
+        : {
+            "tuukh.tulbur.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+          };
+
+      const ajiltniiNukhutsul = {};
+      if (req.body.burtgesenAjiltaniiId) {
+        ajiltniiNukhutsul["tuukh.burtgesenAjiltaniiId"] =
+          req.body.burtgesenAjiltaniiId;
+      }
+
+      const ajiltniiPipeline = [
+        { $match: baseMatch },
+        { $unwind: "$tuukh" },
+        { $unwind: "$tuukh.tulbur" },
+        { $match: { ...ajiltanDateMatch, ...ajiltniiNukhutsul } },
+        {
+          $group: {
+            _id: "$tuukh.tulbur.turul",
+            niitDun: { $sum: "$tuukh.tulbur.dun" },
+            niitToo: { $sum: 1 },
+          },
+        },
+      ];
+
+      const qrTypes = ["GadaaQR", "DotorQR", "bankQR", "toki", "киоск"];
+
+      const qrDateMatch = {
+        "tuukh.tulbur.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+      };
+
+      const qrPipeline = [
+        { $match: baseMatch },
+        { $unwind: "$tuukh" },
+        { $unwind: "$tuukh.tulbur" },
+        {
+          $match: {
+            ...qrDateMatch,
+            "tuukh.tulbur.turul": { $in: qrTypes },
+          },
+        },
+        {
+          $group: {
+            _id: "$tuukh.tulbur.turul",
+            niitDun: { $sum: "$tuukh.tulbur.dun" },
+            niitToo: { $sum: 1 },
+          },
+        },
+      ];
+
+      const ajiltniiTailan = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate(ajiltniiPipeline);
+
+      let qrTailan = [];
+      if (req.body.burtgesenAjiltaniiId) {
+        qrTailan = await Uilchluulegch(
+          req.body.tukhainBaaziinKholbolt,
+          true
+        ).aggregate(qrPipeline);
+      }
+
+      let niilberTailan = Array.isArray(ajiltniiTailan)
+        ? [...ajiltniiTailan]
+        : [];
+      if (Array.isArray(qrTailan) && qrTailan.length > 0) {
+        const qrTypeSet = new Set(qrTypes);
+        niilberTailan = niilberTailan.filter((row) => !qrTypeSet.has(row._id));
+        niilberTailan.push(...qrTailan);
+      }
+
+      res.status(200).send(niilberTailan);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// router.post(
+//   "/zogsooliinAjiltniiUdriinTailanAvya",
+//   tokenShalgakh,
+//   async (req, res, next) => {
+//     try {
+//       const ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+//       const duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+
+//       const dateMatchBuilder = (useGateFilter = true) => {
+//         if (useGateFilter && !!req.body.garsanKhaalga) {
+//           return {
+//             "tuukh.garsanKhaalga": req.body.garsanKhaalga,
+//             "tuukh.tsagiinTuukh.garsanTsag": {
+//               $gte: ekhlekhOgnoo,
+//               $lte: duusakhOgnoo,
+//             },
+//           };
+//         }
+//         return {
+//           "tuukh.tulbur.ognoo": {
+//             $gte: ekhlekhOgnoo,
+//             $lte: duusakhOgnoo,
+//           },
+//         };
+//       };
+
+//       const baseMatch = {
+//         baiguullagiinId: req.body.baiguullagiinId,
+//         barilgiinId: !!req.body.barilgiinId
+//           ? req.body.barilgiinId
+//           : { $exists: true },
+//       };
+
+//       const buildPipeline = (extraMatch = {}, opts = {}) => {
+//         const { useGateFilter = true } = opts;
+//         const matchStage = {
+//           ...dateMatchBuilder(useGateFilter),
+//           ...extraMatch,
+//         };
+//         return [
+//           {
+//             $match: baseMatch,
+//           },
+//           {
+//             $unwind: "$tuukh",
+//           },
+//           {
+//             $unwind: "$tuukh.tulbur",
+//           },
+//           {
+//             $match: matchStage,
+//           },
+//           {
+//             $group: {
+//               _id: "$tuukh.tulbur.turul",
+//               niitDun: {
+//                 $sum: "$tuukh.tulbur.dun",
+//               },
+//               niitToo: { $sum: 1 },
+//             },
+//           },
+//         ];
+//       };
+
+//       const ajiltniiNukhutsul = {};
+//       if (!!req.body.burtgesenAjiltaniiId) {
+//         ajiltniiNukhutsul["tuukh.burtgesenAjiltaniiId"] =
+//           req.body.burtgesenAjiltaniiId;
+//       }
+
+//       const ajiltniiTailan = await Uilchluulegch(
+//         req.body.tukhainBaaziinKholbolt,
+//         true
+//       ).aggregate(buildPipeline(ajiltniiNukhutsul));
+
+//       const qrTypes = ["GadaaQR", "DotorQR", "bankQR", "toki", "киоск"];
+//       let qrTailan = [];
+//       if (!!req.body.burtgesenAjiltaniiId) {
+//         qrTailan = await Uilchluulegch(
+//           req.body.tukhainBaaziinKholbolt,
+//           true
+//         ).aggregate(
+//           buildPipeline(
+//             {
+//               "tuukh.tulbur.turul": { $in: qrTypes },
+//             },
+//             { useGateFilter: false }
+//           )
+//         );
+//       }
+
+//       let niilberTailan = [...ajiltniiTailan];
+//       if (qrTailan?.length > 0) {
+//         const qrTypeSet = new Set(qrTypes);
+//         niilberTailan = niilberTailan.filter((row) => !qrTypeSet.has(row._id));
+//         niilberTailan.push(...qrTailan);
+//       }
+
+//       res.status(200).send(niilberTailan);
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
+
+router.post(
   "/zogsooliinUdriinTailanAvya",
   tokenShalgakh,
   async (req, res, next) => {
@@ -596,7 +801,8 @@ router.post(
       if (!!req.body.burtgesenAjiltaniiId)
         match["tuukh.burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
       var udriinTailan = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt, true
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).aggregate([
         {
           $match: {
@@ -626,7 +832,8 @@ router.post(
         },
       ]);
       var zurchiltei = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt, true
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).aggregate([
         {
           $match: {
@@ -665,7 +872,8 @@ router.post(
       ]);
 
       var unegui = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt, true
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).aggregate([
         {
           $match: {
@@ -946,7 +1154,8 @@ router.post(
         },
       ];
       const khariu = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt, true
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).aggregate(query);
       res.send(khariu);
     } catch (err) {
@@ -1435,14 +1644,18 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
         );
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
-              mashiniiDugaar: req.params.plate_number,
-              "tuukh.0.zogsooliinId": zogsool._id,
-              "tuukh.0.tuluv": 0,
-              zurchil: { $exists: false },
-            }).sort({ createdAt: -1 }).limit(1);
+            oldsonMashin = await Uilchluulegch(kholbolt, true)
+              .findOne({
+                mashiniiDugaar: req.params.plate_number,
+                "tuukh.0.zogsooliinId": zogsool._id,
+                "tuukh.0.tuluv": 0,
+                zurchil: { $exists: false },
+              })
+              .sort({ createdAt: -1 })
+              .limit(1);
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
-              oldsonMashin.freezeOgnoo = oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag;
+              oldsonMashin.freezeOgnoo =
+                oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag;
               await Uilchluulegch(kholbolt).updateOne(
                 { _id: oldsonMashin._id },
                 {
@@ -1459,15 +1672,20 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
                 oldsonMashin?.turul == "Дурын"
               )
                 bodsonDun = zogsool.togtmolTulburiinDun;
-              else
-              {
-                console.log('Calculating parking fee for', oldsonMashin.mashiniiDugaar);
+              else {
+                console.log(
+                  "Calculating parking fee for",
+                  oldsonMashin.mashiniiDugaar
+                );
                 bodsonDun = await zogsooliinDunAvya(
                   zogsool,
                   oldsonMashin,
                   kholbolt
                 );
-                console.log('Calculating parking fee for bodsonDun --->', bodsonDun);
+                console.log(
+                  "Calculating parking fee for bodsonDun --->",
+                  bodsonDun
+                );
               }
             }
           }
@@ -1561,12 +1779,18 @@ router.get("/v2/search_car/:plate_number", async (req, res, next) => {
         );
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
-              mashiniiDugaar: { $regex: req.params.plate_number, $options: "i" },
-              "tuukh.0.zogsooliinId": zogsool._id,
-              "tuukh.0.tuluv": 0,
-              zurchil: { $exists: false },
-            }).sort({ createdAt: -1 }).limit(1);
+            oldsonMashin = await Uilchluulegch(kholbolt, true)
+              .findOne({
+                mashiniiDugaar: {
+                  $regex: req.params.plate_number,
+                  $options: "i",
+                },
+                "tuukh.0.zogsooliinId": zogsool._id,
+                "tuukh.0.tuluv": 0,
+                zurchil: { $exists: false },
+              })
+              .sort({ createdAt: -1 })
+              .limit(1);
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
               await Uilchluulegch(kholbolt).updateOne(
                 { _id: oldsonMashin._id },
@@ -1971,7 +2195,9 @@ router.post("/v1/tulburMedeelelAvya", async (req, res, next) => {
       for await (const kholbolt of kholboltuud) {
         var zogsool = await Parking(kholbolt).findById(parking_id);
         if (!!zogsool) {
-          oldsonMashin = await Uilchluulegch(kholbolt, true).findById(session_id);
+          oldsonMashin = await Uilchluulegch(kholbolt, true).findById(
+            session_id
+          );
           if (!oldsonMashin) {
             message = "Мэдээлэл олдсонгүй!";
             success = false;
@@ -2152,7 +2378,10 @@ router.route("/v1/pay").post(async (req, res, next) => {
             var nemeltZogsool = await Parking(tukhainKholbolt).findOne({
               _id: { $ne: tukhainZogsool._id },
             });
-            var garsanObject = await Uilchluulegch(tukhainKholbolt, true).findOne({
+            var garsanObject = await Uilchluulegch(
+              tukhainKholbolt,
+              true
+            ).findOne({
               mashiniiDugaar: req.body.plate_number,
               "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
               "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
@@ -2464,7 +2693,10 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
             var nemeltZogsool = await Parking(tukhainKholbolt).findOne({
               _id: { $ne: tukhainZogsool._id },
             });
-            var garsanObject = await Uilchluulegch(tukhainKholbolt, true).findOne({
+            var garsanObject = await Uilchluulegch(
+              tukhainKholbolt,
+              true
+            ).findOne({
               mashiniiDugaar: req.body.plate_number,
               "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
               "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
@@ -2742,7 +2974,8 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         });
     if (!!zogsool) {
       oldsonMashin = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt, true
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).findOne({
         _id: req.body.uilchluulegchiinId,
       });
@@ -2766,7 +2999,10 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
     if (!tukhainObject) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
     }
-    bodsonDun -= tukhainObject.tuukh[0].tulbur.reduce((a, b) => a + (b.dun || 0), 0);
+    bodsonDun -= tukhainObject.tuukh[0].tulbur.reduce(
+      (a, b) => a + (b.dun || 0),
+      0
+    );
     if (
       tukhainObject &&
       tukhainObject.tuukh &&
@@ -2832,7 +3068,9 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
               });
             }
           }
-          set["garakhTsag"] = new Date(new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000);
+          set["garakhTsag"] = new Date(
+            new Date().getTime() + (tukhainZogsool?.garakhTsag || 30) * 60000
+          );
           set["tuukh.$[t].burtgesenAjiltaniiId"] = req.body.ajiltniiId;
           set["tuukh.$[t].burtgesenAjiltaniiNer"] = req.body.ajiltniiNer;
         }
@@ -2999,7 +3237,8 @@ router.post(
       if (!!req.body.mashiniiDugaar)
         match["mashiniiDugaar"] = req.body.mashiniiDugaar;
       var uilchluulegchuud = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt, true
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).find(match);
       var ebarimtuud = [];
       if (uilchluulegchuud?.length > 0) {
@@ -3093,7 +3332,8 @@ router.post("/davkharBarimtZasakh", tokenShalgakh, async (req, res, next) => {
     if (!!req.body.mashiniiDugaar)
       match["mashiniiDugaar"] = req.body.mashiniiDugaar;
     var uilchluulegchuud = await Uilchluulegch(
-      req.body.tukhainBaaziinKholbolt, true
+      req.body.tukhainBaaziinKholbolt,
+      true
     ).find(match);
     if (uilchluulegchuud?.length > 0) {
       for await (const data of uilchluulegchuud) {
@@ -3132,7 +3372,8 @@ router.post(
       );
       if (zogsool?.zurchulMsgeerSanuulakh) {
         const zurchilteiUilchluulegch = await Uilchluulegch(
-          req.body.tukhainBaaziinKholbolt, true
+          req.body.tukhainBaaziinKholbolt,
+          true
         ).find({
           baiguullagiinId: zogsool?.baiguullagiinId,
           barilgiinId: zogsool.barilgiinId,
@@ -3391,9 +3632,10 @@ router.post(
       };
       if (req.body.mashiniiDugaar)
         match["mashiniiDugaar"] = req.body.mashiniiDugaar;
-      var mashinuud = await Uilchluulegch(req.body.tukhainBaaziinKholbolt, true).find(
-        match
-      );
+      var mashinuud = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).find(match);
       var result = [];
       for await (const data of mashinuud) {
         var tuukh = data.tuukh?.filter(
@@ -3457,7 +3699,10 @@ router.post("/zochinAjiltaniiIdTseverlekh", async (req, res, next) => {
 
 router.post("/mashiniiDugaarZasakh", tokenShalgakh, async (req, res, next) => {
   try {
-    var uilchluulegch = await Uilchluulegch(req.body.tukhainBaaziinKholbolt, true)
+    var uilchluulegch = await Uilchluulegch(
+      req.body.tukhainBaaziinKholbolt,
+      true
+    )
       .findOne({
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
