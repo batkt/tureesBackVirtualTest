@@ -665,117 +665,78 @@ router.post(
         niilberTailan.push(...qrTailan);
       }
 
+      const garaltMatch = {
+        "tuukh.tsagiinTuukh.garsanTsag": {
+          $gte: ekhlekhOgnoo,
+          $lte: duusakhOgnoo,
+        },
+      };
+
+      if (req.body.garsanKhaalga) {
+        garaltMatch["tuukh.garsanKhaalga"] = req.body.garsanKhaalga;
+      }
+      if (req.body.burtgesenAjiltaniiId) {
+        garaltMatch["tuukh.burtgesenAjiltaniiId"] =
+          req.body.burtgesenAjiltaniiId;
+      }
+
+      const [zurchiltei, unegui] = await Promise.all([
+        Uilchluulegch(req.body.tukhainBaaziinKholbolt, true).aggregate([
+          { $match: baseMatch },
+          { $unwind: "$tuukh" },
+          {
+            $match: {
+              ...garaltMatch,
+              "tuukh.tuluv": -2,
+            },
+          },
+          {
+            $group: {
+              _id: "Зөрчилтэй",
+              niitDun: { $sum: "$niitDun" },
+              ids: { $addToSet: "$_id" },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              niitDun: 1,
+              niitToo: { $size: "$ids" },
+            },
+          },
+        ]),
+        Uilchluulegch(req.body.tukhainBaaziinKholbolt, true).aggregate([
+          { $match: baseMatch },
+          { $unwind: "$tuukh" },
+          {
+            $match: {
+              ...garaltMatch,
+              "tuukh.uneguiGarsan": { $exists: true },
+            },
+          },
+          {
+            $group: {
+              _id: "Үнэгүй",
+              niitDun: { $sum: "$niitDun" },
+              niitToo: { $sum: 1 },
+            },
+          },
+        ]),
+      ]);
+
+      if (Array.isArray(zurchiltei) && zurchiltei.length > 0) {
+        niilberTailan.push(zurchiltei[0]);
+      }
+      if (Array.isArray(unegui) && unegui.length > 0) {
+        niilberTailan.push(unegui[0]);
+      }
+
       res.status(200).send(niilberTailan);
     } catch (error) {
       next(error);
     }
   }
 );
-
-// router.post(
-//   "/zogsooliinAjiltniiUdriinTailanAvya",
-//   tokenShalgakh,
-//   async (req, res, next) => {
-//     try {
-//       const ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
-//       const duusakhOgnoo = new Date(req.body.duusakhOgnoo);
-
-//       const dateMatchBuilder = (useGateFilter = true) => {
-//         if (useGateFilter && !!req.body.garsanKhaalga) {
-//           return {
-//             "tuukh.garsanKhaalga": req.body.garsanKhaalga,
-//             "tuukh.tsagiinTuukh.garsanTsag": {
-//               $gte: ekhlekhOgnoo,
-//               $lte: duusakhOgnoo,
-//             },
-//           };
-//         }
-//         return {
-//           "tuukh.tulbur.ognoo": {
-//             $gte: ekhlekhOgnoo,
-//             $lte: duusakhOgnoo,
-//           },
-//         };
-//       };
-
-//       const baseMatch = {
-//         baiguullagiinId: req.body.baiguullagiinId,
-//         barilgiinId: !!req.body.barilgiinId
-//           ? req.body.barilgiinId
-//           : { $exists: true },
-//       };
-
-//       const buildPipeline = (extraMatch = {}, opts = {}) => {
-//         const { useGateFilter = true } = opts;
-//         const matchStage = {
-//           ...dateMatchBuilder(useGateFilter),
-//           ...extraMatch,
-//         };
-//         return [
-//           {
-//             $match: baseMatch,
-//           },
-//           {
-//             $unwind: "$tuukh",
-//           },
-//           {
-//             $unwind: "$tuukh.tulbur",
-//           },
-//           {
-//             $match: matchStage,
-//           },
-//           {
-//             $group: {
-//               _id: "$tuukh.tulbur.turul",
-//               niitDun: {
-//                 $sum: "$tuukh.tulbur.dun",
-//               },
-//               niitToo: { $sum: 1 },
-//             },
-//           },
-//         ];
-//       };
-
-//       const ajiltniiNukhutsul = {};
-//       if (!!req.body.burtgesenAjiltaniiId) {
-//         ajiltniiNukhutsul["tuukh.burtgesenAjiltaniiId"] =
-//           req.body.burtgesenAjiltaniiId;
-//       }
-
-//       const ajiltniiTailan = await Uilchluulegch(
-//         req.body.tukhainBaaziinKholbolt,
-//         true
-//       ).aggregate(buildPipeline(ajiltniiNukhutsul));
-
-//       const qrTypes = ["GadaaQR", "DotorQR", "bankQR", "toki", "киоск"];
-//       let qrTailan = [];
-//       if (!!req.body.burtgesenAjiltaniiId) {
-//         qrTailan = await Uilchluulegch(
-//           req.body.tukhainBaaziinKholbolt,
-//           true
-//         ).aggregate(
-//           buildPipeline(
-//             {
-//               "tuukh.tulbur.turul": { $in: qrTypes },
-//             },
-//             { useGateFilter: false }
-//           )
-//         );
-//       }
-
-//       let niilberTailan = [...ajiltniiTailan];
-//       if (qrTailan?.length > 0) {
-//         const qrTypeSet = new Set(qrTypes);
-//         niilberTailan = niilberTailan.filter((row) => !qrTypeSet.has(row._id));
-//         niilberTailan.push(...qrTailan);
-//       }
-
-//       res.status(200).send(niilberTailan);
-//     } catch (error) {
-//       next(error);
-//     }
-//   }
-// );
 
 router.post(
   "/zogsooliinUdriinTailanAvya",
