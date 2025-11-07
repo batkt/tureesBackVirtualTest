@@ -604,6 +604,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                     x.kholbosonTalbainId = jagsaalt;
                     x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
                     x.isNew = false;
+                    x.burtgesenAjiltaniiNer = "систем автомат qpay";
                     x.save();
                   }
                 } else {
