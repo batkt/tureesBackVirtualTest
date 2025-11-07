@@ -21,7 +21,7 @@ const bankniiGuilgeeSchema = new Schema(
     CtBankNo: String,
     Amt: Number,
     //tdbshine
-    bankcode : String,
+    bankcode: String,
     refno: String,
     fee: String,
     //khaan
@@ -89,25 +89,48 @@ const bankniiGuilgeeSchema = new Schema(
       type: String,
       unique: true,
     },
+    burtgesenAjiltaniiId: String,
+    burtgesenAjiltaniiNer: String,
   },
   {
     timestamps: true,
   }
 );
 
-bankniiGuilgeeSchema.pre('insertMany', function(next, docs) {
+bankniiGuilgeeSchema.pre("insertMany", function (next, docs) {
   for (let doc of docs) {
-    var dugaar = doc.bank === "khanbank" ? doc.record : 
-                doc.bank === "golomt" ? doc.tranId : 
-                  doc.bank === "bogd" ?  doc.recNum :
-                    doc.bank === "tran" ? doc.jrno  :
-                      doc.bank === "tdb" && !!doc.NtryRef ? doc.NtryRef : doc.refno
-    var mungunDun = doc.bank === "khanbank" ? doc.amount : 
-                doc.bank === "golomt" ?  doc.tranAmount : 
-                  doc.bank === "bogd" ?  doc.amount :
-                    doc.bank === "tran" ? (doc.income > 0 ? doc.income : doc.outcome) :
-                      doc.bank === "tdb" ? doc.Amt : 0
-    doc.indexTalbar = doc.barilgiinId + doc.bank + doc.dansniiDugaar + dugaar + mungunDun.toString();
+    var dugaar =
+      doc.bank === "khanbank"
+        ? doc.record
+        : doc.bank === "golomt"
+        ? doc.tranId
+        : doc.bank === "bogd"
+        ? doc.recNum
+        : doc.bank === "tran"
+        ? doc.jrno
+        : doc.bank === "tdb" && !!doc.NtryRef
+        ? doc.NtryRef
+        : doc.refno;
+    var mungunDun =
+      doc.bank === "khanbank"
+        ? doc.amount
+        : doc.bank === "golomt"
+        ? doc.tranAmount
+        : doc.bank === "bogd"
+        ? doc.amount
+        : doc.bank === "tran"
+        ? doc.income > 0
+          ? doc.income
+          : doc.outcome
+        : doc.bank === "tdb"
+        ? doc.Amt
+        : 0;
+    doc.indexTalbar =
+      doc.barilgiinId +
+      doc.bank +
+      doc.dansniiDugaar +
+      dugaar +
+      mungunDun.toString();
   }
   next();
 });
