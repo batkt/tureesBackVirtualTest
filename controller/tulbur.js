@@ -774,6 +774,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                       id: "$_id",
                       gereeniiDugaar: "$gereeniiDugaar",
                       tulukhUdur: "$tulukhUdur",
+                      daraagiinTulukhOgnoo: "$daraagiinTulukhOgnoo",
                     },
                     tulukh: {
                       $sum: {
@@ -813,12 +814,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               var gereenuud = await Geree(kholbolt, true).aggregate(query);
               if (gereenuud && gereenuud.length > 0) {
                 for (const geree of gereenuud) {
-                  var uusgexOgnoo = moment(ognoo).set(
-                    "date",
-                    geree._id.tulukhUdur[0]
-                  );
-                  // parseFloat()
-                  const hariuOgnoo = moment(uusgexOgnoo)
+                  var uusgexOgnoo = moment(geree._id.daraagiinTulukhOgnoo);
+                  const hariuOgnoo = moment(geree._id.daraagiinTulukhOgnoo)
                     .startOf("day")
                     .add(aldangiChuluulukhKhonog, "days")
                     .subtract(1, "day");
