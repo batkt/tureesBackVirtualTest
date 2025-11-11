@@ -624,15 +624,20 @@ router.post(
         "tuukh.tulbur.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
       };
 
+      const qrMatch = {
+        ...qrDateMatch,
+        "tuukh.tulbur.turul": { $in: qrTypes },
+      };
+      if (req.body.garsanKhaalga) {
+        qrMatch["tuukh.garsanKhaalga"] = req.body.garsanKhaalga;
+      }
+
       const qrPipeline = [
         { $match: baseMatch },
         { $unwind: "$tuukh" },
         { $unwind: "$tuukh.tulbur" },
         {
-          $match: {
-            ...qrDateMatch,
-            "tuukh.tulbur.turul": { $in: qrTypes },
-          },
+          $match: qrMatch,
         },
         {
           $group: {
