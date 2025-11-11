@@ -1050,8 +1050,6 @@ router.post(
         //"tuukh.zogsooliinId": req.body.zogsooliinId,
       };
       if (!!req.body.barilgiinId) match.barilgiinId = req.body.barilgiinId;
-      const ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
-      const duusakhOgnoo = new Date(req.body.duusakhOgnoo);
       const query = [
         {
           $match: match,
@@ -1063,8 +1061,8 @@ router.post(
         {
           $match: {
             "tuukh.tulbur.ognoo": {
-              $gte: ekhlekhOgnoo,
-              $lte: duusakhOgnoo,
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
             },
           },
         },
@@ -1121,54 +1119,10 @@ router.post(
           },
         },
       ];
-      let khariu = await Uilchluulegch(
+      const khariu = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt,
         true
       ).aggregate(query);
-      const zurchilUneguinMatch = {
-        "tuukh.tsagiinTuukh.garsanTsag": {
-          $gte: ekhlekhOgnoo,
-          $lte: duusakhOgnoo,
-        },
-        $or: [
-          { "tuukh.tuluv": -2 },
-          { "tuukh.uneguiGarsan": { $exists: true } },
-        ],
-      };
-      if (req.body.garakhKhaalgaIp) {
-        zurchilUneguinMatch["tuukh.garsanKhaalga"] = req.body.garakhKhaalgaIp;
-      }
-      const zurchilUneguinNiit = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt,
-        true
-      ).aggregate([
-        { $match: match },
-        { $unwind: "$tuukh" },
-        { $match: zurchilUneguinMatch },
-        {
-          $group: {
-            _id: null,
-            niitDun: { $sum: { $ifNull: ["$tuukh.tulukhDun", 0] } },
-          },
-        },
-      ]);
-      const zurchilUneguinDun =
-        zurchilUneguinNiit && zurchilUneguinNiit.length > 0
-          ? zurchilUneguinNiit[0].niitDun || 0
-          : 0;
-      if (!khariu || khariu.length === 0) {
-        khariu = [
-          {
-            _id: "id",
-            dun: 0,
-            garsanKhaalga: 0,
-            niitDun: 0,
-            khungulsun: 0,
-          },
-        ];
-      }
-      khariu[0].niitDun =
-        (khariu[0].niitDun ? khariu[0].niitDun : 0) + zurchilUneguinDun;
       res.send(khariu);
     } catch (err) {
       next(err);
