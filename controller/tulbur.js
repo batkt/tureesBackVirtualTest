@@ -810,8 +810,14 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               aldangiChuluulukhKhonog,
               "days"
             );
-
+            console.log(
+              "aldangiChuluulukhOgnoo --------------->>> ",
+              aldangiChuluulukhOgnoo
+            );
             if (moment().isAfter(aldangiChuluulukhOgnoo)) {
+              console.log(
+                "-geree.uldegdel ------------------------>" + geree.uldegdel
+              );
               const bodogdsonKhuu = tooZasyaSync(
                 (geree.uldegdel * aldagiinKhuvi) / 100
               );
