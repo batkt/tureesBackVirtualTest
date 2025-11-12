@@ -726,13 +726,20 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         const aldagiinKhuvi = barilga.tokhirgoo.aldangiinKhuvi || 0.5;
         const aldangiChuluulukhKhonog =
           barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
-        const startDate = (
-          barilga.tokhirgoo.aldangiOgnoo
-            ? moment(barilga.tokhirgoo.aldangiOgnoo)
-            : moment()
-        ).startOf("month");
+        let startDate;
+        if (barilga?.tokhirgoo?.aldangiOgnoo) {
+          startDate = moment(barilga.tokhirgoo.aldangiOgnoo).startOf("month");
+        } else {
+          // default — өнөөдрийн сар
+          startDate = moment().startOf("month");
+        }
+
         const endDate = moment().startOf("month");
-        const diff = endDate.diff(startDate);
+        const diff = endDate.diff(startDate, "month");
+
+        console.log("➡️ Target month:", startDate.format("YYYY-MM-DD"));
+        console.log("Сарын ялгаа:", diff);
+
         let aldangiBodojEkhlekhToo = diff * -1;
 
         console.log(
