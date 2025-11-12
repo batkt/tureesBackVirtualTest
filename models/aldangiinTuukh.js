@@ -19,6 +19,7 @@ const aldangiinTuukhSchema = new Schema(
     niitAldangi: Number,
     umnukhAldangi: Number,
     tulukhUdur: Number,
+    aldangiSar: String,
   },
   {
     timestamps: true,
