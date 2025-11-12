@@ -802,22 +802,17 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           for (const geree of gereenuud) {
             const tulukhUdur = geree._id.tulukhUdur?.[0] || 1;
 
-            const tulukhOgnoo = moment({
+            const aldangiEhlehOgnoo = moment({
               year: targetMonth.year(),
               month: targetMonth.month(),
               day: tulukhUdur,
             });
 
-            const aldangiEhlehOgnoo = tulukhOgnoo
-              .clone()
-              .add(1, "month")
-              .startOf("month");
             const aldangiChuluulukhOgnoo = aldangiEhlehOgnoo
               .clone()
               .add(aldangiChuluulukhKhonog, "days");
 
             console.log(`📄 Geree: ${geree._id.gereeniiDugaar}`);
-            console.log(`   Tulukh ognoo: ${tulukhOgnoo.format("YYYY-MM-DD")}`);
             console.log(
               `   Aldangi ehleh: ${aldangiEhlehOgnoo.format("YYYY-MM-DD")}`
             );
