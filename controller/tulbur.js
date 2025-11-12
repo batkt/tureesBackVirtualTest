@@ -731,6 +731,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             `Processing aldangi for ${baiguullaga.ner} - ${barilga.ner}, offset: ${offset}`
           );
           const targetMonth = moment().add(offset, "month");
+          console.log("targetMonth --------------->>> ", targetMonth);
           const start = targetMonth.clone().startOf("month").toDate();
           const end = targetMonth.clone().endOf("month").toDate();
 
