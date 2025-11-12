@@ -726,7 +726,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         const aldagiinKhuvi = barilga.tokhirgoo.aldangiinKhuvi || 0.5;
         const aldangiChuluulukhKhonog =
           barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
-        for (let offset = -2; offset <= 0; offset++) {
+        const aldangiBodojEkhlekhToo =
+          barilga.tokhirgoo.aldangiBodojEkhlekhToo || 0;
+        for (let offset = aldangiBodojEkhlekhToo; offset <= 0; offset++) {
           const targetMonth = moment().add(offset, "month");
           const start = targetMonth.clone().startOf("month").toDate();
           const end = targetMonth.clone().endOf("month").toDate();
