@@ -42,6 +42,7 @@ const baiguullagaSchema = new Schema(
           /**Алданги бодож эхлэх огноо */
           aldangiBodojEkhlekhOgnoo: Date,
           aldangiBodojEkhlekhToo: Number,
+          aldangiOgnoo: Date,
           eBarimtAshiglakhEsekh: Boolean,
           eBarimtShine: Boolean,
           eBarimtAutomataarIlgeekh: Boolean,

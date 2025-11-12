@@ -726,8 +726,18 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         const aldagiinKhuvi = barilga.tokhirgoo.aldangiinKhuvi || 0.5;
         const aldangiChuluulukhKhonog =
           barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
-        const aldangiBodojEkhlekhToo =
-          barilga.tokhirgoo.aldangiBodojEkhlekhToo || 0;
+        const aldangiBodojEkhlekhToo = 0;
+        if (barilga.tokhirgoo.aldangiOgnoo) {
+          const startDate = moment(barilga.tokhirgoo.aldangiOgnoo).startOf(
+            "month"
+          );
+          const endDate = moment().startOf("month");
+          const diff = endDate.diff(startDate, "month");
+          aldangiBodojEkhlekhToo = diff * -1;
+        }
+        console.log(
+          "aldangiBodojEkhlekhToo --------------->" + aldangiBodojEkhlekhToo
+        );
         for (let offset = aldangiBodojEkhlekhToo; offset <= 0; offset++) {
           const targetMonth = moment().add(offset, "month");
           const start = targetMonth.clone().startOf("month").toDate();
@@ -763,6 +773,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 baiguullagiinId: baiguullaga._id.toString(),
                 barilgiinId: barilga._id.toString(),
                 tuluv: { $nin: [-1] },
+                gereeniiDugaar: "ГД2510063",
               },
             },
             { $unwind: "$avlaga.guilgeenuud" },
