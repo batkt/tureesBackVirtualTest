@@ -789,7 +789,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           if (!gereenuud?.length) continue;
 
           for (const geree of gereenuud) {
-            const tulukhOgnoo = moment(geree._id.tulukhUdur[0]);
+            const tulukhOgnoo = moment(
+              targetMonth.format("YYYY-MM") + "-" + geree._id.tulukhUdur[0]
+            );
             console.log("tulukhOgnoo --------------->>> ", tulukhOgnoo);
             console.log(
               "----------------->>> " + JSON.stringify(geree._id.gereeniiDugaar)
