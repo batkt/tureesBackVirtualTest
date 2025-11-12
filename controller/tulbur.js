@@ -724,6 +724,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         const aldangiChuluulukhKhonog =
           barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
         for (let offset = -1; offset <= 0; offset++) {
+          console.log(
+            `Processing aldangi for ${baiguullaga.ner} - ${barilga.ner}, offset: ${offset}`
+          );
           const targetMonth = moment().add(offset, "month");
           const start = targetMonth.clone().startOf("month").toDate();
           const end = targetMonth.clone().endOf("month").toDate();
@@ -783,6 +786,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
 
           for (const geree of gereenuud) {
             const tulukhOgnoo = moment(geree._id.tulukhUdur[0]);
+            console.log(
+              "----------------->>> " + JSON.stringify(geree._id.gereeniiDugaar)
+            );
             const tulukhSar = tulukhOgnoo.month();
             const tulukhJil = tulukhOgnoo.year();
 
@@ -799,6 +805,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             );
 
             if (moment().isAfter(aldangiChuluulukhOgnoo)) {
+              console.log("------------------>>> Calculating aldangi...");
               const bodogdsonKhuu = tooZasyaSync(
                 (geree.uldegdel * aldagiinKhuvi) / 100
               );
