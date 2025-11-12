@@ -812,7 +812,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             );
 
             if (moment().isAfter(aldangiChuluulukhOgnoo)) {
-              console.log("------------------>>> Calculating aldangi...");
               const bodogdsonKhuu = tooZasyaSync(
                 (geree.uldegdel * aldagiinKhuvi) / 100
               );
@@ -852,7 +851,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   umnukhAldangi: data.aldangiinUldegdel || 0,
                   niitAldangi: (data.aldangiinUldegdel || 0) + bodogdsonKhuu,
                   tulukhUdur: geree._id.tulukhUdur[0],
-                  aldangiSar: tulukhOgnoo.format("YYYY-MM"),
+                  aldangiSar: aldangiEhlehOgnoo.format("YYYY-MM"),
                 })
               );
             }
