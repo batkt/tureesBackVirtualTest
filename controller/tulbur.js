@@ -697,7 +697,10 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
     if (!kholboltuud) return;
 
     let query = { "barilguud.tokhirgoo.aldangiinKhuvi": { $gt: 0 } };
-    if (baiguullagiinId) query["_id"] = new ObjectId(baiguullagiinId);
+    if (!!baiguullagiinId) {
+      var ObjectId = require("mongodb").ObjectId;
+      query["_id"] = new ObjectId(baiguullagiinId);
+    }
 
     const baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt)
       .find(query)
