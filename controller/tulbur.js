@@ -789,6 +789,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
 
           for (const geree of gereenuud) {
             const tulukhOgnoo = moment(geree._id.tulukhUdur[0]);
+            console.log("tulukhOgnoo --------------->>> ", tulukhOgnoo);
             console.log(
               "----------------->>> " + JSON.stringify(geree._id.gereeniiDugaar)
             );
