@@ -732,8 +732,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           );
           const targetMonth = moment().add(offset, "month");
           console.log("targetMonth --------------->>> ", targetMonth);
-          const start = targetMonth.clone().startOf("month").toDate();
-          const end = targetMonth.clone().endOf("month").toDate();
+          const start = targetMonth.clone().startOf("month");
+          const end = targetMonth.clone().endOf("month");
 
           const match = {
             "avlaga.guilgeenuud.ognoo": { $gte: start, $lte: end },
