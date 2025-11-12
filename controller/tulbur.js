@@ -727,13 +727,20 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         const aldangiChuluulukhKhonog =
           barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
         for (let offset = -1; offset <= 0; offset++) {
-          console.log(
-            `Processing aldangi for ${baiguullaga.ner} - ${barilga.ner}, offset: ${offset}`
-          );
           const targetMonth = moment().add(offset, "month");
-          console.log("targetMonth --------------->>> ", targetMonth);
           const start = targetMonth.clone().startOf("month").toDate();
           const end = targetMonth.clone().endOf("month").toDate();
+
+          console.log(
+            "------------------------------------------------------------"
+          );
+          console.log(`🧾 [${baiguullaga.ner}] - [${barilga.ner}]`);
+          console.log(`➡️  Target month: ${targetMonth.format("YYYY-MM")}`);
+          console.log(`   Start: ${start.toISOString()}`);
+          console.log(`   End:   ${end.toISOString()}`);
+          console.log(
+            "------------------------------------------------------------"
+          );
 
           const match = {
             "avlaga.guilgeenuud.ognoo": { $gte: start, $lte: end },
@@ -786,42 +793,53 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             { $match: { uldegdel: { $gt: 0 } } },
           ]);
 
-          if (!gereenuud?.length) continue;
+          if (!gereenuud?.length) {
+            console.log("❌ No unpaid gereenuud found for this month.");
+            continue;
+          }
 
           for (const geree of gereenuud) {
-            const tulukhOgnoo = moment(
-              targetMonth.format("YYYY-MM") + "-" + geree._id.tulukhUdur[0]
-            );
-            console.log("tulukhOgnoo --------------->>> ", tulukhOgnoo);
-            console.log(
-              "----------------->>> " + JSON.stringify(geree._id.gereeniiDugaar)
-            );
-            const tulukhSar = tulukhOgnoo.month();
-            const tulukhJil = tulukhOgnoo.year();
+            const tulukhUdur = geree._id.tulukhUdur?.[0] || 1;
 
-            // Дараагийн сарын 1-нээс алданги эхэлнэ
-            const aldangiEhlehOgnoo = moment()
-              .year(tulukhJil)
-              .month(tulukhSar + 1)
+            const tulukhOgnoo = moment({
+              year: targetMonth.year(),
+              month: targetMonth.month(),
+              day: tulukhUdur,
+            });
+
+            const aldangiEhlehOgnoo = tulukhOgnoo
+              .clone()
+              .add(1, "month")
               .startOf("month");
+            const aldangiChuluulukhOgnoo = aldangiEhlehOgnoo
+              .clone()
+              .add(aldangiChuluulukhKhonog, "days");
 
-            // Алданги чөлөөлөх хугацаа
-            const aldangiChuluulukhOgnoo = moment(aldangiEhlehOgnoo).add(
-              aldangiChuluulukhKhonog,
-              "days"
+            console.log(`📄 Geree: ${geree._id.gereeniiDugaar}`);
+            console.log(`   Tulukh ognoo: ${tulukhOgnoo.format("YYYY-MM-DD")}`);
+            console.log(
+              `   Aldangi ehleh: ${aldangiEhlehOgnoo.format("YYYY-MM-DD")}`
             );
             console.log(
-              "aldangiChuluulukhOgnoo --------------->>> ",
-              aldangiChuluulukhOgnoo
+              `   Chuluuluh: ${aldangiChuluulukhOgnoo.format("YYYY-MM-DD")}`
             );
+            console.log(`   Uldegdel: ${geree.uldegdel}`);
+            console.log(`   Aldangiin khuvi: ${aldagiinKhuvi}%`);
+            console.log(
+              "------------------------------------------------------------"
+            );
+
             if (moment().isAfter(aldangiChuluulukhOgnoo)) {
-              console.log(
-                "-geree.uldegdel ------------------------>" + geree.uldegdel
-              );
               const bodogdsonKhuu = tooZasyaSync(
                 (geree.uldegdel * aldagiinKhuvi) / 100
               );
               const data = await Geree(kholbolt, true).findById(geree._id.id);
+
+              console.log(
+                `✅ Aldangi bodogdloo: ${bodogdsonKhuu}₮ (umnukh: ${
+                  data.aldangiinUldegdel || 0
+                })`
+              );
 
               bulkOps.push({
                 updateOne: {
@@ -840,6 +858,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   ],
                 },
               });
+
               aldangiinTuukh.push(
                 new AldangiinTuukh(kholbolt)({
                   baiguullagiinId: baiguullaga._id.toString(),
@@ -856,9 +875,13 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   aldangi: bodogdsonKhuu,
                   umnukhAldangi: data.aldangiinUldegdel || 0,
                   niitAldangi: (data.aldangiinUldegdel || 0) + bodogdsonKhuu,
-                  tulukhUdur: geree._id.tulukhUdur[0],
+                  tulukhUdur: tulukhUdur,
                   aldangiSar: aldangiEhlehOgnoo.format("YYYY-MM"),
                 })
+              );
+            } else {
+              console.log(
+                "⏳ Aldangi chuluuluh hugatsaa duusaa-gui, haruulav..."
               );
             }
           }
