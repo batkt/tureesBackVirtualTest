@@ -148,6 +148,7 @@ const gereeSchema = new Schema(
     garaasKhonogOruulakhEsekh: Boolean,
     ekhniiSariinKhonog: Number,
     nekhemjlekhiinOgnoo: Date,
+    aldangiinKhuvi: Number,
     zurguud: [String],
     zardluud: [
       {
