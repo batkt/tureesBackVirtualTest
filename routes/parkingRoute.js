@@ -3035,10 +3035,12 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       }
       if (req.body.turul == "Пос үнэгүй") {
         set = {
-          "tuukh.$[t].tuluv": -1,
           "tuukh.$[t].uneguiGarsan": req.body.uneguiGarsan,
           turul: req.body.turul,
         };
+        if (!!tukhainObject.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag) {
+          set["tuukh.$[t].tuluv"] = -1;
+        }
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
         tukhainObject._id,
