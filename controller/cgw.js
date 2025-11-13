@@ -146,7 +146,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
   }
 }
 
-async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
+async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
   try {
     var turul = "tdb" + (dans.corporateDansTusBur ? dans.dugaar : "");
     var tokenObject = await Token(tukhainBaaziinKholbolt).findOne({
@@ -168,13 +168,9 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
           },
         })
         .catch((err) => {
-          if (next) next(err);
+          throw err;
         });
-      if (!response || !response.body) {
-        throw new Error("TDB-с хариу ирсэнгүй, нэвтрэх мэдээллээ шалгана уу!");
-      }
-      var khariu = JSON.parse(response?.body);
-      console.log("tdb token khariu ----------->>>" + JSON.stringify(khariu));
+      var khariu = JSON.parse(response.body);
       Token(tukhainBaaziinKholbolt)
         .updateOne(
           { turul: turul, baiguullagiinId: dans.baiguullagiinId },
@@ -190,7 +186,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
     }
     return tokenObject;
   } catch (error) {
-    if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!" + error));
+    next(new Error("Банктай холбогдоход алдаа гарлаа!"));
   }
 }
 
@@ -572,15 +568,8 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       ) {
         var tokenObject = await tdbTokenAvya(
           dans,
-          req.body.tukhainBaaziinKholbolt,
-          next
+          req.body.tukhainBaaziinKholbolt
         );
-        if (!tokenObject || !tokenObject.token) {
-          // Token байхгүй үед frontend рүү хариу илгээх
-          throw new Error(
-            "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
-          );
-        }
         var url =
           process.env.TDB_SERVER + "/accounts/" + dans.dugaar + "/balance";
         const response = await got
@@ -591,7 +580,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
             },
           })
           .catch((err) => {
-            console.log("err tdbTokenAvya ----------->>>" + err);
             throw err;
           });
         var khariu = JSON.parse(response.body);
@@ -748,12 +736,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       res.send({ uldegdel: khariltsakh?.balance });
     }
   } catch (err) {
-    console.log("--------------dansniiUldegdelAvya -------- " + err);
-    if (next) next(err);
-    res.status(400).json({
-      success: false,
-      aldaa: err.message || "Дансны үлдэгдэл авахад алдаа гарлаа!",
-    });
+    next(err);
   }
 });
 
@@ -878,7 +861,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
-                  var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
+                  var tokenObject = await tdbTokenAvya(dans, kholbolt);
                   var url =
                     process.env.TDB_SERVER +
                     "/accounts/statement/" +
