@@ -186,7 +186,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
     }
     return tokenObject;
   } catch (error) {
-    if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!"));
+    if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!" + error));
   }
 }
 
