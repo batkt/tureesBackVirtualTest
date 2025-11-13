@@ -185,7 +185,9 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
       tokenObject = khariu;
     }
     return tokenObject;
-  } catch (error) {}
+  } catch (error) {
+    console.log("tdbTokenAvya -------------->>" + error);
+  }
 }
 
 async function bogdTokentAvya(dans, tukhainBaaziinKholbolt) {
