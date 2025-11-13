@@ -169,6 +169,9 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
         })
         .catch((err) => {
           console.log("tdbTokenAvya -------- 1 ---------------->>" + err);
+          throw new Error(
+            "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!" + err
+          );
         });
       if (!response || !response?.body) {
         throw new Error(
