@@ -35,6 +35,7 @@ const baiguullagaSchema = new Schema(
         neekhTsag: Date,
         khaakhTsag: Date,
         tokhirgoo: {
+          aldangiGereeTusBur: Boolean,
           /**Хоногт бодох алдангийн хувь дээд тал 0.5 байна */
           aldangiinKhuvi: Number,
           /**Алданги авалгүйгээр хүлээх хоног */
