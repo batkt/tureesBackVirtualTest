@@ -3037,7 +3037,6 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         set = {
           "tuukh.$[t].tuluv": -1,
           "tuukh.$[t].uneguiGarsan": req.body.uneguiGarsan,
-          turul: req.body.turul,
         };
       }
       await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
