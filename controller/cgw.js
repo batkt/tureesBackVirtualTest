@@ -168,7 +168,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
           },
         })
         .catch((err) => {
-          throw err;
+          console.log(err);
         });
       if (!response || !response?.body) {
         throw new Error(
