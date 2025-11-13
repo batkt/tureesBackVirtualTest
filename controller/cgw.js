@@ -750,6 +750,10 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
   } catch (err) {
     console.log("--------------dansniiUldegdelAvya -------- " + err);
     if (next) next(err);
+    res.status(400).json({
+      success: false,
+      aldaa: err.message || "Дансны үлдэгдэл авахад алдаа гарлаа!",
+    });
   }
 });
 
