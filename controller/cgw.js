@@ -170,11 +170,6 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
         .catch((err) => {
           throw err;
         });
-      if (!response || !response?.body) {
-        throw new Error(
-          "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
-        );
-      }
       var khariu = JSON.parse(response?.body);
       Token(tukhainBaaziinKholbolt)
         .updateOne(
@@ -867,6 +862,11 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
                   var tokenObject = await tdbTokenAvya(dans, kholbolt);
+                  if (!tokenObject || tokenObject?.token) {
+                    throw new Error(
+                      "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
+                    );
+                  }
                   var url =
                     process.env.TDB_SERVER +
                     "/accounts/statement/" +
