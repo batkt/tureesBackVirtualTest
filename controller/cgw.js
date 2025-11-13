@@ -146,7 +146,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
   }
 }
 
-async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
+async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
   try {
     var turul = "tdb" + (dans.corporateDansTusBur ? dans.dugaar : "");
     var tokenObject = await Token(tukhainBaaziinKholbolt).findOne({
@@ -195,7 +195,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
     return tokenObject;
   } catch (error) {
     console.log("tdbTokenAvya -------------->>" + error);
-    new Error(error);
+    if (next) next(error);
   }
 }
 
@@ -577,7 +577,8 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       ) {
         var tokenObject = await tdbTokenAvya(
           dans,
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt,
+          next
         );
         if (tokenObject?.token) {
           var url =
@@ -873,7 +874,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
-                  var tokenObject = await tdbTokenAvya(dans, kholbolt);
+                  var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
                   if (!tokenObject || tokenObject?.token) {
                     throw new Error(
                       "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
