@@ -146,7 +146,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
   }
 }
 
-async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
+async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
   try {
     var turul = "tdb" + (dans.corporateDansTusBur ? dans.dugaar : "");
     var tokenObject = await Token(tukhainBaaziinKholbolt).findOne({
@@ -186,7 +186,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
     }
     return tokenObject;
   } catch (error) {
-    console.log("err tdbTokenAvya ----------->>>" + error);
+    if (next) next(new Error("Банктай холбогдоход алдаа гарлаа!"));
   }
 }
 
@@ -568,7 +568,8 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       ) {
         var tokenObject = await tdbTokenAvya(
           dans,
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt,
+          next
         );
         var url =
           process.env.TDB_SERVER + "/accounts/" + dans.dugaar + "/balance";
@@ -863,7 +864,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
-                  var tokenObject = await tdbTokenAvya(dans, kholbolt);
+                  var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
                   var url =
                     process.env.TDB_SERVER +
                     "/accounts/statement/" +
