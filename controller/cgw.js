@@ -581,7 +581,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           .get(url, {
             headers: {
               "Content-Type": "application/json",
-              Authorization: "Bearer " + tokenObject.token,
+              Authorization: "Bearer " + tokenObject?.token,
             },
           })
           .catch((err) => {
