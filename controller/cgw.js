@@ -746,7 +746,8 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
     }
   } catch (err) {
     console.log("dansniiUldegdelAvya 00000-----------<<<" + err);
-    if (next) next(err);
+    if (next)
+      next("Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!");
   }
 });
 
