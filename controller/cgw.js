@@ -170,6 +170,9 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
         .catch((err) => {
           if (next) next(err);
         });
+      if (!response || !response.body) {
+        throw new Error("TDB-с хариу ирсэнгүй, нэвтрэх мэдээллээ шалгана уу!");
+      }
       var khariu = JSON.parse(response?.body);
       console.log("tdb token khariu ----------->>>" + JSON.stringify(khariu));
       Token(tukhainBaaziinKholbolt)
