@@ -168,7 +168,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
           },
         })
         .catch((err) => {
-          throw err;
+          if (next) next(err);
         });
       var khariu = JSON.parse(response.body);
       Token(tukhainBaaziinKholbolt)
