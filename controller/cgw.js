@@ -745,7 +745,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
     }
   } catch (err) {
     console.log("--------------dansniiUldegdelAvya -------- " + err);
-    if (next) next(err);
     if (err) res.send({ success: false, aldaa: err.message });
   }
 });
