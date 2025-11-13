@@ -176,7 +176,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
           { turul: turul, baiguullagiinId: dans.baiguullagiinId },
           {
             ognoo: new Date(),
-            token: khariu.token,
+            token: khariu?.token,
           },
           { upsert: true }
         )
