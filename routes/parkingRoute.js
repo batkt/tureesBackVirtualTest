@@ -15,7 +15,7 @@ const {
   zogsooliinDunAvya,
   TokiMashin,
   uilchluulegchGaraasBurtgey,
-} = require("parking-v1");
+} = require("parking-v2");
 const {
   zogsooloosEbarimtUusgye,
   zogsooloosEbarimtShineUusgye,

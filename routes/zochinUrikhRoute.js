@@ -1,5 +1,5 @@
 const express = require("express");
-const { Mashin, Uilchluulegch, EzenUrisanMashin } = require("parking-v1");
+const { Mashin, Uilchluulegch, EzenUrisanMashin } = require("parking-v2");
 const Khariltsagch = require("../models/khariltsagch");
 const Geree = require("../models/geree");
 const router = express.Router();
@@ -127,8 +127,7 @@ async function mashinHadgalya(mashinMedeelel, tukhainBaaziinKholbolt) {
       });
       return await newMashin.save();
     }
-  } catch (error) {
-  }
+  } catch (error) {}
 }
 
 // Үндсэн route функц
@@ -255,7 +254,10 @@ router.post("/ezenUrisanTuukh", tokenShalgakh, async (req, res, next) => {
     });
     var jagsaalt = [];
     if (ezenJagsaalt?.length > 0) {
-      jagsaalt = await Uilchluulegch(req.body.tukhainBaaziinKholbolt, true).find({
+      jagsaalt = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).find({
         mashiniiDugaar: {
           $in: ezenJagsaalt?.map((e) => e.urisanMashiniiDugaar),
         },

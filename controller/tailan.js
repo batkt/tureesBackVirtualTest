@@ -4,7 +4,7 @@ const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Baiguullaga = require("../models/baiguullaga");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const Zardal = require("../models/zardal");
-const { Uilchluulegch } = require("parking-v1");
+const { Uilchluulegch } = require("parking-v2");
 const lodash = require("lodash");
 const moment = require("moment");
 const { Dans } = require("zevbackv2");
@@ -148,7 +148,8 @@ exports.zardaliinTailanAvya = asyncHandler(async (req, res, next) => {
     })
     .lean();
   var zardliinDunguud = await BankniiGuilgee(
-    req.body.tukhainBaaziinKholbolt, true
+    req.body.tukhainBaaziinKholbolt,
+    true
   ).aggregate([
     {
       $match: {
@@ -578,7 +579,8 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     ];
     var zardluud = await BankniiGuilgee(
-      req.body.tukhainBaaziinKholbolt, true
+      req.body.tukhainBaaziinKholbolt,
+      true
     ).aggregate(query);
     query = [
       {
@@ -636,7 +638,8 @@ exports.ashigiinTailanAvya = asyncHandler(async (req, res, next) => {
       },
     ];
     var orloguud = await BankniiGuilgee(
-      req.body.tukhainBaaziinKholbolt, true
+      req.body.tukhainBaaziinKholbolt,
+      true
     ).aggregate(query);
     var niitZardal = 0;
     var niitOrlogo = 0;
@@ -1541,8 +1544,8 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
     if (req.params.turul == "Rent") {
       var matchQuery = {
         tuluv: { $ne: -1 },
-      }
-      if(!!req.params.barilgiinId)
+      };
+      if (!!req.params.barilgiinId)
         matchQuery["barilgiinId"] = req.params.barilgiinId;
       var registeruud = await Geree(
         req.body.tukhainBaaziinKholbolt,
@@ -2008,8 +2011,10 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         {
           $group: {
             _id: {
-              burtgesenAjiltaniiId: { $ifNull: ["$tuukh.burtgesenAjiltaniiId", 0] },
-              burtgesenAjiltaniiNer: "$tuukh.burtgesenAjiltaniiNer" 
+              burtgesenAjiltaniiId: {
+                $ifNull: ["$tuukh.burtgesenAjiltaniiId", 0],
+              },
+              burtgesenAjiltaniiNer: "$tuukh.burtgesenAjiltaniiNer",
             },
           },
         },
@@ -2077,14 +2082,21 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         for (const ajiltan of ajiltnuud) {
           if (!!ajiltan?._id?.burtgesenAjiltaniiNer) {
             var ajiltanData;
-            if(ajiltan?._id?.burtgesenAjiltaniiId !== 0)
-              ajiltanData = await Ajiltan(db.erunkhiiKholbolt).findById(ajiltan?._id?.burtgesenAjiltaniiId);
+            if (ajiltan?._id?.burtgesenAjiltaniiId !== 0)
+              ajiltanData = await Ajiltan(db.erunkhiiKholbolt).findById(
+                ajiltan?._id?.burtgesenAjiltaniiId
+              );
             var mur = {
-              ajiltanRegister: ajiltan?._id?.burtgesenAjiltaniiId !== 0 ? ajiltanData?.register : ajiltan?._id?.burtgesenAjiltaniiNer,
+              ajiltanRegister:
+                ajiltan?._id?.burtgesenAjiltaniiId !== 0
+                  ? ajiltanData?.register
+                  : ajiltan?._id?.burtgesenAjiltaniiNer,
               ajiltanNer: ajiltan?._id?.burtgesenAjiltaniiNer,
             };
             var filterDunguud = dunguudAjiltan?.filter(
-              (a) => a._id?.burtgesenAjiltaniiNer === ajiltan?._id?.burtgesenAjiltaniiNer
+              (a) =>
+                a._id?.burtgesenAjiltaniiNer ===
+                ajiltan?._id?.burtgesenAjiltaniiNer
             );
             if (filterDunguud?.length > 0) {
               for (const row of filterDunguud) mur[row._id.turul] = row.dun;

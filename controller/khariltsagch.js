@@ -8,7 +8,7 @@ const request = require("request");
 const Geree = require("../models/geree");
 const Talbai = require("../models/talbai");
 const { formatNumber } = require("zevbackv2");
-const { Mashin } = require("parking-v1");
+const { Mashin } = require("parking-v2");
 
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {

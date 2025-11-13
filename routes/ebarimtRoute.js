@@ -19,7 +19,7 @@ const {
   db,
 } = require("zevbackv2");
 const request = require("request");
-const { Uilchluulegch } = require("parking-v1");
+const { Uilchluulegch } = require("parking-v2");
 const { msgIlgeeye } = require("../controller/khariltsagch");
 const lodash = require("lodash");
 const MsgTuukh = require("../models/msgTuukh");
@@ -740,7 +740,8 @@ async function ebarimtShivye(req, res, next) {
       };
     } else {
       var guilgee = await BankniiGuilgee(
-        req.body.tukhainBaaziinKholbolt, true
+        req.body.tukhainBaaziinKholbolt,
+        true
       ).findById(req.body.id);
       if (guilgee.ebarimtAvsanEsekh)
         throw new aldaa("Ибаримт хэвлэж авсан байна!");

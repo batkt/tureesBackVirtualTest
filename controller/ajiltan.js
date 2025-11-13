@@ -14,7 +14,7 @@ const axios = require("axios");
 const fs = require("fs");
 const moment = require("moment");
 const useragent = require("express-useragent");
-const { Uilchluulegch, ZurchilteiMashin } = require("parking-v1");
+const { Uilchluulegch, ZurchilteiMashin } = require("parking-v2");
 const http = require("http");
 const lodash = require("lodash");
 const { formatNumber, tokenShalgakh } = require("zevbackv2");
@@ -127,7 +127,8 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           butsaakhObject.token = jwt;
           //doorxiig zogsooliinPos-d zoriulj oruulaw
           if (!!baiguullaga?.tokhirgoo?.zogsoolNer)
-            butsaakhObject.result.zogsoolNer = baiguullaga?.tokhirgoo?.zogsoolNer;
+            butsaakhObject.result.zogsoolNer =
+              baiguullaga?.tokhirgoo?.zogsoolNer;
           else butsaakhObject.result.zogsoolNer = baiguullaga.ner;
           var source = req.headers["user-agent"];
           var ua = useragent.parse(source);
@@ -975,30 +976,39 @@ exports.licenseOgnooShalgakh = asyncHandler(
     try {
       const { db } = require("zevbackv2");
       var kholboltuud = db.kholboltuud;
-      if(!!baiguullagiinId)
-        kholboltuud = [kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId)];
+      if (!!baiguullagiinId)
+        kholboltuud = [
+          kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId),
+        ];
       if (kholboltuud) {
         for await (const kholbolt of kholboltuud) {
-          var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
+          var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+            kholbolt.baiguullagiinId
+          );
           if (!!baiguullaga && !!baiguullaga.register) {
             duusakhOgnooAvya(
               { register: baiguullaga.register, system: "Turees" },
-              async (khariu) => { 
+              async (khariu) => {
                 try {
                   if (khariu.success) {
                     var odooOgnoo = new Date();
                     odooOgnoo.setHours(23, 59, 59, 0);
-                    if (io && moment(odooOgnoo).isSameOrAfter(moment(khariu.duusakhOgnoo)))
+                    if (
+                      io &&
+                      moment(odooOgnoo).isSameOrAfter(
+                        moment(khariu.duusakhOgnoo)
+                      )
+                    )
                       io.emit(`autoLogout${baiguullagiinId}`, khariu);
                   }
-                } 
-                  catch (err) {
-                }        
-              });
+                } catch (err) {}
+              }
+            );
           }
         }
       }
-    }catch (error) {
-    if(next) next(error);
+    } catch (error) {
+      if (next) next(error);
+    }
   }
-});
+);

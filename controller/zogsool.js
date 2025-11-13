@@ -7,7 +7,7 @@ const {
   Uilchluulegch,
   zogsooliinDunAvya,
   sdkData,
-} = require("parking-v1");
+} = require("parking-v2");
 const moment = require("moment");
 const got = require("got");
 const FormData = require("form-data");
@@ -18,10 +18,13 @@ module.exports.khungulultKhugatsaaShinechlyaSar =
     const kholboltuud = db.kholboltuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        const mashinuud = await ParkingMashin(kholbolt).find({turul: "Түрээслэгч", khungulultTurul: "togtmolTsag", tsagiinTurul: "Сараар"});
+        const mashinuud = await ParkingMashin(kholbolt).find({
+          turul: "Түрээслэгч",
+          khungulultTurul: "togtmolTsag",
+          tsagiinTurul: "Сараар",
+        });
         var bulkOps = [];
-        if(mashinuud?.length > 0)
-        {
+        if (mashinuud?.length > 0) {
           mashinuud.forEach((mashin) => {
             if (
               mashin.turul === "Түрээслэгч" &&
@@ -60,7 +63,11 @@ module.exports.khungulultKhugatsaaShinechlyaUdur =
     const kholboltuud = db.kholboltuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        const mashinuud = await ParkingMashin(kholbolt).find({turul: "Түрээслэгч", khungulultTurul: "togtmolTsag", tsagiinTurul: "Өдрөөр"});
+        const mashinuud = await ParkingMashin(kholbolt).find({
+          turul: "Түрээслэгч",
+          khungulultTurul: "togtmolTsag",
+          tsagiinTurul: "Өдрөөр",
+        });
         var bulkOps = [];
         mashinuud.forEach((mashin) => {
           if (
@@ -177,7 +184,10 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
           "khaalga.ajiltnuud.id": body.ajiltniiId,
         });
     if (!!zogsool) {
-      oldsonMashin = await Uilchluulegch(body.tukhainBaaziinKholbolt, true).findOne({
+      oldsonMashin = await Uilchluulegch(
+        body.tukhainBaaziinKholbolt,
+        true
+      ).findOne({
         _id: body.uilchluulegchiinId,
       });
       if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
@@ -208,11 +218,13 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
         else tukhainObject.tuukh[0].tulbur = tulbur;
       var set = {
         "tuukh.0.tulbur": tukhainObject?.tuukh?.[0]?.tulbur || 0,
-        "tuukh.0.tuluv": (body.turul === "DotorQR" ? 0 : 1),
+        "tuukh.0.tuluv": body.turul === "DotorQR" ? 0 : 1,
         "tuukh.0.tulukhDun": 0,
       };
-      if(body.turul === "DotorQR")
-        set["garakhTsag"] = new Date(Date.now() + (tukhainZogsool?.garakhTsag || 30) * 60000);
+      if (body.turul === "DotorQR")
+        set["garakhTsag"] = new Date(
+          Date.now() + (tukhainZogsool?.garakhTsag || 30) * 60000
+        );
       if (bodsonDun > 0 && bodsonDun === body.paid_amount) {
         set["tuukh.0.burtgesenAjiltaniiId"] = body.ajiltniiId;
         set["tuukh.0.burtgesenAjiltaniiNer"] = body.ajiltniiNer;
@@ -318,10 +330,17 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
           var tukhainKholbolt = kholboltuud.find(
             (x) => x.baiguullagiinId == baiguullaga._id.toString()
           );
-          var shiveeguiTuukhuud = await Uilchluulegch(tukhainKholbolt, true).find({
+          var shiveeguiTuukhuud = await Uilchluulegch(
+            tukhainKholbolt,
+            true
+          ).find({
             ebarimtAvsanEsekh: { $ne: true },
             "tuukh.0.tulbur": { $exists: true, $not: { $size: 0 } },
-            "tuukh.0.tulbur.ognoo": { $gt: new Date(moment(new Date()).add(-1, "day").format("YYYY-MM-DD 23:59:59")) },
+            "tuukh.0.tulbur.ognoo": {
+              $gt: new Date(
+                moment(new Date()).add(-1, "day").format("YYYY-MM-DD 23:59:59")
+              ),
+            },
           });
           var uilchluulegchBulk = [];
           if (!!shiveeguiTuukhuud) {
@@ -329,21 +348,27 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
             for await (const object of shiveeguiTuukhuud) {
               var niilberDun = 0;
               for await (const tulbur of object.tuukh[0]?.tulbur) {
-                if(!!tulbur.turul && tulbur.turul != "khungulult" && tulbur.turul != "khariult") 
+                if (
+                  !!tulbur.turul &&
+                  tulbur.turul != "khungulult" &&
+                  tulbur.turul != "khariult"
+                )
                   niilberDun += tulbur.dun;
               }
-              if(niilberDun > 0)
-              {
+              if (niilberDun > 0) {
                 niitDun = niitDun + niilberDun;
                 let upsert = {
                   updateOne: {
-                      filter: { _id: object._id, baiguullagiinId: baiguullaga._id },
-                      update: {
-                        ebarimtAvsanDun: niilberDun,
-                        ebarimtAvsanEsekh: true,
-                      },
+                    filter: {
+                      _id: object._id,
+                      baiguullagiinId: baiguullaga._id,
                     },
-                };  
+                    update: {
+                      ebarimtAvsanDun: niilberDun,
+                      ebarimtAvsanEsekh: true,
+                    },
+                  },
+                };
                 uilchluulegchBulk.push(upsert);
               }
             }
@@ -354,17 +379,16 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
                 shiveeguiTuukhuud[0]?.barilgiinId,
                 next,
                 shiveeguiTuukhuud,
-                null,
+                null
               );
             }
             if (uilchluulegchBulk)
               Uilchluulegch(tukhainKholbolt)
                 .bulkWrite(uilchluulegchBulk)
-                  .then((bulkWriteOpResult) => {
-                  })
-                  .catch((err) => {
-                    throw err;
-                  });
+                .then((bulkWriteOpResult) => {})
+                .catch((err) => {
+                  throw err;
+                });
           }
         }
       }
@@ -372,34 +396,33 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
   } catch (err) {
     if (!!next) {
       next(err);
-    } 
+    }
   }
 };
 
-
 module.exports.testCloudMongodb = async function testCloudMongodb() {
-  try 
-  {
-    var mashiniiDugaar =  Math.floor(1000 + Math.random() * 9000) + "УУУ";
+  try {
+    var mashiniiDugaar = Math.floor(1000 + Math.random() * 9000) + "УУУ";
     // const form = new FormData();
     // form.append('mashiniiDugaar', mashiniiDugaar);
     // form.append('CAMERA_IP', "192.168.1.108");
     // form.append('barilgiinId', "622ca3938e64e5b4f0c36bed");
-    const response = await got.post("http://103.143.40.230:8081/zogsoolSdkService", 
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MyIsIm5lciI6IkNBZG1pbiIsImJhaWd1dWxsYWdpaW5JZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MSIsImlhdCI6MTc0ODQ4ODQxNX0.FZFqETa5TMm2qVV1eZYDnGTZyOINWp-M9q_7eZf254U",
-      },
-      body: JSON.stringify({
-        "mashiniiDugaar": mashiniiDugaar,
-        "CAMERA_IP": "192.168.1.108",
-        "barilgiinId": "622ca3938e64e5b4f0c36bed",
-      }),
-    })
-    .catch((err) => {
-      throw err;
-    });
+    const response = await got
+      .post("http://103.143.40.230:8081/zogsoolSdkService", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MyIsIm5lciI6IkNBZG1pbiIsImJhaWd1dWxsYWdpaW5JZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MSIsImlhdCI6MTc0ODQ4ODQxNX0.FZFqETa5TMm2qVV1eZYDnGTZyOINWp-M9q_7eZf254U",
+        },
+        body: JSON.stringify({
+          mashiniiDugaar: mashiniiDugaar,
+          CAMERA_IP: "192.168.1.108",
+          barilgiinId: "622ca3938e64e5b4f0c36bed",
+        }),
+      })
+      .catch((err) => {
+        throw err;
+      });
   } catch (err) {
     throw err;
   }

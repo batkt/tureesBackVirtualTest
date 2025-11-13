@@ -16,7 +16,7 @@ const moment = require("moment");
 const lodash = require("lodash");
 const excel = require("exceljs");
 const mongoose = require("mongoose");
-const { Mashin, BlockMashin } = require("parking-v1");
+const { Mashin, BlockMashin } = require("parking-v2");
 
 function formatNumber(num, fixed = 2) {
   if (num === undefined || num === null || num === "")
