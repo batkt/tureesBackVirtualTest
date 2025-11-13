@@ -170,6 +170,11 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
         .catch((err) => {
           throw err;
         });
+      if (!response || !response?.body) {
+        throw new Error(
+          "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
+        );
+      }
       var khariu = JSON.parse(response?.body);
       Token(tukhainBaaziinKholbolt)
         .updateOne(
