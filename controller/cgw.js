@@ -574,11 +574,9 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         );
         if (!tokenObject || !tokenObject.token) {
           // Token байхгүй үед frontend рүү хариу илгээх
-          return res.status(401).json({
-            success: false,
-            aldaa:
-              "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!",
-          });
+          throw new Error(
+            "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
+          );
         }
         var url =
           process.env.TDB_SERVER + "/accounts/" + dans.dugaar + "/balance";
@@ -748,7 +746,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
     }
   } catch (err) {
     console.log("--------------dansniiUldegdelAvya -------- " + err);
-    if (err) res.send({ success: false, aldaa: err.message });
+    if (next) next(err);
   }
 });
 
