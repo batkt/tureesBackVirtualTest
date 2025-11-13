@@ -580,6 +580,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
             },
           })
           .catch((err) => {
+            console.log("err tdbTokenAvya ----------->>>" + err);
             throw err;
           });
         var khariu = JSON.parse(response.body);
@@ -604,7 +605,8 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           },
         ];
         var max = await BankniiGuilgee(
-          req.body.tukhainBaaziinKholbolt, true
+          req.body.tukhainBaaziinKholbolt,
+          true
         ).aggregate(query);
         var maxDugaar = 100;
         if (max && max.length !== 0) maxDugaar = max[0].max;
@@ -735,7 +737,8 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       res.send({ uldegdel: khariltsakh?.balance });
     }
   } catch (err) {
-    next(err);
+    console.log("--------------dansniiUldegdelAvya -------- " + err);
+    if (next) next(err);
   }
 });
 
@@ -954,7 +957,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       },
                     },
                   ];
-                  var max = await BankniiGuilgee(kholbolt, true).aggregate(query);
+                  var max = await BankniiGuilgee(kholbolt, true).aggregate(
+                    query
+                  );
                   var maxDugaar = 100;
                   if (max && max.length !== 0) maxDugaar = max[0].max;
                   var khuseltiinDugaar = await Dugaarlalt(kholbolt).aggregate([
@@ -1391,9 +1396,10 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
       },
     },
   ];
-  var max = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true).aggregate(
-    query
-  );
+  var max = await BankniiGuilgee(
+    req.body.tukhainBaaziinKholbolt,
+    true
+  ).aggregate(query);
   var maxDugaar = 100;
   if (max && max.length !== 0) maxDugaar = max[0].max;
   var khuseltiinDugaar = await Dugaarlalt(
@@ -1552,7 +1558,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         item.dansniiDugaar +
                         item.record +
                         item.amount.toString();
-                      var guilgee = await BankniiGuilgee(kholbolt, true).findOne({
+                      var guilgee = await BankniiGuilgee(
+                        kholbolt,
+                        true
+                      ).findOne({
                         indexTalbar: indexTalbar,
                       });
                       if (guilgee) ustgakhJagsaalt.push(item);
@@ -1566,8 +1575,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   for await (const item of guilgeenuud) {
                     if (!!dans.zogsooliinId) {
                       var url =
-                        process.env.UNDSEN_SERVER +
-                        "/zogsooliinTulburOrjIrlee";
+                        process.env.UNDSEN_SERVER + "/zogsooliinTulburOrjIrlee";
                       axios
                         .post(url, {
                           baiguullagiinId: dans.baiguullagiinId,
@@ -1584,8 +1592,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     ) {
                       // GTHub dotor garakh
                       var url =
-                        process.env.UNDSEN_SERVER +
-                        "/zogsooliinTulburOrjIrlee";
+                        process.env.UNDSEN_SERVER + "/zogsooliinTulburOrjIrlee";
                       axios
                         .post(url, {
                           baiguullagiinId: dans.baiguullagiinId,
@@ -1742,7 +1749,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                               })
                               .catch(function (error) {});
                           }
-                          var guilgee = await BankniiGuilgee(kholbolt, true).findOne({
+                          var guilgee = await BankniiGuilgee(
+                            kholbolt,
+                            true
+                          ).findOne({
                             NtryRef: item.NtryRef,
                             barilgiinId: dans.barilgiinId,
                           });
@@ -1843,7 +1853,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         item.dansniiDugaar +
                         item.tranId +
                         item.tranAmount.toString();
-                      var guilgee = await BankniiGuilgee(kholbolt, true).findOne({
+                      var guilgee = await BankniiGuilgee(
+                        kholbolt,
+                        true
+                      ).findOne({
                         indexTalbar: indexTalbar,
                       });
                       if (guilgee) ustgakhJagsaalt.push(item);
@@ -1857,8 +1870,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   for await (const item of guilgeenuud) {
                     if (!!dans.zogsooliinId) {
                       var url =
-                        process.env.UNDSEN_SERVER +
-                        "/zogsooliinTulburOrjIrlee";
+                        process.env.UNDSEN_SERVER + "/zogsooliinTulburOrjIrlee";
                       axios
                         .post(url, {
                           baiguullagiinId: dans.baiguullagiinId,
@@ -1968,7 +1980,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   if (guilgeenuud) {
                     var ustgakhJagsaalt = [];
                     for await (const item of guilgeenuud) {
-                      var guilgee = await BankniiGuilgee(kholbolt, true).findOne({
+                      var guilgee = await BankniiGuilgee(
+                        kholbolt,
+                        true
+                      ).findOne({
                         jrno: item.jrno,
                         barilgiinId: dans.barilgiinId,
                       });
