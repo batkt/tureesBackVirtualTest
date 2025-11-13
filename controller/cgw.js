@@ -170,7 +170,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
         .catch((err) => {
           throw err;
         });
-      var khariu = JSON.parse(response.body);
+      var khariu = JSON.parse(response?.body);
       Token(tukhainBaaziinKholbolt)
         .updateOne(
           { turul: turul, baiguullagiinId: dans.baiguullagiinId },
@@ -185,9 +185,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
       tokenObject = khariu;
     }
     return tokenObject;
-  } catch (error) {
-    next(new Error("Банктай холбогдоход алдаа гарлаа!"));
-  }
+  } catch (error) {}
 }
 
 async function bogdTokentAvya(dans, tukhainBaaziinKholbolt) {
