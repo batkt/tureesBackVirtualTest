@@ -192,6 +192,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
     return tokenObject;
   } catch (error) {
     console.log("tdbTokenAvya -------------->>" + error);
+    new Error(error);
   }
 }
 
