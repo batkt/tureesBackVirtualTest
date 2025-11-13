@@ -579,20 +579,22 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           dans,
           req.body.tukhainBaaziinKholbolt
         );
-        var url =
-          process.env.TDB_SERVER + "/accounts/" + dans.dugaar + "/balance";
-        const response = await got
-          .get(url, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + tokenObject?.token,
-            },
-          })
-          .catch((err) => {
-            console.log("tdbTokenAvya ------------->>" + err);
-          });
-        var khariu = JSON.parse(response?.body);
-        res.send({ uldegdel: khariu.acntno.BALANCE });
+        if (tokenObject?.token) {
+          var url =
+            process.env.TDB_SERVER + "/accounts/" + dans.dugaar + "/balance";
+          const response = await got
+            .get(url, {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + tokenObject?.token,
+              },
+            })
+            .catch((err) => {
+              console.log("tdbTokenAvya ------------->>" + err);
+            });
+          var khariu = JSON.parse(response?.body);
+          res.send({ uldegdel: khariu.acntno.BALANCE });
+        }
       } else {
         var query = [
           {
