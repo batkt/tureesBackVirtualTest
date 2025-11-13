@@ -168,7 +168,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt) {
           },
         })
         .catch((err) => {
-          console.log(err);
+          console.log("tdbTokenAvya -------- 1 ---------------->>" + err);
         });
       if (!response || !response?.body) {
         throw new Error(
@@ -585,7 +585,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
             },
           })
           .catch((err) => {
-            throw err;
+            console.log("tdbTokenAvya ------------->>" + err);
           });
         var khariu = JSON.parse(response.body);
         res.send({ uldegdel: khariu.acntno.BALANCE });
@@ -741,7 +741,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       res.send({ uldegdel: khariltsakh?.balance });
     }
   } catch (err) {
-    next(err);
+    console.log("dansniiUldegdelAvya 00000-----------<<<" + err);
   }
 });
 
