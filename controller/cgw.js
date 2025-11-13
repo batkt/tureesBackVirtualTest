@@ -170,7 +170,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
         .catch((err) => {
           if (next) next(err);
         });
-      var khariu = JSON.parse(response.body);
+      var khariu = JSON.parse(response?.body);
       console.log("tdb token khariu ----------->>>" + JSON.stringify(khariu));
       Token(tukhainBaaziinKholbolt)
         .updateOne(
