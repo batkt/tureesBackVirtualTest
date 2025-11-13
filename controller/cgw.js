@@ -591,7 +591,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           .catch((err) => {
             console.log("tdbTokenAvya ------------->>" + err);
           });
-        var khariu = JSON.parse(response.body);
+        var khariu = JSON.parse(response?.body);
         res.send({ uldegdel: khariu.acntno.BALANCE });
       } else {
         var query = [
@@ -746,8 +746,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
     }
   } catch (err) {
     console.log("dansniiUldegdelAvya 00000-----------<<<" + err);
-    if (next)
-      next("Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!");
+    if (next) next(err);
   }
 });
 
