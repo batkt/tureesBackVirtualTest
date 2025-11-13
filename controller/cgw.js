@@ -572,6 +572,11 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           req.body.tukhainBaaziinKholbolt,
           next
         );
+        if (!tokenObject || tokenObject?.token) {
+          throw new Error(
+            "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
+          );
+        }
         var url =
           process.env.TDB_SERVER + "/accounts/" + dans.dugaar + "/balance";
         const response = await got
