@@ -1282,6 +1282,7 @@ router.get("/v1/parking", async (req, res, next) => {
               id: zogsool._id.toString(),
               name: zogsool.ner,
               baiguullagiinId: zogsool.baiguullagiinId,
+              barilgiinId: zogsool.barilgiinId,
               slot,
             });
           }
