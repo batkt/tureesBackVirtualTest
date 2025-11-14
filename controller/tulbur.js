@@ -727,8 +727,10 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         const aldangiChuluulukhKhonog =
           barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
         let startDate;
-        if (barilga?.tokhirgoo?.aldangiOgnoo) {
-          startDate = moment(barilga.tokhirgoo.aldangiOgnoo).startOf("month");
+        if (barilga?.tokhirgoo?.aldangiBodojEkhlekhOgnoo) {
+          startDate = moment(
+            barilga.tokhirgoo.aldangiBodojEkhlekhOgnoo
+          ).startOf("month");
         } else {
           // default — өнөөдрийн сар
           startDate = moment().startOf("month");
@@ -780,6 +782,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 baiguullagiinId: baiguullaga._id.toString(),
                 barilgiinId: barilga._id.toString(),
                 tuluv: { $nin: [-1] },
+                gereeniiDugaar: "ТГ/F4/B3",
               },
             },
             { $unwind: "$avlaga.guilgeenuud" },
