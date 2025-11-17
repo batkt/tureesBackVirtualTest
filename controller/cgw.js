@@ -167,7 +167,9 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
             client_secret: dans.corporateNuutsUg,
           },
         })
-        .catch((err) => {});
+        .catch((err) => {
+          console.log("post err ----------->", err);
+        });
       if (!response || !response?.body) {
         throw new Error(
           "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
@@ -184,7 +186,9 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
           { upsert: true }
         )
         .then((x) => {})
-        .catch((e) => {});
+        .catch((e) => {
+          console.log("post 999 err ----------->", e);
+        });
       tokenObject = khariu;
     }
     return tokenObject;
