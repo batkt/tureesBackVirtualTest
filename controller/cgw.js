@@ -167,7 +167,9 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
             client_secret: dans.corporateNuutsUg,
           },
         })
-        .catch((err) => {});
+        .catch((err) => {
+          console.log("post err ----------->", err);
+        });
       if (!response || !response?.body) {
         throw new Error(
           "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
@@ -184,8 +186,11 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
           { upsert: true }
         )
         .then((x) => {})
-        .catch((e) => {});
+        .catch((e) => {
+          console.log("post 999 err ----------->", e);
+        });
       tokenObject = khariu;
+      console.log("Tdb v2 tokenObject ----------->", tokenObject);
     }
     return tokenObject;
   } catch (error) {
@@ -575,6 +580,10 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           req.body.tukhainBaaziinKholbolt,
           next
         );
+        console.log(
+          "tdb dansnii uldegdel tokenObject ----------->",
+          tokenObject?.token
+        );
         if (tokenObject?.token) {
           var url =
             process.env.TDB_SERVER + "/accounts/" + dans.dugaar + "/balance";
@@ -585,7 +594,9 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
                 Authorization: "Bearer " + tokenObject?.token,
               },
             })
-            .catch((err) => {});
+            .catch((err) => {
+              console.log("tdb dansnii accounts err ----------->", err);
+            });
           var khariu = JSON.parse(response?.body);
           res.send({ uldegdel: khariu.acntno.BALANCE });
         }
@@ -894,9 +905,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     })
                     .sort({ TxDt: -1 })
                     .limit(1);
-                  if (!!max) {
-                    firstDay = new Date(max.TxDt);
-                  } else firstDay = new Date();
+                  // if (!!max) {
+                  //   firstDay = new Date(max.TxDt);
+                  // } else
+                  firstDay = new Date();
                   url =
                     url +
                     "?from=" +
@@ -915,7 +927,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     "/" +
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate() +
-                    "&page=0&size=100";
+                    "&page=0&size=500";
                   var response = await axios
                     .get(url, {
                       headers: {
