@@ -559,6 +559,8 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
       object.tureesiinTulbur = object.talbainNiitUne;
+      object.sulKhemjee =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)];
       if (segmentuud && segmentuud.length > 0) {
         segmentuud.forEach((segment) => {
           if (tolgoinObject.hasOwnProperty(segment.ner)) {
