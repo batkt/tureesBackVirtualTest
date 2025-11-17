@@ -905,9 +905,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     })
                     .sort({ TxDt: -1 })
                     .limit(1);
-                  if (!!max) {
-                    firstDay = new Date(max.TxDt);
-                  } else firstDay = new Date();
+                  // if (!!max) {
+                  //   firstDay = new Date(max.TxDt);
+                  // } else
+                  firstDay = new Date();
                   url =
                     url +
                     "?from=" +
@@ -926,7 +927,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     "/" +
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate() +
-                    "&page=0&size=100";
+                    "&page=0&size=500";
                   var response = await axios
                     .get(url, {
                       headers: {
