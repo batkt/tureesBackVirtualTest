@@ -580,6 +580,10 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           req.body.tukhainBaaziinKholbolt,
           next
         );
+        console.log(
+          "tdb dansnii uldegdel tokenObject ----------->",
+          tokenObject?.token
+        );
         if (tokenObject?.token) {
           var url =
             process.env.TDB_SERVER + "/accounts/" + dans.dugaar + "/balance";
