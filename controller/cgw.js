@@ -190,6 +190,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
           console.log("post 999 err ----------->", e);
         });
       tokenObject = khariu;
+      console.log("Tdb v2 tokenObject ----------->", tokenObject);
     }
     return tokenObject;
   } catch (error) {
