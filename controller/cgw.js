@@ -747,6 +747,9 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
 
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
   try {
+    console.log(
+      "------------- bankniiKhuulgaTatajKhadgalya ---------------->>>"
+    );
     var kholboltuud;
     const { db } = require("zevbackv2");
     if (!!req?.body?.tukhainBaaziinKholbolt) {
@@ -771,6 +774,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
     }
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
+        console.log(
+          "------999------- bankniiKhuulgaTatajKhadgalya ---------------->>>"
+        );
         if (!req)
           dansnuud = await Dans(kholbolt)
             .find({
@@ -866,6 +872,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
+                  console.log(
+                    "-----------ffff-- bankniiKhuulgaTatajKhadgalya ---------------->>>",
+                    dans?.dugaar
+                  );
                   var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
                   if (!tokenObject || tokenObject?.token) {
                     throw new Error(
