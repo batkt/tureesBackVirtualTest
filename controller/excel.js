@@ -488,6 +488,18 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     ]);
     var tolgoinObject = {};
     var muriinDugaar = 1;
+
+    // Debug: Log all header values
+    console.log("Excel Headers:");
+    console.log("A1:", worksheet["A1"]?.v);
+    console.log("B1:", worksheet["B1"]?.v);
+    console.log("C1:", worksheet["C1"]?.v);
+    console.log("D1:", worksheet["D1"]?.v);
+    console.log("E1:", worksheet["E1"]?.v);
+    console.log("F1:", worksheet["F1"]?.v);
+    console.log("G1:", worksheet["G1"]?.v);
+    console.log("H1:", worksheet["H1"]?.v);
+
     if (
       !worksheet["A1"].v.includes("Давхар") ||
       !worksheet["B1"].v.includes("Талбайн №") ||
@@ -533,6 +545,18 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       }
     }
     console.log("Tolgoin Object:", tolgoinObject);
+
+    // Validate that all required columns were mapped
+    if (!tolgoinObject.talbainKhemjee) {
+      throw new aldaa("Талбайн хэмжээ багана олдсонгүй! Баганы толгойг шалгана уу.");
+    }
+    if (!tolgoinObject.davkhar) {
+      throw new aldaa("Давхар багана олдсонгүй! Баганы толгойг шалгана уу.");
+    }
+    if (!tolgoinObject.kod) {
+      throw new aldaa("Талбайн № багана олдсонгүй! Баганы толгойг шалгана уу.");
+    }
+
     var data = xlsx.utils.sheet_to_json(worksheet, {
       header: 1,
       range: 1,
@@ -547,6 +571,14 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)];
       object.talbainKhemjeeMetrKube =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjeeMetrKube)];
+
+      // Debug first 3 rows
+      if (muriinDugaar <= 4) {
+        console.log(`Row ${muriinDugaar}:`);
+        console.log(`  Column index for talbainKhemjee: ${usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)}`);
+        console.log(`  talbainKhemjee value: ${object.talbainKhemjee}`);
+        console.log(`  Full row data:`, mur);
+      }
 
       object.kod = mur[usegTooruuKhurvuulekh(tolgoinObject.kod)];
       object.talbainNegjUne =
