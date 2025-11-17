@@ -44,6 +44,7 @@ const parkingRoute = require("./routes/parkingRoute");
 const eventRoute = require("./routes/eventRoute");
 const tasalbarRoute = require("./routes/tasalbarRoute");
 const zochinUrikhRoute = require("./routes/zochinUrikhRoute");
+const uneguiMashinRoute = require("./routes/uneguiMashinRoute");
 
 const { db } = require("zevbackv2");
 
@@ -98,6 +99,7 @@ app.use(parkingRoute);
 app.use(eventRoute);
 app.use(tasalbarRoute);
 app.use(zochinUrikhRoute);
+app.use(uneguiMashinRoute);
 zuragPack(app);
 
 app.use(aldaaBarigch);
