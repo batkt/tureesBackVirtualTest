@@ -908,6 +908,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   if (!!max) {
                     firstDay = new Date(max.TxDt);
                   } else firstDay = new Date();
+                  console.log("dans.dugaar ----------->", dans.dugaar);
+                  console.log("firstDay ----------->", firstDay);
+                  console.log("lastDay ----------->", lastDay);
                   url =
                     url +
                     "?from=" +
