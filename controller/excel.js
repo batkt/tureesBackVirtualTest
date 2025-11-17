@@ -488,6 +488,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     ]);
     var tolgoinObject = {};
     var muriinDugaar = 1;
+
     if (
       !worksheet["A1"].v.includes("Давхар") ||
       !worksheet["B1"].v.includes("Талбайн №") ||
@@ -507,32 +508,31 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!worksheet[cellAsString].v
       ) {
-        var headerValue = worksheet[cellAsString].v.toString().trim();
-        if (headerValue.includes("Давхар"))
+        if (worksheet[cellAsString].v.includes("Давхар"))
           tolgoinObject.davkhar = cellAsString[0];
-        else if (headerValue.includes("Талбайн хэмжээ"))
+        else if (worksheet[cellAsString].v.includes("Талбайн хэмжээ"))
           tolgoinObject.talbainKhemjee = cellAsString[0];
-        else if (headerValue.includes("Талбайн метркуб"))
+        else if (worksheet[cellAsString].v.includes("Талбайн метркуб"))
           tolgoinObject.talbainKhemjeeMetrKube = cellAsString[0];
-        else if (headerValue.includes("Талбайн №"))
+        else if (worksheet[cellAsString].v.includes("Талбайн №"))
           tolgoinObject.kod = cellAsString[0];
-        else if (headerValue.includes("Талбайн нэгж үнэ"))
+        else if (worksheet[cellAsString].v.includes("Талбайн нэгж үнэ"))
           tolgoinObject.talbainNegjUne = cellAsString[0];
-        else if (headerValue.includes("Талбайн нийт үнэ"))
+        else if (worksheet[cellAsString].v.includes("Талбайн нийт үнэ"))
           tolgoinObject.talbainNiitUne = cellAsString[0];
-        else if (headerValue.includes("Тайлбар"))
+        else if (worksheet[cellAsString].v.includes("Тайлбар"))
           tolgoinObject.tailbar = cellAsString[0];
-        else if (headerValue.includes("Нийтийн талбай эсэх"))
+        else if (worksheet[cellAsString].v.includes("Нийтийн талбай эсэх"))
           tolgoinObject.niitiinTalbai = cellAsString[0];
         else if (segmentuud && segmentuud.length > 0) {
           var segment = segmentuud.find(
-            (element) => element.ner === headerValue
+            (element) => element.ner === worksheet[cellAsString].v
           );
           if (segment) tolgoinObject[segment.ner] = cellAsString[0];
         }
       }
     }
-    console.log("Tolgoin Object:", tolgoinObject);
+
     var data = xlsx.utils.sheet_to_json(worksheet, {
       header: 1,
       range: 1,
