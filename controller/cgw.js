@@ -937,10 +937,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         Authorization: "Bearer " + tokenObject.token,
                       },
                     })
-                    .catch((err) => {
-                      console.log("/accounts/statement/ " + err);
-                      if (next) next(err);
-                    });
+                    .catch((err) => {});
                   var khariu = response.data;
                   if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
                     var guilgeenuud = [];
