@@ -888,11 +888,11 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     dans?.dugaar
                   );
                   var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
-                  if (!tokenObject || tokenObject?.token) {
-                    throw new Error(
-                      "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
-                    );
-                  }
+                  // if (!tokenObject || tokenObject?.token) {
+                  //   throw new Error(
+                  //     "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
+                  //   );
+                  // }
                   console.log("dans.dugaar ----------->", dans.dugaar);
                   var url =
                     process.env.TDB_SERVER +
@@ -908,7 +908,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   if (!!max) {
                     firstDay = new Date(max.TxDt);
                   } else firstDay = new Date();
-                  console.log("dans.dugaar ----------->", dans.dugaar);
+                  console.log("dans.dugaar ----------ff->", dans.dugaar);
                   console.log("firstDay ----------->", firstDay);
                   console.log("lastDay ----------->", lastDay);
                   url =
