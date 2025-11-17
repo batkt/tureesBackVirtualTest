@@ -871,6 +871,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
                     );
                   }
+                  console.log("dans.dugaar ----------->", dans.dugaar);
                   var url =
                     process.env.TDB_SERVER +
                     "/accounts/statement/" +
@@ -912,6 +913,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       },
                     })
                     .catch((err) => {
+                      console.log("/accounts/statement/ " + err);
                       if (next) next(err);
                     });
                   var khariu = response.data;
