@@ -594,7 +594,9 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
                 Authorization: "Bearer " + tokenObject?.token,
               },
             })
-            .catch((err) => {});
+            .catch((err) => {
+              console.log("tdb dansnii accounts err ----------->", err);
+            });
           var khariu = JSON.parse(response?.body);
           res.send({ uldegdel: khariu.acntno.BALANCE });
         }
