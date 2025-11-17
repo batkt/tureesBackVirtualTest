@@ -723,14 +723,14 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         )
           continue;
 
-        const aldagiinKhuvi = barilga.tokhirgoo.aldangiinKhuvi || 0.5;
-        const aldangiChuluulukhKhonog =
+        let aldagiinKhuvi = barilga.tokhirgoo.aldangiinKhuvi || 0.5;
+        let aldangiChuluulukhKhonog =
           barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
+        let aldangiBodojEkhlekhOgnoo =
+          barilga?.tokhirgoo?.aldangiBodojEkhlekhOgnoo;
         let startDate;
-        if (barilga?.tokhirgoo?.aldangiBodojEkhlekhOgnoo) {
-          startDate = moment(
-            barilga.tokhirgoo.aldangiBodojEkhlekhOgnoo
-          ).startOf("month");
+        if (aldangiBodojEkhlekhOgnoo) {
+          startDate = moment(aldangiBodojEkhlekhOgnoo).startOf("month");
         } else {
           // default — өнөөдрийн сар
           startDate = moment().startOf("month");
@@ -763,7 +763,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             "------------------------------------------------------------"
           );
 
-          const match = {
+          let match = {
             "avlaga.guilgeenuud.ognoo": { $gte: start, $lte: end },
             $or: [
               { "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] } },
@@ -775,7 +775,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               },
             ],
           };
-
+          if (barilga?.tokhirgoo?.aldangiGereeTusBur)
+            match["aldangiinKhuvi"] = { $gt: 0 };
           const gereenuud = await Geree(kholbolt, true).aggregate([
             {
               $match: {
@@ -792,6 +793,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   id: "$_id",
                   gereeniiDugaar: "$gereeniiDugaar",
                   tulukhUdur: "$tulukhUdur",
+                  aldangiinKhuvi: "$aldangiinKhuvi",
+                  aldangiChuluulukhKhonog: "$aldangiChuluulukhKhonog",
+                  aldangiBodojEkhlekhOgnoo: "$aldangiBodojEkhlekhOgnoo",
                 },
                 tulukh: {
                   $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
@@ -820,6 +824,77 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           }
 
           for (const geree of gereenuud) {
+            if (barilga?.tokhirgoo?.aldangiGereeTusBur) {
+              aldagiinKhuvi = geree._id.aldangiinKhuvi || aldagiinKhuvi;
+              aldangiChuluulukhKhonog =
+                geree._id.aldangiChuluulukhKhonog || aldangiChuluulukhKhonog;
+              aldangiBodojEkhlekhOgnoo =
+                geree._id.aldangiBodojEkhlekhOgnoo || aldangiBodojEkhlekhOgnoo;
+              if (aldangiBodojEkhlekhOgnoo > new Date()) continue;
+            }
+            match = {
+              "avlaga.guilgeenuud.ognoo": { $lt: start },
+              $or: [
+                {
+                  "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] },
+                },
+                {
+                  $and: [
+                    { "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] } },
+                    { "avlaga.guilgeenuud.tulsunDun": { $gt: 0 } },
+                  ],
+                },
+              ],
+            };
+            const songosonGereenuud = await Geree(kholbolt, true).aggregate([
+              {
+                $match: {
+                  _id: geree._id.id,
+                  baiguullagiinId: baiguullaga._id.toString(),
+                  barilgiinId: barilga._id.toString(),
+                  tuluv: { $nin: [-1] },
+                },
+              },
+              { $unwind: "$avlaga.guilgeenuud" },
+              { $match: match },
+              {
+                $group: {
+                  _id: {
+                    id: "$_id",
+                    gereeniiDugaar: "$gereeniiDugaar",
+                    tulukhUdur: "$tulukhUdur",
+                  },
+                  tulukh: {
+                    $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
+                  },
+                  khyamdral: {
+                    $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+                  },
+                  tulsun: {
+                    $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+                  },
+                },
+              },
+              {
+                $project: {
+                  uldegdel: {
+                    $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }],
+                  },
+                },
+              },
+              { $match: { uldegdel: { $lt: 0 } } },
+            ]);
+            var umnukhUldegdel = 0;
+            if (songosonGereenuud?.length > 0)
+              umnukhUldegdel = songosonGereenuud[0].uldegdel;
+            var uldegdel = geree.uldegdel + umnukhUldegdel;
+            console.log(" илүү төлөлт байгаа эсэх " + uldegdel);
+            if (uldegdel < 0) {
+              console.log(
+                "❌ алданги бодохгүй үлдэгдэл нь илүү төлөлттэй." + uldegdel
+              );
+              continue;
+            }
             const tulukhUdur = geree._id.tulukhUdur?.[0] || 1;
 
             const aldangiEhlehOgnoo = moment({
@@ -839,7 +914,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             console.log(
               `   Chuluuluh: ${aldangiChuluulukhOgnoo.format("YYYY-MM-DD")}`
             );
-            console.log(`   Uldegdel: ${geree.uldegdel}`);
+            console.log(`   Uldegdel: ${uldegdel}`);
             console.log(`   Aldangiin khuvi: ${aldagiinKhuvi}%`);
             console.log(
               "------------------------------------------------------------"
@@ -847,7 +922,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
 
             if (moment().isAfter(aldangiChuluulukhOgnoo)) {
               const bodogdsonKhuu = tooZasyaSync(
-                (geree.uldegdel * aldagiinKhuvi) / 100
+                (uldegdel * aldagiinKhuvi) / 100
               );
               const data = await Geree(kholbolt, true).findById(geree._id.id);
 
@@ -883,7 +958,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   gereeniiId: geree._id.id,
                   gereeniiDugaar: geree._id.gereeniiDugaar,
                   ognoo: aldangiEhlehOgnoo,
-                  uldegdel: geree.uldegdel,
+                  uldegdel: uldegdel,
                   aldangiChuluulukhOgnoo: aldangiChuluulukhOgnoo,
                   aldangiBodsonOgnoo: new Date(),
                   aldangiinKhuvi: aldagiinKhuvi,
