@@ -167,9 +167,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
             client_secret: dans.corporateNuutsUg,
           },
         })
-        .catch((err) => {
-          console.log("post err ----------->", err);
-        });
+        .catch((err) => {});
       if (!response || !response?.body) {
         throw new Error(
           "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
@@ -186,15 +184,11 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
           { upsert: true }
         )
         .then((x) => {})
-        .catch((e) => {
-          console.log("post 999 err ----------->", e);
-        });
+        .catch((e) => {});
       tokenObject = khariu;
-      console.log("Tdb v2 tokenObject ----------->", tokenObject);
     }
     return tokenObject;
   } catch (error) {
-    console.log("bankniiKhuulgaTatajKhadgalya err ----------->", error);
     if (next) next(error);
   }
 }
@@ -580,10 +574,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           req.body.tukhainBaaziinKholbolt,
           next
         );
-        console.log(
-          "tdb dansnii uldegdel tokenObject ----------->",
-          tokenObject?.token
-        );
         if (tokenObject?.token) {
           var url =
             process.env.TDB_SERVER + "/accounts/" + dans.dugaar + "/balance";
@@ -594,9 +584,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
                 Authorization: "Bearer " + tokenObject?.token,
               },
             })
-            .catch((err) => {
-              console.log("tdb dansnii accounts err ----------->", err);
-            });
+            .catch((err) => {});
           var khariu = JSON.parse(response?.body);
           res.send({ uldegdel: khariu.acntno.BALANCE });
         }
@@ -758,9 +746,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
 
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
   try {
-    console.log(
-      "------------- bankniiKhuulgaTatajKhadgalya ---------------->>>"
-    );
     var kholboltuud;
     const { db } = require("zevbackv2");
     if (!!req?.body?.tukhainBaaziinKholbolt) {
@@ -785,9 +770,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
     }
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        console.log(
-          "------999------- bankniiKhuulgaTatajKhadgalya ---------------->>>"
-        );
         if (!req)
           dansnuud = await Dans(kholbolt)
             .find({
@@ -883,17 +865,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
-                  console.log(
-                    "-----------ffff-- bankniiKhuulgaTatajKhadgalya ---------------->>>",
-                    dans?.dugaar
-                  );
                   var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
-                  // if (!tokenObject || tokenObject?.token) {
-                  //   throw new Error(
-                  //     "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
-                  //   );
-                  // }
-                  console.log("dans.dugaar ----------->", dans.dugaar);
                   var url =
                     process.env.TDB_SERVER +
                     "/accounts/statement/" +
@@ -908,9 +880,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   if (!!max) {
                     firstDay = new Date(max.TxDt);
                   } else firstDay = new Date();
-                  console.log("dans.dugaar ----------ff->", dans.dugaar);
-                  console.log("firstDay ----------->", firstDay);
-                  console.log("lastDay ----------->", lastDay);
                   url =
                     url +
                     "?from=" +
@@ -1403,7 +1372,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       }
     }
   } catch (err) {
-    console.log("bankniiKhuulgaTatajKhadgalya err ----------->", err);
     if (next) next(err);
   }
 });
