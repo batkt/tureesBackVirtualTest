@@ -22,22 +22,25 @@ router.post("/uneguiMashinBurtgekh", async (req, res, next) => {
   }
 });
 
-router.put("/api/uneguiMashin/:id", async (req, res, next) => {
+router.put("/api/uneguiMashin/:mashiniiDugaar", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
 
     const model = uneguiMashin(db.erunkhiiKholbolt);
-    const id = req.params.id;
-    if (!id) return res.status(400).send("Burtgeliin ID shaardlagatai.");
+    const huuchinDugaar = req.params.mashiniiDugaar;
 
     const update = { ...req.body };
     if (update.mashiniiDugaar)
       update.mashiniiDugaar = update.mashiniiDugaar.trim();
 
-    const zasagdsan = await model.findByIdAndUpdate(id, update, {
-      new: true,
-      runValidators: true,
-    });
+    const zasagdsan = await model.findOneAndUpdate(
+      { mashiniiDugaar: huuchinDugaar },
+      update,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     if (!zasagdsan)
       return res.status(404).send("Burtgel oldsongui. Zasakh bolomjgui.");
 
@@ -47,15 +50,16 @@ router.put("/api/uneguiMashin/:id", async (req, res, next) => {
   }
 });
 
-router.delete("/api/uneguiMashin/:id", async (req, res, next) => {
+router.delete("/api/uneguiMashin/:mashiniiDugaar", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
 
     const model = uneguiMashin(db.erunkhiiKholbolt);
-    const id = req.params.id;
-    if (!id) return res.status(400).send("Burtgeliin ID shaardlagatai.");
+    const mashiniiDugaar = req.params.mashiniiDugaar;
 
-    const ustgasan = await model.findByIdAndDelete(id);
+    const ustgasan = await model.findOneAndDelete({
+      mashiniiDugaar,
+    });
     if (!ustgasan)
       return res.status(404).send("Burtgel oldsongui. Ustgakh bolomjgui.");
 
