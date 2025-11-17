@@ -189,6 +189,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
     }
     return tokenObject;
   } catch (error) {
+    console.log("bankniiKhuulgaTatajKhadgalya err ----------->", error);
     if (next) next(error);
   }
 }
