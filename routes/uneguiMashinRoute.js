@@ -22,7 +22,7 @@ router.post("/uneguiMashinBurtgekh", async (req, res, next) => {
   }
 });
 
-router.put("/api/uneguiMashin/:mashiniiDugaar", async (req, res, next) => {
+router.put("/uneguiMashin/:mashiniiDugaar", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
 
@@ -50,7 +50,7 @@ router.put("/api/uneguiMashin/:mashiniiDugaar", async (req, res, next) => {
   }
 });
 
-router.delete("/api/uneguiMashin/:mashiniiDugaar", async (req, res, next) => {
+router.delete("/uneguiMashin/:mashiniiDugaar", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
 
