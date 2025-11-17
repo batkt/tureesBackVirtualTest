@@ -489,17 +489,6 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     var tolgoinObject = {};
     var muriinDugaar = 1;
 
-    // Debug: Log all header values
-    console.log("Excel Headers:");
-    console.log("A1:", worksheet["A1"]?.v);
-    console.log("B1:", worksheet["B1"]?.v);
-    console.log("C1:", worksheet["C1"]?.v);
-    console.log("D1:", worksheet["D1"]?.v);
-    console.log("E1:", worksheet["E1"]?.v);
-    console.log("F1:", worksheet["F1"]?.v);
-    console.log("G1:", worksheet["G1"]?.v);
-    console.log("H1:", worksheet["H1"]?.v);
-
     if (
       !worksheet["A1"].v.includes("Давхар") ||
       !worksheet["B1"].v.includes("Талбайн №") ||
@@ -519,42 +508,29 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
         cellAsString.length == 2 &&
         !!worksheet[cellAsString].v
       ) {
-        var headerValue = worksheet[cellAsString].v.toString().trim();
-        if (headerValue.includes("Давхар"))
+        if (worksheet[cellAsString].v.includes("Давхар"))
           tolgoinObject.davkhar = cellAsString[0];
-        else if (headerValue.includes("Талбайн хэмжээ"))
+        else if (worksheet[cellAsString].v.includes("Талбайн хэмжээ"))
           tolgoinObject.talbainKhemjee = cellAsString[0];
-        else if (headerValue.includes("Талбайн метркуб"))
+        else if (worksheet[cellAsString].v.includes("Талбайн метркуб"))
           tolgoinObject.talbainKhemjeeMetrKube = cellAsString[0];
-        else if (headerValue.includes("Талбайн №"))
+        else if (worksheet[cellAsString].v.includes("Талбайн №"))
           tolgoinObject.kod = cellAsString[0];
-        else if (headerValue.includes("Талбайн нэгж үнэ"))
+        else if (worksheet[cellAsString].v.includes("Талбайн нэгж үнэ"))
           tolgoinObject.talbainNegjUne = cellAsString[0];
-        else if (headerValue.includes("Талбайн нийт үнэ"))
+        else if (worksheet[cellAsString].v.includes("Талбайн нийт үнэ"))
           tolgoinObject.talbainNiitUne = cellAsString[0];
-        else if (headerValue.includes("Тайлбар"))
+        else if (worksheet[cellAsString].v.includes("Тайлбар"))
           tolgoinObject.tailbar = cellAsString[0];
-        else if (headerValue.includes("Нийтийн талбай эсэх"))
+        else if (worksheet[cellAsString].v.includes("Нийтийн талбай эсэх"))
           tolgoinObject.niitiinTalbai = cellAsString[0];
         else if (segmentuud && segmentuud.length > 0) {
           var segment = segmentuud.find(
-            (element) => element.ner === headerValue
+            (element) => element.ner === worksheet[cellAsString].v
           );
           if (segment) tolgoinObject[segment.ner] = cellAsString[0];
         }
       }
-    }
-    console.log("Tolgoin Object:", tolgoinObject);
-
-    // Validate that all required columns were mapped
-    if (!tolgoinObject.talbainKhemjee) {
-      throw new aldaa("Талбайн хэмжээ багана олдсонгүй! Баганы толгойг шалгана уу.");
-    }
-    if (!tolgoinObject.davkhar) {
-      throw new aldaa("Давхар багана олдсонгүй! Баганы толгойг шалгана уу.");
-    }
-    if (!tolgoinObject.kod) {
-      throw new aldaa("Талбайн № багана олдсонгүй! Баганы толгойг шалгана уу.");
     }
 
     var data = xlsx.utils.sheet_to_json(worksheet, {
@@ -571,14 +547,6 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)];
       object.talbainKhemjeeMetrKube =
         mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjeeMetrKube)];
-
-      // Debug first 3 rows
-      if (muriinDugaar <= 4) {
-        console.log(`Row ${muriinDugaar}:`);
-        console.log(`  Column index for talbainKhemjee: ${usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)}`);
-        console.log(`  talbainKhemjee value: ${object.talbainKhemjee}`);
-        console.log(`  Full row data:`, mur);
-      }
 
       object.kod = mur[usegTooruuKhurvuulekh(tolgoinObject.kod)];
       object.talbainNegjUne =
