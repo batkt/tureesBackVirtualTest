@@ -787,7 +787,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 baiguullagiinId: baiguullaga._id.toString(),
                 barilgiinId: barilga._id.toString(),
                 tuluv: { $nin: [-1] },
-                gereeniiDugaar: "ГД2511181",
+                gereeniiDugaar: "ГД2511141",
               },
             },
             { $unwind: "$avlaga.guilgeenuud" },
