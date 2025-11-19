@@ -3013,6 +3013,29 @@ exports.ashiglakhKhonogTootsoolokh = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.aldangiUstgayaa = asyncHandler(async (req, res, next) => {
+  try {
+    const { barilgiinId, baiguullagiinId } = req.body;
+    if (!barilgiinId || !baiguullagiinId) {
+      throw new Error("barilgiinId, baiguullagiinId aa bogloochee!");
+    }
+
+    await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).deleteMany({
+      baiguullagiinId,
+      barilgiinId,
+    });
+
+    await Geree(req.body.tukhainBaaziinKholbolt).updateMany(
+      { baiguullagiinId, barilgiinId },
+      { $set: { aldangiinUldegdel: 0 } }
+    );
+
+    res.send("Амжилттай");
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports.aldangiTegBolgoy = async function aldangiTegBolgoy(
   baiguullagiinId = null
 ) {

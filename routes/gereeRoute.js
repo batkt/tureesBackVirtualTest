@@ -73,6 +73,7 @@ const {
   fcZasvarKhiie,
   avlagaZasay,
   ashiglakhKhonogTootsoolokh,
+  aldangiUstgayaa,
 } = require("../controller/tulbur");
 router.route("/tulultTaniya").get(tulultTaniya);
 const lodash = require("lodash");
@@ -198,6 +199,7 @@ router.route("/aldangiBodyo").post(tokenShalgakh, async (req, res, next) => {
   await aldangiBodyo(req.body.baiguullagiinId);
   res.send("Amjilttai");
 });
+router.route("/aldangiUstgayaa").post(tokenShalgakh, aldangiUstgayaa);
 router
   .route("/aldangiTegBolgoy")
   .post(tokenShalgakh, async (req, res, next) => {
