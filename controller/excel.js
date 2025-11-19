@@ -542,7 +542,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     var kodnuud = [];
     var aldaaniiMsg = "";
     for await (const mur of data) {
-      if (!mur || mur.length === 0 || mur.every((cell) => !cell)) return;
+      if (!mur || mur.length === 0 || mur.every((cell) => !cell)) continue;
       muriinDugaar++;
       let object = new Talbai(req.body.tukhainBaaziinKholbolt)();
       object.davkhar = mur[usegTooruuKhurvuulekh(tolgoinObject.davkhar)];
@@ -787,11 +787,6 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
       key: "Нийтийн талбай эсэх",
       width: 20,
     },
-    {
-      header: "Тоолуурын №",
-      key: "Тоолуурын №",
-      width: 20,
-    },
   ];
   if (segmentuud && segmentuud.length > 0) {
     segmentuud.forEach((x) => {
@@ -802,6 +797,11 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
       });
     });
   }
+  baganuud.push({
+    header: "Тоолуурын №",
+    key: "Тоолуурын №",
+    width: 20,
+  });
   worksheet.columns = baganuud;
   if (segmentuud && segmentuud.length > 0) {
     var baganiiToo = 7;
