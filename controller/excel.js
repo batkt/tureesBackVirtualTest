@@ -1366,6 +1366,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     var muriinDugaar = 1;
     try {
       data.forEach((mur) => {
+        if (!mur || mur.length === 0 || mur.every((cell) => !cell)) return;
         muriinDugaar++;
         let object = new Geree(req.body.tukhainBaaziinKholbolt)();
         object.tuluv = 1;
@@ -1496,6 +1497,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     muriinDugaar = 1;
     try {
       data30.forEach((mur) => {
+        // Skip completely empty rows
+        if (!mur || mur.length === 0 || mur.every((cell) => !cell)) return;
         muriinDugaar++;
         let object = new Geree(req.body.tukhainBaaziinKholbolt)();
         object.tuluv = 1;
