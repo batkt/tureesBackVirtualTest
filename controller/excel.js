@@ -542,7 +542,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     var kodnuud = [];
     var aldaaniiMsg = "";
     for await (const mur of data) {
-      if (!mur || mur.length === 0 || mur.every((cell) => !cell)) return;
+      if (!mur || mur.length === 0 || mur.every((cell) => !cell)) continue;
       muriinDugaar++;
       let object = new Talbai(req.body.tukhainBaaziinKholbolt)();
       object.davkhar = mur[usegTooruuKhurvuulekh(tolgoinObject.davkhar)];
