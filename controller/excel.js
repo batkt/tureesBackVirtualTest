@@ -523,6 +523,8 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
         else if (worksheet[cellAsString].v.includes("Тайлбар"))
           tolgoinObject.tailbar = cellAsString[0];
         else if (worksheet[cellAsString].v.includes("Нийтийн талбай эсэх"))
+          tolgoinObject.tooluuriinDugaar = cellAsString[0];
+        else if (worksheet[cellAsString].v.includes("Тоолуурын №"))
           tolgoinObject.niitiinTalbai = cellAsString[0];
         else if (segmentuud && segmentuud.length > 0) {
           var segment = segmentuud.find(
@@ -559,9 +561,10 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
         mur[usegTooruuKhurvuulekh(tolgoinObject.niitiinTalbai)] == "Тийм";
       object.baiguullagiinId = req.body.baiguullagiinId;
       object.barilgiinId = req.body.barilgiinId;
-      object.tureesiinTulbur = object.talbainNiitUne;
+      object.tooluuriinDugaar = object.tureesiinTulbur = object.talbainNiitUne;
       object.sulKhemjee =
-        mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)];
+        mur[usegTooruuKhurvuulekh(tolgoinObject.tooluuriinDugaar)];
+      mur[usegTooruuKhurvuulekh(tolgoinObject.talbainKhemjee)];
       if (segmentuud && segmentuud.length > 0) {
         segmentuud.forEach((segment) => {
           if (tolgoinObject.hasOwnProperty(segment.ner)) {
@@ -782,6 +785,11 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
     {
       header: "Нийтийн талбай эсэх",
       key: "Нийтийн талбай эсэх",
+      width: 20,
+    },
+    {
+      header: "Тоолуурын №",
+      key: "Тоолуурын №",
       width: 20,
     },
   ];
