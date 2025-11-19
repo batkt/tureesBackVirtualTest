@@ -540,6 +540,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     var kodnuud = [];
     var aldaaniiMsg = "";
     for await (const mur of data) {
+      if (!mur || mur.length === 0 || mur.every((cell) => !cell)) return;
       muriinDugaar++;
       let object = new Talbai(req.body.tukhainBaaziinKholbolt)();
       object.davkhar = mur[usegTooruuKhurvuulekh(tolgoinObject.davkhar)];
@@ -625,6 +626,9 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
       }
     }
     if (aldaaniiMsg) throw new aldaa(aldaaniiMsg);
+    if (jagsaalt.length === 0) {
+      throw new aldaa("Excel файл хоосон байна! Мэдээлэл оруулна уу.");
+    }
     const toFindDuplicates = (arry) =>
       arry.filter((item, index) => arry.indexOf(item) !== index);
     var davkhardsanKod = toFindDuplicates(kodnuud);
