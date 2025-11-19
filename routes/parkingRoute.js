@@ -1612,13 +1612,16 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
         );
         for await (const zogsool of zogsooluud) {
           if (!!zogsool) {
+            var matchMashin = {
+              mashiniiDugaar: req.params.plate_number,
+              "tuukh.0.zogsooliinId": zogsool._id,
+              "tuukh.0.tuluv": 0,
+              zurchil: { $exists: false },
+            };
+            if (req.query.barilgiinId)
+              matchMashin["barilgiinId"] = req.query.barilgiinId;
             oldsonMashin = await Uilchluulegch(kholbolt, true)
-              .findOne({
-                mashiniiDugaar: req.params.plate_number,
-                "tuukh.0.zogsooliinId": zogsool._id,
-                "tuukh.0.tuluv": 0,
-                zurchil: { $exists: false },
-              })
+              .findOne(matchMashin)
               .sort({ createdAt: -1 })
               .limit(1);
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
