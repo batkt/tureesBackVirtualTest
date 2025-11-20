@@ -27,6 +27,7 @@ const Sonorduulga = require("../models/sonorduulga");
 const Ebarimt = require("../models/ebarimt");
 const EbarimtShine = require("../models/ebarimtShine");
 const KassCameraKhaalt = require("../models/kassCameraKhaalt");
+const uneguiMashin = require("../models/uneguiMashin");
 
 const {
   khariltsagchidSonorduulgaIlgeeye,
@@ -220,6 +221,34 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
         }
       }
     };
+    const uneguiMashinOldson = await uneguiMashin(db.erunkhiiKholbolt).findOne({
+      mashiniiDugaar: req.body.mashiniiDugaar,
+      "zogsool.baiguullagiinId": req.body.baiguullagiinId,
+    });
+
+    if (uneguiMashinOldson) {
+      const randomMinutes = Math.floor(Math.random() * 15) + 1;
+      const orsonTsag = new Date(Date.now() - randomMinutes * 60000);
+      const uilchluulegchModel = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+      const oldsonUilchluulegch = await uilchluulegchModel
+        .findOne({
+          mashiniiDugaar: req.body.mashiniiDugaar,
+          "tuukh.0.tuluv": 0,
+          "tuukh.0.garsanKhaalga": { $exists: false },
+        })
+        .sort({ createdAt: -1 });
+
+      if (oldsonUilchluulegch && oldsonUilchluulegch._id) {
+        await uilchluulegchModel.findOneAndUpdate(
+          { _id: oldsonUilchluulegch._id },
+          {
+            $set: {
+              "tuukh.0.tsagiinTuukh.0.orsonTsag": orsonTsag,
+            },
+          }
+        );
+      }
+    }
     const khariu = await sdkData(req, medegdel);
     res.send(khariu);
   } catch (err) {
