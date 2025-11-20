@@ -4904,34 +4904,34 @@ router.route("/aldangiButsaakh").post(tokenShalgakh, async (req, res, next) => {
     ]);
     const bulkOps = [];
     const gereenuudIds = [];
-    // if (aldangiinTuukh?.length > 0) {
-    //   for await (const aldangiData of aldangiinTuukh) {
-    //     gereenuudIds.push(aldangiData._id.gereeniiId);
-    //     bulkOps.push({
-    //       updateOne: {
-    //         filter: { _id: aldangiData._id.gereeniiId },
-    //         update: [
-    //           {
-    //             $set: {
-    //               aldangiinUldegdel: {
-    //                 $subtract: [
-    //                   { $ifNull: ["$aldangiinUldegdel", 0] },
-    //                   aldangiData.aldangi,
-    //                 ],
-    //               },
-    //             },
-    //           },
-    //         ],
-    //       },
-    //     });
-    //   }
-    //   if (bulkOps.length > 0)
-    //     await Geree(req.body.tukhainBaaziinKholbolt).bulkWrite(bulkOps);
-    //   if (gereenuudIds.length > 0)
-    //     await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).deleteMany({
-    //       gereeniiId: { $in: gereenuudIds },
-    //     });
-    // }
+    if (aldangiinTuukh?.length > 0) {
+      for await (const aldangiData of aldangiinTuukh) {
+        gereenuudIds.push(aldangiData._id.gereeniiId);
+        bulkOps.push({
+          updateOne: {
+            filter: { _id: aldangiData._id.gereeniiId },
+            update: [
+              {
+                $set: {
+                  aldangiinUldegdel: {
+                    $subtract: [
+                      { $ifNull: ["$aldangiinUldegdel", 0] },
+                      aldangiData.aldangi,
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        });
+      }
+      if (bulkOps.length > 0)
+        await Geree(req.body.tukhainBaaziinKholbolt).bulkWrite(bulkOps);
+      if (gereenuudIds.length > 0)
+        await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).deleteMany({
+          gereeniiId: { $in: gereenuudIds },
+        });
+    }
     res.send(aldangiinTuukh);
   } catch (error) {
     if (next) next(error);
