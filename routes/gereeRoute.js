@@ -4929,8 +4929,10 @@ router.route("/aldangiButsaakh").post(tokenShalgakh, async (req, res, next) => {
         await Geree(req.body.tukhainBaaziinKholbolt).bulkWrite(bulkOps);
       if (gereenuudIds.length > 0)
         await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).deleteMany({
-          gereeniiId: { $in: gereenuudIds },
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
           createdAt: { $gte: new Date(req.body.ekhlekhOgnoo) },
+          gereeniiId: { $in: gereenuudIds },
         });
     }
     res.send(aldangiinTuukh);
