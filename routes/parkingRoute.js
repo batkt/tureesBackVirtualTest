@@ -1,6 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { tokenShalgakh, khuudaslalt, crud, UstsanBarimt } = require("zevbackv2");
+const {
+  tokenShalgakh,
+  khuudaslalt,
+  crud,
+  UstsanBarimt,
+  db,
+} = require("zevbackv2");
 const {
   Parking,
   Mashin,
