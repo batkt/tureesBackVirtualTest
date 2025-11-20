@@ -4932,7 +4932,7 @@ router.route("/aldangiButsaakh").post(tokenShalgakh, async (req, res, next) => {
     //       gereeniiId: { $in: gereenuudIds },
     //     });
     // }
-    res.send(aldangiinTuukh?.length);
+    res.send(aldangiinTuukh);
   } catch (error) {
     if (next) next(error);
   }
