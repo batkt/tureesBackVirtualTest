@@ -4930,6 +4930,7 @@ router.route("/aldangiButsaakh").post(tokenShalgakh, async (req, res, next) => {
       if (gereenuudIds.length > 0)
         await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).deleteMany({
           gereeniiId: { $in: gereenuudIds },
+          createdAt: { $gte: new Date(req.body.ekhlekhOgnoo) },
         });
     }
     res.send(aldangiinTuukh);
