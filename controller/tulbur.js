@@ -738,7 +738,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           startDate = moment(aldangiBodojEkhlekhOgnoo).startOf("month");
         } else {
           // default — өнөөдрийн сар
-          startDate = moment().startOf("month");
+          startDate = moment().subtract(1, "month").startOf("month");
         }
 
         const endDate = moment().startOf("month");
