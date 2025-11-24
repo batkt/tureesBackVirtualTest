@@ -965,7 +965,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   ognoo: aldangiEhlehOgnoo,
                   uldegdel: uldegdel,
                   aldangiChuluulukhOgnoo: aldangiChuluulukhOgnoo,
-                  aldangiBodsonOgnoo: new Date(),
+                  aldangiBodsonOgnoo: moment().subtract(3, "days"),
                   aldangiinKhuvi: aldagiinKhuvi,
                   aldangiChuluulukhKhonog: aldangiChuluulukhKhonog,
                   aldangi: bodogdsonKhuu,
