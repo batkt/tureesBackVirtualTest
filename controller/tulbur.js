@@ -732,7 +732,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
         let aldangiBodojEkhlekhOgnoo = barilga?.tokhirgoo?.aldangiOgnoo
           ? barilga?.tokhirgoo?.aldangiOgnoo
-          : new Date();
+          : null;
         let startDate;
         if (aldangiBodojEkhlekhOgnoo) {
           startDate = moment(aldangiBodojEkhlekhOgnoo).startOf("month");
