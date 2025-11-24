@@ -738,7 +738,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           startDate = moment(aldangiBodojEkhlekhOgnoo).startOf("month");
         } else {
           // default — өнөөдрийн сар
-          startDate = moment().subtract(1, "month").startOf("month");
+          startDate = moment().startOf("month");
         }
 
         const endDate = moment().startOf("month");
@@ -788,7 +788,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 baiguullagiinId: baiguullaga._id.toString(),
                 barilgiinId: barilga._id.toString(),
                 tuluv: { $nin: [-1] },
-                gereeniiDugaar: "24A07-A4022-PMC471",
               },
             },
             { $unwind: "$avlaga.guilgeenuud" },
