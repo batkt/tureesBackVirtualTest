@@ -782,12 +782,14 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           };
           if (barilga?.tokhirgoo?.aldangiGereeTusBur)
             match["aldangiinKhuvi"] = { $gt: 0 };
+          const bagaUldegdel = barilga?.tokhirgoo?.aldangiinBagaUldegdel || 0;
           const gereenuud = await Geree(kholbolt, true).aggregate([
             {
               $match: {
                 baiguullagiinId: baiguullaga._id.toString(),
                 barilgiinId: barilga._id.toString(),
                 tuluv: { $nin: [-1] },
+                gereeniiDugaar: "ТГ/F4/A23",
               },
             },
             { $unwind: "$avlaga.guilgeenuud" },
@@ -820,7 +822,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 },
               },
             },
-            { $match: { uldegdel: { $gt: 0 } } },
+            { $match: { uldegdel: { $gt: bagaUldegdel } } },
           ]);
 
           if (!gereenuud?.length) {
@@ -851,7 +853,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 },
               ],
             };
-            const bagaUldegdel = barilga?.tokhirgoo?.aldangiinBagaUldegdel || 0;
             const songosonGereenuud = await Geree(kholbolt, true).aggregate([
               {
                 $match: {
@@ -888,7 +889,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   },
                 },
               },
-              { $match: { uldegdel: { $lt: bagaUldegdel } } },
+              { $match: { uldegdel: { $lt: 0 } } },
             ]);
             var umnukhUldegdel = 0;
             if (songosonGereenuud?.length > 0)
