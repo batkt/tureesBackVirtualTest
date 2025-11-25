@@ -846,8 +846,8 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
   });
   var baganuud = [
     {
-      header: "Код",
-      key: "Код",
+      header: "Төрөл",
+      key: "Төрөл",
       width: 30,
     },
     {
