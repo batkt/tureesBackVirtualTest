@@ -229,9 +229,19 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     if (!!req.body) {
+ 
+      if (!req.body.baiguullagiinId) {
+        return next(new aldaa("Ажилтанд барилгын тохиргоо хийгдээгүй байна"));
+      }
+
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
         req.body.baiguullagiinId
       );
+
+      if (!baiguullaga) {
+        return next(new aldaa("Ажилтанд барилгын тохиргоо хийгдээгүй байна"));
+      }
+
       var ajiltan = new Ajiltan(db.erunkhiiKholbolt)({
         _id: req.params.id,
         ...req.body,
@@ -240,6 +250,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
         { _id: req.params.id },
         ajiltan
       );
+
       if (req.body.erkhuud && req.body.erkhuud.length > 0) {
         for await (const element of req.body.erkhuud) {
           var queryAjiltan = {
@@ -251,6 +262,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
           ).countDocuments(queryAjiltan);
           element.too = ajiltanErkhiinToo;
         }
+
         var ilgeekhBody = {
           register: baiguullaga.register,
           erkhuud: req.body.erkhuud,
@@ -263,8 +275,11 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
           }
         );
       }
+
       res.send("Amjilttai");
-    } else next(new aldaa("Засах боломжгүй байна"));
+    } else {
+      next(new aldaa("Засах боломжгүй байна"));
+    }
   } catch (error) {
     next(error);
   }
