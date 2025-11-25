@@ -776,9 +776,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           console.log(`➡️  Target month: ${targetMonth.format("YYYY-MM")}`);
           console.log(`   Start: ${start.toISOString()}`);
           console.log(`   End:   ${end.toISOString()}`);
-          console.log(
-            "------------------------------------------------------------"
-          );
 
           let match = {
             "avlaga.guilgeenuud.ognoo": { $gte: start, $lte: end },
