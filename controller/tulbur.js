@@ -851,6 +851,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 },
               ],
             };
+            const bagaUldegdel = barilga?.tokhirgoo?.aldangiinBagaUldegdel || 0;
             const songosonGereenuud = await Geree(kholbolt, true).aggregate([
               {
                 $match: {
@@ -887,7 +888,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   },
                 },
               },
-              { $match: { uldegdel: { $lt: 0 } } },
+              { $match: { uldegdel: { $lt: bagaUldegdel } } },
             ]);
             var umnukhUldegdel = 0;
             if (songosonGereenuud?.length > 0)
