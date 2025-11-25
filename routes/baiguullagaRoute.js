@@ -122,12 +122,13 @@ router.post(
       if (!!req.body) {
         var update = {};
         for (var field in req.body.tokhirgoo) {
-          if (field != "baiguullagiinId")
+          if (field !== "baiguullagiinId")
             update["tokhirgoo." + field] = req.body.tokhirgoo[field];
         }
+
         await Baiguullaga(db.erunkhiiKholbolt).findOneAndUpdate(
           { _id: req.body.baiguullagiinId },
-          update
+          { $set: update }
         );
         res.send("Amjilttai");
       } else next(new aldaa("Засах боломжгүй байна"));

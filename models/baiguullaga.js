@@ -91,14 +91,13 @@ const baiguullagaSchema = new Schema(
 
       /**Алданги авалгүйгээр хүлээх хоног */
       aldangiChuluulukhKhonog: Number,
-      
+
       baritsaaAvakhEsekh: Boolean,
       /**Алданги бодож эхлэх огноо */
       aldangiBodojEkhlekhOgnoo: Date,
 
       /**Жилийн эцэсээр гэрээ хаах бол 12 гэж байна ИХ Наяд дээр бүх гэрээ жилийн эцэст хаагддаг учир ийл тохиргоо авлаа */
       gereeDuusgakhSar: Number,
-
       /**Хэдэн сараар барьцаа авах вэ */
       baritsaaAvakhSar: Number,
 
