@@ -93,25 +93,26 @@ router.post("/backTest", tokenShalgakh, async (req, res, next) => {
 
 router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
   try {
-    const { baiguullagiinId, barilgiinId, zardliinTurul, suuliinZaalt, umnukhZaalt } = req.body;
+    const { baiguullagiinId, barilgiinId, zardliinTurul } = req.body;
 
     // Validate required fields
     if (!baiguullagiinId || !barilgiinId || !zardliinTurul) {
       return res.status(400).send("baiguullagiinId, barilgiinId, zardliinTurul заавал шаардлагатай");
     }
 
-    // Find Geree document
+    // Find Geree document with avlaga included (since it's select: false by default)
     const geree = await Geree(req.body.tukhainBaaziinKholbolt)
       .findOne({
         baiguullagiinId: baiguullagiinId,
         barilgiinId: barilgiinId
-      });
+      })
+      .select('+avlaga');
 
     if (!geree) {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
 
-    // Find matching zardal
+    // Find matching zardal in zardluud array
     const zardal = geree.zardluud.find(z => z.ner === zardliinTurul);
 
     if (!zardal) {
@@ -120,9 +121,35 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
 
     // Calculate for "Хүйтэн ус"
     if (zardliinTurul === "Хүйтэн ус") {
-      if (suuliinZaalt === undefined || umnukhZaalt === undefined) {
-        return res.status(400).send("Хүйтэн усны тооцоонд suuliinZaalt, umnukhZaalt шаардлагатай");
+      // Check if avlaga and guilgeenuud exist
+      if (!geree.avlaga || !geree.avlaga.guilgeenuud || geree.avlaga.guilgeenuud.length === 0) {
+        return res.status(404).send("Гэрээнд авлагын гүйлгээ олдсонгүй");
       }
+
+      // Get current month start and end dates
+      const now = new Date();
+      const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const currentMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+      // Find the latest guilgee entry that matches the zardliinTurul and is in the current month
+      const matchingGuilgeenuud = geree.avlaga.guilgeenuud
+        .filter(g => {
+          const guilgeeOgnoo = new Date(g.ognoo);
+          return g.zardliinTurul === zardliinTurul &&
+                 guilgeeOgnoo >= currentMonthStart &&
+                 guilgeeOgnoo <= currentMonthEnd;
+        })
+        .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
+
+      if (matchingGuilgeenuud.length === 0) {
+        return res.status(404).send(`Энэ сард "${zardliinTurul}"-ийн гүйлгээ олдсонгүй`);
+      }
+
+      const latestGuilgee = matchingGuilgeenuud[0];
+
+      // Get suuliinZaalt and umnukhZaalt from the latest guilgee
+      const suuliinZaalt = latestGuilgee.suuliinZaalt || 0;
+      const umnukhZaalt = latestGuilgee.umnukhZaalt || 0;
 
       // Calculate odooniiZaalt
       const odooniiZaalt = suuliinZaalt - umnukhZaalt;
