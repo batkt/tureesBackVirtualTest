@@ -1283,8 +1283,8 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         .catch((err) => {
           next(err);
         });
-      var tempGeree = await Geree(req.body.tukhainBaaziinKholbolt)
-        .findById(req.body.gereeniiId, true)
+      var tempGeree = await Geree(req.body.tukhainBaaziinKholbolt, true)
+        .findById(req.body.gereeniiId)
         .select("avlaga");
       var filteredGuilgee = tempGeree?.avlaga?.guilgeenuud?.filter(
         (a) => a.guilgeeniiId === req.body.guilgeeniiId
