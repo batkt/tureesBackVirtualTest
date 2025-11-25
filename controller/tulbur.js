@@ -679,8 +679,20 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                         x.magadlaltaiGereenuud.push(a._id);
                       else x.magadlaltaiGereenuud = [a._id];
                     });
-                    x.isNew = false;
-                    x.save();
+                    try {
+                      await x.save();
+                    } catch (saveError) {
+                      if (saveError.name === "VersionError") {
+                        const reloaded = await x.constructor.findById(x._id);
+                        if (reloaded) {
+                          reloaded.magadlaltaiGereenuud =
+                            x.magadlaltaiGereenuud;
+                          await reloaded.save();
+                        }
+                      } else {
+                        throw saveError;
+                      }
+                    }
                   }
                 }
               });
