@@ -169,7 +169,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "30 0 0 * * * ",
+  "30 3 9 * * * ",
   async function () {
     tulbur.aldangiBodyo();
   },

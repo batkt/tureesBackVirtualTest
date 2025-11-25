@@ -989,7 +989,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         await AldangiinTuukh(kholbolt).insertMany(aldangiinTuukh);
     }
   } catch (err) {
-    console.error("Aldangi bodyo error:", err);
+    console.log("Aldangi bodyo error:", err);
   }
 };
 
