@@ -110,7 +110,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
     }
 
     const geree = await Geree(tukhainBaaziinKholbolt)
-      .findOne({
+      .find({
         barilgiinId: "68f702c1326ac1a2ad718c9f",
         baiguullagiinId: "612f457d185280db676d0b51",
         tuluv: {
@@ -123,7 +123,9 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
     if (!geree) {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
-    console.log(geree.avlaga.guilgeenuud);
+    geree.avlaga.guilgeenuud.forEach((item, index) => {
+      console.log(index, item);
+    });
     const zardal = geree.zardluud.find((z) => z.ner === zardliinTurul);
 
     if (!zardal) {
