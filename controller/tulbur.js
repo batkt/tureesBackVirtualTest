@@ -298,7 +298,6 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     if (body.turGereeEsekh) khugatsaa = 1;
     var tulukhUdruud = body.tulukhUdruud;
     var ekhlekhOgnoo;
-
     if (body.baiguullagiinId === "63c0f31efe522048bf02086d") {
       var foodcityEkhlekhOgnoo = new Date(
         moment("2024-09-30").format("YYYY-MM-DD 00:00:00")
@@ -315,7 +314,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
         foodcityEkhlekhOgnoo > tempEkhlekhOgnoo
           ? foodcityEkhlekhOgnoo
           : tempEkhlekhOgnoo
-      );
+      ); // body.ekhlekhOgnoo
     } else
       ekhlekhOgnoo = new Date(
         body.shineGereeEsekh ||
@@ -323,7 +322,6 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
           ? body.ekhlekhOgnoo
           : moment().startOf("month")
       );
-
     var duusakhOgnoo = new Date(body.duusakhOgnoo);
     if (body.turGereeEsekh) tulukhUdruud = [ekhlekhOgnoo.getDate()];
     var butsaakhJagsaalt = [];
@@ -332,27 +330,10 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     var tukhainSar = new Date(moment(ognoo).set("date", 1));
     var suuliinUdur;
     var duussanEsekh = false;
-
-    var niitTalbainKhemjee = body.mk;
-    var niitMetrKube = body.metrKube;
-
-    if (body.turGereeEsekh && body.talbainuud && body.talbainuud.length > 0) {
-      var talbai = body.talbainuud[0];
-      niitTalbainKhemjee =
-        talbai.sulKhemjee || talbai.talbainKhemjee || body.mk;
-      niitMetrKube = talbai.talbainKhemjeeMetrKube || body.metrKube;
-    }
-
-    var m3Coefficient = body.metrKube;
-    if (body.turGereeEsekh && niitMetrKube > 0) {
-      m3Coefficient = (body.mk * body.metrKube) / niitMetrKube;
-    }
-
     if (tulukhUdruud && tulukhUdruud.length > 1)
       tulukhUdruud.sort(function (a, b) {
         return a - b;
       });
-
     await new Array(khugatsaa).fill("").map((mur, index) => {
       tulukhUdruud?.forEach((udur) => {
         if (!duussanEsekh) {
@@ -374,7 +355,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                 turOgnoo,
                 ekhlekhOgnoo,
                 body.dun
-              );
+              ); // Ekhnii sariin dun bodokh
             }
             if (dun > 0)
               butsaakhJagsaalt.push({
@@ -401,13 +382,9 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                 ) {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
-
-                  if (zardal.turul == "1м3/талбай") {
-                    zardal.dun = tooZasyaSync(zardal.tariff * m3Coefficient);
-                  }
-
+                  if (zardal.turul == "1м3/талбай")
+                    zardal.dun = tooZasyaSync(zardal.tariff * body.metrKube);
                   if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
-
                   var zardalDun = body.turGereeEsekh
                     ? zardal.dun
                     : ekhniiSariinDunZasyaSync(
@@ -416,7 +393,6 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                         ekhlekhOgnoo,
                         zardal.dun
                       );
-
                   if (
                     zardal.ognoonuud?.length > 0 &&
                     moment(zardal.ognoonuud[0]).format("MM") ==
