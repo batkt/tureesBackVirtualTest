@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Zardal = require("../models/zardal");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
+const Geree = require("../models/geree");
+const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const { backAvya } = require("../controller/backup");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
@@ -88,6 +90,116 @@ router.post("/zardalTsutslaya", tokenShalgakh, async (req, res, next) => {
 router.post("/backTest", tokenShalgakh, async (req, res, next) => {
   backAvya();
   res.send("Amjilttai");
+});
+
+router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
+  try {
+    const { baiguullagiinId, barilgiinId, zardliinTurul } = req.body;
+
+    if (!baiguullagiinId || !barilgiinId || !zardliinTurul) {
+      return res
+        .status(400)
+        .send(
+          "baiguullagiinId, barilgiinId, zardliinTurul заавал шаардлагатай"
+        );
+    }
+
+    const geree = await Geree()
+      .findOne({
+        baiguullagiinId: baiguullagiinId,
+        barilgiinId: barilgiinId,
+      })
+      .select("+avlaga");
+
+    if (!geree) {
+      return res.status(404).send("Гэрээ олдсонгүй");
+    }
+
+    const zardal = geree.zardluud.find((z) => z.ner === zardliinTurul);
+
+    if (!zardal) {
+      return res.status(404).send(`"${zardliinTurul}" нэртэй зардал олдсонгүй`);
+    }
+
+    let suuliinZaaltNum = 0;
+    let umnukhZaaltNum = 0;
+
+    if (
+      geree.avlaga &&
+      geree.avlaga.guilgeenuud &&
+      geree.avlaga.guilgeenuud.length > 0
+    ) {
+      const matchingGuilgeenuud = geree.avlaga.guilgeenuud
+        .filter((g) => g.zardliinTurul === zardliinTurul)
+        .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
+
+      if (matchingGuilgeenuud.length > 0) {
+        const latestGuilgee = matchingGuilgeenuud[0];
+        suuliinZaaltNum = latestGuilgee.suuliinZaalt || 0;
+        umnukhZaaltNum = latestGuilgee.umnukhZaalt || 0;
+      }
+    }
+
+    const odooniiZaalt = suuliinZaaltNum - umnukhZaaltNum;
+
+    let tulukhDun = 0;
+
+    if (
+      zardal.ner === "Цахилгаан" ||
+      zardal.ner === "Халуун ус" ||
+      zardal.ner === "Хүйтэн ус"
+    ) {
+      const ashiglaltiinZardal = await AshiglaltiinZardluud().findOne({
+        baiguullagiinId: baiguullagiinId,
+        barilgiinId: barilgiinId,
+        ner: zardal.ner,
+      });
+
+      if (ashiglaltiinZardal) {
+        if (zardal.ner === "Цахилгаан") {
+          const tsakhilgaanUrjver = ashiglaltiinZardal.tsakhilgaanUrjver || 0;
+          const tsakhilgaanChadal = ashiglaltiinZardal.tsakhilgaanChadal || 0;
+          const tsakhilgaanDemjikh = ashiglaltiinZardal.tsakhilgaanDemjikh || 0;
+
+          tulukhDun =
+            odooniiZaalt * tsakhilgaanUrjver +
+            odooniiZaalt * tsakhilgaanChadal +
+            odooniiZaalt * tsakhilgaanDemjikh;
+        } else if (zardal.ner === "Халуун ус") {
+          const bokhirUsDun = ashiglaltiinZardal.bokhirUsDun || 0;
+          const tseverUsDun = ashiglaltiinZardal.tseverUsDun || 0;
+          const usKhalaasniiDun = ashiglaltiinZardal.usKhalaasniiDun || 0;
+
+          tulukhDun =
+            odooniiZaalt * bokhirUsDun +
+            odooniiZaalt * tseverUsDun +
+            odooniiZaalt * usKhalaasniiDun;
+        } else if (zardal.ner === "Хүйтэн ус") {
+          const bokhirUsDun = ashiglaltiinZardal.bokhirUsDun || 0;
+          const tseverUsDun = ashiglaltiinZardal.tseverUsDun || 0;
+
+          tulukhDun = odooniiZaalt * bokhirUsDun + odooniiZaalt * tseverUsDun;
+        }
+      }
+    } else {
+      const bokhirUsDun = zardal.bokhirUsDun || 0;
+      const tseverUsDun = zardal.tseverUsDun || 0;
+      const usKhalaasniiDun = zardal.usKhalaasniiDun || 0;
+
+      tulukhDun =
+        odooniiZaalt * bokhirUsDun +
+        odooniiZaalt * tseverUsDun +
+        odooniiZaalt * usKhalaasniiDun;
+    }
+
+    zardal.tulukhDun = tulukhDun;
+
+    await geree.save();
+
+    res.json({ tulukhDun });
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;
