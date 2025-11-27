@@ -128,14 +128,14 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
 
     let suuliinZaaltNum = 0;
     let umnukhZaaltNum = 0;
-    console.log(geree);
+
     if (
       geree.avlaga &&
       geree.avlaga.guilgeenuud &&
       geree.avlaga.guilgeenuud.length > 0
     ) {
       const matchingGuilgeenuud = geree.avlaga.guilgeenuud
-        .filter((g) => g.zardliinTurul === zardliinTurul)
+        .filter((g) => g.tailbar === zardliinTurul)
         .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
 
       if (matchingGuilgeenuud.length > 0) {
