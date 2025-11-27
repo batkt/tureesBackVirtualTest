@@ -104,7 +104,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         );
     }
 
-    const geree = await Geree(tukhainBaaziinKholbolt)
+    const geree = await Geree(req.body.tukhainBaaziinKholbolt)
       .findOne({
         baiguullagiinId: baiguullagiinId,
         barilgiinId: barilgiinId,
