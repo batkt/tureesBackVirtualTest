@@ -129,7 +129,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
     let suuliinZaaltNum = 0;
     let umnukhZaaltNum = 0;
 
-    const matchingGuilgeenuud = geree.avlaga.guilgeenuud.filter(
+    const matchingGuilgeenuud = geree.avlagiinTurul.guilgeenuud.filter(
       (g) => g.tailbar === zardliinTurul
     );
 
