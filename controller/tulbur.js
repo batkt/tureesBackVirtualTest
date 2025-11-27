@@ -383,17 +383,9 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
                   if (zardal.turul == "1м3/талбай") {
-
-                    const totalArea = body.totalAvailableM2 || 1;
-
-                 
-                    const proportionalUsage =
-                      ((body.metrKube || 0) * (body.mk || 0)) / totalArea;
-
-                 
-                    zardal.dun = tooZasyaSync(
-                      proportionalUsage * zardal.tariff
-                    );
+                    const userMetrKube =
+                      (body.metrKube * body.mk) / body.totalBuildingMk;
+                    zardal.dun = tooZasyaSync(userMetrKube * zardal.tariff);
                   }
                   if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                   var zardalDun = body.turGereeEsekh
@@ -1593,10 +1585,12 @@ exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
                   zardal.dun = tooZasyaSync(
                     zardal.tariff * geree.talbainKhemjee
                   );
-                if (zardal.turul == "1м3/талбай")
-                  zardal.dun = tooZasyaSync(
-                    zardal.tariff * geree.talbainKhemjeeMetrKube
-                  );
+                if (zardal.turul == "1м3/талбай") {
+                  const userMetrKube =
+                    (geree.barilgiinMetrKube * geree.talbainKhemjee) /
+                    (geree.niitBarialgaKhemjee || geree.talbainKhemjee);
+                  zardal.dun = tooZasyaSync(userMetrKube * zardal.tariff);
+                }
                 if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                 butsaakhJagsaalt.push({
                   turul: "avlaga",
@@ -2794,13 +2788,18 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
                     zardal.turul == "1м3/талбай" &&
                     talbai.talbainKhemjeeMetrKube > 0
                   ) {
+                
+                    const userMetrKube =
+                      (talbai.barilgiinMetrKube * talbai.talbainKhemjee) /
+                      (talbai.niitBarialgaKhemjee || talbai.talbainKhemjee);
+                    const calculatedDun = tooZasyaSync(
+                      userMetrKube * zardal.tariff
+                    );
+
                     baigaa = khuvaariud.find((a) => {
                       return (
                         a.turul == "avlaga" &&
-                        a.tulukhDun ==
-                          tooZasyaSync(
-                            zardal.tariff * talbai.talbainKhemjeeMetrKube
-                          ) &&
+                        a.tulukhDun == calculatedDun &&
                         moment(a.ognoo).isSame(tukhainUdur, "day") &&
                         a.tailbar == zardal.ner
                       );
@@ -2811,9 +2810,7 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
                         khyamdral: 0,
                         turul: "avlaga",
                         tailbar: zardal.ner,
-                        tulukhDun: tooZasyaSync(
-                          zardal.tariff * talbai.talbainKhemjeeMetrKube
-                        ),
+                        tulukhDun: calculatedDun,
                       });
                   } else if (
                     zardal.turul == "1м2" &&
