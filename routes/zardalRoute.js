@@ -94,7 +94,12 @@ router.post("/backTest", tokenShalgakh, async (req, res, next) => {
 
 router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
   try {
-    const { baiguullagiinId, barilgiinId, zardliinTurul } = req.body;
+    const {
+      baiguullagiinId,
+      barilgiinId,
+      zardliinTurul,
+      tukhainBaaziinKholbolt,
+    } = req.body;
 
     if (!baiguullagiinId || !barilgiinId || !zardliinTurul) {
       return res
@@ -104,7 +109,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         );
     }
 
-    const geree = await Geree(req.body.tukhainBaaziinKholbolt)
+    const geree = await Geree(tukhainBaaziinKholbolt)
       .findOne({
         baiguullagiinId: baiguullagiinId,
         barilgiinId: barilgiinId,
