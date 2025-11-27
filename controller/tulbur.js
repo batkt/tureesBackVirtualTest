@@ -383,10 +383,14 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
                   if (zardal.turul == "1м3/талбай") {
+
                     const totalArea = body.totalAvailableM2 || 1;
+
+                 
                     const proportionalUsage =
                       ((body.metrKube || 0) * (body.mk || 0)) / totalArea;
 
+                 
                     zardal.dun = tooZasyaSync(
                       proportionalUsage * zardal.tariff
                     );
