@@ -104,7 +104,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         );
     }
 
-    const geree = await Geree()
+    const geree = await Geree(tukhainBaaziinKholbolt)
       .findOne({
         baiguullagiinId: baiguullagiinId,
         barilgiinId: barilgiinId,
@@ -149,7 +149,9 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       zardal.ner === "Халуун ус" ||
       zardal.ner === "Хүйтэн ус"
     ) {
-      const ashiglaltiinZardal = await AshiglaltiinZardluud().findOne({
+      const ashiglaltiinZardal = await AshiglaltiinZardluud(
+        tukhainBaaziinKholbolt
+      ).findOne({
         baiguullagiinId: baiguullagiinId,
         barilgiinId: barilgiinId,
         ner: zardal.ner,
