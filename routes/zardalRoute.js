@@ -203,7 +203,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
 
     await geree.save();
 
-    res.json({ tulukhDun });
+    res.json(geree);
   } catch (err) {
     next(err);
   }
