@@ -120,7 +120,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
     console.log(geree.avlaga.guilgeenuud);
-    const zardal = geree.zardluud.find((z) => z.ner === zardliinTurul);
+    const zardal = geree.zardluud.find((z) => z.tailbar === zardliinTurul);
 
     if (!zardal) {
       return res.status(404).send(`"${zardliinTurul}" нэртэй зардал олдсонгүй`);
