@@ -128,7 +128,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
 
     let suuliinZaaltNum = 0;
     let umnukhZaaltNum = 0;
-
+    console.log(geree);
     if (
       geree.avlaga &&
       geree.avlaga.guilgeenuud &&
