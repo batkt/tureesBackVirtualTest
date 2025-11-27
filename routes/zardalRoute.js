@@ -123,9 +123,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
     if (!geree) {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
-    geree.avlaga.guilgeenuud.forEach((item, index) => {
-      console.log(index, item);
-    });
+    console.log(geree.avlaga.guilgeenuud);
     const zardal = geree.zardluud.find((z) => z.ner === zardliinTurul);
 
     if (!zardal) {
