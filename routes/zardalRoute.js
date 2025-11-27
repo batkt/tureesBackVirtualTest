@@ -137,11 +137,13 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       const matchingGuilgeenuud = geree.avlaga.guilgeenuud
         .filter((g) => g.tailbar === zardliinTurul)
         .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
-
+      console.log(matchingGuilgeenuud);
       if (matchingGuilgeenuud.length > 0) {
         const latestGuilgee = matchingGuilgeenuud[0];
         suuliinZaaltNum = latestGuilgee.suuliinZaalt || 0;
         umnukhZaaltNum = latestGuilgee.umnukhZaalt || 0;
+        console.log("suuliin", suuliinZaaltNum);
+        console.log("umnukh", umnukhZaaltNum);
       }
     }
 
