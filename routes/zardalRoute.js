@@ -94,26 +94,16 @@ router.post("/backTest", tokenShalgakh, async (req, res, next) => {
 
 router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
   try {
-    const {
-      baiguullagiinId,
-      barilgiinId,
-      zardluud_id,
-    } = req.body;
+    const { baiguullagiinId, barilgiinId, zardliinTurul } = req.body;
 
-    // Validate required fields
-    if (
-      !baiguullagiinId ||
-      !barilgiinId ||
-      !zardluud_id
-    ) {
+    if (!baiguullagiinId || !barilgiinId || !zardliinTurul) {
       return res
         .status(400)
         .send(
-          "baiguullagiinId, barilgiinId, zardluud_id заавал шаардлагатай"
+          "baiguullagiinId, barilgiinId, zardliinTurul заавал шаардлагатай"
         );
     }
 
-    // Find Geree document with avlaga included
     const geree = await Geree()
       .findOne({
         baiguullagiinId: baiguullagiinId,
@@ -125,21 +115,22 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
 
-    // Find matching zardal in zardluud array by _id
-    const zardal = geree.zardluud.id(zardluud_id);
+    const zardal = geree.zardluud.find((z) => z.ner === zardliinTurul);
 
     if (!zardal) {
-      return res.status(404).send(`ID: "${zardluud_id}"-тэй зардал олдсонгүй`);
+      return res.status(404).send(`"${zardliinTurul}" нэртэй зардал олдсонгүй`);
     }
 
-    // Get the latest guilgee entry for this zardal from avlaga.guilgeenuud
     let suuliinZaaltNum = 0;
     let umnukhZaaltNum = 0;
 
-    if (geree.avlaga && geree.avlaga.guilgeenuud && geree.avlaga.guilgeenuud.length > 0) {
-      // Filter guilgeenuud by zardliinId and sort by date (latest first)
+    if (
+      geree.avlaga &&
+      geree.avlaga.guilgeenuud &&
+      geree.avlaga.guilgeenuud.length > 0
+    ) {
       const matchingGuilgeenuud = geree.avlaga.guilgeenuud
-        .filter(g => g.zardliinId && g.zardliinId.toString() === zardluud_id)
+        .filter((g) => g.zardliinTurul === zardliinTurul)
         .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
 
       if (matchingGuilgeenuud.length > 0) {
@@ -149,14 +140,15 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       }
     }
 
-    // Calculate odooniiZaalt
     const odooniiZaalt = suuliinZaaltNum - umnukhZaaltNum;
 
     let tulukhDun = 0;
 
-    // Check if zardliinTurul is "Цахилгаан", "Халуун ус" or "Хүйтэн ус"
-    if (zardal.ner === "Цахилгаан" || zardal.ner === "Халуун ус" || zardal.ner === "Хүйтэн ус") {
-      // Fetch values from ashiglaltiinZardluud model
+    if (
+      zardal.ner === "Цахилгаан" ||
+      zardal.ner === "Халуун ус" ||
+      zardal.ner === "Хүйтэн ус"
+    ) {
       const ashiglaltiinZardal = await AshiglaltiinZardluud().findOne({
         baiguullagiinId: baiguullagiinId,
         barilgiinId: barilgiinId,
@@ -165,43 +157,45 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
 
       if (ashiglaltiinZardal) {
         if (zardal.ner === "Цахилгаан") {
-          // For electricity: use tsakhilgaan related fields
           const tsakhilgaanUrjver = ashiglaltiinZardal.tsakhilgaanUrjver || 0;
           const tsakhilgaanChadal = ashiglaltiinZardal.tsakhilgaanChadal || 0;
           const tsakhilgaanDemjikh = ashiglaltiinZardal.tsakhilgaanDemjikh || 0;
 
-          tulukhDun = (odooniiZaalt * tsakhilgaanUrjver) + (odooniiZaalt * tsakhilgaanChadal) + (odooniiZaalt * tsakhilgaanDemjikh);
+          tulukhDun =
+            odooniiZaalt * tsakhilgaanUrjver +
+            odooniiZaalt * tsakhilgaanChadal +
+            odooniiZaalt * tsakhilgaanDemjikh;
         } else if (zardal.ner === "Халуун ус") {
-          // For hot water: use all three water costs
           const bokhirUsDun = ashiglaltiinZardal.bokhirUsDun || 0;
           const tseverUsDun = ashiglaltiinZardal.tseverUsDun || 0;
           const usKhalaasniiDun = ashiglaltiinZardal.usKhalaasniiDun || 0;
 
-          tulukhDun = (odooniiZaalt * bokhirUsDun) + (odooniiZaalt * tseverUsDun) + (odooniiZaalt * usKhalaasniiDun);
+          tulukhDun =
+            odooniiZaalt * bokhirUsDun +
+            odooniiZaalt * tseverUsDun +
+            odooniiZaalt * usKhalaasniiDun;
         } else if (zardal.ner === "Хүйтэн ус") {
-          // For cold water: use only bokhirUsDun and tseverUsDun
           const bokhirUsDun = ashiglaltiinZardal.bokhirUsDun || 0;
           const tseverUsDun = ashiglaltiinZardal.tseverUsDun || 0;
 
-          tulukhDun = (odooniiZaalt * bokhirUsDun) + (odooniiZaalt * tseverUsDun);
+          tulukhDun = odooniiZaalt * bokhirUsDun + odooniiZaalt * tseverUsDun;
         }
       }
     } else {
-      // Use values from geree's zardal for other types
       const bokhirUsDun = zardal.bokhirUsDun || 0;
       const tseverUsDun = zardal.tseverUsDun || 0;
       const usKhalaasniiDun = zardal.usKhalaasniiDun || 0;
 
-      tulukhDun = (odooniiZaalt * bokhirUsDun) + (odooniiZaalt * tseverUsDun) + (odooniiZaalt * usKhalaasniiDun);
+      tulukhDun =
+        odooniiZaalt * bokhirUsDun +
+        odooniiZaalt * tseverUsDun +
+        odooniiZaalt * usKhalaasniiDun;
     }
 
-    // Update tulukhDun in the zardal
     zardal.tulukhDun = tulukhDun;
 
-    // Save the updated geree
     await geree.save();
 
-    // Return the calculated tulukhDun
     res.json({ tulukhDun });
   } catch (err) {
     next(err);
