@@ -382,11 +382,8 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                 ) {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
-                  if (zardal.turul == "1м3/талбай") {
-                    const userMetrKube =
-                      (body.metrKube * body.mk) / body.totalBuildingMk;
-                    zardal.dun = tooZasyaSync(userMetrKube * zardal.tariff);
-                  }
+                  if (zardal.turul == "1м3/талбай")
+                    zardal.dun = tooZasyaSync(zardal.tariff * body.metrKube);
                   if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                   var zardalDun = body.turGereeEsekh
                     ? zardal.dun
@@ -1585,12 +1582,10 @@ exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
                   zardal.dun = tooZasyaSync(
                     zardal.tariff * geree.talbainKhemjee
                   );
-                if (zardal.turul == "1м3/талбай") {
-                  const userMetrKube =
-                    (geree.barilgiinMetrKube * geree.talbainKhemjee) /
-                    (geree.niitBarialgaKhemjee || geree.talbainKhemjee);
-                  zardal.dun = tooZasyaSync(userMetrKube * zardal.tariff);
-                }
+                if (zardal.turul == "1м3/талбай")
+                  zardal.dun = tooZasyaSync(
+                    zardal.tariff * geree.talbainKhemjeeMetrKube
+                  );
                 if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                 butsaakhJagsaalt.push({
                   turul: "avlaga",
@@ -2788,18 +2783,13 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
                     zardal.turul == "1м3/талбай" &&
                     talbai.talbainKhemjeeMetrKube > 0
                   ) {
-                
-                    const userMetrKube =
-                      (talbai.barilgiinMetrKube * talbai.talbainKhemjee) /
-                      (talbai.niitBarialgaKhemjee || talbai.talbainKhemjee);
-                    const calculatedDun = tooZasyaSync(
-                      userMetrKube * zardal.tariff
-                    );
-
                     baigaa = khuvaariud.find((a) => {
                       return (
                         a.turul == "avlaga" &&
-                        a.tulukhDun == calculatedDun &&
+                        a.tulukhDun ==
+                          tooZasyaSync(
+                            zardal.tariff * talbai.talbainKhemjeeMetrKube
+                          ) &&
                         moment(a.ognoo).isSame(tukhainUdur, "day") &&
                         a.tailbar == zardal.ner
                       );
@@ -2810,7 +2800,9 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
                         khyamdral: 0,
                         turul: "avlaga",
                         tailbar: zardal.ner,
-                        tulukhDun: calculatedDun,
+                        tulukhDun: tooZasyaSync(
+                          zardal.tariff * talbai.talbainKhemjeeMetrKube
+                        ),
                       });
                   } else if (
                     zardal.turul == "1м2" &&
