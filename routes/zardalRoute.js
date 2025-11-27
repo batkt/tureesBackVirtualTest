@@ -3,6 +3,7 @@ const router = express.Router();
 const Zardal = require("../models/zardal");
 const BankniiGuilgee = require("../models/bankniiGuilgee");
 const Geree = require("../models/geree");
+const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const { backAvya } = require("../controller/backup");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
@@ -91,85 +92,126 @@ router.post("/backTest", tokenShalgakh, async (req, res, next) => {
   res.send("Amjilttai");
 });
 
-router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
+router.get("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
   try {
-    const { baiguullagiinId, barilgiinId, zardliinTurul } = req.body;
+    const {
+      baiguullagiinId,
+      barilgiinId,
+      zardluud_id,
+      umnukhZaalt,
+      suuliinZaalt,
+      createdAt,
+    } = req.query;
 
     // Validate required fields
-    if (!baiguullagiinId || !barilgiinId || !zardliinTurul) {
-      return res.status(400).send("baiguullagiinId, barilgiinId, zardliinTurul заавал шаардлагатай");
+    if (
+      !baiguullagiinId ||
+      !barilgiinId ||
+      !zardluud_id ||
+      !umnukhZaalt ||
+      !suuliinZaalt ||
+      !createdAt
+    ) {
+      return res
+        .status(400)
+        .send(
+          "baiguullagiinId, barilgiinId, zardluud_id, umnukhZaalt, suuliinZaalt, createdAt заавал шаардлагатай"
+        );
     }
 
-    // Find Geree document with avlaga included (since it's select: false by default)
-    const geree = await Geree(req.body.tukhainBaaziinKholbolt)
+    // Find Geree document with avlaga included
+    const geree = await Geree()
       .findOne({
         baiguullagiinId: baiguullagiinId,
-        barilgiinId: barilgiinId
+        barilgiinId: barilgiinId,
       })
-      .select('+avlaga');
+      .select("+avlaga");
 
     if (!geree) {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
 
-    // Find matching zardal in zardluud array
-    const zardal = geree.zardluud.find(z => z.ner === zardliinTurul);
+    // Find matching zardal in zardluud array by _id
+    const zardal = geree.zardluud.id(zardluud_id);
 
     if (!zardal) {
-      return res.status(404).send(`"${zardliinTurul}" нэртэй зардал олдсонгүй`);
+      return res.status(404).send(`ID: "${zardluud_id}"-тэй зардал олдсонгүй`);
     }
 
-    // Calculate for "Хүйтэн ус"
-    if (zardliinTurul === "Хүйтэн ус") {
-      // Check if avlaga and guilgeenuud exist
-      if (!geree.avlaga || !geree.avlaga.guilgeenuud || geree.avlaga.guilgeenuud.length === 0) {
-        return res.status(404).send("Гэрээнд авлагын гүйлгээ олдсонгүй");
+    // Parse input values to numbers
+    const suuliinZaaltNum = parseFloat(suuliinZaalt);
+    const umnukhZaaltNum = parseFloat(umnukhZaalt);
+
+    // Calculate odooniiZaalt
+    const odooniiZaalt = suuliinZaaltNum - umnukhZaaltNum;
+
+    let bokhirUsDun = 0;
+    let tseverUsDun = 0;
+    let usKhalaasniiDun = 0;
+
+    // Check if zardliinTurul is "Халуун ус" or "Хүйтэн ус"
+    if (zardal.ner === "Халуун ус" || zardal.ner === "Хүйтэн ус") {
+      // Fetch values from ashiglaltiinZardluud model
+      const ashiglaltiinZardal = await AshiglaltiinZardluud().findOne({
+        baiguullagiinId: baiguullagiinId,
+        barilgiinId: barilgiinId,
+        ner: zardal.ner,
+      });
+
+      if (ashiglaltiinZardal) {
+        bokhirUsDun = ashiglaltiinZardal.bokhirUsDun || 0;
+        tseverUsDun = ashiglaltiinZardal.tseverUsDun || 0;
+        // Only use usKhalaasniiDun for "Халуун ус"
+        if (zardal.ner === "Халуун ус") {
+          usKhalaasniiDun = ashiglaltiinZardal.usKhalaasniiDun || 0;
+        }
       }
-
-      // Get current month start and end dates
-      const now = new Date();
-      const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const currentMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-
-      // Find the latest guilgee entry that matches the zardliinTurul and is in the current month
-      const matchingGuilgeenuud = geree.avlaga.guilgeenuud
-        .filter(g => {
-          const guilgeeOgnoo = new Date(g.ognoo);
-          return g.zardliinTurul === zardliinTurul &&
-                 guilgeeOgnoo >= currentMonthStart &&
-                 guilgeeOgnoo <= currentMonthEnd;
-        })
-        .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
-
-      if (matchingGuilgeenuud.length === 0) {
-        return res.status(404).send(`Энэ сард "${zardliinTurul}"-ийн гүйлгээ олдсонгүй`);
-      }
-
-      const latestGuilgee = matchingGuilgeenuud[0];
-
-      // Get suuliinZaalt and umnukhZaalt from the latest guilgee
-      const suuliinZaalt = latestGuilgee.suuliinZaalt || 0;
-      const umnukhZaalt = latestGuilgee.umnukhZaalt || 0;
-
-      // Calculate odooniiZaalt
-      const odooniiZaalt = suuliinZaalt - umnukhZaalt;
-
-      // Calculate tulukhDun = (bokhirUsDun * odooniiZaalt) + (tseverUsDun * odooniiZaalt)
-      const bokhirUsDun = zardal.bokhirUsDun || 0;
-      const tseverUsDun = zardal.tseverUsDun || 0;
-      const tulukhDun = (bokhirUsDun * odooniiZaalt) + (tseverUsDun * odooniiZaalt);
-
-      // Update tulukhDun in the zardal
-      zardal.tulukhDun = tulukhDun;
-
-      // Save the updated geree
-      await geree.save();
-
-      // Return the updated geree
-      res.json(geree);
     } else {
-      return res.status(400).send("Одоогоор зөвхөн 'Хүйтэн ус' дэмжигдэнэ");
+      // Use values from geree's zardal
+      bokhirUsDun = zardal.bokhirUsDun || 0;
+      tseverUsDun = zardal.tseverUsDun || 0;
+      usKhalaasniiDun = zardal.usKhalaasniiDun || 0;
     }
+
+    // Calculate individual components
+    const tseverUsDunTotal = odooniiZaalt * tseverUsDun;
+    const bokhirUsDunTotal = odooniiZaalt * bokhirUsDun;
+    const usKhalaasniiDunTotal = odooniiZaalt * usKhalaasniiDun;
+
+    // Calculate tulukhDun = sum of all components
+    const tulukhDun =
+      tseverUsDunTotal + bokhirUsDunTotal + usKhalaasniiDunTotal;
+
+    // Update tulukhDun in the zardal
+    zardal.tulukhDun = tulukhDun;
+
+    // Initialize avlaga if it doesn't exist
+    if (!geree.avlaga) {
+      geree.avlaga = { guilgeenuud: [], baritsaa: [] };
+    }
+    if (!geree.avlaga.guilgeenuud) {
+      geree.avlaga.guilgeenuud = [];
+    }
+
+    // Add new entry to guilgeenuud
+    geree.avlaga.guilgeenuud.push({
+      ognoo: new Date(createdAt),
+      suuliinZaalt: suuliinZaaltNum,
+      umnukhZaalt: umnukhZaaltNum,
+      tulukhDun: tulukhDun,
+      zardliinId: zardluud_id,
+      zardliinNer: zardal.ner,
+      zardliinTurul: zardal.ner,
+      bokhirUsDun: bokhirUsDun,
+      tseverUsDun: tseverUsDun,
+      usKhalaasniiDun: usKhalaasniiDun,
+    });
+
+    // Save the updated geree
+    await geree.save();
+
+    // Return the calculated tulukhDun
+    res.json({ tulukhDun });
   } catch (err) {
     next(err);
   }
