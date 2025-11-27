@@ -134,9 +134,10 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       geree.avlaga.guilgeenuud &&
       geree.avlaga.guilgeenuud.length > 0
     ) {
-      const matchingGuilgeenuud = geree.avlaga.guilgeenuud
-        .filter((g) => g.tailbar === zardliinTurul)
-        .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
+      const matchingGuilgeenuud = geree.avlaga.guilgeenuud.filter(
+        (g) => g.tailbar === zardliinTurul
+      );
+
       console.log(matchingGuilgeenuud);
       if (matchingGuilgeenuud.length > 0) {
         const latestGuilgee = matchingGuilgeenuud[0];
