@@ -110,17 +110,19 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
     }
 
     const geree = await Geree(tukhainBaaziinKholbolt)
-      .find({
+      .findOne({
         barilgiinId: "68f702c1326ac1a2ad718c9f",
         baiguullagiinId: "612f457d185280db676d0b51",
         tuluv: {
           $ne: -1,
         },
+
         "zardluud._id": "691a9967219032fda288a7fd",
       })
+      .sort({ createdAt: -1 })
       .select("+avlaga");
 
-    if (!geree) {
+    if (!geree || geree.length === 0) {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
     geree.avlaga.guilgeenuud.forEach((item, index) => {
