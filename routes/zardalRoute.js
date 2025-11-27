@@ -134,9 +134,9 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       geree.avlaga.guilgeenuud &&
       geree.avlaga.guilgeenuud.length > 0
     ) {
-      const matchingGuilgeenuud = geree.avlaga.guilgeenuud
-        .filter((g) => g.zardliinTurul === zardliinTurul)
-        .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
+      const matchingGuilgeenuud = geree.avlaga.guilgeenuud.filter(
+        (g) => g.tailbar === zardliinTurul
+      );
 
       if (matchingGuilgeenuud.length > 0) {
         const latestGuilgee = matchingGuilgeenuud[0];
@@ -144,7 +144,9 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         umnukhZaaltNum = latestGuilgee.umnukhZaalt || 0;
       }
     }
-
+    console.log("guilgee" + marchingGuilgeenuud);
+    console.log("---------->" + suuliinZaaltNum);
+    console.log("---------->" + umnukhZaaltNum);
     const odooniiZaalt = suuliinZaaltNum - umnukhZaaltNum;
 
     let tulukhDun = 0;
