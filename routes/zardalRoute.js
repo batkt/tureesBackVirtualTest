@@ -113,11 +113,9 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       .findOne({
         barilgiinId: "68f702c1326ac1a2ad718c9f",
         baiguullagiinId: "612f457d185280db676d0b51",
-        tuluv: {
-          $ne: -1,
-        },
+        tuluv: { $ne: -1 },
 
-        "zardluud._id": "691a9967219032fda288a7fd",
+        "avlaga.guilgeenuud._id": "692454886f54d030f6870a25",
       })
       .sort({ createdAt: -1 })
       .select("+avlaga");
