@@ -1582,13 +1582,10 @@ exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
                   zardal.dun = tooZasyaSync(
                     zardal.tariff * geree.talbainKhemjee
                   );
-                if (zardal.turul == "1м3/талбай") {
-                  const totalArea = body.totalAvailableM2 || 1;
-                  const proportionalUsage =
-                    ((body.metrKube || 0) * (body.mk || 0)) / totalArea;
-
-                  zardal.dun = tooZasyaSync(proportionalUsage * zardal.tariff);
-                }
+                if (zardal.turul == "1м3/талбай")
+                  zardal.dun = tooZasyaSync(
+                    zardal.tariff * geree.talbainKhemjeeMetrKube
+                  );
                 if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                 butsaakhJagsaalt.push({
                   turul: "avlaga",
