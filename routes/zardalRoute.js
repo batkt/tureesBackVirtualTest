@@ -144,7 +144,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         umnukhZaaltNum = latestGuilgee.umnukhZaalt || 0;
       }
     }
-    console.log("guilgee" + marchingGuilgeenuud);
+    console.log("guilgee" + matchingGuilgeenuud);
     console.log("---------->" + suuliinZaaltNum);
     console.log("---------->" + umnukhZaaltNum);
     const odooniiZaalt = suuliinZaaltNum - umnukhZaaltNum;
