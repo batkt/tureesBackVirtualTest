@@ -123,7 +123,10 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
     if (!geree) {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
-    console.log(geree.avlaga.guilgeenuud);
+    geree.avlaga.guilgeenuud.forEach((item, index) => {
+      console.log(index, item);
+    });
+
     const zardal = geree.zardluud.find((z) => z.ner === zardliinTurul);
 
     if (!zardal) {
@@ -138,17 +141,10 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       geree.avlaga.guilgeenuud &&
       geree.avlaga.guilgeenuud.length > 0
     ) {
-      console.log("Looking for zardliinTurul:", zardliinTurul);
-      console.log(
-        "Available tailbars:",
-        geree.avlaga.guilgeenuud.map((g) => g.tailbar)
-      );
-
       const matchingGuilgeenuud = geree.avlaga.guilgeenuud
         .filter((g) => g.tailbar === zardliinTurul)
         .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
 
-      console.log("Matching guilgeenuud count:", matchingGuilgeenuud.length);
       if (matchingGuilgeenuud.length > 0) {
         const latestGuilgee = matchingGuilgeenuud[0];
         suuliinZaaltNum = latestGuilgee.suuliinZaalt || 0;
