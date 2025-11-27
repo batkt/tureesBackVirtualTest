@@ -120,6 +120,11 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
 
+    console.log("Found geree _id:", geree._id);
+    console.log("Found geree gereeniiDugaar:", geree.gereeniiDugaar);
+    console.log("Query baiguullagiinId:", baiguullagiinId);
+    console.log("Query barilgiinId:", barilgiinId);
+
     const zardal = geree.zardluud.find((z) => z.ner === zardliinTurul);
 
     if (!zardal) {
@@ -134,23 +139,14 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       geree.avlaga.guilgeenuud &&
       geree.avlaga.guilgeenuud.length > 0
     ) {
-      console.log("Looking for zardliinTurul:", zardliinTurul);
-      console.log(
-        "Available tailbars:",
-        geree.avlaga.guilgeenuud.map((g) => g.tailbar)
-      );
-
       const matchingGuilgeenuud = geree.avlaga.guilgeenuud
         .filter((g) => g.tailbar === zardliinTurul)
         .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
 
-      console.log("Matching guilgeenuud count:", matchingGuilgeenuud.length);
       if (matchingGuilgeenuud.length > 0) {
         const latestGuilgee = matchingGuilgeenuud[0];
         suuliinZaaltNum = latestGuilgee.suuliinZaalt || 0;
         umnukhZaaltNum = latestGuilgee.umnukhZaalt || 0;
-        console.log("suuliin", suuliinZaaltNum);
-        console.log("umnukh", umnukhZaaltNum);
       }
     }
 
