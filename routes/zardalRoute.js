@@ -99,6 +99,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       barilgiinId,
       zardliinTurul,
       tukhainBaaziinKholbolt,
+      zardliinId,
     } = req.body;
 
     if (!baiguullagiinId || !barilgiinId || !zardliinTurul) {
@@ -114,7 +115,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         barilgiinId: barilgiinId,
         baiguullagiinId: baiguullagiinId,
         tuluv: { $ne: -1 },
-        "avlaga.guilgeenuud.tailbar": zardliinTurul,
+        "zardluud._id": zardliinId,
       })
       .sort({ createdAt: -1 })
       .select("+avlaga");
@@ -122,7 +123,6 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
     if (!geree) {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
-    console.log(geree);
 
     const zardal = geree.zardluud.find((z) => z.ner === zardliinTurul);
 
@@ -146,8 +146,6 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         const specificGuilgee = matchingGuilgeenuud[0];
         suuliinZaaltNum = specificGuilgee.suuliinZaalt || 0;
         umnukhZaaltNum = specificGuilgee.umnukhZaalt || 0;
-        console.log("suuliin", suuliinZaaltNum);
-        console.log("umnukh", umnukhZaaltNum);
       }
     }
 
@@ -167,7 +165,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         barilgiinId: barilgiinId,
         ner: zardal.ner,
       });
-      console.log("--------ashig>>>", ashiglaltiinZardal);
+
       if (ashiglaltiinZardal) {
         if (zardal.ner === "Цахилгаан") {
           const tsakhilgaanUrjver = ashiglaltiinZardal.tsakhilgaanUrjver || 0;
@@ -204,7 +202,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         odooniiZaalt * tseverUsDun +
         odooniiZaalt * usKhalaasniiDun;
     }
-    console.log("tolokhhhh>>>>", tulukhDun);
+
     zardal.tulukhDun = tulukhDun;
 
     await geree.save();
