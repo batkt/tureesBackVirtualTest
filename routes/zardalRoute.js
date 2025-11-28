@@ -7,7 +7,6 @@ const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const { backAvya } = require("../controller/backup");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
-var ObjectId = require("mongodb").ObjectId;
 crud(router, "zardal", Zardal, UstsanBarimt);
 
 router.post("/zardliinDunAvya", tokenShalgakh, async (req, res, next) => {
