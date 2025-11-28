@@ -109,8 +109,6 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         );
     }
 
-    const guilgeeniiId = "692454886f54d030f6870a25"; // or get from req.body
-
     const geree = await Geree(tukhainBaaziinKholbolt)
       .findOne({
         barilgiinId: barilgiinId,
@@ -140,7 +138,6 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       geree.avlaga.guilgeenuud &&
       geree.avlaga.guilgeenuud.length > 0
     ) {
-      // Filter by tailbar and get the latest one by date
       const matchingGuilgeenuud = geree.avlaga.guilgeenuud
         .filter((g) => g.tailbar === zardliinTurul)
         .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
@@ -170,7 +167,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         barilgiinId: barilgiinId,
         ner: zardal.ner,
       });
-
+      console.log("--------ashig>>>", ashiglaltiinZardal);
       if (ashiglaltiinZardal) {
         if (zardal.ner === "Цахилгаан") {
           const tsakhilgaanUrjver = ashiglaltiinZardal.tsakhilgaanUrjver || 0;
