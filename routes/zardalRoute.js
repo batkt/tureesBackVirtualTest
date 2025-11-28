@@ -109,13 +109,14 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         );
     }
 
+    const guilgeeniiId = "692454886f54d030f6870a25"; // or get from req.body
+
     const geree = await Geree(tukhainBaaziinKholbolt)
       .findOne({
-        barilgiinId: "68f702c1326ac1a2ad718c9f",
-        baiguullagiinId: "612f457d185280db676d0b51",
+        barilgiinId: barilgiinId,
+        baiguullagiinId: baiguullagiinId,
         tuluv: { $ne: -1 },
-
-        "avlaga.guilgeenuud._id": "692454886f54d030f6870a25",
+        "avlaga.guilgeenuud.tailbar": zardliinTurul,
       })
       .sort({ createdAt: -1 })
       .select("+avlaga");
@@ -139,14 +140,14 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       geree.avlaga.guilgeenuud &&
       geree.avlaga.guilgeenuud.length > 0
     ) {
-      const matchingGuilgeenuud = geree.avlaga.guilgeenuud
-        .filter((g) => g.tailbar === zardliinTurul)
-        .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
+      // Find the specific guilgee by _id instead of filtering by tailbar
+      const specificGuilgee = geree.avlaga.guilgeenuud.find(
+        (g) => g.tailbar.toString() === zardliinTurul
+      );
 
-      if (matchingGuilgeenuud.length > 0) {
-        const latestGuilgee = matchingGuilgeenuud[0];
-        suuliinZaaltNum = latestGuilgee.suuliinZaalt || 0;
-        umnukhZaaltNum = latestGuilgee.umnukhZaalt || 0;
+      if (specificGuilgee) {
+        suuliinZaaltNum = specificGuilgee.suuliinZaalt || 0;
+        umnukhZaaltNum = specificGuilgee.umnukhZaalt || 0;
         console.log("suuliin", suuliinZaaltNum);
         console.log("umnukh", umnukhZaaltNum);
       }
