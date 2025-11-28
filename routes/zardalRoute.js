@@ -204,7 +204,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         odooniiZaalt * tseverUsDun +
         odooniiZaalt * usKhalaasniiDun;
     }
-
+    console.log("tolokhhhh>>>>", tulukhDun);
     zardal.tulukhDun = tulukhDun;
 
     await geree.save();
