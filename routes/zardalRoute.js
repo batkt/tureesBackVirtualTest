@@ -7,7 +7,6 @@ const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const { backAvya } = require("../controller/backup");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
-var ObjectId = require("mongodb").ObjectId;
 crud(router, "zardal", Zardal, UstsanBarimt);
 
 router.post("/zardliinDunAvya", tokenShalgakh, async (req, res, next) => {
@@ -109,19 +108,22 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
           "baiguullagiinId, barilgiinId, zardliinTurul заавал шаардлагатай"
         );
     }
-
+    var ObjectId = require("mongodb").ObjectId;
     const gereenuud = await Geree(tukhainBaaziinKholbolt)
       .find({
-        barilgiinId: barilgiinId,
         baiguullagiinId: baiguullagiinId,
+        barilgiinId: barilgiinId,
         tuluv: { $ne: -1 },
+        gereeniiDugaar: "ГД2505151",
         "zardluud._id": new ObjectId(req.body.zardliinId),
       })
       .select("+avlaga");
-
+    console.log("geree log ssss length --------------->>>" + gereenuud?.length);
+    console.log("--------------->>>" + JSON.stringify(gereenuud));
     for await (const geree of gereenuud) {
       console.log(
-        "geree --------------->>>" + JSON.stringify(geree.avlaga.guilgeenuud)
+        "geree log ssss --------------->>>" +
+          JSON.stringify(geree.avlaga.guilgeenuud)
       );
     }
 
