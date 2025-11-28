@@ -7,7 +7,7 @@ const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const { backAvya } = require("../controller/backup");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
-
+var ObjectId = require("mongodb").ObjectId;
 crud(router, "zardal", Zardal, UstsanBarimt);
 
 router.post("/zardliinDunAvya", tokenShalgakh, async (req, res, next) => {
@@ -115,7 +115,7 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         barilgiinId: barilgiinId,
         baiguullagiinId: baiguullagiinId,
         tuluv: { $ne: -1 },
-        "zardluud._id": zardliinId.toString(),
+        "zardluud._id": new ObjectId(req.body.zardliinId),
       })
       .select("+avlaga");
 
