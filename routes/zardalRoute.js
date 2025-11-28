@@ -115,9 +115,8 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         barilgiinId: barilgiinId,
         baiguullagiinId: baiguullagiinId,
         tuluv: { $ne: -1 },
-        "zardluud._id": zardliinId,
+        "zardluud._id": zardliinId.toString(),
       })
-      .sort({ createdAt: -1 })
       .select("+avlaga");
 
     for await (const geree of gereenuud) {
