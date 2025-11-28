@@ -120,9 +120,6 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       .sort({ createdAt: -1 })
       .select("+avlaga");
 
-    if (!geree) {
-      return res.status(404).send("Гэрээ олдсонгүй");
-    }
     for await (const geree of gereenuud) {
       console.log(
         "geree --------------->>>" + JSON.stringify(geree.avlaga.guilgeenuud)
