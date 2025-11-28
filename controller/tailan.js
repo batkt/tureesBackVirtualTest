@@ -2104,13 +2104,13 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
             data.push(mur);
           }
         }
-        butsaakhKhariu.dataAjiltan = data;
-        data = {
+        var dataNiit = {
           currency: "MNT",
         };
         for await (const dun of dunguud) {
-          data[dun._id.turul] = dun.dun;
+          dataNiit[dun._id.turul] = dun.dun;
         }
+        data.push(dataNiit);
         butsaakhKhariu.data = data;
       } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
     } else if (req.params.turul == "Toyland") {
