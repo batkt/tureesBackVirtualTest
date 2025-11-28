@@ -110,8 +110,8 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
         );
     }
 
-    const geree = await Geree(tukhainBaaziinKholbolt)
-      .findOne({
+    const gereenuud = await Geree(tukhainBaaziinKholbolt)
+      .find({
         barilgiinId: barilgiinId,
         baiguullagiinId: baiguullagiinId,
         tuluv: { $ne: -1 },
@@ -123,91 +123,96 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
     if (!geree) {
       return res.status(404).send("Гэрээ олдсонгүй");
     }
-    console.log(geree.avlaga.guilgeenuud);
-    const zardal = geree.zardluud.find((z) => z.ner === zardliinTurul);
-
-    if (!zardal) {
-      return res.status(404).send(`"${zardliinTurul}" нэртэй зардал олдсонгүй`);
+    for await (const geree of gereenuud) {
+      console.log(
+        "geree --------------->>>" + JSON.stringify(geree.avlaga.guilgeenuud)
+      );
     }
 
-    let suuliinZaaltNum = 0;
-    let umnukhZaaltNum = 0;
+    // const zardal = geree.zardluud.find((z) => z.ner === zardliinTurul);
 
-    if (
-      geree.avlaga &&
-      geree.avlaga.guilgeenuud &&
-      geree.avlaga.guilgeenuud.length > 0
-    ) {
-      const matchingGuilgeenuud = geree.avlaga.guilgeenuud
-        .filter((g) => g.tailbar === zardliinTurul)
-        .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
+    // if (!zardal) {
+    //   return res.status(404).send(`"${zardliinTurul}" нэртэй зардал олдсонгүй`);
+    // }
 
-      if (matchingGuilgeenuud.length > 0) {
-        const specificGuilgee = matchingGuilgeenuud[0];
-        suuliinZaaltNum = specificGuilgee.suuliinZaalt || 0;
-        umnukhZaaltNum = specificGuilgee.umnukhZaalt || 0;
-      }
-    }
+    // let suuliinZaaltNum = 0;
+    // let umnukhZaaltNum = 0;
 
-    const odooniiZaalt = suuliinZaaltNum - umnukhZaaltNum;
+    // if (
+    //   geree.avlaga &&
+    //   geree.avlaga.guilgeenuud &&
+    //   geree.avlaga.guilgeenuud.length > 0
+    // ) {
+    //   const matchingGuilgeenuud = geree.avlaga.guilgeenuud
+    //     .filter((g) => g.tailbar === zardliinTurul)
+    //     .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
 
-    let tulukhDun = 0;
+    //   if (matchingGuilgeenuud.length > 0) {
+    //     const specificGuilgee = matchingGuilgeenuud[0];
+    //     suuliinZaaltNum = specificGuilgee.suuliinZaalt || 0;
+    //     umnukhZaaltNum = specificGuilgee.umnukhZaalt || 0;
+    //   }
+    // }
 
-    if (
-      zardal.ner === "Цахилгаан" ||
-      zardal.ner === "Халуун ус" ||
-      zardal.ner === "Хүйтэн ус"
-    ) {
-      const ashiglaltiinZardal = await AshiglaltiinZardluud(
-        tukhainBaaziinKholbolt
-      ).findOne({
-        baiguullagiinId: baiguullagiinId,
-        barilgiinId: barilgiinId,
-        ner: zardal.ner,
-      });
+    // const odooniiZaalt = suuliinZaaltNum - umnukhZaaltNum;
 
-      if (ashiglaltiinZardal) {
-        if (zardal.ner === "Цахилгаан") {
-          const tsakhilgaanUrjver = ashiglaltiinZardal.tsakhilgaanUrjver || 0;
-          const tsakhilgaanChadal = ashiglaltiinZardal.tsakhilgaanChadal || 0;
-          const tsakhilgaanDemjikh = ashiglaltiinZardal.tsakhilgaanDemjikh || 0;
+    // let tulukhDun = 0;
 
-          tulukhDun =
-            odooniiZaalt * tsakhilgaanUrjver +
-            odooniiZaalt * tsakhilgaanChadal +
-            odooniiZaalt * tsakhilgaanDemjikh;
-        } else if (zardal.ner === "Халуун ус") {
-          const bokhirUsDun = ashiglaltiinZardal.bokhirUsDun || 0;
-          const tseverUsDun = ashiglaltiinZardal.tseverUsDun || 0;
-          const usKhalaasniiDun = ashiglaltiinZardal.usKhalaasniiDun || 0;
+    // if (
+    //   zardal.ner === "Цахилгаан" ||
+    //   zardal.ner === "Халуун ус" ||
+    //   zardal.ner === "Хүйтэн ус"
+    // ) {
+    //   const ashiglaltiinZardal = await AshiglaltiinZardluud(
+    //     tukhainBaaziinKholbolt
+    //   ).findOne({
+    //     baiguullagiinId: baiguullagiinId,
+    //     barilgiinId: barilgiinId,
+    //     ner: zardal.ner,
+    //   });
 
-          tulukhDun =
-            odooniiZaalt * bokhirUsDun +
-            odooniiZaalt * tseverUsDun +
-            odooniiZaalt * usKhalaasniiDun;
-        } else if (zardal.ner === "Хүйтэн ус") {
-          const bokhirUsDun = ashiglaltiinZardal.bokhirUsDun || 0;
-          const tseverUsDun = ashiglaltiinZardal.tseverUsDun || 0;
+    //   if (ashiglaltiinZardal) {
+    //     if (zardal.ner === "Цахилгаан") {
+    //       const tsakhilgaanUrjver = ashiglaltiinZardal.tsakhilgaanUrjver || 0;
+    //       const tsakhilgaanChadal = ashiglaltiinZardal.tsakhilgaanChadal || 0;
+    //       const tsakhilgaanDemjikh = ashiglaltiinZardal.tsakhilgaanDemjikh || 0;
 
-          tulukhDun = odooniiZaalt * bokhirUsDun + odooniiZaalt * tseverUsDun;
-        }
-      }
-    } else {
-      const bokhirUsDun = zardal.bokhirUsDun || 0;
-      const tseverUsDun = zardal.tseverUsDun || 0;
-      const usKhalaasniiDun = zardal.usKhalaasniiDun || 0;
+    //       tulukhDun =
+    //         odooniiZaalt * tsakhilgaanUrjver +
+    //         odooniiZaalt * tsakhilgaanChadal +
+    //         odooniiZaalt * tsakhilgaanDemjikh;
+    //     } else if (zardal.ner === "Халуун ус") {
+    //       const bokhirUsDun = ashiglaltiinZardal.bokhirUsDun || 0;
+    //       const tseverUsDun = ashiglaltiinZardal.tseverUsDun || 0;
+    //       const usKhalaasniiDun = ashiglaltiinZardal.usKhalaasniiDun || 0;
 
-      tulukhDun =
-        odooniiZaalt * bokhirUsDun +
-        odooniiZaalt * tseverUsDun +
-        odooniiZaalt * usKhalaasniiDun;
-    }
+    //       tulukhDun =
+    //         odooniiZaalt * bokhirUsDun +
+    //         odooniiZaalt * tseverUsDun +
+    //         odooniiZaalt * usKhalaasniiDun;
+    //     } else if (zardal.ner === "Хүйтэн ус") {
+    //       const bokhirUsDun = ashiglaltiinZardal.bokhirUsDun || 0;
+    //       const tseverUsDun = ashiglaltiinZardal.tseverUsDun || 0;
 
-    zardal.tulukhDun = tulukhDun;
+    //       tulukhDun = odooniiZaalt * bokhirUsDun + odooniiZaalt * tseverUsDun;
+    //     }
+    //   }
+    // } else {
+    //   const bokhirUsDun = zardal.bokhirUsDun || 0;
+    //   const tseverUsDun = zardal.tseverUsDun || 0;
+    //   const usKhalaasniiDun = zardal.usKhalaasniiDun || 0;
 
-    await geree.save();
+    //   tulukhDun =
+    //     odooniiZaalt * bokhirUsDun +
+    //     odooniiZaalt * tseverUsDun +
+    //     odooniiZaalt * usKhalaasniiDun;
+    // }
 
-    res.json(geree);
+    // zardal.tulukhDun = tulukhDun;
+
+    // await geree.save();
+
+    res.json(gereenuud);
   } catch (err) {
     next(err);
   }
