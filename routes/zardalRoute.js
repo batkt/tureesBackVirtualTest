@@ -140,12 +140,13 @@ router.post("/huwisakhZardalTootsyo", tokenShalgakh, async (req, res, next) => {
       geree.avlaga.guilgeenuud &&
       geree.avlaga.guilgeenuud.length > 0
     ) {
-      // Find the specific guilgee by _id instead of filtering by tailbar
-      const specificGuilgee = geree.avlaga.guilgeenuud.find(
-        (g) => g.tailbar.toString() === zardliinTurul
-      );
+      // Filter by tailbar and get the latest one by date
+      const matchingGuilgeenuud = geree.avlaga.guilgeenuud
+        .filter((g) => g.tailbar === zardliinTurul)
+        .sort((a, b) => new Date(b.ognoo) - new Date(a.ognoo));
 
-      if (specificGuilgee) {
+      if (matchingGuilgeenuud.length > 0) {
+        const specificGuilgee = matchingGuilgeenuud[0];
         suuliinZaaltNum = specificGuilgee.suuliinZaalt || 0;
         umnukhZaaltNum = specificGuilgee.umnukhZaalt || 0;
         console.log("suuliin", suuliinZaaltNum);
