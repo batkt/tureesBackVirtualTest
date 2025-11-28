@@ -2079,6 +2079,13 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
       ]);
       if (dunguud && dunguud.length > 0) {
         var data = [];
+        var dataNiit = {
+          currency: "MNT",
+        };
+        for await (const dun of dunguud) {
+          dataNiit[dun._id.turul] = dun.dun;
+        }
+        data.push(dataNiit);
         for (const ajiltan of ajiltnuud) {
           if (!!ajiltan?._id?.burtgesenAjiltaniiNer) {
             var ajiltanData;
@@ -2104,13 +2111,6 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
             data.push(mur);
           }
         }
-        var dataNiit = {
-          currency: "MNT",
-        };
-        for await (const dun of dunguud) {
-          dataNiit[dun._id.turul] = dun.dun;
-        }
-        data.push(dataNiit);
         butsaakhKhariu.data = data;
       } else butsaakhKhariu.msg = "Өгөгдөл байхгүй!";
     } else if (req.params.turul == "Toyland") {
