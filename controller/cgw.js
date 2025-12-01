@@ -156,13 +156,6 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
     });
     if (!tokenObject) {
       var url = process.env.TDB_SERVER + "/oauth2/token";
-      console.log(
-        "tdbTokenAvya ------------------->>> dans dugaar: " + dans.dugaar
-      );
-      console.log("tdbTokenAvya ------------------->>> url: " + url);
-      console.log(
-        "tdbTokenAvya ------------------->>> new Date: " + new Date()
-      );
       const response = await got
         .post(url, {
           headers: {
@@ -174,9 +167,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
             client_secret: dans.corporateNuutsUg,
           },
         })
-        .catch((err) => {
-          console.log("tdbTokenAvya ------------------->>>" + err);
-        });
+        .catch((err) => {});
       if (!response || !response?.body) {
         throw new Error(
           "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
@@ -198,7 +189,6 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
     }
     return tokenObject;
   } catch (error) {
-    console.log("tdbTokenAvya 1 ------------------->>>" + error);
     if (next) next(error);
   }
 }
@@ -762,7 +752,6 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       res.send({ uldegdel: khariltsakh?.balance });
     }
   } catch (err) {
-    console.log("dansniiUldegdelAvya ---------------------->>>", err);
     if (next) next(err);
   }
 });
