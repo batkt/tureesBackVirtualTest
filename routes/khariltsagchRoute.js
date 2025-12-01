@@ -114,7 +114,10 @@ router
           _id: req.body.id,
         })
         .then(async (result) => {
-          var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
+          var geree = await Geree(
+            req.body.tukhainBaaziinKholbolt,
+            true
+          ).findOne({
             tuluv: 1,
             register: result.register,
             barilgiinId: result.barilgiinId,
@@ -186,7 +189,8 @@ router
           gereeniiDugaar: { $exists: true },
           tuluv: { $nin: [-1] },
         };
-         if (davkhar?.length > 0) {
+
+        if (davkhar?.length > 0) {
           matchGeree["davkhar"] = { $in: davkhar };
         }
 
@@ -195,68 +199,97 @@ router
             $match: matchGeree,
           },
         ];
+
         var gereeResult = await Geree(
-          req.body.tukhainBaaziinKholbolt, true
+          req.body.tukhainBaaziinKholbolt,
+          true
         ).aggregate(query);
+
+        const parseTalbainDugaar = (talbainDugaar) => {
+          if (!talbainDugaar || typeof talbainDugaar !== "string") {
+            return [];
+          }
+          const trimmed = talbainDugaar.trim();
+          if (!trimmed) {
+            return [];
+          }
+          return trimmed
+            .split(",")
+            .map((t) => t.trim())
+            .filter((t) => t.length > 0);
+        };
+
         if (davkhar?.length > 0) {
           const tempKhariltsagch = [];
           for (const geree of gereeResult) {
-            const filtered = tempKhariltsagch?.filter(a =>
-              (!!a.register && geree.register === a.register) ||
+            const filtered = tempKhariltsagch?.filter(
+              (a) =>
+                (!!a.register && geree.register === a.register) ||
                 (!!a.register && geree.customerTin === a.register) ||
                 (!!a.customerTin && geree.register === a.customerTin)
             );
 
-            const talbainDugaarList = geree.talbainDugaar?.split(',').length > 0
-              ? geree.talbainDugaar?.split(',').map(t => t.trim())
-              : [geree.talbainDugaar?.trim()];
+            const talbainDugaarList = parseTalbainDugaar(geree.talbainDugaar);
 
             if (filtered?.length > 0) {
               const data = filtered[0];
               data.talbainDugaar = data.talbainDugaar || [];
-              data.talbainDugaar.push(...talbainDugaarList);
-              data.davkhar = data.davkhar || []; 
-              data.davkhar.push(geree.davkhar);
-              data.gereenuud = data.gereenuud || [] 
+              if (talbainDugaarList.length > 0) {
+                data.talbainDugaar.push(...talbainDugaarList);
+              }
+              data.davkhar = data.davkhar || [];
+              if (geree.davkhar) {
+                data.davkhar.push(geree.davkhar);
+              }
+              data.gereenuud = data.gereenuud || [];
               data.gereenuud.push(geree);
             } else {
-              const filteredData = jagsaalt?.filter(a =>
-                (!!a.register && geree.register === a.register) ||
-                (!!a.register && geree.customerTin === a.register) ||
-                (!!a.customerTin && geree.register === a.customerTin)
+              const filteredData = jagsaalt?.filter(
+                (a) =>
+                  (!!a.register && geree.register === a.register) ||
+                  (!!a.register && geree.customerTin === a.register) ||
+                  (!!a.customerTin && geree.register === a.customerTin)
               );
 
               if (filteredData?.length > 0) {
                 const data = { ...filteredData[0] };
                 data.talbainDugaar = talbainDugaarList;
-                data.davkhar = data.davkhar || []; 
-                data.davkhar.push(geree.davkhar);
-                data.gereenuud = data.gereenuud || [] 
+                data.davkhar = data.davkhar || [];
+                if (geree.davkhar) {
+                  data.davkhar.push(geree.davkhar);
+                }
+                data.gereenuud = data.gereenuud || [];
                 data.gereenuud.push(geree);
                 tempKhariltsagch.push(data);
               }
             }
           }
           result = tempKhariltsagch;
-        }
-        else
-        {
+        } else {
           for await (const khariltsagch of jagsaalt) {
             var filteredGeree = gereeResult?.filter(
               (geree) =>
-                (!!khariltsagch.register && geree.register === khariltsagch.register) ||
-                (!!khariltsagch.register && geree.customerTin === khariltsagch.register) ||
-                (!!khariltsagch.customerTin && geree.register === khariltsagch.customerTin)
+                (!!khariltsagch.register &&
+                  geree.register === khariltsagch.register) ||
+                (!!khariltsagch.register &&
+                  geree.customerTin === khariltsagch.register) ||
+                (!!khariltsagch.customerTin &&
+                  geree.register === khariltsagch.customerTin)
             );
+
             for (const geree of filteredGeree) {
-              const talbainDugaarList = geree.talbainDugaar?.split(',').length > 0
-                    ? geree.talbainDugaar?.split(',').map(t => t.trim())
-                    : [geree.talbainDugaar?.trim()];
+              // ЗАСВАР: Helper function ашиглах
+              const talbainDugaarList = parseTalbainDugaar(geree.talbainDugaar);
+
               khariltsagch.talbainDugaar = khariltsagch.talbainDugaar || [];
-              khariltsagch.talbainDugaar.push(...talbainDugaarList);      
-              khariltsagch.davkhar = khariltsagch.davkhar || []; 
-              khariltsagch.davkhar.push(geree.davkhar);
-              khariltsagch.gereenuud = khariltsagch.gereenuud || [] 
+              if (talbainDugaarList.length > 0) {
+                khariltsagch.talbainDugaar.push(...talbainDugaarList);
+              }
+              khariltsagch.davkhar = khariltsagch.davkhar || [];
+              if (geree.davkhar) {
+                khariltsagch.davkhar.push(geree.davkhar);
+              }
+              khariltsagch.gereenuud = khariltsagch.gereenuud || [];
               khariltsagch.gereenuud.push(geree);
             }
           }

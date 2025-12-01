@@ -1134,22 +1134,35 @@ router
         ajiltniiId: req.body.nevtersenAjiltniiToken.id,
       };
 
-      var avlagaMatch = req.body.udruurBodokhEsekh
-        ? {
-            ognoo: {
-              $gte: new Date(moment(req.body.tsutslakhOgnoo).startOf("month")),
-            },
-            tulsunDun: { $exists: false },
-          }
-        : { ognoo: { $gt: new Date() } };
+      var tsutslakhOgnoo = req.body.tsutslakhOgnoo
+        ? new Date(req.body.tsutslakhOgnoo)
+        : new Date();
 
-      var updateQuery = {
-        $set: {
-          tsutsalsanOgnoo: new Date(),
-          tuluv: -1,
-        },
-        $pull: { "avlaga.guilgeenuud": avlagaMatch },
-      };
+      var shinechlegudsunAvlaguud = [];
+
+      geree.avlaga?.guilgeenuud?.forEach((avlaga) => {
+        var avlagaOgnoo = moment(avlaga.ognoo);
+        var tsutslakhSar = moment(tsutslakhOgnoo);
+
+        if (avlaga.tulsunDun !== undefined) {
+          shinechlegudsunAvlaguud.push(avlaga);
+          return;
+        }
+
+        if (avlaga.turul === "khuvaari") {
+          if (req.body.udruurBodokhEsekh) {
+            if (avlagaOgnoo.isBefore(tsutslakhSar, "month")) {
+              shinechlegudsunAvlaguud.push(avlaga);
+            }
+          } else {
+            if (avlagaOgnoo.isSameOrBefore(moment(), "day")) {
+              shinechlegudsunAvlaguud.push(avlaga);
+            }
+          }
+        } else {
+          shinechlegudsunAvlaguud.push(avlaga);
+        }
+      });
 
       if (
         req.body.udruurBodokhEsekh &&
@@ -1158,33 +1171,23 @@ router
         var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud.map(
           (savlaga) => ({
             ...savlaga,
-            tailbar: req.body.shaltgaan,
+            tailbar: savlaga.tailbar || req.body.shaltgaan,
           })
         );
 
-        var odoogchiOgnoonuud = new Set(
-          geree.avlaga?.guilgeenuud
-            ?.filter((g) => !g.tulsunDun)
-            ?.map((g) => moment(g.ognoo).format("YYYY-MM-DD")) || []
-        );
-
-        var shineerNemekh = suuliinSariinAvlaguud.filter(
-          (savlaga) =>
-            !odoogchiOgnoonuud.has(moment(savlaga.ognoo).format("YYYY-MM-DD"))
-        );
-
-        if (shineerNemekh.length > 0) {
-          updateQuery.$push = {
-            "avlaga.guilgeenuud": { $each: shineerNemekh },
-          };
-        }
+        shinechlegudsunAvlaguud.push(...suuliinSariinAvlaguud);
       }
 
+      var updateQuery = {
+        $set: {
+          tsutsalsanOgnoo: new Date(),
+          tuluv: -1,
+          "avlaga.guilgeenuud": shinechlegudsunAvlaguud,
+        },
+      };
+
       if (geree.gereeniiTuukhuud) {
-        updateQuery.$push = {
-          ...updateQuery.$push,
-          gereeniiTuukhuud: tuukh,
-        };
+        updateQuery.$push = { gereeniiTuukhuud: tuukh };
       } else {
         updateQuery.$set.gereeniiTuukhuud = [tuukh];
       }
@@ -1204,6 +1207,7 @@ router
       next(error);
     }
   });
+
 router
   .route("/eneSardTulukhJagsaaltAvya")
   .post(tokenShalgakh, async (req, res, next) => {
