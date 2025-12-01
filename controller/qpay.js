@@ -482,10 +482,10 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         //   tulsunAldangi
         // );
 
-        await daraagiinTulukhOgnooZasya(
-          qpayBarimt.gereeniiId,
-          tukhainBaaziinKholbolt
-        );
+        // await daraagiinTulukhOgnooZasya(
+        //   qpayBarimt.gereeniiId,
+        //   tukhainBaaziinKholbolt
+        // );
         res.sendStatus(200);
       }
     }

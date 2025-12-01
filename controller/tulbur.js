@@ -13,6 +13,7 @@ const mongoose = require("mongoose");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const AldangiinTuukh = require("../models/aldangiinTuukh");
+const { tulultiinMsgIlgeeye } = require("../controller/khariltsagch");
 
 exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
   var guilgeenuud = req.body.guilgeenuud;
@@ -701,6 +702,27 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                       { _id: oldsonGereenuud[0]._id },
                       updateQuery,
                       { new: true }
+                    );
+
+                    var tulsunDun = tulbur
+                      .filter((a) => a.turul == "qpay")
+                      .reduce((a, b) => a + b.tulsunDun, 0);
+
+                    var tulsunAldangi = tulbur
+                      .filter((a) => a.turul == "aldangi")
+                      .reduce((a, b) => a + b.tulsunAldangi, 0);
+
+                    await tulultiinMsgIlgeeye(
+                      req.params.baiguullagiinId,
+                      result.gereeniiDugaar,
+                      result.utas[0],
+                      tulsunDun,
+                      tulsunAldangi
+                    );
+
+                    await daraagiinTulukhOgnooZasya(
+                      qpayBarimt.gereeniiId,
+                      tukhainBaaziinKholbolt
                     );
                   }
                 } else {
