@@ -889,22 +889,9 @@ router
           gereeniiTuukhuud: 1,
           duusakhOgnoo: 1,
           tuluv: 1,
-          khugatsaa: 1,
-          tulukhUdur: 1,
-          talbainIdnuud: 1,
         });
       if (geree.tuluv !== -1)
         throw new Error("Зөвхөн цуцалсан төлөвтэй гэрээг сэргээх боломжтой!");
-
-      const TalbaiModel = Talbai(req.body.tukhainBaaziinKholbolt);
-      const talbai = await TalbaiModel.findOne({
-        _id: geree.talbainIdnuud[0],
-      }).select("talbainNiitUne");
-
-      if (!talbai) {
-        throw new Error("Гэрээтэй холбоотой талбайн мэдээлэл олдсонгүй!");
-      }
-
       var tuukh = {
         umnukhDuusakhOgnoo: geree.duusakhOgnoo,
         sergeekhOgnoo: req.body.sergeekhOgnoo,
@@ -926,70 +913,74 @@ router
         0,
         0
       );
-
       new Array(geree.khugatsaa || 0).fill("").map((mur, index) => {
         geree.tulukhUdur.forEach((udur) => {
-          const settlementDate = moment(unuudur)
-            .add(index, "month")
-            .set("date", udur)
-            .toDate();
-
           if (
-            moment(settlementDate).startOf("day") <=
-              moment(geree.duusakhOgnoo).startOf("day") &&
-            moment(settlementDate).startOf("day") >
-              moment(new Date()).startOf("day")
-          ) {
+            moment(unuudur).add(index, "month").set("date", udur) <=
+              moment(geree.duusakhOgnoo) &&
+            moment(unuudur).add(index, "month").set("date", udur) >
+              moment(new Date())
+          )
             khuvaariud.push({
-              ognoo: settlementDate,
+              ognoo: moment(unuudur).add(index, "month").set("date", udur),
               khyamdral: 0,
               undsenDun: talbai.talbainNiitUne,
               tulukhDun: talbai.talbainNiitUne,
             });
-          }
         });
       });
-
-      var pullFilter = {
-        ognoo: { $gte: unuudur },
-        tulsunDun: { $exists: false },
-      };
-
-      var updateQuery = {
-        $set: {
-          tsutsalsanOgnoo: null,
-          tuluv: 1,
-        },
-        $pull: { "avlaga.guilgeenuud": pullFilter },
-      };
-
-      if (khuvaariud.length > 0) {
-        updateQuery.$push = {
-          "avlaga.guilgeenuud": { $each: khuvaariud },
-        };
-      }
-
       if (geree.gereeniiTuukhuud) {
-        updateQuery.$push = updateQuery.$push || {};
-        updateQuery.$push.gereeniiTuukhuud = tuukh;
+        Geree(req.body.tukhainBaaziinKholbolt)
+          .findOneAndUpdate(
+            { _id: req.body.gereeniiId },
+            {
+              $push: {
+                [`gereeniiTuukhuud`]: tuukh,
+                [`avlaga.guilgeenuud`]: khuvaariud,
+              },
+              $set: {
+                tsutsalsanOgnoo: null,
+                tuluv: 1,
+              },
+            }
+          )
+          .then((result) => {
+            talbaiKhariltsagchiinTuluvUurchluy(
+              [geree._id],
+              req.body.tukhainBaaziinKholbolt
+            );
+            res.send("Amjilttai");
+          })
+          .catch((err) => {
+            next(err);
+          });
       } else {
-        updateQuery.$set.gereeniiTuukhuud = [tuukh];
+        tuukh = [tuukh];
+        Geree(req.body.tukhainBaaziinKholbolt)
+          .findOneAndUpdate(
+            { _id: req.body.gereeniiId },
+            {
+              $push: {
+                [`avlaga.guilgeenuud`]: khuvaariud,
+              },
+              $set: {
+                tsutsalsanOgnoo: null,
+                tuluv: 1,
+                gereeniiTuukhuud: tuukh,
+              },
+            }
+          )
+          .then((result) => {
+            talbaiKhariltsagchiinTuluvUurchluy(
+              [geree._id],
+              req.body.tukhainBaaziinKholbolt
+            );
+            res.send("Amjilttai");
+          })
+          .catch((err) => {
+            next(err);
+          });
       }
-
-      Geree(req.body.tukhainBaaziinKholbolt)
-        .findOneAndUpdate({ _id: req.body.gereeniiId }, updateQuery, {
-          new: true,
-        })
-        .then((result) => {
-          talbaiKhariltsagchiinTuluvUurchluy(
-            [req.body.gereeniiId],
-            req.body.tukhainBaaziinKholbolt
-          );
-          res.send("Amjilttai");
-        })
-        .catch((err) => {
-          next(err);
-        });
     } catch (err) {
       next(err);
     }
