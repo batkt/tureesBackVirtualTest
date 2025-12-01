@@ -1117,7 +1117,14 @@ router
         .select({
           gereeniiTuukhuud: 1,
           duusakhOgnoo: 1,
+          tuluv: 1,
+          "avlaga.guilgeenuud": 1,
         });
+
+      if (geree.tuluv === -1) {
+        throw new Error("Гэрээ аль хэдийн цуцлагдсан байна!");
+      }
+
       var tuukh = {
         umnukhDuusakhOgnoo: geree.duusakhOgnoo,
         tsutslasanShaltgaan: req.body.shaltgaan,
@@ -1126,6 +1133,7 @@ router
         ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
         ajiltniiId: req.body.nevtersenAjiltniiToken.id,
       };
+
       var avlagaMatch = req.body.udruurBodokhEsekh
         ? {
             ognoo: {
@@ -1134,81 +1142,68 @@ router
             tulsunDun: { $exists: false },
           }
         : { ognoo: { $gt: new Date() } };
-      if (geree.gereeniiTuukhuud) {
-        Geree(req.body.tukhainBaaziinKholbolt)
-          .findOneAndUpdate(
-            { _id: req.body.gereeniiId },
-            {
-              $push: {
-                [`gereeniiTuukhuud`]: tuukh,
-              },
-              $set: {
-                tsutsalsanOgnoo: new Date(),
-                tuluv: -1,
-              },
-              $pull: { "avlaga.guilgeenuud": avlagaMatch },
-            }
-          )
-          .then((result) => {
-            talbaiKhariltsagchiinTuluvUurchluy(
-              [geree._id],
-              req.body.tukhainBaaziinKholbolt
-            );
-            res.send("Amjilttai");
-          })
-          .catch((err) => {
-            next(err);
-          });
-      } else {
-        tuukh = [tuukh];
-        Geree(req.body.tukhainBaaziinKholbolt)
-          .findOneAndUpdate(
-            { _id: req.body.gereeniiId },
-            {
-              $set: {
-                gereeniiTuukhuud: tuukh,
-                tsutsalsanOgnoo: new Date(),
-                tuluv: -1,
-              },
-              $pull: { "avlaga.guilgeenuud": avlagaMatch },
-            }
-          )
-          .then((result) => {
-            talbaiKhariltsagchiinTuluvUurchluy(
-              [geree._id],
-              req.body.tukhainBaaziinKholbolt
-            );
-            res.send("Amjilttai");
-          })
-          .catch((err) => {
-            next(err);
-          });
-      }
+
+      var updateQuery = {
+        $set: {
+          tsutsalsanOgnoo: new Date(),
+          tuluv: -1,
+        },
+        $pull: { "avlaga.guilgeenuud": avlagaMatch },
+      };
+
       if (
         req.body.udruurBodokhEsekh &&
-        req.body.suuliinSariinAvlaguud &&
         req.body.suuliinSariinAvlaguud?.length > 0
       ) {
-        var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud;
-        for (const savlaga of suuliinSariinAvlaguud)
-          savlaga.tailbar = req.body.shaltgaan;
-        Geree(req.body.tukhainBaaziinKholbolt)
-          .findOneAndUpdate(
-            { _id: req.body.gereeniiId },
-            {
-              $push: { "avlaga.guilgeenuud": suuliinSariinAvlaguud },
-            }
-          )
-          .then((result) => {})
-          .catch((err) => {
-            next(err);
-          });
+        var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud.map(
+          (savlaga) => ({
+            ...savlaga,
+            tailbar: req.body.shaltgaan,
+          })
+        );
+
+        var odoogchiOgnoonuud = new Set(
+          geree.avlaga?.guilgeenuud
+            ?.filter((g) => !g.tulsunDun)
+            ?.map((g) => moment(g.ognoo).format("YYYY-MM-DD")) || []
+        );
+
+        var shineerNemekh = suuliinSariinAvlaguud.filter(
+          (savlaga) =>
+            !odoogchiOgnoonuud.has(moment(savlaga.ognoo).format("YYYY-MM-DD"))
+        );
+
+        if (shineerNemekh.length > 0) {
+          updateQuery.$push = {
+            "avlaga.guilgeenuud": { $each: shineerNemekh },
+          };
+        }
       }
+
+      if (geree.gereeniiTuukhuud) {
+        updateQuery.$push = {
+          ...updateQuery.$push,
+          gereeniiTuukhuud: tuukh,
+        };
+      } else {
+        updateQuery.$set.gereeniiTuukhuud = [tuukh];
+      }
+
+      await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+        { _id: req.body.gereeniiId },
+        updateQuery
+      );
+
+      await talbaiKhariltsagchiinTuluvUurchluy(
+        [geree._id],
+        req.body.tukhainBaaziinKholbolt
+      );
+
+      res.send("Amjilttai");
     } catch (error) {
       next(error);
     }
   });
-
 router
   .route("/eneSardTulukhJagsaaltAvya")
   .post(tokenShalgakh, async (req, res, next) => {
