@@ -384,86 +384,86 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
           qpayBarimt.payment_id = req.query.qpay_payment_id;
         qpayBarimt.tulsunEsekh = true;
         qpayBarimt.isNew = false;
-        var tulbur = [];
-        var updateQuery = {};
-        var updatePush = {};
-        var geree = await Geree(tukhainBaaziinKholbolt, true).findOne({
-          _id: qpayBarimt.gereeniiId,
-        });
-        var qpayAmount = parseFloat(qpayBarimt.qpay.amount);
-        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-          req.params.baiguullagiinId
-        );
-        if (baiguullaga?.tokhirgoo?.qpayShimtgelTusdaa == true)
-          qpayAmount -= 300;
-        if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
-          var tulsunDun = 0;
-          if (geree.aldangiinUldegdel >= qpayAmount) {
-            geree.aldangiinUldegdel = geree.aldangiinUldegdel - qpayAmount;
-            tulsunDun = qpayAmount;
-          } else {
-            tulsunDun = geree.aldangiinUldegdel;
-            var iluuDun = qpayAmount - tulsunDun;
-            tulbur.push({
-              turul: "qpay",
-              tulsunDun: iluuDun,
-              ognoo: qpayBarimt.ognoo,
-              guilgeeKhiisenOgnoo: new Date(),
-            });
-            geree.aldangiinUldegdel = 0;
-          }
-          tulbur.push({
-            tailbar: "систем алданги qpay ээр төлсөн",
-            turul: "aldangi",
-            aldangiinTurul: "qpay",
-            tulukhAldangi: geree.aldangiinUldegdel,
-            tulsunAldangi: tulsunDun,
-            ognoo: qpayBarimt.ognoo,
-            guilgeeKhiisenOgnoo: new Date(),
-          });
-          var niitTulsunAldangi = tulbur
-            ?.filter((a) => a.turul == "aldangi")
-            .reduce((a, b) => a + b.tulsunAldangi, 0);
-          const niitTulsun = (geree.niitTulsunAldangi || 0) + niitTulsunAldangi;
-          updateQuery = {
-            $set: {
-              aldangiinUldegdel: geree.aldangiinUldegdel,
-              niitTulsunAldangi: niitTulsun,
-            },
-          };
-          updatePush = {
-            $push: {
-              "avlaga.guilgeenuud": {
-                $each: tulbur,
-              },
-            },
-          };
-        } else {
-          tulbur.push({
-            turul: "qpay",
-            tulsunDun: qpayAmount,
-            ognoo: qpayBarimt.ognoo,
-            guilgeeKhiisenOgnoo: new Date(),
-          });
-          updateQuery = {
-            $push: {
-              [`avlaga.guilgeenuud`]: {
-                $each: tulbur,
-              },
-            },
-          };
-        }
-        await Geree(tukhainBaaziinKholbolt).findByIdAndUpdate(
-          { _id: qpayBarimt.gereeniiId },
-          updatePush,
-          { new: true }
-        );
+        // var tulbur = [];
+        // var updateQuery = {};
+        // var updatePush = {};
+        // var geree = await Geree(tukhainBaaziinKholbolt, true).findOne({
+        //   _id: qpayBarimt.gereeniiId,
+        // });
+        // var qpayAmount = parseFloat(qpayBarimt.qpay.amount);
+        // var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+        //   req.params.baiguullagiinId
+        // );
+        // if (baiguullaga?.tokhirgoo?.qpayShimtgelTusdaa == true)
+        //   qpayAmount -= 300;
+        // if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
+        //   var tulsunDun = 0;
+        //   if (geree.aldangiinUldegdel >= qpayAmount) {
+        //     geree.aldangiinUldegdel = geree.aldangiinUldegdel - qpayAmount;
+        //     tulsunDun = qpayAmount;
+        //   } else {
+        //     tulsunDun = geree.aldangiinUldegdel;
+        //     var iluuDun = qpayAmount - tulsunDun;
+        //     tulbur.push({
+        //       turul: "qpay",
+        //       tulsunDun: iluuDun,
+        //       ognoo: qpayBarimt.ognoo,
+        //       guilgeeKhiisenOgnoo: new Date(),
+        //     });
+        //     geree.aldangiinUldegdel = 0;
+        //   }
+        //   tulbur.push({
+        //     tailbar: "систем алданги qpay ээр төлсөн",
+        //     turul: "aldangi",
+        //     aldangiinTurul: "qpay",
+        //     tulukhAldangi: geree.aldangiinUldegdel,
+        //     tulsunAldangi: tulsunDun,
+        //     ognoo: qpayBarimt.ognoo,
+        //     guilgeeKhiisenOgnoo: new Date(),
+        //   });
+        //   var niitTulsunAldangi = tulbur
+        //     ?.filter((a) => a.turul == "aldangi")
+        //     .reduce((a, b) => a + b.tulsunAldangi, 0);
+        //   const niitTulsun = (geree.niitTulsunAldangi || 0) + niitTulsunAldangi;
+        //   updateQuery = {
+        //     $set: {
+        //       aldangiinUldegdel: geree.aldangiinUldegdel,
+        //       niitTulsunAldangi: niitTulsun,
+        //     },
+        //   };
+        //   updatePush = {
+        //     $push: {
+        //       "avlaga.guilgeenuud": {
+        //         $each: tulbur,
+        //       },
+        //     },
+        //   };
+        // } else {
+        //   tulbur.push({
+        //     turul: "qpay",
+        //     tulsunDun: qpayAmount,
+        //     ognoo: qpayBarimt.ognoo,
+        //     guilgeeKhiisenOgnoo: new Date(),
+        //   });
+        //   updateQuery = {
+        //     $push: {
+        //       [`avlaga.guilgeenuud`]: {
+        //         $each: tulbur,
+        //       },
+        //     },
+        //   };
+        // }
+        // await Geree(tukhainBaaziinKholbolt).findByIdAndUpdate(
+        //   { _id: qpayBarimt.gereeniiId },
+        //   updatePush,
+        //   { new: true }
+        // );
 
-        const result = await Geree(tukhainBaaziinKholbolt).findByIdAndUpdate(
-          { _id: qpayBarimt.gereeniiId },
-          updateQuery,
-          { new: true }
-        );
+        // const result = await Geree(tukhainBaaziinKholbolt).findByIdAndUpdate(
+        //   { _id: qpayBarimt.gereeniiId },
+        //   updateQuery,
+        //   { new: true }
+        // );
 
         await qpayBarimt.save();
         var tulsunDun = tulbur
