@@ -715,17 +715,14 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                       .reduce((a, b) => a + b.tulsunAldangi, 0);
 
                     await tulultiinMsgIlgeeye(
-                      req.params.baiguullagiinId,
-                      result.gereeniiDugaar,
-                      result.utas[0],
+                      x.baiguullagiinId,
+                      geree.gereeniiDugaar,
+                      geree.utas[0],
                       tulsunDun,
                       tulsunAldangi
                     );
 
-                    await daraagiinTulukhOgnooZasya(
-                      qpayBarimt.gereeniiId,
-                      tukhainBaaziinKholbolt
-                    );
+                    await daraagiinTulukhOgnooZasya(geree._id, kholbolt);
                   }
                 } else {
                   khaikhNukhtsul = [];
