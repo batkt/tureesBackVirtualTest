@@ -466,21 +466,21 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         // );
 
         await qpayBarimt.save();
-        var tulsunDun = tulbur
-          .filter((a) => a.turul == "qpay")
-          .reduce((a, b) => a + b.tulsunDun, 0);
+        // var tulsunDun = tulbur
+        //   .filter((a) => a.turul == "qpay")
+        //   .reduce((a, b) => a + b.tulsunDun, 0);
 
-        var tulsunAldangi = tulbur
-          .filter((a) => a.turul == "aldangi")
-          .reduce((a, b) => a + b.tulsunAldangi, 0);
+        // var tulsunAldangi = tulbur
+        //   .filter((a) => a.turul == "aldangi")
+        //   .reduce((a, b) => a + b.tulsunAldangi, 0);
 
-        await tulultiinMsgIlgeeye(
-          req.params.baiguullagiinId,
-          result.gereeniiDugaar,
-          result.utas[0],
-          tulsunDun,
-          tulsunAldangi
-        );
+        // await tulultiinMsgIlgeeye(
+        //   req.params.baiguullagiinId,
+        //   result.gereeniiDugaar,
+        //   result.utas[0],
+        //   tulsunDun,
+        //   tulsunAldangi
+        // );
 
         await daraagiinTulukhOgnooZasya(
           qpayBarimt.gereeniiId,
