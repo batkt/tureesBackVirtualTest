@@ -156,6 +156,13 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
     });
     if (!tokenObject) {
       var url = process.env.TDB_SERVER + "/oauth2/token";
+      console.log(
+        "tdbTokenAvya ------------------->>> dans dugaar: " + dans.dugaar
+      );
+      console.log("tdbTokenAvya ------------------->>> url: " + url);
+      console.log(
+        "tdbTokenAvya ------------------->>> new Date: " + new Date()
+      );
       const response = await got
         .post(url, {
           headers: {
