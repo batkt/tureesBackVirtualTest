@@ -167,7 +167,9 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
             client_secret: dans.corporateNuutsUg,
           },
         })
-        .catch((err) => {});
+        .catch((err) => {
+          console.log("tdbTokenAvya ------------------->>>" + err);
+        });
       if (!response || !response?.body) {
         throw new Error(
           "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
@@ -189,6 +191,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
     }
     return tokenObject;
   } catch (error) {
+    console.log("tdbTokenAvya 1 ------------------->>>" + error);
     if (next) next(error);
   }
 }
@@ -740,6 +743,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       res.send({ uldegdel: khariltsakh?.balance });
     }
   } catch (err) {
+    console.log("dansniiUldegdelAvya ---------------------->>>", err);
     if (next) next(err);
   }
 });
