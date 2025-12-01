@@ -604,6 +604,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
             $match: {
               dansniiDugaar: dans.dugaar,
               baiguullagiinId: dans.baiguullagiinId,
+              NtryRef: { $exists: true, $ne: "", $ne: null },
             },
           },
           {
@@ -611,7 +612,12 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
               _id: "$dansniiDugaar",
               max: {
                 $max: {
-                  $toDouble: "$NtryRef",
+                  $convert: {
+                    input: "$NtryRef",
+                    to: "double",
+                    onError: 0,
+                    onNull: 0,
+                  },
                 },
               },
             },
@@ -629,6 +635,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           {
             $match: {
               turul: "tdbKhuselt",
+              dugaar: { $exists: true, $ne: "", $ne: null },
             },
           },
           {
@@ -636,7 +643,12 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
               _id: "aaa",
               max: {
                 $max: {
-                  $toDouble: "$dugaar",
+                  $convert: {
+                    input: "$dugaar",
+                    to: "double",
+                    onError: 0,
+                    onNull: 0,
+                  },
                 },
               },
             },
@@ -955,6 +967,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       $match: {
                         dansniiDugaar: dans.dugaar,
                         baiguullagiinId: dans.baiguullagiinId,
+                        NtryRef: { $exists: true, $ne: "", $ne: null },
                       },
                     },
                     {
@@ -962,7 +975,12 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         _id: "$dansniiDugaar",
                         max: {
                           $max: {
-                            $toDouble: "$NtryRef",
+                            $convert: {
+                              input: "$NtryRef",
+                              to: "double",
+                              onError: 0,
+                              onNull: 0,
+                            },
                           },
                         },
                       },
@@ -977,6 +995,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     {
                       $match: {
                         turul: "tdbKhuselt",
+                        dugaar: { $exists: true, $ne: "", $ne: null },
                       },
                     },
                     {
@@ -984,7 +1003,12 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         _id: "aaa",
                         max: {
                           $max: {
-                            $toDouble: "$dugaar",
+                            $convert: {
+                              input: "$dugaar",
+                              to: "double",
+                              onError: 0,
+                              onNull: 0,
+                            },
                           },
                         },
                       },
@@ -1394,6 +1418,7 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
       $match: {
         dansniiDugaar: dans.dugaar,
         baiguullagiinId: dans.baiguullagiinId,
+        NtryRef: { $exists: true, $ne: "", $ne: null },
       },
     },
     {
@@ -1401,7 +1426,12 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
         _id: "$dansniiDugaar",
         max: {
           $max: {
-            $toDouble: "$NtryRef",
+            $convert: {
+              input: "$NtryRef",
+              to: "double",
+              onError: 0,
+              onNull: 0,
+            },
           },
         },
       },
@@ -1419,6 +1449,7 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
     {
       $match: {
         turul: "tdbKhuselt",
+        dugaar: { $exists: true, $ne: "", $ne: null },
       },
     },
     {
@@ -1426,7 +1457,12 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
         _id: "aaa",
         max: {
           $max: {
-            $toDouble: "$dugaar",
+            $convert: {
+              input: "$dugaar",
+              to: "double",
+              onError: 0,
+              onNull: 0,
+            },
           },
         },
       },
@@ -1626,6 +1662,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     $match: {
                       dansniiDugaar: dans.dugaar,
                       baiguullagiinId: dans.baiguullagiinId,
+                      NtryRef: { $exists: true, $ne: "", $ne: null },
                     },
                   },
                   {
@@ -1633,7 +1670,12 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       _id: "$dansniiDugaar",
                       max: {
                         $max: {
-                          $toDouble: "$NtryRef",
+                          $convert: {
+                            input: "$NtryRef",
+                            to: "double",
+                            onError: 0,
+                            onNull: 0,
+                          },
                         },
                       },
                     },
@@ -1646,6 +1688,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   {
                     $match: {
                       turul: "tdbKhuselt",
+                      dugaar: { $exists: true, $ne: "", $ne: null },
                     },
                   },
                   {
@@ -1653,7 +1696,12 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       _id: "aaa",
                       max: {
                         $max: {
-                          $toDouble: "$dugaar",
+                          $convert: {
+                            input: "$dugaar",
+                            to: "double",
+                            onError: 0,
+                            onNull: 0,
+                          },
                         },
                       },
                     },
