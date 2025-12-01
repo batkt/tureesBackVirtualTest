@@ -1182,7 +1182,7 @@ router
       ) {
         var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud;
         for (const savlaga of suuliinSariinAvlaguud)
-          savlaga.tailbar = req.body.shaltgaan;
+          savlaga.tailbar = savlaga.tailbar + " " + req.body.shaltgaan;
         console.log(
           "avlaguud -------------->>>" + JSON.stringify(suuliinSariinAvlaguud)
         );
