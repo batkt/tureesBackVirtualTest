@@ -893,6 +893,7 @@ router
           tulukhUdur: 1,
           talbainIdnuud: 1,
         });
+
       if (geree.tuluv !== -1)
         throw new Error("Зөвхөн цуцалсан төлөвтэй гэрээг сэргээх боломжтой!");
 
@@ -955,7 +956,7 @@ router
         tulsunDun: { $exists: false },
       };
 
-      var updateQuery = {
+      var setPushQuery = {
         $set: {
           tsutsalsanOgnoo: null,
           tuluv: 1,
@@ -963,38 +964,38 @@ router
         $pull: { "avlaga.guilgeenuud": pullFilter },
       };
 
-      if (khuvaariud.length > 0) {
-        updateQuery.$push = {
-          "avlaga.guilgeenuud": { $each: khuvaariud },
-        };
-      }
-
       if (geree.gereeniiTuukhuud) {
-        updateQuery.$push = updateQuery.$push || {};
-        updateQuery.$push.gereeniiTuukhuud = tuukh;
+        setPushQuery.$push = { gereeniiTuukhuud: tuukh };
       } else {
-        updateQuery.$set.gereeniiTuukhuud = [tuukh];
+        setPushQuery.$set.gereeniiTuukhuud = [tuukh];
       }
 
-      Geree(req.body.tukhainBaaziinKholbolt)
-        .findOneAndUpdate({ _id: req.body.gereeniiId }, updateQuery, {
-          new: true,
-        })
-        .then((result) => {
-          talbaiKhariltsagchiinTuluvUurchluy(
-            [req.body.gereeniiId],
-            req.body.tukhainBaaziinKholbolt
-          );
-          res.send("Amjilttai");
-        })
-        .catch((err) => {
-          next(err);
-        });
+      await Geree(req.body.tukhainBaaziinKholbolt)
+        .findOneAndUpdate({ _id: req.body.gereeniiId }, setPushQuery)
+        .exec();
+
+      if (khuvaariud.length > 0) {
+        await Geree(req.body.tukhainBaaziinKholbolt)
+          .findOneAndUpdate(
+            { _id: req.body.gereeniiId },
+            {
+              $push: {
+                "avlaga.guilgeenuud": { $each: khuvaariud },
+              },
+            }
+          )
+          .exec();
+      }
+
+      talbaiKhariltsagchiinTuluvUurchluy(
+        [req.body.gereeniiId],
+        req.body.tukhainBaaziinKholbolt
+      );
+      res.send("Amjilttai");
     } catch (err) {
       next(err);
     }
   });
-
 async function talbaiKhariltsagchiinTuluvUurchluy(
   gereeniiIdnuud,
   tukhainBaaziinKholbolt
