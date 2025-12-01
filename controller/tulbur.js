@@ -625,6 +625,8 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                       _id: oldsonGereenuud[0]._id,
                     });
                     var qpayAmount = x.kholbosonDun;
+                    console.log("qpayAmount", qpayAmount);
+                    console.log("geree ", geree.gereeniiDugaar);
                     var baiguullaga = await Baiguullaga(
                       db.erunkhiiKholbolt
                     ).findById(x.baiguullagiinId);
@@ -815,7 +817,9 @@ module.exports.tulultTaniya = async function tulultTaniya() {
         }
       }
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log("tulultTaniya ---------------->>" + e);
+  }
 };
 
 module.exports.aldangiBodyo = async function aldangiBodyo(
