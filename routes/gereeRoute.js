@@ -893,7 +893,6 @@ router
           tulukhUdur: 1,
           talbainIdnuud: 1,
         });
-
       if (geree.tuluv !== -1)
         throw new Error("Зөвхөн цуцалсан төлөвтэй гэрээг сэргээх боломжтой!");
 
@@ -951,27 +950,28 @@ router
         });
       });
 
-      var pullFilter = {
+      var pullFilterForFuture = {
         ognoo: { $gte: unuudur },
         tulsunDun: { $exists: false },
       };
 
-      var setPushQuery = {
+      var setPullQuery = {
         $set: {
           tsutsalsanOgnoo: null,
           tuluv: 1,
         },
-        $pull: { "avlaga.guilgeenuud": pullFilter },
+
+        $pull: { "avlaga.guilgeenuud": pullFilterForFuture },
       };
 
       if (geree.gereeniiTuukhuud) {
-        setPushQuery.$push = { gereeniiTuukhuud: tuukh };
+        setPullQuery.$push = { gereeniiTuukhuud: tuukh };
       } else {
-        setPushQuery.$set.gereeniiTuukhuud = [tuukh];
+        setPullQuery.$set.gereeniiTuukhuud = [tuukh];
       }
 
       await Geree(req.body.tukhainBaaziinKholbolt)
-        .findOneAndUpdate({ _id: req.body.gereeniiId }, setPushQuery)
+        .findOneAndUpdate({ _id: req.body.gereeniiId }, setPullQuery)
         .exec();
 
       if (khuvaariud.length > 0) {
@@ -996,6 +996,7 @@ router
       next(err);
     }
   });
+
 async function talbaiKhariltsagchiinTuluvUurchluy(
   gereeniiIdnuud,
   tukhainBaaziinKholbolt
