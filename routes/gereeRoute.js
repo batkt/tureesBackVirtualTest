@@ -1144,7 +1144,7 @@ router
         var avlagaOgnoo = moment(avlaga.ognoo);
         var tsutslakhSar = moment(tsutslakhOgnoo);
 
-        if (avlaga.tulsunDun !== undefined) {
+        if (avlaga.tulsunDun !== undefined && avlaga.tulsunDun !== null) {
           shinechlegudsunAvlaguud.push(avlaga);
           return;
         }
@@ -1168,12 +1168,26 @@ router
         req.body.udruurBodokhEsekh &&
         req.body.suuliinSariinAvlaguud?.length > 0
       ) {
-        var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud.map(
-          (savlaga) => ({
+        var odoogchiAvlaguudSet = new Set();
+        shinechlegudsunAvlaguud.forEach((g) => {
+          var key = `${moment(g.ognoo).format("YYYY-MM-DD")}_${g.turul || ""}_${
+            g.tailbar || ""
+          }`;
+          odoogchiAvlaguudSet.add(key);
+        });
+
+        // Сүүлийн сарын авлагуудыг шүүх
+        var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud
+          .map((savlaga) => ({
             ...savlaga,
             tailbar: savlaga.tailbar || req.body.shaltgaan,
-          })
-        );
+          }))
+          .filter((savlaga) => {
+            var key = `${moment(savlaga.ognoo).format("YYYY-MM-DD")}_${
+              savlaga.turul || ""
+            }_${savlaga.tailbar || ""}`;
+            return !odoogchiAvlaguudSet.has(key);
+          });
 
         shinechlegudsunAvlaguud.push(...suuliinSariinAvlaguud);
       }
