@@ -1183,7 +1183,9 @@ router
         var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud;
         for (const savlaga of suuliinSariinAvlaguud)
           savlaga.tailbar = req.body.shaltgaan;
-
+        console.log(
+          "avlaguud -------------->>>" + JSON.stringify(suuliinSariinAvlaguud)
+        );
         Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
             { _id: req.body.gereeniiId },
