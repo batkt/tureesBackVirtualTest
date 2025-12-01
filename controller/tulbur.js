@@ -349,7 +349,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               turOgnoo.getFullYear() == duusakhOgnoo.getFullYear()
             )
               duussanEsekh = true;
-            if (!body.turGereeEsekh) {
+            if (!body.turGereeEsekh || !body.garaasKhonogOruulakhEsekh) {
               dun = ekhniiSariinDunZasyaSync(
                 body,
                 turOgnoo,
@@ -385,14 +385,15 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                   if (zardal.turul == "1м3/талбай")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.metrKube);
                   if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
-                  var zardalDun = body.turGereeEsekh
-                    ? zardal.dun
-                    : ekhniiSariinDunZasyaSync(
-                        body,
-                        turOgnoo,
-                        ekhlekhOgnoo,
-                        zardal.dun
-                      );
+                  var zardalDun =
+                    body.turGereeEsekh || !body.garaasKhonogOruulakhEsekh
+                      ? zardal.dun
+                      : ekhniiSariinDunZasyaSync(
+                          body,
+                          turOgnoo,
+                          ekhlekhOgnoo,
+                          zardal.dun
+                        );
                   if (
                     zardal.ognoonuud?.length > 0 &&
                     moment(zardal.ognoonuud[0]).format("MM") ==
