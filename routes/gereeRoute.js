@@ -1122,7 +1122,7 @@ router
             ognoo: {
               $gte: new Date(moment(req.body.tsutslakhOgnoo).startOf("month")),
             },
-            tulsunDun: { $exists: false },
+            $or: [{ tulsunDun: 0 }, { tulsunDun: { $exists: false } }],
           }
         : { ognoo: { $gt: new Date() } };
       if (geree.gereeniiTuukhuud) {
