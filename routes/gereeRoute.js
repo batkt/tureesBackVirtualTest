@@ -883,7 +883,6 @@ router
   .route("/gereeSergeeye")
   .post(tokenShalgakh, gereeSergeekhShalguur, async (req, res, next) => {
     try {
-      // ЗАСВАР 1: Шаардлагатай бүх өгөгдлийг авах
       var geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findById(req.body.gereeniiId)
         .select({
