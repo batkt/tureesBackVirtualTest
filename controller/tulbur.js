@@ -700,7 +700,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                       { new: true }
                     );
 
-                    const result = await Geree(kholbolt).findByIdAndUpdate(
+                    await Geree(kholbolt).findByIdAndUpdate(
                       { _id: oldsonGereenuud[0]._id },
                       updateQuery,
                       { new: true }
@@ -715,7 +715,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                       .reduce((a, b) => a + b.tulsunAldangi, 0);
 
                     await tulultiinMsgIlgeeye(
-                      x.baiguullagiinId,
+                      geree.baiguullagiinId,
                       geree.gereeniiDugaar,
                       geree.utas[0],
                       tulsunDun,
