@@ -467,47 +467,23 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
 });
 
 function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
-  if (
-    turOgnoo.getMonth() == ekhlekhOgnoo.getMonth() &&
-    turOgnoo.getFullYear() == ekhlekhOgnoo.getFullYear()
-  ) {
+  const ekh = moment(ekhlekhOgnoo, ["YYYY-MM-DD", "YYYY/MM/DD"]);
+  const ger = moment(body?.gereeniiOgnoo, ["YYYY-MM-DD", "YYYY/MM/DD"]);
+  const tur = moment(turOgnoo, ["YYYY-MM-DD", "YYYY/MM/DD"]);
+
+  if (tur.month() == ekh.month() && tur.year() == ekh.year()) {
     var sariinNiitKhonog = body.guchKhonogOruulakhEsekh
       ? 30
-      : parseFloat(moment(ekhlekhOgnoo).endOf("month").format("DD"));
-    
-    // Normalize gereeniiOgnoo to proper date format for moment.js
-    var gereeniiOgnooMoment = null;
-    if (body?.gereeniiOgnoo) {
-      var dateInput = body.gereeniiOgnoo;
-      // If it's a string in format "2025/05/01", convert to ISO format "2025-05-01"
-      if (typeof dateInput === 'string' && dateInput.includes('/')) {
-        dateInput = dateInput.replace(/\//g, '-');
-      }
-      // Parse with moment using explicit format if it's a date string
-      if (typeof dateInput === 'string') {
-        gereeniiOgnooMoment = moment(dateInput, ['YYYY-MM-DD', 'YYYY/MM/DD', moment.ISO_8601], true);
-      } else if (dateInput instanceof Date) {
-        gereeniiOgnooMoment = moment(dateInput);
-      } else {
-        gereeniiOgnooMoment = moment(dateInput);
-      }
-      // Validate the moment object
-      if (!gereeniiOgnooMoment.isValid()) {
-        gereeniiOgnooMoment = null;
-      }
-    }
-    
+      : Number(ekh.endOf("month").format("DD"));
+
     var ashiglakhKhonog =
       body.garaasKhonogOruulakhEsekh &&
-      gereeniiOgnooMoment &&
-      gereeniiOgnooMoment.isSame(ekhlekhOgnoo, "month") &&
-      gereeniiOgnooMoment.isSame(ekhlekhOgnoo, "year")
+      ger.isSame(ekh, "month") &&
+      ger.isSame(ekh, "year")
         ? body.ekhniiSariinKhonog
-        : gereeniiOgnooMoment
-        ? moment(ekhlekhOgnoo).endOf("month").diff(gereeniiOgnooMoment, "d") + 1
-        : 1;
+        : ekh.endOf("month").diff(ger, "d") + 1;
     ashiglakhKhonog =
-      sariinNiitKhonog < ashiglakhKhonog ? sariinNiitKhonog : ashiglakhKhonog; // 28 < 30
+      sariinNiitKhonog < ashiglakhKhonog ? sariinNiitKhonog : ashiglakhKhonog;
     dun = (dun * ashiglakhKhonog) / (sariinNiitKhonog || 1);
   }
   return dun;
