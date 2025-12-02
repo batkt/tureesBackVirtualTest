@@ -592,9 +592,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                   var qpayAmount = x.kholbosonDun;
                   console.log("qpayAmount", qpayAmount);
                   console.log("geree ", geree.gereeniiDugaar);
-                  var baiguullaga = await Baiguullaga(
-                    db.erunkhiiKholbolt
-                  ).findById(x.baiguullagiinId);
                   if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
                     var tulsunDun = 0;
                     if (geree.aldangiinUldegdel >= qpayAmount) {
