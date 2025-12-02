@@ -705,6 +705,14 @@ router
         baiguullagiinId: geree.baiguullagiinId,
         kod: geree.talbainDugaar,
       });
+
+      if (geree.turGereeEsekh) {
+        if (!talbai) talbai = {};
+        talbai.talbainKhemjee = geree.talbainKhemjee;
+        talbai.talbainKhemjeeMetrKube = geree.talbainKhemjeeMetrKube;
+        talbai.talbainNiitUne = geree.sariinTurees;
+      }
+
       if (!!geree.zardluud && !!ashiglaltiinZardluud) {
         for await (const zardal of geree.zardluud) {
           var tukhainZardal = ashiglaltiinZardluud.find(
