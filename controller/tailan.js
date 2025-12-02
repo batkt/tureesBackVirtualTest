@@ -2019,6 +2019,14 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
           },
         },
       ]);
+      const qrTypes = [
+        "GadaaQR",
+        "DotorQR",
+        "bankQR",
+        "toki",
+        "qpay",
+        "qpayUridchilsan",
+      ];
       var groups = {
         turul: "$tuukh.tulbur.turul",
       };
@@ -2038,6 +2046,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
               $gte: new Date(req.params.ekhlekhOgnoo),
               $lte: new Date(req.params.duusakhOgnoo),
             },
+            "tuukh.tulbur.turul": { $nin: qrTypes },
           },
         },
         {
@@ -2066,6 +2075,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
               $gte: new Date(req.params.ekhlekhOgnoo),
               $lte: new Date(req.params.duusakhOgnoo),
             },
+            "tuukh.tulbur.turul": { $in: qrTypes },
           },
         },
         {
