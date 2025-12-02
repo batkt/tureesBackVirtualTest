@@ -705,14 +705,6 @@ router
         baiguullagiinId: geree.baiguullagiinId,
         kod: geree.talbainDugaar,
       });
-
-      if (geree.turGereeEsekh) {
-        if (!talbai) talbai = {};
-        talbai.talbainKhemjee = geree.talbainKhemjee;
-        talbai.talbainKhemjeeMetrKube = geree.talbainKhemjeeMetrKube;
-        talbai.talbainNiitUne = geree.sariinTurees;
-      }
-
       if (!!geree.zardluud && !!ashiglaltiinZardluud) {
         for await (const zardal of geree.zardluud) {
           var tukhainZardal = ashiglaltiinZardluud.find(
@@ -1130,7 +1122,7 @@ router
             ognoo: {
               $gte: new Date(moment(req.body.tsutslakhOgnoo).startOf("month")),
             },
-            tulukhDun: { $gt: 0 },
+            tulsunDun: { $exists: false },
           }
         : { ognoo: { $gt: new Date() } };
       if (geree.gereeniiTuukhuud) {
@@ -1190,15 +1182,8 @@ router
       ) {
         var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud;
         for (const savlaga of suuliinSariinAvlaguud)
-          savlaga.tailbar =
-            (savlaga.turul === "khuvaari"
-              ? "Түрээсийн төлбөр"
-              : savlaga.tailbar) +
-            " " +
-            req.body.shaltgaan;
-        console.log(
-          "avlaguud -------------->>>" + JSON.stringify(suuliinSariinAvlaguud)
-        );
+          savlaga.tailbar = req.body.shaltgaan;
+
         Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
             { _id: req.body.gereeniiId },

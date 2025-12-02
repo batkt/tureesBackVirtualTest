@@ -1674,14 +1674,12 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             moment(ognoo).add(index, "month").set("date", udur) <=
             moment(x.duusakhOgnoo)
           ) {
-            var dun = x.garaasKhonogOruulakhEsekh
-              ? ekhniiSariinDunZasyaSync(
-                  x,
-                  moment(ognoo).add(index, "month").set("date", udur),
-                  moment(x.gereeniiOgnoo).startOf("month"),
-                  x.talbainNiitUne
-                )
-              : x.talbainNiitUne; // Ekhnii sariin dun bodokh
+            var dun = ekhniiSariinDunZasyaSync(
+              x,
+              moment(ognoo).add(index, "month").set("date", udur),
+              moment(x.gereeniiOgnoo).startOf("month"),
+              x.talbainNiitUne
+            ); // Ekhnii sariin dun bodokh
             data.push({
               ognoo: moment(ognoo).add(index, "month").set("date", udur),
               undsenDun: dun,
@@ -1701,14 +1699,12 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
                     );
                   if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
                   if (!!zardal.dun) {
-                    var zardalDun = x.garaasKhonogOruulakhEsekh
-                      ? ekhniiSariinDunZasyaSync(
-                          x,
-                          moment(ognoo).add(index, "month").set("date", udur),
-                          moment(x.gereeniiOgnoo).startOf("month"),
-                          zardal.dun
-                        )
-                      : zardal.dun; // Ekhnii sariin dun bodokh
+                    var zardalDun = ekhniiSariinDunZasyaSync(
+                      x,
+                      moment(ognoo).add(index, "month").set("date", udur),
+                      moment(x.gereeniiOgnoo).startOf("month"),
+                      zardal.dun
+                    ); // Ekhnii sariin dun bodokh
                     data.push({
                       turul: "avlaga",
                       tailbar: zardal.ner,

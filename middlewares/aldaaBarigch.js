@@ -33,8 +33,11 @@ function aldaagIlgeeye(aldaa, req) {
   request.end();
 }
 const aldaaBarigch = (err, req, res, next) => {
-  try
-  {
+  try {
+    if (res.headersSent) {
+      return next(err);
+    }
+
     if (req.body && req.body.nevtersenAjiltniiToken) aldaagIlgeeye(err, req);
     if (!!err.message && err.message.includes("indexTalbar_1 dup key"))
       err.message = "Нэвтрэх нэр давхардаж байна!";
@@ -48,10 +51,18 @@ const aldaaBarigch = (err, req, res, next) => {
       success: false,
       aldaa: err.message,
     });
-  } 
-  catch( error)
-  {
-    if(!!next) next(error)
+  } catch (error) {
+    if (res.headersSent) {
+      return next(error);
+    }
+    try {
+      res.status(500).json({
+        success: false,
+        aldaa: error.message || "Алдаа гарлаа",
+      });
+    } catch (sendError) {
+      if (!!next) next(error);
+    }
   }
 };
 
