@@ -514,10 +514,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             };
             var match1 = match;
             const qpayRegex = {
-              $in: [
-                { $regex: "qpay", $options: "i" },
-                { $regex: "QPAY", $options: "i" },
-              ],
+              $in: [/qpay/i, /QPAY/i],
             };
             if (dans.bank == "golomt") {
               match1["tranDesc"] = qpayRegex;
@@ -536,10 +533,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             );
             var match2 = match;
             const qpayRegexNot = {
-              $nin: [
-                { $regex: "qpay", $options: "i" },
-                { $regex: "QPAY", $options: "i" },
-              ],
+              $nin: [/qpay/i, /QPAY/i],
             };
             if (dans.bank == "golomt") {
               match2["tranDesc"] = qpayRegexNot;
