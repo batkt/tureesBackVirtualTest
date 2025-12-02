@@ -705,6 +705,14 @@ router
         baiguullagiinId: geree.baiguullagiinId,
         kod: geree.talbainDugaar,
       });
+
+      if (geree.turGereeEsekh) {
+        if (!talbai) talbai = {};
+        talbai.talbainKhemjee = geree.talbainKhemjee;
+        talbai.talbainKhemjeeMetrKube = geree.talbainKhemjeeMetrKube;
+        talbai.talbainNiitUne = geree.sariinTurees;
+      }
+
       if (!!geree.zardluud && !!ashiglaltiinZardluud) {
         for await (const zardal of geree.zardluud) {
           var tukhainZardal = ashiglaltiinZardluud.find(
@@ -717,10 +725,11 @@ router
           }
         }
       }
+
       var khuvaariud = geree.avlaga.guilgeenuud;
       khuvaariud = khuvaariud.filter(
         (x) =>
-          x.ognoo < moment().startOf("month") ||
+          x.ognoo <= geree.duusakhOgnoo ||
           x.turul == "khyamdral" ||
           !!x.guilgeeKhiisenAjiltniiId ||
           !!x.guilgeeKhiisenOgnoo
@@ -739,8 +748,8 @@ router
           if (
             moment(unuudur).add(index, "month").set("date", udur) <=
               moment(new Date(req.body.duusakhOgnoo)) &&
-            moment(unuudur).add(index, "month").set("date", udur) >=
-              moment().startOf("month")
+            moment(unuudur).add(index, "month").set("date", udur) >
+              moment(geree.duusakhOgnoo)
           ) {
             var tukhainUdur = moment(unuudur)
               .add(index, "month")
@@ -749,30 +758,47 @@ router
             var baigaa = khuvaariud.find((a) => {
               return (
                 a.turul == "khuvaari" &&
-                a.tulukhDun == talbai.talbainNiitUne &&
+                a.tulukhDun ==
+                  (geree.turGereeEsekh
+                    ? geree.sariinTurees
+                    : talbai.talbainNiitUne) &&
                 moment(a.ognoo).isSame(tukhainUdur, "day")
               );
             });
-            if (!baigaa && talbai?.talbainNiitUne > 0)
+            if (
+              !baigaa &&
+              (geree.turGereeEsekh
+                ? geree.sariinTurees
+                : talbai?.talbainNiitUne) > 0
+            )
               khuvaariud.push({
                 ognoo: tukhainUdur,
                 khyamdral: 0,
                 turul: "khuvaari",
-                undsenDun: talbai.talbainNiitUne,
-                tulukhDun: talbai.talbainNiitUne,
+                undsenDun: geree.turGereeEsekh
+                  ? geree.sariinTurees
+                  : talbai.talbainNiitUne,
+                tulukhDun: geree.turGereeEsekh
+                  ? geree.sariinTurees
+                  : talbai.talbainNiitUne,
               });
             if (!!geree.zardluud && geree.zardluud.length > 0) {
               geree.zardluud.forEach((zardal) => {
                 if (
                   zardal.turul == "1м3/талбай" &&
-                  talbai.talbainKhemjeeMetrKube > 0
+                  (geree.turGereeEsekh
+                    ? geree.talbainKhemjeeMetrKube
+                    : talbai.talbainKhemjeeMetrKube) > 0
                 ) {
                   baigaa = khuvaariud.find((a) => {
                     return (
                       a.turul == "avlaga" &&
                       a.tulukhDun ==
                         tooZasyaSync(
-                          zardal.tariff * talbai.talbainKhemjeeMetrKube
+                          zardal.tariff *
+                            (geree.turGereeEsekh
+                              ? geree.talbainKhemjeeMetrKube
+                              : talbai.talbainKhemjeeMetrKube)
                         ) &&
                       moment(a.ognoo).isSame(tukhainUdur, "day") &&
                       a.tailbar == zardal.ner
@@ -785,18 +811,28 @@ router
                       turul: "avlaga",
                       tailbar: zardal.ner,
                       tulukhDun: tooZasyaSync(
-                        zardal.tariff * talbai.talbainKhemjeeMetrKube
+                        zardal.tariff *
+                          (geree.turGereeEsekh
+                            ? geree.talbainKhemjeeMetrKube
+                            : talbai.talbainKhemjeeMetrKube)
                       ),
                     });
                 } else if (
                   zardal.turul == "1м2" &&
-                  talbai?.talbainKhemjee > 0
+                  (geree.turGereeEsekh
+                    ? geree.talbainKhemjee
+                    : talbai?.talbainKhemjee) > 0
                 ) {
                   baigaa = khuvaariud.find((a) => {
                     return (
                       a.turul == "avlaga" &&
                       a.tulukhDun ==
-                        tooZasyaSync(zardal.tariff * talbai.talbainKhemjee) &&
+                        tooZasyaSync(
+                          zardal.tariff *
+                            (geree.turGereeEsekh
+                              ? geree.talbainKhemjee
+                              : talbai.talbainKhemjee)
+                        ) &&
                       moment(a.ognoo).isSame(tukhainUdur, "day") &&
                       a.tailbar == zardal.ner
                     );
@@ -808,7 +844,10 @@ router
                       turul: "avlaga",
                       tailbar: zardal.ner,
                       tulukhDun: tooZasyaSync(
-                        zardal.tariff * talbai.talbainKhemjee
+                        zardal.tariff *
+                          (geree.turGereeEsekh
+                            ? geree.talbainKhemjee
+                            : talbai.talbainKhemjee)
                       ),
                     });
                 } else if (zardal.turul == "Тогтмол") {
@@ -834,6 +873,7 @@ router
           }
         });
       });
+
       if (geree.gereeniiTuukhuud) {
         Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
@@ -1122,7 +1162,7 @@ router
             ognoo: {
               $gte: new Date(moment(req.body.tsutslakhOgnoo).startOf("month")),
             },
-            tulsunDun: { $exists: false },
+            tulukhDun: { $gt: 0 },
           }
         : { ognoo: { $gt: new Date() } };
       if (geree.gereeniiTuukhuud) {
@@ -1182,8 +1222,15 @@ router
       ) {
         var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud;
         for (const savlaga of suuliinSariinAvlaguud)
-          savlaga.tailbar = req.body.shaltgaan;
-
+          savlaga.tailbar =
+            (savlaga.turul === "khuvaari"
+              ? "Түрээсийн төлбөр"
+              : savlaga.tailbar) +
+            " " +
+            req.body.shaltgaan;
+        console.log(
+          "avlaguud -------------->>>" + JSON.stringify(suuliinSariinAvlaguud)
+        );
         Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
             { _id: req.body.gereeniiId },
