@@ -467,21 +467,52 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
 });
 
 function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
-  const ekh = moment(ekhlekhOgnoo, ["YYYY-MM-DD", "YYYY/MM/DD"]);
-  const ger = moment(body?.gereeniiOgnoo, ["YYYY-MM-DD", "YYYY/MM/DD"]);
-  const tur = moment(turOgnoo, ["YYYY-MM-DD", "YYYY/MM/DD"]);
+  const toMoment = (value) => {
+    if (!value) return null;
+    if (moment.isMoment(value)) {
+      return value.clone();
+    }
+    if (value instanceof Date) {
+      return moment(value);
+    }
+    if (typeof value === 'string') {
+      const formats = ["YYYY-MM-DD", "YYYY/MM/DD", "YYYY-MM-DD HH:mm:ss", "YYYY/MM/DD HH:mm:ss"];
+      const parsed = moment(value, formats, true);
+      if (parsed.isValid()) {
+        return parsed;
+      }
+      return moment(value);
+    }
+    return moment(value);
+  };
+
+  const ekh = toMoment(ekhlekhOgnoo);
+  const tur = toMoment(turOgnoo);
+  const ger = toMoment(body?.gereeniiOgnoo);
+
+  if (!ekh || !ekh.isValid() || !tur || !tur.isValid()) {
+    return dun;
+  }
 
   if (tur.month() == ekh.month() && tur.year() == ekh.year()) {
     var sariinNiitKhonog = body.guchKhonogOruulakhEsekh
       ? 30
       : Number(ekh.endOf("month").format("DD"));
 
-    var ashiglakhKhonog =
+    var ashiglakhKhonog;
+    if (
       body.garaasKhonogOruulakhEsekh &&
+      ger &&
+      ger.isValid() &&
       ger.isSame(ekh, "month") &&
       ger.isSame(ekh, "year")
-        ? body.ekhniiSariinKhonog
-        : ekh.endOf("month").diff(ger, "d") + 1;
+    ) {
+      ashiglakhKhonog = body.ekhniiSariinKhonog;
+    } else if (ger && ger.isValid()) {
+      ashiglakhKhonog = ekh.endOf("month").diff(ger, "d") + 1;
+    } else {
+      ashiglakhKhonog = 1;
+    }
     ashiglakhKhonog =
       sariinNiitKhonog < ashiglakhKhonog ? sariinNiitKhonog : ashiglakhKhonog;
     dun = (dun * ashiglakhKhonog) / (sariinNiitKhonog || 1);
