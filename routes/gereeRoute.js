@@ -1130,7 +1130,7 @@ router
             ognoo: {
               $gte: new Date(moment(req.body.tsutslakhOgnoo).startOf("month")),
             },
-            tulsunDun: { $exists: false },
+            tulukhDun: { $gt: 0 },
           }
         : { ognoo: { $gt: new Date() } };
       if (geree.gereeniiTuukhuud) {
@@ -1190,8 +1190,15 @@ router
       ) {
         var suuliinSariinAvlaguud = req.body.suuliinSariinAvlaguud;
         for (const savlaga of suuliinSariinAvlaguud)
-          savlaga.tailbar = req.body.shaltgaan;
-
+          savlaga.tailbar =
+            (savlaga.turul === "khuvaari"
+              ? "Түрээсийн төлбөр"
+              : savlaga.tailbar) +
+            " " +
+            req.body.shaltgaan;
+        console.log(
+          "avlaguud -------------->>>" + JSON.stringify(suuliinSariinAvlaguud)
+        );
         Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
             { _id: req.body.gereeniiId },

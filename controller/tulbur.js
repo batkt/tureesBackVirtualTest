@@ -13,6 +13,7 @@ const mongoose = require("mongoose");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const AldangiinTuukh = require("../models/aldangiinTuukh");
+const { tulultiinMsgIlgeeye } = require("../controller/khariltsagch");
 
 exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
   var guilgeenuud = req.body.guilgeenuud;
@@ -349,7 +350,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               turOgnoo.getFullYear() == duusakhOgnoo.getFullYear()
             )
               duussanEsekh = true;
-            if (!body.turGereeEsekh) {
+            if (body.garaasKhonogOruulakhEsekh) {
               dun = ekhniiSariinDunZasyaSync(
                 body,
                 turOgnoo,
@@ -385,7 +386,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                   if (zardal.turul == "1м3/талбай")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.metrKube);
                   if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
-                  var zardalDun = body.turGereeEsekh
+                  var zardalDun = !body.garaasKhonogOruulakhEsekh
                     ? zardal.dun
                     : ekhniiSariinDunZasyaSync(
                         body,
@@ -610,6 +611,117 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                     x.isNew = false;
                     x.burtgesenAjiltaniiNer = "систем автомат qpay";
                     x.save();
+                    var ognoo =
+                      dans.bank == "tdb"
+                        ? x.TxDt
+                          ? x.TxDt
+                          : x.TxPostDate
+                        : x.tranDate;
+                    var tulbur = [];
+                    var updateQuery = {};
+                    var updatePush = {};
+                    var geree = await Geree(kholbolt, true).findOne({
+                      _id: oldsonGereenuud[0]._id,
+                    });
+                    var qpayAmount = x.kholbosonDun;
+                    console.log("qpayAmount", qpayAmount);
+                    console.log("geree ", geree.gereeniiDugaar);
+                    var baiguullaga = await Baiguullaga(
+                      db.erunkhiiKholbolt
+                    ).findById(x.baiguullagiinId);
+                    if (baiguullaga?.tokhirgoo?.qpayShimtgelTusdaa == true)
+                      qpayAmount += 300;
+                    if (
+                      geree.aldangiinUldegdel &&
+                      geree.aldangiinUldegdel > 0
+                    ) {
+                      var tulsunDun = 0;
+                      if (geree.aldangiinUldegdel >= qpayAmount) {
+                        geree.aldangiinUldegdel =
+                          geree.aldangiinUldegdel - qpayAmount;
+                        tulsunDun = qpayAmount;
+                      } else {
+                        tulsunDun = geree.aldangiinUldegdel;
+                        var iluuDun = qpayAmount - tulsunDun;
+                        tulbur.push({
+                          turul: "qpay",
+                          tulsunDun: iluuDun,
+                          ognoo: ognoo,
+                          guilgeeKhiisenOgnoo: new Date(),
+                        });
+                        geree.aldangiinUldegdel = 0;
+                      }
+                      tulbur.push({
+                        tailbar: "систем алданги qpay ээр төлсөн",
+                        turul: "aldangi",
+                        aldangiinTurul: "qpay",
+                        tulukhAldangi: geree.aldangiinUldegdel,
+                        tulsunAldangi: tulsunDun,
+                        ognoo: ognoo,
+                        guilgeeKhiisenOgnoo: new Date(),
+                      });
+                      var niitTulsunAldangi = tulbur
+                        ?.filter((a) => a.turul == "aldangi")
+                        .reduce((a, b) => a + b.tulsunAldangi, 0);
+                      const niitTulsun =
+                        (geree.niitTulsunAldangi || 0) + niitTulsunAldangi;
+                      updateQuery = {
+                        $set: {
+                          aldangiinUldegdel: geree.aldangiinUldegdel,
+                          niitTulsunAldangi: niitTulsun,
+                        },
+                      };
+                      updatePush = {
+                        $push: {
+                          "avlaga.guilgeenuud": {
+                            $each: tulbur,
+                          },
+                        },
+                      };
+                    } else {
+                      tulbur.push({
+                        turul: "qpay",
+                        tulsunDun: qpayAmount,
+                        ognoo: ognoo,
+                        guilgeeKhiisenOgnoo: new Date(),
+                      });
+                      updateQuery = {
+                        $push: {
+                          [`avlaga.guilgeenuud`]: {
+                            $each: tulbur,
+                          },
+                        },
+                      };
+                    }
+                    await Geree(kholbolt).findByIdAndUpdate(
+                      { _id: oldsonGereenuud[0]._id },
+                      updatePush,
+                      { new: true }
+                    );
+
+                    await Geree(kholbolt).findByIdAndUpdate(
+                      { _id: oldsonGereenuud[0]._id },
+                      updateQuery,
+                      { new: true }
+                    );
+
+                    var tulsunDun = tulbur
+                      .filter((a) => a.turul == "qpay")
+                      .reduce((a, b) => a + b.tulsunDun, 0);
+
+                    var tulsunAldangi = tulbur
+                      .filter((a) => a.turul == "aldangi")
+                      .reduce((a, b) => a + b.tulsunAldangi, 0);
+
+                    await tulultiinMsgIlgeeye(
+                      geree.baiguullagiinId,
+                      geree.gereeniiDugaar,
+                      geree.utas[0],
+                      tulsunDun,
+                      tulsunAldangi
+                    );
+
+                    await daraagiinTulukhOgnooZasya(geree._id, kholbolt);
                   }
                 } else {
                   khaikhNukhtsul = [];
@@ -701,7 +813,9 @@ module.exports.tulultTaniya = async function tulultTaniya() {
         }
       }
     }
-  } catch (e) {}
+  } catch (e) {
+    console.log("tulultTaniya ---------------->>" + e);
+  }
 };
 
 module.exports.aldangiBodyo = async function aldangiBodyo(
