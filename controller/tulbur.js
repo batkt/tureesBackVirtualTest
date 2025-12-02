@@ -513,297 +513,268 @@ module.exports.tulultTaniya = async function tulultTaniya() {
               magadlaltaiGereenuud: { $exists: false },
             };
             var match1 = match;
+            const qpayRegex = {
+              $in: [
+                { $regex: "qpay", $options: "i" },
+                { $regex: "QPAY", $options: "i" },
+              ],
+            };
             if (dans.bank == "golomt") {
-              match1["tranDesc"] = { $regex: "qpay", $options: "i" };
+              match1["tranDesc"] = qpayRegex;
               match1["drOrCr"] = "Credit";
               match1["recNum"] = "1";
               match1["tranAmount"] = { $gt: 0 };
             } else if (dans.bank == "tdb") {
+              match1["TxAddInf"] = qpayRegex;
               match1["Amt"] = { $gt: 0 };
-              match1["TxAddInf"] = { $regex: "qpay", $options: "i" };
             } else {
-              match1["description"] = { $regex: "qpay", $options: "i" };
+              match1["description"] = qpayRegex;
               match1["amount"] = { $gt: 0 };
             }
-            var guilgeenuud = [];
-            var guilgeenuudQpay = await BankniiGuilgee(kholbolt, true).find(
+            var guilgeenuudQPAY = await BankniiGuilgee(kholbolt, true).find(
               match1
             );
-            guilgeenuud.push(...guilgeenuudQpay);
             var match2 = match;
+            const qpayRegexNot = {
+              $nin: [
+                { $regex: "qpay", $options: "i" },
+                { $regex: "QPAY", $options: "i" },
+              ],
+            };
             if (dans.bank == "golomt") {
-              match2["tranDesc"] = { $regex: "QPAY", $options: "i" };
+              match2["tranDesc"] = qpayRegexNot;
               match2["drOrCr"] = "Credit";
               match2["recNum"] = "1";
               match2["tranAmount"] = { $gt: 0 };
             } else if (dans.bank == "tdb") {
-              match2["TxAddInf"] = { $regex: "QPAY", $options: "i" };
+              match2["TxAddInf"] = qpayRegexNot;
               match2["Amt"] = { $gt: 0 };
             } else {
-              match2["description"] = { $regex: "QPAY", $options: "i" };
+              match2["description"] = qpayRegexNot;
               match2["amount"] = { $gt: 0 };
             }
-            var guilgeenuudQPAY = await BankniiGuilgee(kholbolt, true).find(
+            var guilgeenuudNOTQPAY = await BankniiGuilgee(kholbolt, true).find(
               match2
             );
-            guilgeenuud.push(...guilgeenuudQPAY);
-            var match3 = match;
-            if (dans.bank == "golomt") {
-              match3["tranDesc"] = { $not: { $regex: "qpay" } };
-              match3["drOrCr"] = "Credit";
-              match3["recNum"] = "1";
-              match3["tranAmount"] = { $gt: 0 };
-            } else if (dans.bank == "tdb") {
-              match3["TxAddInf"] = { $not: { $regex: "qpay" } };
-              match3["Amt"] = { $gt: 0 };
-            } else {
-              match3["description"] = { $not: { $regex: "qpay" } };
-              match3["amount"] = { $gt: 0 };
-            }
-            var guilgeenuudBish = await BankniiGuilgee(kholbolt, true).find(
-              match3
-            );
-            guilgeenuud.push(...guilgeenuudBish);
-            var match4 = match;
-            if (dans.bank == "golomt") {
-              match4["tranDesc"] = { $not: { $regex: "QPAY" } };
-              match4["drOrCr"] = "Credit";
-              match4["recNum"] = "1";
-              match4["tranAmount"] = { $gt: 0 };
-            } else if (dans.bank == "tdb") {
-              match4["TxAddInf"] = { $not: { $regex: "QPAY" } };
-              match4["Amt"] = { $gt: 0 };
-            } else {
-              match4["description"] = { $not: { $regex: "QPAY" } };
-              match4["amount"] = { $gt: 0 };
-            }
-            var guilgeenuudQPAYBish = await BankniiGuilgee(kholbolt, true).find(
-              match4
-            );
-            guilgeenuud.push(...guilgeenuudQPAYBish);
             var khaikhNukhtsul;
             var tailbar = [];
-            if (guilgeenuud?.length > 0) {
-              guilgeenuud.forEach(async (x) => {
-                if (
-                  (x.description &&
-                    x.description.toLowerCase().includes("qpay")) ||
-                  (x.TxAddInf && x.TxAddInf.toLowerCase().includes("qpay")) ||
-                  (x.tranDesc && x.tranDesc.toLowerCase().includes("qpay"))
-                ) {
-                  if (x.description) tailbar = x.description.split(/,| /);
-                  else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
-                  else if (x.tranDesc) tailbar = x.tranDesc.split(/,| /);
-                  var oldsonGereenuud = await Geree(kholbolt, true).find({
-                    gereeniiDugaar: { $in: tailbar },
-                    tuluv: 1,
-                    barilgiinId: x.barilgiinId,
-                  });
-                  if (oldsonGereenuud != null && oldsonGereenuud.length == 1) {
-                    var jagsaalt = [];
-                    var dugaar = oldsonGereenuud[0].talbainDugaar;
-                    if (dugaar.includes(",")) {
-                      jagsaalt = [...jagsaalt, ...dugaar.split(",")];
-                    } else jagsaalt.push(dugaar);
-                    x.kholbosonGereeniiId = [oldsonGereenuud[0]._id];
-                    x.kholbosonTalbainId = jagsaalt;
-                    x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
-                    x.isNew = false;
-                    x.burtgesenAjiltaniiNer = "систем автомат qpay";
-                    x.save();
-                    var ognoo =
-                      dans.bank == "tdb"
+            var bankniiGuilgeeniiIds = [];
+            if (guilgeenuudQPAY?.length > 0) {
+              guilgeenuudQPAY.forEach(async (x) => {
+                if (bankniiGuilgeeniiIds?.includes(x._id)) return;
+                if (x.description) tailbar = x.description.split(/,| /);
+                else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
+                else if (x.tranDesc) tailbar = x.tranDesc.split(/,| /);
+                var oldsonGereenuud = await Geree(kholbolt, true).find({
+                  gereeniiDugaar: { $in: tailbar },
+                  tuluv: 1,
+                  barilgiinId: x.barilgiinId,
+                });
+                if (oldsonGereenuud != null && oldsonGereenuud.length == 1) {
+                  var jagsaalt = [];
+                  var dugaar = oldsonGereenuud[0].talbainDugaar;
+                  if (dugaar.includes(",")) {
+                    jagsaalt = [...jagsaalt, ...dugaar.split(",")];
+                  } else jagsaalt.push(dugaar);
+                  x.kholbosonGereeniiId = [oldsonGereenuud[0]._id];
+                  x.kholbosonTalbainId = jagsaalt;
+                  x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
+                  x.isNew = false;
+                  x.burtgesenAjiltaniiNer = "систем автомат qpay";
+                  x.save();
+                  bankniiGuilgeeniiIds.push(x._id);
+                  var ognoo =
+                    dans.bank == "tdb"
+                      ? x.TxDt
                         ? x.TxDt
-                          ? x.TxDt
-                          : x.TxPostDate
-                        : x.tranDate;
-                    var tulbur = [];
-                    var updateQuery = {};
-                    var updatePush = {};
-                    var geree = await Geree(kholbolt, true).findOne({
-                      _id: oldsonGereenuud[0]._id,
-                    });
-                    var qpayAmount = x.kholbosonDun;
-                    console.log("qpayAmount", qpayAmount);
-                    console.log("geree ", geree.gereeniiDugaar);
-                    var baiguullaga = await Baiguullaga(
-                      db.erunkhiiKholbolt
-                    ).findById(x.baiguullagiinId);
-                    if (baiguullaga?.tokhirgoo?.qpayShimtgelTusdaa == true)
-                      qpayAmount += 300;
-                    if (
-                      geree.aldangiinUldegdel &&
-                      geree.aldangiinUldegdel > 0
-                    ) {
-                      var tulsunDun = 0;
-                      if (geree.aldangiinUldegdel >= qpayAmount) {
-                        geree.aldangiinUldegdel =
-                          geree.aldangiinUldegdel - qpayAmount;
-                        tulsunDun = qpayAmount;
-                      } else {
-                        tulsunDun = geree.aldangiinUldegdel;
-                        var iluuDun = qpayAmount - tulsunDun;
-                        tulbur.push({
-                          turul: "qpay",
-                          tulsunDun: iluuDun,
-                          ognoo: ognoo,
-                          guilgeeKhiisenOgnoo: new Date(),
-                        });
-                        geree.aldangiinUldegdel = 0;
-                      }
-                      tulbur.push({
-                        tailbar: "систем алданги qpay ээр төлсөн",
-                        turul: "aldangi",
-                        aldangiinTurul: "qpay",
-                        tulukhAldangi: geree.aldangiinUldegdel,
-                        tulsunAldangi: tulsunDun,
-                        ognoo: ognoo,
-                        guilgeeKhiisenOgnoo: new Date(),
-                      });
-                      var niitTulsunAldangi = tulbur
-                        ?.filter((a) => a.turul == "aldangi")
-                        .reduce((a, b) => a + b.tulsunAldangi, 0);
-                      const niitTulsun =
-                        (geree.niitTulsunAldangi || 0) + niitTulsunAldangi;
-                      updateQuery = {
-                        $set: {
-                          aldangiinUldegdel: geree.aldangiinUldegdel,
-                          niitTulsunAldangi: niitTulsun,
-                        },
-                      };
-                      updatePush = {
-                        $push: {
-                          "avlaga.guilgeenuud": {
-                            $each: tulbur,
-                          },
-                        },
-                      };
+                        : x.TxPostDate
+                      : x.tranDate;
+                  var tulbur = [];
+                  var updateQuery = {};
+                  var updatePush = {};
+                  var geree = await Geree(kholbolt, true).findOne({
+                    _id: oldsonGereenuud[0]._id,
+                  });
+                  var qpayAmount = x.kholbosonDun;
+                  console.log("qpayAmount", qpayAmount);
+                  console.log("geree ", geree.gereeniiDugaar);
+                  var baiguullaga = await Baiguullaga(
+                    db.erunkhiiKholbolt
+                  ).findById(x.baiguullagiinId);
+                  if (baiguullaga?.tokhirgoo?.qpayShimtgelTusdaa == true)
+                    qpayAmount += 300;
+                  if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
+                    var tulsunDun = 0;
+                    if (geree.aldangiinUldegdel >= qpayAmount) {
+                      geree.aldangiinUldegdel =
+                        geree.aldangiinUldegdel - qpayAmount;
+                      tulsunDun = qpayAmount;
                     } else {
+                      tulsunDun = geree.aldangiinUldegdel;
+                      var iluuDun = qpayAmount - tulsunDun;
                       tulbur.push({
                         turul: "qpay",
-                        tulsunDun: qpayAmount,
+                        tulsunDun: iluuDun,
                         ognoo: ognoo,
                         guilgeeKhiisenOgnoo: new Date(),
+                        bankniiGuilgeeId: x._id,
                       });
-                      updateQuery = {
-                        $push: {
-                          [`avlaga.guilgeenuud`]: {
-                            $each: tulbur,
-                          },
-                        },
-                      };
+                      geree.aldangiinUldegdel = 0;
                     }
-                    await Geree(kholbolt).findByIdAndUpdate(
-                      { _id: oldsonGereenuud[0]._id },
-                      updatePush,
-                      { new: true }
-                    );
-
-                    await Geree(kholbolt).findByIdAndUpdate(
-                      { _id: oldsonGereenuud[0]._id },
-                      updateQuery,
-                      { new: true }
-                    );
-
-                    var tulsunDun = tulbur
-                      .filter((a) => a.turul == "qpay")
-                      .reduce((a, b) => a + b.tulsunDun, 0);
-
-                    var tulsunAldangi = tulbur
-                      .filter((a) => a.turul == "aldangi")
+                    tulbur.push({
+                      tailbar: "систем алданги qpay ээр төлсөн",
+                      turul: "aldangi",
+                      aldangiinTurul: "qpay",
+                      tulukhAldangi: geree.aldangiinUldegdel,
+                      tulsunAldangi: tulsunDun,
+                      ognoo: ognoo,
+                      guilgeeKhiisenOgnoo: new Date(),
+                      bankniiGuilgeeId: x._id,
+                    });
+                    var niitTulsunAldangi = tulbur
+                      ?.filter((a) => a.turul == "aldangi")
                       .reduce((a, b) => a + b.tulsunAldangi, 0);
-
-                    await tulultiinMsgIlgeeye(
-                      geree.baiguullagiinId,
-                      geree.gereeniiDugaar,
-                      geree.utas[0],
-                      tulsunDun,
-                      tulsunAldangi
-                    );
-
-                    await daraagiinTulukhOgnooZasya(geree._id, kholbolt);
-                  }
-                } else {
-                  khaikhNukhtsul = [];
-                  if (x.description) tailbar = x.description.split(" ");
-                  else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
-                  else if (x.tranDesc) tailbar = x.tranDesc.split(" ");
-                  var oldsonGereenuud = [];
-                  if (x.relatedAccount != null) {
-                    var oldsonGereenuudRelatedAccount = await Geree(
-                      kholbolt,
-                      true
-                    ).find({
-                      "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
-                      tuluv: 1,
-                      barilgiinId: x.barilgiinId,
+                    const niitTulsun =
+                      (geree.niitTulsunAldangi || 0) + niitTulsunAldangi;
+                    updateQuery = {
+                      $set: {
+                        aldangiinUldegdel: geree.aldangiinUldegdel,
+                        niitTulsunAldangi: niitTulsun,
+                      },
+                    };
+                    updatePush = {
+                      $push: {
+                        "avlaga.guilgeenuud": {
+                          $each: tulbur,
+                        },
+                      },
+                    };
+                  } else {
+                    tulbur.push({
+                      turul: "qpay",
+                      tulsunDun: qpayAmount,
+                      ognoo: ognoo,
+                      guilgeeKhiisenOgnoo: new Date(),
+                      bankniiGuilgeeId: x._id,
                     });
-                    if (oldsonGereenuudRelatedAccount?.length > 0)
-                      oldsonGereenuud.push(...oldsonGereenuudRelatedAccount);
-                  } else if (x.CtAcntOrg != null) {
-                    var oldsonGereenuudCtAcntOrg = await Geree(
-                      kholbolt,
-                      true
-                    ).find({
-                      "avlaga.guilgeenuud.dansniiDugaar": x.CtAcntOrg,
-                      tuluv: 1,
-                      barilgiinId: x.barilgiinId,
-                    });
-                    if (oldsonGereenuudCtAcntOrg?.length > 0)
-                      oldsonGereenuud.push(...oldsonGereenuudCtAcntOrg);
+                    updateQuery = {
+                      $push: {
+                        [`avlaga.guilgeenuud`]: {
+                          $each: tulbur,
+                        },
+                      },
+                    };
                   }
-                  var oldsonGereenuudUtas = await Geree(kholbolt, true).find({
-                    utas: { $in: tailbar },
-                    tuluv: 1,
-                    barilgiinId: x.barilgiinId,
-                  });
-                  if (oldsonGereenuudUtas)
-                    oldsonGereenuud.push(...oldsonGereenuudUtas);
-                  var oldsonGereenuudRegister = await Geree(
+                  await Geree(kholbolt).findByIdAndUpdate(
+                    { _id: oldsonGereenuud[0]._id },
+                    updatePush,
+                    { new: true }
+                  );
+
+                  await Geree(kholbolt).findByIdAndUpdate(
+                    { _id: oldsonGereenuud[0]._id },
+                    updateQuery,
+                    { new: true }
+                  );
+
+                  var tulsunDun = tulbur
+                    .filter((a) => a.turul == "qpay")
+                    .reduce((a, b) => a + b.tulsunDun, 0);
+
+                  var tulsunAldangi = tulbur
+                    .filter((a) => a.turul == "aldangi")
+                    .reduce((a, b) => a + b.tulsunAldangi, 0);
+
+                  await tulultiinMsgIlgeeye(
+                    geree.baiguullagiinId,
+                    geree.gereeniiDugaar,
+                    geree.utas[0],
+                    tulsunDun,
+                    tulsunAldangi
+                  );
+
+                  await daraagiinTulukhOgnooZasya(geree._id, kholbolt);
+                }
+              });
+            }
+            tailbar = [];
+            if (guilgeenuudNOTQPAY?.length > 0) {
+              guilgeenuudNOTQPAY.forEach(async (x) => {
+                khaikhNukhtsul = [];
+                if (x.description) tailbar = x.description.split(" ");
+                else if (x.TxAddInf) tailbar = x.TxAddInf.split(" ");
+                else if (x.tranDesc) tailbar = x.tranDesc.split(" ");
+                var oldsonGereenuud = [];
+                if (x.relatedAccount != null) {
+                  var oldsonGereenuudRelatedAccount = await Geree(
                     kholbolt,
                     true
                   ).find({
-                    register: { $in: tailbar },
+                    "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
                     tuluv: 1,
                     barilgiinId: x.barilgiinId,
                   });
-                  if (oldsonGereenuudRegister)
-                    oldsonGereenuud.push(...oldsonGereenuudRegister);
-
-                  tailbar.forEach((y) => {
-                    y = y.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
-                    khaikhNukhtsul.push({
-                      talbainDugaar: { $regex: ".*" + y + ".*" },
-                    });
-                  });
-
-                  var oldsonGereenuud = await Geree(kholbolt, true).find({
-                    $or: khaikhNukhtsul,
+                  if (oldsonGereenuudRelatedAccount?.length > 0)
+                    oldsonGereenuud.push(...oldsonGereenuudRelatedAccount);
+                } else if (x.CtAcntOrg != null) {
+                  var oldsonGereenuudCtAcntOrg = await Geree(
+                    kholbolt,
+                    true
+                  ).find({
+                    "avlaga.guilgeenuud.dansniiDugaar": x.CtAcntOrg,
                     tuluv: 1,
                     barilgiinId: x.barilgiinId,
                   });
-                  if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
-                    oldsonGereenuud.forEach((a) => {
-                      if (
-                        x.magadlaltaiGereenuud != null &&
-                        !x.magadlaltaiGereenuud.includes(a._id)
-                      )
-                        x.magadlaltaiGereenuud.push(a._id);
-                      else x.magadlaltaiGereenuud = [a._id];
-                    });
-                    try {
-                      await x.save();
-                    } catch (saveError) {
-                      if (saveError.name === "VersionError") {
-                        const reloaded = await x.constructor.findById(x._id);
-                        if (reloaded) {
-                          reloaded.magadlaltaiGereenuud =
-                            x.magadlaltaiGereenuud;
-                          await reloaded.save();
-                        }
-                      } else {
-                        throw saveError;
+                  if (oldsonGereenuudCtAcntOrg?.length > 0)
+                    oldsonGereenuud.push(...oldsonGereenuudCtAcntOrg);
+                }
+                var oldsonGereenuudUtas = await Geree(kholbolt, true).find({
+                  utas: { $in: tailbar },
+                  tuluv: 1,
+                  barilgiinId: x.barilgiinId,
+                });
+                if (oldsonGereenuudUtas)
+                  oldsonGereenuud.push(...oldsonGereenuudUtas);
+                var oldsonGereenuudRegister = await Geree(kholbolt, true).find({
+                  register: { $in: tailbar },
+                  tuluv: 1,
+                  barilgiinId: x.barilgiinId,
+                });
+                if (oldsonGereenuudRegister)
+                  oldsonGereenuud.push(...oldsonGereenuudRegister);
+
+                tailbar.forEach((y) => {
+                  y = y.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, "");
+                  khaikhNukhtsul.push({
+                    talbainDugaar: { $regex: ".*" + y + ".*" },
+                  });
+                });
+
+                var oldsonGereenuud = await Geree(kholbolt, true).find({
+                  $or: khaikhNukhtsul,
+                  tuluv: 1,
+                  barilgiinId: x.barilgiinId,
+                });
+                if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
+                  oldsonGereenuud.forEach((a) => {
+                    if (
+                      x.magadlaltaiGereenuud != null &&
+                      !x.magadlaltaiGereenuud.includes(a._id)
+                    )
+                      x.magadlaltaiGereenuud.push(a._id);
+                    else x.magadlaltaiGereenuud = [a._id];
+                  });
+                  try {
+                    await x.save();
+                  } catch (saveError) {
+                    if (saveError.name === "VersionError") {
+                      const reloaded = await x.constructor.findById(x._id);
+                      if (reloaded) {
+                        reloaded.magadlaltaiGereenuud = x.magadlaltaiGereenuud;
+                        await reloaded.save();
                       }
+                    } else {
+                      throw saveError;
                     }
                   }
                 }

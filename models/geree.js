@@ -66,6 +66,7 @@ var avlagiinTurul = new Schema({
       tooluuriinDugaar: String,
       tulukhNUAT: Number,
       tulukhNuatgui: Number,
+      bankniiGuilgeeId: String,
     },
   ],
   baritsaa: [
