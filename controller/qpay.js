@@ -394,8 +394,6 @@ exports.qpayTulye = asyncHandler(async (req, res, next) => {
         // var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
         //   req.params.baiguullagiinId
         // );
-        // if (baiguullaga?.tokhirgoo?.qpayShimtgelTusdaa == true)
-        //   qpayAmount -= 300;
         // if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
         //   var tulsunDun = 0;
         //   if (geree.aldangiinUldegdel >= qpayAmount) {

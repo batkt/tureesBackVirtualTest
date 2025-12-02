@@ -87,13 +87,16 @@ router.get(
       ) {
         const io = req.app.get("socketio");
         if (io) {
-          io.emit(`qpayMobileSdk${req.params.baiguullagiinId}${req.params.cameraIP}`, {
-            khaalgaTurul: "Гарах",
-            turul: "qpayMobile",
-            mashiniiDugaar: req.params.mashiniiDugaar,
-            cameraIP: req.params.cameraIP,
-            uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
-          });
+          io.emit(
+            `qpayMobileSdk${req.params.baiguullagiinId}${req.params.cameraIP}`,
+            {
+              khaalgaTurul: "Гарах",
+              turul: "qpayMobile",
+              mashiniiDugaar: req.params.mashiniiDugaar,
+              cameraIP: req.params.cameraIP,
+              uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
+            }
+          );
         }
       }
       res.sendStatus(200);
