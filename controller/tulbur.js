@@ -474,12 +474,38 @@ function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
     var sariinNiitKhonog = body.guchKhonogOruulakhEsekh
       ? 30
       : parseFloat(moment(ekhlekhOgnoo).endOf("month").format("DD"));
+    
+    // Normalize gereeniiOgnoo to proper date format for moment.js
+    var gereeniiOgnooMoment = null;
+    if (body?.gereeniiOgnoo) {
+      var dateInput = body.gereeniiOgnoo;
+      // If it's a string in format "2025/05/01", convert to ISO format "2025-05-01"
+      if (typeof dateInput === 'string' && dateInput.includes('/')) {
+        dateInput = dateInput.replace(/\//g, '-');
+      }
+      // Parse with moment using explicit format if it's a date string
+      if (typeof dateInput === 'string') {
+        gereeniiOgnooMoment = moment(dateInput, ['YYYY-MM-DD', 'YYYY/MM/DD', moment.ISO_8601], true);
+      } else if (dateInput instanceof Date) {
+        gereeniiOgnooMoment = moment(dateInput);
+      } else {
+        gereeniiOgnooMoment = moment(dateInput);
+      }
+      // Validate the moment object
+      if (!gereeniiOgnooMoment.isValid()) {
+        gereeniiOgnooMoment = null;
+      }
+    }
+    
     var ashiglakhKhonog =
       body.garaasKhonogOruulakhEsekh &&
-      moment(body?.gereeniiOgnoo).isSame(ekhlekhOgnoo, "month") &&
-      moment(body?.gereeniiOgnoo).isSame(ekhlekhOgnoo, "year")
+      gereeniiOgnooMoment &&
+      gereeniiOgnooMoment.isSame(ekhlekhOgnoo, "month") &&
+      gereeniiOgnooMoment.isSame(ekhlekhOgnoo, "year")
         ? body.ekhniiSariinKhonog
-        : moment(ekhlekhOgnoo).endOf("month").diff(body.gereeniiOgnoo, "d") + 1;
+        : gereeniiOgnooMoment
+        ? moment(ekhlekhOgnoo).endOf("month").diff(gereeniiOgnooMoment, "d") + 1
+        : 1;
     ashiglakhKhonog =
       sariinNiitKhonog < ashiglakhKhonog ? sariinNiitKhonog : ashiglakhKhonog; // 28 < 30
     dun = (dun * ashiglakhKhonog) / (sariinNiitKhonog || 1);
