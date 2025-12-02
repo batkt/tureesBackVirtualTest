@@ -2046,7 +2046,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
               $gte: new Date(req.params.ekhlekhOgnoo),
               $lte: new Date(req.params.duusakhOgnoo),
             },
-            "tuukh.tulbur.turul": { $nin: qrTypes },
+            "tuukh.tulbur.turul": { $in: qrTypes },
           },
         },
         {
@@ -2075,7 +2075,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
               $gte: new Date(req.params.ekhlekhOgnoo),
               $lte: new Date(req.params.duusakhOgnoo),
             },
-            "tuukh.tulbur.turul": { $in: qrTypes },
+            "tuukh.tulbur.turul": { $nin: qrTypes },
           },
         },
         {
