@@ -122,13 +122,12 @@ router.post(
       if (!!req.body) {
         var update = {};
         for (var field in req.body.tokhirgoo) {
-          if (field !== "baiguullagiinId")
+          if (field != "baiguullagiinId")
             update["tokhirgoo." + field] = req.body.tokhirgoo[field];
         }
-
         await Baiguullaga(db.erunkhiiKholbolt).findOneAndUpdate(
           { _id: req.body.baiguullagiinId },
-          { $set: update }
+          update
         );
         res.send("Amjilttai");
       } else next(new aldaa("Засах боломжгүй байна"));
@@ -137,6 +136,7 @@ router.post(
     }
   }
 );
+
 router.post("/nevtreltiinTuukhAvya", tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
