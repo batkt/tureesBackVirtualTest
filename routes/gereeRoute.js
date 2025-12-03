@@ -675,28 +675,19 @@ router
       var geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findById(req.body.gereeniiId)
         .select("+avlaga");
-      
- 
       var val = geree.khugatsaa + req.body.sar;
-      
-    
       await Geree(req.body.tukhainBaaziinKholbolt)
         .findByIdAndUpdate({ _id: req.body.gereeniiId }, { khugatsaa: val })
         .then((xariu) => {})
         .catch((err) => {
           next(err);
         });
-
-    
       geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findById(req.body.gereeniiId)
         .select("+avlaga");
-
       var shineDuusakhOgnoo = new Date(req.body.duusakhOgnoo);
       if (shineDuusakhOgnoo < new Date())
         throw new Error("Сунгах огноо өнөөдрөөс хойш байх шаардлагатай!");
-
- 
       var tuukh = {
         umnukhDuusakhOgnoo: geree.duusakhOgnoo,
         shineDuusakhOgnoo: new Date(req.body.duusakhOgnoo),
@@ -704,16 +695,12 @@ router
         turul: "Sungakh",
         ajiltniiNer: req.body.nevtersenAjiltniiToken.ner,
         ajiltniiId: req.body.nevtersenAjiltniiToken.id,
-        uldegdelZassan: req.body.uldegdel || 0, // Add uldegdel to history
       };
-
-     
       var ashiglaltiinZardluud = await AshiglaltiinZardluud(
         req.body.tukhainBaaziinKholbolt
       ).find({
         baiguullagiinId: req.body.baiguullagiinId,
       });
-      
       var talbai = await Talbai(req.body.tukhainBaaziinKholbolt).findOne({
         baiguullagiinId: geree.baiguullagiinId,
         kod: geree.talbainDugaar,
@@ -726,7 +713,6 @@ router
         talbai.talbainNiitUne = geree.sariinTurees;
       }
 
- 
       if (!!geree.zardluud && !!ashiglaltiinZardluud) {
         for await (const zardal of geree.zardluud) {
           var tukhainZardal = ashiglaltiinZardluud.find(
@@ -740,7 +726,6 @@ router
         }
       }
 
-   
       var khuvaariud = geree.avlaga.guilgeenuud;
       khuvaariud = khuvaariud.filter(
         (x) =>
@@ -749,7 +734,6 @@ router
           !!x.guilgeeKhiisenAjiltniiId ||
           !!x.guilgeeKhiisenOgnoo
       );
-
       var today = new Date();
       var unuudur = new Date(
         today.getFullYear(),
@@ -759,8 +743,6 @@ router
         0,
         0
       );
-
- 
       new Array((geree.khugatsaa || 0) + 12).fill("").map((mur, index) => {
         geree.tulukhUdur.forEach((udur) => {
           if (
@@ -772,8 +754,7 @@ router
             var tukhainUdur = moment(unuudur)
               .add(index, "month")
               .set("date", udur);
-            
-       
+            //undsen tulultiin xuwaari)
             var baigaa = khuvaariud.find((a) => {
               return (
                 a.turul == "khuvaari" &&
@@ -801,8 +782,6 @@ router
                   ? geree.sariinTurees
                   : talbai.talbainNiitUne,
               });
-
-    
             if (!!geree.zardluud && geree.zardluud.length > 0) {
               geree.zardluud.forEach((zardal) => {
                 if (
@@ -894,26 +873,21 @@ router
           }
         });
       });
- 
-      var sungasanGeree = {
-        $set: {
-          duusakhOgnoo: req.body.duusakhOgnoo,
-          "avlaga.guilgeenuud": khuvaariud,
-        },
-      };
-
-    
-      if (req.body.uldegdel !== undefined && req.body.uldegdel !== null) {
-        sungasanGeree.$set.uldegdel = req.body.uldegdel;
-      }
 
       if (geree.gereeniiTuukhuud) {
-        sungasanGeree.$push = {
-          [`gereeniiTuukhuud`]: tuukh,
-        };
-        
         Geree(req.body.tukhainBaaziinKholbolt)
-          .findOneAndUpdate({ _id: req.body.gereeniiId }, sungasanGeree)
+          .findOneAndUpdate(
+            { _id: req.body.gereeniiId },
+            {
+              $push: {
+                [`gereeniiTuukhuud`]: tuukh,
+              },
+              $set: {
+                duusakhOgnoo: req.body.duusakhOgnoo,
+                "avlaga.guilgeenuud": khuvaariud,
+              },
+            }
+          )
           .then((result) => {
             res.send("Amjilttai");
           })
@@ -922,10 +896,17 @@ router
           });
       } else {
         tuukh = [tuukh];
-        sungasanGeree.$set.gereeniiTuukhuud = tuukh;
-        
         Geree(req.body.tukhainBaaziinKholbolt)
-          .findOneAndUpdate({ _id: req.body.gereeniiId }, sungasanGeree)
+          .findOneAndUpdate(
+            { _id: req.body.gereeniiId },
+            {
+              $set: {
+                duusakhOgnoo: req.body.duusakhOgnoo,
+                gereeniiTuukhuud: tuukh,
+                "avlaga.guilgeenuud": khuvaariud,
+              },
+            }
+          )
           .then((result) => {
             res.send("Amjilttai");
           })
