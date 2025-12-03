@@ -914,12 +914,12 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
 
           for (const geree of gereenuud) {
             if (barilga?.tokhirgoo?.aldangiGereeTusBur) {
-              aldagiinKhuvi = geree._id.aldangiinKhuvi || aldagiinKhuvi;
-              aldangiChuluulukhKhonog =
-                geree._id.aldangiChuluulukhKhonog || aldangiChuluulukhKhonog;
+              aldagiinKhuvi = geree._id.aldangiinKhuvi || 0;
+              aldangiChuluulukhKhonog = geree._id.aldangiChuluulukhKhonog || 0;
               aldangiBodojEkhlekhOgnoo =
-                geree._id.aldangiBodojEkhlekhOgnoo || aldangiBodojEkhlekhOgnoo;
-              if (aldangiBodojEkhlekhOgnoo > new Date()) continue;
+                geree._id.aldangiBodojEkhlekhOgnoo || null;
+              if (aldagiinKhuvi == 0 || aldangiBodojEkhlekhOgnoo > new Date())
+                continue;
             }
             match = {
               "avlaga.guilgeenuud.ognoo": { $lt: start },
