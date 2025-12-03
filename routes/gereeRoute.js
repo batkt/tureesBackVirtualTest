@@ -874,81 +874,6 @@ router
         });
       });
 
-      if (req.body.sar && geree.turGereeEsekh === true) {
-        if (geree.sariinTurees > 0) {
-          khuvaariud.push({
-            ognoo: new Date(req.body.duusakhOgnoo),
-            khyamdral: 0,
-            turul: "khuvaari",
-            undsenDun: tooZasyaSync(
-              (geree.sariinTurees /
-                moment(req.body.duusakhOgnoo).daysInMonth()) *
-                req.body.sar
-            ),
-            tulukhDun: tooZasyaSync(
-              (geree.sariinTurees /
-                moment(req.body.duusakhOgnoo).daysInMonth()) *
-                req.body.sar
-            ),
-            tailbar: `${req.body.sar} хоногийн түрээсийн төлбөр`,
-          });
-        }
-
-        if (!!geree.zardluud && geree.zardluud.length > 0) {
-          geree.zardluud.forEach((zardal) => {
-            if (
-              zardal.turul == "1м3/талбай" &&
-              geree.talbainKhemjeeMetrKube > 0
-            ) {
-              khuvaariud.push({
-                ognoo: new Date(req.body.duusakhOgnoo),
-                khyamdral: 0,
-                turul: "avlaga",
-                tailbar: `${zardal.ner} (${req.body.sar} хоног)`,
-                tulukhDun: tooZasyaSync(
-                  ((zardal.tariff * geree.talbainKhemjeeMetrKube) /
-                    moment(req.body.duusakhOgnoo).daysInMonth()) *
-                    req.body.sar
-                ),
-              });
-            } else if (zardal.turul == "1м2" && geree.talbainKhemjee > 0) {
-              khuvaariud.push({
-                ognoo: new Date(req.body.duusakhOgnoo),
-                khyamdral: 0,
-                turul: "avlaga",
-                tailbar: `${zardal.ner} (${req.body.sar} хоног)`,
-                tulukhDun: tooZasyaSync(
-                  ((zardal.tariff * geree.talbainKhemjee) /
-                    moment(req.body.duusakhOgnoo).daysInMonth()) *
-                    req.body.sar
-                ),
-              });
-            } else if (zardal.turul == "Тогтмол") {
-              khuvaariud.push({
-                ognoo: new Date(req.body.duusakhOgnoo),
-                khyamdral: 0,
-                turul: "avlaga",
-                tailbar: `${zardal.ner} (${req.body.sar} хоног)`,
-                tulukhDun: tooZasyaSync(
-                  (zardal.tariff /
-                    moment(req.body.duusakhOgnoo).daysInMonth()) *
-                    req.body.sar
-                ),
-              });
-            }
-          });
-        }
-      }
-
-      updateObject = {
-        duusakhOgnoo: req.body.duusakhOgnoo,
-        "avlaga.guilgeenuud": khuvaariud,
-      };
-
-      if (req.body.uldegdel !== undefined && req.body.uldegdel !== null) {
-        updateObject.uldegdel = req.body.uldegdel;
-      }
-
       if (geree.gereeniiTuukhuud) {
         Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
@@ -957,7 +882,10 @@ router
               $push: {
                 [`gereeniiTuukhuud`]: tuukh,
               },
-              $set: updateObject,
+              $set: {
+                duusakhOgnoo: req.body.duusakhOgnoo,
+                "avlaga.guilgeenuud": khuvaariud,
+              },
             }
           )
           .then((result) => {
@@ -968,12 +896,15 @@ router
           });
       } else {
         tuukh = [tuukh];
-        updateObject.gereeniiTuukhuud = tuukh;
         Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
             { _id: req.body.gereeniiId },
             {
-              $set: updateObject,
+              $set: {
+                duusakhOgnoo: req.body.duusakhOgnoo,
+                gereeniiTuukhuud: tuukh,
+                "avlaga.guilgeenuud": khuvaariud,
+              },
             }
           )
           .then((result) => {
