@@ -106,41 +106,7 @@ router.post(
     }
   }
 );
-router.post(
-  "/upload",
-  upload.single("file"),
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      var turul = req.body.turul;
-      var id = require("uuid").v1().toString();
 
-      if (!req.file) {
-        return res.status(400).json({ aldaa: "File алга байна!" });
-      }
-
-      const tmpDir = "./tmp/";
-      const turulDir = tmpDir + turul + "/";
-
-      if (!fs.existsSync(tmpDir)) {
-        fs.mkdirSync(tmpDir, { recursive: true });
-      }
-
-      if (!fs.existsSync(turulDir)) {
-        fs.mkdirSync(turulDir, { recursive: true });
-      }
-
-      fs.writeFile(turulDir + id, req.file.buffer, (err) => {
-        if (err) {
-          return next(err);
-        }
-        res.status(200).json(id);
-      });
-    } catch (err) {
-      next(err);
-    }
-  }
-);
 router.get(
   "/zuragAvya/:turul/:baiguullagiinId/:zurgiinNer",
   (req, res, next) => {
@@ -158,38 +124,7 @@ router.get(
     );
   }
 );
-router.get("/file", tokenShalgakh, (req, res, next) => {
-  const filePath = req.query.path;
 
-  if (!filePath) {
-    return res.status(400).json({ aldaa: "Path parameter алга байна!" });
-  }
-
-  const fullPath = "./" + filePath;
-
-  fs.access(fullPath, fs.constants.F_OK, (err) => {
-    if (err) {
-      return res.status(404).json({ aldaa: "File олдсонгүй: " + fullPath });
-    }
-
-    const ext = filePath.split(".").pop().toLowerCase();
-    const mimeTypes = {
-      png: "image/png",
-      jpg: "image/jpeg",
-      jpeg: "image/jpeg",
-      gif: "image/gif",
-    };
-    const contentType = mimeTypes[ext] || "application/octet-stream";
-
-    fs.readFile(fullPath, (err, data) => {
-      if (err) {
-        return next(err);
-      }
-      res.setHeader("Content-Type", contentType);
-      res.send(data);
-    });
-  });
-});
 router.get("/fileAvya/:baiguullagiinId/:id", (req, res, next) => {
   res.download(
     "./file/" + req.params.baiguullagiinId + "/" + req.params.id,
