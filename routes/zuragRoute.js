@@ -106,7 +106,41 @@ router.post(
     }
   }
 );
+router.post(
+  "/upload",
+  upload.single("file"),
+  tokenShalgakh,
+  async (req, res, next) => {
+    var turul = req.body.turul;
+    var id = require("uuid").v1().toString();
 
+    if (req.file) {
+      try {
+        fs.access("./tmp/", (err) => {
+          if (err) fs.mkdirSync("./tmp/");
+        });
+
+        fs.access("./tmp/" + turul + "/", (err) => {
+          if (err) fs.mkdirSync("./tmp/" + turul + "/");
+        });
+
+        fs.writeFile(
+          "./tmp/" + turul + "/" + id,
+          req.file.buffer,
+          function (err) {
+            if (err) {
+              next(err);
+            } else {
+              res.status(200).json(id);
+            }
+          }
+        );
+      } catch (err) {
+        next(err);
+      }
+    }
+  }
+);
 router.get(
   "/zuragAvya/:turul/:baiguullagiinId/:zurgiinNer",
   (req, res, next) => {
