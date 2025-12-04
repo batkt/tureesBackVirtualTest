@@ -111,33 +111,33 @@ router.post(
   upload.single("file"),
   tokenShalgakh,
   async (req, res, next) => {
-    var turul = req.body.turul;
-    var id = require("uuid").v1().toString();
+    try {
+      var turul = req.body.turul;
+      var id = require("uuid").v1().toString();
 
-    if (req.file) {
-      try {
-        fs.access("./tmp/", (err) => {
-          if (err) fs.mkdirSync("./tmp/");
-        });
-
-        fs.access("./tmp/" + turul + "/", (err) => {
-          if (err) fs.mkdirSync("./tmp/" + turul + "/");
-        });
-
-        fs.writeFile(
-          "./tmp/" + turul + "/" + id,
-          req.file.buffer,
-          function (err) {
-            if (err) {
-              next(err);
-            } else {
-              res.status(200).json(id);
-            }
-          }
-        );
-      } catch (err) {
-        next(err);
+      if (!req.file) {
+        return res.status(400).json({ aldaa: "File алга байна!" });
       }
+
+      const tmpDir = "./tmp/";
+      const turulDir = tmpDir + turul + "/";
+
+      if (!fs.existsSync(tmpDir)) {
+        fs.mkdirSync(tmpDir, { recursive: true });
+      }
+
+      if (!fs.existsSync(turulDir)) {
+        fs.mkdirSync(turulDir, { recursive: true });
+      }
+
+      fs.writeFile(turulDir + id, req.file.buffer, (err) => {
+        if (err) {
+          return next(err);
+        }
+        res.status(200).json(id);
+      });
+    } catch (err) {
+      next(err);
     }
   }
 );
