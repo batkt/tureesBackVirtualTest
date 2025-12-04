@@ -39,7 +39,20 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
         if (callback) callback(response);
       })
       .catch((error) => {
-        next(error);
+        const errorCode = error.code || '';
+        const isInvalidToken = 
+          errorCode === 'messaging/invalid-registration-token' ||
+          errorCode === 'messaging/registration-token-not-registered' ||
+          errorCode === 'messaging/invalid-argument' ||
+          error.message?.includes('token oldsongui');
+        
+        if (isInvalidToken) {
+          console.log('firebase medegdel ilgeeheed aldaa garlaa - token buruu baina:', error.message);
+          if (callback) callback({ successCount: 0, error: 'Invalid token' });
+        } else {
+          if (next) next(error);
+          else if (callback) callback({ successCount: 0, error: error.message });
+        }
       });
   else if (callback) callback({ successCount: 1 });
 }
@@ -72,7 +85,20 @@ async function khariltsagchidSonorduulgaIlgeeye(
       callback(response);
     })
     .catch((error) => {
-      next(error);
+      const errorCode = error.code || '';
+      const isInvalidToken = 
+        errorCode === 'messaging/invalid-registration-token' ||
+        errorCode === 'messaging/registration-token-not-registered' ||
+        errorCode === 'messaging/invalid-argument' ||
+        error.message?.includes('token oldsongui');
+      
+      if (isInvalidToken) {
+        console.log('firebase medegdel ilgeeheed aldaa garlaa - token buruu baina:', error.message);
+        if (callback) callback({ successCount: 0, error: 'Invalid token' });
+      } else {
+        if (next) next(error);
+        else if (callback) callback({ successCount: 0, error: error.message });
+      }
     });
 }
 
