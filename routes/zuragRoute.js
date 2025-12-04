@@ -158,7 +158,38 @@ router.get(
     );
   }
 );
+router.get("/file", tokenShalgakh, (req, res, next) => {
+  const filePath = req.query.path;
 
+  if (!filePath) {
+    return res.status(400).json({ aldaa: "Path parameter алга байна!" });
+  }
+
+  const fullPath = "./" + filePath;
+
+  fs.access(fullPath, fs.constants.F_OK, (err) => {
+    if (err) {
+      return res.status(404).json({ aldaa: "File олдсонгүй: " + fullPath });
+    }
+
+    const ext = filePath.split(".").pop().toLowerCase();
+    const mimeTypes = {
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      gif: "image/gif",
+    };
+    const contentType = mimeTypes[ext] || "application/octet-stream";
+
+    fs.readFile(fullPath, (err, data) => {
+      if (err) {
+        return next(err);
+      }
+      res.setHeader("Content-Type", contentType);
+      res.send(data);
+    });
+  });
+});
 router.get("/fileAvya/:baiguullagiinId/:id", (req, res, next) => {
   res.download(
     "./file/" + req.params.baiguullagiinId + "/" + req.params.id,
