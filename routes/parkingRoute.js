@@ -2442,7 +2442,9 @@ router.route("/v1/pay").post(async (req, res, next) => {
                 delete d.barilgiinId;
                 delete d._id;
                 butsaakhKhariu.data = d;
-                res.send(butsaakhKhariu);
+                if (!res.headersSent) {
+                  res.send(butsaakhKhariu);
+                }
               } else {
                 var ebarimt;
                 if (!!tuxainSalbar.eBarimtShine)
@@ -2453,7 +2455,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
                 ebarimt.barilgiinId = khariuObject.barilgiinId;
                 ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
                 ebarimt.save().catch((err) => {
-                  next(err);
+                  if (!res.headersSent && next) next(err);
                 });
                 var update = {
                   ebarimtAvsanEsekh: true,
@@ -2468,17 +2470,19 @@ router.route("/v1/pay").post(async (req, res, next) => {
                   .findByIdAndUpdate(tukhainObject._id, update)
                   .then((xariu) => {})
                   .catch((err) => {
-                    next(err);
+                    if (!res.headersSent && next) next(err);
                   });
                 delete d.baiguullagiinId;
                 delete d.zogsooliinId;
                 delete d.barilgiinId;
                 delete d._id;
                 butsaakhKhariu.data = d;
-                res.send(butsaakhKhariu);
+                if (!res.headersSent) {
+                  res.send(butsaakhKhariu);
+                }
               }
             } catch (err) {
-              next(err);
+              if (!res.headersSent && next) next(err);
             }
           };
           ebarimtDuudya(
@@ -2758,7 +2762,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
               ebarimt.barilgiinId = khariuObject.barilgiinId;
               ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
               ebarimt.save().catch((err) => {
-                next(err);
+                if (!res.headersSent && next) next(err);
               });
               var update = {
                 ebarimtAvsanEsekh: true,
@@ -2773,16 +2777,18 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
                 .findByIdAndUpdate(tukhainObject._id, update)
                 .then((xariu) => {})
                 .catch((err) => {
-                  next(err);
+                  if (!res.headersSent && next) next(err);
                 });
               delete d.baiguullagiinId;
               delete d.zogsooliinId;
               delete d.barilgiinId;
               delete d._id;
               butsaakhKhariu.data = d;
-              res.send(butsaakhKhariu);
+              if (!res.headersSent) {
+                res.send(butsaakhKhariu);
+              }
             } catch (err) {
-              next(err);
+              if (!res.headersSent && next) next(err);
             }
           };
           ebarimtDuudya(
@@ -3156,7 +3162,7 @@ router
             ebarimt.barilgiinId = khariuObject.barilgiinId;
             ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
             ebarimt.save().catch((err) => {
-              next(err);
+              if (!res.headersSent && next) next(err);
             });
             var update = {
               ebarimtAvsanEsekh: true,
@@ -3171,7 +3177,7 @@ router
               .findByIdAndUpdate(tukhainObject._id, update)
               .then((xariu) => {})
               .catch((err) => {
-                next(err);
+                if (!res.headersSent && next) next(err);
               });
             delete d.baiguullagiinId;
             delete d.zogsooliinId;
@@ -3182,9 +3188,11 @@ router
               message: "Amjilttai",
             };
             butsaakhKhariu.data = d;
-            res.send(butsaakhKhariu);
+            if (!res.headersSent) {
+              res.send(butsaakhKhariu);
+            }
           } catch (err) {
-            next(err);
+            if (!res.headersSent && next) next(err);
           }
         };
         ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
