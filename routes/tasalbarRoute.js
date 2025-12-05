@@ -298,7 +298,7 @@ router
           butsaakhKhariu.data = d;
           res.send(butsaakhKhariu);
         } catch (err) {
-          next(err);
+          res.send("Татварын системтэй холбогдож чадсангүй!");
         }
       };
       ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);

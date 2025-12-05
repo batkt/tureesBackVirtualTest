@@ -3198,7 +3198,7 @@ router
         ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
       } else res.send(null);
     } catch (err) {
-      next(err);
+      res.send("Татварын системтэй холбогдож чадсангүй!");
     }
   });
 
