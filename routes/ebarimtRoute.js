@@ -471,7 +471,9 @@ router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
       tuxainSalbar?.eBarimtShine
     );
   } catch (error) {
-    next(error);
+    if (error.status === 500) {
+      res.send("Татварын системтэй холбогдож чадсангүй!");
+    }
   }
 });
 
