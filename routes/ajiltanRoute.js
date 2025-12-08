@@ -229,7 +229,6 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     if (!!req.body) {
- 
       if (!req.body.baiguullagiinId) {
         return next(new aldaa("Ажилтанд барилгын тохиргоо хийгдээгүй байна"));
       }
@@ -374,6 +373,7 @@ router.get("/licenseOgnooAvya", tokenShalgakh, async (req, res, next) => {
   }
 });
 
+crud(router, "nevtreltiinTuukh", NevtreltiinTuukh, UstsanBarimt);
 router.post(
   "/ekhniiNevtersenOgnooAvya",
   tokenShalgakh,
