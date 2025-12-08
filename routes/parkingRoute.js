@@ -1165,6 +1165,67 @@ router.post(
   }
 );
 
+router.post(
+  "/zogsoolUilchluulegchdiinNiitDun",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      let query = body.query ? JSON.parse(body.query) : {};
+
+      const pipeline = [
+        { $match: query },
+        {
+          $group: {
+            _id: null,
+            niitDun: { $sum: "$niitDun" },
+            niitEbarimt: { $sum: "$ebarimtAvsanDun" },
+            niitToo: { $sum: 1 },
+          },
+        },
+      ];
+
+      const result = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate(pipeline);
+
+      const tulburPipeline = [
+        { $match: query },
+        { $unwind: "$tuukh" },
+        { $unwind: "$tuukh.tulbur" },
+        {
+          $match: {
+            "tuukh.tuluv": { $in: [1, 2] },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            niitTulbur: { $sum: "$tuukh.tulbur.dun" },
+          },
+        },
+      ];
+
+      const tulburResult = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate(tulburPipeline);
+
+      const summary = {
+        totalDun: result[0]?.niitDun || 0,
+        totalEbarimt: result[0]?.niitEbarimt || 0,
+        totalTulbur: tulburResult[0]?.niitTulbur || 0,
+        totalToo: result[0]?.niitToo || 0,
+      };
+
+      res.send(summary);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 router.post("/mashiniiTooAvya", tokenShalgakh, async (req, res, next) => {
   try {
     var query = [
@@ -3788,4 +3849,4 @@ router.post(
   }
 );
 
-module.exports = router;
+module.exports = router;c
