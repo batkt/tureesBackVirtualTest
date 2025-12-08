@@ -1069,88 +1069,6 @@ router.post(
   }
 );
 
-router.post("/uilchluulegchNiitDun", tokenShalgakh, async (req, res, next) => {
-  try {
-    const {
-      baiguullagiinId,
-      barilgiinId,
-      khuudasniiDugaar = 1,
-      khuudasniiKhemjee = 10,
-      query = {},
-    } = req.body;
-    const parsedQuery = typeof query === "string" ? JSON.parse(query) : query;
-
-    const matchQuery = {
-      ...parsedQuery,
-      baiguullagiinId: baiguullagiinId,
-      barilgiinId: barilgiinId ? barilgiinId : { $exists: true },
-    };
-
-    const skip = (khuudasniiDugaar - 1) * khuudasniiKhemjee;
-
-    const pipeline = [
-      { $match: matchQuery },
-
-      {
-        $facet: {
-          overallSummary: [
-            { $unwind: "$tuukh" },
-
-            { $match: { "tuukh.tuluv": { $in: [1, -2] } } },
-            {
-              $group: {
-                _id: null,
-
-                niitDun: { $sum: "$tuukh.tulukhDun" },
-
-                niitEbarimt: { $sum: "$tuukh.ebarimtAvakhDun" },
-              },
-            },
-            { $project: { _id: 0, niitDun: 1, niitEbarimt: 1 } },
-          ],
-
-          niitMur: [{ $count: "count" }],
-
-          jagsaalt: [
-            { $sort: { createdAt: -1 } },
-            { $skip: skip },
-            { $limit: khuudasniiKhemjee },
-          ],
-        },
-      },
-
-      {
-        $project: {
-          jagsaalt: "$jagsaalt",
-          niitMur: { $arrayElemAt: ["$niitMur.count", 0] },
-
-          niitDun: { $arrayElemAt: ["$overallSummary.niitDun", 0] },
-          niitEbarimt: { $arrayElemAt: ["$overallSummary.niitEbarimt", 0] },
-
-          khuudasniiDugaar: khuudasniiDugaar,
-          khuudasniiKhemjee: khuudasniiKhemjee,
-        },
-      },
-    ];
-
-    const result = await Uilchluulegch(
-      req.body.tukhainBaaziinKholbolt,
-      true
-    ).aggregate(pipeline);
-
-    res
-      .status(200)
-      .send(
-        result.length > 0
-          ? result[0]
-          : { jagsaalt: [], niitMur: 0, niitDun: 0, niitEbarimt: 0 }
-      );
-  } catch (error) {
-    next(error);
-  }
-});
-
-
 router.post(
   "/zogsoolUilchluulegchdiinDunAvay",
   tokenShalgakh,
@@ -3280,7 +3198,7 @@ router
         ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
       } else res.send(null);
     } catch (err) {
-      res.send("Татварын системтэй холбогдож чадсангүй!");
+      next(err);
     }
   });
 
