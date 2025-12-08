@@ -1179,7 +1179,7 @@ router.post(
           $group: {
             _id: null,
             niitDun: { $sum: "$niitDun" },
-            niitEbarimt: { $sum: "$ebarimtAvsanDun" },
+            niitEbarimt: { $sum: { $ifNull: ["$ebarimtAvsanDun", 0] } },
             niitToo: { $sum: 1 },
           },
         },
@@ -1193,12 +1193,13 @@ router.post(
       const tulburPipeline = [
         { $match: query },
         { $unwind: "$tuukh" },
-        { $unwind: "$tuukh.tulbur" },
         {
           $match: {
             "tuukh.tuluv": { $in: [1, 2] },
+            "tuukh.tulbur": { $exists: true, $ne: [] },
           },
         },
+        { $unwind: "$tuukh.tulbur" },
         {
           $group: {
             _id: null,
@@ -1219,8 +1220,16 @@ router.post(
         totalToo: result[0]?.niitToo || 0,
       };
 
+      console.log("Summary calculation:", {
+        query: JSON.stringify(query),
+        result: result[0],
+        tulburResult: tulburResult[0],
+        summary,
+      });
+
       res.send(summary);
     } catch (err) {
+      console.error("Summary error:", err);
       next(err);
     }
   }
