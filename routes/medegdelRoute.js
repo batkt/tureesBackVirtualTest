@@ -38,92 +38,101 @@ router
       const { medeelel, turul } = req.body;
       var firebaseToken = req.body.firebaseToken;
 
+      console.log("📨 Incoming notification request:", {
+        khariltsagchiinId: req.body.khariltsagchiinId,
+        hasFirebaseToken: !!firebaseToken,
+        turul: turul,
+      });
+
+      // Get client info
       var kharilltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
         _id: req.body.khariltsagchiinId,
       });
 
-      if (kharilltsagch) firebaseToken = kharilltsagch.firebaseToken;
+      if (kharilltsagch && kharilltsagch.firebaseToken) {
+        firebaseToken = kharilltsagch.firebaseToken;
+        console.log("✅ Found firebase token from database");
+      }
 
-      if (!!firebaseToken) {
+      // Create notification document first (before Firebase push)
+      var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+
+      sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
+      sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+      sonorduulga.barilgiinId = req.body.barilgiinId;
+      sonorduulga.zurgiinId = req.body.zurgiinId;
+
+      if (req.body.khariltsagchiinId)
+        sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
+
+      // Set turul with proper fallback
+      if (
+        turul &&
+        [
+          "medegdel",
+          "shaardlaga",
+          "sanalKhuselt",
+          "sonorduulga",
+          "sanal",
+          "gomdol",
+        ].includes(turul)
+      ) {
+        sonorduulga.turul = turul;
+      } else {
+        sonorduulga.turul = "medegdel"; // default
+      }
+
+      sonorduulga.title = medeelel.title;
+      sonorduulga.message = medeelel.body;
+      sonorduulga.kharsanEsekh = false;
+
+      // Save notification to database
+      const savedNotif = await sonorduulga.save();
+      console.log("✅ Notification saved to database:", {
+        id: savedNotif._id,
+        turul: savedNotif.turul,
+        khariltsagchiinId: savedNotif.khariltsagchiinId,
+      });
+
+      // Emit socket event IMMEDIATELY (don't wait for Firebase)
+      var io = req.app.get("socketio");
+      if (io) {
+        const eventName = "khariltsagch" + req.body.khariltsagchiinId;
+        console.log("📡 Emitting socket event:", eventName);
+        io.emit(eventName, savedNotif);
+      } else {
+        console.warn("⚠️ Socket.io not available");
+      }
+
+      // Try to send Firebase push notification (but don't fail if it doesn't work)
+      if (firebaseToken) {
         khariltsagchidSonorduulgaIlgeeye(
           firebaseToken,
           medeelel,
           (r) => {
-            var sonorduulga = new Sonorduulga(
-              req.body.tukhainBaaziinKholbolt
-            )();
-
-            sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
-            sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
-            sonorduulga.barilgiinId = req.body.barilgiinId;
-            sonorduulga.zurgiinId = req.body.zurgiinId;
-
-            if (req.body.khariltsagchiinId)
-              sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
-
-            if (
-              turul &&
-              [
-                "medegdel",
-                "shaardlaga",
-                "sanalKhuselt",
-                "sonorduulga",
-                "sanal",
-                "gomdol",
-              ].includes(turul)
-            ) {
-              sonorduulga.turul = turul;
-            } else {
-              sonorduulga.turul = "medegdel";
-            }
-
-            sonorduulga.title = medeelel.title;
-            sonorduulga.message = medeelel.body;
-            sonorduulga.kharsanEsekh = false;
-
-            sonorduulga
-              .save()
-              .then((savedNotif) => {
-                console.log("✅ Notification saved:", {
-                  id: savedNotif._id,
-                  turul: savedNotif.turul,
-                  khariltsagchiinId: savedNotif.khariltsagchiinId,
-                });
-
-                var io = req.app.get("socketio");
-                if (io) {
-                  const eventName = "khariltsagch" + req.body.khariltsagchiinId;
-                  console.log("📡 Emitting socket event:", eventName);
-                  io.emit(eventName, savedNotif);
-                } else {
-                  console.warn("socket obso");
-                }
-
-                res.send({
-                  success: true,
-                  message: "done",
-                  notification: savedNotif,
-                });
-              })
-              .catch((saveError) => {
-                console.error("hadgaallt obso:", saveError);
-                res.status(500).send({
-                  success: false,
-                  error: "Failed to save notification",
-                });
-              });
+            console.log("✅ Firebase notification sent:", r);
           },
-          next
+          (err) => {
+            console.warn(
+              "⚠️ Firebase notification failed (non-critical):",
+              err
+            );
+          }
         );
       } else {
-        console.warn("firebase bhgu:", req.body.khariltsagchiinId);
-        res.status(400).send({
-          success: false,
-          error: "!fire token not found",
-        });
+        console.warn(
+          "⚠️ No firebase token found - notification saved but push not sent"
+        );
       }
+
+      // Always respond with success if notification was saved
+      res.send({
+        success: true,
+        message: "done",
+        notification: savedNotif,
+      });
     } catch (error) {
-      console.error(" aldaa in sonorduulgaIlgeeye:", error);
+      console.error("❌ Error in sonorduulgaIlgeeye:", error);
       next(error);
     }
   });
