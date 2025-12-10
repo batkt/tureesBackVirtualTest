@@ -38,23 +38,14 @@ router
       const { medeelel, turul } = req.body;
       var firebaseToken = req.body.firebaseToken;
 
-      console.log("📨 Incoming notification request:", {
-        khariltsagchiinId: req.body.khariltsagchiinId,
-        hasFirebaseToken: !!firebaseToken,
-        turul: turul,
-      });
-
-      // Get client info
       var kharilltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
         _id: req.body.khariltsagchiinId,
       });
 
       if (kharilltsagch && kharilltsagch.firebaseToken) {
         firebaseToken = kharilltsagch.firebaseToken;
-        console.log("✅ Found firebase token from database");
       }
 
-      // Create notification document first (before Firebase push)
       var sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
 
       sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
@@ -65,7 +56,6 @@ router
       if (req.body.khariltsagchiinId)
         sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
 
-      // Set turul with proper fallback
       if (
         turul &&
         [
@@ -79,60 +69,31 @@ router
       ) {
         sonorduulga.turul = turul;
       } else {
-        sonorduulga.turul = "medegdel"; // default
+        sonorduulga.turul = "medegdel";
       }
 
       sonorduulga.title = medeelel.title;
       sonorduulga.message = medeelel.body;
       sonorduulga.kharsanEsekh = false;
 
-      // Save notification to database
       const savedNotif = await sonorduulga.save();
-      console.log("✅ Notification saved to database:", {
-        id: savedNotif._id,
-        turul: savedNotif.turul,
-        khariltsagchiinId: savedNotif.khariltsagchiinId,
-      });
 
-      // Emit socket event IMMEDIATELY (don't wait for Firebase)
       var io = req.app.get("socketio");
       if (io) {
         const eventName = "khariltsagch" + req.body.khariltsagchiinId;
-        console.log("📡 Emitting socket event:", eventName);
         io.emit(eventName, savedNotif);
-      } else {
-        console.warn("⚠️ Socket.io not available");
       }
 
-      // Try to send Firebase push notification (but don't fail if it doesn't work)
       if (firebaseToken) {
-        khariltsagchidSonorduulgaIlgeeye(
-          firebaseToken,
-          medeelel,
-          (r) => {
-            console.log("✅ Firebase notification sent:", r);
-          },
-          (err) => {
-            console.warn(
-              "⚠️ Firebase notification failed (non-critical):",
-              err
-            );
-          }
-        );
-      } else {
-        console.warn(
-          "⚠️ No firebase token found - notification saved but push not sent"
-        );
+        khariltsagchidSonorduulgaIlgeeye(firebaseToken, medeelel);
       }
 
-      // Always respond with success if notification was saved
       res.send({
         success: true,
         message: "done",
         notification: savedNotif,
       });
     } catch (error) {
-      console.error("❌ Error in sonorduulgaIlgeeye:", error);
       next(error);
     }
   });
