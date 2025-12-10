@@ -1863,15 +1863,22 @@ router.get("/v3/search_car/:plate_number", async (req, res, next) => {
       }
     }
 
-    if (!oldsonMashin) {
+    if (!dataList || dataList.length == 0) {
       message = "Машины мэдээлэл олдсонгүй!";
       success = false;
     }
+    const latest = dataList.reduce((a, b) => {
+      return new Date(a.enter_date) > new Date(b.enter_date) ? a : b;
+    });
+
+    console.log(latest);
+
     var butsaakhKhariu = {
       success,
       message,
       data,
       dataList,
+      latest,
     };
     res.send(butsaakhKhariu);
   } catch (err) {
