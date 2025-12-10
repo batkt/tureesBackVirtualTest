@@ -1819,7 +1819,7 @@ router.get("/v3/search_car/:plate_number", async (req, res, next) => {
               }
             }
           }
-          if (bodsonDun > 0) {
+          if (bodsonDun > 0 && oldsonMashin) {
             data = {
               plate_number: req.params.plate_number,
               enter_date: moment(
