@@ -1733,14 +1733,14 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
         //if (data && data.plate_number) break;
       }
     }
-
-    if (!dataList || dataList.length == 0) {
+    if (dataList?.length > 0)
+      data = dataList?.reduce((a, b) => {
+        return new Date(a.enter_date) > new Date(b.enter_date) ? a : b;
+      });
+    else {
       message = "Машины мэдээлэл олдсонгүй!";
       success = false;
     }
-    data = dataList?.reduce((a, b) => {
-      return new Date(a.enter_date) > new Date(b.enter_date) ? a : b;
-    });
 
     console.log(data);
 
