@@ -1738,7 +1738,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
       message = "Машины мэдээлэл олдсонгүй!";
       success = false;
     }
-    data = dataList.reduce((a, b) => {
+    data = dataList?.reduce((a, b) => {
       return new Date(a.enter_date) > new Date(b.enter_date) ? a : b;
     });
 
