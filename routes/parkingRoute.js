@@ -1748,7 +1748,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
       success,
       message,
       data,
-      dataList,
     };
     res.send(butsaakhKhariu);
   } catch (err) {
