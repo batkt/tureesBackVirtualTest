@@ -1746,7 +1746,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
       message,
       data,
     };
-    console.log(butsaakhKhariu);
     res.send(butsaakhKhariu);
   } catch (err) {
     console.log("v3 search_car / ------------>>" + err);
