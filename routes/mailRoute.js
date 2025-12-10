@@ -16,6 +16,7 @@ const FormData = require("form-data");
 const { Dugaarlalt, tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
 const NekhemjlekhiinTuukh = require("../models/nekhemjlekhiinTuukh");
 const TodorkhoiloltiinTuukh = require("../models/todorkhoiloltiinTuukh");
+const Sonorduulga = require("../models/sonorduulga");
 
 crud(router, "mailiinZagvar", MailiinZagvar, UstsanBarimt);
 crud(router, "msgTuukh", MsgTuukh, UstsanBarimt);
@@ -170,15 +171,15 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
           body
         );
       }
-      if(!!req.body.todorkhoilolt)
-      {
-        const tod = new TodorkhoiloltiinTuukh(req.body.tukhainBaaziinKholbolt)(req.body.todorkhoilolt);
+      if (!!req.body.todorkhoilolt) {
+        const tod = new TodorkhoiloltiinTuukh(req.body.tukhainBaaziinKholbolt)(
+          req.body.todorkhoilolt
+        );
         tod.mailuud = req.body.mailuud;
         await tod.save();
       }
       res.send(body);
-    }
-    else {
+    } else {
       for await (const mail of req.body.mailuud) {
         await MailIlgeeye.duriinMailIlgeeye(
           baiguullaga.tokhirgoo.mailNevtrekhNer,
@@ -190,6 +191,18 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
           mail.content,
           mail.gereeniiDugaar
         );
+
+    
+        const sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+        sonorduulga.khuleenAvagchiinId = mail.khariltsagchiinId;
+        sonorduulga.barilgiinId = mail.barilgiinId;
+        sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+        sonorduulga.khariltsagchiinNer = mail.khariltsagchiinNer;
+        sonorduulga.title = req.body.subject;
+        sonorduulga.message = mail.content;
+        sonorduulga.turul = req.body.turul || "Mail";
+        sonorduulga.kharsanEsekh = false;
+        await sonorduulga.save();
       }
       res.send("Amjilttai");
     }
@@ -278,7 +291,7 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
       "&text=" +
       jagsaalt[index].text.toString();
     url = encodeURI(url);
-    request(url, { json: true }, (err1, res1, body) => {
+    request(url, { json: true }, async (err1, res1, body) => {
       if (err1) {
         next(err1);
       } else {
@@ -290,7 +303,25 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
         msg.msg = jagsaalt[index].text;
         msg.msgIlgeekhKey = key;
         msg.msgIlgeekhDugaar = dugaar;
-        msg.save();
+        await msg.save();
+
+        // ШИНЭ: Sonorduulga хадгалах
+        if (body && body[0]?.Result === "SUCCESS") {
+          const sonorduulga = new Sonorduulga(
+            req.body.tukhainBaaziinKholbolt
+          )();
+          sonorduulga.khuleenAvagchiinId = jagsaalt[index].khariltsagchiinId;
+          sonorduulga.barilgiinId =
+            jagsaalt[index].barilgiinId || req.body.barilgiinId;
+          sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+          sonorduulga.khariltsagchiinNer = jagsaalt[index].khariltsagchiinNer;
+          sonorduulga.khariltsagchiinUtas = jagsaalt[index].to;
+          sonorduulga.message = jagsaalt[index].text;
+          sonorduulga.turul = "SMS";
+          sonorduulga.kharsanEsekh = false;
+          await sonorduulga.save();
+        }
+
         if (jagsaalt.length > index + 1) {
           khariu.push(body[0]);
           msgIlgeeye(jagsaalt, key, dugaar, khariu, index + 1, next, req, res);
@@ -337,13 +368,25 @@ async function msgIlgeeyeUnitel(
         msg.msg = data.text;
         msg.msgIlgeekhKey = key;
         msg.msgIlgeekhDugaar = dugaar;
-        msg.save();
+        await msg.save();
+
+        const sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+        sonorduulga.khuleenAvagchiinId = data.khariltsagchiinId;
+        sonorduulga.barilgiinId = data.barilgiinId || req.body.barilgiinId;
+        sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+        sonorduulga.khariltsagchiinNer = data.khariltsagchiinNer;
+        sonorduulga.khariltsagchiinUtas = data.to;
+        sonorduulga.message = data.text;
+        sonorduulga.turul = "SMS";
+        sonorduulga.kharsanEsekh = false;
+        await sonorduulga.save();
+
         if (resp && resp.data) {
           resp.data.Result = resp.data.status;
         }
         khariu.push(resp?.data);
       }
-    };
+    }
     res.send(khariu?.length > 0 ? [khariu[0]] : []);
   } catch (err) {
     next(err);
