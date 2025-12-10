@@ -1871,7 +1871,7 @@ router.get("/v3/search_car/:plate_number", async (req, res, next) => {
       return new Date(a.enter_date) > new Date(b.enter_date) ? a : b;
     });
 
-    console.log(latest);
+    console.log(data);
 
     var butsaakhKhariu = {
       success,
