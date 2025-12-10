@@ -1656,7 +1656,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             if (req.query.barilgiinId)
               matchMashin["barilgiinId"] = req.query.barilgiinId;
             oldsonMashin = await Uilchluulegch(kholbolt, true)
-              .findOne(matchMashin)
+              .find(matchMashin)
               .sort({ createdAt: -1 })
               .limit(1);
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
@@ -1867,7 +1867,7 @@ router.get("/v3/search_car/:plate_number", async (req, res, next) => {
       message = "Машины мэдээлэл олдсонгүй!";
       success = false;
     }
-    const latest = dataList.reduce((a, b) => {
+    data = dataList.reduce((a, b) => {
       return new Date(a.enter_date) > new Date(b.enter_date) ? a : b;
     });
 
@@ -1878,7 +1878,6 @@ router.get("/v3/search_car/:plate_number", async (req, res, next) => {
       message,
       data,
       dataList,
-      latest,
     };
     res.send(butsaakhKhariu);
   } catch (err) {
