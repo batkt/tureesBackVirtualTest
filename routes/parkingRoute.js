@@ -1875,6 +1875,7 @@ router.get("/v3/search_car/:plate_number", async (req, res, next) => {
     };
     res.send(butsaakhKhariu);
   } catch (err) {
+    console.log("v3 search_car / ------------>>" + err);
     next(err);
   }
 });
