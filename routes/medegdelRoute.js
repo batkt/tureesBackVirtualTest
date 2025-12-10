@@ -35,12 +35,15 @@ router
   .route("/sonorduulgaIlgeeye")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      const { medeelel } = req.body;
+      const { medeelel, turul } = req.body;
       var firebaseToken = req.body.firebaseToken;
+
       var kharilltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
         _id: req.body.khariltsagchiinId,
       });
+
       if (kharilltsagch) firebaseToken = kharilltsagch.firebaseToken;
+
       if (!!firebaseToken) {
         khariltsagchidSonorduulgaIlgeeye(
           firebaseToken,
@@ -49,26 +52,78 @@ router
             var sonorduulga = new Sonorduulga(
               req.body.tukhainBaaziinKholbolt
             )();
+
             sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
             sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
             sonorduulga.barilgiinId = req.body.barilgiinId;
             sonorduulga.zurgiinId = req.body.zurgiinId;
+
             if (req.body.khariltsagchiinId)
               sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
-            if (!req.body.turul) sonorduulga.turul = "medegdel";
+
+            if (
+              turul &&
+              [
+                "medegdel",
+                "shaardlaga",
+                "sanalKhuselt",
+                "sonorduulga",
+                "sanal",
+                "gomdol",
+              ].includes(turul)
+            ) {
+              sonorduulga.turul = turul;
+            } else {
+              sonorduulga.turul = "medegdel";
+            }
+
             sonorduulga.title = medeelel.title;
             sonorduulga.message = medeelel.body;
             sonorduulga.kharsanEsekh = false;
-            sonorduulga.save();
-            var io = req.app.get("socketio");
-            if (io)
-              io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
-            res.send("done");
+
+            sonorduulga
+              .save()
+              .then((savedNotif) => {
+                console.log("✅ Notification saved:", {
+                  id: savedNotif._id,
+                  turul: savedNotif.turul,
+                  khariltsagchiinId: savedNotif.khariltsagchiinId,
+                });
+
+                var io = req.app.get("socketio");
+                if (io) {
+                  const eventName = "khariltsagch" + req.body.khariltsagchiinId;
+                  console.log("📡 Emitting socket event:", eventName);
+                  io.emit(eventName, savedNotif);
+                } else {
+                  console.warn("socket obso");
+                }
+
+                res.send({
+                  success: true,
+                  message: "done",
+                  notification: savedNotif,
+                });
+              })
+              .catch((saveError) => {
+                console.error("hadgaallt obso:", saveError);
+                res.status(500).send({
+                  success: false,
+                  error: "Failed to save notification",
+                });
+              });
           },
           next
         );
-      } else res.send("!fire token not found");
+      } else {
+        console.warn("firebase bhgu:", req.body.khariltsagchiinId);
+        res.status(400).send({
+          success: false,
+          error: "!fire token not found",
+        });
+      }
     } catch (error) {
+      console.error(" aldaa in sonorduulgaIlgeeye:", error);
       next(error);
     }
   });
@@ -112,7 +167,7 @@ router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
       io.emit(
         "adminMedegdelilgeeyeAppWebSocket" + baiguullaga?._id.toString(),
         medegdeluud
-      );  
+      );
     res.send("done");
   } catch (error) {
     next(error);
