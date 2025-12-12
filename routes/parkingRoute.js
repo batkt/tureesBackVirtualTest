@@ -659,7 +659,15 @@ router.post(
         },
       ];
 
-      const qrTypes = ["GadaaQR", "DotorQR", "bankQR", "toki", "киоск"];
+      // Self-service/payment types that are not tied to a specific employee
+      const qrTypes = [
+        "GadaaQR",
+        "DotorQR",
+        "bankQR",
+        "toki",
+        "киоск",
+        "tseneglelt",
+      ];
 
       const qrDateMatch = {
         "tuukh.tulbur.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
