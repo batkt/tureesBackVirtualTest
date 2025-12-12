@@ -2497,7 +2497,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
               `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
               {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
-                khaalgaTurul: "oroh",
+                khaalgaTurul: "garsan",
                 turul: "toki",
                 mashiniiDugaar: req.body.plate_number,
                 cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
@@ -3174,7 +3174,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
                 `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
                 {
                   baiguullagiinId: tukhainObject.baiguullagiinId,
-                  khaalgaTurul: "oroh",
+                  khaalgaTurul: "garsan",
                   cameraIP: tukhainObject.tuukh[0]?.garsanKhaalga,
                 }
               );
