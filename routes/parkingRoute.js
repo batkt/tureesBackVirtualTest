@@ -45,12 +45,54 @@ const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
 const { msgIlgeeye } = require("../controller/khariltsagch");
 const MsgTuukh = require("../models/msgTuukh");
 const client = require("../routes/redisClient");
+const crypto = require("crypto");
+
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
 });*/
 crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
 crud(router, "mashin", Mashin, UstsanBarimt);
 crud(router, "blockMashin", BlockMashin, UstsanBarimt);
+// Ажилтнаар шүүсэн ч цэнэглэлт (автомат) үлдэхээр шүүлтүүрийг өргөтгөнө.
+router.use("/zogsoolUilchluulegch", (req, res, next) => {
+  try {
+    if (req.method !== "GET" || !req?.query?.query) return next();
+    const query = JSON.parse(req.query.query);
+    const ajiltanFilter = query["tuukh.burtgesenAjiltaniiId"];
+    if (!ajiltanFilter) return next();
+
+    const addTseneglelt = (arr) => {
+      if (!arr.includes("tseneglelt")) arr.push("tseneglelt");
+      return arr;
+    };
+
+    if (typeof ajiltanFilter === "string") {
+      query["tuukh.burtgesenAjiltaniiId"] = {
+        $in: addTseneglelt([ajiltanFilter]),
+      };
+    } else if (
+      typeof ajiltanFilter === "object" &&
+      !Array.isArray(ajiltanFilter)
+    ) {
+      const existing =
+        Array.isArray(ajiltanFilter.$in) && ajiltanFilter.$in.length > 0
+          ? ajiltanFilter.$in
+          : ajiltanFilter.$eq
+          ? [ajiltanFilter.$eq]
+          : [];
+      if (existing.length > 0) {
+        query["tuukh.burtgesenAjiltaniiId"] = {
+          $in: addTseneglelt(existing),
+        };
+      }
+    }
+
+    req.query.query = JSON.stringify(query);
+  } catch (err) {
+    // parsing алдаа гарвал анхны логикоор үргэлжлүүлнэ
+  }
+  next();
+});
 crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
 // crud(router, "zogsoolUilchluulegch", (conn) => Uilchluulegch(conn, true), UstsanBarimt);
 crud(router, "uilchluulegch", Uilchluulegch, UstsanBarimt);
@@ -384,206 +426,212 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var nemeltUtga = req.body.nemeltUtga;
     var tulsunDun = Number(req.body.tulsunDun);
     var shineDun = 0;
-    if (baiguullagiinId == "663da696aa6bedd9ae0567f0") {
-      tulsunDun = tulsunDun + 50; //sms 50tug
-    }
-    shineDun =
-      (await Math.round((tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100)) /
-      100;
-    const { db } = require("zevbackv2");
-    var kholbolt = db.kholboltuud.find(
-      (a) => a.baiguullagiinId == baiguullagiinId
-    );
-    var shuukhKhugatsaa = new Date(
-      Date.now() - 300000 //5 * 60 * 1000
-    );
-    var query = {
-      $or: [
-        {
-          niitDun: tulsunDun,
+    console.log("tailbar ----->>", nemeltUtga);
+    if (nemeltUtga?.includes("QRGadaa") || nemeltUtga?.includes("QRGADAA")) {
+      console.log("QR Gadaa tulbur bish");
+    } else {
+      if (baiguullagiinId == "663da696aa6bedd9ae0567f0") {
+        tulsunDun = tulsunDun + 50; //sms 50tug
+      }
+      shineDun =
+        (await Math.round(
+          (tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100
+        )) / 100;
+      const { db } = require("zevbackv2");
+      var kholbolt = db.kholboltuud.find(
+        (a) => a.baiguullagiinId == baiguullagiinId
+      );
+      var shuukhKhugatsaa = new Date(
+        Date.now() - 300000 //5 * 60 * 1000
+      );
+      var query = {
+        $or: [
+          {
+            niitDun: tulsunDun,
+          },
+          {
+            niitDun: shineDun > 0 ? shineDun : tulsunDun,
+          },
+        ],
+        tokiId: { $exists: false },
+        "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+          $gt: shuukhKhugatsaa,
         },
-        {
-          niitDun: shineDun > 0 ? shineDun : tulsunDun,
-        },
-      ],
-      tokiId: { $exists: false },
-      "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-        $gt: shuukhKhugatsaa,
-      },
-      "tuukh.0.tuluv": 0,
-    };
-    if (baiguullagiinId == "6115f350b35689cdbf1b9da3") {
-      if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.202";
-      } else if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.204";
-      } else if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 3") || nemeltUtga.includes("ХААЛТ 3"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.231";
-      } else if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 4") || nemeltUtga.includes("ХААЛТ 4"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.229";
+        "tuukh.0.tuluv": 0,
+      };
+      if (baiguullagiinId == "6115f350b35689cdbf1b9da3") {
+        if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.202";
+        } else if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.204";
+        } else if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 3") || nemeltUtga.includes("ХААЛТ 3"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.231";
+        } else if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 4") || nemeltUtga.includes("ХААЛТ 4"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.229";
+        }
       }
-    }
-    if (baiguullagiinId === "674042c8640d59bcf2e95a9a") {
-      // NaranTuul Office
-      if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("office2") || nemeltUtga.includes("OFFICE2"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.102";
-      } else if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("office1") || nemeltUtga.includes("OFFICE1"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.102";
+      if (baiguullagiinId === "674042c8640d59bcf2e95a9a") {
+        // NaranTuul Office
+        if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("office2") || nemeltUtga.includes("OFFICE2"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.102";
+        } else if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("office1") || nemeltUtga.includes("OFFICE1"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.102";
+        }
       }
-    }
-    if (baiguullagiinId == "6731b43bc23730ac1908da2d") {
-      // soyolj
-      if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.2.21";
-      } else if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.2.24";
-      } else if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 3") || nemeltUtga.includes("ХААЛТ 3"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.2.25";
-      } else if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 4") || nemeltUtga.includes("ХААЛТ 4"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.2.26";
+      if (baiguullagiinId == "6731b43bc23730ac1908da2d") {
+        // soyolj
+        if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.2.21";
+        } else if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.2.24";
+        } else if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 3") || nemeltUtga.includes("ХААЛТ 3"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.2.25";
+        } else if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 4") || nemeltUtga.includes("ХААЛТ 4"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.2.26";
+        }
       }
-    }
-    if (baiguullagiinId == "67dfebe55b92ee004ba43ad2") {
-      // chingeltei
-      if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.122";
-      } else if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.121";
+      if (baiguullagiinId == "67dfebe55b92ee004ba43ad2") {
+        // chingeltei
+        if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.122";
+        } else if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.121";
+        }
       }
-    }
-    if (baiguullagiinId == "6800b91480a007fe5ab34436") {
-      // khavdar
-      if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.103";
-      } else if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.1.104";
+      if (baiguullagiinId == "6800b91480a007fe5ab34436") {
+        // khavdar
+        if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 1") || nemeltUtga.includes("ХААЛТ 1"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.103";
+        } else if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Хаалт 2") || nemeltUtga.includes("ХААЛТ 2"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.1.104";
+        }
       }
-    }
-    if (baiguullagiinId == "63c0f31efe522048bf02086d") {
-      // foodcity
-      if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Гарах-1") || nemeltUtga.includes("ГАРАХ-1"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.2.236";
-      } else if (
-        !!nemeltUtga &&
-        (nemeltUtga.includes("Гарах-2") || nemeltUtga.includes("ГАРАХ-2"))
-      ) {
-        query["tuukh.0.garsanKhaalga"] = "192.168.2.237";
+      if (baiguullagiinId == "63c0f31efe522048bf02086d") {
+        // foodcity
+        if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Гарах-1") || nemeltUtga.includes("ГАРАХ-1"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.2.236";
+        } else if (
+          !!nemeltUtga &&
+          (nemeltUtga.includes("Гарах-2") || nemeltUtga.includes("ГАРАХ-2"))
+        ) {
+          query["tuukh.0.garsanKhaalga"] = "192.168.2.237";
+        }
       }
-    }
-    let regex = /\b\d{4}[А-ЯӨҮ]{2,3}\b/gu;
-    let result = nemeltUtga?.match(regex);
-    if (result) query["mashiniiDugaar"] = result[0];
-    var oldsonData = await Uilchluulegch(kholbolt, true).findOne(query);
-    if (oldsonData) {
-      await Uilchluulegch(kholbolt).findByIdAndUpdate(
-        oldsonData._id,
-        {
-          $set: {
-            "tuukh.$[t].burtgesenAjiltaniiNer": "system",
-            "tuukh.$[t].tulbur": [
+      let regex = /\b\d{4}[А-ЯӨҮ]{2,3}\b/gu;
+      let result = nemeltUtga?.match(regex);
+      if (result) query["mashiniiDugaar"] = result[0];
+      var oldsonData = await Uilchluulegch(kholbolt, true).findOne(query);
+      if (oldsonData) {
+        await Uilchluulegch(kholbolt).findByIdAndUpdate(
+          oldsonData._id,
+          {
+            $set: {
+              "tuukh.$[t].burtgesenAjiltaniiNer": "system",
+              "tuukh.$[t].tulbur": [
+                {
+                  ognoo: new Date(),
+                  turul:
+                    nemeltUtga?.includes("qpay") || nemeltUtga?.includes("QPAY")
+                      ? "bankQR"
+                      : "khariltsakh",
+                  dun: tulsunDun,
+                },
+              ],
+              "tuukh.$[t].tuluv": 1,
+            },
+          },
+          {
+            arrayFilters: [
               {
-                ognoo: new Date(),
-                turul:
-                  nemeltUtga?.includes("qpay") || nemeltUtga?.includes("QPAY")
-                    ? "bankQR"
-                    : "khariltsakh",
-                dun: tulsunDun,
+                "t.zogsooliinId": zogsooliinId,
               },
             ],
-            "tuukh.$[t].tuluv": 1,
+          }
+        );
+        Uilchluulegch(kholbolt).deleteOne({
+          mashiniiDugaar: oldsonData.mashiniiDugaar,
+          "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+            $exists: false,
           },
-        },
-        {
-          arrayFilters: [
-            {
-              "t.zogsooliinId": zogsooliinId,
-            },
-          ],
-        }
-      );
-      Uilchluulegch(kholbolt).deleteOne({
-        mashiniiDugaar: oldsonData.mashiniiDugaar,
-        "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-          $exists: false,
-        },
-        "tuukh.0.tuluv": {
-          $ne: -2,
-        },
-        "tuukh.zogsooliinId": { $ne: zogsooliinId },
-      });
-      const io = req.app.get("socketio");
-      if (io) {
-        io.emit(`zogsool${baiguullagiinId}`, {
-          khaalgaTurul: "oroh",
-          cameraIP: oldsonData.tuukh[0].garsanKhaalga,
+          "tuukh.0.tuluv": {
+            $ne: -2,
+          },
+          "tuukh.zogsooliinId": { $ne: zogsooliinId },
         });
-      }
-      var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-        kholbolt.baiguullagiinId
-      );
-      var tuxainSalbar = baiguullaga?.barilguud?.find(
-        (e) => e._id.toString() === barilgiinId
-      )?.tokhirgoo;
-      if (tuxainSalbar?.eBarimtMessageIlgeekhEsekh && nemeltUtga) {
-        var filterDugaar = nemeltUtga
-          ?.split(/,| /)
-          ?.filter((a) => isNumeric(a) && a.length === 8);
-        if (filterDugaar?.length > 0) {
-          var shiveeguiTuukhuud = [];
-          shiveeguiTuukhuud.push(oldsonData);
-          await zogsoolNiitDungeerEbarimtShivye(
-            kholbolt,
-            tulsunDun,
-            barilgiinId,
-            next,
-            shiveeguiTuukhuud,
-            filterDugaar[0]
-          );
+        const io = req.app.get("socketio");
+        if (io) {
+          io.emit(`zogsool${baiguullagiinId}`, {
+            khaalgaTurul: "oroh",
+            cameraIP: oldsonData.tuukh[0].garsanKhaalga,
+          });
+        }
+        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+          kholbolt.baiguullagiinId
+        );
+        var tuxainSalbar = baiguullaga?.barilguud?.find(
+          (e) => e._id.toString() === barilgiinId
+        )?.tokhirgoo;
+        if (tuxainSalbar?.eBarimtMessageIlgeekhEsekh && nemeltUtga) {
+          var filterDugaar = nemeltUtga
+            ?.split(/,| /)
+            ?.filter((a) => isNumeric(a) && a.length === 8);
+          if (filterDugaar?.length > 0) {
+            var shiveeguiTuukhuud = [];
+            shiveeguiTuukhuud.push(oldsonData);
+            await zogsoolNiitDungeerEbarimtShivye(
+              kholbolt,
+              tulsunDun,
+              barilgiinId,
+              next,
+              shiveeguiTuukhuud,
+              filterDugaar[0]
+            );
+          }
         }
       }
     }
@@ -653,7 +701,15 @@ router.post(
         },
       ];
 
-      const qrTypes = ["GadaaQR", "DotorQR", "bankQR", "toki", "киоск"];
+      // Self-service/payment types that are not tied to a specific employee
+      const qrTypes = [
+        "GadaaQR",
+        "DotorQR",
+        "bankQR",
+        "toki",
+        "киоск",
+        "tseneglelt",
+      ];
 
       const qrDateMatch = {
         "tuukh.tulbur.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
@@ -1336,14 +1392,18 @@ router.get("/v1/parking", async (req, res, next) => {
 });
 
 async function getParkingFind(kholbolt, baiguullagiinId, query) {
-  const cacheKey = `parkingFind:${baiguullagiinId}`;
+  const queryKey = crypto
+    .createHash("md5")
+    .update(JSON.stringify(query))
+    .digest("hex");
+  const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
   if (cached) {
     return JSON.parse(cached);
   }
-  const zogsooluud = await Parking(kholbolt).find(query);
-  await client.setEx(cacheKey, 60, JSON.stringify(zogsooluud));
-  return zogsooluud;
+  const data = await Parking(kholbolt).find(query);
+  await client.setEx(cacheKey, 60, JSON.stringify(data)); // 60sec TTL
+  return data;
 }
 
 async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
@@ -1363,7 +1423,11 @@ async function getAggregateUilchluulegch(
   barilgiinId,
   query
 ) {
-  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}`;
+  const queryKey = crypto
+    .createHash("md5")
+    .update(JSON.stringify(query))
+    .digest("hex");
+  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
   if (cached) {
     return JSON.parse(cached);
@@ -1380,7 +1444,11 @@ async function getUilchluulegchfindOne(
   barilgiinId,
   query
 ) {
-  const cacheKey = `UilchluulegchFindOne:${baiguullagiinId}:${barilgiinId}`;
+  const queryKey = crypto
+    .createHash("md5")
+    .update(JSON.stringify(query))
+    .digest("hex");
+  const cacheKey = `UilchluulegchFindOne:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
   if (cached) {
     return JSON.parse(cached);
