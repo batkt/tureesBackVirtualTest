@@ -45,6 +45,8 @@ const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
 const { msgIlgeeye } = require("../controller/khariltsagch");
 const MsgTuukh = require("../models/msgTuukh");
 const client = require("../routes/redisClient");
+const crypto = require("crypto");
+
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
 });*/
 crud(router, "parking", Parking, UstsanBarimt);
@@ -1390,7 +1392,10 @@ router.get("/v1/parking", async (req, res, next) => {
 });
 
 async function getParkingFind(kholbolt, baiguullagiinId, query) {
-  const queryKey = "";
+  const queryKey = crypto
+    .createHash("md5")
+    .update(JSON.stringify(query))
+    .digest("hex");
   const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
   if (cached) {
@@ -1418,7 +1423,10 @@ async function getAggregateUilchluulegch(
   barilgiinId,
   query
 ) {
-  const queryKey = "";
+  const queryKey = crypto
+    .createHash("md5")
+    .update(JSON.stringify(query))
+    .digest("hex");
   const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
   if (cached) {
