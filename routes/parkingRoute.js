@@ -605,10 +605,14 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         });
         const io = req.app.get("socketio");
         if (io) {
-          io.emit(`zogsool${baiguullagiinId}`, {
-            khaalgaTurul: "oroh",
-            cameraIP: oldsonData.tuukh[0].garsanKhaalga,
-          });
+          io.emit(
+            `zogsoolGarahTulsun${baiguullagiinId}${oldsonData.tuukh[0].garsanKhaalga}`,
+            {
+              baiguullagiinId: baiguullagiinId,
+              khaalgaTurul: "garsan",
+              cameraIP: oldsonData.tuukh[0].garsanKhaalga,
+            }
+          );
         }
         var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
           kholbolt.baiguullagiinId
@@ -2477,20 +2481,28 @@ router.route("/v1/pay").post(async (req, res, next) => {
               },
             });
             const io = req.app.get("socketio");
-            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
-              khaalgaTurul: "oroh",
-              turul: "toki",
-              mashiniiDugaar: req.body.plate_number,
-              cameraIP: garsanObject.tuukh[0].garsanKhaalga,
-            });
+            io.emit(
+              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${garsanObject.tuukh[0].garsanKhaalga}`,
+              {
+                baiguullagiinId: tukhainObject.baiguullagiinId,
+                khaalgaTurul: "garsan",
+                turul: "toki",
+                mashiniiDugaar: req.body.plate_number,
+                cameraIP: garsanObject.tuukh[0].garsanKhaalga,
+              }
+            );
           } else {
             const io = req.app.get("socketio");
-            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
-              khaalgaTurul: "oroh",
-              turul: "toki",
-              mashiniiDugaar: req.body.plate_number,
-              cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
-            });
+            io.emit(
+              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
+              {
+                baiguullagiinId: tukhainObject.baiguullagiinId,
+                khaalgaTurul: "oroh",
+                turul: "toki",
+                mashiniiDugaar: req.body.plate_number,
+                cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
+              }
+            );
           }
         }
         tukhainObject.niitDun = req.body.paid_amount;
@@ -2796,20 +2808,28 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
               },
             });
             const io = req.app.get("socketio");
-            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
-              khaalgaTurul: "oroh",
-              turul: "toki",
-              mashiniiDugaar: req.body.plate_number,
-              cameraIP: garsanObject.tuukh[0].garsanKhaalga,
-            });
+            io.emit(
+              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${garsanObject.tuukh[0].garsanKhaalga}`,
+              {
+                baiguullagiinId: tukhainObject.baiguullagiinId,
+                khaalgaTurul: "garsan",
+                turul: "toki",
+                mashiniiDugaar: req.body.plate_number,
+                cameraIP: garsanObject.tuukh[0].garsanKhaalga,
+              }
+            );
           } else {
             const io = req.app.get("socketio");
-            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
-              khaalgaTurul: "oroh",
-              turul: "toki",
-              mashiniiDugaar: req.body.plate_number,
-              cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
-            });
+            io.emit(
+              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
+              {
+                baiguullagiinId: tukhainObject.baiguullagiinId,
+                khaalgaTurul: "garsan",
+                turul: "toki",
+                mashiniiDugaar: req.body.plate_number,
+                cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
+              }
+            );
           }
         }
         tukhainObject.niitDun = req.body.tulukhDun;
@@ -3150,10 +3170,14 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
             set["tuukh.$[t].tuluv"] = 1;
             if (!!tukhainObject.tuukh[0]?.garsanKhaalga) {
               const io = req.app.get("socketio");
-              io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
-                khaalgaTurul: "oroh",
-                cameraIP: tukhainObject.tuukh[0]?.garsanKhaalga,
-              });
+              io.emit(
+                `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
+                {
+                  baiguullagiinId: tukhainObject.baiguullagiinId,
+                  khaalgaTurul: "oroh",
+                  cameraIP: tukhainObject.tuukh[0]?.garsanKhaalga,
+                }
+              );
             }
           }
           set["garakhTsag"] = new Date(

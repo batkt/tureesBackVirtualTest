@@ -218,10 +218,12 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
         else tukhainObject.tuukh[0].tulbur = tulbur;
       var set = {
         "tuukh.0.tulbur": tukhainObject?.tuukh?.[0]?.tulbur || 0,
-        "tuukh.0.tuluv": body.turul === "DotorQR" ? 0 : 1,
+        "tuukh.0.tuluv": tukhainObject?.tuukh[0].tsagiinTuukh[0].garsanTsag
+          ? 1
+          : 0,
         "tuukh.0.tulukhDun": 0,
       };
-      if (body.turul === "DotorQR")
+      if (!tukhainObject?.tuukh[0].tsagiinTuukh[0].garsanTsag)
         set["garakhTsag"] = new Date(
           Date.now() + (tukhainZogsool?.garakhTsag || 30) * 60000
         );
