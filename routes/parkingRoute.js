@@ -51,6 +51,46 @@ crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
 crud(router, "mashin", Mashin, UstsanBarimt);
 crud(router, "blockMashin", BlockMashin, UstsanBarimt);
+// Ажилтнаар шүүсэн ч цэнэглэлт (автомат) үлдэхээр шүүлтүүрийг өргөтгөнө.
+router.use("/zogsoolUilchluulegch", (req, res, next) => {
+  try {
+    if (req.method !== "GET" || !req?.query?.query) return next();
+    const query = JSON.parse(req.query.query);
+    const ajiltanFilter = query["tuukh.burtgesenAjiltaniiId"];
+    if (!ajiltanFilter) return next();
+
+    const addTseneglelt = (arr) => {
+      if (!arr.includes("tseneglelt")) arr.push("tseneglelt");
+      return arr;
+    };
+
+    if (typeof ajiltanFilter === "string") {
+      query["tuukh.burtgesenAjiltaniiId"] = {
+        $in: addTseneglelt([ajiltanFilter]),
+      };
+    } else if (
+      typeof ajiltanFilter === "object" &&
+      !Array.isArray(ajiltanFilter)
+    ) {
+      const existing =
+        Array.isArray(ajiltanFilter.$in) && ajiltanFilter.$in.length > 0
+          ? ajiltanFilter.$in
+          : ajiltanFilter.$eq
+          ? [ajiltanFilter.$eq]
+          : [];
+      if (existing.length > 0) {
+        query["tuukh.burtgesenAjiltaniiId"] = {
+          $in: addTseneglelt(existing),
+        };
+      }
+    }
+
+    req.query.query = JSON.stringify(query);
+  } catch (err) {
+    // parsing алдаа гарвал анхны логикоор үргэлжлүүлнэ
+  }
+  next();
+});
 crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
 // crud(router, "zogsoolUilchluulegch", (conn) => Uilchluulegch(conn, true), UstsanBarimt);
 crud(router, "uilchluulegch", Uilchluulegch, UstsanBarimt);
