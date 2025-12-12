@@ -878,6 +878,24 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
         await butsaakhBarimt.save().catch((err) => {
           next(err);
         });
+
+        try {
+          var ustsanBarimt = new UstsanBarimt(
+            req.body.tukhainBaaziinKholbolt
+          )();
+          ustsanBarimt.class = "eBarimt";
+          ustsanBarimt.object = butsaakhBarimt.toObject();
+          ustsanBarimt.ajiltniiNer =
+            req.body.ajiltniiNer || req.user?.ner || "";
+          ustsanBarimt.tailbar = req.body.tailbar || "И-баримт устгасан";
+          ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
+          ustsanBarimt.barilgiinId = req.body.barilgiinId;
+          await ustsanBarimt.save().catch((err) => {
+            console.error("И-Баримт устгахад алдаа гарлаа:", err);
+          });
+        } catch (err) {
+          console.error("И-Баримт үүсгэхэд алдаа гарлаа:", err);
+        }
         if (butsaakhBarimt.guilgeeniiId)
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(
@@ -997,10 +1015,12 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
       (e) => e._id.toString() == req.body?.barilgiinId
     )?.tokhirgoo;
     if (!!tuxainSalbar && !!tuxainSalbar?.eBarimtShine) ebarimtShine = true;
+
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
     };
+
     if (!!ebarimtShine) {
       match.createdAt = {
         $gte: new Date(req.body.ekhlekhOgnoo),
@@ -1012,6 +1032,7 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
         $lte: new Date(req.body.duusakhOgnoo),
       };
     }
+
     if (req.body.barimtTurul === "mashiniiDugaar")
       match.mashiniiDugaar = { $exists: true };
     else if (req.body.barimtTurul === "gereeniiDugaar")
@@ -1072,6 +1093,7 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
         },
       },
     ];
+
     var result;
 
     if (!!ebarimtShine)
@@ -1135,13 +1157,14 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
         },
       },
     ];
+
     var result1 = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true)
       .aggregate(query)
       .catch((err) => {
         next(err);
       });
 
-    khariu = {
+    var khariu = {
       ilgeesenDun: 0,
       ilgeesenToo: 0,
       butsaasanDun: 0,
@@ -1149,24 +1172,7 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
       avakhDun: 0,
       avakhToo: 0,
     };
-    if (result[0]) {
-      if (result[0].butsaasan[0]) {
-        khariu.butsaasanDun = parseFloat(result[0].butsaasan[0].dun);
-        khariu.butsaasanToo = result[0].butsaasan[0].too;
-      }
-      if (result[0].ilgeesen[0]) {
-        khariu.ilgeesenDun = parseFloat(result[0].ilgeesen[0].dun);
-        khariu.ilgeesenToo = result[0].ilgeesen[0].too;
-      }
-    }
-    khariu = {
-      ilgeesenDun: 0,
-      ilgeesenToo: 0,
-      butsaasanDun: 0,
-      butsaasanToo: 0,
-      avakhDun: 0,
-      avakhToo: 0,
-    };
+
     if (result[0]) {
       if (result[0].butsaasan[0]) {
         khariu.butsaasanDun = parseFloat(result[0].butsaasan[0].dun);
@@ -1182,6 +1188,7 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
       khariu.avakhDun = result1[0].dun + result1[0].dunTdb;
       khariu.avakhToo = result1[0].too;
     }
+
     res.send(khariu);
   } catch (error) {
     next(error);
