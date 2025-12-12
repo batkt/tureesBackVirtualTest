@@ -1391,10 +1391,19 @@ router.get("/v1/parking", async (req, res, next) => {
   }
 });
 
+function stableStringify(obj) {
+  if (obj === null || typeof obj !== "object") return JSON.stringify(obj);
+  if (Array.isArray(obj)) return `[${obj.map(stableStringify).join(",")}]`;
+  const keys = Object.keys(obj).sort();
+  return `{${keys
+    .map((k) => JSON.stringify(k) + ":" + stableStringify(obj[k]))
+    .join(",")}}`;
+}
+
 async function getParkingFind(kholbolt, baiguullagiinId, query) {
   const queryKey = crypto
     .createHash("md5")
-    .update(JSON.stringify(query))
+    .update(stableStringify(query))
     .digest("hex");
   const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
@@ -1425,7 +1434,7 @@ async function getAggregateUilchluulegch(
 ) {
   const queryKey = crypto
     .createHash("md5")
-    .update(JSON.stringify(query))
+    .update(stableStringify(query))
     .digest("hex");
   const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
@@ -1446,7 +1455,7 @@ async function getUilchluulegchfindOne(
 ) {
   const queryKey = crypto
     .createHash("md5")
-    .update(JSON.stringify(query))
+    .update(stableStringify(query))
     .digest("hex");
   const cacheKey = `UilchluulegchFindOne:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
