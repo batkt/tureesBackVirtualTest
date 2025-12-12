@@ -385,7 +385,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var tulsunDun = Number(req.body.tulsunDun);
     var shineDun = 0;
     console.log("tailbar ----->>", nemeltUtga);
-    if (nemeltUtga?.includes("QRGadaa")) {
+    if (nemeltUtga?.includes("QRGadaa") || nemeltUtga?.includes("QRGADAA")) {
       console.log("QR Gadaa tulbur bish");
     } else {
       if (baiguullagiinId == "663da696aa6bedd9ae0567f0") {
