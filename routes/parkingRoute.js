@@ -1350,14 +1350,15 @@ router.get("/v1/parking", async (req, res, next) => {
 });
 
 async function getParkingFind(kholbolt, baiguullagiinId, query) {
-  const cacheKey = `parkingFind:${baiguullagiinId}`;
+  const queryKey = JSON.stringify(query);
+  const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
   if (cached) {
     return JSON.parse(cached);
   }
-  const zogsooluud = await Parking(kholbolt).find(query);
-  await client.setEx(cacheKey, 60, JSON.stringify(zogsooluud));
-  return zogsooluud;
+  const data = await Parking(kholbolt).find(query);
+  await client.setEx(cacheKey, 60, JSON.stringify(data)); // 60sec TTL
+  return data;
 }
 
 async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
@@ -1377,7 +1378,8 @@ async function getAggregateUilchluulegch(
   barilgiinId,
   query
 ) {
-  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}`;
+  const queryKey = JSON.stringify(query);
+  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
   if (cached) {
     return JSON.parse(cached);
@@ -1394,7 +1396,8 @@ async function getUilchluulegchfindOne(
   barilgiinId,
   query
 ) {
-  const cacheKey = `UilchluulegchFindOne:${baiguullagiinId}:${barilgiinId}`;
+  const queryKey = JSON.stringify(query);
+  const cacheKey = `UilchluulegchFindOne:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
   if (cached) {
     return JSON.parse(cached);
