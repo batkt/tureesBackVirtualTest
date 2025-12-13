@@ -1867,12 +1867,7 @@ router
                                                                   "",
                                                                 ],
                                                               },
-                                                              {
-                                                                $ifNull: [
-                                                                  "$avlaga.zardliinNer",
-                                                                  "$avlaga.tailbar",
-                                                                ],
-                                                              },
+                                                              "$avlaga.tailbar",
                                                             ],
                                                           },
                                                         ],
