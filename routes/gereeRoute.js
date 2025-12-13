@@ -1845,9 +1845,20 @@ router
                                                       },
                                                       "Барьцаа ашигласан",
                                                       {
-                                                        $ifNull: [
-                                                          "$avlaga.zardliinNer",
-                                                          "$avlaga.tailbar",
+                                                        $cond: [
+                                                          {
+                                                            $eq: [
+                                                              "$avlaga.turul",
+                                                              "torguuli",
+                                                            ],
+                                                          },
+                                                          "торгууль",
+                                                          {
+                                                            $ifNull: [
+                                                              "$avlaga.zardliinNer",
+                                                              "$avlaga.tailbar",
+                                                            ],
+                                                          },
                                                         ],
                                                       },
                                                     ],
