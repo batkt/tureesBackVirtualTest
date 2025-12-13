@@ -1839,39 +1839,23 @@ router
                                                     $cond: [
                                                       {
                                                         $eq: [
-                                                          "$avlaga.zardliinTurul",
-                                                          "busad",
+                                                          "$avlaga.turul",
+                                                          "baritsaa",
                                                         ],
                                                       },
-                                                      {
-                                                        $concat: [
-                                                          "Авлага бусад ",
-                                                          {
-                                                            $ifNull: [
-                                                              "$avlaga.tailbar",
-                                                              "",
-                                                            ],
-                                                          },
-                                                        ],
-                                                      },
+                                                      "Барьцаа ашигласан",
                                                       {
                                                         $cond: [
                                                           {
                                                             $eq: [
                                                               "$avlaga.turul",
-                                                              "baritsaa",
+                                                              "torguuli",
                                                             ],
                                                           },
-                                                          "Барьцаа ашигласан",
+                                                          "торгууль",
                                                           {
-                                                            $cond: [
-                                                              {
-                                                                $eq: [
-                                                                  "$avlaga.turul",
-                                                                  "torguuli",
-                                                                ],
-                                                              },
-                                                              "торгууль",
+                                                            $concat: [
+                                                              "Авлага бусад ",
                                                               {
                                                                 $ifNull: [
                                                                   "$avlaga.zardliinNer",
