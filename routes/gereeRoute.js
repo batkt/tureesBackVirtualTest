@@ -1854,9 +1854,30 @@ router
                                                           },
                                                           "торгууль",
                                                           {
-                                                            $ifNull: [
-                                                              "$avlaga.zardliinNer",
-                                                              "$avlaga.tailbar",
+                                                            $cond: [
+                                                              {
+                                                                $eq: [
+                                                                  "$avlaga.zardliinTurul",
+                                                                  "busad",
+                                                                ],
+                                                              },
+                                                              {
+                                                                $concat: [
+                                                                  "Авлага бусад ",
+                                                                  {
+                                                                    $ifNull: [
+                                                                      "$avlaga.tailbar",
+                                                                      "",
+                                                                    ],
+                                                                  },
+                                                                ],
+                                                              },
+                                                              {
+                                                                $ifNull: [
+                                                                  "$avlaga.zardliinNer",
+                                                                  "$avlaga.tailbar",
+                                                                ],
+                                                              },
                                                             ],
                                                           },
                                                         ],
