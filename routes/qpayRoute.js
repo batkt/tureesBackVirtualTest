@@ -52,6 +52,28 @@ router.get(
   }
 );
 router.get(
+  "/qpaycallbackKiosk/:baiguullagiinId/:barilgiinId/:mashiniiDugaar/:zakhialgiinDugaar",
+  async (req, res, next) => {
+    try {
+      const { db } = require("zevbackv2");
+      const b = req.params.baiguullagiinId;
+      var kholbolt = db.kholboltuud.find((a) => a.baiguullagiinId == b);
+      const qpayObject = await QuickQpayObject(kholbolt).findOne({
+        zakhialgiinDugaar: req.params.zakhialgiinDugaar,
+        tulsunEsekh: false,
+      });
+
+      qpayObject.tulsunEsekh = true;
+      qpayObject.isNew = false;
+      await qpayObject.save();
+      req.app.get("socketio").emit(`qpay/${b}/${qpayObject.zakhialgiinDugaar}`);
+      res.sendStatus(200);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+router.get(
   "/qpaycallbackGadaaSticker/:baiguullagiinId/:barilgiinId/:mashiniiDugaar/:cameraIP/:zakhialgiinDugaar",
   async (req, res, next) => {
     try {
@@ -90,6 +112,7 @@ router.get(
           io.emit(
             `qpayMobileSdk${req.params.baiguullagiinId}${req.params.cameraIP}`,
             {
+              baiguullagiinId: req.params.baiguullagiinId,
               khaalgaTurul: "Гарах",
               turul: "qpayMobile",
               mashiniiDugaar: req.params.mashiniiDugaar,
@@ -185,6 +208,20 @@ router.post("/qpayGargaya", tokenShalgakh, async (req, res, next) => {
           req.body.mashiniiDugaar +
           "/" +
           req.body.cameraIP +
+          "/" +
+          req.body?.zakhialgiinDugaar;
+      }
+
+      // kiosk
+      if (req.body.turul === "kiosk" && !!req.body.mashiniiDugaar) {
+        callback_url =
+          process.env.UNDSEN_SERVER +
+          "/qpaycallbackKiosk/" +
+          req.body.baiguullagiinId +
+          "/" +
+          req.body.barilgiinId.toString() +
+          "/" +
+          req.body.mashiniiDugaar +
           "/" +
           req.body?.zakhialgiinDugaar;
       }
