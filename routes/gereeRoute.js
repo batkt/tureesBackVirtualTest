@@ -1857,8 +1857,8 @@ router
                                                             $cond: [
                                                               {
                                                                 $eq: [
-                                                                  "$avlaga.zardliinTurul",
-                                                                  "busad",
+                                                                  "$avlaga.turul",
+                                                                  "avlaga",
                                                                 ],
                                                               },
                                                               {
