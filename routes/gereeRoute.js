@@ -2018,12 +2018,14 @@ router
                 );
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
+                    console.log("------- 1 -------<" + zardal.tailbar);
                     zardal.tailbar = zardal.tailbar?.includes("Авлага бусад")
                       ? zardal.tailbar
                       : zardal._id.tailbar +
                         (zardal._id.tooluuriinDugaar
                           ? " " + zardal._id.tooluuriinDugaar
                           : "");
+                    console.log("-------- 2 -------<" + zardal.tailbar);
                     if (
                       zardal.tailbar == "Түрээс" ||
                       zardal.tailbar == "Хөнгөлөлт"
