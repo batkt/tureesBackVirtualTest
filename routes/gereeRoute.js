@@ -1852,17 +1852,27 @@ router
                                                               "torguuli",
                                                             ],
                                                           },
-                                                          "торгууль",
+                                                          "засвар",
                                                           {
-                                                            $cond: [
+                                                            $concat: [
                                                               {
-                                                                $eq: [
-                                                                  "$avlaga.zardliinTurul",
-                                                                  "busad",
+                                                                $cond: [
+                                                                  {
+                                                                    $eq: [
+                                                                      "$avlaga.zardliinTurul",
+                                                                      "busad",
+                                                                    ],
+                                                                  },
+                                                                  "Авлага бусад ",
+                                                                  "",
                                                                 ],
                                                               },
-                                                              "Авлага бусад ",
-                                                              "$avlaga.tailbar",
+                                                              {
+                                                                $ifNull: [
+                                                                  "$avlaga.zardliinNer",
+                                                                  "$avlaga.tailbar",
+                                                                ],
+                                                              },
                                                             ],
                                                           },
                                                         ],
@@ -2008,11 +2018,12 @@ router
                 );
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
-                    zardal.tailbar =
-                      zardal._id.tailbar +
-                      (zardal._id.tooluuriinDugaar
-                        ? " " + zardal._id.tooluuriinDugaar
-                        : "");
+                    zardal.tailbar = zardal.tailbar?.includes("Авлага бусад")
+                      ? zardal.tailbar
+                      : zardal._id.tailbar +
+                        (zardal._id.tooluuriinDugaar
+                          ? " " + zardal._id.tooluuriinDugaar
+                          : "");
                     if (
                       zardal.tailbar == "Түрээс" ||
                       zardal.tailbar == "Хөнгөлөлт"
