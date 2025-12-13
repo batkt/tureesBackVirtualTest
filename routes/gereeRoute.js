@@ -1855,7 +1855,18 @@ router
                                                           "торгууль",
                                                           {
                                                             $concat: [
-                                                              "Авлага бусад ",
+                                                              {
+                                                                $cond: [
+                                                                  {
+                                                                    $eq: [
+                                                                      "$avlaga.zardliinTurul",
+                                                                      "busad",
+                                                                    ],
+                                                                  },
+                                                                  "Авлага бусад ",
+                                                                  "",
+                                                                ],
+                                                              },
                                                               {
                                                                 $ifNull: [
                                                                   "$avlaga.zardliinNer",
