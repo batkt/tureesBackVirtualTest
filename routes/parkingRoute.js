@@ -46,6 +46,8 @@ const { msgIlgeeye } = require("../controller/khariltsagch");
 const MsgTuukh = require("../models/msgTuukh");
 const client = require("../routes/redisClient");
 const crypto = require("crypto");
+const { QuickQpayObject } = require("quickqpaypackv2");
+const axios = require("axios");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
 });*/
@@ -426,10 +428,42 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var nemeltUtga = req.body.nemeltUtga;
     var tulsunDun = Number(req.body.tulsunDun);
     var shineDun = 0;
+    const { db } = require("zevbackv2");
+    var kholbolt = db.kholboltuud.find(
+      (a) => a.baiguullagiinId == baiguullagiinId
+    );
     console.log("tailbar ----->>", nemeltUtga);
     if (nemeltUtga?.includes("QRGadaa") || nemeltUtga?.includes("QRGADAA")) {
       console.log("QR Gadaa tulbur bish");
-    } else {
+      var guilgeenuud = await QuickQpayObject(kholbolt).find({
+        tulsunEsekh: false,
+        zogsooliinId: zogsooliinId,
+        "qpay.description": { $regex: "QRGadaa", $options: "i" },
+        ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
+      });
+      for (const guilgee of guilgeenuud) {
+        var oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
+          _id: guilgee.zogsoolUilchluulegch?.uId,
+          "tuukh.0.tulbur": { $size: 0 },
+        });
+        if (!oldsonMashin) continue;
+        console.log("QR Gadaa tulbur ->" + JSON.stringify(oldsonMashin));
+        try {
+          const resCallBack = await axios.get(
+            encodeURI(guilgee.qpay?.callback_url)
+          );
+          console.log("QR Gadaa tulbur -> response", resCallBack.data);
+        } catch (err) {
+          console.error(
+            "QR Gadaa callback error:",
+            err.response?.status,
+            err.response?.data || err.message
+          );
+        }
+      }
+    } else if (nemeltUtga?.includes("kiosk") || nemeltUtga?.includes("KIOSK"))
+      console.log("QR Gadaa tulbur bish");
+    else {
       if (baiguullagiinId == "663da696aa6bedd9ae0567f0") {
         tulsunDun = tulsunDun + 50; //sms 50tug
       }
@@ -437,10 +471,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         (await Math.round(
           (tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100
         )) / 100;
-      const { db } = require("zevbackv2");
-      var kholbolt = db.kholboltuud.find(
-        (a) => a.baiguullagiinId == baiguullagiinId
-      );
+
       var shuukhKhugatsaa = new Date(
         Date.now() - 300000 //5 * 60 * 1000
       );
