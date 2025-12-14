@@ -432,6 +432,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var kholbolt = db.kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullagiinId
     );
+    console.log("tailbar baiguullagiinId ----->>", baiguullagiinId);
     console.log("tailbar ----->>", nemeltUtga);
     if (nemeltUtga?.includes("QRGadaa") || nemeltUtga?.includes("QRGADAA")) {
       console.log("QR Gadaa tulbur bish");
@@ -442,6 +443,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
       });
       for (const guilgee of guilgeenuud) {
+        if (!guilgee.zogsoolUilchluulegch?.uId) continue;
         var oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
           _id: guilgee.zogsoolUilchluulegch?.uId,
           "tuukh.0.tulbur": { $size: 0 },
