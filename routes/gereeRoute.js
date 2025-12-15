@@ -1283,7 +1283,6 @@ router
             var idnuud = [];
             result.jagsaalt.forEach((a) => idnuud.push(a._id));
             
-            // Build umnukhSariinUrTulbur aggregation conditionally for FoodCity
             const umnukhSariinUrTulburGroup = {
               _id: "$gereeniiDugaar",
               tulukh: {
@@ -1297,7 +1296,6 @@ router
                 },
               },
             };
-            // For FoodCity: include tulsun in aggregation to get correct previous month balance
             if (isFoodCity) {
               umnukhSariinUrTulburGroup.tulsun = {
                 $sum: {
@@ -1310,7 +1308,6 @@ router
               gereeniiDugaar: "$gereeniiDugaar",
               uldegdel: isFoodCity
                 ? {
-                    // FoodCity: include tulsun in calculation (previous month balance)
                     $subtract: [
                       "$tulukh",
                       {
@@ -1319,7 +1316,6 @@ router
                     ],
                   }
                 : {
-                    // Others: old logic (tulukh - khyamdral only)
                     $subtract: ["$tulukh", "$khyamdral"],
                   },
             };
@@ -2011,11 +2007,6 @@ router
                   gereenuud[0].umnukhSariinUrTulbur.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;
-                // FoodCity fix: umnukhSariinUrTulbur should be the PREVIOUS month's ending balance
-                // BEFORE any current month payments/transactions. For FoodCity, the aggregation
-                // already includes all payments (tulsunDun) for transactions before ekhlekhOgnoo,
-                // so we should NOT subtract umnukhSariinTulsun here.
-                // For other organizations: keep old logic (subtract umnukhSariinTulsun)
                 if (!isFoodCity) {
                   x.umnukhSariinUrTulbur =
                     x.umnukhSariinUrTulbur - x.umnukhSariinTulsun;
