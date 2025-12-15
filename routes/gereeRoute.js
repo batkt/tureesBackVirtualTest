@@ -1320,6 +1320,17 @@ router
                   },
             };
             
+            const umnukhSariinTulsunDunGroup = isFoodCity
+              ? {
+                  _id: "$gereeniiDugaar",
+                  tulsun: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                    },
+                  },
+                }
+              : null;
+            
             var query = [
               {
                 $match: {
@@ -1458,6 +1469,61 @@ router
                       $project: umnukhSariinUrTulburProject,
                     },
                   ],
+                  ...(isFoodCity
+                    ? {
+                        umnukhSariinTulsunDun: [
+                          {
+                            $unwind: {
+                              path: "$avlaga.guilgeenuud",
+                            },
+                          },
+                          {
+                            $match: {
+                              "avlaga.guilgeenuud.ognoo": {
+                                $lt: new Date(req.body.ekhlekhOgnoo),
+                              },
+                              $or: [
+                                {
+                                  "avlaga.guilgeenuud.turul": {
+                                    $nin: ["baritsaa", "aldangi"],
+                                  },
+                                },
+                                {
+                                  $and: [
+                                    {
+                                      "avlaga.guilgeenuud.turul": {
+                                        $in: ["baritsaa"],
+                                      },
+                                    },
+                                    {
+                                      "avlaga.guilgeenuud.tulsunDun": {
+                                        $gt: 0,
+                                      },
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $group: {
+                              _id: "$gereeniiDugaar",
+                              tulsun: {
+                                $sum: {
+                                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                                },
+                              },
+                            },
+                          },
+                          {
+                            $project: {
+                              gereeniiDugaar: "$gereeniiDugaar",
+                              uldegdel: "$tulsun",
+                            },
+                          },
+                        ],
+                      }
+                    : {}),
                   umnukhSariinTureesUrTulbur: [
                     {
                       $unwind: {
@@ -2020,8 +2086,12 @@ router
                 
                 if (isFoodCity) {
                   x.niitDun = (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0);
-                  x.umnukhSariinTulsunDun = x.umnukhSariinTulsun || 0;
+                  x.umnukhSariinTulsunDun =
+                    gereenuud[0].umnukhSariinTulsunDun?.find(
+                      (a) => a._id == x.gereeniiDugaar
+                    )?.uldegdel || 0;
                   x.garaasBodsonNiitDun = x.niitUldegdel || 0;
+                  x.tulsunDun = (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0) - (x.garaasBodsonNiitDun || 0);
                 }
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
