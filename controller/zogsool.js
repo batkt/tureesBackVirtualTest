@@ -204,7 +204,6 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
     if (!tukhainObject) {
       return "Машины мэдээлэл олдсонгүй!";
     }
-    const niitBodogdsonDun = Number(bodsonDun) || 0;
     if (
       tukhainObject &&
       tukhainObject.tuukh &&
@@ -222,8 +221,7 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
         "tuukh.0.tuluv": tukhainObject?.tuukh[0].tsagiinTuukh[0].garsanTsag
           ? 1
           : 0,
-        "tuukh.0.tulukhDun": niitBodogdsonDun,
-        niitDun: niitBodogdsonDun,
+        "tuukh.0.tulukhDun": 0,
       };
       if (!tukhainObject?.tuukh[0].tsagiinTuukh[0].garsanTsag)
         set["garakhTsag"] = new Date(
