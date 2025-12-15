@@ -2430,6 +2430,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
         tukhainObject,
         tukhainKholbolt
       );
+      const niitBodogdsonDun = Number(bodsonDun) || 0;
       if (
         tukhainObject &&
         tukhainObject.tuukh &&
@@ -2453,6 +2454,8 @@ router.route("/v1/pay").post(async (req, res, next) => {
           } else tukhainObject.tuukh[0].tulbur = tulbur;
         var set = {
           "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
+          "tuukh.$[t].tulukhDun": niitBodogdsonDun,
+          niitDun: niitBodogdsonDun,
           tokiId: "toki",
         };
         if (bodsonDun > 0) {
@@ -3141,6 +3144,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
     if (!tukhainObject) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
     }
+    const niitBodogdsonDun = Number(bodsonDun) || 0;
     bodsonDun -= tukhainObject.tuukh[0].tulbur.reduce(
       (a, b) => a + (b.dun || 0),
       0
@@ -3197,6 +3201,8 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         } else tukhainObject.tuukh[0].tulbur = tulbur;
       var set = {
         "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
+        "tuukh.$[t].tulukhDun": niitBodogdsonDun,
+        niitDun: niitBodogdsonDun,
       };
       if (bodsonDun > 0) {
         if (bodsonDun == req.body.paid_amount) {
@@ -3238,6 +3244,8 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         set = {
           "tuukh.$[t].uneguiGarsan": req.body.uneguiGarsan,
           turul: req.body.turul,
+          "tuukh.$[t].tulukhDun": niitBodogdsonDun,
+          niitDun: niitBodogdsonDun,
         };
         if (!!tukhainObject.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag) {
           set["tuukh.$[t].tuluv"] = -1;
