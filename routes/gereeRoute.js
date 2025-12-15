@@ -2017,6 +2017,16 @@ router
                   )?.uldegdel || 0;
                 x.niitAvlagaUldegdel =
                   x.niitUldegdel + (x.aldangiinUldegdel || 0);
+                
+                // FoodCity template fields - map to frontend expected field names
+                if (isFoodCity) {
+                  // niitDun = Initial balance + Current month charges
+                  x.niitDun = (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0);
+                  // umnukhSariinTulsunDun = Previous month payments (for display only)
+                  x.umnukhSariinTulsunDun = x.umnukhSariinTulsun || 0;
+                  // garaasBodsonNiitDun = Total balance after payments
+                  x.garaasBodsonNiitDun = x.niitUldegdel || 0;
+                }
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
                     (a) => a._id == x.gereeniiDugaar
