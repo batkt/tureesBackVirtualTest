@@ -2521,7 +2521,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
                 khaalgaTurul: "garsan",
                 turul: "toki",
-                mashiniiDugaar: req.body.plate_number,
+                mashiniiDugaar: tukhainObject.mashiniiDugaar,
                 cameraIP: garsanObject.tuukh[0].garsanKhaalga,
               }
             );
@@ -2533,7 +2533,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
                 khaalgaTurul: "garsan",
                 turul: "toki",
-                mashiniiDugaar: req.body.plate_number,
+                mashiniiDugaar: tukhainObject.mashiniiDugaar,
                 cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
               }
             );
@@ -2848,7 +2848,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
                 khaalgaTurul: "garsan",
                 turul: "toki",
-                mashiniiDugaar: req.body.plate_number,
+                mashiniiDugaar: tukhainObject.mashiniiDugaar,
                 cameraIP: garsanObject.tuukh[0].garsanKhaalga,
               }
             );
@@ -2860,7 +2860,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
                 khaalgaTurul: "garsan",
                 turul: "toki",
-                mashiniiDugaar: req.body.plate_number,
+                mashiniiDugaar: tukhainObject.mashiniiDugaar,
                 cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
               }
             );
