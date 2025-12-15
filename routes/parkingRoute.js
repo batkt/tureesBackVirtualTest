@@ -644,6 +644,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
               baiguullagiinId: baiguullagiinId,
               khaalgaTurul: "garsan",
               cameraIP: oldsonData.tuukh[0].garsanKhaalga,
+              mashiniiDugaar: oldsonData.mashiniiDugaar,
             }
           );
         }
@@ -3220,6 +3221,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
                 {
                   baiguullagiinId: tukhainObject.baiguullagiinId,
                   khaalgaTurul: "garsan",
+                  mashiniiDugaar: tukhainObject.mashiniiDugaar,
                   cameraIP: tukhainObject.tuukh[0]?.garsanKhaalga,
                 }
               );
