@@ -3199,9 +3199,21 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       };
       if (bodsonDun > 0) {
         if (bodsonDun == req.body.paid_amount) {
+          console.log("here");
+          console.log("here req.body.paid_amount --->", req.body.paid_amount);
           if (!!tukhainObject.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag) {
+            console.log(
+              "here tukhainObject.tuukh[0]?.garsanKhaalga --->",
+              tukhainObject.tuukh[0]?.garsanKhaalga
+            );
             set["tuukh.$[t].tuluv"] = 1;
             if (!!tukhainObject.tuukh[0]?.garsanKhaalga) {
+              console.log("mashin --->", oldsonMashin.mashiniiDugaar);
+              console.log("mashin 1 --->", tukhainObject.baiguullagiinId);
+              console.log(
+                "mashin 2 --->",
+                tukhainObject.tuukh[0].garsanKhaalga
+              );
               const io = req.app.get("socketio");
               io.emit(
                 `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
