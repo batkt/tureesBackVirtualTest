@@ -1276,11 +1276,54 @@ router
           $ne: -1,
         };
       body.lean = true;
+      const isFoodCity = req.body.baiguullagiinId === "63c0f31efe522048bf02086d";
       khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt, true), body)
         .then(async (result) => {
           if (result && result.jagsaalt && result.jagsaalt.length > 0) {
             var idnuud = [];
             result.jagsaalt.forEach((a) => idnuud.push(a._id));
+            
+            // Build umnukhSariinUrTulbur aggregation conditionally for FoodCity
+            const umnukhSariinUrTulburGroup = {
+              _id: "$gereeniiDugaar",
+              tulukh: {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                },
+              },
+              khyamdral: {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                },
+              },
+            };
+            // For FoodCity: include tulsun in aggregation to get correct previous month balance
+            if (isFoodCity) {
+              umnukhSariinUrTulburGroup.tulsun = {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                },
+              };
+            }
+            
+            const umnukhSariinUrTulburProject = {
+              gereeniiDugaar: "$gereeniiDugaar",
+              uldegdel: isFoodCity
+                ? {
+                    // FoodCity: include tulsun in calculation (previous month balance)
+                    $subtract: [
+                      "$tulukh",
+                      {
+                        $sum: ["$khyamdral", "$tulsun"],
+                      },
+                    ],
+                  }
+                : {
+                    // Others: old logic (tulukh - khyamdral only)
+                    $subtract: ["$tulukh", "$khyamdral"],
+                  },
+            };
+            
             var query = [
               {
                 $match: {
@@ -1413,27 +1456,10 @@ router
                       },
                     },
                     {
-                      $group: {
-                        _id: "$gereeniiDugaar",
-                        tulukh: {
-                          $sum: {
-                            $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
-                          },
-                        },
-                        khyamdral: {
-                          $sum: {
-                            $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
-                          },
-                        },
-                      },
+                      $group: umnukhSariinUrTulburGroup,
                     },
                     {
-                      $project: {
-                        gereeniiDugaar: "$gereeniiDugaar",
-                        uldegdel: {
-                          $subtract: ["$tulukh", "$khyamdral"],
-                        },
-                      },
+                      $project: umnukhSariinUrTulburProject,
                     },
                   ],
                   umnukhSariinTureesUrTulbur: [
@@ -1985,8 +2011,15 @@ router
                   gereenuud[0].umnukhSariinUrTulbur.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;
-                x.umnukhSariinUrTulbur =
-                  x.umnukhSariinUrTulbur - x.umnukhSariinTulsun;
+                // FoodCity fix: umnukhSariinUrTulbur should be the PREVIOUS month's ending balance
+                // BEFORE any current month payments/transactions. For FoodCity, the aggregation
+                // already includes all payments (tulsunDun) for transactions before ekhlekhOgnoo,
+                // so we should NOT subtract umnukhSariinTulsun here.
+                // For other organizations: keep old logic (subtract umnukhSariinTulsun)
+                if (!isFoodCity) {
+                  x.umnukhSariinUrTulbur =
+                    x.umnukhSariinUrTulbur - x.umnukhSariinTulsun;
+                }
                 x.niitUldegdel =
                   gereenuud[0].niitUldegdel.find(
                     (a) => a._id == x.gereeniiDugaar
