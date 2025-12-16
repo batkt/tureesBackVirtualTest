@@ -84,42 +84,45 @@ router.get(
         zakhialgiinDugaar: req.params.zakhialgiinDugaar,
         tulsunEsekh: false,
       });
-
-      qpayObject.tulsunEsekh = true;
-      qpayObject.isNew = false;
-      await qpayObject.save();
-      req.app.get("socketio").emit(`qpay/${b}/${qpayObject.zakhialgiinDugaar}`);
-      if (qpayObject.zogsooliinId) {
-        const body = {
-          tukhainBaaziinKholbolt: kholbolt,
-          turul: req.params.cameraIP == "dotor" ? "DotorQR" : "GadaaQR",
-          uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
-          paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
-          plate_number: qpayObject.zogsoolUilchluulegch.plate_number,
-          barilgiinId: qpayObject.salbariinId,
-          ajiltniiNer: "qpaySticker",
-          zogsooliinId: qpayObject.zogsooliinId,
-        };
-        await tulburUridchiljTulukh(body, res, next);
-      }
-      if (
-        !!req.params.mashiniiDugaar &&
-        !!req.params.cameraIP &&
-        req.params.cameraIP != "dotor"
-      ) {
-        const io = req.app.get("socketio");
-        if (io) {
-          io.emit(
-            `qpayMobileSdk${req.params.baiguullagiinId}${req.params.cameraIP}`,
-            {
-              baiguullagiinId: req.params.baiguullagiinId,
-              khaalgaTurul: "Гарах",
-              turul: "qpayMobile",
-              mashiniiDugaar: req.params.mashiniiDugaar,
-              cameraIP: req.params.cameraIP,
-              uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
-            }
-          );
+      if (!!qpayObject) {
+        qpayObject.tulsunEsekh = true;
+        qpayObject.isNew = false;
+        await qpayObject.save();
+        req.app
+          .get("socketio")
+          .emit(`qpay/${b}/${qpayObject.zakhialgiinDugaar}`);
+        if (qpayObject.zogsooliinId) {
+          const body = {
+            tukhainBaaziinKholbolt: kholbolt,
+            turul: req.params.cameraIP == "dotor" ? "DotorQR" : "GadaaQR",
+            uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
+            paid_amount: qpayObject.zogsoolUilchluulegch.pay_amount,
+            plate_number: qpayObject.zogsoolUilchluulegch.plate_number,
+            barilgiinId: qpayObject.salbariinId,
+            ajiltniiNer: "qpaySticker",
+            zogsooliinId: qpayObject.zogsooliinId,
+          };
+          await tulburUridchiljTulukh(body, res, next);
+        }
+        if (
+          !!req.params.mashiniiDugaar &&
+          !!req.params.cameraIP &&
+          req.params.cameraIP != "dotor"
+        ) {
+          const io = req.app.get("socketio");
+          if (io) {
+            io.emit(
+              `qpayMobileSdk${req.params.baiguullagiinId}${req.params.cameraIP}`,
+              {
+                baiguullagiinId: req.params.baiguullagiinId,
+                khaalgaTurul: "Гарах",
+                turul: "qpayMobile",
+                mashiniiDugaar: req.params.mashiniiDugaar,
+                cameraIP: req.params.cameraIP,
+                uilchluulegchiinId: qpayObject.zogsoolUilchluulegch.uId,
+              }
+            );
+          }
         }
       }
       res.sendStatus(200);
