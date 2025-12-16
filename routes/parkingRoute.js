@@ -3258,6 +3258,18 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           ],
         }
       );
+      if (req.body.turul == "Пос үнэгүй") {
+        const io = req.app.get("socketio");
+        io.emit(
+          `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
+          {
+            baiguullagiinId: tukhainObject.baiguullagiinId,
+            khaalgaTurul: "garsan",
+            mashiniiDugaar: tukhainObject.mashiniiDugaar,
+            cameraIP: tukhainObject.tuukh[0]?.garsanKhaalga,
+          }
+        );
+      }
       res.send("Amjilttai");
     }
   } catch (err) {
