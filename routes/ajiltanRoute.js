@@ -5,6 +5,7 @@ const NevtreltiinTuukh = require("../models/nevtreltiinTuukh");
 const BackTuukh = require("../models/backTuukh");
 const Baiguullaga = require("../models/baiguullaga");
 const KassCameraKhaalt = require("../models/kassCameraKhaalt");
+const BaaziinMedeelel = require("../models/baaziinMedeelel");
 const request = require("request");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const {
@@ -77,6 +78,46 @@ router.get("/sessionAvya/:sessionId", async (req, res, next) => {
     res.send(sessionData);
   } catch (err) {
     next(err);
+  }
+});
+
+router.route("/idaarBugdiigUstgaya").post(async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    const { baaz, baiguullagiinId } = req.body;
+    if (!baaz || !baiguullagiinId)
+      throw new aldaa("baaz болон baiguullagiinId хоосон байна");
+    const baaziinMedeelelModel = BaaziinMedeelel(db.erunkhiiKholbolt);
+    const ajiltanModel = Ajiltan(db.erunkhiiKholbolt);
+    const baiguullagaModel = Baiguullaga(db.erunkhiiKholbolt);
+
+    const baaziinMedeelel = await baaziinMedeelelModel.find({ baaz }).lean();
+    const ajiltanuud = await ajiltanModel.find({ baiguullagiinId }).lean();
+    const baiguullaga = await baiguullagaModel
+      .find({ _id: baiguullagiinId })
+      .lean();
+
+    console.log("baaziinMedeelel:", baaziinMedeelel);
+    console.log("ajiltanuud:", ajiltanuud);
+    console.log("baiguullaga:", baiguullaga);
+    // const ustgasanBaiguullaga = await baiguullagaModel.deleteOne({
+    //   _id: baiguullagiinId,
+    // });
+    // const ustgasanAjiltan = await ajiltanModel.deleteOne({
+    //   baiguullagiinId,
+    // });
+    // const ustgasanBaaz = await baaziinMedeelelModel.deleteOne({ baaz });
+
+    res.send({
+      baaziinMedeelel,
+      ajiltanuud,
+      baiguullaga,
+      ustgasanBaiguullaga: ustgasanBaiguullaga?.deletedCount || 0,
+      ustgasanAjiltan: ustgasanAjiltan?.deletedCount || 0,
+      ustgasanBaaz: ustgasanBaaz?.deletedCount || 0,
+    });
+  } catch (error) {
+    next(error);
   }
 });
 
