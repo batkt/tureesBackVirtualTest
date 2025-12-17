@@ -96,16 +96,16 @@ router.route("/idaarBugdiigUstgaya").post(async (req, res, next) => {
     console.log("ajiltanuud:", ajiltanuud);
     console.log("baiguullaga:", baiguullaga);
 
-    // const ustgasanAjiltan = await ajiltanModel.deleteMany({ baiguullagiinId });
-    // const ustgasanBaiguullaga = await baiguullagaModel.deleteOne({
-    //   _id: baiguullaga._id,
-    // });
+    const ustgasanAjiltan = await ajiltanModel.deleteOne({ baiguullagiinId });
+    const ustgasanBaiguullaga = await baiguullagaModel.deleteOne({
+      _id: baiguullaga._id,
+    });
 
     res.send({
       ajiltanuud,
       baiguullaga,
-      // ustgasanBaiguullaga: ustgasanBaiguullaga?.deletedCount || 0,
-      // ustgasanAjiltan: ustgasanAjiltan?.deletedCount || 0,
+      ustgasanBaiguullaga: ustgasanBaiguullaga?.deletedCount || 0,
+      ustgasanAjiltan: ustgasanAjiltan?.deletedCount || 0,
     });
   } catch (error) {
     next(error);
