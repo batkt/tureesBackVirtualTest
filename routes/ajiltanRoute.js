@@ -83,31 +83,29 @@ router.get("/sessionAvya/:sessionId", async (req, res, next) => {
 router.route("/idaarBugdiigUstgaya").post(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
-    const { baiguullagiinId } = req.body;
-    if (!baiguullagiinId) throw new aldaa("baiguullagiinId хоосон байна");
+    const { register } = req.body;
+    if (!register) throw new aldaa("Регистр хоосон байна");
     const ajiltanModel = Ajiltan(db.erunkhiiKholbolt);
     const baiguullagaModel = Baiguullaga(db.erunkhiiKholbolt);
 
-    const ajiltanuud = await ajiltanModel.find({ baiguullagiinId }).lean();
-    const baiguullaga = await baiguullagaModel
-      .find({ _id: baiguullagiinId })
-      .lean();
+    const baiguullaga = await baiguullagaModel.findOne({ register }).lean();
+    if (!baiguullaga) throw new aldaa("Байгууллага олдсонгүй");
 
+    const baiguullagiinId = baiguullaga._id?.toString();
+    const ajiltanuud = await ajiltanModel.find({ baiguullagiinId }).lean();
     console.log("ajiltanuud:", ajiltanuud);
     console.log("baiguullaga:", baiguullaga);
+
+    // const ustgasanAjiltan = await ajiltanModel.deleteMany({ baiguullagiinId });
     // const ustgasanBaiguullaga = await baiguullagaModel.deleteOne({
-    //   _id: baiguullagiinId,
+    //   _id: baiguullaga._id,
     // });
-    // const ustgasanAjiltan = await ajiltanModel.deleteOne({
-    //   baiguullagiinId,
-    // });
-    // const ustgasanBaaz = await baaziinMedeelelModel.deleteOne({ baaz });
 
     res.send({
       ajiltanuud,
       baiguullaga,
-      ustgasanBaiguullaga: ustgasanBaiguullaga?.deletedCount || 0,
-      ustgasanAjiltan: ustgasanAjiltan?.deletedCount || 0,
+      // ustgasanBaiguullaga: ustgasanBaiguullaga?.deletedCount || 0,
+      // ustgasanAjiltan: ustgasanAjiltan?.deletedCount || 0,
     });
   } catch (error) {
     next(error);
