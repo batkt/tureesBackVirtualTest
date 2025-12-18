@@ -80,6 +80,38 @@ router.get("/sessionAvya/:sessionId", async (req, res, next) => {
   }
 });
 
+router.route("/idaarBugdiigUstgaya").post(async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    const { register } = req.body;
+    if (!register) throw new aldaa("Регистр хоосон байна");
+    const ajiltanModel = Ajiltan(db.erunkhiiKholbolt);
+    const baiguullagaModel = Baiguullaga(db.erunkhiiKholbolt);
+
+    const baiguullaga = await baiguullagaModel.findOne({ register }).lean();
+    if (!baiguullaga) throw new aldaa("Байгууллага олдсонгүй");
+
+    const baiguullagiinId = baiguullaga._id?.toString();
+    const ajiltanuud = await ajiltanModel.find({ baiguullagiinId }).lean();
+    console.log("ajiltanuud:", ajiltanuud);
+    console.log("baiguullaga:", baiguullaga);
+
+    const ustgasanAjiltan = await ajiltanModel.deleteOne({ baiguullagiinId });
+    const ustgasanBaiguullaga = await baiguullagaModel.deleteOne({
+      _id: baiguullaga._id,
+    });
+
+    res.send({
+      ajiltanuud,
+      baiguullaga,
+      ustgasanBaiguullaga: ustgasanBaiguullaga?.deletedCount || 0,
+      ustgasanAjiltan: ustgasanAjiltan?.deletedCount || 0,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.route("/ajiltanNevtrey").post(ajiltanNevtrey);
 router.route("/tokenoorAjiltanAvya").post(tokenoorAjiltanAvya);
 router.route("/nuutsUgShalgakhAjiltan").post(nuutsUgShalgakhAjiltan);

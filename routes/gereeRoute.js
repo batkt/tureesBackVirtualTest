@@ -1276,11 +1276,61 @@ router
           $ne: -1,
         };
       body.lean = true;
+      const isFoodCity = req.body.baiguullagiinId === "63c0f31efe522048bf02086d";
       khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt, true), body)
         .then(async (result) => {
           if (result && result.jagsaalt && result.jagsaalt.length > 0) {
             var idnuud = [];
             result.jagsaalt.forEach((a) => idnuud.push(a._id));
+            
+            const umnukhSariinUrTulburGroup = {
+              _id: "$gereeniiDugaar",
+              tulukh: {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                },
+              },
+              khyamdral: {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                },
+              },
+            };
+            if (isFoodCity) {
+              umnukhSariinUrTulburGroup.tulsun = {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                },
+              };
+            }
+            
+            const umnukhSariinUrTulburProject = {
+              gereeniiDugaar: "$gereeniiDugaar",
+              uldegdel: isFoodCity
+                ? {
+                    $subtract: [
+                      "$tulukh",
+                      {
+                        $sum: ["$khyamdral", "$tulsun"],
+                      },
+                    ],
+                  }
+                : {
+                    $subtract: ["$tulukh", "$khyamdral"],
+                  },
+            };
+            
+            const umnukhSariinTulsunDunGroup = isFoodCity
+              ? {
+                  _id: "$gereeniiDugaar",
+                  tulsun: {
+                    $sum: {
+                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                    },
+                  },
+                }
+              : null;
+            
             var query = [
               {
                 $match: {
@@ -1413,29 +1463,67 @@ router
                       },
                     },
                     {
-                      $group: {
-                        _id: "$gereeniiDugaar",
-                        tulukh: {
-                          $sum: {
-                            $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
-                          },
-                        },
-                        khyamdral: {
-                          $sum: {
-                            $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
-                          },
-                        },
-                      },
+                      $group: umnukhSariinUrTulburGroup,
                     },
                     {
-                      $project: {
-                        gereeniiDugaar: "$gereeniiDugaar",
-                        uldegdel: {
-                          $subtract: ["$tulukh", "$khyamdral"],
-                        },
-                      },
+                      $project: umnukhSariinUrTulburProject,
                     },
                   ],
+                  ...(isFoodCity
+                    ? {
+                        umnukhSariinTulsunDun: [
+                          {
+                            $unwind: {
+                              path: "$avlaga.guilgeenuud",
+                            },
+                          },
+                          {
+                            $match: {
+                              "avlaga.guilgeenuud.ognoo": {
+                                $lt: new Date(req.body.ekhlekhOgnoo),
+                              },
+                              $or: [
+                                {
+                                  "avlaga.guilgeenuud.turul": {
+                                    $nin: ["baritsaa", "aldangi"],
+                                  },
+                                },
+                                {
+                                  $and: [
+                                    {
+                                      "avlaga.guilgeenuud.turul": {
+                                        $in: ["baritsaa"],
+                                      },
+                                    },
+                                    {
+                                      "avlaga.guilgeenuud.tulsunDun": {
+                                        $gt: 0,
+                                      },
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            $group: {
+                              _id: "$gereeniiDugaar",
+                              tulsun: {
+                                $sum: {
+                                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                                },
+                              },
+                            },
+                          },
+                          {
+                            $project: {
+                              gereeniiDugaar: "$gereeniiDugaar",
+                              uldegdel: "$tulsun",
+                            },
+                          },
+                        ],
+                      }
+                    : {}),
                   umnukhSariinTureesUrTulbur: [
                     {
                       $unwind: {
@@ -1845,9 +1933,20 @@ router
                                                       },
                                                       "Барьцаа ашигласан",
                                                       {
-                                                        $ifNull: [
-                                                          "$avlaga.zardliinNer",
-                                                          "$avlaga.tailbar",
+                                                        $cond: [
+                                                          {
+                                                            $eq: [
+                                                              "$avlaga.turul",
+                                                              "torguuli",
+                                                            ],
+                                                          },
+                                                          "торгууль",
+                                                          {
+                                                            $ifNull: [
+                                                              "$avlaga.zardliinNer",
+                                                              "$avlaga.tailbar",
+                                                            ],
+                                                          },
                                                         ],
                                                       },
                                                     ],
@@ -1974,14 +2073,26 @@ router
                   gereenuud[0].umnukhSariinUrTulbur.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;
-                x.umnukhSariinUrTulbur =
-                  x.umnukhSariinUrTulbur - x.umnukhSariinTulsun;
+                if (!isFoodCity) {
+                  x.umnukhSariinUrTulbur =
+                    x.umnukhSariinUrTulbur - x.umnukhSariinTulsun;
+                }
                 x.niitUldegdel =
                   gereenuud[0].niitUldegdel.find(
                     (a) => a._id == x.gereeniiDugaar
                   )?.uldegdel || 0;
                 x.niitAvlagaUldegdel =
                   x.niitUldegdel + (x.aldangiinUldegdel || 0);
+                
+                if (isFoodCity) {
+                  x.niitDun = (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0);
+                  x.umnukhSariinTulsunDun =
+                    gereenuud[0].umnukhSariinTulsunDun?.find(
+                      (a) => a._id == x.gereeniiDugaar
+                    )?.uldegdel || 0;
+                  x.garaasBodsonNiitDun = x.niitUldegdel || 0;
+                  x.tulsunDun = (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0) - (x.garaasBodsonNiitDun || 0);
+                }
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
                     (a) => a._id == x.gereeniiDugaar
@@ -1991,11 +2102,13 @@ router
                 );
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
+                    console.log("------- 1 -------<" + zardal.tailbar);
                     zardal.tailbar =
                       zardal._id.tailbar +
                       (zardal._id.tooluuriinDugaar
                         ? " " + zardal._id.tooluuriinDugaar
                         : "");
+                    console.log("-------- 2 -------<" + zardal.tailbar);
                     if (
                       zardal.tailbar == "Түрээс" ||
                       zardal.tailbar == "Хөнгөлөлт"
