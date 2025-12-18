@@ -2378,6 +2378,25 @@ router.route("/v1/pay").post(async (req, res, next) => {
     if (!tukhainObject) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
     } else {
+      var mashinTurul = "toki"; // default value
+
+      if (!!tukhainObject.turul) {
+        mashinTurul = tukhainObject.turul;
+      } else if (!!tukhainObject.mashiniiDugaar) {
+        try {
+          const mashin = await Mashin(tukhainKholbolt).findOne({
+            dugaar: tukhainObject.mashiniiDugaar,
+            baiguullagiinId: tukhainObject.baiguullagiinId,
+            barilgiinId: tukhainObject.barilgiinId,
+          });
+          if (!!mashin && !!mashin.turul) {
+            mashinTurul = mashin.turul;
+          }
+        } catch (err) {}
+      }
+
+      tulbur[0].turul = mashinTurul;
+
       bodsonDun = await zogsooliinDunAvya(
         tukhainZogsool,
         tukhainObject,
