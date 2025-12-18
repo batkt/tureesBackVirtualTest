@@ -46,8 +46,6 @@ const { msgIlgeeye } = require("../controller/khariltsagch");
 const MsgTuukh = require("../models/msgTuukh");
 const client = require("../routes/redisClient");
 const crypto = require("crypto");
-const { QuickQpayObject } = require("quickqpaypackv2");
-const axios = require("axios");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
 });*/
@@ -428,44 +426,10 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var nemeltUtga = req.body.nemeltUtga;
     var tulsunDun = Number(req.body.tulsunDun);
     var shineDun = 0;
-    const { db } = require("zevbackv2");
-    var kholbolt = db.kholboltuud.find(
-      (a) => a.baiguullagiinId == baiguullagiinId
-    );
-    console.log("tailbar baiguullagiinId ----->>", baiguullagiinId);
     console.log("tailbar ----->>", nemeltUtga);
     if (nemeltUtga?.includes("QRGadaa") || nemeltUtga?.includes("QRGADAA")) {
       console.log("QR Gadaa tulbur bish");
-      var guilgeenuud = await QuickQpayObject(kholbolt).find({
-        tulsunEsekh: false,
-        zogsooliinId: zogsooliinId,
-        "qpay.description": { $regex: "QRGadaa", $options: "i" },
-        ognoo: { $gte: new Date(new Date().getTime() - 29 * 60000) },
-      });
-      for (const guilgee of guilgeenuud) {
-        if (!guilgee.zogsoolUilchluulegch?.uId) continue;
-        var oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
-          _id: guilgee.zogsoolUilchluulegch?.uId,
-          "tuukh.0.tulbur": { $size: 0 },
-        });
-        if (!oldsonMashin) continue;
-        console.log("QR Gadaa tulbur ->" + JSON.stringify(oldsonMashin));
-        try {
-          const resCallBack = await axios.get(
-            encodeURI(guilgee.qpay?.callback_url)
-          );
-          console.log("QR Gadaa tulbur -> response", resCallBack.data);
-        } catch (err) {
-          console.error(
-            "QR Gadaa callback error:",
-            err.response?.status,
-            err.response?.data || err.message
-          );
-        }
-      }
-    } else if (nemeltUtga?.includes("kiosk") || nemeltUtga?.includes("KIOSK"))
-      console.log("QR Gadaa tulbur bish");
-    else {
+    } else {
       if (baiguullagiinId == "663da696aa6bedd9ae0567f0") {
         tulsunDun = tulsunDun + 50; //sms 50tug
       }
@@ -473,7 +437,10 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         (await Math.round(
           (tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100
         )) / 100;
-
+      const { db } = require("zevbackv2");
+      var kholbolt = db.kholboltuud.find(
+        (a) => a.baiguullagiinId == baiguullagiinId
+      );
       var shuukhKhugatsaa = new Date(
         Date.now() - 300000 //5 * 60 * 1000
       );
@@ -638,15 +605,10 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         });
         const io = req.app.get("socketio");
         if (io) {
-          io.emit(
-            `zogsoolGarahTulsun${baiguullagiinId}${oldsonData.tuukh[0].garsanKhaalga}`,
-            {
-              baiguullagiinId: baiguullagiinId,
-              khaalgaTurul: "garsan",
-              cameraIP: oldsonData.tuukh[0].garsanKhaalga,
-              mashiniiDugaar: oldsonData.mashiniiDugaar,
-            }
-          );
+          io.emit(`zogsool${baiguullagiinId}`, {
+            khaalgaTurul: "oroh",
+            cameraIP: oldsonData.tuukh[0].garsanKhaalga,
+          });
         }
         var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
           kholbolt.baiguullagiinId
@@ -1429,19 +1391,10 @@ router.get("/v1/parking", async (req, res, next) => {
   }
 });
 
-function stableStringify(obj) {
-  if (obj === null || typeof obj !== "object") return JSON.stringify(obj);
-  if (Array.isArray(obj)) return `[${obj.map(stableStringify).join(",")}]`;
-  const keys = Object.keys(obj).sort();
-  return `{${keys
-    .map((k) => JSON.stringify(k) + ":" + stableStringify(obj[k]))
-    .join(",")}}`;
-}
-
 async function getParkingFind(kholbolt, baiguullagiinId, query) {
   const queryKey = crypto
     .createHash("md5")
-    .update(stableStringify(query))
+    .update(JSON.stringify(query))
     .digest("hex");
   const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
@@ -1472,7 +1425,7 @@ async function getAggregateUilchluulegch(
 ) {
   const queryKey = crypto
     .createHash("md5")
-    .update(stableStringify(query))
+    .update(JSON.stringify(query))
     .digest("hex");
   const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
@@ -1493,7 +1446,7 @@ async function getUilchluulegchfindOne(
 ) {
   const queryKey = crypto
     .createHash("md5")
-    .update(stableStringify(query))
+    .update(JSON.stringify(query))
     .digest("hex");
   const cacheKey = `UilchluulegchFindOne:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
@@ -2425,25 +2378,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
     if (!tukhainObject) {
       res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
     } else {
-      var mashinTurul = "toki"; // default value
-
-      if (!!tukhainObject.turul) {
-        mashinTurul = tukhainObject.turul;
-      } else if (!!tukhainObject.mashiniiDugaar) {
-        try {
-          const mashin = await Mashin(tukhainKholbolt).findOne({
-            dugaar: tukhainObject.mashiniiDugaar,
-            baiguullagiinId: tukhainObject.baiguullagiinId,
-            barilgiinId: tukhainObject.barilgiinId,
-          });
-          if (!!mashin && !!mashin.turul) {
-            mashinTurul = mashin.turul;
-          }
-        } catch (err) {}
-      }
-
-      tulbur[0].turul = mashinTurul;
-
       bodsonDun = await zogsooliinDunAvya(
         tukhainZogsool,
         tukhainObject,
@@ -2534,28 +2468,20 @@ router.route("/v1/pay").post(async (req, res, next) => {
               },
             });
             const io = req.app.get("socketio");
-            io.emit(
-              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${garsanObject.tuukh[0].garsanKhaalga}`,
-              {
-                baiguullagiinId: tukhainObject.baiguullagiinId,
-                khaalgaTurul: "garsan",
-                turul: "toki",
-                mashiniiDugaar: tukhainObject.mashiniiDugaar,
-                cameraIP: garsanObject.tuukh[0].garsanKhaalga,
-              }
-            );
+            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
+              khaalgaTurul: "oroh",
+              turul: "toki",
+              mashiniiDugaar: req.body.plate_number,
+              cameraIP: garsanObject.tuukh[0].garsanKhaalga,
+            });
           } else {
             const io = req.app.get("socketio");
-            io.emit(
-              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
-              {
-                baiguullagiinId: tukhainObject.baiguullagiinId,
-                khaalgaTurul: "garsan",
-                turul: "toki",
-                mashiniiDugaar: tukhainObject.mashiniiDugaar,
-                cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
-              }
-            );
+            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
+              khaalgaTurul: "oroh",
+              turul: "toki",
+              mashiniiDugaar: req.body.plate_number,
+              cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
+            });
           }
         }
         tukhainObject.niitDun = req.body.paid_amount;
@@ -2861,28 +2787,20 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
               },
             });
             const io = req.app.get("socketio");
-            io.emit(
-              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${garsanObject.tuukh[0].garsanKhaalga}`,
-              {
-                baiguullagiinId: tukhainObject.baiguullagiinId,
-                khaalgaTurul: "garsan",
-                turul: "toki",
-                mashiniiDugaar: tukhainObject.mashiniiDugaar,
-                cameraIP: garsanObject.tuukh[0].garsanKhaalga,
-              }
-            );
+            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
+              khaalgaTurul: "oroh",
+              turul: "toki",
+              mashiniiDugaar: req.body.plate_number,
+              cameraIP: garsanObject.tuukh[0].garsanKhaalga,
+            });
           } else {
             const io = req.app.get("socketio");
-            io.emit(
-              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
-              {
-                baiguullagiinId: tukhainObject.baiguullagiinId,
-                khaalgaTurul: "garsan",
-                turul: "toki",
-                mashiniiDugaar: tukhainObject.mashiniiDugaar,
-                cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
-              }
-            );
+            io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
+              khaalgaTurul: "oroh",
+              turul: "toki",
+              mashiniiDugaar: req.body.plate_number,
+              cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
+            });
           }
         }
         tukhainObject.niitDun = req.body.tulukhDun;
@@ -3219,31 +3137,14 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       };
       if (bodsonDun > 0) {
         if (bodsonDun == req.body.paid_amount) {
-          console.log("here");
-          console.log("here req.body.paid_amount --->", req.body.paid_amount);
           if (!!tukhainObject.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag) {
-            console.log(
-              "here tukhainObject.tuukh[0]?.garsanKhaalga --->",
-              tukhainObject.tuukh[0]?.garsanKhaalga
-            );
             set["tuukh.$[t].tuluv"] = 1;
             if (!!tukhainObject.tuukh[0]?.garsanKhaalga) {
-              console.log("mashin --->", oldsonMashin.mashiniiDugaar);
-              console.log("mashin 1 --->", tukhainObject.baiguullagiinId);
-              console.log(
-                "mashin 2 --->",
-                tukhainObject.tuukh[0].garsanKhaalga
-              );
               const io = req.app.get("socketio");
-              io.emit(
-                `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
-                {
-                  baiguullagiinId: tukhainObject.baiguullagiinId,
-                  khaalgaTurul: "garsan",
-                  mashiniiDugaar: tukhainObject.mashiniiDugaar,
-                  cameraIP: tukhainObject.tuukh[0]?.garsanKhaalga,
-                }
-              );
+              io.emit(`zogsool${tukhainObject.baiguullagiinId}`, {
+                khaalgaTurul: "oroh",
+                cameraIP: tukhainObject.tuukh[0]?.garsanKhaalga,
+              });
             }
           }
           set["garakhTsag"] = new Date(
@@ -3277,18 +3178,6 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           ],
         }
       );
-      if (req.body.turul == "Пос үнэгүй") {
-        const io = req.app.get("socketio");
-        io.emit(
-          `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
-          {
-            baiguullagiinId: tukhainObject.baiguullagiinId,
-            khaalgaTurul: "garsan",
-            mashiniiDugaar: tukhainObject.mashiniiDugaar,
-            cameraIP: tukhainObject.tuukh[0]?.garsanKhaalga,
-          }
-        );
-      }
       res.send("Amjilttai");
     }
   } catch (err) {
