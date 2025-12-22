@@ -367,6 +367,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
       url = url + "?from=" + body.ekhlekhOgnoo + "&to=" + body.duusakhOgnoo;
     if (body.record)
       url = url + (resultValue ? "" : "/record?record=" + body.record);
+    console.log("url ---->" + url);
     const response = await instance.get(url, { context });
     if (!response.body) {
       if (next) next(new aldaa("Татах хуулга байхгүй"));
