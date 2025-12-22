@@ -313,13 +313,15 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try
     {
+      let gereeMatch = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        tuluv: 1,
+      }
+      if(req.body.gereeniiDugaar)
+        gereeMatch.gereeniiDugaar = req.body.gereeniiDugaar;
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
-        .find({
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-          tuluv: 1,
-          gereeniiDugaar: req.body.gereeniiDugaar,
-        })
+        .find(gereeMatch)
         .select("+avlaga");
       if(gereenuud?.length > 0)       
       {
