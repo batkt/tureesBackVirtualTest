@@ -306,4 +306,61 @@ router
     }
   });
 
+router
+  .route("/bankniiKholboltZasya")
+  .post(tokenShalgakh, async (req, res, next) => {
+    try
+    {
+      var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
+        .find({
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          tuluv: 1,
+        })
+        .select("+avlaga");
+      if(gereenuud?.length > 0)       
+      {
+        for (const geree of gereenuud){
+          console.log("geree ----------------->>" + geree.gereeniiDugaar);
+          var filteredGeree = geree?.avlaga?.guilgeenuud.filter((e) => e.ognoo > moment(req.body.ognoo) && e.turul === 'bank' && e.dansniiDugaar === '5100229713');
+          if(filteredGeree?.length > 0)
+          {
+            for (const data of filteredGeree)
+            {
+              if(data.dansniiDugaar == '5100229713' && data.turul == 'bank')    
+              {
+                let tulsunDun = data.tulsunDun + (data.tulsunAldangi || 0);
+                var match = {
+                  amount: tulsunDun, 
+                  barilgiinId: req.body.barilgiinId, 
+                  tranDate: data.ognoo, 
+                  kholbosonGereeniiId: [],
+                  kholbosonTalbainId: [],
+                }
+                console.log("tulsunDun ----------------->>" + tulsunDun);
+                var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true).find(match);
+                if(resultRef?.length > 0)
+                {
+                  console.log("resultRef[0] ----------------->>" + resultRef[0]);
+                  var x = resultRef[0];
+                  var jagsaalt = [];
+                  var dugaar = geree.talbainDugaar;
+                  if (dugaar.includes(",")) {
+                    jagsaalt = [...jagsaalt, ...dugaar.split(",")];
+                  } else jagsaalt.push(dugaar);
+                  x.kholbosonGereeniiId = [geree._id];
+                  x.kholbosonTalbainId = jagsaalt;
+                  x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
+                  x.save();  
+                }
+              }
+            }
+          }
+        }
+      }
+      res.send("Амжилт");
+    } catch (error) {
+      next(error);
+    }
+  });  
 module.exports = router;
