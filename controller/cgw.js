@@ -848,7 +848,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   corporateShunuUntraakhEsekh: dans.corporateShunuUntraakhEsekh,
                 };
                 if(dans.barilgiinId == "6735c77a7fc60cd66deb290a" && dans.dugaar == "5100229713")
-                  bodyKhuulga["record"] = 31107;
+                  bodyKhuulga["record"] = "31106";
                 else
                   {
                     if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
