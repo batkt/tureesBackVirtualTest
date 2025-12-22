@@ -364,7 +364,10 @@ async function dansniiKhuulgaAvya(token, next, body) {
       (resultValue ? "corporate/" : "") +
       body.dansniiDugaar;
     if(body.ekhlekhOgnoo && body.duusakhOgnoo)
-      url = url + "?from=" + body.ekhlekhOgnoo + "&to=" + body.duusakhOgnoo;
+    {
+      url = url + "?from=" + body.ekhlekhOgnoo + "&to=" + body.duusakhOgnoo + "&page=" + body.khuudasniiDugaar + "&&size=" + body.khuudasniiKhemjee;
+    }
+
     if (body.record)
       url = url + (resultValue ? "" : "/record?record=" + body.record);
     console.log("url ---->" + url);
@@ -855,6 +858,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   console.log("------->" + dans.dugaar);
                   bodyKhuulga.ekhlekhOgnoo = new Date(ognoo.getFullYear(), ognoo.getMonth(), 1);
                   bodyKhuulga.duusakhOgnoo = new Date(ognoo.getFullYear(), ognoo.getMonth() + 1, 0);
+                  bodyKhuulga.khuudasniiDugaar = 0;
+                  bodyKhuulga.khuudasniiKhemjee = 100;
                 }
                 else
                 {
