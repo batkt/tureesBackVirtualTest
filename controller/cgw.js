@@ -363,6 +363,8 @@ async function dansniiKhuulgaAvya(token, next, body) {
       "https://api.khanbank.com/v1/statements/" +
       (resultValue ? "corporate/" : "") +
       body.dansniiDugaar;
+    if(body.ekhlekhOgnoo && body.duusakhOgnoo)
+      url = url + "?from=" + body.ekhlekhOgnoo + "&to=" + body.duusakhOgnoo;
     if (body.record)
       url = url + (resultValue ? "" : "/record?record=" + body.record);
     const response = await instance.get(url, { context });
@@ -848,11 +850,15 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   corporateShunuUntraakhEsekh: dans.corporateShunuUntraakhEsekh,
                 };
                 if(dans.barilgiinId == "6735c77a7fc60cd66deb290a" && dans.dugaar == "5100229713")
-                  bodyKhuulga["record"] = "31106";
+                {
+                  console.log("------->" + dans.dugaar);
+                  bodyKhuulga.ekhlekhOgnoo = new Date(ognoo.getFullYear(), ognoo.getMonth(), 1);
+                  bodyKhuulga.duusakhOgnoo = new Date(ognoo.getFullYear(), ognoo.getMonth() + 1, 0);
+                }
                 else
-                  {
-                    if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
-                  }
+                {
+                  if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
+                }
                 var khariu = await dansniiKhuulgaAvya(token, next, bodyKhuulga);
 
                 if (khariu && khariu.transactions) {
