@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { crud, UstsanBarimt, tokenShalgakh } = require("zevbackv2");
+const { crud, UstsanBarimt, tokenShalgakh, db } = require("zevbackv2");
 const TogloomiinTariff = require("../models/togloomiinTariff");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const TogloomiinTulbur = require("../models/togloomiinTulbur");
@@ -292,6 +292,243 @@ router
       next(err);
     }
   });
+
+// router
+//   .route("/togloomiinTuvUilchluulsenUdriinTailan")
+//   .post(async (req, res, next) => {
+//     try {
+//       var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+//       var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+//       var match = {
+//         baiguullagiinId: req.body.baiguullagiinId,
+//         barilgiinId: req.body.barilgiinId,
+//         ognoo: {
+//           $gte: ekhlekhOgnoo,
+//           $lte: duusakhOgnoo,
+//         },
+//       };
+//       if (!!req.body.burtgesenAjiltaniiId)
+//         match["burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
+
+//       var pipeline = [
+//         {
+//           $match: match,
+//         },
+//         {
+//           $facet: {
+//             tulburuud: [
+//               {
+//                 $match: {
+//                   tuluv: { $ne: -1 },
+//                 },
+//               },
+//               {
+//                 $unwind: "$niitTulbur",
+//               },
+//               {
+//                 $match: {
+//                   "niitTulbur.turul": {
+//                     $nin: ["khariult", "khungulult", "erkhiinBichig"],
+//                   },
+//                 },
+//               },
+//               {
+//                 $group: {
+//                   _id: "$niitTulbur.turul",
+//                   niitDun: {
+//                     $sum: "$niitTulbur.dun",
+//                   },
+//                   niitToo: { $sum: 1 },
+//                 },
+//               },
+//             ],
+//             khariult: [
+//               {
+//                 $match: {
+//                   tuluv: { $ne: -1 },
+//                 },
+//               },
+//               {
+//                 $unwind: "$niitTulbur",
+//               },
+//               {
+//                 $match: {
+//                   "niitTulbur.turul": "khariult",
+//                 },
+//               },
+//               {
+//                 $group: {
+//                   _id: null,
+//                   niitDun: {
+//                     $sum: "$niitTulbur.dun",
+//                   },
+//                   niitToo: { $sum: 1 },
+//                 },
+//               },
+//             ],
+//             khungulult: [
+//               {
+//                 $match: {
+//                   tuluv: { $ne: -1 },
+//                 },
+//               },
+//               {
+//                 $unwind: "$niitTulbur",
+//               },
+//               {
+//                 $match: {
+//                   "niitTulbur.turul": { $in: ["khungulult", "erkhiinBichig"] },
+//                 },
+//               },
+//               {
+//                 $group: {
+//                   _id: null,
+//                   niitDun: {
+//                     $sum: "$niitTulbur.dun",
+//                   },
+//                   niitToo: { $sum: 1 },
+//                 },
+//               },
+//             ],
+//             uilchluulsen: [
+//               {
+//                 $group: {
+//                   _id: null,
+//                   niit: {
+//                     $sum: {
+//                       $cond: [{ $ne: ["$tuluv", -1] }, 1, 0],
+//                     },
+//                   },
+//                   niitKhuukhduud: {
+//                     $sum: {
+//                       $cond: [
+//                         { $ne: ["$tuluv", -1] },
+//                         { $ifNull: ["$khuukhdiinToo", 0] },
+//                         0,
+//                       ],
+//                     },
+//                   },
+//                   tulsunToo: {
+//                     $sum: {
+//                       $cond: [
+//                         {
+//                           $and: [
+//                             { $ne: ["$tuluv", -1] },
+//                             {
+//                               $eq: [
+//                                 { $ifNull: ["$tulburTulsunEsekh", false] },
+//                                 true,
+//                               ],
+//                             },
+//                           ],
+//                         },
+//                         1,
+//                         0,
+//                       ],
+//                     },
+//                   },
+//                   tuluuguiToo: {
+//                     $sum: {
+//                       $cond: [
+//                         {
+//                           $and: [
+//                             { $ne: ["$tuluv", -1] },
+//                             {
+//                               $ne: [
+//                                 { $ifNull: ["$tulburTulsunEsekh", false] },
+//                                 true,
+//                               ],
+//                             },
+//                           ],
+//                         },
+//                         1,
+//                         0,
+//                       ],
+//                     },
+//                   },
+//                   tsutsalsan: {
+//                     $sum: {
+//                       $cond: [{ $eq: ["$tuluv", -1] }, 1, 0],
+//                     },
+//                   },
+//                   niitDun: {
+//                     $sum: {
+//                       $cond: [
+//                         { $ne: ["$tuluv", -1] },
+//                         { $ifNull: ["$niitDun", 0] },
+//                         0,
+//                       ],
+//                     },
+//                   },
+//                 },
+//               },
+//             ],
+//           },
+//         },
+//         {
+//           $project: {
+//             tulburuud: 1,
+//             khariult: {
+//               $ifNull: [
+//                 { $arrayElemAt: ["$khariult", 0] },
+//                 { niitDun: 0, niitToo: 0 },
+//               ],
+//             },
+//             khungulult: {
+//               $ifNull: [
+//                 { $arrayElemAt: ["$khungulult", 0] },
+//                 { niitDun: 0, niitToo: 0 },
+//               ],
+//             },
+//             uilchluulsen: {
+//               $ifNull: [
+//                 { $arrayElemAt: ["$uilchluulsen", 0] },
+//                 {
+//                   niit: 0,
+//                   niitKhuukhduud: 0,
+//                   tulsunToo: 0,
+//                   tuluuguiToo: 0,
+//                   tsutsalsan: 0,
+//                   niitDun: 0,
+//                 },
+//               ],
+//             },
+//           },
+//         },
+//         {
+//           $addFields: {
+//             niitTulburDun: {
+//               $sum: "$tulburuud.niitDun",
+//             },
+//           },
+//         },
+//       ];
+//       var khariu = await TogloomiinTuv(db.tukhainBaaziinKholbolt).aggregate(
+//         pipeline
+//       );
+//       res.send(
+//         khariu?.length > 0
+//           ? khariu[0]
+//           : {
+//               tulburuud: [],
+//               khariult: { niitDun: 0, niitToo: 0 },
+//               khungulult: { niitDun: 0, niitToo: 0 },
+//               uilchluulsen: {
+//                 niit: 0,
+//                 niitKhuukhduud: 0,
+//                 tulsunToo: 0,
+//                 tuluuguiToo: 0,
+//                 tsutsalsan: 0,
+//                 niitDun: 0,
+//               },
+//               niitTulburDun: 0,
+//             }
+//       );
+//     } catch (err) {
+//       next(err);
+//     }
+//   });
+
 router
   .route("/togloomiinDunAvya")
   .post(tokenShalgakh, async (req, res, next) => {
@@ -636,6 +873,77 @@ router
         },
       ]);
       res.send(khariu);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+router
+  .route(
+    "/togloomKioskNegtgelMedeelelAvya/:ekhlekhOgnoo/:duusakhOgnoo/:baiguullagiinId?/:barilgiinId?"
+  )
+  .get(async (req, res, next) => {
+    try {
+      const ekhlekhOgnoo = new Date(req.params.ekhlekhOgnoo);
+      const duusakhOgnoo = new Date(req.params.duusakhOgnoo);
+      const baiguullagiinId = req.params.baiguullagiinId;
+
+      const match = {
+        baiguullagiinId: baiguullagiinId,
+        barilgiinId: req.params.barilgiinId
+          ? req.params.barilgiinId
+          : { $exists: true },
+        ognoo: {
+          $gte: ekhlekhOgnoo,
+          $lte: duusakhOgnoo,
+        },
+        tuluv: { $ne: -1 },
+        tasalbariinGuilgeeniiId: { $exists: true },
+      };
+
+      const pipeline = [
+        { $match: match },
+        { $unwind: "$niitTulbur" },
+        {
+          $match: {
+            "niitTulbur.tailbar": "kiosk",
+          },
+        },
+        {
+          $group: {
+            _id: "$niitTulbur.turul",
+            niitDun: { $sum: "$niitTulbur.dun" },
+            niitToo: { $sum: 1 },
+            niitTaslalbar: {
+              $sum: { $ifNull: ["$khuukhdiinToo", 0] },
+            },
+          },
+        },
+      ];
+
+      const tailan = await TogloomiinTuv(db.tukhainBaaziinKholbolt).aggregate(
+        pipeline
+      );
+
+      const data = {};
+      if (Array.isArray(tailan)) {
+        tailan.forEach((mur) => {
+          data[mur._id] = {
+            niitDun: mur.niitDun,
+            niitToo: mur.niitToo,
+            niitTaslalbar: mur.niitTaslalbar,
+          };
+        });
+      }
+
+      res.send({
+        msg: "Амжилттай",
+        ekhlekhOgnoo: req.params.ekhlekhOgnoo,
+        duusakhOgnoo: req.params.duusakhOgnoo,
+        baiguullagiinId: baiguullagiinId,
+        barilgiinId: req.params.barilgiinId,
+        data,
+      });
     } catch (err) {
       next(err);
     }
