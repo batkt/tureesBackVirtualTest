@@ -316,6 +316,7 @@ router
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
           tuluv: 1,
+          gereeniiDugaar: "24A07-B403-RC649",
         })
         .select("+avlaga");
       if(gereenuud?.length > 0)       
