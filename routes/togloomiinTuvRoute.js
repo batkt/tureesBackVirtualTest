@@ -879,20 +879,22 @@ router
   });
 
 router
-  .route(
-    "/togloomKioskNegtgelMedeelelAvya/:ekhlekhOgnoo/:duusakhOgnoo/:baiguullagiinId?/:barilgiinId?"
-  )
-  .get(tokenShalgakh, async (req, res, next) => {
+  .route("/togloomKioskNegtgelMedeelelAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
     try {
-      const ekhlekhOgnoo = new Date(req.params.ekhlekhOgnoo);
-      const duusakhOgnoo = new Date(req.params.duusakhOgnoo);
-      const baiguullagiinId = req.params.baiguullagiinId;
+      if (!req.body.ekhlekhOgnoo) throw new Error("Эхлэх огноо заавал байх ёстой!");
+      if (!req.body.duusakhOgnoo) throw new Error("Дуусах огноо заавал байх ёстой!");
+      if (!req.body.baiguullagiinId)
+        throw new Error("Байгууллагын ID заавал байх ёстой!");
+
+      const ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+      const duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+      const baiguullagiinId = req.body.baiguullagiinId;
+      const barilgiinId = req.body.barilgiinId;
 
       const match = {
         baiguullagiinId: baiguullagiinId,
-        barilgiinId: req.params.barilgiinId
-          ? req.params.barilgiinId
-          : { $exists: true },
+        barilgiinId: barilgiinId ? barilgiinId : { $exists: true },
         ognoo: {
           $gte: ekhlekhOgnoo,
           $lte: duusakhOgnoo,
@@ -938,10 +940,10 @@ router
 
       res.send({
         msg: "Амжилттай",
-        ekhlekhOgnoo: req.params.ekhlekhOgnoo,
-        duusakhOgnoo: req.params.duusakhOgnoo,
+        ekhlekhOgnoo: req.body.ekhlekhOgnoo,
+        duusakhOgnoo: req.body.duusakhOgnoo,
         baiguullagiinId: baiguullagiinId,
-        barilgiinId: req.params.barilgiinId,
+        barilgiinId: barilgiinId,
         data,
       });
     } catch (err) {
