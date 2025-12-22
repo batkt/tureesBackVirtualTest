@@ -858,7 +858,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   console.log("------->" + dans.dugaar);
                   bodyKhuulga.ekhlekhOgnoo = "20251101"
                   bodyKhuulga.duusakhOgnoo = "20251115"
-                  bodyKhuulga.khuudasniiDugaar = 1;
+                  bodyKhuulga.khuudasniiDugaar = 0;
                   bodyKhuulga.khuudasniiKhemjee = 100;
                 }
                 else
