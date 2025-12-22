@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { crud, UstsanBarimt, tokenShalgakh, db } = require("zevbackv2");
+const { crud, UstsanBarimt, tokenShalgakh } = require("zevbackv2");
 const TogloomiinTariff = require("../models/togloomiinTariff");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const TogloomiinTulbur = require("../models/togloomiinTulbur");
@@ -879,20 +879,22 @@ router
   });
 
 router
-  .route(
-    "/togloomKioskNegtgelMedeelelAvya/:ekhlekhOgnoo/:duusakhOgnoo/:baiguullagiinId?/:barilgiinId?"
-  )
-  .get(async (req, res, next) => {
+  .route("/togloomKioskNegtgelMedeelelAvya")
+  .post(tokenShalgakh, async (req, res, next) => {
     try {
-      const ekhlekhOgnoo = new Date(req.params.ekhlekhOgnoo);
-      const duusakhOgnoo = new Date(req.params.duusakhOgnoo);
-      const baiguullagiinId = req.params.baiguullagiinId;
+      if (!req.body.ekhlekhOgnoo) throw new Error("Эхлэх огноо заавал байх ёстой!");
+      if (!req.body.duusakhOgnoo) throw new Error("Дуусах огноо заавал байх ёстой!");
+      if (!req.body.baiguullagiinId)
+        throw new Error("Байгууллагын ID заавал байх ёстой!");
+
+      const ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+      const duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+      const baiguullagiinId = req.body.baiguullagiinId;
+      const barilgiinId = req.body.barilgiinId;
 
       const match = {
         baiguullagiinId: baiguullagiinId,
-        barilgiinId: req.params.barilgiinId
-          ? req.params.barilgiinId
-          : { $exists: true },
+        barilgiinId: barilgiinId ? barilgiinId : { $exists: true },
         ognoo: {
           $gte: ekhlekhOgnoo,
           $lte: duusakhOgnoo,
@@ -921,9 +923,9 @@ router
         },
       ];
 
-      const tailan = await TogloomiinTuv(db.tukhainBaaziinKholbolt).aggregate(
-        pipeline
-      );
+      const tailan = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate(pipeline);
 
       const data = {};
       if (Array.isArray(tailan)) {
@@ -938,10 +940,10 @@ router
 
       res.send({
         msg: "Амжилттай",
-        ekhlekhOgnoo: req.params.ekhlekhOgnoo,
-        duusakhOgnoo: req.params.duusakhOgnoo,
+        ekhlekhOgnoo: req.body.ekhlekhOgnoo,
+        duusakhOgnoo: req.body.duusakhOgnoo,
         baiguullagiinId: baiguullagiinId,
-        barilgiinId: req.params.barilgiinId,
+        barilgiinId: barilgiinId,
         data,
       });
     } catch (err) {
