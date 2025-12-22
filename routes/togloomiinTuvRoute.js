@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { crud, UstsanBarimt, tokenShalgakh, db } = require("zevbackv2");
+const { crud, UstsanBarimt, tokenShalgakh } = require("zevbackv2");
 const TogloomiinTariff = require("../models/togloomiinTariff");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const TogloomiinTulbur = require("../models/togloomiinTulbur");
@@ -882,7 +882,7 @@ router
   .route(
     "/togloomKioskNegtgelMedeelelAvya/:ekhlekhOgnoo/:duusakhOgnoo/:baiguullagiinId?/:barilgiinId?"
   )
-  .get(async (req, res, next) => {
+  .get(tokenShalgakh, async (req, res, next) => {
     try {
       const ekhlekhOgnoo = new Date(req.params.ekhlekhOgnoo);
       const duusakhOgnoo = new Date(req.params.duusakhOgnoo);
@@ -921,9 +921,9 @@ router
         },
       ];
 
-      const tailan = await TogloomiinTuv(db.tukhainBaaziinKholbolt).aggregate(
-        pipeline
-      );
+      const tailan = await TogloomiinTuv(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate(pipeline);
 
       const data = {};
       if (Array.isArray(tailan)) {
