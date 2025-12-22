@@ -316,7 +316,7 @@ router
       let gereeMatch = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
-        tuluv: 1,
+        tuluv: -1,
       }
       if(req.body.gereeniiDugaar)
         gereeMatch.gereeniiDugaar = req.body.gereeniiDugaar;
