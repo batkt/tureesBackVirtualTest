@@ -5,6 +5,7 @@ const { tdbcer } = require("../kholbolt/tdbcer");
 const { bankniiGuilgeeToololtAvya } = require("../controller/toololt");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { tokenShalgakh, crud, UstsanBarimt, Dans } = require("zevbackv2");
+const Geree = require("../models/geree");
 //const { crud } = require('../components/crud');
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 
@@ -316,7 +317,7 @@ router
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
           tuluv: 1,
-          gereeniiDugaar: "24A07-B403-RC649",
+          gereeniiDugaar: req.body.gereeniiDugaar,
         })
         .select("+avlaga");
       if(gereenuud?.length > 0)       
