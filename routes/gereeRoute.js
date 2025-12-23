@@ -211,7 +211,7 @@ router
   .get(tokenShalgakh, (req, res, next) => {
     Geree(req.body.tukhainBaaziinKholbolt, true)
       .findById(req.params.gereeniiId)
-      .select("avlaga")
+      .select("+avlaga")
       .then((result) => {
         if (lodash.isArray(lodash.get(result, "avlaga.guilgeenuud"))) {
           var a = lodash
