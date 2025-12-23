@@ -433,6 +433,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
       (a) => a.baiguullagiinId == baiguullagiinId
     );
     if (nemeltUtga?.includes("QRGadaa") || nemeltUtga?.includes("QRGADAA")) {
+      console.log("QR Gadaa tulbur");
       var guilgeenuud = await QuickQpayObject(kholbolt).find({
         tulsunEsekh: false,
         zogsooliinId: zogsooliinId,
