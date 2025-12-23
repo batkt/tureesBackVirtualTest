@@ -211,7 +211,7 @@ router
   .get(tokenShalgakh, (req, res, next) => {
     Geree(req.body.tukhainBaaziinKholbolt, true)
       .findById(req.params.gereeniiId)
-      .select("+avlaga")
+      .select("avlaga")
       .then((result) => {
         if (lodash.isArray(lodash.get(result, "avlaga.guilgeenuud"))) {
           var a = lodash
@@ -464,15 +464,15 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   }
   if (!khariltsagchShalguur) await khariltsagch.save();
 
-  // Хуваарь/авлагын мөрүүдийг (хөнгөлөлтүүдтэй) шууд хадгална.
-  const khuvaariGuilgeenuud =
-    lodash.get(req, "body.avlaga.guilgeenuud") ||
-    req.body.guilgeenuud ||
-    req.body.khuvaari;
-  if (Array.isArray(khuvaariGuilgeenuud)) {
-    req.body.avlaga = req.body.avlaga || {};
-    req.body.avlaga.guilgeenuud = khuvaariGuilgeenuud;
-  }
+  // // Хуваарь/авлагын мөрүүдийг (хөнгөлөлтүүдтэй) шууд хадгална.
+  // const khuvaariGuilgeenuud =
+  //   lodash.get(req, "body.avlaga.guilgeenuud") ||
+  //   req.body.guilgeenuud ||
+  //   req.body.khuvaari;
+  // if (Array.isArray(khuvaariGuilgeenuud)) {
+  //   req.body.avlaga = req.body.avlaga || {};
+  //   req.body.avlaga.guilgeenuud = khuvaariGuilgeenuud;
+  // }
 
   var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
   var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
