@@ -369,7 +369,6 @@ async function dansniiKhuulgaAvya(token, next, body) {
     // }
     if (body.record)
       url = url + (resultValue ? "" : "/record?record=" + body.record);
-    console.log("url ---->" + url);
     const response = await instance.get(url, { context });
     if (!response.body) {
       if (next) next(new aldaa("Татах хуулга байхгүй"));
@@ -854,7 +853,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 };
                 // if(dans.barilgiinId == "6735c77a7fc60cd66deb290a" && dans.dugaar == "5100229713")
                 // {
-                //   console.log("------->" + dans.dugaar);
                 //   bodyKhuulga.ekhlekhOgnoo = "20251116"
                 //   bodyKhuulga.duusakhOgnoo = "20251130"
                 //   bodyKhuulga.khuudasniiDugaar = 0;

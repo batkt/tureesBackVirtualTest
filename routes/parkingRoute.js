@@ -432,10 +432,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
     var kholbolt = db.kholboltuud.find(
       (a) => a.baiguullagiinId == baiguullagiinId
     );
-    console.log("tailbar baiguullagiinId ----->>", baiguullagiinId);
-    console.log("tailbar ----->>", nemeltUtga);
     if (nemeltUtga?.includes("QRGadaa") || nemeltUtga?.includes("QRGADAA")) {
-      console.log("QR Gadaa tulbur bish");
       var guilgeenuud = await QuickQpayObject(kholbolt).find({
         tulsunEsekh: false,
         zogsooliinId: zogsooliinId,
@@ -449,12 +446,10 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
           "tuukh.0.tulbur": { $size: 0 },
         });
         if (!oldsonMashin) continue;
-        console.log("QR Gadaa tulbur ->" + JSON.stringify(oldsonMashin));
         try {
           const resCallBack = await axios.get(
             encodeURI(guilgee.qpay?.callback_url)
           );
-          console.log("QR Gadaa tulbur -> response", resCallBack.data);
         } catch (err) {
           console.error(
             "QR Gadaa callback error:",
@@ -1863,7 +1858,6 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
     };
     res.send(butsaakhKhariu);
   } catch (err) {
-    console.log("v3 search_car / ------------>>" + err);
     next(err);
   }
 });
@@ -3219,21 +3213,9 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       };
       if (bodsonDun > 0) {
         if (bodsonDun == req.body.paid_amount) {
-          console.log("here");
-          console.log("here req.body.paid_amount --->", req.body.paid_amount);
           if (!!tukhainObject.tuukh[0]?.tsagiinTuukh[0]?.garsanTsag) {
-            console.log(
-              "here tukhainObject.tuukh[0]?.garsanKhaalga --->",
-              tukhainObject.tuukh[0]?.garsanKhaalga
-            );
             set["tuukh.$[t].tuluv"] = 1;
             if (!!tukhainObject.tuukh[0]?.garsanKhaalga) {
-              console.log("mashin --->", oldsonMashin.mashiniiDugaar);
-              console.log("mashin 1 --->", tukhainObject.baiguullagiinId);
-              console.log(
-                "mashin 2 --->",
-                tukhainObject.tuukh[0].garsanKhaalga
-              );
               const io = req.app.get("socketio");
               io.emit(
                 `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,

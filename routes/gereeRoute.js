@@ -1228,9 +1228,6 @@ router
               : savlaga.tailbar) +
             " " +
             req.body.shaltgaan;
-        console.log(
-          "avlaguud -------------->>>" + JSON.stringify(suuliinSariinAvlaguud)
-        );
         Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
             { _id: req.body.gereeniiId },
@@ -2102,13 +2099,11 @@ router
                 );
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
-                    console.log("------- 1 -------<" + zardal.tailbar);
                     zardal.tailbar =
                       zardal._id.tailbar +
                       (zardal._id.tooluuriinDugaar
                         ? " " + zardal._id.tooluuriinDugaar
                         : "");
-                    console.log("-------- 2 -------<" + zardal.tailbar);
                     if (
                       zardal.tailbar == "Түрээс" ||
                       zardal.tailbar == "Хөнгөлөлт"

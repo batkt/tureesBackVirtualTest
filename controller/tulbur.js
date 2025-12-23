@@ -590,8 +590,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                     _id: oldsonGereenuud[0]._id,
                   });
                   var qpayAmount = x.kholbosonDun;
-                  console.log("qpayAmount", qpayAmount);
-                  console.log("geree ", geree.gereeniiDugaar);
                   if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
                     var tulsunDun = 0;
                     if (geree.aldangiinUldegdel >= qpayAmount) {
@@ -774,7 +772,6 @@ module.exports.tulultTaniya = async function tulultTaniya() {
       }
     }
   } catch (e) {
-    console.log("tulultTaniya ---------------->>" + e);
   }
 };
 
@@ -830,26 +827,12 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         const endDate = moment().startOf("month");
         const diff = endDate.diff(startDate, "month");
 
-        console.log("➡️ Target month:", startDate.format("YYYY-MM-DD"));
-        console.log("Сарын ялгаа:", diff);
-
         let aldangiBodojEkhlekhToo = diff * -1;
 
-        console.log(
-          "aldangiBodojEkhlekhToo --------------->" + aldangiBodojEkhlekhToo
-        );
         for (let offset = aldangiBodojEkhlekhToo; offset <= 0; offset++) {
           const targetMonth = moment().add(offset, "month");
           const start = targetMonth.clone().startOf("month").toDate();
           const end = targetMonth.clone().endOf("month").toDate();
-
-          console.log(
-            "------------------------------------------------------------"
-          );
-          console.log(`🧾 [${baiguullaga.ner}] - [${barilga.ner}]`);
-          console.log(`➡️  Target month: ${targetMonth.format("YYYY-MM")}`);
-          console.log(`   Start: ${start.toISOString()}`);
-          console.log(`   End:   ${end.toISOString()}`);
 
           let match = {
             "avlaga.guilgeenuud.ognoo": { $gte: start, $lte: end },
@@ -872,6 +855,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 baiguullagiinId: baiguullaga._id.toString(),
                 barilgiinId: barilga._id.toString(),
                 tuluv: { $nin: [-1] },
+                aldangiTsartsaakhEsekh: { $exists: false }
               },
             },
             { $unwind: "$avlaga.guilgeenuud" },
@@ -908,7 +892,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           ]);
 
           if (!gereenuud?.length) {
-            console.log("❌ No unpaid gereenuud found for this month.");
             continue;
           }
 
@@ -977,11 +960,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             if (songosonGereenuud?.length > 0)
               umnukhUldegdel = songosonGereenuud[0].uldegdel;
             var uldegdel = geree.uldegdel + umnukhUldegdel;
-            console.log(" илүү төлөлт байгаа эсэх " + uldegdel);
             if (uldegdel < 0) {
-              console.log(
-                "❌ алданги бодохгүй үлдэгдэл нь илүү төлөлттэй." + uldegdel
-              );
               continue;
             }
             const tulukhUdur = geree._id.tulukhUdur?.[0] || 1;
@@ -996,31 +975,11 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               .clone()
               .add(aldangiChuluulukhKhonog, "days");
 
-            console.log(`📄 Geree: ${geree._id.gereeniiDugaar}`);
-            console.log(
-              `   Aldangi ehleh: ${aldangiEhlehOgnoo.format("YYYY-MM-DD")}`
-            );
-            console.log(
-              `   Chuluuluh: ${aldangiChuluulukhOgnoo.format("YYYY-MM-DD")}`
-            );
-            console.log(`   Uldegdel: ${uldegdel}`);
-            console.log(`   Aldangiin khuvi: ${aldagiinKhuvi}%`);
-            console.log(
-              "------------------------------------------------------------"
-            );
-
             if (moment().isAfter(aldangiChuluulukhOgnoo)) {
               const bodogdsonKhuu = tooZasyaSync(
                 (uldegdel * aldagiinKhuvi) / 100
               );
               const data = await Geree(kholbolt, true).findById(geree._id.id);
-
-              console.log(
-                `✅ Aldangi bodogdloo: ${bodogdsonKhuu}₮ (umnukh: ${
-                  data.aldangiinUldegdel || 0
-                })`
-              );
-
               bulkOps.push({
                 updateOne: {
                   filter: { _id: geree._id.id },
@@ -1073,7 +1032,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         await AldangiinTuukh(kholbolt).insertMany(aldangiinTuukh);
     }
   } catch (err) {
-    console.log("Aldangi bodyo error:", err);
   }
 };
 

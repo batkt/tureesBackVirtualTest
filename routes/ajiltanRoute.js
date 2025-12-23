@@ -93,9 +93,7 @@ router.route("/idaarBugdiigUstgaya").post(async (req, res, next) => {
 
     const baiguullagiinId = baiguullaga._id?.toString();
     const ajiltanuud = await ajiltanModel.find({ baiguullagiinId }).lean();
-    console.log("ajiltanuud:", ajiltanuud);
-    console.log("baiguullaga:", baiguullaga);
-
+    
     const ustgasanAjiltan = await ajiltanModel.deleteOne({ baiguullagiinId });
     const ustgasanBaiguullaga = await baiguullagaModel.deleteOne({
       _id: baiguullaga._id,

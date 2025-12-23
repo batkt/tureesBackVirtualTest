@@ -326,7 +326,6 @@ router
       if(gereenuud?.length > 0)       
       {
         for (const geree of gereenuud){
-          console.log("geree ----------------->>" + geree.gereeniiDugaar);
           var filteredGeree = geree?.avlaga?.guilgeenuud.filter((e) => e.ognoo > moment(req.body.ognoo) && e.turul === 'bank' && e.dansniiDugaar === '5100229713');
           if(filteredGeree?.length > 0)
           {
@@ -342,11 +341,9 @@ router
                   kholbosonGereeniiId: [],
                   kholbosonTalbainId: [],
                 }
-                console.log("tulsunDun ----------------->>" + tulsunDun);
                 var resultRef = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true).find(match);
                 if(resultRef?.length > 0)
                 {
-                  console.log("resultRef[0] ----------------->>" + resultRef[0]);
                   var x = resultRef[0];
                   var jagsaalt = [];
                   var dugaar = geree.talbainDugaar;
