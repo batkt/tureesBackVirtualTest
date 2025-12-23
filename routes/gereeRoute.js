@@ -463,6 +463,17 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     });
   }
   if (!khariltsagchShalguur) await khariltsagch.save();
+
+  // Хуваарь/авлагын мөрүүдийг (хөнгөлөлтүүдтэй) шууд хадгална.
+  const khuvaariGuilgeenuud =
+    lodash.get(req, "body.avlaga.guilgeenuud") ||
+    req.body.guilgeenuud ||
+    req.body.khuvaari;
+  if (Array.isArray(khuvaariGuilgeenuud)) {
+    req.body.avlaga = req.body.avlaga || {};
+    req.body.avlaga.guilgeenuud = khuvaariGuilgeenuud;
+  }
+
   var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
   var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
   try {
@@ -1273,13 +1284,14 @@ router
           $ne: -1,
         };
       body.lean = true;
-      const isFoodCity = req.body.baiguullagiinId === "63c0f31efe522048bf02086d";
+      const isFoodCity =
+        req.body.baiguullagiinId === "63c0f31efe522048bf02086d";
       khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt, true), body)
         .then(async (result) => {
           if (result && result.jagsaalt && result.jagsaalt.length > 0) {
             var idnuud = [];
             result.jagsaalt.forEach((a) => idnuud.push(a._id));
-            
+
             const umnukhSariinUrTulburGroup = {
               _id: "$gereeniiDugaar",
               tulukh: {
@@ -1300,7 +1312,7 @@ router
                 },
               };
             }
-            
+
             const umnukhSariinUrTulburProject = {
               gereeniiDugaar: "$gereeniiDugaar",
               uldegdel: isFoodCity
@@ -1316,7 +1328,7 @@ router
                     $subtract: ["$tulukh", "$khyamdral"],
                   },
             };
-            
+
             const umnukhSariinTulsunDunGroup = isFoodCity
               ? {
                   _id: "$gereeniiDugaar",
@@ -1327,7 +1339,7 @@ router
                   },
                 }
               : null;
-            
+
             var query = [
               {
                 $match: {
@@ -2080,15 +2092,19 @@ router
                   )?.uldegdel || 0;
                 x.niitAvlagaUldegdel =
                   x.niitUldegdel + (x.aldangiinUldegdel || 0);
-                
+
                 if (isFoodCity) {
-                  x.niitDun = (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0);
+                  x.niitDun =
+                    (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0);
                   x.umnukhSariinTulsunDun =
                     gereenuud[0].umnukhSariinTulsunDun?.find(
                       (a) => a._id == x.gereeniiDugaar
                     )?.uldegdel || 0;
                   x.garaasBodsonNiitDun = x.niitUldegdel || 0;
-                  x.tulsunDun = (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0) - (x.garaasBodsonNiitDun || 0);
+                  x.tulsunDun =
+                    (x.umnukhSariinUrTulbur || 0) +
+                    (x.eneSardTulukhDun || 0) -
+                    (x.garaasBodsonNiitDun || 0);
                 }
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
