@@ -24,16 +24,16 @@ module.exports.archiveEbarimt =
                         const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
                         console.log(`📦 Archiving month: ${archiveName}`);
                         
-                        // // --- Archive ---
-                        // await EbarimtShine(kholbolt).aggregate([
-                        //     { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
-                        //     { $out: archiveName }
-                        // ]);
-                        // // --- Delete ---
-                        // const res = await EbarimtShine(kholbolt).deleteMany({
-                        //     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-                        // });
-                        // console.log(`🗑️ Deleted ${res.deletedCount} docs from ebarimtShine`);
+                        // --- Archive ---
+                        await EbarimtShine(kholbolt).aggregate([
+                            { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
+                            { $out: archiveName }
+                        ]);
+                        // --- Delete ---
+                        const res = await EbarimtShine(kholbolt).deleteMany({
+                            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+                        });
+                        console.log(`🗑️ Deleted ${res?.deletedCount} docs from ebarimtShine`);
                     }
                 }
             }
