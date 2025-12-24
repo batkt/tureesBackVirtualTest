@@ -34,6 +34,7 @@ const surveyRoute = require("./routes/surveyRoute");
 const togloomiinTuvRoute = require("./routes/togloomiinTuvRoute");
 const daalgavarRoute = require("./routes/daalgavarRoute");
 const zogsool = require("./controller/zogsool");
+const ebarimt = require("./controller/ebarimt");
 const cgw = require("./controller/cgw");
 const tulbur = require("./controller/tulbur");
 const ajiltanController = require("./controller/ajiltan");
@@ -269,6 +270,17 @@ cron.schedule(
   "*/8 * * * * * ",
   function () {
     tulbur.tulultTaniya();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
+  "05 07 * * * ",
+  function () {
+    ebarimt.archiveEbarimt();
   },
   {
     scheduled: true,
