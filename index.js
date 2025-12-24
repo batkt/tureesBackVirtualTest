@@ -278,7 +278,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "10 07 * * * ",
+  "15 07 * * * ",
   function () {
     ebarimt.archiveEbarimt();
   },
