@@ -160,6 +160,7 @@ router
             tasalbarTariff: tulbur.tasalbarTariff,
             tasalbarDun: tulbur.tasalbarDun,
             tasalbarShirkheg: tulbur.tasalbarShirkheg,
+            turul: tulbur.turul,
           };
           var tempGuilgee = new TasalbariinGuilgee(
             req.body.tukhainBaaziinKholbolt
@@ -179,14 +180,14 @@ router
             khuukhdiinToo: tempData.tasalbarShirkheg,
             niitTulbur: [
               {
-                turul: "qpay",
+                turul: tempData.turul,
                 tailbar: "kiosk",
                 dun: tempData.tasalbarDun,
               },
             ],
             tulbur: [
               {
-                turul: "qpay",
+                turul: tempData.turul,
                 tailbar: "kiosk",
                 dun: tempData.tasalbarDun,
               },
