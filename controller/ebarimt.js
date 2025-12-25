@@ -10,17 +10,18 @@ module.exports.archiveEbarimt =
         const currentYear = now.getFullYear();
         const currentMonth = now.getMonth() + 1;
         if (kholboltuud) {
-            for await (const kholbolt of kholboltuud) {
+            for (const kholbolt of kholboltuud) {
                 if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
                 const months = await EbarimtShine(kholbolt).aggregate([
                     { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
-                    { $group: { _id: { year: "$year", month: "$month" } } }
+                    { $group: { _id: { year: "$year", month: "$month" } } },
+                    { $sort: { "_id.year": 1, "_id.month": 1 }, },
                 ]);
                 console.log(`${JSON.stringify(months)} months found for kholbolt: ${kholbolt.baiguullagiinId}`);
-                for(const { _id } of months) {
+                for (const { _id } of months) {
                     const y = _id.year;
                     const m = _id.month;
-                    if (y === currentYear && m === currentMonth) return; // одоогийн сар алгасна
+                    if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
                     const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
                     console.log(`📦 Archiving month: ${archiveName}`);
                     const docs = await EbarimtShine(kholbolt, archiveName).find({
