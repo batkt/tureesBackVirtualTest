@@ -29,11 +29,11 @@ module.exports.archiveEbarimt =
                     });
                     if (docs?.length > 0) continue;
                     console.log(`📦 docs length: ${docs?.length}`);
-                    // // --- Archive ---
-                    // await EbarimtShine(kholbolt).aggregate([
-                    //     { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
-                    //     { $out: archiveName }
-                    // ]);
+                    // --- Archive ---
+                    await EbarimtShine(kholbolt).aggregate([
+                        { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
+                        { $out: archiveName }
+                    ]);
                     // // --- Delete ---
                     // const res = await EbarimtShine(kholbolt).deleteMany({
                     //     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
