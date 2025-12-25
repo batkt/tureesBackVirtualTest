@@ -23,7 +23,6 @@ module.exports.archiveEbarimt =
                     if (y === currentYear && m === currentMonth) return; // одоогийн сар алгасна
                     const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
                     console.log(`📦 Archiving month: ${archiveName}`);
-                    console.log(`📦 Archiving docs: ${docs?.lengt}`);
                     const docs = await EbarimtShine(kholbolt, archiveName).find({
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
