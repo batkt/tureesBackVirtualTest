@@ -27,18 +27,24 @@ module.exports.archiveEbarimt =
                     const docs = await EbarimtShine(kholbolt, archiveName).find({
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
-                    if (docs?.length > 0) continue;
+                    if (docs?.length > 0) {
+                        const res = await EbarimtShine(kholbolt).deleteMany({
+                            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+                        });
+                        console.log(`🗑️ docs?.length > 0 Deleted ${res?.deletedCount} docs from ebarimtShine`);
+                        continue;
+                    } 
                     console.log(`📦 docs length: ${docs?.length}`);
                     // --- Archive ---
                     await EbarimtShine(kholbolt).aggregate([
                         { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
                         { $out: archiveName }
                     ]);
-                    // // --- Delete ---
-                    // const res = await EbarimtShine(kholbolt).deleteMany({
-                    //     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-                    // });
-                    // console.log(`🗑️ Deleted ${res?.deletedCount} docs from ebarimtShine`);
+                    // --- Delete ---
+                    const res = await EbarimtShine(kholbolt).deleteMany({
+                        createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+                    });
+                    console.log(`🗑️ Deleted ${res?.deletedCount} docs from ebarimtShine`);
                 }
             }
         }

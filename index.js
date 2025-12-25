@@ -278,9 +278,20 @@ cron.schedule(
 );
 
 cron.schedule(
-  "55 09 * * * ",
+  "35 10 * * * ",
   function () {
     ebarimt.archiveEbarimt();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
+  "05 15 * * * ",
+  function () {
+    zogsool.archiveUilchluulegch();
   },
   {
     scheduled: true,

@@ -433,7 +433,6 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
       (a) => a.baiguullagiinId == baiguullagiinId
     );
     if (nemeltUtga?.includes("QRGadaa") || nemeltUtga?.includes("QRGADAA")) {
-      console.log("QR Gadaa tulbur");
       var guilgeenuud = await QuickQpayObject(kholbolt).find({
         tulsunEsekh: false,
         zogsooliinId: zogsooliinId,
@@ -460,7 +459,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         }
       }
     } else if (nemeltUtga?.includes("kiosk") || nemeltUtga?.includes("KIOSK"))
-      console.log("QR Gadaa tulbur bish");
+      console.log("QR Gadaa tulbur KIOSK bish");
     else {
       if (baiguullagiinId == "663da696aa6bedd9ae0567f0") {
         tulsunDun = tulsunDun + 50; //sms 50tug
