@@ -81,11 +81,11 @@ ebarimtSchema.pre("updateOne", async function () {
   this._update.dateOgnoo = new Date(this._update.date);
 });
 
-module.exports = function a(conn) {
+module.exports = function a(conn, modelName = "ebarimtShine") {
   if (!conn || !conn.kholbolt)
     throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
   conn = conn.kholbolt;
-  return conn.model("ebarimtShine", ebarimtSchema);
+  return conn.model(modelName, ebarimtSchema);
 };
 
 //module.exports = mongoose.model("ebarimt", ebarimtSchema);
