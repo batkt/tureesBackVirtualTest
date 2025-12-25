@@ -16,7 +16,7 @@ module.exports.archiveEbarimt =
                     { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
                     { $group: { _id: { year: "$year", month: "$month" } } }
                 ]);
-                console.log(`${months} months found for kholbolt: ${kholbolt.baiguullagiinId}`);
+                console.log(`${JSON.stringify(months)} months found for kholbolt: ${kholbolt.baiguullagiinId}`);
                 for(const { _id } of months) {
                     const y = _id.year;
                     const m = _id.month;
