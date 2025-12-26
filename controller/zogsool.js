@@ -454,11 +454,11 @@ module.exports.archiveUilchluulegch =
                     if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
                     const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
                     console.log(`📦 Archiving month: ${archiveName}`);
-                    const docs = await Uilchluulegch(kholbolt, false, archiveName).find({
-                        createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-                    });
-                    if (docs?.length > 0) continue;
-                    console.log(`📦 docs length: ${docs?.length}`);
+                    // const docs = await Uilchluulegch(kholbolt, false, archiveName).find({
+                    //     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+                    // });
+                    // if (docs?.length > 0) continue;
+                    // console.log(`📦 docs length: ${docs?.length}`);
                     // --- Archive ---
                     await Uilchluulegch(kholbolt).aggregate([
                         { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
