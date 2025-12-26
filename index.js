@@ -277,16 +277,16 @@ cron.schedule(
   }
 );
 
-cron.schedule(
-  "40 6 * * * ",
-  function () {
-    ebarimt.archiveEbarimt();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
+// cron.schedule(
+//   "40 6 * * * ",
+//   function () {
+//     ebarimt.archiveEbarimt();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 
 // cron.schedule(
 //   "18 6 * * * ",
