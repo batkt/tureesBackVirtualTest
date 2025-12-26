@@ -349,7 +349,8 @@ router
             guilgee.turul == "Соёолж Ц/Д" ||
             guilgee.turul == "Хөнгөлөлт/ 24 цаг" ||
             guilgee.turul == "Хөнгөлөлт/ 2 цаг" ||
-            guilgee.turul == "Fitness"
+            guilgee.turul == "Fitness" ||
+            guilgee.turul?.includes("Угаалга")
               ? 0
               : guilgee.dun;
           tulbur.push({
@@ -3059,6 +3060,95 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           },
         ];
       }
+    } else if (
+      req.body.ajiltniiId == "694e260f3f0da03b83ace92b" &&
+      (req.body.ugaalgaHungulult || req.body.ugaalgaHungulult24)
+    ) {
+      // Validation: Зөвхөн нэг discount type байх ёстой
+      if (req.body.ugaalgaHungulult && req.body.ugaalgaHungulult24) {
+        throw new Error("Зөвхөн нэг Угаалга хөнгөлөлт сонгох боломжтой!");
+      }
+
+      // Validation: Discount amount шалгах
+      if (req.body.ugaalgaHungulult) {
+        if (!req.body.zogsoolUndsenUne) {
+          throw new Error("zogsoolUndsenUne заавал оруулах шаардлагатай!");
+        }
+        const expectedDun = req.body.zogsoolUndsenUne * 1;
+        if (req.body.ugaalgaHungulult !== expectedDun) {
+          throw new Error(
+            `Угаалга 1 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${req.body.ugaalgaHungulult}`
+          );
+        }
+      }
+
+      if (req.body.ugaalgaHungulult24) {
+        if (!req.body.zogsoolUndsenUne) {
+          throw new Error("zogsoolUndsenUne заавал оруулах шаардлагатай!");
+        }
+        const expectedDun = req.body.zogsoolUndsenUne * 24;
+        if (req.body.ugaalgaHungulult24 !== expectedDun) {
+          throw new Error(
+            `Угаалга 24 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${req.body.ugaalgaHungulult24}`
+          );
+        }
+      }
+
+      // 1 цагийн хөнгөлөлт
+      if (req.body.ugaalgaHungulult && req.body.ugaalgaHungulultTsag === 1) {
+        if (req.body.paid_amount == 0) {
+          tulbur = [
+            {
+              ognoo: new Date(),
+              turul: "Угаалга/ 1 цаг",
+              dun: req.body.ugaalgaHungulult,
+            },
+          ];
+        } else {
+          tulbur = [
+            {
+              ognoo: new Date(),
+              turul: "Угаалга/ 1 цаг",
+              dun: req.body.ugaalgaHungulult,
+            },
+            {
+              ognoo: new Date(),
+              turul: req.body.turul,
+              dun: req.body.paid_amount,
+            },
+          ];
+        }
+      }
+      // 24 цагийн хөнгөлөлт
+      else if (
+        req.body.ugaalgaHungulult24 &&
+        req.body.ugaalgaHungulultTsag24 === 24
+      ) {
+        if (req.body.paid_amount == 0) {
+          tulbur = [
+            {
+              ognoo: new Date(),
+              turul: "Угаалга/ 24 цаг",
+              dun: req.body.ugaalgaHungulult24,
+            },
+          ];
+        } else {
+          tulbur = [
+            {
+              ognoo: new Date(),
+              turul: "Угаалга/ 24 цаг",
+              dun: req.body.ugaalgaHungulult24,
+            },
+            {
+              ognoo: new Date(),
+              turul: req.body.turul,
+              dun: req.body.paid_amount,
+            },
+          ];
+        }
+      } else {
+        throw new Error("Угаалга хөнгөлөлтийн мэдээлэл буруу байна!");
+      }
     } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
       if (req.body.paid_amount == 0) {
         tulbur = [
@@ -3186,6 +3276,14 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
               )
             )
               throw new Error("Хөнгөлөлт оруулсан байна!");
+          } else if (req.body.ajiltniiId == "694e260f3f0da03b83ace92b") {
+            // Угаалга хөнгөлөлт аль хэдийн оруулсан эсэхийг шалгах
+            const existingUgaalga = tukhainObject.tuukh[0].tulbur.find((x) =>
+              x.turul?.includes("Угаалга")
+            );
+            if (existingUgaalga) {
+              throw new Error("Угаалга хөнгөлөлт оруулсан байна!");
+            }
           } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
             if (
               tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Хөнгөлөлт")
