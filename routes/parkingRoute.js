@@ -3062,44 +3062,62 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       }
     } else if (
       req.body.ajiltniiId == "694e260f3f0da03b83ace92b" &&
-      (req.body.ugaalgaHungulult || req.body.ugaalgaHungulult24)
+      (req.body.ugaalgaHungulult || 
+       req.body.ugaalgaHungulult24 || 
+       (req.body.khungulult && req.body.khungulukhTsag && req.body.zogsoolUndsenUne))
     ) {
-      if (req.body.ugaalgaHungulult && req.body.ugaalgaHungulult24) {
+      let ugaalgaHungulult = req.body.ugaalgaHungulult;
+      let ugaalgaHungulult24 = req.body.ugaalgaHungulult24;
+      let ugaalgaHungulultTsag = req.body.ugaalgaHungulultTsag;
+      let ugaalgaHungulultTsag24 = req.body.ugaalgaHungulultTsag24;
+
+      // Handle legacy field names (khungulult, khungulukhTsag)
+      if (req.body.khungulult && req.body.khungulukhTsag && req.body.zogsoolUndsenUne) {
+        if (req.body.khungulukhTsag === 1) {
+          ugaalgaHungulult = req.body.khungulult;
+          ugaalgaHungulultTsag = 1;
+        } else if (req.body.khungulukhTsag === 24) {
+          ugaalgaHungulult24 = req.body.khungulult;
+          ugaalgaHungulultTsag24 = 24;
+        }
+      }
+
+      if (ugaalgaHungulult && ugaalgaHungulult24) {
         throw new Error("Зөвхөн нэг Угаалга хөнгөлөлт сонгох боломжтой!");
       }
 
-      if (req.body.ugaalgaHungulult) {
+      if (ugaalgaHungulult) {
         if (!req.body.zogsoolUndsenUne) {
           throw new Error("zogsoolUndsenUne заавал оруулах шаардлагатай!");
         }
         const expectedDun = req.body.zogsoolUndsenUne * 1;
-        if (req.body.ugaalgaHungulult !== expectedDun) {
+        if (ugaalgaHungulult !== expectedDun) {
           throw new Error(
-            `Угаалга 1 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${req.body.ugaalgaHungulult}`
+            `Угаалга 1 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult}`
           );
         }
       }
 
-      if (req.body.ugaalgaHungulult24) {
+      if (ugaalgaHungulult24) {
         if (!req.body.zogsoolUndsenUne) {
           throw new Error("zogsoolUndsenUne заавал оруулах шаардлагатай!");
         }
         const expectedDun = req.body.zogsoolUndsenUne * 24;
-        if (req.body.ugaalgaHungulult24 !== expectedDun) {
+        if (ugaalgaHungulult24 !== expectedDun) {
           throw new Error(
-            `Угаалга 24 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${req.body.ugaalgaHungulult24}`
+            `Угаалга 24 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult24}`
           );
         }
       }
 
       // 1 цагийн хөнгөлөлт
-      if (req.body.ugaalgaHungulult && req.body.ugaalgaHungulultTsag === 1) {
+      if (ugaalgaHungulult && ugaalgaHungulultTsag === 1) {
         if (req.body.paid_amount == 0) {
           tulbur = [
             {
               ognoo: new Date(),
               turul: "Угаалга/ 1 цаг",
-              dun: req.body.ugaalgaHungulult,
+              dun: ugaalgaHungulult,
             },
           ];
         } else {
@@ -3107,7 +3125,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
             {
               ognoo: new Date(),
               turul: "Угаалга/ 1 цаг",
-              dun: req.body.ugaalgaHungulult,
+              dun: ugaalgaHungulult,
             },
             {
               ognoo: new Date(),
@@ -3118,16 +3136,13 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         }
       }
       // 24 цагийн хөнгөлөлт
-      else if (
-        req.body.ugaalgaHungulult24 &&
-        req.body.ugaalgaHungulultTsag24 === 24
-      ) {
+      else if (ugaalgaHungulult24 && ugaalgaHungulultTsag24 === 24) {
         if (req.body.paid_amount == 0) {
           tulbur = [
             {
               ognoo: new Date(),
               turul: "Угаалга/ 24 цаг",
-              dun: req.body.ugaalgaHungulult24,
+              dun: ugaalgaHungulult24,
             },
           ];
         } else {
@@ -3135,7 +3150,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
             {
               ognoo: new Date(),
               turul: "Угаалга/ 24 цаг",
-              dun: req.body.ugaalgaHungulult24,
+              dun: ugaalgaHungulult24,
             },
             {
               ognoo: new Date(),
