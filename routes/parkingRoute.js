@@ -3064,12 +3064,10 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       req.body.ajiltniiId == "694e260f3f0da03b83ace92b" &&
       (req.body.ugaalgaHungulult || req.body.ugaalgaHungulult24)
     ) {
-      // Validation: Зөвхөн нэг discount type байх ёстой
       if (req.body.ugaalgaHungulult && req.body.ugaalgaHungulult24) {
         throw new Error("Зөвхөн нэг Угаалга хөнгөлөлт сонгох боломжтой!");
       }
 
-      // Validation: Discount amount шалгах
       if (req.body.ugaalgaHungulult) {
         if (!req.body.zogsoolUndsenUne) {
           throw new Error("zogsoolUndsenUne заавал оруулах шаардлагатай!");
@@ -3277,7 +3275,6 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
             )
               throw new Error("Хөнгөлөлт оруулсан байна!");
           } else if (req.body.ajiltniiId == "694e260f3f0da03b83ace92b") {
-            // Угаалга хөнгөлөлт аль хэдийн оруулсан эсэхийг шалгах
             const existingUgaalga = tukhainObject.tuukh[0].tulbur.find((x) =>
               x.turul?.includes("Угаалга")
             );
