@@ -289,7 +289,7 @@ cron.schedule(
 // );
 
 cron.schedule(
-  "53 4 * * * ",
+  "55 4 * * * ",
   function () {
     zogsool.archiveUilchluulegch();
   },
