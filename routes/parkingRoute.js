@@ -3062,17 +3062,22 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       }
     } else if (
       req.body.ajiltniiId == "694e260f3f0da03b83ace92b" &&
-      (req.body.ugaalgaHungulult || 
-       req.body.ugaalgaHungulult24 || 
-       (req.body.khungulult && req.body.khungulukhTsag && req.body.zogsoolUndsenUne))
+      (req.body.ugaalgaHungulult ||
+        req.body.ugaalgaHungulult24 ||
+        (req.body.khungulult &&
+          req.body.khungulukhTsag &&
+          req.body.zogsoolUndsenUne))
     ) {
       let ugaalgaHungulult = req.body.ugaalgaHungulult;
       let ugaalgaHungulult24 = req.body.ugaalgaHungulult24;
       let ugaalgaHungulultTsag = req.body.ugaalgaHungulultTsag;
       let ugaalgaHungulultTsag24 = req.body.ugaalgaHungulultTsag24;
 
-      // Handle legacy field names (khungulult, khungulukhTsag)
-      if (req.body.khungulult && req.body.khungulukhTsag && req.body.zogsoolUndsenUne) {
+      if (
+        req.body.khungulult &&
+        req.body.khungulukhTsag &&
+        req.body.zogsoolUndsenUne
+      ) {
         if (req.body.khungulukhTsag === 1) {
           ugaalgaHungulult = req.body.khungulult;
           ugaalgaHungulultTsag = 1;
