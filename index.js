@@ -288,16 +288,16 @@ cron.schedule(
 //   }
 // );
 
-// cron.schedule(
-//   "18 3 * * * ",
-//   function () {
-//     zogsool.archiveUilchluulegch();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "50 4 * * * ",
+  function () {
+    zogsool.archiveUilchluulegch();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 // cron.schedule(
 //   "*/6 * * * * * ",

@@ -185,7 +185,7 @@ module.exports.archiveUilchluulegch =
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
                     if (docs?.length > 0) continue;
-                    // console.log(`📦 docs length: ${docs?.length}`);
+                    console.log(`📦 docs length: ${docs?.length}`);
                     // // --- Archive ---
                     // await Uilchluulegch(kholbolt, false, archiveName).aggregate([
                     //     { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
