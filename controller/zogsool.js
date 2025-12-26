@@ -460,10 +460,10 @@ module.exports.archiveUilchluulegch =
                     if (docs?.length > 0) continue;
                     console.log(`📦 docs length: ${docs?.length}`);
                     // --- Archive ---
-                    await Uilchluulegch(kholbolt).aggregate([
+                    const data = await Uilchluulegch(kholbolt).aggregate([
                         { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
-                        { $out: archiveName }
                     ]);
+                    await Uilchluulegch(kholbolt, false, archiveName).insertMany(data);
                     // --- Delete ---
                     const res = await Uilchluulegch(kholbolt).deleteMany({
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
