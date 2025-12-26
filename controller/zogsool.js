@@ -468,7 +468,7 @@ module.exports.archiveUilchluulegch =
                     const res = await Uilchluulegch(kholbolt).deleteMany({
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
-                    console.log(`🗑️ Deleted ${res?.deletedCount} docs from ebarimtShine`);
+                    console.log(`🗑️ Deleted ${res?.deletedCount} docs from Uilchluulegch`);
                 }
             }
         }
