@@ -458,17 +458,17 @@ module.exports.archiveUilchluulegch =
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
                     if (docs?.length > 0) continue;
-                    console.log(`📦 docs length: ${docs?.length}`);
-                    // --- Archive ---
-                    const data = await Uilchluulegch(kholbolt).aggregate([
-                        { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
-                    ]);
-                    await Uilchluulegch(kholbolt, false, archiveName).insertMany(data);
-                    // --- Delete ---
-                    const res = await Uilchluulegch(kholbolt).deleteMany({
-                        createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-                    });
-                    console.log(`🗑️ Deleted ${res?.deletedCount} docs from ebarimtShine`);
+                    // console.log(`📦 docs length: ${docs?.length}`);
+                    // // --- Archive ---
+                    // const data = await Uilchluulegch(kholbolt).aggregate([
+                    //     { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
+                    // ]);
+                    // await Uilchluulegch(kholbolt, false, archiveName).insertMany(data);
+                    // // --- Delete ---
+                    // const res = await Uilchluulegch(kholbolt).deleteMany({
+                    //     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+                    // });
+                    // console.log(`🗑️ Deleted ${res?.deletedCount} docs from ebarimtShine`);
                 }
             }
         }
