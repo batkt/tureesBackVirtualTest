@@ -350,7 +350,7 @@ router
             guilgee.turul == "Хөнгөлөлт/ 24 цаг" ||
             guilgee.turul == "Хөнгөлөлт/ 2 цаг" ||
             guilgee.turul == "Fitness" ||
-            guilgee.turul?.includes("Угаалга")
+            guilgee.turul?.includes("ugaalga")
               ? 0
               : guilgee.dun;
           tulbur.push({
@@ -3088,7 +3088,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       }
 
       if (ugaalgaHungulult && ugaalgaHungulult24) {
-        throw new Error("Зөвхөн нэг Угаалга хөнгөлөлт сонгох боломжтой!");
+        throw new Error("Зөвхөн нэг ugaalga хөнгөлөлт сонгох боломжтой!");
       }
 
       if (ugaalgaHungulult) {
@@ -3098,7 +3098,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         const expectedDun = req.body.zogsoolUndsenUne * 1;
         if (ugaalgaHungulult !== expectedDun) {
           throw new Error(
-            `Угаалга 1 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult}`
+            `ugaalga 1 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult}`
           );
         }
       }
@@ -3110,7 +3110,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         const expectedDun = req.body.zogsoolUndsenUne * 24;
         if (ugaalgaHungulult24 !== expectedDun) {
           throw new Error(
-            `Угаалга 24 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult24}`
+            `ugaalga 24 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult24}`
           );
         }
       }
@@ -3121,7 +3121,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           tulbur = [
             {
               ognoo: new Date(),
-              turul: "Угаалга/ 1 цаг",
+              turul: "ugaalga/ 1 цаг",
               dun: ugaalgaHungulult,
             },
           ];
@@ -3129,7 +3129,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           tulbur = [
             {
               ognoo: new Date(),
-              turul: "Угаалга/ 1 цаг",
+              turul: "ugaalga/ 1 цаг",
               dun: ugaalgaHungulult,
             },
             {
@@ -3146,7 +3146,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           tulbur = [
             {
               ognoo: new Date(),
-              turul: "Угаалга/ 24 цаг",
+              turul: "ugaalga/ 24 цаг",
               dun: ugaalgaHungulult24,
             },
           ];
@@ -3154,7 +3154,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           tulbur = [
             {
               ognoo: new Date(),
-              turul: "Угаалга/ 24 цаг",
+              turul: "ugaalga/ 24 цаг",
               dun: ugaalgaHungulult24,
             },
             {
@@ -3165,7 +3165,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           ];
         }
       } else {
-        throw new Error("Угаалга хөнгөлөлтийн мэдээлэл буруу байна!");
+        throw new Error("ugaalga хөнгөлөлтийн мэдээлэл буруу байна!");
       }
     } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
       if (req.body.paid_amount == 0) {
@@ -3296,10 +3296,10 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
               throw new Error("Хөнгөлөлт оруулсан байна!");
           } else if (req.body.ajiltniiId == "694e260f3f0da03b83ace92b") {
             const existingUgaalga = tukhainObject.tuukh[0].tulbur.find((x) =>
-              x.turul?.includes("Угаалга")
+              x.turul?.includes("ugaalga")
             );
             if (existingUgaalga) {
-              throw new Error("Угаалга хөнгөлөлт оруулсан байна!");
+              throw new Error("ugaalga хөнгөлөлт оруулсан байна!");
             }
           } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
             if (
