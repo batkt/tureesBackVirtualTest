@@ -3088,7 +3088,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       }
 
       if (ugaalgaHungulult && ugaalgaHungulult24) {
-        throw new Error("Зөвхөн нэг ugaalga хөнгөлөлт сонгох боломжтой!");
+        throw new Error("Зөвхөн нэг угаалга хөнгөлөлт сонгох боломжтой!");
       }
 
       if (ugaalgaHungulult) {
@@ -3098,7 +3098,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         const expectedDun = req.body.zogsoolUndsenUne * 1;
         if (ugaalgaHungulult !== expectedDun) {
           throw new Error(
-            `ugaalga 1 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult}`
+            `Угаалга 1 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult}`
           );
         }
       }
@@ -3110,7 +3110,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         const expectedDun = req.body.zogsoolUndsenUne * 24;
         if (ugaalgaHungulult24 !== expectedDun) {
           throw new Error(
-            `ugaalga 24 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult24}`
+            `Угаалга 24 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult24}`
           );
         }
       }
@@ -3165,7 +3165,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           ];
         }
       } else {
-        throw new Error("ugaalga хөнгөлөлтийн мэдээлэл буруу байна!");
+        throw new Error("Угаалга хөнгөлөлтийн мэдээлэл буруу байна!");
       }
     } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
       if (req.body.paid_amount == 0) {
@@ -3299,7 +3299,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
               x.turul?.includes("ugaalga")
             );
             if (existingUgaalga) {
-              throw new Error("ugaalga хөнгөлөлт оруулсан байна!");
+              throw new Error("Угаалга хөнгөлөлт оруулсан байна!");
             }
           } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
             if (
