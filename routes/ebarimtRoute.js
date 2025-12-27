@@ -1002,11 +1002,6 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
         start.year() !== end.year() || start.month() !== end.month();
 
       if (isMultiMonth) {
-        console.log("📅 Multi-month query detected:", {
-          start: start.format("YYYY-MM"),
-          end: end.format("YYYY-MM"),
-        });
-
         const collectionsToQuery = [];
         let current = start.clone().startOf("month");
 
@@ -1037,11 +1032,6 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
           current.add(1, "month");
         }
 
-        console.log(
-          "📦 Collections to query:",
-          collectionsToQuery.map((c) => c.name || "main")
-        );
-
         const allResults = [];
 
         for (const collection of collectionsToQuery) {
@@ -1067,11 +1057,6 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
               .sort(body.order)
               .lean();
 
-            console.log(
-              `📊 Found ${results.length} records in ${
-                collection.name || "main"
-              }`
-            );
             allResults.push(...results);
           } catch (err) {
             console.error(
@@ -1086,29 +1071,27 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
         const orderDir = body.order?.[orderKey] || -1;
 
         allResults.sort((a, b) => {
-          const aVal = a[orderKey];
-          const bVal = b[orderKey];
+          let aVal = a[orderKey];
+          let bVal = b[orderKey];
 
-          if (aVal instanceof Date && bVal instanceof Date) {
-            return orderDir === -1 ? bVal - aVal : aVal - bVal;
+          if (orderKey === "createdAt" || orderKey === "dateOgnoo") {
+            aVal = new Date(aVal);
+            bVal = new Date(bVal);
           }
 
-          return orderDir === -1
-            ? bVal > aVal
-              ? 1
-              : -1
-            : aVal > bVal
-            ? 1
-            : -1;
+          if (aVal instanceof Date && bVal instanceof Date) {
+            const diff = aVal.getTime() - bVal.getTime();
+            return orderDir === -1 ? -diff : diff;
+          }
+
+          if (aVal < bVal) return orderDir === -1 ? 1 : -1;
+          if (aVal > bVal) return orderDir === -1 ? -1 : 1;
+          return 0;
         });
 
         const startIndex = (body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee;
         const endIndex = startIndex + body.khuudasniiKhemjee;
         const paginatedResults = allResults.slice(startIndex, endIndex);
-
-        console.log(
-          `📄 Returning ${paginatedResults.length} of ${allResults.length} total records`
-        );
 
         return res.send({
           jagsaalt: paginatedResults,
