@@ -979,7 +979,9 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
       body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
     if (!!body?.search) body.search = String(body.search);
     body.query && (body.query["baiguullagiinId"] = req.body.baiguullagiinId);
+
     var shine = false;
+
     if (body?.query?.barilgiinId) {
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
         req.body.baiguullagiinId
@@ -989,14 +991,140 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
       )?.tokhirgoo;
       if (!!tuxainSalbar.eBarimtShine) shine = true;
     }
-    khuudaslalt(
-      shine
-        ? EbarimtShine(req.body.tukhainBaaziinKholbolt)
-        : Ebarimt(req.body.tukhainBaaziinKholbolt),
-      body
-    )
+
+    const createdAt = body.query?.createdAt;
+    if (shine && createdAt && createdAt.$gte && createdAt.$lte) {
+      const start = moment(createdAt.$gte);
+      const end = moment(createdAt.$lte);
+      const now = moment();
+
+      const isMultiMonth =
+        start.year() !== end.year() || start.month() !== end.month();
+
+      if (isMultiMonth) {
+        const collectionsToQuery = [];
+        let current = start.clone().startOf("month");
+
+        while (current.isSameOrBefore(end, "month")) {
+          const isCurrentMonth =
+            current.year() === now.year() && current.month() === now.month();
+
+          if (isCurrentMonth) {
+            collectionsToQuery.push({
+              name: null,
+              startDate: current.clone().startOf("month").toDate(),
+              endDate: current.clone().endOf("month").toDate(),
+              isMain: true,
+            });
+          } else {
+            const y = current.year();
+            const m = String(current.month() + 1).padStart(2, "0");
+            const archiveName = `ebarimtShine${y}${m}`;
+
+            collectionsToQuery.push({
+              name: archiveName,
+              startDate: current.clone().startOf("month").toDate(),
+              endDate: current.clone().endOf("month").toDate(),
+              isMain: false,
+            });
+          }
+
+          current.add(1, "month");
+        }
+
+        const allResults = [];
+
+        for (const collection of collectionsToQuery) {
+          try {
+            const collectionQuery = { ...body.query };
+            collectionQuery.createdAt = {
+              $gte:
+                collection.startDate > new Date(createdAt.$gte)
+                  ? collection.startDate
+                  : new Date(createdAt.$gte),
+              $lte:
+                collection.endDate < new Date(createdAt.$lte)
+                  ? collection.endDate
+                  : new Date(createdAt.$lte),
+            };
+
+            const model = collection.isMain
+              ? EbarimtShine(req.body.tukhainBaaziinKholbolt)
+              : EbarimtShine(req.body.tukhainBaaziinKholbolt, collection.name);
+
+            const results = await model
+              .find(collectionQuery)
+              .sort(body.order)
+              .lean();
+
+            allResults.push(...results);
+          } catch (err) {
+            console.error(
+              `Error querying ${collection.name || "main"}:`,
+              err.message
+            );
+          }
+        }
+
+        const orderKey =
+          Object.keys(body.order || { createdAt: -1 })[0] || "createdAt";
+        const orderDir = body.order?.[orderKey] || -1;
+
+        allResults.sort((a, b) => {
+          let aVal = a[orderKey];
+          let bVal = b[orderKey];
+
+          if (orderKey === "createdAt" || orderKey === "dateOgnoo") {
+            aVal = new Date(aVal);
+            bVal = new Date(bVal);
+          }
+
+          if (aVal instanceof Date && bVal instanceof Date) {
+            const diff = aVal.getTime() - bVal.getTime();
+            return orderDir === -1 ? -diff : diff;
+          }
+
+          if (aVal < bVal) return orderDir === -1 ? 1 : -1;
+          if (aVal > bVal) return orderDir === -1 ? -1 : 1;
+          return 0;
+        });
+
+        const startIndex = (body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee;
+        const endIndex = startIndex + body.khuudasniiKhemjee;
+        const paginatedResults = allResults.slice(startIndex, endIndex);
+
+        return res.send({
+          jagsaalt: paginatedResults,
+          niitMur: allResults.length,
+          khuudasniiDugaar: body.khuudasniiDugaar,
+          khuudasniiKhemjee: body.khuudasniiKhemjee,
+          archiveName: "multi-month",
+          collections: collectionsToQuery.map((c) => c.name || "main"),
+        });
+      }
+    }
+
+    var archiveName = null;
+    if (body?.query?.archiveName) {
+      archiveName = body.query.archiveName;
+      delete body.query.archiveName;
+    }
+
+    let model;
+    if (shine) {
+      model = archiveName
+        ? EbarimtShine(req.body.tukhainBaaziinKholbolt, archiveName)
+        : EbarimtShine(req.body.tukhainBaaziinKholbolt);
+    } else {
+      model = Ebarimt(req.body.tukhainBaaziinKholbolt);
+    }
+
+    khuudaslalt(model, body)
       .then((result) => {
-        res.send(result);
+        res.send({
+          ...result,
+          archiveName: archiveName,
+        });
       })
       .catch((err) => {
         next(err);
@@ -1005,6 +1133,7 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
     next(error);
   }
 });
+
 router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
   try {
     var ebarimtShine = false;
