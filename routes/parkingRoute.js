@@ -1074,7 +1074,8 @@ router.post(
           udriinTailan.push(zurchiltei[0]);
         if (!!unegui && unegui.length > 0) udriinTailan.push(unegui[0]);
         if (zurchilteTailan?.length > 0) udriinTailan.push(zurchilteTailan[0]);
-        if (tulburiinZurchiltei?.length > 0) udriinTailan.push(tulburiinZurchiltei[0]);
+        if (tulburiinZurchiltei?.length > 0)
+          udriinTailan.push(tulburiinZurchiltei[0]);
       }
       res.status(200).send(udriinTailan);
     } catch (error) {
@@ -3102,7 +3103,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         ];
       }
     } else if (
-      req.body.ajiltniiId == "694e260f3f0da03b83ace92b" &&
+      req.body.ajiltniiId == "694e6d2d5b0e44bb0cca2945" &&
       (req.body.ugaalgaHungulult ||
         req.body.ugaalgaHungulult24 ||
         (req.body.khungulult &&
