@@ -490,7 +490,6 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
         for (const kholbolt of kholboltuud) {
           const zurchilteiUilchluulegch = await Uilchluulegch(kholbolt).find({
             baiguullagiinId: kholbolt?.baiguullagiinId,
-            'tuukh.tulbur': [],
             'tuukh.tsagiinTuukh.garsanTsag': { $exists: true },
             'tuukh.garsanKhaalga': { $exists: true },
             niitDun: { $gt: 0 },
@@ -504,6 +503,8 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
           var bulkOps = [];
           if (zurchilteiUilchluulegch?.length > 0) {
             for (const zurchiltei of zurchilteiUilchluulegch) {
+              var dun = zurchiltei?.tuukh[0]?.tulbur?.length > 0 ? zurchiltei?.tuukh[0]?.tulbur.reduce((a, b) => a + b.dun || 0, 0) : 0;
+              if(zurchiltei.niitDun === dun) continue;
               let upsertDoc = {
                 updateOne: {
                   filter: { _id: zurchiltei._id },
