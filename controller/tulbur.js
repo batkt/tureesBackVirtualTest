@@ -805,6 +805,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         if (
           !barilga.tokhirgoo ||
           !barilga.tokhirgoo.aldangiinKhuvi ||
+          barilga.tokhirgoo.aldangiinKhuvi === 0 ||
           !barilga.tokhirgoo.aldangiBodojEkhlekhOgnoo ||
           barilga.tokhirgoo.aldangiBodojEkhlekhOgnoo > new Date()
         )
