@@ -962,6 +962,46 @@ router.post(
         },
       ]);
 
+      var tulburiinZurchiltei = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        true
+      ).aggregate([
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: !!req.body.barilgiinId
+              ? req.body.barilgiinId
+              : { $exists: true },
+          },
+        },
+        {
+          $unwind: "$tuukh",
+        },
+        {
+          $match: {
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            },
+            "tuukh.tuluv": -4,
+          },
+        },
+        {
+          $group: {
+            _id: "Төлбөрийн зөрчилтэй",
+            niitDun: { $sum: "$niitDun" },
+            ids: { $addToSet: "$_id" },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            niitDun: 1,
+            niitToo: { $size: "$ids" },
+          },
+        },
+      ]);
+
       var unegui = await Uilchluulegch(
         req.body.tukhainBaaziinKholbolt,
         true
@@ -1034,6 +1074,7 @@ router.post(
           udriinTailan.push(zurchiltei[0]);
         if (!!unegui && unegui.length > 0) udriinTailan.push(unegui[0]);
         if (zurchilteTailan?.length > 0) udriinTailan.push(zurchilteTailan[0]);
+        if (tulburiinZurchiltei?.length > 0) udriinTailan.push(tulburiinZurchiltei[0]);
       }
       res.status(200).send(udriinTailan);
     } catch (error) {
