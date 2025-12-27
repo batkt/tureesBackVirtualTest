@@ -277,6 +277,17 @@ cron.schedule(
   }
 );
 
+cron.schedule(
+  "35 9 * * * ",
+  function () {
+    zogsool.zurchilteiTuvulBoluulakh("612f457d185280db676d0b51");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
 // cron.schedule(
 //   "40 6 * * * ",
 //   function () {

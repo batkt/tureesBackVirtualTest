@@ -476,3 +476,47 @@ module.exports.archiveUilchluulegch =
         console.error("Error archiving archiveUilchluulegch:", error);
     }
 };
+
+exports.zurchilteiTuvulBoluulakh = asyncHandler(
+  async (baiguullagiinId = null) => {
+    try 
+    {
+      const { db } = require("zevbackv2");
+      var kholboltuud = db.kholboltuud;
+      if (!!baiguullagiinId)
+        kholboltuud = [ kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId), ];
+      if (kholboltuud) {
+        for (const kholbolt of kholboltuud) {
+          const zurchilteiUilchluulegch = await Uilchluulegch(kholbolt).find({
+            baiguullagiinId: kholbolt?.baiguullagiinId,
+            'tuukh.tulbur': [],
+            'tuukh.tsagiinTuukh.garsanTsag': { $exists: true },
+            'tuukh.garsanKhaalga': { $exists: true },
+            niitDun: { $gt: 0 },
+            turul: { $exists: false },
+            "tuukh.0.tuluv": 0,
+            createdAt: {
+              $lt: moment().startOf('day').toDate(),
+            },
+          });
+          console.log(`Zurchiltei uilchluulegch found: ${zurchilteiUilchluulegch?.length} for kholbolt: ${kholbolt?.baiguullagiinId}`);
+          var bulkOps = [];
+          if (zurchilteiUilchluulegch?.length > 0) {
+            for (const zurchiltei of zurchilteiUilchluulegch) {
+              let upsertDoc = {
+                updateOne: {
+                  filter: { _id: zurchiltei._id },
+                  update: {"tuukh.0.tuluv": -4 },
+                },
+              };
+              bulkOps.push(upsertDoc);
+            }
+            await Uilchluulegch(kholbolt).bulkWrite(bulkOps).then((bulkWriteOpResult) => {}).catch((err) => {});
+          }
+        } 
+      }  
+      res.send(bulkOps);      
+    } catch (error) {
+        console.error("Error zurchilteiTuvulBoluulakh:", error);
+    }
+});
