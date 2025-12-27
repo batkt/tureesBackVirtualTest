@@ -998,12 +998,16 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
       delete body.query.archiveName;
     }
 
-    khuudaslalt(
-      shine
+    let model;
+    if (shine) {
+      model = archiveName
         ? EbarimtShine(req.body.tukhainBaaziinKholbolt, archiveName)
-        : Ebarimt(req.body.tukhainBaaziinKholbolt),
-      body
-    )
+        : EbarimtShine(req.body.tukhainBaaziinKholbolt);
+    } else {
+      model = Ebarimt(req.body.tukhainBaaziinKholbolt);
+    }
+
+    khuudaslalt(model, body)
       .then((result) => {
         res.send({
           ...result,
@@ -1017,6 +1021,7 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
     next(error);
   }
 });
+
 router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
   try {
     var ebarimtShine = false;
