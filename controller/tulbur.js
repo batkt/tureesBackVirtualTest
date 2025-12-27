@@ -788,7 +788,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
       var ObjectId = require("mongodb").ObjectId;
       query["_id"] = new ObjectId(baiguullagiinId);
     }
-
+    console.log(`baiguullagiinId Processing baiguullaga: ${baiguullagiinId}`);
     const baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt)
       .find(query)
       .lean();
