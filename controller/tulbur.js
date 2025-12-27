@@ -802,6 +802,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
       const aldangiinTuukh = [];
 
       for await (const barilga of baiguullaga.barilguud) {
+        console.log(`Processing baiguullaga: ${baiguullaga.ner}, barilga: ${barilga.ner}`);
         if (
           !barilga.tokhirgoo ||
           !barilga.tokhirgoo.aldangiinKhuvi ||
@@ -810,8 +811,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           barilga.tokhirgoo.aldangiBodojEkhlekhOgnoo > new Date()
         )
           continue;
-
-        let aldagiinKhuvi = barilga.tokhirgoo.aldangiinKhuvi || 0.5;
+        console.log(`test === > Processing baiguullaga: ${baiguullaga.ner}, barilga: ${barilga.ner}, with aldangiinKhuvi: ${barilga.tokhirgoo.aldangiinKhuvi}`);
+        let aldagiinKhuvi = barilga.tokhirgoo.aldangiinKhuvi || 0;
         let aldangiChuluulukhKhonog =
           barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
         let aldangiBodojEkhlekhOgnoo = barilga?.tokhirgoo?.aldangiOgnoo
@@ -856,7 +857,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 baiguullagiinId: baiguullaga._id.toString(),
                 barilgiinId: barilga._id.toString(),
                 tuluv: { $nin: [-1] },
-                aldangiTsartsaakhEsekh: { $exists: false }
+                aldangiTsartsaakhEsekh: { $exists: false },
+                gereenniiDugaar: "ТГ/F3/C01"
               },
             },
             { $unwind: "$avlaga.guilgeenuud" },
