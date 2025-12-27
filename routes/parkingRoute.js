@@ -55,6 +55,200 @@ crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
 crud(router, "mashin", Mashin, UstsanBarimt);
 crud(router, "blockMashin", BlockMashin, UstsanBarimt);
+
+router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
+  try {
+    const body = req.query;
+    if (!!body?.query) body.query = JSON.parse(body.query);
+    if (!!body?.order) body.order = JSON.parse(body.order);
+    if (!!body?.khuudasniiDugaar)
+      body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+    if (!!body?.khuudasniiKhemjee)
+      body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+    if (!!body?.search) body.search = String(body.search);
+    body.query && (body.query["baiguullagiinId"] = req.body.baiguullagiinId);
+
+    console.log("📋 zogsoolUilchluulegch route called");
+
+    var archiveName = null;
+    if (body?.query?.archiveName) {
+      archiveName = body.query.archiveName;
+      delete body.query.archiveName;
+      console.log("📦 Using archive:", archiveName);
+    }
+
+    const createdAt = body.query?.createdAt;
+    if (createdAt && createdAt.$gte && createdAt.$lte) {
+      const start = moment(createdAt.$gte);
+      const end = moment(createdAt.$lte);
+      const now = moment();
+
+      const isMultiMonth =
+        start.year() !== end.year() || start.month() !== end.month();
+
+      if (isMultiMonth) {
+        console.log("🗓️ Multi-month query detected");
+        const collectionsToQuery = [];
+        let current = start.clone().startOf("month");
+
+        while (current.isSameOrBefore(end, "month")) {
+          const isCurrentMonth =
+            current.year() === now.year() && current.month() === now.month();
+
+          if (isCurrentMonth) {
+            collectionsToQuery.push({
+              name: null,
+              startDate: current.clone().startOf("month").toDate(),
+              endDate: current.clone().endOf("month").toDate(),
+              isMain: true,
+            });
+          } else {
+            const y = current.year();
+            const m = String(current.month() + 1).padStart(2, "0");
+            const archiveName = `uilchluulegch${y}${m}`;
+
+            collectionsToQuery.push({
+              name: archiveName,
+              startDate: current.clone().startOf("month").toDate(),
+              endDate: current.clone().endOf("month").toDate(),
+              isMain: false,
+            });
+          }
+
+          current.add(1, "month");
+        }
+
+        const allResults = [];
+
+        for (const collection of collectionsToQuery) {
+          try {
+            const collectionQuery = { ...body.query };
+            collectionQuery.createdAt = {
+              $gte:
+                collection.startDate > new Date(createdAt.$gte)
+                  ? collection.startDate
+                  : new Date(createdAt.$gte),
+              $lte:
+                collection.endDate < new Date(createdAt.$lte)
+                  ? collection.endDate
+                  : new Date(createdAt.$lte),
+            };
+
+            const model = collection.isMain
+              ? Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+              : Uilchluulegch(req.body.tukhainBaaziinKholbolt, collection.name);
+
+            const results = await model
+              .find(collectionQuery)
+              .sort(body.order)
+              .lean();
+
+            allResults.push(...results);
+          } catch (err) {
+            console.error(
+              `Error querying ${collection.name || "main"}:`,
+              err.message
+            );
+          }
+        }
+
+        const orderKey =
+          Object.keys(body.order || { createdAt: -1 })[0] || "createdAt";
+        const orderDir = body.order?.[orderKey] || -1;
+
+        allResults.sort((a, b) => {
+          let aVal = a[orderKey];
+          let bVal = b[orderKey];
+
+          if (orderKey === "createdAt") {
+            aVal = new Date(aVal);
+            bVal = new Date(bVal);
+          }
+
+          if (aVal instanceof Date && bVal instanceof Date) {
+            const diff = aVal.getTime() - bVal.getTime();
+            return orderDir === -1 ? -diff : diff;
+          }
+
+          if (aVal < bVal) return orderDir === -1 ? 1 : -1;
+          if (aVal > bVal) return orderDir === -1 ? -1 : 1;
+          return 0;
+        });
+
+        const startIndex = (body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee;
+        const endIndex = startIndex + body.khuudasniiKhemjee;
+        const paginatedResults = allResults.slice(startIndex, endIndex);
+
+        return res.send({
+          jagsaalt: paginatedResults,
+          niitMur: allResults.length,
+          khuudasniiDugaar: body.khuudasniiDugaar,
+          khuudasniiKhemjee: body.khuudasniiKhemjee,
+          archiveName: "multi-month",
+          collections: collectionsToQuery.map((c) => c.name || "main"),
+        });
+      }
+    }
+
+    const model = archiveName
+      ? Uilchluulegch(req.body.tukhainBaaziinKholbolt, archiveName)
+      : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+
+    khuudaslalt(model, body)
+      .then((result) => {
+        res.send({
+          ...result,
+          archiveName: archiveName,
+        });
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.use("/zogsoolUilchluulegch", (req, res, next) => {
+  try {
+    if (req.method !== "GET" || !req?.query?.query) return next();
+    const query = JSON.parse(req.query.query);
+    const ajiltanFilter = query["tuukh.burtgesenAjiltaniiId"];
+    if (!ajiltanFilter) return next();
+
+    const addTseneglelt = (arr) => {
+      if (!arr.includes("tseneglelt")) arr.push("tseneglelt");
+      return arr;
+    };
+
+    if (typeof ajiltanFilter === "string") {
+      query["tuukh.burtgesenAjiltaniiId"] = {
+        $in: addTseneglelt([ajiltanFilter]),
+      };
+    } else if (
+      typeof ajiltanFilter === "object" &&
+      !Array.isArray(ajiltanFilter)
+    ) {
+      const existing =
+        Array.isArray(ajiltanFilter.$in) && ajiltanFilter.$in.length > 0
+          ? ajiltanFilter.$in
+          : ajiltanFilter.$eq
+          ? [ajiltanFilter.$eq]
+          : [];
+      if (existing.length > 0) {
+        query["tuukh.burtgesenAjiltaniiId"] = {
+          $in: addTseneglelt(existing),
+        };
+      }
+    }
+
+    req.query.query = JSON.stringify(query);
+  } catch (err) {
+    // parsing алдаа гарвал анхны логикоор үргэлжлүүлнэ
+  }
+  next();
+});
+
 // Ажилтнаар шүүсэн ч цэнэглэлт (автомат) үлдэхээр шүүлтүүрийг өргөтгөнө.
 router.use("/zogsoolUilchluulegch", (req, res, next) => {
   try {
@@ -95,10 +289,12 @@ router.use("/zogsoolUilchluulegch", (req, res, next) => {
   }
   next();
 });
-crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
+
+// crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
 // crud(router, "zogsoolUilchluulegch", (conn) => Uilchluulegch(conn, true), UstsanBarimt);
 crud(router, "uilchluulegch", Uilchluulegch, UstsanBarimt);
 crud(router, "kassCameraKhaalt", KassCameraKhaalt, UstsanBarimt);
+
 /*
 crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
 });
@@ -143,10 +339,136 @@ router.get("/zogsoolJagsaalt", tokenShalgakh, async (req, res, next) => {
     if (!!body?.khuudasniiKhemjee)
       body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
     if (!!body?.search) body.search = String(body.search);
+    body.query && (body.query["baiguullagiinId"] = req.body.baiguullagiinId);
 
-    khuudaslalt(Parking(req.body.tukhainBaaziinKholbolt), body)
+    var archiveName = null;
+    if (body?.query?.archiveName) {
+      archiveName = body.query.archiveName;
+      delete body.query.archiveName;
+    }
+
+    const createdAt = body.query?.createdAt;
+    if (createdAt && createdAt.$gte && createdAt.$lte) {
+      const start = moment(createdAt.$gte);
+      const end = moment(createdAt.$lte);
+      const now = moment();
+
+      const isMultiMonth =
+        start.year() !== end.year() || start.month() !== end.month();
+
+      if (isMultiMonth) {
+        const collectionsToQuery = [];
+        let current = start.clone().startOf("month");
+
+        while (current.isSameOrBefore(end, "month")) {
+          const isCurrentMonth =
+            current.year() === now.year() && current.month() === now.month();
+
+          if (isCurrentMonth) {
+            collectionsToQuery.push({
+              name: null,
+              startDate: current.clone().startOf("month").toDate(),
+              endDate: current.clone().endOf("month").toDate(),
+              isMain: true,
+            });
+          } else {
+            const y = current.year();
+            const m = String(current.month() + 1).padStart(2, "0");
+            const archiveName = `uilchluulegch${y}${m}`;
+
+            collectionsToQuery.push({
+              name: archiveName,
+              startDate: current.clone().startOf("month").toDate(),
+              endDate: current.clone().endOf("month").toDate(),
+              isMain: false,
+            });
+          }
+
+          current.add(1, "month");
+        }
+
+        const allResults = [];
+
+        for (const collection of collectionsToQuery) {
+          try {
+            const collectionQuery = { ...body.query };
+            collectionQuery.createdAt = {
+              $gte:
+                collection.startDate > new Date(createdAt.$gte)
+                  ? collection.startDate
+                  : new Date(createdAt.$gte),
+              $lte:
+                collection.endDate < new Date(createdAt.$lte)
+                  ? collection.endDate
+                  : new Date(createdAt.$lte),
+            };
+
+            const model = collection.isMain
+              ? Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+              : Uilchluulegch(req.body.tukhainBaaziinKholbolt, collection.name);
+
+            const results = await model
+              .find(collectionQuery)
+              .sort(body.order)
+              .lean();
+
+            allResults.push(...results);
+          } catch (err) {
+            console.error(
+              `Error querying ${collection.name || "main"}:`,
+              err.message
+            );
+          }
+        }
+
+        const orderKey =
+          Object.keys(body.order || { createdAt: -1 })[0] || "createdAt";
+        const orderDir = body.order?.[orderKey] || -1;
+
+        allResults.sort((a, b) => {
+          let aVal = a[orderKey];
+          let bVal = b[orderKey];
+
+          if (orderKey === "createdAt") {
+            aVal = new Date(aVal);
+            bVal = new Date(bVal);
+          }
+
+          if (aVal instanceof Date && bVal instanceof Date) {
+            const diff = aVal.getTime() - bVal.getTime();
+            return orderDir === -1 ? -diff : diff;
+          }
+
+          if (aVal < bVal) return orderDir === -1 ? 1 : -1;
+          if (aVal > bVal) return orderDir === -1 ? -1 : 1;
+          return 0;
+        });
+
+        const startIndex = (body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee;
+        const endIndex = startIndex + body.khuudasniiKhemjee;
+        const paginatedResults = allResults.slice(startIndex, endIndex);
+
+        return res.send({
+          jagsaalt: paginatedResults,
+          niitMur: allResults.length,
+          khuudasniiDugaar: body.khuudasniiDugaar,
+          khuudasniiKhemjee: body.khuudasniiKhemjee,
+          archiveName: "multi-month",
+          collections: collectionsToQuery.map((c) => c.name || "main"),
+        });
+      }
+    }
+
+    let model = archiveName
+      ? Uilchluulegch(req.body.tukhainBaaziinKholbolt, archiveName)
+      : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+
+    khuudaslalt(model, body)
       .then((result) => {
-        res.send(result);
+        res.send({
+          ...result,
+          archiveName: archiveName,
+        });
       })
       .catch((err) => {
         next(err);
