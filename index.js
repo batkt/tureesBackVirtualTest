@@ -278,7 +278,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "01 12 * * * ",
+  "10 12 * * * ",
   function () {
     zogsool.zurchilteiTuvulBoluulakh();
   },
