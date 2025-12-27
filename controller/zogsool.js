@@ -515,8 +515,7 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
             await Uilchluulegch(kholbolt).bulkWrite(bulkOps).then((bulkWriteOpResult) => {}).catch((err) => {});
           }
         } 
-      }  
-      res.send(bulkOps);      
+      }   
     } catch (error) {
         console.error("Error zurchilteiTuvulBoluulakh:", error);
     }
