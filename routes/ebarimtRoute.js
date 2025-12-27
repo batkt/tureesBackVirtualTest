@@ -979,7 +979,10 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
       body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
     if (!!body?.search) body.search = String(body.search);
     body.query && (body.query["baiguullagiinId"] = req.body.baiguullagiinId);
+
     var shine = false;
+    var archiveName = null;
+
     if (body?.query?.barilgiinId) {
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
         req.body.baiguullagiinId
@@ -989,14 +992,23 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
       )?.tokhirgoo;
       if (!!tuxainSalbar.eBarimtShine) shine = true;
     }
+
+    if (body?.query?.archiveName) {
+      archiveName = body.query.archiveName;
+      delete body.query.archiveName;
+    }
+
     khuudaslalt(
       shine
-        ? EbarimtShine(req.body.tukhainBaaziinKholbolt)
+        ? EbarimtShine(req.body.tukhainBaaziinKholbolt, archiveName)
         : Ebarimt(req.body.tukhainBaaziinKholbolt),
       body
     )
       .then((result) => {
-        res.send(result);
+        res.send({
+          ...result,
+          archiveName: archiveName,
+        });
       })
       .catch((err) => {
         next(err);
