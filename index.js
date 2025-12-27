@@ -277,19 +277,19 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "10 6 * * * ",
-//   function () {
-//     zogsool.zurchilteiTuvulBoluulakh();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "50 6 * * * ",
+  function () {
+    zogsool.zurchilteiTuvulBoluulakh();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 cron.schedule(
-  "0 6 * * * ",
+  "30 3 5 * * ",
   function () {
     ebarimt.archiveEbarimt();
   },
