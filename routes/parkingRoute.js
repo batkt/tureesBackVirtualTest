@@ -2605,6 +2605,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
         // if (!!baiguullaga)
         //   ebarimtAshiglakhEsekh = baiguullaga?.tokhirgoo?.ebarimtAshiglakhEsekh;
         // if (!!ebarimtAshiglakhEsekh) {
+        console.log("Baiguullaga:", JSON.stringify(baiguullaga));
         var tuxainSalbar = baiguullaga?.barilguud?.find(
           (e) => e._id.toString() == tukhainObject.barilgiinId
         )?.tokhirgoo;
@@ -2612,7 +2613,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
           (x) => x._id.toString() == tukhainObject.barilgiinId
         )?.tokhirgoo?.nuatTulukhEsekh;
         if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-        if (!!tuxainSalbar?.eBarimtShine) {
+        if (tuxainSalbar?.eBarimtShine === true) {
           console.log("tuxainSalbar ebarimt true", tuxainSalbar?.eBarimtShine);
           var ebarimt = await zogsooloosEbarimtShineUusgye(
             tukhainObject,
