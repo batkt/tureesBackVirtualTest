@@ -2407,6 +2407,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
         dun: req.body.paid_amount,
       },
     ];
+    console.log("tulbur", JSON.stringify(tulbur));
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     var message = "Amjilttai";
@@ -2532,7 +2533,8 @@ router.route("/v1/pay").post(async (req, res, next) => {
             new Date(Date.now() - 600000)
         )
           //10 * 60 * 1000
-          req.body.manually_open = true;
+        req.body.manually_open = true;
+        console.log("set --->", JSON.stringify(set));
         await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
           tukhainObject._id,
           {
@@ -2611,6 +2613,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
         )?.tokhirgoo?.nuatTulukhEsekh;
         if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
         if (!!tuxainSalbar?.eBarimtShine) {
+          console.log("tuxainSalbar ebarimt true", tuxainSalbar?.eBarimtShine);
           var ebarimt = await zogsooloosEbarimtShineUusgye(
             tukhainObject,
             req.body.customerNo,
@@ -2678,6 +2681,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
             tuxainSalbar.eBarimtShine
           );
         } else {
+          console.log("tuxainSalbar ebarimt false");
           butsaakhKhariu.success = true;
           butsaakhKhariu.message = "ИБаримт dll холболт хийгдээгүй байна!";
           res.send(butsaakhKhariu);
