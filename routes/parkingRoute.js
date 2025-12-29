@@ -2605,7 +2605,9 @@ router.route("/v1/pay").post(async (req, res, next) => {
         // if (!!baiguullaga)
         //   ebarimtAshiglakhEsekh = baiguullaga?.tokhirgoo?.ebarimtAshiglakhEsekh;
         // if (!!ebarimtAshiglakhEsekh) {
-        console.log("Baiguullaga:", JSON.stringify(baiguullaga));
+        console.log("Baiguullaga:", JSON.stringify(baiguullaga?.ner));
+        console.log("Baiguullaga:", JSON.stringify(baiguullaga?.register));
+        console.log("Baiguullaga:", JSON.stringify(baiguullaga?._id));
         var tuxainSalbar = baiguullaga?.barilguud?.find(
           (e) => e._id.toString() == tukhainObject.barilgiinId
         )?.tokhirgoo;
