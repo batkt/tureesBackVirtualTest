@@ -2535,6 +2535,8 @@ router.route("/v1/pay").post(async (req, res, next) => {
           //10 * 60 * 1000
         req.body.manually_open = true;
         console.log("set --->", JSON.stringify(set));
+        console.log("_id --->", JSON.stringify(tukhainObject?._id));
+        console.log("plate_number --->", JSON.stringify(req.body.plate_number));
         await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
           tukhainObject._id,
           {
