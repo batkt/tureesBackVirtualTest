@@ -215,21 +215,8 @@ crud(router, "blockMashin", BlockMashin, UstsanBarimt);
 //     next(error);
 //   }
 // });
+crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
 
-crud(
-  router,
-  "zogsoolUilchluulegch",
-  Uilchluulegch,
-  UstsanBarimt,
-  async (req, res, next) => {
-    try {
-      console.log("Zogsool Uilchluulegch crud middleware called");
-      next();
-    } catch (error) {
-      next(error);
-    }
-  }
-);
 // crud(router, "zogsoolUilchluulegch", (conn) => Uilchluulegch(conn, true), UstsanBarimt);
 crud(router, "uilchluulegch", Uilchluulegch, UstsanBarimt);
 crud(router, "kassCameraKhaalt", KassCameraKhaalt, UstsanBarimt);
