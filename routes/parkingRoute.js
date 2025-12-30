@@ -2407,7 +2407,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
         dun: req.body.paid_amount,
       },
     ];
-    console.log("tulbur", JSON.stringify(tulbur));
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     var message = "Amjilttai";
@@ -2534,9 +2533,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
         )
           //10 * 60 * 1000
         req.body.manually_open = true;
-        console.log("set --->", JSON.stringify(set));
-        console.log("_id --->", JSON.stringify(tukhainObject?._id));
-        console.log("plate_number --->", JSON.stringify(req.body.plate_number));
         await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
           tukhainObject._id,
           {
@@ -2607,9 +2603,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
         // if (!!baiguullaga)
         //   ebarimtAshiglakhEsekh = baiguullaga?.tokhirgoo?.ebarimtAshiglakhEsekh;
         // if (!!ebarimtAshiglakhEsekh) {
-        console.log("Baiguullaga:", JSON.stringify(baiguullaga?.ner));
-        console.log("Baiguullaga:", JSON.stringify(baiguullaga?.register));
-        console.log("Baiguullaga:", JSON.stringify(baiguullaga?._id));
         var tuxainSalbar = baiguullaga?.barilguud?.find(
           (e) => e._id.toString() == tukhainObject.barilgiinId
         )?.tokhirgoo;
@@ -2618,7 +2611,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
         )?.tokhirgoo?.nuatTulukhEsekh;
         if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
         if (tuxainSalbar?.eBarimtShine === true) {
-          console.log("tuxainSalbar ebarimt true", tuxainSalbar?.eBarimtShine);
           var ebarimt = await zogsooloosEbarimtShineUusgye(
             tukhainObject,
             req.body.customerNo,
@@ -2686,7 +2678,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
             tuxainSalbar.eBarimtShine
           );
         } else {
-          console.log("tuxainSalbar ebarimt false");
           butsaakhKhariu.success = true;
           butsaakhKhariu.message = "ИБаримт dll холболт хийгдээгүй байна!";
           res.send(butsaakhKhariu);
