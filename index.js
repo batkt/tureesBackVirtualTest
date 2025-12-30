@@ -299,16 +299,16 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "18 6 * * * ",
-//   function () {
-//     zogsool.archiveUilchluulegch();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "55 12 * * * ",
+  function () {
+    zogsool.archiveUilchluulegch();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 // cron.schedule(
 //   "*/6 * * * * * ",
