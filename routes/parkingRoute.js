@@ -4235,6 +4235,7 @@ router.post(
 
 router.post("/zogsoolUilchluulegchFast", tokenShalgakh, async (req, res, next) => {
   try {
+    console.log("zogsoolUilchluulegchFast ----> req.body", req.body);
     const {
       baiguullagiinId,
       barilgiinId,
