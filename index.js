@@ -255,16 +255,16 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "*/5 * * * * * ",
-//   function () {
-//     cgw.dotorZogsoolDavhkardsanMashin(null, null, null);
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "*/5 * * * * * ",
+  function () {
+    cgw.dotorZogsoolDavhkardsanMashin(null, null, null);
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 cron.schedule(
   "*/8 * * * * * ",
