@@ -300,7 +300,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "05 1 * * * ",
+  "08 1 * * * ",
   function () {
     zogsool.archiveUilchluulegch();
   },
