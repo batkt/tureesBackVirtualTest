@@ -1575,6 +1575,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   },
                 ];
                 var max = await BankniiGuilgee(kholbolt, true).aggregate(query);
+                console.log("Khan oirkhon tatakh:", dans.dugaar, max);
                 var bodyKhuulga = {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
