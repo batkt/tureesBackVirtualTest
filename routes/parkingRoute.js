@@ -4267,7 +4267,8 @@ router.post("/zogsoolUilchluulegchFast", tokenShalgakh, async (req, res, next) =
       barilgiinId,
       $or: orFilter.length > 0 ? orFilter : [{}],
     });
-
+    console.log("zogsoolUilchluulegchFast ----> total", total);
+    console.log("zogsoolUilchluulegchFast ----> result length", result?.length);
     res.json({ data: result, total });
   } catch (err) {
     if (next) next(err);
