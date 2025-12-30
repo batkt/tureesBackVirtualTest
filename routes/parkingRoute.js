@@ -4233,4 +4233,45 @@ router.post(
   }
 );
 
+router.post("/zogsoolUilchluulegchFast", tokenShalgakh, async (req, res, next) => {
+  try {
+    const {
+      baiguullagiinId,
+      barilgiinId,
+      matchWithGate,
+      matchWithoutGate,
+      khuudasniiDugaar = 1,
+      khuudasniiKhemjee = 10,
+      order = { "tuukh.0.tsagiinTuukh.garsanTsag": -1 },
+    } = req.body;
+
+    // $or filter-г нэгтгэх
+    const orFilter = [];
+    if (matchWithGate) orFilter.push(matchWithGate);
+    if (matchWithoutGate) orFilter.push(matchWithoutGate);
+
+    // MongoDB query
+    const result = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).find({
+      baiguullagiinId,
+      barilgiinId,
+      $or: orFilter.length > 0 ? orFilter : [{}],
+    })
+      .sort(order)
+      .skip((khuudasniiDugaar - 1) * khuudasniiKhemjee)
+      .limit(khuudasniiKhemjee);
+
+    // Хүссэн тоогоор count авах
+    const total = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).countDocuments({
+      baiguullagiinId,
+      barilgiinId,
+      $or: orFilter.length > 0 ? orFilter : [{}],
+    });
+
+    res.json({ data: result, total });
+  } catch (err) {
+    if (next) next(err);
+    res.status(500).json({ error: "Алдаа гарлаа" });
+  }
+});
+
 module.exports = router;
