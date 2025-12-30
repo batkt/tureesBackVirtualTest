@@ -380,8 +380,14 @@ router
       }
       if (kholboltuud) {
         for await (const kholbolt of kholboltuud) {
-          if(kholbolt?.baiguullagiinId !== "6800b91480a007fe5ab34436") continue;
+          // if(kholbolt?.baiguullagiinId !== "6800b91480a007fe5ab34436") continue;
           var guilgeenuud = await BankniiGuilgee(kholbolt, true).aggregate([
+            {
+              $match: {
+                kholbosonGereeniiId: { $size: 0 },
+                kholbosonTalbainId: { $size: 0 }
+              }
+            },
             {
               $group: {
                 _id: "$indexTalbar",
