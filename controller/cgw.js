@@ -598,23 +598,15 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
             $match: {
               dansniiDugaar: dans.dugaar,
               baiguullagiinId: dans.baiguullagiinId,
-              NtryRef: { $exists: true, $ne: "", $ne: null },
+              NtryRef: { $exists: true, $nin: ["", null] },
             },
           },
+          { $sort: { NtryRef: -1 } },
           {
             $group: {
               _id: "$dansniiDugaar",
-              max: {
-                $max: {
-                  $convert: {
-                    input: "$NtryRef",
-                    to: "double",
-                    onError: 0,
-                    onNull: 0,
-                  },
-                },
-              },
-            },
+              max: { $first: "$NtryRef" },
+            }
           },
         ];
         var max = await BankniiGuilgee(
@@ -629,25 +621,20 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           {
             $match: {
               turul: "tdbKhuselt",
-              dugaar: { $exists: true, $ne: "", $ne: null },
-            },
+              dugaar: { $exists: true, $nin: ["", null] }
+            }
+          },
+          {
+            $sort: { dugaar: -1 }
           },
           {
             $group: {
-              _id: "aaa",
-              max: {
-                $max: {
-                  $convert: {
-                    input: "$dugaar",
-                    to: "double",
-                    onError: 0,
-                    onNull: 0,
-                  },
-                },
-              },
-            },
-          },
+              _id: null,
+              max: { $first: "$dugaar" }
+            }
+          }
         ]);
+
         var maxKhuseltiinDugaar = 107;
         if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
           maxKhuseltiinDugaar = khuseltiinDugaar[0].max;
@@ -968,7 +955,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       $match: {
                         dansniiDugaar: dans.dugaar,
                         baiguullagiinId: dans.baiguullagiinId,
-                        NtryRef: { $exists: true, $ne: "", $ne: null },
+                        NtryRef: { $exists: true, $nin: ["", null] },
                       },
                     },
                     {
@@ -996,7 +983,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     {
                       $match: {
                         turul: "tdbKhuselt",
-                        dugaar: { $exists: true, $ne: "", $ne: null },
+                        dugaar: { $exists: true, $nin: ["", null] },
                       },
                     },
                     {
@@ -1419,7 +1406,7 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
       $match: {
         dansniiDugaar: dans.dugaar,
         baiguullagiinId: dans.baiguullagiinId,
-        NtryRef: { $exists: true, $ne: "", $ne: null },
+        NtryRef: { $exists: true, $nin: ["", null] },
       },
     },
     {
@@ -1450,7 +1437,7 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
     {
       $match: {
         turul: "tdbKhuselt",
-        dugaar: { $exists: true, $ne: "", $ne: null },
+        dugaar: { $exists: true, $nin: ["", null] },
       },
     },
     {
@@ -1660,7 +1647,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     $match: {
                       dansniiDugaar: dans.dugaar,
                       baiguullagiinId: dans.baiguullagiinId,
-                      NtryRef: { $exists: true, $ne: "", $ne: null },
+                      NtryRef: { $exists: true, $nin: ["", null] },
                     },
                   },
                   {
@@ -1686,7 +1673,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   {
                     $match: {
                       turul: "tdbKhuselt",
-                      dugaar: { $exists: true, $ne: "", $ne: null },
+                      dugaar: { $exists: true, $nin: ["", null] },
                     },
                   },
                   {
