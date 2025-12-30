@@ -598,15 +598,23 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
             $match: {
               dansniiDugaar: dans.dugaar,
               baiguullagiinId: dans.baiguullagiinId,
-              NtryRef: { $exists: true, $nin: ["", null] },
+              NtryRef: { $exists: true, $ne: "", $ne: null },
             },
           },
-          { $sort: { NtryRef: -1 } },
           {
             $group: {
               _id: "$dansniiDugaar",
-              max: { $first: "$NtryRef" },
-            }
+              max: {
+                $max: {
+                  $convert: {
+                    input: "$NtryRef",
+                    to: "double",
+                    onError: 0,
+                    onNull: 0,
+                  },
+                },
+              },
+            },
           },
         ];
         var max = await BankniiGuilgee(
@@ -621,20 +629,25 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           {
             $match: {
               turul: "tdbKhuselt",
-              dugaar: { $exists: true, $nin: ["", null] }
-            }
-          },
-          {
-            $sort: { dugaar: -1 }
+              dugaar: { $exists: true, $ne: "", $ne: null },
+            },
           },
           {
             $group: {
-              _id: null,
-              max: { $first: "$dugaar" }
-            }
-          }
+              _id: "aaa",
+              max: {
+                $max: {
+                  $convert: {
+                    input: "$dugaar",
+                    to: "double",
+                    onError: 0,
+                    onNull: 0,
+                  },
+                },
+              },
+            },
+          },
         ]);
-
         var maxKhuseltiinDugaar = 107;
         if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
           maxKhuseltiinDugaar = khuseltiinDugaar[0].max;
@@ -820,12 +833,15 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       barilgiinId: dans.barilgiinId,
                     },
                   },
-                  { $sort: { record: -1 } },
                   {
                     $group: {
                       _id: "$dansniiDugaar",
-                      max: { $first: "$record" }
-                    }
+                      max: {
+                        $max: {
+                          $toInt: "$record",
+                        },
+                      },
+                    },
                   },
                 ];
                 var max = await BankniiGuilgee(kholbolt, true).aggregate(query);
@@ -955,14 +971,22 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       $match: {
                         dansniiDugaar: dans.dugaar,
                         baiguullagiinId: dans.baiguullagiinId,
-                        NtryRef: { $exists: true, $nin: ["", null] },
+                        NtryRef: { $exists: true, $ne: "", $ne: null },
                       },
                     },
-                    { $sort: { NtryRef: -1 } },
                     {
                       $group: {
                         _id: "$dansniiDugaar",
-                        max: { $first: "$NtryRef" },
+                        max: {
+                          $max: {
+                            $convert: {
+                              input: "$NtryRef",
+                              to: "double",
+                              onError: 0,
+                              onNull: 0,
+                            },
+                          },
+                        },
                       },
                     },
                   ];
@@ -975,18 +999,24 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     {
                       $match: {
                         turul: "tdbKhuselt",
-                        dugaar: { $exists: true, $nin: ["", null] },
+                        dugaar: { $exists: true, $ne: "", $ne: null },
                       },
                     },
                     {
-                      $sort: { dugaar: -1 }
-                    },
-                    {
                       $group: {
-                        _id: null,
-                        max: { $first: "$dugaar" }
-                      }
-                    }
+                        _id: "aaa",
+                        max: {
+                          $max: {
+                            $convert: {
+                              input: "$dugaar",
+                              to: "double",
+                              onError: 0,
+                              onNull: 0,
+                            },
+                          },
+                        },
+                      },
+                    },
                   ]);
                   var maxKhuseltiinDugaar = 107;
                   if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
@@ -1381,7 +1411,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       }
     }
   } catch (err) {
-    console.log("------- bankniiKhuulgaTatajKhadgalya ----------------->" + err);
     if (next) next(err);
   }
 });
@@ -1393,16 +1422,22 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
       $match: {
         dansniiDugaar: dans.dugaar,
         baiguullagiinId: dans.baiguullagiinId,
-        NtryRef: { $exists: true, $nin: ["", null] },
+        NtryRef: { $exists: true, $ne: "", $ne: null },
       },
-    },
-    {
-      $sort: { NtryRef: -1 }
     },
     {
       $group: {
         _id: "$dansniiDugaar",
-        max: { $first: "$NtryRef" }
+        max: {
+          $max: {
+            $convert: {
+              input: "$NtryRef",
+              to: "double",
+              onError: 0,
+              onNull: 0,
+            },
+          },
+        },
       },
     },
   ];
@@ -1418,18 +1453,24 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
     {
       $match: {
         turul: "tdbKhuselt",
-        dugaar: { $exists: true, $nin: ["", null] },
+        dugaar: { $exists: true, $ne: "", $ne: null },
       },
     },
     {
-      $sort: { dugaar: -1 }
-    },
-    {
       $group: {
-        _id: null,
-        max: { $first: "$dugaar" }
-      }
-    }
+        _id: "aaa",
+        max: {
+          $max: {
+            $convert: {
+              input: "$dugaar",
+              to: "double",
+              onError: 0,
+              onNull: 0,
+            },
+          },
+        },
+      },
+    },
   ]);
   var maxKhuseltiinDugaar = 107;
   if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
@@ -1528,12 +1569,15 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       baiguullagiinId: dans.baiguullagiinId,
                     },
                   },
-                  { $sort: { record: -1 } },
                   {
                     $group: {
                       _id: "$dansniiDugaar",
-                      max: { $first: "$record" }
-                    }
+                      max: {
+                        $max: {
+                          $toInt: "$record",
+                        },
+                      },
+                    },
                   },
                 ];
                 var max = await BankniiGuilgee(kholbolt, true).aggregate(query);
@@ -1622,16 +1666,22 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     $match: {
                       dansniiDugaar: dans.dugaar,
                       baiguullagiinId: dans.baiguullagiinId,
-                      NtryRef: { $exists: true, $nin: ["", null] },
+                      NtryRef: { $exists: true, $ne: "", $ne: null },
                     },
-                  },
-                  {
-                    $sort: { NtryRef: -1 }
                   },
                   {
                     $group: {
                       _id: "$dansniiDugaar",
-                      max: { $first: "$NtryRef" }
+                      max: {
+                        $max: {
+                          $convert: {
+                            input: "$NtryRef",
+                            to: "double",
+                            onError: 0,
+                            onNull: 0,
+                          },
+                        },
+                      },
                     },
                   },
                 ];
@@ -1642,18 +1692,24 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   {
                     $match: {
                       turul: "tdbKhuselt",
-                      dugaar: { $exists: true, $nin: ["", null] },
+                      dugaar: { $exists: true, $ne: "", $ne: null },
                     },
                   },
                   {
-                    $sort: { dugaar: -1 }
-                  },
-                  {
                     $group: {
-                      _id: null,
-                      max: { $first: "$dugaar" }
-                    }
-                  }
+                      _id: "aaa",
+                      max: {
+                        $max: {
+                          $convert: {
+                            input: "$dugaar",
+                            to: "double",
+                            onError: 0,
+                            onNull: 0,
+                          },
+                        },
+                      },
+                    },
+                  },
                 ]);
                 var maxKhuseltiinDugaar = 107;
                 if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
@@ -2122,7 +2178,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
         else if (res) res.status(200).send("Tatah guilgee baihgui!");
       }
     }
-  } catch (err) { console.log("bankniiKhuulgaTatyaOirkhon ------------------->" + err); }
+  } catch (err) {}
 });
 
 async function pad(num, size) {

@@ -229,12 +229,13 @@ router.post("/maxDugaarAvya", tokenShalgakh, async (req, res, next) => {
           },
         },
         {
-          $sort: { dugaar: -1 }
-        },
-        {
           $group: {
-            _id: null,
-            max: { $first: "$dugaar" }
+            _id: "aaa",
+            max: {
+              $max: {
+                $toDouble: "$dugaar",
+              },
+            },
           },
         },
       ]
