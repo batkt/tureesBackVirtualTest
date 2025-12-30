@@ -958,19 +958,11 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         NtryRef: { $exists: true, $nin: ["", null] },
                       },
                     },
+                    { $sort: { NtryRef: -1 } },
                     {
                       $group: {
                         _id: "$dansniiDugaar",
-                        max: {
-                          $max: {
-                            $convert: {
-                              input: "$NtryRef",
-                              to: "double",
-                              onError: 0,
-                              onNull: 0,
-                            },
-                          },
-                        },
+                        max: { $first: "$NtryRef" },
                       },
                     },
                   ];
@@ -987,20 +979,14 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       },
                     },
                     {
-                      $group: {
-                        _id: "aaa",
-                        max: {
-                          $max: {
-                            $convert: {
-                              input: "$dugaar",
-                              to: "double",
-                              onError: 0,
-                              onNull: 0,
-                            },
-                          },
-                        },
-                      },
+                      $sort: { dugaar: -1 }
                     },
+                    {
+                      $group: {
+                        _id: null,
+                        max: { $first: "$dugaar" }
+                      }
+                    }
                   ]);
                   var maxKhuseltiinDugaar = 107;
                   if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
@@ -1410,18 +1396,12 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
       },
     },
     {
+      $sort: { NtryRef: -1 }
+    },
+    {
       $group: {
         _id: "$dansniiDugaar",
-        max: {
-          $max: {
-            $convert: {
-              input: "$NtryRef",
-              to: "double",
-              onError: 0,
-              onNull: 0,
-            },
-          },
-        },
+        max: { $first: "$NtryRef" }
       },
     },
   ];
@@ -1441,20 +1421,14 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
       },
     },
     {
-      $group: {
-        _id: "aaa",
-        max: {
-          $max: {
-            $convert: {
-              input: "$dugaar",
-              to: "double",
-              onError: 0,
-              onNull: 0,
-            },
-          },
-        },
-      },
+      $sort: { dugaar: -1 }
     },
+    {
+      $group: {
+        _id: null,
+        max: { $first: "$dugaar" }
+      }
+    }
   ]);
   var maxKhuseltiinDugaar = 107;
   if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
@@ -1651,18 +1625,12 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     },
                   },
                   {
+                    $sort: { NtryRef: -1 }
+                  },
+                  {
                     $group: {
                       _id: "$dansniiDugaar",
-                      max: {
-                        $max: {
-                          $convert: {
-                            input: "$NtryRef",
-                            to: "double",
-                            onError: 0,
-                            onNull: 0,
-                          },
-                        },
-                      },
+                      max: { $first: "$NtryRef" }
                     },
                   },
                 ];
@@ -1677,20 +1645,14 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     },
                   },
                   {
-                    $group: {
-                      _id: "aaa",
-                      max: {
-                        $max: {
-                          $convert: {
-                            input: "$dugaar",
-                            to: "double",
-                            onError: 0,
-                            onNull: 0,
-                          },
-                        },
-                      },
-                    },
+                    $sort: { dugaar: -1 }
                   },
+                  {
+                    $group: {
+                      _id: null,
+                      max: { $first: "$dugaar" }
+                    }
+                  }
                 ]);
                 var maxKhuseltiinDugaar = 107;
                 if (khuseltiinDugaar && khuseltiinDugaar.length !== 0)
