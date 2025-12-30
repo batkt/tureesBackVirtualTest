@@ -2138,9 +2138,13 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           var match = {
             baiguullagiinId: parking.baiguullagiinId,
             barilgiinId: parking.barilgiinId,
-            "tuukh.zogsooliinId": parking._id.toString(),
-            "tuukh.orsonKhaalga": "192.168.2.75",
-            "tuukh.garsanKhaalga": { $exists: false },
+            "tuukh.0.zogsooliinId": parking._id.toString(),
+            "tuukh.0.orsonKhaalga": "192.168.2.75",
+            "tuukh.0.garsanKhaalga": { $exists: false },
+            createdAt: {
+              $gt: new Date(new Date().getTime() - 60000),
+              $lt: new Date(),
+            },
           };
           if (req?.body?.mashiniiDugaar)
             match["mashiniiDugaar"] = req?.body?.mashiniiDugaar;
@@ -2165,21 +2169,18 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
               }
             }
           }
-          var match = {
-            baiguullagiinId: parking.baiguullagiinId,
-            barilgiinId: parking.barilgiinId,
-            "tuukh.zogsooliinId": parking._id.toString(),
-            "tuukh.orsonKhaalga": "192.168.2.234",
-            "tuukh.tsagiinTuukh.garsanTsag": { $exists: false },
-          };
         }
         if (!!gadnaParkuud?.length > 0) {
           for await (const gadnaParking of gadnaParkuud) {
             var match = {
               baiguullagiinId: gadnaParking.baiguullagiinId,
               barilgiinId: gadnaParking.barilgiinId,
-              "tuukh.zogsooliinId": gadnaParking._id.toString(),
-              "tuukh.tsagiinTuukh.garsanTsag": { $exists: false },
+              "tuukh.0.zogsooliinId": gadnaParking._id.toString(),
+              "tuukh.0.tsagiinTuukh.garsanTsag": { $exists: false },
+              createdAt: {
+                $gt: new Date(new Date().getTime() - 60000),
+                $lt: new Date(),
+              },
             };
             if (req?.body?.mashiniiDugaar)
               match["mashiniiDugaar"] = req?.body?.mashiniiDugaar;
