@@ -215,11 +215,12 @@ crud(router, "blockMashin", BlockMashin, UstsanBarimt);
 //     next(error);
 //   }
 // });
+// Add this route to your parkingRoute.js file
+// Replace the existing crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
+
 router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
   try {
     const body = req.query;
-    console.log("📥 Raw query params:", body);
-
     if (!!body?.query) body.query = JSON.parse(body.query);
     if (!!body?.order) body.order = JSON.parse(body.order);
     if (!!body?.khuudasniiDugaar)
@@ -228,17 +229,25 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
       body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
     if (!!body?.search) body.search = String(body.search);
 
-    console.log("📋 Parsed body:", {
-      query: body.query,
-      search: body.search,
-      khuudasniiDugaar: body.khuudasniiDugaar,
-      khuudasniiKhemjee: body.khuudasniiKhemjee,
-    });
-
     const createdAt = body.query?.createdAt;
-    console.log("📅 createdAt filter:", createdAt);
 
-    // Handle multi-month queries
+     
+    const hasSearch = body.search && body.search.trim();
+    const hasDateFilter = createdAt && createdAt.$gte && createdAt.$lte;
+    const hasArchive = body?.query?.archiveName;
+    
+    if (hasSearch || hasDateFilter || hasArchive) {
+      console.log("🔍 Filtering zogsoolUilchluulegch:", {
+        search: hasSearch ? body.search : undefined,
+        dateRange: hasDateFilter ? { 
+          from: moment(createdAt.$gte).format("YYYY-MM-DD"),
+          to: moment(createdAt.$lte).format("YYYY-MM-DD")
+        } : undefined,
+        archive: hasArchive ? body.query.archiveName : undefined,
+      });
+    }
+
+  
     if (createdAt && createdAt.$gte && createdAt.$lte) {
       const start = moment(createdAt.$gte);
       const end = moment(createdAt.$lte);
@@ -247,15 +256,12 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
       const isMultiMonth =
         start.year() !== end.year() || start.month() !== end.month();
 
-      console.log("🗓️  Date range analysis:", {
-        start: start.format("YYYY-MM"),
-        end: end.format("YYYY-MM"),
-        now: now.format("YYYY-MM"),
-        isMultiMonth,
-      });
-
       if (isMultiMonth) {
-        console.log("📦 Multi-month query detected");
+        console.log("📦 Multi-month query:", {
+          start: start.format("YYYY-MM"),
+          end: end.format("YYYY-MM"),
+        });
+        
         const collectionsToQuery = [];
         let current = start.clone().startOf("month");
 
@@ -286,10 +292,7 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
           current.add(1, "month");
         }
 
-        console.log(
-          "📚 Collections to query:",
-          collectionsToQuery.map((c) => c.name || "main")
-        );
+        console.log("📚 Querying collections:", collectionsToQuery.map(c => c.name || "main").join(", "));
 
         const allResults = [];
 
@@ -307,13 +310,6 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
                   : new Date(createdAt.$lte),
             };
 
-            console.log(`🔍 Querying ${collection.name || "main"}:`, {
-              dateRange: {
-                $gte: collectionQuery.createdAt.$gte,
-                $lte: collectionQuery.createdAt.$lte,
-              },
-            });
-
             const model = collection.isMain
               ? Uilchluulegch(req.body.tukhainBaaziinKholbolt)
               : Uilchluulegch(
@@ -327,23 +323,16 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
               .sort(body.order)
               .lean();
 
-            console.log(
-              `✅ Found ${results.length} results in ${
-                collection.name || "main"
-              }`
-            );
+            if (results.length > 0) {
+              console.log(`  ✓ ${collection.name || "main"}: ${results.length} results`);
+            }
             allResults.push(...results);
           } catch (err) {
-            console.error(
-              `❌ Error querying ${collection.name || "main"}:`,
-              err.message
-            );
+            console.error(`❌ Error querying ${collection.name || "main"}:`, err.message);
           }
         }
 
-        console.log(
-          `📊 Total results from all collections: ${allResults.length}`
-        );
+        console.log(`📊 Total: ${allResults.length} results from ${collectionsToQuery.length} collections`);
 
         const orderKey =
           Object.keys(body.order || { createdAt: -1 })[0] || "createdAt";
@@ -372,13 +361,6 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
         const endIndex = startIndex + body.khuudasniiKhemjee;
         const paginatedResults = allResults.slice(startIndex, endIndex);
 
-        console.log("✂️  Pagination:", {
-          total: allResults.length,
-          page: body.khuudasniiDugaar,
-          pageSize: body.khuudasniiKhemjee,
-          returned: paginatedResults.length,
-        });
-
         return res.send({
           jagsaalt: paginatedResults,
           niitMur: allResults.length,
@@ -390,12 +372,12 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
       }
     }
 
-    // Handle archive name
+ 
     var archiveName = null;
     if (body?.query?.archiveName) {
       archiveName = body.query.archiveName;
       delete body.query.archiveName;
-      console.log("🗄️  Using archive:", archiveName);
+      console.log("🗄️  Archive collection:", archiveName);
     }
 
     let model;
@@ -405,21 +387,18 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
         false,
         archiveName
       );
-      console.log("📂 Querying archive collection:", archiveName);
     } else {
       model = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
-      console.log("📂 Querying main collection");
     }
-
-    console.log("🔎 Final query:", body.query);
 
     khuudaslalt(model, body)
       .then((result) => {
-        console.log("✅ Query result:", {
-          count: result?.jagsaalt?.length,
-          total: result?.niitMur,
-          archiveName,
-        });
+        if (hasSearch || hasDateFilter || hasArchive) {
+          console.log("✅ Results:", {
+            count: result?.jagsaalt?.length,
+            total: result?.niitMur,
+          });
+        }
         res.send({
           ...result,
           archiveName: archiveName,
