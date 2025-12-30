@@ -215,7 +215,225 @@ crud(router, "blockMashin", BlockMashin, UstsanBarimt);
 //     next(error);
 //   }
 // });
-crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
+router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
+  try {
+    const body = req.query;
+    console.log("📥 Raw query params:", body);
+
+    if (!!body?.query) body.query = JSON.parse(body.query);
+    if (!!body?.order) body.order = JSON.parse(body.order);
+    if (!!body?.khuudasniiDugaar)
+      body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+    if (!!body?.khuudasniiKhemjee)
+      body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+    if (!!body?.search) body.search = String(body.search);
+
+    console.log("📋 Parsed body:", {
+      query: body.query,
+      search: body.search,
+      khuudasniiDugaar: body.khuudasniiDugaar,
+      khuudasniiKhemjee: body.khuudasniiKhemjee,
+    });
+
+    const createdAt = body.query?.createdAt;
+    console.log("📅 createdAt filter:", createdAt);
+
+    // Handle multi-month queries
+    if (createdAt && createdAt.$gte && createdAt.$lte) {
+      const start = moment(createdAt.$gte);
+      const end = moment(createdAt.$lte);
+      const now = moment();
+
+      const isMultiMonth =
+        start.year() !== end.year() || start.month() !== end.month();
+
+      console.log("🗓️  Date range analysis:", {
+        start: start.format("YYYY-MM"),
+        end: end.format("YYYY-MM"),
+        now: now.format("YYYY-MM"),
+        isMultiMonth,
+      });
+
+      if (isMultiMonth) {
+        console.log("📦 Multi-month query detected");
+        const collectionsToQuery = [];
+        let current = start.clone().startOf("month");
+
+        while (current.isSameOrBefore(end, "month")) {
+          const isCurrentMonth =
+            current.year() === now.year() && current.month() === now.month();
+
+          if (isCurrentMonth) {
+            collectionsToQuery.push({
+              name: null,
+              startDate: current.clone().startOf("month").toDate(),
+              endDate: current.clone().endOf("month").toDate(),
+              isMain: true,
+            });
+          } else {
+            const y = current.year();
+            const m = String(current.month() + 1).padStart(2, "0");
+            const archiveName = `Uilchluulegch${y}${m}`;
+
+            collectionsToQuery.push({
+              name: archiveName,
+              startDate: current.clone().startOf("month").toDate(),
+              endDate: current.clone().endOf("month").toDate(),
+              isMain: false,
+            });
+          }
+
+          current.add(1, "month");
+        }
+
+        console.log(
+          "📚 Collections to query:",
+          collectionsToQuery.map((c) => c.name || "main")
+        );
+
+        const allResults = [];
+
+        for (const collection of collectionsToQuery) {
+          try {
+            const collectionQuery = { ...body.query };
+            collectionQuery.createdAt = {
+              $gte:
+                collection.startDate > new Date(createdAt.$gte)
+                  ? collection.startDate
+                  : new Date(createdAt.$gte),
+              $lte:
+                collection.endDate < new Date(createdAt.$lte)
+                  ? collection.endDate
+                  : new Date(createdAt.$lte),
+            };
+
+            console.log(`🔍 Querying ${collection.name || "main"}:`, {
+              dateRange: {
+                $gte: collectionQuery.createdAt.$gte,
+                $lte: collectionQuery.createdAt.$lte,
+              },
+            });
+
+            const model = collection.isMain
+              ? Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+              : Uilchluulegch(
+                  req.body.tukhainBaaziinKholbolt,
+                  false,
+                  collection.name
+                );
+
+            const results = await model
+              .find(collectionQuery)
+              .sort(body.order)
+              .lean();
+
+            console.log(
+              `✅ Found ${results.length} results in ${
+                collection.name || "main"
+              }`
+            );
+            allResults.push(...results);
+          } catch (err) {
+            console.error(
+              `❌ Error querying ${collection.name || "main"}:`,
+              err.message
+            );
+          }
+        }
+
+        console.log(
+          `📊 Total results from all collections: ${allResults.length}`
+        );
+
+        const orderKey =
+          Object.keys(body.order || { createdAt: -1 })[0] || "createdAt";
+        const orderDir = body.order?.[orderKey] || -1;
+
+        allResults.sort((a, b) => {
+          let aVal = a[orderKey];
+          let bVal = b[orderKey];
+
+          if (orderKey === "createdAt" || orderKey.includes("Ognoo")) {
+            aVal = new Date(aVal);
+            bVal = new Date(bVal);
+          }
+
+          if (aVal instanceof Date && bVal instanceof Date) {
+            const diff = aVal.getTime() - bVal.getTime();
+            return orderDir === -1 ? -diff : diff;
+          }
+
+          if (aVal < bVal) return orderDir === -1 ? 1 : -1;
+          if (aVal > bVal) return orderDir === -1 ? -1 : 1;
+          return 0;
+        });
+
+        const startIndex = (body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee;
+        const endIndex = startIndex + body.khuudasniiKhemjee;
+        const paginatedResults = allResults.slice(startIndex, endIndex);
+
+        console.log("✂️  Pagination:", {
+          total: allResults.length,
+          page: body.khuudasniiDugaar,
+          pageSize: body.khuudasniiKhemjee,
+          returned: paginatedResults.length,
+        });
+
+        return res.send({
+          jagsaalt: paginatedResults,
+          niitMur: allResults.length,
+          khuudasniiDugaar: body.khuudasniiDugaar,
+          khuudasniiKhemjee: body.khuudasniiKhemjee,
+          archiveName: "multi-month",
+          collections: collectionsToQuery.map((c) => c.name || "main"),
+        });
+      }
+    }
+
+    // Handle archive name
+    var archiveName = null;
+    if (body?.query?.archiveName) {
+      archiveName = body.query.archiveName;
+      delete body.query.archiveName;
+      console.log("🗄️  Using archive:", archiveName);
+    }
+
+    let model;
+    if (archiveName) {
+      model = Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        false,
+        archiveName
+      );
+      console.log("📂 Querying archive collection:", archiveName);
+    } else {
+      model = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+      console.log("📂 Querying main collection");
+    }
+
+    console.log("🔎 Final query:", body.query);
+
+    khuudaslalt(model, body)
+      .then((result) => {
+        console.log("✅ Query result:", {
+          count: result?.jagsaalt?.length,
+          total: result?.niitMur,
+          archiveName,
+        });
+        res.send({
+          ...result,
+          archiveName: archiveName,
+        });
+      })
+      .catch((err) => {
+        console.error("❌ Query error:", err.message);
+        next(err);
+      });
+  } catch (error) {
+    console.error("❌ Route error:", error.message);
+    next(error);
+  }
+});
 
 // crud(router, "zogsoolUilchluulegch", (conn) => Uilchluulegch(conn, true), UstsanBarimt);
 crud(router, "uilchluulegch", Uilchluulegch, UstsanBarimt);
