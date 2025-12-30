@@ -365,4 +365,48 @@ router
       next(error);
     }
   });  
+  
+router
+  .route("/davkhardsanIndexTalbar")
+  .post(async (req, res, next) => {
+    try
+    {
+      var kholboltuud;
+      const { db } = require("zevbackv2");
+      if (!!req?.body?.tukhainBaaziinKholbolt) {
+        kholboltuud = [req.body.tukhainBaaziinKholbolt];
+      } else {
+        kholboltuud = db.kholboltuud;
+      }
+      if (kholboltuud) {
+        for await (const kholbolt of kholboltuud) {
+          if(kholbolt?.baiguullagiinId !== "6800b91480a007fe5ab34436") continue;
+          var guilgeenuud = await BankniiGuilgee(kholbolt, true).aggregate([
+            {
+              $group: {
+                _id: "$indexTalbar",
+                ids: { $push: "$_id" },
+                count: { $sum: 1 }
+              }
+            },
+            {
+              $match: {
+                count: { $gt: 1 }
+              }
+            }
+          ]);
+          console.log("kholbolt:", kholbolt?.baiguullagiinId, " davkhardsan:", JSON.stringify(guilgeenuud));
+          for await (const guilgee of guilgeenuud){
+            var ustgakhJagsaalt = [];
+            ustgakhJagsaalt.push(guilgee.ids[0]);
+            var fRemove = guilgee.ids.filter((el) => !ustgakhJagsaalt.includes(el));
+            await BankniiGuilgee(kholbolt).deleteMany({ _id: { $in: fRemove }, });
+          }
+        }
+      }
+      res.send("Амжилт");
+    } catch (error) {
+      next(error);
+    }
+  });
 module.exports = router;
