@@ -256,7 +256,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "*/5 * * * * * ",
+  "*/2 * * * * ",
   function () {
     cgw.dotorZogsoolDavhkardsanMashin(null, null, null);
   },
