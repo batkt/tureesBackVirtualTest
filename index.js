@@ -255,16 +255,16 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "*/5 * * * * * ",
-//   function () {
-//     cgw.dotorZogsoolDavhkardsanMashin(null, null, null);
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "*/5 * * * * * ",
+  function () {
+    cgw.dotorZogsoolDavhkardsanMashin(null, null, null);
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 cron.schedule(
   "*/8 * * * * * ",
@@ -299,16 +299,16 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "18 6 * * * ",
-//   function () {
-//     zogsool.archiveUilchluulegch();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "45 13 * * * ",
+  function () {
+    zogsool.archiveUilchluulegch();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 // cron.schedule(
 //   "*/6 * * * * * ",
