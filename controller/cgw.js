@@ -833,15 +833,12 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       barilgiinId: dans.barilgiinId,
                     },
                   },
+                  { $sort: { record: -1 } },
                   {
                     $group: {
                       _id: "$dansniiDugaar",
-                      max: {
-                        $max: {
-                          $toInt: "$record",
-                        },
-                      },
-                    },
+                      max: { $first: "$record" }
+                    }
                   },
                 ];
                 var max = await BankniiGuilgee(kholbolt, true).aggregate(query);
@@ -1569,15 +1566,12 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       baiguullagiinId: dans.baiguullagiinId,
                     },
                   },
+                  { $sort: { record: -1 } },
                   {
                     $group: {
                       _id: "$dansniiDugaar",
-                      max: {
-                        $max: {
-                          $toInt: "$record",
-                        },
-                      },
-                    },
+                      max: { $first: "$record" }
+                    }
                   },
                 ];
                 var max = await BankniiGuilgee(kholbolt, true).aggregate(query);
