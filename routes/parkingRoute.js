@@ -216,7 +216,6 @@ crud(router, "blockMashin", BlockMashin, UstsanBarimt);
 //   }
 // });
 crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
-
 // crud(router, "zogsoolUilchluulegch", (conn) => Uilchluulegch(conn, true), UstsanBarimt);
 crud(router, "uilchluulegch", Uilchluulegch, UstsanBarimt);
 crud(router, "kassCameraKhaalt", KassCameraKhaalt, UstsanBarimt);

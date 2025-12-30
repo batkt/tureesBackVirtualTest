@@ -593,36 +593,17 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           res.send({ uldegdel: khariu.acntno.BALANCE });
         }
       } else {
-        var query = [
-          {
-            $match: {
-              dansniiDugaar: dans.dugaar,
-              baiguullagiinId: dans.baiguullagiinId,
-              NtryRef: { $exists: true, $ne: "", $ne: null },
-            },
-          },
-          {
-            $group: {
-              _id: "$dansniiDugaar",
-              max: {
-                $max: {
-                  $convert: {
-                    input: "$NtryRef",
-                    to: "double",
-                    onError: 0,
-                    onNull: 0,
-                  },
-                },
-              },
-            },
-          },
-        ];
         var max = await BankniiGuilgee(
           req.body.tukhainBaaziinKholbolt,
           true
-        ).aggregate(query);
+        ).findOne({
+          dansniiDugaar: dans.dugaar,
+          barilgiinId: dans.barilgiinId,
+          baiguullagiinId: dans.baiguullagiinId,
+          bank: "tdb",
+        }).sort({ createdAt: -1 }).limit(1);
         var maxDugaar = 100;
-        if (max && max.length !== 0) maxDugaar = max[0].max;
+        if (max && max.NtryRef) maxDugaar = parseFloat(max.NtryRef);
         var khuseltiinDugaar = await Dugaarlalt(
           req.body.tukhainBaaziinKholbolt
         ).aggregate([
@@ -825,26 +806,12 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   );
                   token = tokenObject?.access_token;
                 } else token = tokenObject.token;
-                var query = [
-                  {
-                    $match: {
-                      dansniiDugaar: dans.dugaar,
-                      baiguullagiinId: dans.baiguullagiinId,
-                      barilgiinId: dans.barilgiinId,
-                    },
-                  },
-                  {
-                    $group: {
-                      _id: "$dansniiDugaar",
-                      max: {
-                        $max: {
-                          $toInt: "$record",
-                        },
-                      },
-                    },
-                  },
-                ];
-                var max = await BankniiGuilgee(kholbolt, true).aggregate(query);
+                var max = await BankniiGuilgee(kholbolt, true).findOne({
+                  dansniiDugaar: dans.dugaar,
+                  barilgiinId: dans.barilgiinId,
+                  baiguullagiinId: dans.baiguullagiinId,
+                  bank: "khanbank",
+                }).sort({ createdAt: -1 }).limit(1);
                 var bodyKhuulga = {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
@@ -862,7 +829,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 // {
                   
                 // }
-                if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
+                if (max && max.record) bodyKhuulga["record"] = max.record;
                 var khariu = await dansniiKhuulgaAvya(token, next, bodyKhuulga);
 
                 if (khariu && khariu.transactions) {
@@ -965,36 +932,16 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       })
                       .catch((err) => {});
                   }
+
                 } else {
-                  var query = [
-                    {
-                      $match: {
-                        dansniiDugaar: dans.dugaar,
-                        baiguullagiinId: dans.baiguullagiinId,
-                        NtryRef: { $exists: true, $ne: "", $ne: null },
-                      },
-                    },
-                    {
-                      $group: {
-                        _id: "$dansniiDugaar",
-                        max: {
-                          $max: {
-                            $convert: {
-                              input: "$NtryRef",
-                              to: "double",
-                              onError: 0,
-                              onNull: 0,
-                            },
-                          },
-                        },
-                      },
-                    },
-                  ];
-                  var max = await BankniiGuilgee(kholbolt, true).aggregate(
-                    query
-                  );
+                  var max = await BankniiGuilgee(kholbolt, true).findOne({
+                    dansniiDugaar: dans.dugaar,
+                    barilgiinId: dans.barilgiinId,
+                    baiguullagiinId: dans.baiguullagiinId,
+                    bank: "tdb",
+                  }).sort({ createdAt: -1 }).limit(1);
                   var maxDugaar = 100;
-                  if (max && max.length !== 0) maxDugaar = max[0].max;
+                  if (max && max.NtryRef) maxDugaar = parseFloat(max.NtryRef);
                   var khuseltiinDugaar = await Dugaarlalt(kholbolt).aggregate([
                     {
                       $match: {
@@ -1120,8 +1067,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
               } else if (dans.bank == "golomt") {
                 var max = await BankniiGuilgee(kholbolt, true)
                   .findOne({
-                    barilgiinId: dans.barilgiinId,
                     dansniiDugaar: dans.dugaar,
+                    barilgiinId: dans.barilgiinId,
+                    baiguullagiinId: dans.baiguullagiinId,
+                    bank: "golomt",
                   })
                   .sort({ createdAt: -1 })
                   .limit(1);
@@ -1207,8 +1156,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   (dans.apikey ? dans.apikey : "p_uZ6A");
                 var max = await BankniiGuilgee(kholbolt, true)
                   .findOne({
-                    barilgiinId: dans.barilgiinId,
                     dansniiDugaar: dans.dugaar,
+                    barilgiinId: dans.barilgiinId,
+                    baiguullagiinId: dans.baiguullagiinId,
+                    bank: "trans",
                   })
                   .sort({ createdAt: -1 })
                   .limit(1);
@@ -1300,8 +1251,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 var tokenObject = await bogdTokentAvya(dans, kholbolt);
                 var max = await BankniiGuilgee(kholbolt, true)
                   .findOne({
-                    barilgiinId: dans.barilgiinId,
                     dansniiDugaar: dans.dugaar,
+                    barilgiinId: dans.barilgiinId,
+                    baiguullagiinId: dans.baiguullagiinId,
+                    bank: "bogd",
                   })
                   .sort({ createdAt: -1 })
                   .limit(1);
@@ -1417,36 +1370,17 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
 
 exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
   var dans = req.body;
-  var query = [
-    {
-      $match: {
-        dansniiDugaar: dans.dugaar,
-        baiguullagiinId: dans.baiguullagiinId,
-        NtryRef: { $exists: true, $ne: "", $ne: null },
-      },
-    },
-    {
-      $group: {
-        _id: "$dansniiDugaar",
-        max: {
-          $max: {
-            $convert: {
-              input: "$NtryRef",
-              to: "double",
-              onError: 0,
-              onNull: 0,
-            },
-          },
-        },
-      },
-    },
-  ];
   var max = await BankniiGuilgee(
     req.body.tukhainBaaziinKholbolt,
     true
-  ).aggregate(query);
+  ).findOne({
+    dansniiDugaar: dans.dugaar,
+    barilgiinId: dans.barilgiinId,
+    baiguullagiinId: dans.baiguullagiinId,
+    bank: "tdb",
+  }).sort({ createdAt: -1 }).limit(1);
   var maxDugaar = 100;
-  if (max && max.length !== 0) maxDugaar = max[0].max;
+  if (max && max.NtryRef) maxDugaar = parseFloat(max.NtryRef);
   var khuseltiinDugaar = await Dugaarlalt(
     req.body.tukhainBaaziinKholbolt
   ).aggregate([
@@ -1562,32 +1496,19 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   );
                   token = tokenObject.access_token;
                 } else token = tokenObject.token;
-                var query = [
-                  {
-                    $match: {
-                      dansniiDugaar: dans.dugaar,
-                      baiguullagiinId: dans.baiguullagiinId,
-                    },
-                  },
-                  {
-                    $group: {
-                      _id: "$dansniiDugaar",
-                      max: {
-                        $max: {
-                          $toInt: "$record",
-                        },
-                      },
-                    },
-                  },
-                ];
-                var max = await BankniiGuilgee(kholbolt, true).aggregate(query);
+                var max = await BankniiGuilgee(kholbolt, true).findOne({
+                  dansniiDugaar: dans.dugaar,
+                  barilgiinId: dans.barilgiinId,
+                  baiguullagiinId: dans.baiguullagiinId,
+                  bank: "khanbank",
+                }).sort({ createdAt: -1 }).limit(1);
                 var bodyKhuulga = {
                   baiguullagiinId: dans.baiguullagiinId,
                   barilgiinId: dans.barilgiinId,
                   dansniiDugaar: dans.dugaar,
                   corporateShunuUntraakhEsekh: dans.corporateShunuUntraakhEsekh,
                 };
-                if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
+                if (max && max.record) bodyKhuulga["record"] = max.record;
                 var khariu = await dansniiKhuulgaAvya(token, null, bodyKhuulga);
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
@@ -1661,33 +1582,14 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     .catch((err) => {});
                 }
               } else if (dans.bank == "tdb") {
-                var query = [
-                  {
-                    $match: {
-                      dansniiDugaar: dans.dugaar,
-                      baiguullagiinId: dans.baiguullagiinId,
-                      NtryRef: { $exists: true, $ne: "", $ne: null },
-                    },
-                  },
-                  {
-                    $group: {
-                      _id: "$dansniiDugaar",
-                      max: {
-                        $max: {
-                          $convert: {
-                            input: "$NtryRef",
-                            to: "double",
-                            onError: 0,
-                            onNull: 0,
-                          },
-                        },
-                      },
-                    },
-                  },
-                ];
-                var max = await BankniiGuilgee(kholbolt, true).aggregate(query);
+                var max = await BankniiGuilgee(kholbolt, true).findOne({
+                  dansniiDugaar: dans.dugaar,
+                  barilgiinId: dans.barilgiinId,
+                  baiguullagiinId: dans.baiguullagiinId,
+                  bank: "tdb",
+                }).sort({ createdAt: -1 }).limit(1);
                 var maxDugaar = 100;
-                if (max && max.length !== 0) maxDugaar = max[0].max;
+                if (max && max.NtryRef) maxDugaar = parseFloat(max.NtryRef);
                 var khuseltiinDugaar = await Dugaarlalt(kholbolt).aggregate([
                   {
                     $match: {
@@ -1840,8 +1742,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
               } else if (dans.bank == "golomt") {
                 var max = await BankniiGuilgee(kholbolt, true)
                   .findOne({
-                    barilgiinId: dans.barilgiinId,
                     dansniiDugaar: dans.dugaar,
+                    barilgiinId: dans.barilgiinId,
+                    baiguullagiinId: dans.baiguullagiinId,
+                    bank: "golomt",
                   })
                   .sort({ createdAt: -1 })
                   .limit(1);
@@ -1960,8 +1864,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   (dans.apikey ? dans.apikey : "p_uZ6A");
                 var max = await BankniiGuilgee(kholbolt, true)
                   .findOne({
-                    barilgiinId: dans.barilgiinId,
                     dansniiDugaar: dans.dugaar,
+                    barilgiinId: dans.barilgiinId,
+                    baiguullagiinId: dans.baiguullagiinId,
+                    bank: "trans",
                   })
                   .sort({ createdAt: -1 })
                   .limit(1);
@@ -2085,8 +1991,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 var tokenObject = await bogdTokentAvya(dans, kholbolt);
                 var max = await BankniiGuilgee(kholbolt, true)
                   .findOne({
-                    barilgiinId: dans.barilgiinId,
                     dansniiDugaar: dans.dugaar,
+                    barilgiinId: dans.barilgiinId,
+                    baiguullagiinId: dans.baiguullagiinId,
+                    bank: "bogd",
                   })
                   .sort({ createdAt: -1 })
                   .limit(1);
