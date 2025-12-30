@@ -56,51 +56,8 @@ crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
 crud(router, "mashin", Mashin, UstsanBarimt);
 crud(router, "blockMashin", BlockMashin, UstsanBarimt);
 // Ажилтнаар шүүсэн ч цэнэглэлт (автомат) үлдэхээр шүүлтүүрийг өргөтгөнө.
-router.use("/zogsoolUilchluulegch", (req, res, next) => {
-  try {
-    if (req.method !== "GET" || !req?.query?.query) return next();
-    const query = JSON.parse(req.query.query);
-    const ajiltanFilter = query["tuukh.burtgesenAjiltaniiId"];
-    if (!ajiltanFilter) return next();
-
-    const addTseneglelt = (arr) => {
-      if (!arr.includes("tseneglelt")) arr.push("tseneglelt");
-      return arr;
-    };
-
-    if (typeof ajiltanFilter === "string") {
-      query["tuukh.burtgesenAjiltaniiId"] = {
-        $in: addTseneglelt([ajiltanFilter]),
-      };
-    } else if (
-      typeof ajiltanFilter === "object" &&
-      !Array.isArray(ajiltanFilter)
-    ) {
-      const existing =
-        Array.isArray(ajiltanFilter.$in) && ajiltanFilter.$in.length > 0
-          ? ajiltanFilter.$in
-          : ajiltanFilter.$eq
-          ? [ajiltanFilter.$eq]
-          : [];
-      if (existing.length > 0) {
-        query["tuukh.burtgesenAjiltaniiId"] = {
-          $in: addTseneglelt(existing),
-        };
-      }
-    }
-
-    req.query.query = JSON.stringify(query);
-  } catch (err) {
-    // parsing алдаа гарвал анхны логикоор үргэлжлүүлнэ
-  }
-  next();
-});
-
 router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
   try {
-    console.log("=== zogsoolUilchluulegch REQUEST START ===");
-    console.log("Query params:", req.query);
-
     const body = req.query;
     if (!!body?.query) body.query = JSON.parse(body.query);
     if (!!body?.order) body.order = JSON.parse(body.order);
@@ -110,26 +67,15 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
       body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
     if (!!body?.search) body.search = String(body.search);
 
-    console.log("Parsed body:", JSON.stringify(body, null, 2));
-
     const createdAt = body.query?.createdAt;
-    console.log("CreatedAt filter:", createdAt);
 
     if (createdAt && createdAt.$gte && createdAt.$lte) {
       const start = moment(createdAt.$gte);
       const end = moment(createdAt.$lte);
       const now = moment();
 
-      console.log("Date range:", {
-        start: start.format("YYYY-MM-DD"),
-        end: end.format("YYYY-MM-DD"),
-        now: now.format("YYYY-MM-DD"),
-      });
-
       const isMultiMonth =
         start.year() !== end.year() || start.month() !== end.month();
-
-      console.log("Is multi-month query:", isMultiMonth);
 
       if (isMultiMonth) {
         const collectionsToQuery = [];
@@ -162,23 +108,10 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
           current.add(1, "month");
         }
 
-        console.log(
-          "Collections to query:",
-          collectionsToQuery.map((c) => ({
-            name: c.name || "main",
-            isMain: c.isMain,
-            dateRange: `${moment(c.startDate).format("YYYY-MM-DD")} to ${moment(
-              c.endDate
-            ).format("YYYY-MM-DD")}`,
-          }))
-        );
-
         const allResults = [];
 
         for (const collection of collectionsToQuery) {
           try {
-            console.log(`Querying collection: ${collection.name || "main"}`);
-
             const collectionQuery = { ...body.query };
             collectionQuery.createdAt = {
               $gte:
@@ -191,46 +124,37 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
                   : new Date(createdAt.$lte),
             };
 
-            console.log(
-              `Collection query for ${collection.name || "main"}:`,
-              JSON.stringify(collectionQuery, null, 2)
-            );
-
             const model = collection.isMain
               ? Uilchluulegch(req.body.tukhainBaaziinKholbolt)
-              : Uilchluulegch(req.body.tukhainBaaziinKholbolt, collection.name);
+              : Uilchluulegch(
+                  req.body.tukhainBaaziinKholbolt,
+                  false,
+                  collection.name
+                );
 
             const results = await model
               .find(collectionQuery)
               .sort(body.order)
               .lean();
 
-            console.log(
-              `Found ${results.length} results in ${collection.name || "main"}`
-            );
             allResults.push(...results);
           } catch (err) {
             console.error(
               `Error querying ${collection.name || "main"}:`,
               err.message
             );
-            console.error("Full error:", err);
           }
         }
-
-        console.log(`Total results before pagination: ${allResults.length}`);
 
         const orderKey =
           Object.keys(body.order || { createdAt: -1 })[0] || "createdAt";
         const orderDir = body.order?.[orderKey] || -1;
 
-        console.log("Sorting by:", orderKey, "direction:", orderDir);
-
         allResults.sort((a, b) => {
           let aVal = a[orderKey];
           let bVal = b[orderKey];
 
-          if (orderKey === "createdAt") {
+          if (orderKey === "createdAt" || orderKey.includes("Ognoo")) {
             aVal = new Date(aVal);
             bVal = new Date(bVal);
           }
@@ -249,74 +173,49 @@ router.get("/zogsoolUilchluulegch", tokenShalgakh, async (req, res, next) => {
         const endIndex = startIndex + body.khuudasniiKhemjee;
         const paginatedResults = allResults.slice(startIndex, endIndex);
 
-        console.log("Pagination:", {
-          page: body.khuudasniiDugaar,
-          pageSize: body.khuudasniiKhemjee,
-          startIndex,
-          endIndex,
-          returnedResults: paginatedResults.length,
-        });
-
-        const response = {
+        return res.send({
           jagsaalt: paginatedResults,
           niitMur: allResults.length,
           khuudasniiDugaar: body.khuudasniiDugaar,
           khuudasniiKhemjee: body.khuudasniiKhemjee,
           archiveName: "multi-month",
           collections: collectionsToQuery.map((c) => c.name || "main"),
-        };
-
-        console.log("=== zogsoolUilchluulegch MULTI-MONTH SUCCESS ===");
-        console.log("Response summary:", {
-          resultsReturned: response.jagsaalt.length,
-          totalResults: response.niitMur,
-          collections: response.collections,
         });
-
-        return res.send(response);
       }
     }
-
-    console.log("Single collection query mode");
 
     var archiveName = null;
     if (body?.query?.archiveName) {
       archiveName = body.query.archiveName;
       delete body.query.archiveName;
-      console.log("Using archive collection:", archiveName);
     }
 
-    let model = archiveName
-      ? Uilchluulegch(req.body.tukhainBaaziinKholbolt, archiveName)
-      : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
-
-    console.log("Calling khuudaslalt function");
+    let model;
+    if (archiveName) {
+      model = Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        false,
+        archiveName
+      );
+    } else {
+      model = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+    }
 
     khuudaslalt(model, body)
       .then((result) => {
-        console.log("=== zogsoolUilchluulegch SINGLE COLLECTION SUCCESS ===");
-        console.log("Results:", {
-          resultsReturned: result.jagsaalt?.length,
-          totalResults: result.niitMur,
-          archiveName: archiveName,
-        });
-
         res.send({
           ...result,
           archiveName: archiveName,
         });
       })
       .catch((err) => {
-        console.error("=== zogsoolUilchluulegch ERROR in khuudaslalt ===");
-        console.error("Error:", err);
         next(err);
       });
   } catch (error) {
-    console.error("=== zogsoolUilchluulegch CATCH ERROR ===");
-    console.error("Error:", error);
     next(error);
   }
 });
+crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
 // crud(router, "zogsoolUilchluulegch", (conn) => Uilchluulegch(conn, true), UstsanBarimt);
 crud(router, "uilchluulegch", Uilchluulegch, UstsanBarimt);
 crud(router, "kassCameraKhaalt", KassCameraKhaalt, UstsanBarimt);
@@ -2754,9 +2653,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
         )
           //10 * 60 * 1000
           req.body.manually_open = true;
-        console.log("set --->", JSON.stringify(set));
-        console.log("_id --->", JSON.stringify(tukhainObject?._id));
-        console.log("plate_number --->", JSON.stringify(req.body.plate_number));
         await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
           tukhainObject._id,
           {
