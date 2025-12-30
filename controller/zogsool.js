@@ -456,17 +456,22 @@ module.exports.archiveUilchluulegch =
                     const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
                     console.log(`📦 Archiving month: ${archiveName}`);
                     const docs = await Uilchluulegch(kholbolt, false, archiveName).find({
+                        "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true },
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
                     if (docs?.length > 0) continue;
                     console.log(`📦 docs length: ${docs?.length}`);
                     // --- Archive ---
                     const data = await Uilchluulegch(kholbolt).aggregate([
-                        { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
+                        { $match: {
+                          "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true }, 
+                          createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
+                        } },
                     ]);
                     await Uilchluulegch(kholbolt, false, archiveName).insertMany(data);
                     // --- Delete ---
                     const res = await Uilchluulegch(kholbolt).deleteMany({
+                        "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true },
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
                     console.log(`🗑️ Deleted ${res?.deletedCount} docs from Uilchluulegch`);
