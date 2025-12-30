@@ -2142,7 +2142,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
             "tuukh.0.orsonKhaalga": "192.168.2.75",
             "tuukh.0.garsanKhaalga": { $exists: false },
             createdAt: {
-              $gt: new Date(new Date().getTime() - 60000),
+              $gt: new Date(new Date().getTime() - 300000),
               $lt: new Date(),
             },
           };
@@ -2176,9 +2176,9 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
               baiguullagiinId: gadnaParking.baiguullagiinId,
               barilgiinId: gadnaParking.barilgiinId,
               "tuukh.0.zogsooliinId": gadnaParking._id.toString(),
-              "tuukh.0.tsagiinTuukh.garsanTsag": { $exists: false },
+              "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: false },
               createdAt: {
-                $gt: new Date(new Date().getTime() - 60000),
+                $gt: new Date(new Date().getTime() - 300000),
                 $lt: new Date(),
               },
             };
