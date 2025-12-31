@@ -1524,7 +1524,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
     var dansnuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        if(kholbolt.baiguullagiinId !== "6115f350b35689cdbf1b9da3") continue;
+        if(kholbolt.baiguullagiinId !== "65cf2f027fbc788f85e50b90") continue;
         console.log("Oirkhon tatakh guilgee: " + kholbolt.baiguullagiinId);
         var firstDay;
         var lastDay;
