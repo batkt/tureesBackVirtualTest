@@ -2138,9 +2138,9 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           var match = {
             baiguullagiinId: parking.baiguullagiinId,
             barilgiinId: parking.barilgiinId,
-            "tuukh.0.zogsooliinId": parking._id.toString(),
-            "tuukh.0.orsonKhaalga": "192.168.2.75",
-            "tuukh.0.garsanKhaalga": { $exists: false },
+            "tuukh.zogsooliinId": parking._id.toString(),
+            "tuukh.orsonKhaalga": "192.168.2.75",
+            "tuukh.garsanKhaalga": { $exists: false },
           };
           if (req?.body?.mashiniiDugaar)
             match["mashiniiDugaar"] = req?.body?.mashiniiDugaar;
@@ -2171,8 +2171,8 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
             var match = {
               baiguullagiinId: gadnaParking.baiguullagiinId,
               barilgiinId: gadnaParking.barilgiinId,
-              "tuukh.0.zogsooliinId": gadnaParking._id.toString(),
-              "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: false },
+              "tuukh.zogsooliinId": gadnaParking._id.toString(),
+              "tuukh.tsagiinTuukh.garsanTsag": { $exists: false },
             };
             if (req?.body?.mashiniiDugaar)
               match["mashiniiDugaar"] = req?.body?.mashiniiDugaar;
