@@ -1524,6 +1524,8 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
     var dansnuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
+        if(kholbolt.baiguullagiinId !== "6115f350b35689cdbf1b9da3") continue;
+        console.log("Oirkhon tatakh guilgee: " + kholbolt.baiguullagiinId);
         var firstDay;
         var lastDay;
         firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
@@ -1831,7 +1833,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         .insertMany(guilgeenuud)
                         .then((result) => {})
                         .catch((err) => {
-                          throw err;
+                          console.log(err);
                         });
                     }
                   },
@@ -1949,7 +1951,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     .insertMany(guilgeenuud)
                     .then((result) => {})
                     .catch((err) => {
-                      throw err;
+                      console.log(err);
                     });
                 }
               } else if (dans.bank == "trans") {
@@ -2078,7 +2080,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     .insertMany(guilgeenuud)
                     .then((result) => {})
                     .catch((err) => {
-                      throw err;
+                      console.log(err);
                     });
                 }
               } else if (dans.bank == "bogd") {
@@ -2168,7 +2170,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     if (res) res.send("Amjilttai");
                   })
                   .catch((err) => {
-                    throw err;
+                    console.log(err);
                   });
               }
             } catch (aldaaa) {
