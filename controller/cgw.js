@@ -1733,7 +1733,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         .insertMany(guilgeenuud)
                         .then((result) => {})
                         .catch((err) => {
-                          throw err;
+                          console.log(err);
                         });
                     }
                   },
@@ -1853,7 +1853,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     .insertMany(guilgeenuud)
                     .then((result) => {})
                     .catch((err) => {
-                      throw err;
+                      console.log(err);
                     });
                 }
               } else if (dans.bank == "trans") {
@@ -1984,7 +1984,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     .insertMany(guilgeenuud)
                     .then((result) => {})
                     .catch((err) => {
-                      throw err;
+                      console.log(err);
                     });
                 }
               } else if (dans.bank == "bogd") {
@@ -2076,7 +2076,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     if (res) res.send("Amjilttai");
                   })
                   .catch((err) => {
-                    throw err;
+                    console.log(err);
                   });
               }
             } catch (aldaaa) {
@@ -2086,7 +2086,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
         else if (res) res.status(200).send("Tatah guilgee baihgui!");
       }
     }
-  } catch (err) {}
+  } catch (err) { console.log(err); }
 });
 
 async function pad(num, size) {
