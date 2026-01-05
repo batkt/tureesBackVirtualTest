@@ -1160,95 +1160,74 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
 
 exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
   const { db } = require("zevbackv2");
-  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+
+  // Байгууллага мэдээллийг авна
+  const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     req.body.baiguullagiinId
   );
-  var group = {
-    _id: "$barilgiinId",
-    tulukh: {
-      $sum: "$avlaga.guilgeenuud.tulukhDun",
-    },
-    tulsun: {
-      $sum: "$avlaga.guilgeenuud.tulsunDun",
-    },
-    khyamdral: {
-      $sum: "$avlaga.guilgeenuud.khyamdral",
-    },
-  };
-  let query = [
+
+  // Pipeline-г хурдан болгох
+  const pipeline = [
     {
       $match: {
         baiguullagiinId: req.body.baiguullagiinId,
-      },
-    },
-    {
-      $unwind: {
-        path: "$avlaga.guilgeenuud",
-      },
-    },
-    {
-      $unwind: {
-        path: "$avlaga.guilgeenuud.ognoo",
-      },
-    },
-    {
-      $match: {
-        tuluv: {
-          $ne: -1,
-        },
         "avlaga.guilgeenuud.ognoo": {
           $gte: new Date(new Date().getFullYear(), 0, 1),
           $lte: new Date(new Date().getFullYear(), 11, 31),
         },
-        "avlaga.guilgeenuud.turul": {
-          $nin: ["baritsaa"],
-        },
+        "avlaga.guilgeenuud.turul": { $nin: ["baritsaa"] },
+        "avlaga.guilgeenuud.tuluv": { $ne: -1 },
       },
     },
+    { $unwind: "$avlaga.guilgeenuud" },
     {
-      $group: group,
+      $group: {
+        _id: "$barilgiinId",
+        tulukh: { $sum: "$avlaga.guilgeenuud.tulukhDun" },
+        tulsun: { $sum: "$avlaga.guilgeenuud.tulsunDun" },
+        khyamdral: { $sum: "$avlaga.guilgeenuud.khyamdral" },
+      },
     },
   ];
-  var khariu = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
-    query
+
+  // Aggregate query-г ажиллуулна
+  const khariu = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
+    pipeline
   );
-  var niitAvlaga = 0;
-  var labels = [];
-  var series = [];
+
+  // Chart-д зориулж series болон labels бэлдэх
+  let niitAvlaga = 0;
+  const series = [];
+  const labels = [];
+
   khariu.forEach((a) => {
-    niitAvlaga = niitAvlaga + a.tulukh;
-    niitAvlaga = niitAvlaga - a.tulsun;
-    niitAvlaga = niitAvlaga - a.khyamdral;
+    const netAvlaga = a.tulukh - a.tulsun - a.khyamdral;
+    niitAvlaga += netAvlaga;
     series.push(niitAvlaga.toFixed(2));
-    var barilgiinNer = "";
-    try {
-      barilgiinNer = baiguullaga.barilguud.find((x) => x._id == a._id).ner;
-    } catch (aldaa) {}
+
+    const barilgiinNer =
+      baiguullaga.barilguud.find((x) => x._id == a._id)?.ner || "";
     labels.push(barilgiinNer);
   });
-  var data = {
+
+  // Chart объект бэлдэх
+  const data = {
     series,
     backgroundColor: chartUnguud,
     options: {
-      dataLabels: {
-        enabled: false,
-      },
-      theme: {
-        palette: "palette1",
-      },
+      dataLabels: { enabled: false },
+      theme: { palette: "palette1" },
       labels,
       legend: {
         horizontalAlign: "left",
         show: true,
         position: "bottom",
         fontSize: "13px",
-        itemMargin: {
-          horizontal: 20,
-          vertical: 3,
-        },
+        itemMargin: { horizontal: 20, vertical: 3 },
       },
     },
   };
+
   res.send(data);
 });
 
