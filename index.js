@@ -58,7 +58,8 @@ app.use(
   })
 );
 
-db.kholboltUusgey(app, "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin");
+// db.kholboltUusgey(app, "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin");
+db.kholboltUusgey(app);
 
 app.use(
   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
