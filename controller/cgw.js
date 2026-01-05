@@ -1838,6 +1838,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   dans.baiguullagiinId
                 );
               } else if (dans.bank == "golomt") {
+                console.log("Golomt oirkhon tatakh ajil ajillaj baina..." + dans.dugaar);
                 var max = await BankniiGuilgee(kholbolt, true).aggregate([
                   {
                     $match: {
@@ -1851,6 +1852,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 if (max?.length > 0) {
                   firstDay = new Date(max[0].txnDate);
                 }
+                console.log("firstDay ..." + JSON.stringify(firstDay));
                 var yawuulaxBody = {
                   registerNo: dans.register,
                   accountId: dans.dugaar,
