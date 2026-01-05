@@ -305,8 +305,9 @@ router.get(
         }
       }
 
+      // Use Uilchluulegch instead of Parking
       khuudaslalt(
-        Parking(req.body.tukhainBaaziinKholbolt, false, collectionName),
+        Uilchluulegch(req.body.tukhainBaaziinKholbolt, false, collectionName),
         body
       )
         .then((result) => {
