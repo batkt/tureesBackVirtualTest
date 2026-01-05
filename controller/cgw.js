@@ -2184,7 +2184,9 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
         else if (res) res.status(200).send("Tatah guilgee baihgui!");
       }
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log("bankniiKhuulgaTatyaOirkhon -------------->" + err);
+  }
 });
 
 async function pad(num, size) {
