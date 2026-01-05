@@ -252,7 +252,6 @@ crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
         next(error);
     }
 });*/
-const Uilchluulegch = require("parking-v2");
 
 router.get(
   "/zogsoolUilchluulegchJagsaalt",
