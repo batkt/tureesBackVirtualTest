@@ -2445,7 +2445,7 @@ exports.archiveBankGuilgee = asyncHandler(async () => {
               const y = _id.year;
               const m = _id.month;
               if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
-              const archiveName = `BankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+              const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
               console.log(`📦 Archiving month: ${archiveName}`);
               const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
                 dansniiDugaar: { $in: zogsooliinDansuud },
