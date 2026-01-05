@@ -1838,13 +1838,16 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   dans.baiguullagiinId
                 );
               } else if (dans.bank == "golomt") {
-                var max = await BankniiGuilgee(kholbolt, true)
-                  .findOne({
-                    barilgiinId: dans.barilgiinId,
-                    dansniiDugaar: dans.dugaar,
-                  })
-                  .sort({ createdAt: -1 })
-                  .limit(1);
+                var max = await BankniiGuilgee(kholbolt, true).aggregate([
+                  {
+                    $match: {
+                      barilgiinId: dans.barilgiinId,
+                      dansniiDugaar: dans.dugaar,
+                    },
+                  },
+                  { $sort: { createdAt: -1 } },
+                  { $limit: 1 },
+                ]);
                 if (!!max) {
                   firstDay = new Date(max.tranDate);
                 }
@@ -1958,13 +1961,16 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   process.env.TRANS_SERVER +
                   "/getStatement?apikey=" +
                   (dans.apikey ? dans.apikey : "p_uZ6A");
-                var max = await BankniiGuilgee(kholbolt, true)
-                  .findOne({
-                    barilgiinId: dans.barilgiinId,
-                    dansniiDugaar: dans.dugaar,
-                  })
-                  .sort({ createdAt: -1 })
-                  .limit(1);
+                var max = await BankniiGuilgee(kholbolt, true).aggregate([
+                  {
+                    $match: {
+                      barilgiinId: dans.barilgiinId,
+                      dansniiDugaar: dans.dugaar,
+                    },
+                  },
+                  { $sort: { createdAt: -1 } },
+                  { $limit: 1 },
+                ]);
                 if (!!max) {
                   firstDay = new Date(max.txnDate);
                 }
