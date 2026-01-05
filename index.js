@@ -311,9 +311,9 @@ cron.schedule(
 //);
 
 cron.schedule(
- "35 2 * * * ",
+ "38 2 * * * ",
  function () {
-   zogsool.archiveBankGuilgee();
+   cgw.archiveBankGuilgee();
  },
 {
    scheduled: true,
