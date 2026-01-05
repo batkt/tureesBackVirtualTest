@@ -1118,15 +1118,18 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   );
                 }
               } else if (dans.bank == "golomt") {
-                var max = await BankniiGuilgee(kholbolt, true)
-                  .findOne({
-                    barilgiinId: dans.barilgiinId,
-                    dansniiDugaar: dans.dugaar,
-                  })
-                  .sort({ createdAt: -1 })
-                  .limit(1);
-                if (!!max) {
-                  firstDay = new Date(max.tranDate);
+                var max = await BankniiGuilgee(kholbolt, true).aggregate([
+                  {
+                    $match: {
+                      barilgiinId: dans.barilgiinId,
+                      dansniiDugaar: dans.dugaar,
+                    },
+                  },
+                  { $sort: { createdAt: -1 } },
+                  { $limit: 1 },
+                ]);
+                if (max?.length > 0) {
+                  firstDay = new Date(max[0].tranDate);
                 }
                 var yawuulaxBody = {
                   registerNo: dans.register,
@@ -1838,7 +1841,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   dans.baiguullagiinId
                 );
               } else if (dans.bank == "golomt") {
-                console.log("Golomt oirkhon tatakh ajil ajillaj baina..." + dans.dugaar);
                 var max = await BankniiGuilgee(kholbolt, true).aggregate([
                   {
                     $match: {
@@ -1852,7 +1854,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 if (max?.length > 0) {
                   firstDay = new Date(max[0].tranDate);
                 }
-                console.log("firstDay ..." + JSON.stringify(firstDay));
                 var yawuulaxBody = {
                   registerNo: dans.register,
                   accountId: dans.dugaar,
