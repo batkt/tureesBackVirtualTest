@@ -305,11 +305,12 @@ router.get(
         }
       }
 
-      // Use Uilchluulegch instead of Parking
-      khuudaslalt(
-        Uilchluulegch(req.body.tukhainBaaziinKholbolt, false, collectionName),
-        body
-      )
+      // Call Uilchluulegch with or without collection name
+      const model = collectionName
+        ? Uilchluulegch(req.body.tukhainBaaziinKholbolt, false, collectionName)
+        : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+
+      khuudaslalt(model, body)
         .then((result) => {
           res.send(result);
         })
