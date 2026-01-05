@@ -853,14 +853,14 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 };
                 // if(dans.barilgiinId == "6735c77a7fc60cd66deb290a" && dans.dugaar == "5100229713")
                 // {
-                //   bodyKhuulga.ekhlekhOgnoo = "20251116"
-                //   bodyKhuulga.duusakhOgnoo = "20251130"
+                //   bodyKhuulga.ekhlekhOgnoo = "20251021"
+                //   bodyKhuulga.duusakhOgnoo = "20251031"
                 //   bodyKhuulga.khuudasniiDugaar = 0;
                 //   bodyKhuulga.khuudasniiKhemjee = 100;
                 // }
                 // else
                 // {
-                  
+                //   if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
                 // }
                 if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
                 var khariu = await dansniiKhuulgaAvya(token, next, bodyKhuulga);

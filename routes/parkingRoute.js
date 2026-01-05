@@ -3325,111 +3325,32 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
         ];
       }
     } else if (
-      req.body.ajiltniiId == "694e6d2d5b0e44bb0cca2945" &&
-      (req.body.ugaalgaHungulult ||
-        req.body.ugaalgaHungulult24 ||
-        (req.body.khungulult &&
-          req.body.khungulukhTsag &&
-          req.body.zogsoolUndsenUne))
+      (req.body.ajiltniiId == "694e6d2d5b0e44bb0cca2945" ||
+        req.body.ajiltniiId == "694e260f3f0da03b83ace92b") &&
+      !!req.body.khungulukhTsag &&
+      !!req.body.zogsoolUndsenUne
     ) {
-      let ugaalgaHungulult = req.body.ugaalgaHungulult;
-      let ugaalgaHungulult24 = req.body.ugaalgaHungulult24;
-      let ugaalgaHungulultTsag = req.body.ugaalgaHungulultTsag;
-      let ugaalgaHungulultTsag24 = req.body.ugaalgaHungulultTsag24;
-
-      if (
-        req.body.khungulult &&
-        req.body.khungulukhTsag &&
-        req.body.zogsoolUndsenUne
-      ) {
-        if (req.body.khungulukhTsag === 1) {
-          ugaalgaHungulult = req.body.khungulult;
-          ugaalgaHungulultTsag = 1;
-        } else if (req.body.khungulukhTsag === 24) {
-          ugaalgaHungulult24 = req.body.khungulult;
-          ugaalgaHungulultTsag24 = 24;
-        }
-      }
-
-      if (ugaalgaHungulult && ugaalgaHungulult24) {
-        throw new Error("Зөвхөн нэг угаалга хөнгөлөлт сонгох боломжтой!");
-      }
-
-      if (ugaalgaHungulult) {
-        if (!req.body.zogsoolUndsenUne) {
-          throw new Error("zogsoolUndsenUne заавал оруулах шаардлагатай!");
-        }
-        const expectedDun = req.body.zogsoolUndsenUne * 1;
-        if (ugaalgaHungulult !== expectedDun) {
-          throw new Error(
-            `Угаалга 1 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult}`
-          );
-        }
-      }
-
-      if (ugaalgaHungulult24) {
-        if (!req.body.zogsoolUndsenUne) {
-          throw new Error("zogsoolUndsenUne заавал оруулах шаардлагатай!");
-        }
-        const expectedDun = req.body.zogsoolUndsenUne * 24;
-        if (ugaalgaHungulult24 !== expectedDun) {
-          throw new Error(
-            `Угаалга 24 цагийн хөнгөлөлт буруу байна! Хүлээгдэж буй: ${expectedDun}, Илгээсэн: ${ugaalgaHungulult24}`
-          );
-        }
-      }
-
-      // 1 цагийн хөнгөлөлт
-      if (ugaalgaHungulult && ugaalgaHungulultTsag === 1) {
-        if (req.body.paid_amount == 0) {
-          tulbur = [
-            {
-              ognoo: new Date(),
-              turul: "ugaalga/ 1 цаг",
-              dun: ugaalgaHungulult,
-            },
-          ];
-        } else {
-          tulbur = [
-            {
-              ognoo: new Date(),
-              turul: "ugaalga/ 1 цаг",
-              dun: ugaalgaHungulult,
-            },
-            {
-              ognoo: new Date(),
-              turul: req.body.turul,
-              dun: req.body.paid_amount,
-            },
-          ];
-        }
-      }
-      // 24 цагийн хөнгөлөлт
-      else if (ugaalgaHungulult24 && ugaalgaHungulultTsag24 === 24) {
-        if (req.body.paid_amount == 0) {
-          tulbur = [
-            {
-              ognoo: new Date(),
-              turul: "ugaalga/ 24 цаг",
-              dun: ugaalgaHungulult24,
-            },
-          ];
-        } else {
-          tulbur = [
-            {
-              ognoo: new Date(),
-              turul: "ugaalga/ 24 цаг",
-              dun: ugaalgaHungulult24,
-            },
-            {
-              ognoo: new Date(),
-              turul: req.body.turul,
-              dun: req.body.paid_amount,
-            },
-          ];
-        }
+      if (req.body.paid_amount == 0) {
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "ugaalga/ " + req.body.khungulukhTsag + " цаг",
+            dun: req.body.zogsoolUndsenUne * req.body.khungulukhTsag,
+          },
+        ];
       } else {
-        throw new Error("Угаалга хөнгөлөлтийн мэдээлэл буруу байна!");
+        tulbur = [
+          {
+            ognoo: new Date(),
+            turul: "ugaalga/ " + req.body.khungulukhTsag + " цаг",
+            dun: req.body.zogsoolUndsenUne * req.body.khungulukhTsag,
+          },
+          {
+            ognoo: new Date(),
+            turul: req.body.turul,
+            dun: req.body.paid_amount,
+          },
+        ];
       }
     } else if (req.body.barilgiinId === "673d88133987e97992f77c03") {
       if (req.body.paid_amount == 0) {
@@ -3558,7 +3479,10 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
               )
             )
               throw new Error("Хөнгөлөлт оруулсан байна!");
-          } else if (req.body.ajiltniiId == "694e260f3f0da03b83ace92b") {
+          } else if (
+            req.body.ajiltniiId == "694e260f3f0da03b83ace92b" ||
+            req.body.ajiltniiId == "694e6d2d5b0e44bb0cca2945"
+          ) {
             const existingUgaalga = tukhainObject.tuukh[0].tulbur.find((x) =>
               x.turul?.includes("ugaalga")
             );
