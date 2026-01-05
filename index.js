@@ -1,6 +1,12 @@
 const express = require("express");
 const app = express();
+const http = require("http");
 const cors = require("cors");
+const server = http.Server(app);
+const io = require("socket.io")(server, {
+  pingTimeout: 20000,
+  pingInterval: 10000,
+});
 const cron = require("node-cron");
 const dotenv = require("dotenv");
 const { zuragPack } = require("zuragpack");
@@ -49,7 +55,10 @@ const {
 } = require("./controller/khariltsagch");
 process.setMaxListeners(0);
 process.env.UV_THREADPOOL_SIZE = 20;
+server.listen(8081);
+
 process.env.TZ = "Asia/Ulaanbaatar";
+app.set("socketio", io);
 app.use(cors());
 app.use(
   express.json({
@@ -58,7 +67,6 @@ app.use(
   })
 );
 
-// db.kholboltUusgey(app, "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin");
 db.kholboltUusgey(app);
 
 app.use(
@@ -323,4 +331,10 @@ cron.schedule(
 //     timezone: "Asia/Ulaanbaatar",
 //   }
 // );
-module.exports = app;
+
+io.once("connection", (socket) => {
+  socket.on("disconnect", () => {});
+  socket.on("error", function (err) {
+    socket.disconnect(true);
+  });
+});
