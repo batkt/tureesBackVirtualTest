@@ -2408,3 +2408,73 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(
     }
   }
 );
+
+exports.archiveBankGuilgee = asyncHandler(async () => {
+  try 
+  { 
+    const { db } = require("zevbackv2");
+    const kholboltuud = db.kholboltuud;
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    if (kholboltuud) {
+        for (const kholbolt of kholboltuud) {
+          if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
+          var parkings = await Parking(kholbolt).find({
+            baiguullagiinId: kholbolt.baiguullagiinId,
+            zogsooliinDans: {$exists: true}, 
+          });
+          if (parkings?.length === 0) continue;
+          var zogsooliinDansuud = [];
+          for (const parking of parkings) {
+            if (!!parking.zogsooliinDans && parking.zogsooliinDans !== "0" && !zogsooliinDansuud.includes(parking.zogsooliinDans)) {
+              zogsooliinDansuud.push(parking.zogsooliinDans);
+            }
+          }
+          if (zogsooliinDansuud?.length === 0) continue;
+          console.log(`🚀 Starting archive for kholbolt: ${kholbolt.baiguullagiinId} with dansuud: ${JSON.stringify(zogsooliinDansuud)}`);
+          const months = await BankniiGuilgee(kholbolt).aggregate([
+              { $match: { dansniiDugaar: { $in: zogsooliinDansuud }, kholbosonTalbainId: [] } },
+              { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
+              { $group: { _id: { year: "$year", month: "$month" } } },
+              { $sort: { "_id.year": 1, "_id.month": 1 }, },
+          ]);
+          console.log(`${JSON.stringify(months)} months found for kholbolt: ${kholbolt.baiguullagiinId}`);
+
+          for (const { _id } of months) {
+              const y = _id.year;
+              const m = _id.month;
+              if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
+              const archiveName = `BankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+              console.log(`📦 Archiving month: ${archiveName}`);
+              const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
+                dansniiDugaar: { $in: zogsooliinDansuud },
+                kholbosonTalbainId: [],
+                createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+              });
+              if (docs?.length > 0) continue;
+              console.log(`📦 docs length: ${docs?.length}`);
+              // --- Archive ---
+              // const data = await BankniiGuilgee(kholbolt).aggregate([
+              //     { $match: {
+              //       dansniiDugaar: { $in: zogsooliinDansuud },
+              //       kholbosonTalbainId: [],
+              //       createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
+              //     } },
+              // ]);
+              // await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+              // // --- Delete ---
+              // const res = await BankniiGuilgee(kholbolt).deleteMany({
+              //     dansniiDugaar: { $in: zogsooliinDansuud },
+              //     kholbosonTalbainId: [],
+              //     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+              // });
+              // console.log(`🗑️ Deleted ${res?.deletedCount} docs from BankniiGuilgee`);
+          }
+        }
+    }  
+  } catch (err) {
+      console.error("Error in archiveBankGuilgee:", err);
+    }
+  }
+);

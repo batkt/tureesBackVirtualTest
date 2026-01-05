@@ -135,10 +135,10 @@ bankniiGuilgeeSchema.pre("insertMany", function (next, docs) {
   next();
 });
 
-module.exports = function a(conn, read = false) {
+module.exports = function a(conn, read = false, modelName = "bankniiGuilgee") {
   if (!conn || !conn.kholbolt)
     throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
   conn = read && !!conn.kholboltRead ? conn.kholboltRead : conn.kholbolt;
-  return conn.model("bankniiGuilgee", bankniiGuilgeeSchema);
+  return conn.model(modelName, bankniiGuilgeeSchema);
 };
 //module.exports = mongoose.model("bankniiGuilgee", bankniiGuilgeeSchema);

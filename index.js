@@ -310,6 +310,17 @@ cron.schedule(
 //  }
 //);
 
+cron.schedule(
+ "30 2 * * * ",
+ function () {
+   zogsool.archiveBankGuilgee();
+ },
+{
+   scheduled: true,
+   timezone: "Asia/Ulaanbaatar",
+ }
+);
+
 // cron.schedule(
 //   "*/6 * * * * * ",
 //   function () {
