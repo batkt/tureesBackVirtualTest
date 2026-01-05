@@ -299,27 +299,27 @@ cron.schedule(
   }
 );**/
 
-//cron.schedule(
-//  "50 2 * * * ",
-//  function () {
-//    zogsool.archiveUilchluulegch();
-//  },
-// {
-//    scheduled: true,
-//    timezone: "Asia/Ulaanbaatar",
-//  }
-//);
-
 cron.schedule(
- "15 3 * * * ",
+ "35 3 * * * ",
  function () {
-   cgw.archiveBankGuilgee();
+   zogsool.archiveUilchluulegch();
  },
 {
    scheduled: true,
    timezone: "Asia/Ulaanbaatar",
  }
 );
+
+// cron.schedule(
+//  "15 3 * * * ",
+//  function () {
+//    cgw.archiveBankGuilgee();
+//  },
+// {
+//    scheduled: true,
+//    timezone: "Asia/Ulaanbaatar",
+//  }
+// );
 
 // cron.schedule(
 //   "*/6 * * * * * ",
