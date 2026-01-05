@@ -253,107 +253,107 @@ crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
     }
 });*/
 
-router.get(
-  "/zogsoolUilchluulegchJagsaalt",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      const body = req.query;
-      if (!!body?.query) body.query = JSON.parse(body.query);
-      if (!!body?.order) body.order = JSON.parse(body.order);
-      if (!!body?.khuudasniiDugaar)
-        body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-      if (!!body?.khuudasniiKhemjee)
-        body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-      if (!!body?.search) body.search = String(body.search);
+// router.get(
+//   "/zogsoolUilchluulegchJagsaalt",
+//   tokenShalgakh,
+//   async (req, res, next) => {
+//     try {
+//       const body = req.query;
+//       if (!!body?.query) body.query = JSON.parse(body.query);
+//       if (!!body?.order) body.order = JSON.parse(body.order);
+//       if (!!body?.khuudasniiDugaar)
+//         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+//       if (!!body?.khuudasniiKhemjee)
+//         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+//       if (!!body?.search) body.search = String(body.search);
 
-      // Determine which collection to use based on date filter
-      let collectionName = null;
-      let targetDate = null;
+//       // Determine which collection to use based on date filter
+//       let collectionName = null;
+//       let targetDate = null;
 
-      // Function to extract date from filter
-      const extractDate = (dateFilter) => {
-        if (!dateFilter) return null;
+//       // Function to extract date from filter
+//       const extractDate = (dateFilter) => {
+//         if (!dateFilter) return null;
 
-        if (dateFilter.$gte) {
-          return new Date(dateFilter.$gte);
-        } else if (dateFilter.$lte) {
-          return new Date(dateFilter.$lte);
-        } else if (dateFilter.$eq) {
-          return new Date(dateFilter.$eq);
-        } else if (
-          typeof dateFilter === "string" ||
-          dateFilter instanceof Date
-        ) {
-          return new Date(dateFilter);
-        }
-        return null;
-      };
+//         if (dateFilter.$gte) {
+//           return new Date(dateFilter.$gte);
+//         } else if (dateFilter.$lte) {
+//           return new Date(dateFilter.$lte);
+//         } else if (dateFilter.$eq) {
+//           return new Date(dateFilter.$eq);
+//         } else if (
+//           typeof dateFilter === "string" ||
+//           dateFilter instanceof Date
+//         ) {
+//           return new Date(dateFilter);
+//         }
+//         return null;
+//       };
 
-      if (body?.query) {
-        // Check createdAt
-        if (body.query.createdAt) {
-          targetDate = extractDate(body.query.createdAt);
-        }
+//       if (body?.query) {
+//         // Check createdAt
+//         if (body.query.createdAt) {
+//           targetDate = extractDate(body.query.createdAt);
+//         }
 
-        // Check tuukh.tulbur.ognoo
-        if (!targetDate && body.query["tuukh.tulbur.ognoo"]) {
-          targetDate = extractDate(body.query["tuukh.tulbur.ognoo"]);
-        }
+//         // Check tuukh.tulbur.ognoo
+//         if (!targetDate && body.query["tuukh.tulbur.ognoo"]) {
+//           targetDate = extractDate(body.query["tuukh.tulbur.ognoo"]);
+//         }
 
-        // Check in $and array
-        if (!targetDate && body.query.$and && Array.isArray(body.query.$and)) {
-          for (const condition of body.query.$and) {
-            if (condition.createdAt) {
-              targetDate = extractDate(condition.createdAt);
-              break;
-            }
-            if (condition["tuukh.tulbur.ognoo"]) {
-              targetDate = extractDate(condition["tuukh.tulbur.ognoo"]);
-              break;
-            }
-          }
-        }
-      }
+//         // Check in $and array
+//         if (!targetDate && body.query.$and && Array.isArray(body.query.$and)) {
+//           for (const condition of body.query.$and) {
+//             if (condition.createdAt) {
+//               targetDate = extractDate(condition.createdAt);
+//               break;
+//             }
+//             if (condition["tuukh.tulbur.ognoo"]) {
+//               targetDate = extractDate(condition["tuukh.tulbur.ognoo"]);
+//               break;
+//             }
+//           }
+//         }
+//       }
 
-      if (targetDate && !isNaN(targetDate.getTime())) {
-        const year = targetDate.getFullYear();
-        const month = targetDate.getMonth() + 1;
-        const now = new Date();
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth() + 1;
+//       if (targetDate && !isNaN(targetDate.getTime())) {
+//         const year = targetDate.getFullYear();
+//         const month = targetDate.getMonth() + 1;
+//         const now = new Date();
+//         const currentYear = now.getFullYear();
+//         const currentMonth = now.getMonth() + 1;
 
-        // Use archived collection if not current month
-        if (year !== currentYear || month !== currentMonth) {
-          collectionName = `Uilchluulegch${year}${String(month).padStart(
-            2,
-            "0"
-          )}`;
-          console.log(
-            `📂 Using archived collection: ${collectionName} for date: ${targetDate}`
-          );
-        } else {
-          console.log(`📂 Using main collection (current month)`);
-        }
-      }
+//         // Use archived collection if not current month
+//         if (year !== currentYear || month !== currentMonth) {
+//           collectionName = `Uilchluulegch${year}${String(month).padStart(
+//             2,
+//             "0"
+//           )}`;
+//           console.log(
+//             `📂 Using archived collection: ${collectionName} for date: ${targetDate}`
+//           );
+//         } else {
+//           console.log(`📂 Using main collection (current month)`);
+//         }
+//       }
 
-      // Call Uilchluulegch with or without collection name
-      const model = collectionName
-        ? Uilchluulegch(req.body.tukhainBaaziinKholbolt, false, collectionName)
-        : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+//       // Call Uilchluulegch with or without collection name
+//       const model = collectionName
+//         ? Uilchluulegch(req.body.tukhainBaaziinKholbolt, false, collectionName)
+//         : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-      khuudaslalt(model, body)
-        .then((result) => {
-          res.send(result);
-        })
-        .catch((err) => {
-          next(err);
-        });
-    } catch (error) {
-      next(error);
-    }
-  }
-);
+//       khuudaslalt(model, body)
+//         .then((result) => {
+//           res.send(result);
+//         })
+//         .catch((err) => {
+//           next(err);
+//         });
+//     } catch (error) {
+//       next(error);
+//     }
+//   }
+// );
 router.get("/zogsoolJagsaalt", tokenShalgakh, async (req, res, next) => {
   try {
     const body = req.query;
