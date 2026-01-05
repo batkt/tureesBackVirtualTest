@@ -311,7 +311,7 @@ cron.schedule(
 //);
 
 cron.schedule(
- "42 2 * * * ",
+ "50 2 * * * ",
  function () {
    cgw.archiveBankGuilgee();
  },

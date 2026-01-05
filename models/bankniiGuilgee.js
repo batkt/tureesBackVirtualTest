@@ -130,7 +130,7 @@ bankniiGuilgeeSchema.pre("insertMany", function (next, docs) {
       doc.bank +
       doc.dansniiDugaar +
       dugaar +
-      mungunDun.toString();
+      (mungunDun ? mungunDun.toString() : "0");
   }
   next();
 });
