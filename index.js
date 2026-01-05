@@ -116,16 +116,16 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "*/4 * * * * * ",
-//   function () {
-//     cgw.bankniiKhuulgaTatyaOirkhon();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
+cron.schedule(
+  "*/4 * * * * * ",
+  function () {
+    cgw.bankniiKhuulgaTatyaOirkhon();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 cron.schedule(
   "30 9 * * * ",
