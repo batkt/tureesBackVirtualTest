@@ -1848,8 +1848,8 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   { $sort: { createdAt: -1 } },
                   { $limit: 1 },
                 ]);
-                if (!!max) {
-                  firstDay = new Date(max.tranDate);
+                if (max?.length > 0) {
+                  firstDay = new Date(max[0].txnDate);
                 }
                 var yawuulaxBody = {
                   registerNo: dans.register,
@@ -1971,8 +1971,8 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   { $sort: { createdAt: -1 } },
                   { $limit: 1 },
                 ]);
-                if (!!max) {
-                  firstDay = new Date(max.txnDate);
+                if (max?.length > 0) {
+                  firstDay = new Date(max[0].txnDate);
                 }
                 const response = await got
                   .post(url, {
