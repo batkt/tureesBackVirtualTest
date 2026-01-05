@@ -311,7 +311,7 @@ cron.schedule(
 //);
 
 cron.schedule(
- "30 2 * * * ",
+ "35 2 * * * ",
  function () {
    zogsool.archiveBankGuilgee();
  },
