@@ -252,7 +252,32 @@ crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
         next(error);
     }
 });*/
+router.get(
+  "/zogsoolUilchluulegchJagsaalt",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const body = req.query;
+      if (!!body?.query) body.query = JSON.parse(body.query);
+      if (!!body?.order) body.order = JSON.parse(body.order);
+      if (!!body?.khuudasniiDugaar)
+        body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      if (!!body?.khuudasniiKhemjee)
+        body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+      if (!!body?.search) body.search = String(body.search);
 
+      khuudaslalt(Parking(req.body.tukhainBaaziinKholbolt), body)
+        .then((result) => {
+          res.send(result);
+        })
+        .catch((err) => {
+          next(err);
+        });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 router.get("/zogsoolJagsaalt", tokenShalgakh, async (req, res, next) => {
   try {
     const body = req.query;
@@ -4233,47 +4258,57 @@ router.post(
   }
 );
 
-router.post("/zogsoolUilchluulegchFast", tokenShalgakh, async (req, res, next) => {
-  try {
-    console.log("zogsoolUilchluulegchFast ----> req.body", req.body);
-    const {
-      baiguullagiinId,
-      barilgiinId,
-      matchWithGate,
-      matchWithoutGate,
-      khuudasniiDugaar = 1,
-      khuudasniiKhemjee = 10,
-      order = { "tuukh.0.tsagiinTuukh.garsanTsag": -1 },
-    } = req.body;
+router.post(
+  "/zogsoolUilchluulegchFast",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      console.log("zogsoolUilchluulegchFast ----> req.body", req.body);
+      const {
+        baiguullagiinId,
+        barilgiinId,
+        matchWithGate,
+        matchWithoutGate,
+        khuudasniiDugaar = 1,
+        khuudasniiKhemjee = 10,
+        order = { "tuukh.0.tsagiinTuukh.garsanTsag": -1 },
+      } = req.body;
 
-    // $or filter-г нэгтгэх
-    const orFilter = [];
-    if (matchWithGate) orFilter.push(matchWithGate);
-    if (matchWithoutGate) orFilter.push(matchWithoutGate);
+      // $or filter-г нэгтгэх
+      const orFilter = [];
+      if (matchWithGate) orFilter.push(matchWithGate);
+      if (matchWithoutGate) orFilter.push(matchWithoutGate);
 
-    // MongoDB query
-    const result = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).find({
-      baiguullagiinId,
-      barilgiinId,
-      $or: orFilter.length > 0 ? orFilter : [{}],
-    })
-      .sort(order)
-      .skip((khuudasniiDugaar - 1) * khuudasniiKhemjee)
-      .limit(khuudasniiKhemjee);
+      // MongoDB query
+      const result = await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+        .find({
+          baiguullagiinId,
+          barilgiinId,
+          $or: orFilter.length > 0 ? orFilter : [{}],
+        })
+        .sort(order)
+        .skip((khuudasniiDugaar - 1) * khuudasniiKhemjee)
+        .limit(khuudasniiKhemjee);
 
-    // Хүссэн тоогоор count авах
-    const total = await Uilchluulegch(req.body.tukhainBaaziinKholbolt).countDocuments({
-      baiguullagiinId,
-      barilgiinId,
-      $or: orFilter.length > 0 ? orFilter : [{}],
-    });
-    console.log("zogsoolUilchluulegchFast ----> total", total);
-    console.log("zogsoolUilchluulegchFast ----> result length", result?.length);
-    res.json({ data: result, total });
-  } catch (err) {
-    if (next) next(err);
-    res.status(500).json({ error: "Алдаа гарлаа" });
+      // Хүссэн тоогоор count авах
+      const total = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt
+      ).countDocuments({
+        baiguullagiinId,
+        barilgiinId,
+        $or: orFilter.length > 0 ? orFilter : [{}],
+      });
+      console.log("zogsoolUilchluulegchFast ----> total", total);
+      console.log(
+        "zogsoolUilchluulegchFast ----> result length",
+        result?.length
+      );
+      res.json({ data: result, total });
+    } catch (err) {
+      if (next) next(err);
+      res.status(500).json({ error: "Алдаа гарлаа" });
+    }
   }
-});
+);
 
 module.exports = router;
