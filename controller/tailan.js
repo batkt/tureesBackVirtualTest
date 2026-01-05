@@ -1160,74 +1160,95 @@ exports.avlagiinTailanAvya = asyncHandler(async (req, res, next) => {
 
 exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
   const { db } = require("zevbackv2");
-
-  // Байгууллага мэдээллийг авна
-  const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     req.body.baiguullagiinId
   );
-
-  // Pipeline-г хурдан болгох
-  const pipeline = [
+  var group = {
+    _id: "$barilgiinId",
+    tulukh: {
+      $sum: "$avlaga.guilgeenuud.tulukhDun",
+    },
+    tulsun: {
+      $sum: "$avlaga.guilgeenuud.tulsunDun",
+    },
+    khyamdral: {
+      $sum: "$avlaga.guilgeenuud.khyamdral",
+    },
+  };
+  let query = [
     {
       $match: {
         baiguullagiinId: req.body.baiguullagiinId,
+      },
+    },
+    {
+      $unwind: {
+        path: "$avlaga.guilgeenuud",
+      },
+    },
+    {
+      $unwind: {
+        path: "$avlaga.guilgeenuud.ognoo",
+      },
+    },
+    {
+      $match: {
+        tuluv: {
+          $ne: -1,
+        },
         "avlaga.guilgeenuud.ognoo": {
           $gte: new Date(new Date().getFullYear(), 0, 1),
           $lte: new Date(new Date().getFullYear(), 11, 31),
         },
-        "avlaga.guilgeenuud.turul": { $nin: ["baritsaa"] },
-        "avlaga.guilgeenuud.tuluv": { $ne: -1 },
+        "avlaga.guilgeenuud.turul": {
+          $nin: ["baritsaa"],
+        },
       },
     },
-    { $unwind: "$avlaga.guilgeenuud" },
     {
-      $group: {
-        _id: "$barilgiinId",
-        tulukh: { $sum: "$avlaga.guilgeenuud.tulukhDun" },
-        tulsun: { $sum: "$avlaga.guilgeenuud.tulsunDun" },
-        khyamdral: { $sum: "$avlaga.guilgeenuud.khyamdral" },
-      },
+      $group: group,
     },
   ];
-
-  // Aggregate query-г ажиллуулна
-  const khariu = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
-    pipeline
+  var khariu = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
+    query
   );
-
-  // Chart-д зориулж series болон labels бэлдэх
-  let niitAvlaga = 0;
-  const series = [];
-  const labels = [];
-
+  var niitAvlaga = 0;
+  var labels = [];
+  var series = [];
   khariu.forEach((a) => {
-    const netAvlaga = a.tulukh - a.tulsun - a.khyamdral;
-    niitAvlaga += netAvlaga;
+    niitAvlaga = niitAvlaga + a.tulukh;
+    niitAvlaga = niitAvlaga - a.tulsun;
+    niitAvlaga = niitAvlaga - a.khyamdral;
     series.push(niitAvlaga.toFixed(2));
-
-    const barilgiinNer =
-      baiguullaga.barilguud.find((x) => x._id == a._id)?.ner || "";
+    var barilgiinNer = "";
+    try {
+      barilgiinNer = baiguullaga.barilguud.find((x) => x._id == a._id).ner;
+    } catch (aldaa) {}
     labels.push(barilgiinNer);
   });
-
-  // Chart объект бэлдэх
-  const data = {
+  var data = {
     series,
     backgroundColor: chartUnguud,
     options: {
-      dataLabels: { enabled: false },
-      theme: { palette: "palette1" },
+      dataLabels: {
+        enabled: false,
+      },
+      theme: {
+        palette: "palette1",
+      },
       labels,
       legend: {
         horizontalAlign: "left",
         show: true,
         position: "bottom",
         fontSize: "13px",
-        itemMargin: { horizontal: 20, vertical: 3 },
+        itemMargin: {
+          horizontal: 20,
+          vertical: 3,
+        },
       },
     },
   };
-
   res.send(data);
 });
 
