@@ -266,7 +266,49 @@ router.get(
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) body.search = String(body.search);
 
-      khuudaslalt(Parking(req.body.tukhainBaaziinKholbolt), body)
+      // Determine which collection to use based on date filter
+      let collectionName = null;
+
+      if (body?.query?.createdAt) {
+        const dateFilter = body.query.createdAt;
+        let targetDate = null;
+
+        // Extract date from various filter formats
+        if (dateFilter.$gte) {
+          targetDate = new Date(dateFilter.$gte);
+        } else if (dateFilter.$lte) {
+          targetDate = new Date(dateFilter.$lte);
+        } else if (dateFilter.$eq) {
+          targetDate = new Date(dateFilter.$eq);
+        } else if (
+          typeof dateFilter === "string" ||
+          dateFilter instanceof Date
+        ) {
+          targetDate = new Date(dateFilter);
+        }
+
+        if (targetDate && !isNaN(targetDate.getTime())) {
+          const year = targetDate.getFullYear();
+          const month = targetDate.getMonth() + 1;
+          const now = new Date();
+          const currentYear = now.getFullYear();
+          const currentMonth = now.getMonth() + 1;
+
+          // Use archived collection if not current month
+          if (year !== currentYear || month !== currentMonth) {
+            collectionName = `Uilchluulegch${year}${String(month).padStart(
+              2,
+              "0"
+            )}`;
+            console.log(`📂 Using archived collection: ${collectionName}`);
+          }
+        }
+      }
+
+      khuudaslalt(
+        Parking(req.body.tukhainBaaziinKholbolt, false, collectionName),
+        body
+      )
         .then((result) => {
           res.send(result);
         })
