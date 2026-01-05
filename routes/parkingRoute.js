@@ -252,6 +252,8 @@ crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
         next(error);
     }
 });*/
+const Uilchluulegch = require("parking-v2");
+
 router.get(
   "/zogsoolUilchluulegchJagsaalt",
   tokenShalgakh,
@@ -268,40 +270,71 @@ router.get(
 
       // Determine which collection to use based on date filter
       let collectionName = null;
+      let targetDate = null;
 
-      if (body?.query?.createdAt) {
-        const dateFilter = body.query.createdAt;
-        let targetDate = null;
+      // Function to extract date from filter
+      const extractDate = (dateFilter) => {
+        if (!dateFilter) return null;
 
-        // Extract date from various filter formats
         if (dateFilter.$gte) {
-          targetDate = new Date(dateFilter.$gte);
+          return new Date(dateFilter.$gte);
         } else if (dateFilter.$lte) {
-          targetDate = new Date(dateFilter.$lte);
+          return new Date(dateFilter.$lte);
         } else if (dateFilter.$eq) {
-          targetDate = new Date(dateFilter.$eq);
+          return new Date(dateFilter.$eq);
         } else if (
           typeof dateFilter === "string" ||
           dateFilter instanceof Date
         ) {
-          targetDate = new Date(dateFilter);
+          return new Date(dateFilter);
+        }
+        return null;
+      };
+
+      if (body?.query) {
+        // Check createdAt
+        if (body.query.createdAt) {
+          targetDate = extractDate(body.query.createdAt);
         }
 
-        if (targetDate && !isNaN(targetDate.getTime())) {
-          const year = targetDate.getFullYear();
-          const month = targetDate.getMonth() + 1;
-          const now = new Date();
-          const currentYear = now.getFullYear();
-          const currentMonth = now.getMonth() + 1;
+        // Check tuukh.tulbur.ognoo
+        if (!targetDate && body.query["tuukh.tulbur.ognoo"]) {
+          targetDate = extractDate(body.query["tuukh.tulbur.ognoo"]);
+        }
 
-          // Use archived collection if not current month
-          if (year !== currentYear || month !== currentMonth) {
-            collectionName = `Uilchluulegch${year}${String(month).padStart(
-              2,
-              "0"
-            )}`;
-            console.log(`📂 Using archived collection: ${collectionName}`);
+        // Check in $and array
+        if (!targetDate && body.query.$and && Array.isArray(body.query.$and)) {
+          for (const condition of body.query.$and) {
+            if (condition.createdAt) {
+              targetDate = extractDate(condition.createdAt);
+              break;
+            }
+            if (condition["tuukh.tulbur.ognoo"]) {
+              targetDate = extractDate(condition["tuukh.tulbur.ognoo"]);
+              break;
+            }
           }
+        }
+      }
+
+      if (targetDate && !isNaN(targetDate.getTime())) {
+        const year = targetDate.getFullYear();
+        const month = targetDate.getMonth() + 1;
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth() + 1;
+
+        // Use archived collection if not current month
+        if (year !== currentYear || month !== currentMonth) {
+          collectionName = `Uilchluulegch${year}${String(month).padStart(
+            2,
+            "0"
+          )}`;
+          console.log(
+            `📂 Using archived collection: ${collectionName} for date: ${targetDate}`
+          );
+        } else {
+          console.log(`📂 Using main collection (current month)`);
         }
       }
 
