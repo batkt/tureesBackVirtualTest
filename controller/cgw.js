@@ -1527,7 +1527,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
     var dansnuud;
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
-        if (kholbolt.baiguullagiinId !== "65cf2f027fbc788f85e50b90") continue;
         var firstDay;
         var lastDay;
         firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
