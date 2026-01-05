@@ -853,7 +853,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 };
                 if(dans.barilgiinId == "6735c77a7fc60cd66deb290a" && dans.dugaar == "5100229713")
                 {
-                  bodyKhuulga.ekhlekhOgnoo = "20251016"
+                  bodyKhuulga.ekhlekhOgnoo = "20251020"
                   bodyKhuulga.duusakhOgnoo = "20251031"
                   bodyKhuulga.khuudasniiDugaar = 0;
                   bodyKhuulga.khuudasniiKhemjee = 100;
