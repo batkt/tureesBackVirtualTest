@@ -1850,7 +1850,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   { $limit: 1 },
                 ]);
                 if (max?.length > 0) {
-                  firstDay = new Date(max[0].txnDate);
+                  firstDay = new Date(max[0].tranDate);
                 }
                 console.log("firstDay ..." + JSON.stringify(firstDay));
                 var yawuulaxBody = {
