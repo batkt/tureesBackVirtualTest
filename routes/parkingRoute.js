@@ -1100,25 +1100,9 @@ router.post(
       const end = moment(duusakhOgnoo);
       const now = moment();
 
-      console.log("📅 zogsooliinUdriinTailanAvya - Date Range Selected:", {
-        ekhlekhOgnoo: start.format("YYYY-MM-DD"),
-        duusakhOgnoo: end.format("YYYY-MM-DD"),
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        garsanKhaalga: req.body.garsanKhaalga,
-        burtgesenAjiltaniiId: req.body.burtgesenAjiltaniiId,
-      });
-
-      // Check if date range spans multiple months
       const isMultiMonth =
         start.year() !== end.year() || start.month() !== end.month();
 
-      console.log(
-        "🔍 Query Type:",
-        isMultiMonth ? "MULTI-MONTH" : "SINGLE-MONTH"
-      );
-
-      // Function to aggregate data from a specific collection
       const aggregateFromCollection = async (collectionName = null) => {
         const model = collectionName
           ? Uilchluulegch(
@@ -1271,7 +1255,6 @@ router.post(
       let finalResult = [];
 
       if (isMultiMonth) {
-        // Handle multi-month query
         const collectionsToQuery = [];
         let current = start.clone().startOf("month");
 
@@ -1302,18 +1285,6 @@ router.post(
           current.add(1, "month");
         }
 
-        console.log(
-          "📦 Collections to Query:",
-          collectionsToQuery.map((c) => ({
-            collection: c.name || "Uilchluulegch (main)",
-            dateRange: `${moment(c.startDate).format("YYYY-MM-DD")} to ${moment(
-              c.endDate
-            ).format("YYYY-MM-DD")}`,
-            isMain: c.isMain,
-          }))
-        );
-
-        // Aggregate results from all collections
         const allResults = {
           udriinTailan: [],
           zurchiltei: [],
@@ -1323,20 +1294,7 @@ router.post(
 
         for (const collection of collectionsToQuery) {
           try {
-            console.log(
-              `🔎 Querying collection: ${
-                collection.name || "Uilchluulegch (main)"
-              }`
-            );
-
             const result = await aggregateFromCollection(collection.name);
-
-            console.log(`✅ Results from ${collection.name || "main"}:`, {
-              udriinTailan: result.udriinTailan.length,
-              zurchiltei: result.zurchiltei.length,
-              tulburiinZurchiltei: result.tulburiinZurchiltei.length,
-              unegui: result.unegui.length,
-            });
 
             allResults.udriinTailan.push(...result.udriinTailan);
             allResults.zurchiltei.push(...result.zurchiltei);
@@ -1350,7 +1308,6 @@ router.post(
           }
         }
 
-        // Merge results by payment type
         const mergedTailan = {};
         allResults.udriinTailan.forEach((item) => {
           if (mergedTailan[item._id]) {
@@ -1363,7 +1320,6 @@ router.post(
 
         finalResult = Object.values(mergedTailan);
 
-        // Add other aggregated data
         if (allResults.zurchiltei.length > 0) {
           const mergedZurchiltei = allResults.zurchiltei.reduce(
             (acc, item) => ({
@@ -1401,7 +1357,6 @@ router.post(
           finalResult.push(mergedUnegui);
         }
 
-        // Add ZurchilteiMashin data
         const matchVal = {
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: !!req.body.barilgiinId
@@ -1425,18 +1380,6 @@ router.post(
 
         if (zurchilteTailan?.length > 0) finalResult.push(zurchilteTailan[0]);
 
-        console.log("📊 Multi-Month Final Results:", {
-          totalItems: finalResult.length,
-          collections: collectionsToQuery.map((c) => c.name || "main"),
-          summary: finalResult.map((item) => ({
-            type: item._id,
-            amount: item.niitDun,
-            count: item.niitToo,
-          })),
-        });
-
-        // For backward compatibility, send array directly if client expects it
-        // but also include metadata for new clients
         if (req.body.includeMetadata) {
           res.status(200).send({
             data: finalResult,
@@ -1444,11 +1387,9 @@ router.post(
             collections: collectionsToQuery.map((c) => c.name || "main"),
           });
         } else {
-          // Send array directly for backward compatibility
           res.status(200).send(finalResult);
         }
       } else {
-        // Single month query
         let collectionName = null;
 
         if (!(start.year() === now.year() && start.month() === now.month())) {
@@ -1456,11 +1397,6 @@ router.post(
           const m = String(start.month() + 1).padStart(2, "0");
           collectionName = `Uilchluulegch${y}${m}`;
         }
-
-        console.log(
-          "📦 Single Month - Querying Collection:",
-          collectionName || "Uilchluulegch (main)"
-        );
 
         const result = await aggregateFromCollection(collectionName);
         finalResult = result.udriinTailan;
@@ -1495,25 +1431,12 @@ router.post(
         if (result.tulburiinZurchiltei?.length > 0)
           finalResult.push(result.tulburiinZurchiltei[0]);
 
-        console.log("📊 Single Month Final Results:", {
-          collection: collectionName || "Uilchluulegch (main)",
-          totalItems: finalResult.length,
-          summary: finalResult.map((item) => ({
-            type: item._id,
-            amount: item.niitDun,
-            count: item.niitToo,
-          })),
-        });
-
-        // For backward compatibility, send array directly if client expects it
-        // but also include metadata for new clients
         if (req.body.includeMetadata) {
           res.status(200).send({
             data: finalResult,
             archiveName: collectionName,
           });
         } else {
-          // Send array directly for backward compatibility
           res.status(200).send(finalResult);
         }
       }
