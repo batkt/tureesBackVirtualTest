@@ -855,7 +855,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 if(dans.barilgiinId == "6735c77a7fc60cd66deb290a" && dans.dugaar == "5100229713")
                 {
                   bodyKhuulga.ekhlekhOgnoo = "20251201"
-                  bodyKhuulga.duusakhOgnoo = "20251222"
+                  bodyKhuulga.duusakhOgnoo = "20251216"
                   bodyKhuulga.khuudasniiDugaar = 0;
                   bodyKhuulga.khuudasniiKhemjee = 100;
                 }
@@ -878,6 +878,29 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     x.barilgiinId = dans.barilgiinId;
                     console.log("x --->", x.description);
                   });
+                  if (guilgeenuud) {
+                    var ustgakhJagsaalt = [];
+                    for await (const item of guilgeenuud) {
+                      var indexTalbar =
+                        item.barilgiinId +
+                        item.bank +
+                        item.dansniiDugaar +
+                        item.record +
+                        item.amount.toString();
+                      var guilgee = await BankniiGuilgee(
+                        kholbolt,
+                        true
+                      ).findOne({
+                        indexTalbar: indexTalbar,
+                      });
+                      if (guilgee) ustgakhJagsaalt.push(item);
+                    }
+                    if (!!ustgakhJagsaalt) {
+                      guilgeenuud = guilgeenuud.filter(
+                        (el) => !ustgakhJagsaalt.includes(el)
+                      );
+                    }
+                  }
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {
