@@ -1018,9 +1018,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 })
               );
             } else {
-              console.log(
-                "⏳ Aldangi chuluuluh hugatsaa duusaa-gui, haruulav..."
-              );
+              
             }
           }
         }

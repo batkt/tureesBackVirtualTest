@@ -891,10 +891,10 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
           ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
           ustsanBarimt.barilgiinId = req.body.barilgiinId;
           await ustsanBarimt.save().catch((err) => {
-            console.error("И-Баримт устгахад алдаа гарлаа:", err);
+            
           });
         } catch (err) {
-          console.error("И-Баримт үүсгэхэд алдаа гарлаа:", err);
+          
         }
         if (butsaakhBarimt.guilgeeniiId)
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
@@ -1059,10 +1059,7 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
 
             allResults.push(...results);
           } catch (err) {
-            console.error(
-              `Error querying ${collection.name || "main"}:`,
-              err.message
-            );
+            
           }
         }
 

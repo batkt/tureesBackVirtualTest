@@ -17,5 +17,5 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.SOCKET_PORT || 8089;
 server.listen(PORT, () => {
-  console.log("Socket running on port", PORT);
+  
 });

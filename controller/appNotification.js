@@ -67,11 +67,9 @@ async function sonorduulgaIlgeeye(token, medeelel, callback, next) {
         
         if (isInvalidToken) {
           // Log invalid token errors with full details for debugging
-          console.log('Firebase Invalid Token Error:', JSON.stringify(logDetails, null, 2));
           if (callback) callback({ successCount: 0, error: 'Invalid token', details: logDetails });
         } else {
           // For other errors, log with full details and pass to error handler
-          console.error('Firebase Notification Error:', JSON.stringify(logDetails, null, 2));
           if (next) next(error);
           else if (callback) callback({ successCount: 0, error: error.message, details: logDetails });
         }
@@ -135,11 +133,9 @@ async function khariltsagchidSonorduulgaIlgeeye(
       
       if (isInvalidToken) {
         // Log invalid token errors with full details for debugging
-        console.log('Firebase Invalid Token Error:', JSON.stringify(logDetails, null, 2));
         if (callback) callback({ successCount: 0, error: 'Invalid token', details: logDetails });
       } else {
         // For other errors, log with full details and pass to error handler
-        console.error('Firebase Notification Error:', JSON.stringify(logDetails, null, 2));
         if (next) next(error);
         else if (callback) callback({ successCount: 0, error: error.message, details: logDetails });
       }

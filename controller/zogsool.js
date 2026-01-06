@@ -448,19 +448,16 @@ module.exports.archiveUilchluulegch =
                     { $group: { _id: { year: "$year", month: "$month" } } },
                     { $sort: { "_id.year": 1, "_id.month": 1 }, },
                 ]);
-                console.log(`${JSON.stringify(months)} months found for kholbolt: ${kholbolt.baiguullagiinId}`);
                 for (const { _id } of months) {
                     const y = _id.year;
                     const m = _id.month;
                     if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
                     const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
-                    console.log(`📦 Archiving month: ${archiveName}`);
                     const docs = await Uilchluulegch(kholbolt, false, archiveName).find({
                         "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true },
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
                     if (docs?.length > 0) continue;
-                    console.log(`📦 docs length: ${docs?.length}`);
                     // --- Archive ---
                     const data = await Uilchluulegch(kholbolt).aggregate([
                         { $match: {
@@ -474,12 +471,10 @@ module.exports.archiveUilchluulegch =
                         "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true },
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
-                    console.log(`🗑️ Deleted ${res?.deletedCount} docs from Uilchluulegch`);
                 }
             }
         }
     } catch (error) {
-        console.error("Error archiving archiveUilchluulegch:", error);
     }
 };
 
@@ -503,7 +498,6 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
               $lt: moment().startOf('day').toDate(),
             },
           });
-          console.log(`Zurchiltei uilchluulegch found: ${zurchilteiUilchluulegch?.length} for kholbolt: ${kholbolt?.baiguullagiinId}`);
           var bulkOps = [];
           if (zurchilteiUilchluulegch?.length > 0) {
             for (const zurchiltei of zurchilteiUilchluulegch) {
@@ -522,6 +516,5 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
         } 
       }   
     } catch (error) {
-        console.error("Error zurchilteiTuvulBoluulakh:", error);
     }
 });

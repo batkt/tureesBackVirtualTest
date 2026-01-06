@@ -17,18 +17,15 @@ module.exports.archiveEbarimt =
                     { $group: { _id: { year: "$year", month: "$month" } } },
                     { $sort: { "_id.year": 1, "_id.month": 1 }, },
                 ]);
-                console.log(`${JSON.stringify(months)} months found for kholbolt: ${kholbolt.baiguullagiinId}`);
                 for (const { _id } of months) {
                     const y = _id.year;
                     const m = _id.month;
                     if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
                     const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
-                    console.log(`📦 Archiving month: ${archiveName}`);
                     const docs = await EbarimtShine(kholbolt, archiveName).find({
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
                     if (docs?.length > 0) continue;
-                    console.log(`📦 docs length: ${docs?.length}`);
                     // --- Archive ---
                     const data = await EbarimtShine(kholbolt).aggregate([
                         { $match: { createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
@@ -38,11 +35,9 @@ module.exports.archiveEbarimt =
                     const res = await EbarimtShine(kholbolt).deleteMany({
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
-                    console.log(`🗑️ Deleted ${res?.deletedCount} docs from ebarimtShine`);
                 }
             }
         }
     } catch (error) {
-        console.error("Error archiving archiveEbarimt:", error);
     }
 };

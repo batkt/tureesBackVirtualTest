@@ -139,10 +139,6 @@ crud(router, "blockMashin", BlockMashin, UstsanBarimt);
 
 //             allResults.push(...results);
 //           } catch (err) {
-//             console.error(
-//               `Error querying ${collection.name || "main"}:`,
-//               err.message
-//             );
 //           }
 //         }
 
@@ -789,15 +785,12 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
             encodeURI(guilgee.qpay?.callback_url)
           );
         } catch (err) {
-          console.error(
-            "QR Gadaa callback error:",
-            err.response?.status,
-            err.response?.data || err.message
-          );
+          
         }
       }
-    } else if (nemeltUtga?.includes("kiosk") || nemeltUtga?.includes("KIOSK"))
-      console.log("QR Gadaa tulbur KIOSK bish");
+    } else if (nemeltUtga?.includes("kiosk") || nemeltUtga?.includes("KIOSK")){
+
+    }
     else {
       if (baiguullagiinId == "663da696aa6bedd9ae0567f0") {
         tulsunDun = tulsunDun + 50; //sms 50tug
@@ -1411,10 +1404,7 @@ router.post(
             allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
             allResults.unegui.push(...result.unegui);
           } catch (err) {
-            console.error(
-              `❌ Error querying ${collection.name || "main"}:`,
-              err.message
-            );
+            
           }
         }
 
@@ -1551,7 +1541,6 @@ router.post(
         }
       }
     } catch (error) {
-      console.error("❌ zogsooliinUdriinTailanAvya Error:", error);
       next(error);
     }
   }
