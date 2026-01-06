@@ -66,8 +66,10 @@ app.use(
     extended: true,
   })
 );
-
+//test
 db.kholboltUusgey(app, "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin");
+
+//production
 // db.kholboltUusgey(app);
 
 app.use(
