@@ -26,7 +26,7 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
     baiguullaga
       .save()
       .then((result) => {
-        test
+        // test
         db.kholboltNemye(
           baiguullaga._id,
           req.body.baaziinNer,
