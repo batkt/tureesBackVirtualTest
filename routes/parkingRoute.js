@@ -1191,6 +1191,7 @@ router.post(
             },
           },
           { $unwind: "$tuukh" },
+          { $unwind: "$tuukh.tulbur" },
           {
             $match: {
               "tuukh.tsagiinTuukh.garsanTsag": {
@@ -1203,15 +1204,8 @@ router.post(
           {
             $group: {
               _id: "Төлбөрийн зөрчилтэй",
-              niitDun: { $sum: "$niitDun" },
-              ids: { $addToSet: "$_id" },
-            },
-          },
-          {
-            $project: {
-              _id: 1,
-              niitDun: 1,
-              niitToo: { $size: "$ids" },
+              niitDun: { $sum: "$tuukh.tulbur.dun" },
+              niitToo: { $sum: 1 },
             },
           },
         ]);
