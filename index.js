@@ -67,13 +67,13 @@ app.use(
   })
 );
 //test
-db.kholboltUusgey(
-  app,
-  "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin"
-);
+// db.kholboltUusgey(
+//   app,
+//   "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin"
+// );
 
 //production
-// db.kholboltUusgey(app);
+db.kholboltUusgey(app);
 
 app.use(
   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
@@ -122,16 +122,16 @@ cron.schedule(
   }
 );
 
-cron.schedule(
-  "*/4 * * * * * ",
-  function () {
-    cgw.bankniiKhuulgaTatyaOirkhon();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
+// cron.schedule(
+//   "*/4 * * * * * ",
+//   function () {
+//     cgw.bankniiKhuulgaTatyaOirkhon();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 
 cron.schedule(
   "30 9 * * * ",
