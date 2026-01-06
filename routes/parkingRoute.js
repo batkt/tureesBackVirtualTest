@@ -267,13 +267,14 @@ router.get(
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) body.search = String(body.search);
 
-      let collectionName = null;
-      let targetDate = null;
-
-      const extractDate = (dateFilter) => {
+      const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
 
-        if (dateFilter.$gte) {
+        if (preferStart && dateFilter.$gte) {
+          return new Date(dateFilter.$gte);
+        } else if (!preferStart && dateFilter.$lte) {
+          return new Date(dateFilter.$lte);
+        } else if (dateFilter.$gte) {
           return new Date(dateFilter.$gte);
         } else if (dateFilter.$lte) {
           return new Date(dateFilter.$lte);
@@ -288,62 +289,187 @@ router.get(
         return null;
       };
 
+      // Extract start and end dates
+      let startDate = null;
+      let endDate = null;
+      let dateField = null;
+
       if (body?.query) {
+        // Check createdAt
         if (body.query.createdAt) {
-          targetDate = extractDate(body.query.createdAt);
+          startDate = extractDate(body.query.createdAt, true);
+          endDate = extractDate(body.query.createdAt, false);
+          dateField = "createdAt";
         }
 
-        if (!targetDate && body.query["tuukh.tulbur.ognoo"]) {
-          targetDate = extractDate(body.query["tuukh.tulbur.ognoo"]);
+        // Check tuukh.tulbur.ognoo
+        if (!startDate && body.query["tuukh.tulbur.ognoo"]) {
+          startDate = extractDate(body.query["tuukh.tulbur.ognoo"], true);
+          endDate = extractDate(body.query["tuukh.tulbur.ognoo"], false);
+          dateField = "tuukh.tulbur.ognoo";
         }
 
-        if (!targetDate && body.query.$and && Array.isArray(body.query.$and)) {
+        // Check in $and array
+        if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
           for (const condition of body.query.$and) {
             if (condition.createdAt) {
-              targetDate = extractDate(condition.createdAt);
+              startDate = extractDate(condition.createdAt, true);
+              endDate = extractDate(condition.createdAt, false);
+              dateField = "createdAt";
               break;
             }
             if (condition["tuukh.tulbur.ognoo"]) {
-              targetDate = extractDate(condition["tuukh.tulbur.ognoo"]);
+              startDate = extractDate(condition["tuukh.tulbur.ognoo"], true);
+              endDate = extractDate(condition["tuukh.tulbur.ognoo"], false);
+              dateField = "tuukh.tulbur.ognoo";
               break;
             }
           }
         }
       }
 
-      if (targetDate && !isNaN(targetDate.getTime())) {
-        const year = targetDate.getFullYear();
-        const month = targetDate.getMonth() + 1;
-        const now = new Date();
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth() + 1;
+      // If only one date found, use it as both start and end
+      if (startDate && !endDate) endDate = startDate;
+      if (!startDate && endDate) startDate = endDate;
 
-        // Use archived collection if not current month
-        if (year !== currentYear || month !== currentMonth) {
-          collectionName = `Uilchluulegch${year}${String(month).padStart(
-            2,
-            "0"
-          )}`;
-          console.log(
-            `📂 Using archived collection: ${collectionName} for date: ${targetDate}`
-          );
-        } else {
-          console.log(`📂 Using main collection (current month)`);
+      // Determine which collections to query
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+
+      const collectionsToQuery = [];
+
+      if (startDate && !isNaN(startDate.getTime())) {
+        const start = new Date(startDate);
+        const end =
+          endDate && !isNaN(endDate.getTime())
+            ? new Date(endDate)
+            : new Date(startDate);
+
+        // Generate list of months between start and end
+        const current = new Date(start.getFullYear(), start.getMonth(), 1);
+        const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
+
+        while (current <= endMonth) {
+          const year = current.getFullYear();
+          const month = current.getMonth() + 1;
+
+          if (year === currentYear && month === currentMonth) {
+            // Current month - use main collection
+            collectionsToQuery.push({
+              name: null,
+              year,
+              month,
+              isCurrent: true,
+            });
+          } else {
+            // Archived month
+            const collectionName = `Uilchluulegch${year}${String(
+              month
+            ).padStart(2, "0")}`;
+            collectionsToQuery.push({
+              name: collectionName,
+              year,
+              month,
+              isCurrent: false,
+            });
+          }
+
+          current.setMonth(current.getMonth() + 1);
         }
+
+        console.log(
+          `📂 Querying ${collectionsToQuery.length} collection(s):`,
+          collectionsToQuery.map((c) => c.name || "main")
+        );
       }
 
-      // Call Uilchluulegch with or without collection name
-      const model = collectionName
-        ? Uilchluulegch(req.body.tukhainBaaziinKholbolt, false, collectionName)
-        : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
-
-      khuudaslalt(model, body)
-        .then((result) => {
-          res.send(result);
-        })
-        .catch((err) => {
-          next(err);
+      // If no date range found, just use main collection
+      if (collectionsToQuery.length === 0) {
+        collectionsToQuery.push({
+          name: null,
+          isCurrent: true,
         });
+      }
+
+      // Query all collections and merge results
+      if (collectionsToQuery.length === 1) {
+        // Single collection - use normal flow
+        const model = collectionsToQuery[0].name
+          ? Uilchluulegch(
+              req.body.tukhainBaaziinKholbolt,
+              false,
+              collectionsToQuery[0].name
+            )
+          : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+
+        khuudaslalt(model, body)
+          .then((result) => {
+            res.send(result);
+          })
+          .catch((err) => {
+            next(err);
+          });
+      } else {
+        // Multiple collections - need to merge
+        try {
+          const allResults = [];
+          let totalCount = 0;
+
+          // Query each collection
+          for (const collection of collectionsToQuery) {
+            const model = collection.name
+              ? Uilchluulegch(
+                  req.body.tukhainBaaziinKholbolt,
+                  false,
+                  collection.name
+                )
+              : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+
+            // Create a copy of body without pagination for individual queries
+            const queryBody = { ...body };
+            delete queryBody.khuudasniiDugaar;
+            delete queryBody.khuudasniiKhemjee;
+
+            const result = await khuudaslalt(model, queryBody);
+
+            if (result.jagsaalt && result.jagsaalt.length > 0) {
+              allResults.push(...result.jagsaalt);
+            }
+            totalCount += result.niitMur || 0;
+          }
+
+          // Apply sorting if specified
+          if (body.order) {
+            const sortField = Object.keys(body.order)[0];
+            const sortOrder = body.order[sortField];
+            allResults.sort((a, b) => {
+              const aVal = a[sortField];
+              const bVal = b[sortField];
+              if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
+              if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
+              return 0;
+            });
+          }
+
+          // Apply pagination
+          const page = body.khuudasniiDugaar || 1;
+          const limit = body.khuudasniiKhemjee || 500;
+          const startIndex = (page - 1) * limit;
+          const endIndex = startIndex + limit;
+          const paginatedResults = allResults.slice(startIndex, endIndex);
+
+          res.send({
+            khuudasniiDugaar: page,
+            khuudasniiKhemjee: limit,
+            jagsaalt: paginatedResults,
+            niitMur: totalCount,
+            niitKhuudas: Math.ceil(totalCount / limit),
+          });
+        } catch (err) {
+          next(err);
+        }
+      }
     } catch (error) {
       next(error);
     }
