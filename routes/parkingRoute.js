@@ -377,11 +377,6 @@ router.get(
 
           current.setMonth(current.getMonth() + 1);
         }
-
-        console.log(
-          `📂 Querying ${collectionsToQuery.length} collection(s):`,
-          collectionsToQuery.map((c) => c.name || "main")
-        );
       }
 
       // If no date range found, just use main collection
@@ -4526,7 +4521,6 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      console.log("zogsoolUilchluulegchFast ----> req.body", req.body);
       const {
         baiguullagiinId,
         barilgiinId,
@@ -4561,11 +4555,6 @@ router.post(
         barilgiinId,
         $or: orFilter.length > 0 ? orFilter : [{}],
       });
-      console.log("zogsoolUilchluulegchFast ----> total", total);
-      console.log(
-        "zogsoolUilchluulegchFast ----> result length",
-        result?.length
-      );
       res.json({ data: result, total });
     } catch (err) {
       if (next) next(err);

@@ -99,7 +99,6 @@ const bankniiGuilgeeSchema = new Schema(
 
 bankniiGuilgeeSchema.pre("insertMany", function (next, docs) {
   for (let doc of docs) {
-    console.log("doc.bankniiGuilgeeSchema.pre->", doc.record, doc.dansniiDugaar);
     var dugaar =
       doc.bank === "khanbank"
         ? doc.record
@@ -133,7 +132,6 @@ bankniiGuilgeeSchema.pre("insertMany", function (next, docs) {
       dugaar +
       (mungunDun ? mungunDun.toString() : "0");
 
-    console.log("doc.bankniiGuilgeeSchema.pre->indexTalbar --->", doc.indexTalbar);
   }
   next();
 });

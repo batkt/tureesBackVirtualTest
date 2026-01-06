@@ -401,7 +401,6 @@ router
               }
             }
           ]);
-          console.log("kholbolt:", kholbolt?.baiguullagiinId, " davkhardsan:", JSON.stringify(guilgeenuud));
           for await (const guilgee of guilgeenuud){
             var ustgakhJagsaalt = [];
             ustgakhJagsaalt.push(guilgee.ids[0]);
