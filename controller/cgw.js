@@ -366,7 +366,6 @@ async function dansniiKhuulgaAvya(token, next, body) {
     if(body.ekhlekhOgnoo && body.duusakhOgnoo)
     {
       url = url + "?from=" + body.ekhlekhOgnoo + "&to=" + body.duusakhOgnoo + "&page=" + body.khuudasniiDugaar + "&&size=" + body.khuudasniiKhemjee;
-      console.log("url -------------->", url);
     }
     if (body.record)
       url = url + (resultValue ? "" : "/record?record=" + body.record);
@@ -854,8 +853,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 };
                 if(dans.barilgiinId == "6735c77a7fc60cd66deb290a" && dans.dugaar == "5100229713")
                 {
-                  bodyKhuulga.ekhlekhOgnoo = "20251101"
-                  bodyKhuulga.duusakhOgnoo = "20251116"
+                  bodyKhuulga.ekhlekhOgnoo = "20251017"
+                  bodyKhuulga.duusakhOgnoo = "20251031"
                   bodyKhuulga.khuudasniiDugaar = 0;
                   bodyKhuulga.khuudasniiKhemjee = 100;
                 }
@@ -876,7 +875,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     x.bank = dans.bank;
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
-                    console.log("x --->", x.description);
                   });
                   if (guilgeenuud) {
                     var ustgakhJagsaalt = [];
