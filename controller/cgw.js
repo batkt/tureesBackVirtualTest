@@ -366,6 +366,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
     if(body.ekhlekhOgnoo && body.duusakhOgnoo)
     {
       url = url + "?from=" + body.ekhlekhOgnoo + "&to=" + body.duusakhOgnoo + "&page=" + body.khuudasniiDugaar + "&&size=" + body.khuudasniiKhemjee;
+      console.log("url -------------->", url);
     }
     if (body.record)
       url = url + (resultValue ? "" : "/record?record=" + body.record);
