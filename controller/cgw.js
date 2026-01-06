@@ -854,8 +854,8 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 };
                 if(dans.barilgiinId == "6735c77a7fc60cd66deb290a" && dans.dugaar == "5100229713")
                 {
-                  bodyKhuulga.ekhlekhOgnoo = "20251219"
-                  bodyKhuulga.duusakhOgnoo = "20251230"
+                  bodyKhuulga.ekhlekhOgnoo = "20251201"
+                  bodyKhuulga.duusakhOgnoo = "20251215"
                   bodyKhuulga.khuudasniiDugaar = 0;
                   bodyKhuulga.khuudasniiKhemjee = 100;
                 }
@@ -863,7 +863,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 {
                   if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
                 }
-                if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
+                // if (max && max.length !== 0) bodyKhuulga["record"] = max[0].max;
                 var khariu = await dansniiKhuulgaAvya(token, next, bodyKhuulga);
 
                 if (khariu && khariu.transactions) {
