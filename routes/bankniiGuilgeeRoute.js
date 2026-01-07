@@ -262,7 +262,7 @@ router.get(
             });
           } else {
             // Archived month
-            const archiveName = `BankniiGuilgee${year}${String(month).padStart(
+            const archiveName = `bankniiGuilgee${year}${String(month).padStart(
               2,
               "0"
             )}`;
