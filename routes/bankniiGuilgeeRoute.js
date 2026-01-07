@@ -128,7 +128,6 @@ router.get(
         });
       }
 
-      // Check if dansniiDugaar exists in Parking's zogsooliinDans
       const parkingExists = await Parking(
         req.body.tukhainBaaziinKholbolt
       ).findOne({
@@ -137,12 +136,6 @@ router.get(
         baiguullagiinId: baiguullagiinId,
       });
 
-      console.log(
-        `🔍 Parking check for dans ${dansniiDugaar}:`,
-        parkingExists ? "Found" : "Not found"
-      );
-
-      // Only use archive if dansniiDugaar is found in Parking
       let collectionName = null;
 
       if (parkingExists) {
@@ -168,12 +161,10 @@ router.get(
           return null;
         };
 
-        // Extract start and end dates
         let startDate = null;
         let endDate = null;
 
         if (body?.query) {
-          // Check direct date fields
           if (body.query.TxDt) {
             startDate = extractDate(body.query.TxDt, true);
             endDate = extractDate(body.query.TxDt, false);
@@ -182,7 +173,6 @@ router.get(
             endDate = extractDate(body.query.tranDate, false);
           }
 
-          // Check in $and array
           if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
             for (const condition of body.query.$and) {
               // Look for $or with date conditions
@@ -200,7 +190,7 @@ router.get(
                   }
                 }
               }
-              // Direct date in $and
+
               if (!startDate && condition.TxDt) {
                 startDate = extractDate(condition.TxDt, true);
                 endDate = extractDate(condition.TxDt, false);
@@ -214,11 +204,9 @@ router.get(
           }
         }
 
-        // If only one date found, use it as both start and end
         if (startDate && !endDate) endDate = startDate;
         if (!startDate && endDate) startDate = endDate;
 
-        // Determine which collections to query
         const now = new Date();
         const currentYear = now.getFullYear();
         const currentMonth = now.getMonth() + 1;
@@ -232,7 +220,6 @@ router.get(
               ? new Date(endDate)
               : new Date(startDate);
 
-          // Generate list of months between start and end
           const current = new Date(start.getFullYear(), start.getMonth(), 1);
           const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
 
@@ -241,7 +228,6 @@ router.get(
             const month = current.getMonth() + 1;
 
             if (year === currentYear && month === currentMonth) {
-              // Current month - use main collection
               collectionsToQuery.push({
                 name: null,
                 year,
@@ -249,8 +235,7 @@ router.get(
                 isCurrent: true,
               });
             } else {
-              // Archived month
-              const archiveName = `BankniiGuilgee${year}${String(
+              const archiveName = `bankniiGuilgee${year}${String(
                 month
               ).padStart(2, "0")}`;
               collectionsToQuery.push({
@@ -263,14 +248,8 @@ router.get(
 
             current.setMonth(current.getMonth() + 1);
           }
-
-          console.log(
-            `📂 Querying ${collectionsToQuery.length} BankniiGuilgee collection(s):`,
-            collectionsToQuery.map((c) => c.name || "main")
-          );
         }
 
-        // If no date range found, just use main collection
         if (collectionsToQuery.length === 0) {
           collectionsToQuery.push({
             name: null,
@@ -278,9 +257,7 @@ router.get(
           });
         }
 
-        // Query all collections and merge results
         if (collectionsToQuery.length === 1) {
-          // Single collection - use normal flow
           const model = collectionsToQuery[0].name
             ? BankniiGuilgee(
                 req.body.tukhainBaaziinKholbolt,
@@ -297,12 +274,10 @@ router.get(
               next(err);
             });
         } else {
-          // Multiple collections - need to merge
           try {
             const allResults = [];
             let totalCount = 0;
 
-            // Query each collection
             for (const collection of collectionsToQuery) {
               const model = collection.name
                 ? BankniiGuilgee(
@@ -312,7 +287,6 @@ router.get(
                   )
                 : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
 
-              // Create a copy of body without pagination for individual queries
               const queryBody = { ...body };
               delete queryBody.khuudasniiDugaar;
               delete queryBody.khuudasniiKhemjee;
@@ -325,7 +299,6 @@ router.get(
               totalCount += result.niitMur || 0;
             }
 
-            // Apply sorting if specified
             if (body.order) {
               const sortField = Object.keys(body.order)[0];
               const sortOrder = body.order[sortField];
