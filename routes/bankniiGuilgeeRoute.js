@@ -101,7 +101,279 @@ router
         next(err);
       });
   });
+router.get(
+  "/zogsoolBankniiGuilgeeJagsaalt",
+  tokenShalgakh,
+  async (req, res, next) => {
+    try {
+      const body = req.query;
+      if (!!body?.query) body.query = JSON.parse(body.query);
+      if (!!body?.order) body.order = JSON.parse(body.order);
+      if (!!body?.khuudasniiDugaar)
+        body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      if (!!body?.khuudasniiKhemjee)
+        body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+      if (!!body?.search) body.search = String(body.search);
 
+      const dansniiDugaar = body.dansniiDugaar || body.query?.dansniiDugaar;
+      const barilgiinId = body.barilgiinId || body.query?.barilgiinId;
+      const baiguullagiinId =
+        body.baiguullagiinId || body.query?.baiguullagiinId;
+
+      if (!dansniiDugaar) {
+        return res.status(400).send({
+          success: false,
+          aldaa: "dansniiDugaar required",
+        });
+      }
+
+      // Check if dansniiDugaar exists in Parking's zogsooliinDans
+      const parkingExists = await Parking(
+        req.body.tukhainBaaziinKholbolt
+      ).findOne({
+        zogsooliinDans: dansniiDugaar,
+        barilgiinId: barilgiinId,
+        baiguullagiinId: baiguullagiinId,
+      });
+
+      console.log(
+        `🔍 Parking check for dans ${dansniiDugaar}:`,
+        parkingExists ? "Found" : "Not found"
+      );
+
+      // Only use archive if dansniiDugaar is found in Parking
+      let collectionName = null;
+
+      if (parkingExists) {
+        const extractDate = (dateFilter, preferStart = true) => {
+          if (!dateFilter) return null;
+
+          if (preferStart && dateFilter.$gte) {
+            return new Date(dateFilter.$gte);
+          } else if (!preferStart && dateFilter.$lte) {
+            return new Date(dateFilter.$lte);
+          } else if (dateFilter.$gte) {
+            return new Date(dateFilter.$gte);
+          } else if (dateFilter.$lte) {
+            return new Date(dateFilter.$lte);
+          } else if (dateFilter.$eq) {
+            return new Date(dateFilter.$eq);
+          } else if (
+            typeof dateFilter === "string" ||
+            dateFilter instanceof Date
+          ) {
+            return new Date(dateFilter);
+          }
+          return null;
+        };
+
+        // Extract start and end dates
+        let startDate = null;
+        let endDate = null;
+
+        if (body?.query) {
+          // Check direct date fields
+          if (body.query.TxDt) {
+            startDate = extractDate(body.query.TxDt, true);
+            endDate = extractDate(body.query.TxDt, false);
+          } else if (body.query.tranDate) {
+            startDate = extractDate(body.query.tranDate, true);
+            endDate = extractDate(body.query.tranDate, false);
+          }
+
+          // Check in $and array
+          if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
+            for (const condition of body.query.$and) {
+              // Look for $or with date conditions
+              if (condition.$or && Array.isArray(condition.$or)) {
+                for (const orCondition of condition.$or) {
+                  if (orCondition.TxDt) {
+                    startDate = extractDate(orCondition.TxDt, true);
+                    endDate = extractDate(orCondition.TxDt, false);
+                    break;
+                  }
+                  if (orCondition.tranDate) {
+                    startDate = extractDate(orCondition.tranDate, true);
+                    endDate = extractDate(orCondition.tranDate, false);
+                    break;
+                  }
+                }
+              }
+              // Direct date in $and
+              if (!startDate && condition.TxDt) {
+                startDate = extractDate(condition.TxDt, true);
+                endDate = extractDate(condition.TxDt, false);
+              }
+              if (!startDate && condition.tranDate) {
+                startDate = extractDate(condition.tranDate, true);
+                endDate = extractDate(condition.tranDate, false);
+              }
+              if (startDate) break;
+            }
+          }
+        }
+
+        // If only one date found, use it as both start and end
+        if (startDate && !endDate) endDate = startDate;
+        if (!startDate && endDate) startDate = endDate;
+
+        // Determine which collections to query
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth() + 1;
+
+        const collectionsToQuery = [];
+
+        if (startDate && !isNaN(startDate.getTime())) {
+          const start = new Date(startDate);
+          const end =
+            endDate && !isNaN(endDate.getTime())
+              ? new Date(endDate)
+              : new Date(startDate);
+
+          // Generate list of months between start and end
+          const current = new Date(start.getFullYear(), start.getMonth(), 1);
+          const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
+
+          while (current <= endMonth) {
+            const year = current.getFullYear();
+            const month = current.getMonth() + 1;
+
+            if (year === currentYear && month === currentMonth) {
+              // Current month - use main collection
+              collectionsToQuery.push({
+                name: null,
+                year,
+                month,
+                isCurrent: true,
+              });
+            } else {
+              // Archived month
+              const archiveName = `BankniiGuilgee${year}${String(
+                month
+              ).padStart(2, "0")}`;
+              collectionsToQuery.push({
+                name: archiveName,
+                year,
+                month,
+                isCurrent: false,
+              });
+            }
+
+            current.setMonth(current.getMonth() + 1);
+          }
+
+          console.log(
+            `📂 Querying ${collectionsToQuery.length} BankniiGuilgee collection(s):`,
+            collectionsToQuery.map((c) => c.name || "main")
+          );
+        }
+
+        // If no date range found, just use main collection
+        if (collectionsToQuery.length === 0) {
+          collectionsToQuery.push({
+            name: null,
+            isCurrent: true,
+          });
+        }
+
+        // Query all collections and merge results
+        if (collectionsToQuery.length === 1) {
+          // Single collection - use normal flow
+          const model = collectionsToQuery[0].name
+            ? BankniiGuilgee(
+                req.body.tukhainBaaziinKholbolt,
+                false,
+                collectionsToQuery[0].name
+              )
+            : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
+
+          khuudaslalt(model, body)
+            .then((result) => {
+              res.send(result);
+            })
+            .catch((err) => {
+              next(err);
+            });
+        } else {
+          // Multiple collections - need to merge
+          try {
+            const allResults = [];
+            let totalCount = 0;
+
+            // Query each collection
+            for (const collection of collectionsToQuery) {
+              const model = collection.name
+                ? BankniiGuilgee(
+                    req.body.tukhainBaaziinKholbolt,
+                    false,
+                    collection.name
+                  )
+                : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
+
+              // Create a copy of body without pagination for individual queries
+              const queryBody = { ...body };
+              delete queryBody.khuudasniiDugaar;
+              delete queryBody.khuudasniiKhemjee;
+
+              const result = await khuudaslalt(model, queryBody);
+
+              if (result.jagsaalt && result.jagsaalt.length > 0) {
+                allResults.push(...result.jagsaalt);
+              }
+              totalCount += result.niitMur || 0;
+            }
+
+            // Apply sorting if specified
+            if (body.order) {
+              const sortField = Object.keys(body.order)[0];
+              const sortOrder = body.order[sortField];
+              allResults.sort((a, b) => {
+                const aVal = a[sortField];
+                const bVal = b[sortField];
+                if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
+                if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
+                return 0;
+              });
+            }
+
+            // Apply pagination
+            const page = body.khuudasniiDugaar || 1;
+            const limit = body.khuudasniiKhemjee || 500;
+            const startIndex = (page - 1) * limit;
+            const endIndex = startIndex + limit;
+            const paginatedResults = allResults.slice(startIndex, endIndex);
+
+            res.send({
+              khuudasniiDugaar: page,
+              khuudasniiKhemjee: limit,
+              jagsaalt: paginatedResults,
+              niitMur: totalCount,
+              niitKhuudas: Math.ceil(totalCount / limit),
+            });
+          } catch (err) {
+            next(err);
+          }
+        }
+      } else {
+        // dansniiDugaar NOT found in Parking - use regular BankniiGuilgee only
+        console.log(`📂 Using regular BankniiGuilgee (dans not in Parking)`);
+
+        const model = BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
+
+        khuudaslalt(model, body)
+          .then((result) => {
+            res.send(result);
+          })
+          .catch((err) => {
+            next(err);
+          });
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 router
   .route("/davkhardsanDansniiKhuulga")
   .post(tokenShalgakh, async (req, res, next) => {
@@ -143,289 +415,7 @@ router
         },
       },
     ];
-    router.get(
-      "/zogsoolBankniiGuilgeeJagsaalt",
-      tokenShalgakh,
-      async (req, res, next) => {
-        try {
-          const body = req.query;
-          if (!!body?.query) body.query = JSON.parse(body.query);
-          if (!!body?.order) body.order = JSON.parse(body.order);
-          if (!!body?.khuudasniiDugaar)
-            body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-          if (!!body?.khuudasniiKhemjee)
-            body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-          if (!!body?.search) body.search = String(body.search);
 
-          const dansniiDugaar = body.dansniiDugaar || body.query?.dansniiDugaar;
-          const barilgiinId = body.barilgiinId || body.query?.barilgiinId;
-          const baiguullagiinId =
-            body.baiguullagiinId || body.query?.baiguullagiinId;
-
-          if (!dansniiDugaar) {
-            return res.status(400).send({
-              success: false,
-              aldaa: "dansniiDugaar required",
-            });
-          }
-
-          // Check if dansniiDugaar exists in Parking's zogsooliinDans
-          const parkingExists = await Parking(
-            req.body.tukhainBaaziinKholbolt
-          ).findOne({
-            zogsooliinDans: dansniiDugaar,
-            barilgiinId: barilgiinId,
-            baiguullagiinId: baiguullagiinId,
-          });
-
-          console.log(
-            `🔍 Parking check for dans ${dansniiDugaar}:`,
-            parkingExists ? "Found" : "Not found"
-          );
-
-          // Only use archive if dansniiDugaar is found in Parking
-          let collectionName = null;
-
-          if (parkingExists) {
-            const extractDate = (dateFilter, preferStart = true) => {
-              if (!dateFilter) return null;
-
-              if (preferStart && dateFilter.$gte) {
-                return new Date(dateFilter.$gte);
-              } else if (!preferStart && dateFilter.$lte) {
-                return new Date(dateFilter.$lte);
-              } else if (dateFilter.$gte) {
-                return new Date(dateFilter.$gte);
-              } else if (dateFilter.$lte) {
-                return new Date(dateFilter.$lte);
-              } else if (dateFilter.$eq) {
-                return new Date(dateFilter.$eq);
-              } else if (
-                typeof dateFilter === "string" ||
-                dateFilter instanceof Date
-              ) {
-                return new Date(dateFilter);
-              }
-              return null;
-            };
-
-            // Extract start and end dates
-            let startDate = null;
-            let endDate = null;
-
-            if (body?.query) {
-              // Check direct date fields
-              if (body.query.TxDt) {
-                startDate = extractDate(body.query.TxDt, true);
-                endDate = extractDate(body.query.TxDt, false);
-              } else if (body.query.tranDate) {
-                startDate = extractDate(body.query.tranDate, true);
-                endDate = extractDate(body.query.tranDate, false);
-              }
-
-              // Check in $and array
-              if (
-                !startDate &&
-                body.query.$and &&
-                Array.isArray(body.query.$and)
-              ) {
-                for (const condition of body.query.$and) {
-                  // Look for $or with date conditions
-                  if (condition.$or && Array.isArray(condition.$or)) {
-                    for (const orCondition of condition.$or) {
-                      if (orCondition.TxDt) {
-                        startDate = extractDate(orCondition.TxDt, true);
-                        endDate = extractDate(orCondition.TxDt, false);
-                        break;
-                      }
-                      if (orCondition.tranDate) {
-                        startDate = extractDate(orCondition.tranDate, true);
-                        endDate = extractDate(orCondition.tranDate, false);
-                        break;
-                      }
-                    }
-                  }
-                  // Direct date in $and
-                  if (!startDate && condition.TxDt) {
-                    startDate = extractDate(condition.TxDt, true);
-                    endDate = extractDate(condition.TxDt, false);
-                  }
-                  if (!startDate && condition.tranDate) {
-                    startDate = extractDate(condition.tranDate, true);
-                    endDate = extractDate(condition.tranDate, false);
-                  }
-                  if (startDate) break;
-                }
-              }
-            }
-
-            // If only one date found, use it as both start and end
-            if (startDate && !endDate) endDate = startDate;
-            if (!startDate && endDate) startDate = endDate;
-
-            // Determine which collections to query
-            const now = new Date();
-            const currentYear = now.getFullYear();
-            const currentMonth = now.getMonth() + 1;
-
-            const collectionsToQuery = [];
-
-            if (startDate && !isNaN(startDate.getTime())) {
-              const start = new Date(startDate);
-              const end =
-                endDate && !isNaN(endDate.getTime())
-                  ? new Date(endDate)
-                  : new Date(startDate);
-
-              // Generate list of months between start and end
-              const current = new Date(
-                start.getFullYear(),
-                start.getMonth(),
-                1
-              );
-              const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
-
-              while (current <= endMonth) {
-                const year = current.getFullYear();
-                const month = current.getMonth() + 1;
-
-                if (year === currentYear && month === currentMonth) {
-                  // Current month - use main collection
-                  collectionsToQuery.push({
-                    name: null,
-                    year,
-                    month,
-                    isCurrent: true,
-                  });
-                } else {
-                  // Archived month
-                  const archiveName = `BankniiGuilgee${year}${String(
-                    month
-                  ).padStart(2, "0")}`;
-                  collectionsToQuery.push({
-                    name: archiveName,
-                    year,
-                    month,
-                    isCurrent: false,
-                  });
-                }
-
-                current.setMonth(current.getMonth() + 1);
-              }
-
-              console.log(
-                `📂 Querying ${collectionsToQuery.length} BankniiGuilgee collection(s):`,
-                collectionsToQuery.map((c) => c.name || "main")
-              );
-            }
-
-            // If no date range found, just use main collection
-            if (collectionsToQuery.length === 0) {
-              collectionsToQuery.push({
-                name: null,
-                isCurrent: true,
-              });
-            }
-
-            // Query all collections and merge results
-            if (collectionsToQuery.length === 1) {
-              // Single collection - use normal flow
-              const model = collectionsToQuery[0].name
-                ? BankniiGuilgee(
-                    req.body.tukhainBaaziinKholbolt,
-                    false,
-                    collectionsToQuery[0].name
-                  )
-                : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
-
-              khuudaslalt(model, body)
-                .then((result) => {
-                  res.send(result);
-                })
-                .catch((err) => {
-                  next(err);
-                });
-            } else {
-              // Multiple collections - need to merge
-              try {
-                const allResults = [];
-                let totalCount = 0;
-
-                // Query each collection
-                for (const collection of collectionsToQuery) {
-                  const model = collection.name
-                    ? BankniiGuilgee(
-                        req.body.tukhainBaaziinKholbolt,
-                        false,
-                        collection.name
-                      )
-                    : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
-
-                  // Create a copy of body without pagination for individual queries
-                  const queryBody = { ...body };
-                  delete queryBody.khuudasniiDugaar;
-                  delete queryBody.khuudasniiKhemjee;
-
-                  const result = await khuudaslalt(model, queryBody);
-
-                  if (result.jagsaalt && result.jagsaalt.length > 0) {
-                    allResults.push(...result.jagsaalt);
-                  }
-                  totalCount += result.niitMur || 0;
-                }
-
-                // Apply sorting if specified
-                if (body.order) {
-                  const sortField = Object.keys(body.order)[0];
-                  const sortOrder = body.order[sortField];
-                  allResults.sort((a, b) => {
-                    const aVal = a[sortField];
-                    const bVal = b[sortField];
-                    if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
-                    if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
-                    return 0;
-                  });
-                }
-
-                // Apply pagination
-                const page = body.khuudasniiDugaar || 1;
-                const limit = body.khuudasniiKhemjee || 500;
-                const startIndex = (page - 1) * limit;
-                const endIndex = startIndex + limit;
-                const paginatedResults = allResults.slice(startIndex, endIndex);
-
-                res.send({
-                  khuudasniiDugaar: page,
-                  khuudasniiKhemjee: limit,
-                  jagsaalt: paginatedResults,
-                  niitMur: totalCount,
-                  niitKhuudas: Math.ceil(totalCount / limit),
-                });
-              } catch (err) {
-                next(err);
-              }
-            }
-          } else {
-            // dansniiDugaar NOT found in Parking - use regular BankniiGuilgee only
-            console.log(
-              `📂 Using regular BankniiGuilgee (dans not in Parking)`
-            );
-
-            const model = BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
-
-            khuudaslalt(model, body)
-              .then((result) => {
-                res.send(result);
-              })
-              .catch((err) => {
-                next(err);
-              });
-          }
-        } catch (error) {
-          next(error);
-        }
-      }
-    );
     var result = await BankniiGuilgee(
       req.body.tukhainBaaziinKholbolt,
       true
