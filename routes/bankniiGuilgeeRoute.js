@@ -121,6 +121,8 @@ router.get(
       const baiguullagiinId =
         body.baiguullagiinId || body.query?.baiguullagiinId;
 
+      console.log("🔍 Query:", JSON.stringify(body.query, null, 2));
+
       if (!dansniiDugaar) {
         return res.status(400).send({
           success: false,
@@ -128,6 +130,7 @@ router.get(
         });
       }
 
+      // Check if dansniiDugaar exists in Parking's zogsooliinDans
       const parkingExists = await Parking(
         req.body.tukhainBaaziinKholbolt
       ).findOne({
@@ -136,9 +139,15 @@ router.get(
         baiguullagiinId: baiguullagiinId,
       });
 
+      console.log(
+        `🔍 Parking check for dans ${dansniiDugaar}:`,
+        parkingExists ? "Found ✅" : "Not found ❌"
+      );
+
       let collectionName = null;
 
-      if (parkingExists) {
+      // Only use archive if dansniiDugaar is found in Parking
+      if (parkingExists && body.query) {
         const extractDate = (dateFilter, preferStart = true) => {
           if (!dateFilter) return null;
 
@@ -162,188 +171,87 @@ router.get(
         };
 
         let startDate = null;
-        let endDate = null;
 
-        if (body?.query) {
-          if (body.query.TxDt) {
-            startDate = extractDate(body.query.TxDt, true);
-            endDate = extractDate(body.query.TxDt, false);
-          } else if (body.query.tranDate) {
-            startDate = extractDate(body.query.tranDate, true);
-            endDate = extractDate(body.query.tranDate, false);
-          }
+        // Check TxDt (TDB bank)
+        if (body.query.TxDt) {
+          startDate = extractDate(body.query.TxDt, true);
+          console.log("📅 Found TxDt:", startDate);
+        }
 
-          if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
-            for (const condition of body.query.$and) {
-              // Look for $or with date conditions
-              if (condition.$or && Array.isArray(condition.$or)) {
-                for (const orCondition of condition.$or) {
-                  if (orCondition.TxDt) {
-                    startDate = extractDate(orCondition.TxDt, true);
-                    endDate = extractDate(orCondition.TxDt, false);
-                    break;
-                  }
-                  if (orCondition.tranDate) {
-                    startDate = extractDate(orCondition.tranDate, true);
-                    endDate = extractDate(orCondition.tranDate, false);
-                    break;
-                  }
+        // Check tranDate (other banks)
+        if (!startDate && body.query.tranDate) {
+          startDate = extractDate(body.query.tranDate, true);
+          console.log("📅 Found tranDate:", startDate);
+        }
+
+        // Check in $and array
+        if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
+          for (const condition of body.query.$and) {
+            // Look for $or with date conditions
+            if (condition.$or && Array.isArray(condition.$or)) {
+              for (const orCondition of condition.$or) {
+                if (orCondition.TxDt) {
+                  startDate = extractDate(orCondition.TxDt, true);
+                  console.log("📅 Found TxDt in $and/$or:", startDate);
+                  break;
+                }
+                if (orCondition.tranDate) {
+                  startDate = extractDate(orCondition.tranDate, true);
+                  console.log("📅 Found tranDate in $and/$or:", startDate);
+                  break;
                 }
               }
-
-              if (!startDate && condition.TxDt) {
-                startDate = extractDate(condition.TxDt, true);
-                endDate = extractDate(condition.TxDt, false);
-              }
-              if (!startDate && condition.tranDate) {
-                startDate = extractDate(condition.tranDate, true);
-                endDate = extractDate(condition.tranDate, false);
-              }
-              if (startDate) break;
             }
+            if (startDate) break;
           }
         }
-
-        if (startDate && !endDate) endDate = startDate;
-        if (!startDate && endDate) startDate = endDate;
-
-        const now = new Date();
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth() + 1;
-
-        const collectionsToQuery = [];
 
         if (startDate && !isNaN(startDate.getTime())) {
-          const start = new Date(startDate);
-          const end =
-            endDate && !isNaN(endDate.getTime())
-              ? new Date(endDate)
-              : new Date(startDate);
+          const year = startDate.getFullYear();
+          const month = startDate.getMonth() + 1;
+          const now = new Date();
+          const currentYear = now.getFullYear();
+          const currentMonth = now.getMonth() + 1;
 
-          const current = new Date(start.getFullYear(), start.getMonth(), 1);
-          const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
+          console.log(
+            `📅 Date parsed: ${year}-${month}, Current: ${currentYear}-${currentMonth}`
+          );
 
-          while (current <= endMonth) {
-            const year = current.getFullYear();
-            const month = current.getMonth() + 1;
-
-            if (year === currentYear && month === currentMonth) {
-              collectionsToQuery.push({
-                name: null,
-                year,
-                month,
-                isCurrent: true,
-              });
-            } else {
-              const archiveName = `bankniiGuilgee${year}${String(
-                month
-              ).padStart(2, "0")}`;
-              collectionsToQuery.push({
-                name: archiveName,
-                year,
-                month,
-                isCurrent: false,
-              });
-            }
-
-            current.setMonth(current.getMonth() + 1);
+          // Use archived collection if not current month
+          if (year !== currentYear || month !== currentMonth) {
+            collectionName = `BankniiGuilgee${year}${String(month).padStart(
+              2,
+              "0"
+            )}`;
+            console.log(`📂 Using archived collection: ${collectionName}`);
+          } else {
+            console.log(`📂 Using main collection (current month)`);
           }
-        }
-
-        if (collectionsToQuery.length === 0) {
-          collectionsToQuery.push({
-            name: null,
-            isCurrent: true,
-          });
-        }
-
-        if (collectionsToQuery.length === 1) {
-          const model = collectionsToQuery[0].name
-            ? BankniiGuilgee(
-                req.body.tukhainBaaziinKholbolt,
-                false,
-                collectionsToQuery[0].name
-              )
-            : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
-
-          khuudaslalt(model, body)
-            .then((result) => {
-              res.send(result);
-            })
-            .catch((err) => {
-              next(err);
-            });
         } else {
-          try {
-            const allResults = [];
-            let totalCount = 0;
-
-            for (const collection of collectionsToQuery) {
-              const model = collection.name
-                ? BankniiGuilgee(
-                    req.body.tukhainBaaziinKholbolt,
-                    false,
-                    collection.name
-                  )
-                : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
-
-              const queryBody = { ...body };
-              delete queryBody.khuudasniiDugaar;
-              delete queryBody.khuudasniiKhemjee;
-
-              const result = await khuudaslalt(model, queryBody);
-
-              if (result.jagsaalt && result.jagsaalt.length > 0) {
-                allResults.push(...result.jagsaalt);
-              }
-              totalCount += result.niitMur || 0;
-            }
-
-            if (body.order) {
-              const sortField = Object.keys(body.order)[0];
-              const sortOrder = body.order[sortField];
-              allResults.sort((a, b) => {
-                const aVal = a[sortField];
-                const bVal = b[sortField];
-                if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
-                if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
-                return 0;
-              });
-            }
-
-            // Apply pagination
-            const page = body.khuudasniiDugaar || 1;
-            const limit = body.khuudasniiKhemjee || 500;
-            const startIndex = (page - 1) * limit;
-            const endIndex = startIndex + limit;
-            const paginatedResults = allResults.slice(startIndex, endIndex);
-
-            res.send({
-              khuudasniiDugaar: page,
-              khuudasniiKhemjee: limit,
-              jagsaalt: paginatedResults,
-              niitMur: totalCount,
-              niitKhuudas: Math.ceil(totalCount / limit),
-            });
-          } catch (err) {
-            next(err);
-          }
+          console.log("⚠️ Could not parse date from query");
         }
-      } else {
-        // dansniiDugaar NOT found in Parking - use regular BankniiGuilgee only
-        console.log(`📂 Using regular BankniiGuilgee (dans not in Parking)`);
-
-        const model = BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
-
-        khuudaslalt(model, body)
-          .then((result) => {
-            res.send(result);
-          })
-          .catch((err) => {
-            next(err);
-          });
       }
+
+      // Call BankniiGuilgee with or without collection name
+      const model = collectionName
+        ? BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, collectionName)
+        : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
+
+      console.log(
+        `🗄️ Using model with collection: ${collectionName || "default"}`
+      );
+
+      khuudaslalt(model, body)
+        .then((result) => {
+          console.log(`✅ Result: ${result?.jagsaalt?.length || 0} records`);
+          res.send(result);
+        })
+        .catch((err) => {
+          console.error("❌ khuudaslalt error:", err);
+          next(err);
+        });
     } catch (error) {
+      console.error("❌ Route error:", error);
       next(error);
     }
   }
