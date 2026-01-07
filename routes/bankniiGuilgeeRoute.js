@@ -7,7 +7,8 @@ const { bankniiGuilgeeToololtAvya } = require("../controller/toololt");
 const { tokenShalgakh, crud, UstsanBarimt, Dans } = require("zevbackv2");
 const Geree = require("../models/geree");
 const moment = require("moment");
-const { Parking, khuudaslalt } = require("parking-v2");
+const { Parking } = require("parking-v2");
+const { khuudaslalt } = require("zevbackv2");
 //const { crud } = require('../components/crud');
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 
