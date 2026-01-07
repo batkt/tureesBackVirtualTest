@@ -6,7 +6,7 @@ const Geree = require("../models/geree");
 //const { crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
+const { tokenShalgakh, crud, UstsanBarimt, khuudaslalt } = require("zevbackv2");
 const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
 const {
@@ -155,6 +155,8 @@ router
       next(err2);
     }
   });
+
+
 
 router
   .route("/khariltsagchDavkhraarAvya")
