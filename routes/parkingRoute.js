@@ -784,14 +784,10 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
           const resCallBack = await axios.get(
             encodeURI(guilgee.qpay?.callback_url)
           );
-        } catch (err) {
-          
-        }
+        } catch (err) {}
       }
-    } else if (nemeltUtga?.includes("kiosk") || nemeltUtga?.includes("KIOSK")){
-
-    }
-    else {
+    } else if (nemeltUtga?.includes("kiosk") || nemeltUtga?.includes("KIOSK")) {
+    } else {
       if (baiguullagiinId == "663da696aa6bedd9ae0567f0") {
         tulsunDun = tulsunDun + 50; //sms 50tug
       }
@@ -1212,7 +1208,12 @@ router.post(
       const isMultiMonth =
         start.year() !== end.year() || start.month() !== end.month();
 
-      const aggregateFromCollection = async (collectionName = null) => {
+    
+      const aggregateFromCollection = async (
+        collectionName = null,
+        dateStart = null,
+        dateEnd = null
+      ) => {
         const model = collectionName
           ? Uilchluulegch(
               req.body.tukhainBaaziinKholbolt,
@@ -1221,18 +1222,22 @@ router.post(
             )
           : Uilchluulegch(req.body.tukhainBaaziinKholbolt, true);
 
+        
+        const actualStartDate = dateStart || ekhlekhOgnoo;
+        const actualEndDate = dateEnd || duusakhOgnoo;
+
         const match = !!req.body.garsanKhaalga
           ? {
               "tuukh.garsanKhaalga": req.body.garsanKhaalga,
               "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: ekhlekhOgnoo,
-                $lte: duusakhOgnoo,
+                $gte: actualStartDate,
+                $lte: actualEndDate,
               },
             }
           : {
               "tuukh.tulbur.ognoo": {
-                $gte: ekhlekhOgnoo,
-                $lte: duusakhOgnoo,
+                $gte: actualStartDate,
+                $lte: actualEndDate,
               },
             };
 
@@ -1273,8 +1278,8 @@ router.post(
           {
             $match: {
               "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: ekhlekhOgnoo,
-                $lte: duusakhOgnoo,
+                $gte: actualStartDate,
+                $lte: actualEndDate,
               },
               "tuukh.tuluv": -2,
             },
@@ -1309,8 +1314,8 @@ router.post(
           {
             $match: {
               "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: ekhlekhOgnoo,
-                $lte: duusakhOgnoo,
+                $gte: actualStartDate,
+                $lte: actualEndDate,
               },
               "tuukh.tuluv": -4,
             },
@@ -1337,8 +1342,8 @@ router.post(
           {
             $match: {
               "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: ekhlekhOgnoo,
-                $lte: duusakhOgnoo,
+                $gte: actualStartDate,
+                $lte: actualEndDate,
               },
               "tuukh.uneguiGarsan": { $exists: true },
             },
@@ -1365,11 +1370,18 @@ router.post(
           const isCurrentMonth =
             current.year() === now.year() && current.month() === now.month();
 
+         
+          const collectionStart = moment.max(
+            current.clone().startOf("month"),
+            start
+          );
+          const collectionEnd = moment.min(current.clone().endOf("month"), end);
+
           if (isCurrentMonth) {
             collectionsToQuery.push({
               name: null,
-              startDate: current.clone().startOf("month").toDate(),
-              endDate: current.clone().endOf("month").toDate(),
+              startDate: collectionStart.toDate(),
+              endDate: collectionEnd.toDate(),
               isMain: true,
             });
           } else {
@@ -1379,8 +1391,8 @@ router.post(
 
             collectionsToQuery.push({
               name: archiveName,
-              startDate: current.clone().startOf("month").toDate(),
-              endDate: current.clone().endOf("month").toDate(),
+              startDate: collectionStart.toDate(),
+              endDate: collectionEnd.toDate(),
               isMain: false,
             });
           }
@@ -1397,14 +1409,19 @@ router.post(
 
         for (const collection of collectionsToQuery) {
           try {
-            const result = await aggregateFromCollection(collection.name);
+           
+            const result = await aggregateFromCollection(
+              collection.name,
+              collection.startDate,
+              collection.endDate
+            );
 
             allResults.udriinTailan.push(...result.udriinTailan);
             allResults.zurchiltei.push(...result.zurchiltei);
             allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
             allResults.unegui.push(...result.unegui);
           } catch (err) {
-            
+            console.error(`Error querying collection ${collection.name}:`, err);
           }
         }
 
