@@ -15,6 +15,7 @@ const {
   qpayShalgay,
 } = require("quickqpaypackv2");
 const { tulburUridchiljTulukh } = require("../controller/zogsool");
+const { Uilchluulegch } = require("parking-v2");
 
 router.get(
   "/qpaycallback/:baiguullagiinId/:zakhialgiinDugaar",
@@ -104,6 +105,14 @@ router.get(
           };
           await tulburUridchiljTulukh(body, res, next);
         }
+        var oldsonMashin;
+        if(qpayObject.zogsoolUilchluulegch?.uId)
+          oldsonMashin = await Uilchluulegch(kholbolt, true).findById(qpayObject.zogsoolUilchluulegch?.uId);
+        console.log("garsanKhaalga --->", JSON.stringify(oldsonMashin.tuukh[0].garsanKhaalga));
+        console.log("req.params.cameraIP before --->", JSON.stringify(req.params.cameraIP));
+        if(!!oldsonMashin && !!oldsonMashin.tuukh[0].garsanKhaalga)
+          req.params.cameraIP = oldsonMashin.tuukh[0].garsanKhaalga;
+        console.log("req.params.cameraIP later --->", JSON.stringify(req.params.cameraIP));
         if (
           !!req.params.mashiniiDugaar &&
           !!req.params.cameraIP &&
