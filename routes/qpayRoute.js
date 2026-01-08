@@ -106,8 +106,8 @@ router.get(
           await tulburUridchiljTulukh(body, res, next);
         }
         var oldsonMashin;
-        if(qpayObject.zogsoolUilchluulegch?.uId)
-          oldsonMashin = await Uilchluulegch(kholbolt, true).findById(qpayObject.zogsoolUilchluulegch?.uId);
+        if(!!qpayObject?.zogsoolUilchluulegch?.uId)
+          oldsonMashin = await Uilchluulegch(kholbolt, true).findById(qpayObject?.zogsoolUilchluulegch?.uId);
         console.log("baiguullagiinId params --->", JSON.stringify(req.params.baiguullagiinId));
         console.log("mashiniiDugaar --->", JSON.stringify(req.params.mashiniiDugaar));
         console.log("garsanKhaalga --->", JSON.stringify(oldsonMashin.tuukh[0].garsanKhaalga));
