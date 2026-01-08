@@ -67,13 +67,13 @@ app.use(
   })
 );
 //test
-db.kholboltUusgey(
-  app,
-  "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin"
-);
+// db.kholboltUusgey(
+//   app,
+//   "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin"
+// );
 
 //production
-// db.kholboltUusgey(app);
+db.kholboltUusgey(app);
 
 app.use(
   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
@@ -284,7 +284,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "10 2 * * * ",
+  "50 8 * * * ",
   function () {
     zogsool.zurchilteiTuvulBoluulakh();
   },
