@@ -501,7 +501,7 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
           if (zurchilteiUilchluulegch?.length > 0) {
             for (const zurchiltei of zurchilteiUilchluulegch) {
               var dun = zurchiltei?.tuukh[0]?.tulbur?.length > 0 ? zurchiltei?.tuukh[0]?.tulbur.reduce((a, b) => a + b.dun || 0, 0) : 0;
-              if(zurchiltei.niitDun === dun) continue;
+              if(dun > 0 && zurchiltei.niitDun === dun) continue;
               let upsertDoc = {
                 updateOne: {
                   filter: { _id: zurchiltei._id },
