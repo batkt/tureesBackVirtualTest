@@ -1208,11 +1208,10 @@ router.post(
       const isMultiMonth =
         start.year() !== end.year() || start.month() !== end.month();
 
-    
       const aggregateFromCollection = async (
         collectionName = null,
-        dateStart = null,
-        dateEnd = null
+        dateStart,
+        dateEnd
       ) => {
         const model = collectionName
           ? Uilchluulegch(
@@ -1222,22 +1221,18 @@ router.post(
             )
           : Uilchluulegch(req.body.tukhainBaaziinKholbolt, true);
 
-        
-        const actualStartDate = dateStart || ekhlekhOgnoo;
-        const actualEndDate = dateEnd || duusakhOgnoo;
-
         const match = !!req.body.garsanKhaalga
           ? {
               "tuukh.garsanKhaalga": req.body.garsanKhaalga,
               "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: actualStartDate,
-                $lte: actualEndDate,
+                $gte: dateStart,
+                $lte: dateEnd,
               },
             }
           : {
               "tuukh.tulbur.ognoo": {
-                $gte: actualStartDate,
-                $lte: actualEndDate,
+                $gte: dateStart,
+                $lte: dateEnd,
               },
             };
 
@@ -1278,8 +1273,8 @@ router.post(
           {
             $match: {
               "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: actualStartDate,
-                $lte: actualEndDate,
+                $gte: dateStart,
+                $lte: dateEnd,
               },
               "tuukh.tuluv": -2,
             },
@@ -1314,8 +1309,8 @@ router.post(
           {
             $match: {
               "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: actualStartDate,
-                $lte: actualEndDate,
+                $gte: dateStart,
+                $lte: dateEnd,
               },
               "tuukh.tuluv": -4,
             },
@@ -1342,8 +1337,8 @@ router.post(
           {
             $match: {
               "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: actualStartDate,
-                $lte: actualEndDate,
+                $gte: dateStart,
+                $lte: dateEnd,
               },
               "tuukh.uneguiGarsan": { $exists: true },
             },
@@ -1370,18 +1365,18 @@ router.post(
           const isCurrentMonth =
             current.year() === now.year() && current.month() === now.month();
 
-         
-          const collectionStart = moment.max(
-            current.clone().startOf("month"),
-            start
-          );
-          const collectionEnd = moment.min(current.clone().endOf("month"), end);
+          const monthStart = moment
+            .max(current.clone().startOf("month"), start)
+            .toDate();
+          const monthEnd = moment
+            .min(current.clone().endOf("month"), end)
+            .toDate();
 
           if (isCurrentMonth) {
             collectionsToQuery.push({
               name: null,
-              startDate: collectionStart.toDate(),
-              endDate: collectionEnd.toDate(),
+              startDate: monthStart,
+              endDate: monthEnd,
               isMain: true,
             });
           } else {
@@ -1391,8 +1386,8 @@ router.post(
 
             collectionsToQuery.push({
               name: archiveName,
-              startDate: collectionStart.toDate(),
-              endDate: collectionEnd.toDate(),
+              startDate: monthStart,
+              endDate: monthEnd,
               isMain: false,
             });
           }
@@ -1409,7 +1404,6 @@ router.post(
 
         for (const collection of collectionsToQuery) {
           try {
-           
             const result = await aggregateFromCollection(
               collection.name,
               collection.startDate,
@@ -1421,7 +1415,11 @@ router.post(
             allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
             allResults.unegui.push(...result.unegui);
           } catch (err) {
-            console.error(`Error querying collection ${collection.name}:`, err);
+            // Silent fail for missing collections
+            console.error(
+              `Error querying collection ${collection.name}:`,
+              err.message
+            );
           }
         }
 
@@ -1515,7 +1513,11 @@ router.post(
           collectionName = `Uilchluulegch${y}${m}`;
         }
 
-        const result = await aggregateFromCollection(collectionName);
+        const result = await aggregateFromCollection(
+          collectionName,
+          ekhlekhOgnoo,
+          duusakhOgnoo
+        );
         finalResult = result.udriinTailan;
 
         if (!!result.zurchiltei && result.zurchiltei.length > 0)
