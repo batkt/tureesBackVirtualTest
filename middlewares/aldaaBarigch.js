@@ -2,13 +2,14 @@ const http = require("http");
 const Baiguullaga = require("../models/baiguullaga");
 async function aldaagIlgeeye(aldaa, req) {
   var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
-  req.body.baiguullagiinNer = baiguullaga?.ner;
+
   const data = new TextEncoder().encode(
     JSON.stringify({
       system: "Turees",
       aldaa: aldaa,
       aldaaniiMsg: aldaa.message,
       ognoo: new Date(),
+      baiguullagiinNer: baiguullaga?.ner,
       baiguullagiinId: req.body.baiguullagiinId,
       burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
       burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
