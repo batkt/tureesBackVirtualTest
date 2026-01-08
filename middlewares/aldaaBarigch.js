@@ -1,6 +1,8 @@
 const http = require("http");
-
-function aldaagIlgeeye(aldaa, req) {
+const Baiguullaga = require("../models/baiguullaga");
+async function aldaagIlgeeye(aldaa, req) {
+  var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+  req.body.baiguullagiinNer = baiguullaga.ner;
   const data = new TextEncoder().encode(
     JSON.stringify({
       system: "Turees",
@@ -22,12 +24,9 @@ function aldaagIlgeeye(aldaa, req) {
     },
   };
   const request = http.request(options, (response) => {
-    response.on("data", (d) => {
-      
-    });
+    response.on("data", (d) => {});
   });
-  request.on("error", (error) => {
-  });
+  request.on("error", (error) => {});
 
   request.write(data);
   request.end();
