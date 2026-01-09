@@ -505,7 +505,7 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
               let upsertDoc = {
                 updateOne: {
                   filter: { _id: zurchiltei._id },
-                  update: {"tuukh.0.tuluv": -4 },
+                  update: {"tuukh.0.tuluv": -4, zurchil: "Төлбөрийн зөрчилтэй" },
                 },
               };
               bulkOps.push(upsertDoc);
