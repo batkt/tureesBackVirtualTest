@@ -298,9 +298,7 @@ router.get(
 
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
-              console.log(`  ${result.jagsaalt.length} records`);
             } else {
-              console.log(`  No records found`);
             }
           }
 

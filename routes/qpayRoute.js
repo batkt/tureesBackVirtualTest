@@ -108,13 +108,8 @@ router.get(
         var oldsonMashin;
         if(!!qpayObject?.zogsoolUilchluulegch?.uId)
           oldsonMashin = await Uilchluulegch(kholbolt, true).findById(qpayObject?.zogsoolUilchluulegch?.uId);
-        console.log("baiguullagiinId params --->", JSON.stringify(req.params.baiguullagiinId));
-        console.log("mashiniiDugaar --->", JSON.stringify(req.params.mashiniiDugaar));
-        console.log("garsanKhaalga --->", JSON.stringify(oldsonMashin.tuukh[0].garsanKhaalga));
-        console.log("req.params.cameraIP before --->", JSON.stringify(req.params.cameraIP));
         if(!!oldsonMashin && !!oldsonMashin.tuukh[0].garsanKhaalga)
           req.params.cameraIP = oldsonMashin.tuukh[0].garsanKhaalga;
-        console.log("req.params.cameraIP later --->", JSON.stringify(req.params.cameraIP));
         if (
           !!req.params.mashiniiDugaar &&
           !!req.params.cameraIP &&
