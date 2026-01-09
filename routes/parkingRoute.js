@@ -263,11 +263,6 @@ router.get(
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) body.search = String(body.search);
 
-      console.log(
-        "🔍 Uilchluulegch Query:",
-        JSON.stringify(body.query, null, 2)
-      );
-
       const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
 
@@ -290,20 +285,24 @@ router.get(
         return null;
       };
 
+      // Extract start and end dates
       let startDate = null;
       let endDate = null;
+      let dateField = null;
 
       if (body?.query) {
         // Check createdAt
         if (body.query.createdAt) {
           startDate = extractDate(body.query.createdAt, true);
           endDate = extractDate(body.query.createdAt, false);
+          dateField = "createdAt";
         }
 
         // Check tuukh.tulbur.ognoo
         if (!startDate && body.query["tuukh.tulbur.ognoo"]) {
           startDate = extractDate(body.query["tuukh.tulbur.ognoo"], true);
           endDate = extractDate(body.query["tuukh.tulbur.ognoo"], false);
+          dateField = "tuukh.tulbur.ognoo";
         }
 
         // Check in $and array
@@ -312,21 +311,24 @@ router.get(
             if (condition.createdAt) {
               startDate = extractDate(condition.createdAt, true);
               endDate = extractDate(condition.createdAt, false);
+              dateField = "createdAt";
               break;
             }
             if (condition["tuukh.tulbur.ognoo"]) {
               startDate = extractDate(condition["tuukh.tulbur.ognoo"], true);
               endDate = extractDate(condition["tuukh.tulbur.ognoo"], false);
+              dateField = "tuukh.tulbur.ognoo";
               break;
             }
           }
         }
       }
 
-      // If only one date found, use it as both
+      // If only one date found, use it as both start and end
       if (startDate && !endDate) endDate = startDate;
       if (!startDate && endDate) startDate = endDate;
 
+      // Determine which collections to query
       const now = new Date();
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
@@ -340,10 +342,6 @@ router.get(
             ? new Date(endDate)
             : new Date(startDate);
 
-        console.log(
-          `📅 Date range: ${start.toISOString()} to ${end.toISOString()}`
-        );
-
         // Generate list of months between start and end
         const current = new Date(start.getFullYear(), start.getMonth(), 1);
         const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
@@ -353,6 +351,7 @@ router.get(
           const month = current.getMonth() + 1;
 
           if (year === currentYear && month === currentMonth) {
+            // Current month - use main collection
             collectionsToQuery.push({
               name: null,
               year,
@@ -360,12 +359,12 @@ router.get(
               isCurrent: true,
             });
           } else {
-            const archiveName = `Uilchluulegch${year}${String(month).padStart(
-              2,
-              "0"
-            )}`;
+            // Archived month
+            const collectionName = `Uilchluulegch${year}${String(
+              month
+            ).padStart(2, "0")}`;
             collectionsToQuery.push({
-              name: archiveName,
+              name: collectionName,
               year,
               month,
               isCurrent: false,
@@ -374,16 +373,10 @@ router.get(
 
           current.setMonth(current.getMonth() + 1);
         }
-
-        console.log(
-          `📂 Querying ${collectionsToQuery.length} collection(s):`,
-          collectionsToQuery.map((c) => c.name || "main")
-        );
       }
 
       // If no date range found, just use main collection
       if (collectionsToQuery.length === 0) {
-        console.log("⚠️ No date found, using main collection only");
         collectionsToQuery.push({
           name: null,
           isCurrent: true,
@@ -392,7 +385,7 @@ router.get(
 
       // Query all collections and merge results
       if (collectionsToQuery.length === 1) {
-        // Single collection - use normal khuudaslalt
+        // Single collection - use normal flow
         const model = collectionsToQuery[0].name
           ? Uilchluulegch(
               req.body.tukhainBaaziinKholbolt,
@@ -401,30 +394,21 @@ router.get(
             )
           : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-        console.log(
-          `🗄️ Using single collection: ${collectionsToQuery[0].name || "main"}`
-        );
-
         khuudaslalt(model, body)
           .then((result) => {
-            console.log(`✅ Result: ${result?.jagsaalt?.length || 0} records`);
             res.send(result);
           })
           .catch((err) => {
             next(err);
           });
       } else {
-        // Multiple collections - need to merge WITHOUT pagination first
-        console.log(
-          `🔄 Merging data from ${collectionsToQuery.length} collections`
-        );
-
+        // Multiple collections - need to merge
         try {
           const allResults = [];
+          let totalCount = 0;
 
+          // Query each collection
           for (const collection of collectionsToQuery) {
-            console.log(`📥 Querying: ${collection.name || "main"}`);
-
             const model = collection.name
               ? Uilchluulegch(
                   req.body.tukhainBaaziinKholbolt,
@@ -433,7 +417,7 @@ router.get(
                 )
               : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-            // Query without pagination for individual collections
+            // Create a copy of body without pagination for individual queries
             const queryBody = { ...body };
             delete queryBody.khuudasniiDugaar;
             delete queryBody.khuudasniiKhemjee;
@@ -442,65 +426,42 @@ router.get(
 
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
-              console.log(`  ✅ Found ${result.jagsaalt.length} records`);
-            } else {
-              console.log(`  ℹ️ No records found`);
             }
+            totalCount += result.niitMur || 0;
           }
-
-          console.log(`📊 Total records before sorting: ${allResults.length}`);
 
           // Apply sorting if specified
           if (body.order) {
             const sortField = Object.keys(body.order)[0];
             const sortOrder = body.order[sortField];
-
             allResults.sort((a, b) => {
-              // Handle nested fields like "tuukh.0.tsagiinTuukh.0.garsanTsag"
-              const getNestedValue = (obj, path) => {
-                return path.split(".").reduce((current, key) => {
-                  return current?.[key];
-                }, obj);
-              };
-
-              const aVal = getNestedValue(a, sortField);
-              const bVal = getNestedValue(b, sortField);
-
+              const aVal = a[sortField];
+              const bVal = b[sortField];
               if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
               if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
               return 0;
             });
-
-            console.log(
-              `✅ Sorted by ${sortField} (${sortOrder === 1 ? "ASC" : "DESC"})`
-            );
           }
 
-          // Apply pagination AFTER merging and sorting
+          // Apply pagination
           const page = body.khuudasniiDugaar || 1;
           const limit = body.khuudasniiKhemjee || 500;
           const startIndex = (page - 1) * limit;
           const endIndex = startIndex + limit;
           const paginatedResults = allResults.slice(startIndex, endIndex);
 
-          console.log(
-            `✅ Total: ${allResults.length} records, Page ${page}: ${paginatedResults.length} records (from index ${startIndex} to ${endIndex})`
-          );
-
           res.send({
             khuudasniiDugaar: page,
             khuudasniiKhemjee: limit,
             jagsaalt: paginatedResults,
-            niitMur: allResults.length,
-            niitKhuudas: Math.ceil(allResults.length / limit),
+            niitMur: totalCount,
+            niitKhuudas: Math.ceil(totalCount / limit),
           });
         } catch (err) {
-          console.error("❌ Merge error:", err);
           next(err);
         }
       }
     } catch (error) {
-      console.error("❌ Route error:", error);
       next(error);
     }
   }
@@ -1357,7 +1318,6 @@ router.post(
                 $lte: actualEndDate,
               },
               "tuukh.tuluv": -4,
-              N,
             },
           },
           {
