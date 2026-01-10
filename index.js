@@ -316,16 +316,16 @@ cron.schedule(
 //  }
 // );
 
-cron.schedule(
-  "10 19 * * 6",
-  async function () {
-    await zogsool.archiveUilchluulegchDolooKhonog();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
+// cron.schedule(
+//   "10 19 * * 6",
+//   async function () {
+//     await zogsool.archiveUilchluulegchDolooKhonog();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 
 // cron.schedule(
 //  "15 3 * * * ",
