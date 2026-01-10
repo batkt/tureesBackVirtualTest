@@ -485,21 +485,27 @@ async function archiveUilchluulegchDolooKhonog() {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     const now = new Date();
+    const archiveBeforeDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const y = archiveBeforeDate.getFullYear();
+    const m = archiveBeforeDate.getMonth() + 1;
+    const archiveName = `Uilchluulegch_${y}_${String(m).padStart(2, "0")}`;
     for (const kholbolt of kholboltuud) {
       const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
       if (!baiguullaga?.tokhirgoo?.dolooKhonogTutamArchiveEsekh) continue;
-      const y = startDate.getFullYear();
-      const m = startDate.getMonth() + 1;
-      const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
-      const archivedIds = await Uilchluulegch(kholbolt, false, archiveName).find({}, { _id: 1 }).lean();
+      const archivedIds = await Uilchluulegch(
+        kholbolt,
+        false,
+        archiveName
+      ).find({}, { _id: 1 }).lean();
       const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
       const data = await Uilchluulegch(kholbolt).find({
-        "_id": { $nin: Array.from(archivedIdSet) },
+        _id: { $nin: Array.from(archivedIdSet) },
         "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true },
-        createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+        createdAt: { $lt: archiveBeforeDate }
       }).lean();
       if (!data.length) continue;
-      console.log(`Archiving ${data?.length} documents for ${baiguullaga?.ner} for ${kholbolt.baiguullagiinId} to ${archiveName}`);
+      console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
+      // === БОДИТ АЖИЛЛУУЛАХДАА НЭЭ ===
       // await Uilchluulegch(kholbolt, false, archiveName).insertMany(data);
       // await Uilchluulegch(kholbolt).deleteMany({
       //   _id: { $in: data.map(d => d._id) }
