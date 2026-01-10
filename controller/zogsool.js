@@ -442,7 +442,8 @@ module.exports.archiveUilchluulegch =
         const currentMonth = now.getMonth() + 1;
         if (kholboltuud) {
             for (const kholbolt of kholboltuud) {
-                if (kholbolt.baiguullagiinId !== "6549bbe0d437e6d25d557341") continue;
+                var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
+                if (baiguullaga?.tokhirgoo?.dolooKhonogTutamArchiveEsekh) continue;
                 const months = await Uilchluulegch(kholbolt).aggregate([
                     { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
                     { $group: { _id: { year: "$year", month: "$month" } } },
@@ -476,6 +477,37 @@ module.exports.archiveUilchluulegch =
         }
     } catch (error) {
     }
+};
+
+module.exports.archiveUilchluulegchDolooKhonog =
+async function archiveUilchluulegchDolooKhonog() {
+  try {
+    const { db } = require("zevbackv2");
+    const kholboltuud = db.kholboltuud;
+    const now = new Date();
+    for (const kholbolt of kholboltuud) {
+      const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
+      if (!baiguullaga?.tokhirgoo?.dolooKhonogTutamArchiveEsekh) continue;
+      const y = startDate.getFullYear();
+      const m = startDate.getMonth() + 1;
+      const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
+      const archivedIds = await Uilchluulegch(kholbolt, false, archiveName).find({}, { _id: 1 }).lean();
+      const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
+      const data = await Uilchluulegch(kholbolt).find({
+        "_id": { $nin: Array.from(archivedIdSet) },
+        "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true },
+        createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+      }).lean();
+      if (!data.length) continue;
+      console.log(`Archiving ${data?.length} documents for ${baiguullaga?.ner} for ${kholbolt.baiguullagiinId} to ${archiveName}`);
+      // await Uilchluulegch(kholbolt, false, archiveName).insertMany(data);
+      // await Uilchluulegch(kholbolt).deleteMany({
+      //   _id: { $in: data.map(d => d._id) }
+      // });
+    }
+  } catch (error) {
+    console.error("Archive error:", error);
+  }
 };
 
 exports.zurchilteiTuvulBoluulakh = asyncHandler(
