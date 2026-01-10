@@ -498,6 +498,7 @@ async function archiveUilchluulegchDolooKhonog() {
         archiveName
       ).find({}, { _id: 1 }).lean();
       const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
+      console.log("archiveBeforeDate --->:", archiveBeforeDate);
       const data = await Uilchluulegch(kholbolt).find({
         _id: { $nin: Array.from(archivedIdSet) },
         "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true },
@@ -506,10 +507,12 @@ async function archiveUilchluulegchDolooKhonog() {
       if (!data.length) continue;
       console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
       // === БОДИТ АЖИЛЛУУЛАХДАА НЭЭ ===
-      // await Uilchluulegch(kholbolt, false, archiveName).insertMany(data);
-      // await Uilchluulegch(kholbolt).deleteMany({
-      //   _id: { $in: data.map(d => d._id) }
-      // });
+      await Uilchluulegch(kholbolt, false, archiveName).insertMany(data);
+      await Uilchluulegch(kholbolt).deleteMany({
+        _id: { $in: data.map(d => d._id) },
+        "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true },
+        createdAt: { $lt: archiveBeforeDate }
+      });
     }
   } catch (error) {
     console.error("Archive error:", error);
