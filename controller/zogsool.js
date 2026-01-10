@@ -489,7 +489,7 @@ async function archiveUilchluulegchDolooKhonog() {
     archiveBeforeDate.setHours(0, 0, 0, 0);
     const y = archiveBeforeDate.getFullYear();
     const m = archiveBeforeDate.getMonth() + 1;
-    const archiveName = `Uilchluulegch_${y}_${String(m).padStart(2, "0")}`;
+    const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
     for (const kholbolt of kholboltuud) {
       const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
       if (!baiguullaga?.tokhirgoo?.dolooKhonogTutamArchiveEsekh) continue;
@@ -507,7 +507,6 @@ async function archiveUilchluulegchDolooKhonog() {
       }).lean();
       if (!data.length) continue;
       console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
-      // === БОДИТ АЖИЛЛУУЛАХДАА НЭЭ ===
       await Uilchluulegch(kholbolt, false, archiveName).insertMany(data);
       await Uilchluulegch(kholbolt).deleteMany({
         _id: { $in: data.map(d => d._id) },
