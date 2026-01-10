@@ -486,6 +486,7 @@ async function archiveUilchluulegchDolooKhonog() {
     const kholboltuud = db.kholboltuud;
     const now = new Date();
     const archiveBeforeDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    archiveBeforeDate.setHours(0, 0, 0, 0);
     const y = archiveBeforeDate.getFullYear();
     const m = archiveBeforeDate.getMonth() + 1;
     const archiveName = `Uilchluulegch_${y}_${String(m).padStart(2, "0")}`;
