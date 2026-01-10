@@ -154,6 +154,7 @@ const baiguullagaSchema = new Schema(
       gadaaStickerAshiglakhEsekh: Boolean /** gadaa sticker ashiglakh esekh */,
       togloomiinTuvDavkhardsanShalgakh: Boolean,
       dotorGadnaTsagEsekh: Boolean,
+      dolooKhonogTutamArchiveEsekh: Boolean, // долоо хоног тутам архив эсэх
     },
     erkhuud: [
       {

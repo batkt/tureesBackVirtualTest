@@ -317,7 +317,7 @@ cron.schedule(
 // );
 
 cron.schedule(
-  "25 18 * * 6",
+  "35 18 * * 6",
   async function () {
     await zogsool.archiveUilchluulegchDolooKhonog();
   },
@@ -326,7 +326,6 @@ cron.schedule(
     timezone: "Asia/Ulaanbaatar",
   }
 );
-
 
 // cron.schedule(
 //  "15 3 * * * ",
