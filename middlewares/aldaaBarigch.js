@@ -1,7 +1,10 @@
 const http = require("http");
 const Baiguullaga = require("../models/baiguullaga");
 async function aldaagIlgeeye(aldaa, req) {
-  var baiguullaga = await Baiguullaga.findById(req.body.baiguullagiinId);
+  const { db } = require("zevbackv2");
+  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+    req.body.baiguullagiinId
+  );
 
   const data = new TextEncoder().encode(
     JSON.stringify({
