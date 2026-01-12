@@ -40,6 +40,58 @@ function formatNumber(num, fixed = 2) {
   return firstFormatNum + "." + numSplit[1];
 }
 
+// Generate a deterministic idempotency key to prevent duplicates
+function buildIdempotencyKey(doc) {
+  try {
+    const type = !!doc.zogsooliinId
+      ? "zogsool"
+      : !!doc.togloomiinId
+      ? "togloom"
+      : !!doc.guilgeeniiId
+      ? "guilgee"
+      : "unknown";
+    const org = doc.baiguullagiinId || "";
+    const br = doc.barilgiinId || "";
+    const entityId = doc.zogsooliinId || doc.togloomiinId || doc.guilgeeniiId || "";
+    const dt = doc.dateOgnoo ? new Date(doc.dateOgnoo) : new Date(doc.date);
+    const amt = (doc.totalAmount !== undefined && doc.totalAmount !== null)
+      ? Number(doc.totalAmount)
+      : Number(doc.amount || doc.cashAmount || 0);
+    return [type, org, br, entityId, dt.toISOString(), amt].join(":");
+  } catch (_) {
+    return Date.now().toString();
+  }
+}
+
+// Upsert the e-receipt using idempotency key (atomic insertion)
+async function saveEbarimtIdempotent(modelFactory, kholbolt, ebarimtDoc) {
+  const Model = modelFactory(kholbolt);
+  const insertDoc = ebarimtDoc.toObject();
+  // Ensure computed fields available on insert
+  insertDoc.dateOgnoo = insertDoc.dateOgnoo ? new Date(insertDoc.dateOgnoo) : new Date(insertDoc.date);
+  insertDoc.idempotencyKey = buildIdempotencyKey(insertDoc);
+  const result = await Model.updateOne(
+    { idempotencyKey: insertDoc.idempotencyKey },
+    { $setOnInsert: insertDoc },
+    { upsert: true }
+  );
+  const inserted = !!(result && (result.upsertedId || result.upsertedCount > 0 || result.matchedCount === 0));
+  const type = insertDoc.zogsooliinId
+    ? "zogsool"
+    : insertDoc.togloomiinId
+    ? "togloom"
+    : insertDoc.guilgeeniiId
+    ? "guilgee"
+    : "unknown";
+  const entity = insertDoc.zogsooliinId || insertDoc.togloomiinId || insertDoc.guilgeeniiId || "";
+  const amt = insertDoc.totalAmount ?? insertDoc.amount ?? insertDoc.cashAmount ?? 0;
+  const dt = insertDoc.dateOgnoo || insertDoc.date;
+  console.log(
+    `[ebarimt] ${inserted ? "INSERTED" : "DUPLICATE"} key=${insertDoc.idempotencyKey} type=${type} entity=${entity} amount=${amt} date=${dt}`
+  );
+  return insertDoc;
+}
+
 function nuatBodyo(bodokhDun) {
   var nuatguiDun = bodokhDun / 1.1;
   return (bodokhDun - nuatguiDun).toFixed(2).toString();
@@ -563,7 +615,11 @@ async function zogsoolNiitDungeerEbarimtShivye(
       ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
       ebarimt.barilgiinId = khariuObject.barilgiinId;
       ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
-      ebarimt.save().catch((err) => {
+      saveEbarimtIdempotent(
+        !!tuxainSalbar.eBarimtShine ? EbarimtShine : Ebarimt,
+        kholbolt,
+        ebarimt
+      ).catch((err) => {
         if (next) next(err);
       });
       if (!!shiveeguiTuukhuud && shiveeguiTuukhuud?.length > 0) {
@@ -689,7 +745,11 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.togloomiinId = khariuObject.togloomiinId;
           ebarimt.togloomNer = khariuObject.togloomNer;
           ebarimt.togloomUtas = khariuObject.togloomUtas;
-          ebarimt.save().catch((err) => {
+          saveEbarimtIdempotent(
+            !!tuxainSalbar.eBarimtShine ? EbarimtShine : Ebarimt,
+            req.body.tukhainBaaziinKholbolt,
+            ebarimt
+          ).catch((err) => {
             next(err);
           });
           var ebarimtAmount =
@@ -770,7 +830,11 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
-          ebarimt.save().catch((err) => {
+          saveEbarimtIdempotent(
+            !!tuxainSalbar.eBarimtShine ? EbarimtShine : Ebarimt,
+            req.body.tukhainBaaziinKholbolt,
+            ebarimt
+          ).catch((err) => {
             next(err);
           });
           var update = {
@@ -867,7 +931,11 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.gereeniiDugaar = khariuObject.gereeniiDugaar;
           ebarimt.talbainDugaar = khariuObject.talbainDugaar;
           ebarimt.utas = khariuObject.utas;
-          ebarimt.save().catch((err) => {
+          saveEbarimtIdempotent(
+            !!tuxainSalbar.eBarimtShine ? EbarimtShine : Ebarimt,
+            req.body.tukhainBaaziinKholbolt,
+            ebarimt
+          ).catch((err) => {
             next(err);
           });
           BankniiGuilgee(req.body.tukhainBaaziinKholbolt)

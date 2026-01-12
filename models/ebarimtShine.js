@@ -68,6 +68,8 @@ const ebarimtSchema = new Schema(
         status: String, //PAID,PAY,REVERSED,ERROR
       },
     ],
+    // For idempotent insertion to prevent duplicates
+    idempotencyKey: String,
   },
   {
     timestamps: true,
