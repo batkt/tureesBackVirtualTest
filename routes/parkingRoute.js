@@ -407,6 +407,10 @@ router.get(
           const allResults = [];
           let totalCount = 0;
 
+          // Store original pagination values
+          const originalPage = body.khuudasniiDugaar || 1;
+          const originalLimit = body.khuudasniiKhemjee || 500;
+
           // Query each collection
           for (const collection of collectionsToQuery) {
             const model = collection.name
@@ -417,17 +421,20 @@ router.get(
                 )
               : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-            // Create a copy of body without pagination for individual queries
-            const queryBody = { ...body };
-            delete queryBody.khuudasniiDugaar;
-            delete queryBody.khuudasniiKhemjee;
+            // Create a copy of body with very high limit to get all results
+            const queryBody = {
+              ...body,
+              khuudasniiDugaar: 1,
+              khuudasniiKhemjee: 999999, // Set very high limit to get all results from each collection
+            };
 
             const result = await khuudaslalt(model, queryBody);
 
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
             }
-            totalCount += result.niitMur || 0;
+            // Use the actual count from each collection instead of niitMur
+            totalCount += result.jagsaalt?.length || 0;
           }
 
           // Apply sorting if specified
@@ -435,27 +442,33 @@ router.get(
             const sortField = Object.keys(body.order)[0];
             const sortOrder = body.order[sortField];
             allResults.sort((a, b) => {
-              const aVal = a[sortField];
-              const bVal = b[sortField];
+              // Handle nested fields (e.g., "tuukh.0.createdAt")
+              const getNestedValue = (obj, path) => {
+                return path.split(".").reduce((curr, prop) => {
+                  return curr?.[prop];
+                }, obj);
+              };
+
+              const aVal = getNestedValue(a, sortField);
+              const bVal = getNestedValue(b, sortField);
+
               if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
               if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
               return 0;
             });
           }
 
-          // Apply pagination
-          const page = body.khuudasniiDugaar || 1;
-          const limit = body.khuudasniiKhemjee || 500;
-          const startIndex = (page - 1) * limit;
-          const endIndex = startIndex + limit;
+          // Apply pagination on merged results
+          const startIndex = (originalPage - 1) * originalLimit;
+          const endIndex = startIndex + originalLimit;
           const paginatedResults = allResults.slice(startIndex, endIndex);
 
           res.send({
-            khuudasniiDugaar: page,
-            khuudasniiKhemjee: limit,
+            khuudasniiDugaar: originalPage,
+            khuudasniiKhemjee: originalLimit,
             jagsaalt: paginatedResults,
-            niitMur: totalCount,
-            niitKhuudas: Math.ceil(totalCount / limit),
+            niitMur: allResults.length, // Total count of merged results
+            niitKhuudas: Math.ceil(allResults.length / originalLimit),
           });
         } catch (err) {
           next(err);
@@ -1208,7 +1221,6 @@ router.post(
       const isMultiMonth =
         start.year() !== end.year() || start.month() !== end.month();
 
-    
       const aggregateFromCollection = async (
         collectionName = null,
         dateStart = null,
@@ -1222,7 +1234,6 @@ router.post(
             )
           : Uilchluulegch(req.body.tukhainBaaziinKholbolt, true);
 
-        
         const actualStartDate = dateStart || ekhlekhOgnoo;
         const actualEndDate = dateEnd || duusakhOgnoo;
 
@@ -1370,7 +1381,6 @@ router.post(
           const isCurrentMonth =
             current.year() === now.year() && current.month() === now.month();
 
-         
           const collectionStart = moment.max(
             current.clone().startOf("month"),
             start
@@ -1409,7 +1419,6 @@ router.post(
 
         for (const collection of collectionsToQuery) {
           try {
-           
             const result = await aggregateFromCollection(
               collection.name,
               collection.startDate,
