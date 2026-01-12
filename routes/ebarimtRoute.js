@@ -419,7 +419,7 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
       var url;
       if (
         ugugdul.baiguullagiinId == "612f457d185280db676d0b51" ||
-        "22695c57511a8a4aebc1d65b02"
+        ugugdul.baiguullagiinId == "695c57511a8a4aebc1d65b02"
       )
         var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
       else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
@@ -444,7 +444,10 @@ async function ebarimtMedeelelAvya(
 ) {
   if (!!ebarimtShine) {
     var url = "";
-    if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
+    if (
+      ugugdul.baiguullagiinId == "612f457d185280db676d0b51" ||
+      ugugdul.baiguullagiinId == "695c57511a8a4aebc1d65b02"
+    )
       url = process.env.EBARIMTSHINE_TEST + "rest/info";
     else url = process.env.EBARIMTSHINE_IP + "rest/info";
     if (ugugdul) url = url + "?lib=" + ugugdul.toString();
@@ -483,7 +486,10 @@ router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
 async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
   if (!!ebarimtShine) {
     var url;
-    if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
+    if (
+      ugugdul.baiguullagiinId == "612f457d185280db676d0b51" ||
+      ugugdul.baiguullagiinId == "695c57511a8a4aebc1d65b02"
+    )
       var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
     else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
     request.delete(
@@ -1035,7 +1041,10 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
     }
     if (!!shine) {
       var url;
-      if (req.body.baiguullagiinId == "612f457d185280db676d0b51")
+      if (
+        req.body.baiguullagiinId == "612f457d185280db676d0b51" ||
+        ugugdul.baiguullagiinId == "695c57511a8a4aebc1d65b02"
+      )
         url = process.env.EBARIMTSHINE_TEST + "rest/sendData";
       else url = process.env.EBARIMTSHINE_IP + "rest/sendData";
       request.get(url, { json: true }, (err, res1, body) => {
