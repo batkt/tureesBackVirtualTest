@@ -417,7 +417,10 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
   try {
     if (!!shine) {
       var url;
-      if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
+      if (
+        ugugdul.baiguullagiinId == "612f457d185280db676d0b51" ||
+        "22695c57511a8a4aebc1d65b02"
+      )
         var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
       else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
       request.post(url, { json: true, body: ugugdul }, (err, res1, body) => {
