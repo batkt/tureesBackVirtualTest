@@ -27,30 +27,30 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
       .save()
       .then((result) => {
         // test
-        db.kholboltNemye(
-          baiguullaga._id,
-          req.body.baaziinNer,
-          true,
-          "127.0.0.1:27017",
-          "Br1stelback1",
-          "admin"
-        );
+        // db.kholboltNemye(
+        //   baiguullaga._id,
+        //   req.body.baaziinNer,
+        //   true,
+        //   "127.0.0.1:27017",
+        //   "Br1stelback1",
+        //   "admin"
+        // );
         //production
-        // db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
-        // if (req.body.ajiltan) {
-        //   let ajiltan = new Ajiltan(db.erunkhiiKholbolt)(req.body.ajiltan);
-        //   ajiltan.erkh = "Admin";
-        //   ajiltan.baiguullagiinId = result._id;
-        //   ajiltan.baiguullagiinNer = result.ner;
-        //   ajiltan
-        //     .save()
-        //     .then((result1) => {
-        //       res.send("Amjilttai");
-        //     })
-        //     .catch((err) => {
-        //       next(err);
-        //     });
-        // } else res.send("Amjilttai");
+        db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
+        if (req.body.ajiltan) {
+          let ajiltan = new Ajiltan(db.erunkhiiKholbolt)(req.body.ajiltan);
+          ajiltan.erkh = "Admin";
+          ajiltan.baiguullagiinId = result._id;
+          ajiltan.baiguullagiinNer = result.ner;
+          ajiltan
+            .save()
+            .then((result1) => {
+              res.send("Amjilttai");
+            })
+            .catch((err) => {
+              next(err);
+            });
+        } else res.send("Amjilttai");
       })
       .catch((err) => {
         next(err);
