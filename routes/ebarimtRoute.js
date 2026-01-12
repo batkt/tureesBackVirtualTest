@@ -1043,7 +1043,7 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
       var url;
       if (
         req.body.baiguullagiinId == "612f457d185280db676d0b51" ||
-        ugugdul.baiguullagiinId == "695c57511a8a4aebc1d65b02"
+        req.body.baiguullagiinId == "695c57511a8a4aebc1d65b02"
       )
         url = process.env.EBARIMTSHINE_TEST + "rest/sendData";
       else url = process.env.EBARIMTSHINE_IP + "rest/sendData";
