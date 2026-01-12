@@ -1915,7 +1915,28 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                                             ],
                                           },
                                           "torguuli",
-                                          "turees",
+                                          {
+                                            $cond: [
+                                              {
+                                                $and: [
+                                                  {
+                                                    $eq: [
+                                                      "$avlaga.guilgeenuud.zardliinTurul",
+                                                      "busad",
+                                                    ],
+                                                  },
+                                                  {
+                                                    $regexMatch: {
+                                                      input: "$avlaga.guilgeenuud.tailbar",
+                                                      regex: "Засвар үйлчилгээний зардал",
+                                                    },
+                                                  }
+                                                ]
+                                              },
+                                              "zasvarUilchilgee",
+                                              "turees",
+                                            ]
+                                          }
                                         ],
                                       },
                                     ],
