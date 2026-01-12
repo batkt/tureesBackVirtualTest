@@ -66,7 +66,7 @@ app.use(
     extended: true,
   })
 );
-test;
+// test;
 db.kholboltUusgey(
   app,
   "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin"
