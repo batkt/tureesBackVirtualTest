@@ -417,7 +417,10 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
   try {
     if (!!shine) {
       var url;
-      if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
+      if (
+        ugugdul.baiguullagiinId == "612f457d185280db676d0b51" ||
+        ugugdul.baiguullagiinId == "695c57511a8a4aebc1d65b02"
+      )
         var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
       else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
       request.post(url, { json: true, body: ugugdul }, (err, res1, body) => {
@@ -441,7 +444,10 @@ async function ebarimtMedeelelAvya(
 ) {
   if (!!ebarimtShine) {
     var url = "";
-    if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
+    if (
+      ugugdul.baiguullagiinId == "612f457d185280db676d0b51" ||
+      ugugdul.baiguullagiinId == "695c57511a8a4aebc1d65b02"
+    )
       url = process.env.EBARIMTSHINE_TEST + "rest/info";
     else url = process.env.EBARIMTSHINE_IP + "rest/info";
     if (ugugdul) url = url + "?lib=" + ugugdul.toString();
@@ -480,7 +486,10 @@ router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
 async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
   if (!!ebarimtShine) {
     var url;
-    if (ugugdul.baiguullagiinId == "612f457d185280db676d0b51")
+    if (
+      ugugdul.baiguullagiinId == "612f457d185280db676d0b51" ||
+      ugugdul.baiguullagiinId == "695c57511a8a4aebc1d65b02"
+    )
       var url = process.env.EBARIMTSHINE_TEST + "rest/receipt";
     else var url = process.env.EBARIMTSHINE_IP + "rest/receipt";
     request.delete(
@@ -620,12 +629,37 @@ async function ebarimtShivye(req, res, next) {
     if (ebarimtiinTurul == "togloom") {
       var guilgee = await TogloomiinTuv(
         req.body.tukhainBaaziinKholbolt
-      ).findById(req.body.id);
+      ).findOneAndUpdate(
+        {
+          _id: req.body.id,
+          $or: [
+            { ebarimtProcessing: { $exists: false } },
+            { ebarimtProcessing: false },
+          ],
+        },
+        { ebarimtProcessing: true },
+        { new: true }
+      );
+
+      if (!guilgee) {
+        throw new aldaa("Ибаримт хэвлэж байна, түр хүлээнэ үү!");
+      }
+
       var niitDun = guilgee.tulbur?.reduce((a, b) => a + (b.dun || 0), 0);
-      if (guilgee.ebarimtAvsanEsekh && niitDun == guilgee.niitDun)
+      if (guilgee.ebarimtAvsanEsekh && niitDun == guilgee.niitDun) {
+        await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+          req.body.id,
+          { ebarimtProcessing: false }
+        );
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
-      if (!guilgee.ebarimtAvakhDun || guilgee.ebarimtAvakhDun == 0)
+      }
+      if (!guilgee.ebarimtAvakhDun || guilgee.ebarimtAvakhDun == 0) {
+        await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+          req.body.id,
+          { ebarimtProcessing: false }
+        );
         throw new aldaa("Ибаримтын дүн авах шаардлагагүй!");
+      }
       tuxainSalbar = baiguullaga?.barilguud?.find(
         (e) => e._id.toString() == guilgee.barilgiinId
       )?.tokhirgoo;
@@ -664,6 +698,7 @@ async function ebarimtShivye(req, res, next) {
             ebarimtAvsanEsekh: true,
             ebarimtAvakhDun: 0,
             ebarimtAvsanDun: ebarimtAmount,
+            ebarimtProcessing: false,
           };
           if (ebarimt.customerNo) update.ebarimtRegister = ebarimt.customerNo;
           TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
@@ -674,15 +709,38 @@ async function ebarimtShivye(req, res, next) {
             });
           res.send(d);
         } catch (err) {
+          TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
+            .findByIdAndUpdate(req.body.id, { ebarimtProcessing: false })
+            .catch(() => {});
           next(err);
         }
       };
     } else if (ebarimtiinTurul == "zogsool") {
       var guilgee = await Uilchluulegch(req.body.tukhainBaaziinKholbolt, true)
-        .findById(req.body.id)
+        .findOneAndUpdate(
+          {
+            _id: req.body.id,
+            $or: [
+              { "tuukh.0.ebarimtProcessing": { $exists: false } },
+              { "tuukh.0.ebarimtProcessing": false },
+            ],
+          },
+          { "tuukh.0.ebarimtProcessing": true },
+          { new: true }
+        )
         .lean();
-      if (guilgee.tuukh?.length > 0 && guilgee.tuukh[0].ebarimtAvsanEsekh)
+
+      if (!guilgee) {
+        throw new aldaa("Ибаримт хэвлэж байна, түр хүлээнэ үү!");
+      }
+
+      if (guilgee.tuukh?.length > 0 && guilgee.tuukh[0].ebarimtAvsanEsekh) {
+        await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+          req.body.id,
+          { "tuukh.0.ebarimtProcessing": false }
+        );
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
+      }
       tuxainSalbar = baiguullaga?.barilguud?.find(
         (e) => e._id.toString() == guilgee.barilgiinId
       )?.tokhirgoo;
@@ -716,8 +774,10 @@ async function ebarimtShivye(req, res, next) {
             next(err);
           });
           var update = {
-            ebarimtAvsanEsekh: true,
-            ebarimtAvsanDun: ebarimt.cashAmount || ebarimt.totalAmount,
+            "tuukh.0.ebarimtAvsanEsekh": true,
+            "tuukh.0.ebarimtAvsanDun":
+              ebarimt.cashAmount || ebarimt.totalAmount,
+            "tuukh.0.ebarimtProcessing": false,
           };
           if (ebarimt.customerNo)
             update = {
@@ -737,6 +797,11 @@ async function ebarimtShivye(req, res, next) {
             });
           res.send(d);
         } catch (err) {
+          Uilchluulegch(req.body.tukhainBaaziinKholbolt)
+            .findByIdAndUpdate(req.body.id, {
+              "tuukh.0.ebarimtProcessing": false,
+            })
+            .catch(() => {});
           next(err);
         }
       };
@@ -744,16 +809,41 @@ async function ebarimtShivye(req, res, next) {
       var guilgee = await BankniiGuilgee(
         req.body.tukhainBaaziinKholbolt,
         true
-      ).findById(req.body.id);
-      if (guilgee.ebarimtAvsanEsekh)
+      ).findOneAndUpdate(
+        {
+          _id: req.body.id,
+          $or: [
+            { ebarimtProcessing: { $exists: false } },
+            { ebarimtProcessing: false },
+          ],
+        },
+        { ebarimtProcessing: true },
+        { new: true }
+      );
+
+      if (!guilgee) {
+        throw new aldaa("Ибаримт хэвлэж байна, түр хүлээнэ үү!");
+      }
+
+      if (guilgee.ebarimtAvsanEsekh) {
+        await BankniiGuilgee(
+          req.body.tukhainBaaziinKholbolt,
+          true
+        ).findByIdAndUpdate(req.body.id, { ebarimtProcessing: false });
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
+      }
       var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findById(
         guilgee.kholbosonGereeniiId[0]
       );
-      if (!geree)
+      if (!geree) {
+        await BankniiGuilgee(
+          req.body.tukhainBaaziinKholbolt,
+          true
+        ).findByIdAndUpdate(req.body.id, { ebarimtProcessing: false });
         throw new aldaa(
           "Холбогдсон гэрээ байхгүй тул ибаримт хэвлэх боломжгүй"
         );
+      }
       if (
         baiguullaga &&
         baiguullaga.tokhirgoo &&
@@ -783,7 +873,7 @@ async function ebarimtShivye(req, res, next) {
           BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(
               { _id: req.body.id },
-              { ebarimtAvsanEsekh: true }
+              { ebarimtAvsanEsekh: true, ebarimtProcessing: false }
             )
             .then((xariu) => {})
             .catch((err) => {
@@ -791,6 +881,9 @@ async function ebarimtShivye(req, res, next) {
             });
           res.send(d);
         } catch (err) {
+          BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+            .findByIdAndUpdate(req.body.id, { ebarimtProcessing: false })
+            .catch(() => {});
           next(err);
         }
       };
@@ -890,12 +983,8 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
           ustsanBarimt.tailbar = req.body.tailbar || "И-баримт устгасан";
           ustsanBarimt.baiguullagiinId = req.body.baiguullagiinId;
           ustsanBarimt.barilgiinId = req.body.barilgiinId;
-          await ustsanBarimt.save().catch((err) => {
-            
-          });
-        } catch (err) {
-          
-        }
+          await ustsanBarimt.save().catch((err) => {});
+        } catch (err) {}
         if (butsaakhBarimt.guilgeeniiId)
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(
@@ -952,7 +1041,10 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
     }
     if (!!shine) {
       var url;
-      if (req.body.baiguullagiinId == "612f457d185280db676d0b51")
+      if (
+        req.body.baiguullagiinId == "612f457d185280db676d0b51" ||
+        ugugdul.baiguullagiinId == "695c57511a8a4aebc1d65b02"
+      )
         url = process.env.EBARIMTSHINE_TEST + "rest/sendData";
       else url = process.env.EBARIMTSHINE_IP + "rest/sendData";
       request.get(url, { json: true }, (err, res1, body) => {
@@ -1058,9 +1150,7 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
               .lean();
 
             allResults.push(...results);
-          } catch (err) {
-            
-          }
+          } catch (err) {}
         }
 
         const orderKey =
