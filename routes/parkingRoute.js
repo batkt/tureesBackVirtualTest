@@ -252,6 +252,36 @@ crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
     }
 });*/
 
+// Benchmark endpoint (for testing only - remove in production)
+router.get("/benchmarkUilchluulegch", tokenShalgakh, async (req, res, next) => {
+  try {
+    const {
+      benchmarkMethods,
+      quickBenchmark,
+    } = require("../utils/benchmarkAggregation");
+    const body = req.query;
+    if (!!body?.query) body.query = JSON.parse(body.query);
+    if (!!body?.order) body.order = JSON.parse(body.order);
+    if (!!body?.khuudasniiDugaar)
+      body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+    if (!!body?.khuudasniiKhemjee)
+      body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+    if (!!body?.search) body.search = String(body.search);
+
+    const model = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+    const results = await benchmarkMethods(model, body.query || {}, {
+      khuudasniiDugaar: body.khuudasniiDugaar || 1,
+      khuudasniiKhemjee: body.khuudasniiKhemjee || 100,
+      order: body.order || {},
+      search: body.search || null,
+    });
+
+    res.json(results);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get(
   "/zogsoolUilchluulegchJagsaalt",
   tokenShalgakh,

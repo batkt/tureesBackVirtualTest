@@ -57,14 +57,28 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       pipeline.push({ $match: baseMatch });
     }
 
-    // Stage 2: Store original tuukh array before unwinding
+    // Stage 2: Store original tuukh array before unwinding and handle missing tuukh
     pipeline.push({
       $addFields: {
-        originalTuukh: "$tuukh", // Preserve original tuukh array
+        originalTuukh: {
+          $cond: {
+            if: { $isArray: "$tuukh" },
+            then: "$tuukh",
+            else: [], // Default to empty array if tuukh is not an array
+          },
+        },
       },
     });
 
-    // Stage 3: Unwind tuukh array to work with nested fields efficiently
+    // Stage 3: Filter out documents without tuukh array or with empty tuukh
+    // Only process documents that have tuukh array with at least one element
+    pipeline.push({
+      $match: {
+        originalTuukh: { $exists: true, $ne: [], $type: "array" },
+      },
+    });
+
+    // Stage 4: Unwind tuukh array to work with nested fields efficiently
     pipeline.push({
       $unwind: {
         path: "$tuukh",
@@ -72,15 +86,29 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       },
     });
 
-    // Stage 4: Unwind tsagiinTuukh array if needed for garsanTsag queries
-    pipeline.push({
-      $unwind: {
-        path: "$tuukh.tsagiinTuukh",
-        preserveNullAndEmptyArrays: false,
-      },
-    });
+    // Stage 5: Check if we need to unwind tsagiinTuukh based on query
+    const needsTsagiinTuukhUnwind =
+      (query.$or &&
+        query.$or.some(
+          (or) =>
+            or["tuukh.tsagiinTuukh.garsanTsag"] ||
+            or["tuukh.0.tsagiinTuukh.0.garsanTsag"]
+        )) ||
+      query["tuukh.tsagiinTuukh.garsanTsag"] ||
+      query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
 
-    // Stage 5: Match on tuukh-specific conditions (after unwind, much more efficient)
+    if (needsTsagiinTuukhUnwind) {
+      // Only unwind tsagiinTuukh if query needs it
+      // Use preserveNullAndEmptyArrays: true to keep tuukh without tsagiinTuukh
+      pipeline.push({
+        $unwind: {
+          path: "$tuukh.tsagiinTuukh",
+          preserveNullAndEmptyArrays: true, // Keep tuukh even if tsagiinTuukh doesn't exist
+        },
+      });
+    }
+
+    // Stage 6: Match on tuukh-specific conditions (after unwind, much more efficient)
     const tuukhMatch = {};
 
     // Handle $or conditions - convert nested paths to unwound paths
@@ -101,9 +129,11 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
         }
 
         // Handle second branch: tuukh.0.garsanKhaalga doesn't exist with createdAt
+        // Check for $exists: false or null
         if (
           orCondition["tuukh.0.garsanKhaalga"] === null ||
           (orCondition["tuukh.0.garsanKhaalga"] &&
+            typeof orCondition["tuukh.0.garsanKhaalga"] === "object" &&
             orCondition["tuukh.0.garsanKhaalga"].$exists === false)
         ) {
           condition["tuukh.garsanKhaalga"] = { $exists: false };
@@ -156,9 +186,11 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
         originalTuukh: { $first: "$originalTuukh" },
         // Collect matched tuukh IDs
         matchedTuukhIds: { $addToSet: "$tuukh._id" },
-        // Store sort value for later
+        // Store sort value for later (handle missing tsagiinTuukh)
         sortValue: {
-          $first: "$tuukh.tsagiinTuukh.garsanTsag",
+          $first: {
+            $ifNull: ["$tuukh.tsagiinTuukh.garsanTsag", "$createdAt"],
+          },
         },
       },
     });
@@ -177,22 +209,37 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
         // Filter original tuukh array to keep only matched elements
         tuukh: {
           $cond: {
-            if: { $isArray: "$originalTuukh" },
+            if: {
+              $and: [
+                { $isArray: "$originalTuukh" },
+                { $gt: [{ $size: "$originalTuukh" }, 0] },
+              ],
+            },
             then: {
               $filter: {
                 input: "$originalTuukh",
                 as: "t",
                 cond: {
                   $or: [
-                    // Match by _id
-                    { $in: ["$$t._id", "$matchedTuukhIds"] },
+                    // Match by _id (if _id exists)
+                    {
+                      $and: [
+                        { $ne: ["$$t._id", null] },
+                        { $in: ["$$t._id", "$matchedTuukhIds"] },
+                      ],
+                    },
                     // Or if garsanKhaalga doesn't exist (for second $or branch)
-                    { $eq: [{ $type: "$$t.garsanKhaalga" }, "missing"] },
+                    {
+                      $or: [
+                        { $eq: [{ $type: "$$t.garsanKhaalga" }, "missing"] },
+                        { $eq: ["$$t.garsanKhaalga", null] },
+                      ],
+                    },
                   ],
                 },
               },
             },
-            else: [], // If not an array, return empty array
+            else: [], // If not an array or empty, return empty array
           },
         },
         // Store sort value for sorting
