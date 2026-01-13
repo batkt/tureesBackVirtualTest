@@ -75,69 +75,19 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
           (k) => k.includes("tuukh") || k.includes("tsagiinTuukh")
         ));
 
-    // If no tuukh conditions, use simpler pipeline
+    // If no tuukh conditions, fall back to khuudaslalt for better performance
+    // The original khuudaslalt is already optimized for simple queries
     if (!hasTuukhConditions) {
-      // Simple case: no tuukh filtering needed, just paginate and sort
-      if (search) {
-        pipeline.push({
-          $match: {
-            $or: [{ mashiniiDugaar: { $regex: search, $options: "i" } }],
-          },
-        });
-      }
-
-      // Sort
-      if (order && Object.keys(order).length > 0) {
-        pipeline.push({ $sort: order });
-      } else {
-        pipeline.push({ $sort: { createdAt: -1 } });
-      }
-
-      // Pagination with facet
-      const facetPipeline = [
-        {
-          $facet: {
-            total: [{ $count: "count" }],
-            data: [
-              { $skip: (khuudasniiDugaar - 1) * khuudasniiKhemjee },
-              { $limit: khuudasniiKhemjee },
-            ],
-          },
-        },
-        {
-          $project: {
-            jagsaalt: "$data",
-            niitMur: { $ifNull: [{ $arrayElemAt: ["$total.count", 0] }, 0] },
-          },
-        },
-      ];
-
-      const finalPipeline = [...pipeline, ...facetPipeline];
-      const result = await model
-        .aggregate(finalPipeline)
-        .allowDiskUse(false)
-        .exec();
-
-      if (result && result.length > 0) {
-        const data = result[0];
-        const niitKhuudas = Math.ceil(data.niitMur / khuudasniiKhemjee);
-
-        return {
-          jagsaalt: data.jagsaalt || [],
-          niitMur: data.niitMur || 0,
-          niitKhuudas: niitKhuudas,
-          khuudasniiDugaar: khuudasniiDugaar,
-          khuudasniiKhemjee: khuudasniiKhemjee,
-        };
-      }
-
-      return {
-        jagsaalt: [],
-        niitMur: 0,
-        niitKhuudas: 0,
-        khuudasniiDugaar: khuudasniiDugaar,
-        khuudasniiKhemjee: khuudasniiKhemjee,
-      };
+      // For simple queries without tuukh conditions, use the original method
+      // It's already fast (0.24s) and well-optimized
+      const { khuudaslalt } = require("zevbackv2");
+      return await khuudaslalt(model, {
+        query,
+        khuudasniiDugaar,
+        khuudasniiKhemjee,
+        order,
+        search,
+      });
     }
 
     // Stage 2: Store original tuukh array before unwinding and handle missing tuukh

@@ -427,31 +427,53 @@ router.get(
             )
           : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-        // Use optimized aggregation instead of khuudaslalt
-        try {
-          const result = await executeOptimizedAggregation(
-            model,
-            body.query || {},
-            {
+        // Use optimized aggregation only for complex tuukh queries
+        // For simple queries, khuudaslalt is already fast (0.24s)
+        const query = body.query || {};
+        const hasTuukhConditions =
+          (query.$or &&
+            query.$or.some(
+              (or) =>
+                or["tuukh.0.garsanKhaalga"] !== undefined ||
+                or["tuukh.tsagiinTuukh.garsanTsag"] ||
+                or["tuukh.0.tsagiinTuukh.0.garsanTsag"]
+            )) ||
+          query["tuukh.0.garsanKhaalga"] !== undefined ||
+          query["tuukh.tsagiinTuukh.garsanTsag"] ||
+          query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
+
+        if (hasTuukhConditions) {
+          // Complex query with tuukh conditions - use optimized aggregation
+          try {
+            const result = await executeOptimizedAggregation(model, query, {
               khuudasniiDugaar: body.khuudasniiDugaar || 1,
               khuudasniiKhemjee: body.khuudasniiKhemjee || 500,
               order: body.order || {},
               search: body.search || null,
-            }
-          );
-          res.send(result);
-        } catch (err) {
-          // Fallback to khuudaslalt if aggregation fails
-          console.warn(
-            "Aggregation failed, falling back to khuudaslalt:",
-            err.message
-          );
+            });
+            res.send(result);
+          } catch (err) {
+            // Fallback to khuudaslalt if aggregation fails
+            console.warn(
+              "Aggregation failed, falling back to khuudaslalt:",
+              err.message
+            );
+            khuudaslalt(model, body)
+              .then((result) => {
+                res.send(result);
+              })
+              .catch((fallbackErr) => {
+                next(fallbackErr);
+              });
+          }
+        } else {
+          // Simple query - use fast khuudaslalt (0.24s for 200k docs)
           khuudaslalt(model, body)
             .then((result) => {
               res.send(result);
             })
-            .catch((fallbackErr) => {
-              next(fallbackErr);
+            .catch((err) => {
+              next(err);
             });
         }
       } else {
