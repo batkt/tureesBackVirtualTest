@@ -491,8 +491,10 @@ async function archiveUilchluulegchKhonog() {
     const m = archiveBeforeDate.getMonth() + 1;
     const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
     for (const kholbolt of kholboltuud) {
+      console.log(`Processing kholbolt: ${kholbolt.baiguullagiinId}`);
       const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
-      if (!baiguullaga?.tokhirgoo?.dolooKhonogTutamArchiveEsekh) continue;
+      if(!baiguullaga) continue;
+      // if (!baiguullaga?.tokhirgoo?.dolooKhonogTutamArchiveEsekh) continue;
       const archivedIds = await Uilchluulegch(
         kholbolt,
         false,
