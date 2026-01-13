@@ -57,7 +57,14 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       pipeline.push({ $match: baseMatch });
     }
 
-    // Stage 2: Unwind tuukh array to work with nested fields efficiently
+    // Stage 2: Store original tuukh array before unwinding
+    pipeline.push({
+      $addFields: {
+        originalTuukh: "$tuukh", // Preserve original tuukh array
+      },
+    });
+
+    // Stage 3: Unwind tuukh array to work with nested fields efficiently
     pipeline.push({
       $unwind: {
         path: "$tuukh",
@@ -65,7 +72,7 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       },
     });
 
-    // Stage 3: Unwind tsagiinTuukh array if needed for garsanTsag queries
+    // Stage 4: Unwind tsagiinTuukh array if needed for garsanTsag queries
     pipeline.push({
       $unwind: {
         path: "$tuukh.tsagiinTuukh",
@@ -73,7 +80,7 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       },
     });
 
-    // Stage 4: Match on tuukh-specific conditions (after unwind, much more efficient)
+    // Stage 5: Match on tuukh-specific conditions (after unwind, much more efficient)
     const tuukhMatch = {};
 
     // Handle $or conditions - convert nested paths to unwound paths
@@ -133,14 +140,21 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       pipeline.push({ $match: tuukhMatch });
     }
 
-    // Stage 5: Group back to reconstruct documents
+    // Stage 6: Group back to reconstruct documents
     // Use $first to preserve all root fields and collect matched tuukh
     pipeline.push({
       $group: {
         _id: "$_id",
         // Preserve all root-level fields
-        root: { $first: "$$ROOT" },
-        // Collect matched tuukh elements
+        baiguullagiinId: { $first: "$baiguullagiinId" },
+        barilgiinId: { $first: "$barilgiinId" },
+        mashiniiDugaar: { $first: "$mashiniiDugaar" },
+        createdAt: { $first: "$createdAt" },
+        updatedAt: { $first: "$updatedAt" },
+        __v: { $first: "$__v" },
+        // Preserve original tuukh array (before unwinding)
+        originalTuukh: { $first: "$originalTuukh" },
+        // Collect matched tuukh IDs
         matchedTuukhIds: { $addToSet: "$tuukh._id" },
         // Store sort value for later
         sortValue: {
@@ -149,30 +163,36 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       },
     });
 
-    // Stage 6: Reconstruct document with original structure
+    // Stage 7: Reconstruct document with original structure
     pipeline.push({
       $project: {
-        // Preserve all fields from root
-        _id: "$root._id",
-        baiguullagiinId: "$root.baiguullagiinId",
-        barilgiinId: "$root.barilgiinId",
-        mashiniiDugaar: "$root.mashiniiDugaar",
-        createdAt: "$root.createdAt",
-        updatedAt: "$root.updatedAt",
-        __v: "$root.__v",
-        // Filter tuukh array to keep only matched elements
+        // Preserve all fields
+        _id: 1,
+        baiguullagiinId: 1,
+        barilgiinId: 1,
+        mashiniiDugaar: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        __v: 1,
+        // Filter original tuukh array to keep only matched elements
         tuukh: {
-          $filter: {
-            input: "$root.tuukh",
-            as: "t",
-            cond: {
-              $or: [
-                // Match by _id
-                { $in: ["$$t._id", "$matchedTuukhIds"] },
-                // Or if garsanKhaalga doesn't exist (for second $or branch)
-                { $eq: [{ $type: "$$t.garsanKhaalga" }, "missing"] },
-              ],
+          $cond: {
+            if: { $isArray: "$originalTuukh" },
+            then: {
+              $filter: {
+                input: "$originalTuukh",
+                as: "t",
+                cond: {
+                  $or: [
+                    // Match by _id
+                    { $in: ["$$t._id", "$matchedTuukhIds"] },
+                    // Or if garsanKhaalga doesn't exist (for second $or branch)
+                    { $eq: [{ $type: "$$t.garsanKhaalga" }, "missing"] },
+                  ],
+                },
+              },
             },
+            else: [], // If not an array, return empty array
           },
         },
         // Store sort value for sorting
@@ -180,14 +200,14 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       },
     });
 
-    // Stage 7: Filter out documents with empty tuukh arrays
+    // Stage 8: Filter out documents with empty tuukh arrays
     pipeline.push({
       $match: {
         tuukh: { $exists: true, $ne: [] },
       },
     });
 
-    // Stage 8: Search filter (if provided)
+    // Stage 9: Search filter (if provided)
     if (search) {
       pipeline.push({
         $match: {
@@ -199,7 +219,7 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       });
     }
 
-    // Stage 9: Sort
+    // Stage 10: Sort
     if (order && Object.keys(order).length > 0) {
       const sortField = Object.keys(order)[0];
       const sortOrder = order[sortField];
@@ -216,7 +236,7 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       pipeline.push({ $sort: { createdAt: -1 } });
     }
 
-    // Stage 10: Remove temporary sort field and apply pagination
+    // Stage 11: Remove temporary sort field and apply pagination
     pipeline.push({
       $project: {
         _sortValue: 0, // Remove temporary field
