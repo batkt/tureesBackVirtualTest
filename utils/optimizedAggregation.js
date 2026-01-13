@@ -60,17 +60,33 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
     // Check if we actually need to process tuukh array
     // Only use aggregation for queries that actually filter on tuukh fields
     // Don't use it just for sorting - khuudaslalt handles sorting fine
-    const hasTuukhQueryConditions =
-      (query.$or &&
-        query.$or.some(
-          (or) =>
-            or["tuukh.0.garsanKhaalga"] !== undefined ||
-            or["tuukh.tsagiinTuukh.garsanTsag"] ||
-            or["tuukh.0.tsagiinTuukh.0.garsanTsag"]
-        )) ||
-      query["tuukh.0.garsanKhaalga"] !== undefined ||
-      query["tuukh.tsagiinTuukh.garsanTsag"] ||
-      query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
+    const hasTuukhInQuery = (q) => {
+      if (!q) return false;
+
+      // Check direct tuukh fields (including $exists conditions)
+      const tuukhFields = Object.keys(q).filter((k) => k.startsWith("tuukh."));
+      if (tuukhFields.length > 0) {
+        return true;
+      }
+
+      // Check specific known tuukh fields
+      if (
+        q["tuukh.0.garsanKhaalga"] !== undefined ||
+        q["tuukh.tsagiinTuukh.garsanTsag"] !== undefined ||
+        q["tuukh.0.tsagiinTuukh.0.garsanTsag"] !== undefined
+      ) {
+        return true;
+      }
+
+      // Check $or conditions recursively
+      if (q.$or && Array.isArray(q.$or)) {
+        return q.$or.some((or) => hasTuukhInQuery(or));
+      }
+
+      return false;
+    };
+
+    const hasTuukhQueryConditions = hasTuukhInQuery(query);
 
     // Check if we need tuukh processing for sorting (only if it's a complex nested sort)
     const needsTuukhForSort =

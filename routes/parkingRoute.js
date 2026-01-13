@@ -430,17 +430,46 @@ router.get(
         // Use optimized aggregation only for complex tuukh queries
         // For simple queries, khuudaslalt is already fast (0.24s)
         const query = body.query || {};
-        const hasTuukhConditions =
-          (query.$or &&
-            query.$or.some(
-              (or) =>
-                or["tuukh.0.garsanKhaalga"] !== undefined ||
-                or["tuukh.tsagiinTuukh.garsanTsag"] ||
-                or["tuukh.0.tsagiinTuukh.0.garsanTsag"]
-            )) ||
-          query["tuukh.0.garsanKhaalga"] !== undefined ||
-          query["tuukh.tsagiinTuukh.garsanTsag"] ||
-          query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
+
+        // Check for tuukh conditions in query (including $exists)
+        const hasTuukhInQuery = (q) => {
+          if (!q) return false;
+
+          // Check direct tuukh fields
+          if (
+            q["tuukh.0.garsanKhaalga"] !== undefined ||
+            q["tuukh.tsagiinTuukh.garsanTsag"] !== undefined ||
+            q["tuukh.0.tsagiinTuukh.0.garsanTsag"] !== undefined
+          ) {
+            return true;
+          }
+
+          // Check for $exists conditions on tuukh fields
+          const tuukhFields = Object.keys(q).filter((k) =>
+            k.startsWith("tuukh.")
+          );
+          if (tuukhFields.length > 0) {
+            return true;
+          }
+
+          // Check $or conditions
+          if (q.$or && Array.isArray(q.$or)) {
+            return q.$or.some((or) => hasTuukhInQuery(or));
+          }
+
+          return false;
+        };
+
+        // Check for tuukh in sort order
+        const hasTuukhInSort =
+          body.order &&
+          Object.keys(body.order).some(
+            (k) =>
+              k.includes("tuukh.0.tsagiinTuukh.0.garsanTsag") ||
+              (k.includes("tuukh") && k.split(".").length > 2)
+          );
+
+        const hasTuukhConditions = hasTuukhInQuery(query) || hasTuukhInSort;
 
         if (hasTuukhConditions) {
           // Complex query with tuukh conditions - use optimized aggregation
