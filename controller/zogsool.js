@@ -544,7 +544,7 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
             for (const zurchiltei of zurchilteiUilchluulegch) {
               var dun = zurchiltei?.tuukh[0]?.tulbur?.length > 0 ? zurchiltei?.tuukh[0]?.tulbur.reduce((a, b) => a + b.dun || 0, 0) : 0;
               if(dun > 0 && zurchiltei.niitDun === dun) continue;
-              var zurchil = zurchiltei.niitDun > 0 ? "Төлбөрийн зөрчилтэй": "Үнэгүй хугацаанд";
+              var zurchil = zurchiltei.niitDun > 0 ? "Төлбөрийн зөрчилтэй" : "Тодорхойгүй зөрчилтэй!";
               let upsertDoc = {
                 updateOne: {
                   filter: { _id: zurchiltei._id },
