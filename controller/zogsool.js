@@ -534,6 +534,7 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
             'tuukh.0.tsagiinTuukh.0.garsanTsag': { $exists: true },
             'tuukh.0.garsanKhaalga': { $exists: true },
             'tuukh.0.tuluv': 0,
+            zurchil: { $exists: false },
             createdAt: {
               $lt: moment().startOf('day').toDate(),
             },
@@ -543,10 +544,11 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
             for (const zurchiltei of zurchilteiUilchluulegch) {
               var dun = zurchiltei?.tuukh[0]?.tulbur?.length > 0 ? zurchiltei?.tuukh[0]?.tulbur.reduce((a, b) => a + b.dun || 0, 0) : 0;
               if(dun > 0 && zurchiltei.niitDun === dun) continue;
+              var zurchil = zurchiltei.niitDun > 0 ? "Төлбөрийн зөрчилтэй": "Үнэгүй хугацаанд";
               let upsertDoc = {
                 updateOne: {
                   filter: { _id: zurchiltei._id },
-                  update: {"tuukh.0.tuluv": -4, zurchil: "Төлбөрийн зөрчилтэй" },
+                  update: {"tuukh.0.tuluv": -4, zurchil: zurchil },
                 },
               };
               bulkOps.push(upsertDoc);
