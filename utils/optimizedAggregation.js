@@ -57,6 +57,89 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       pipeline.push({ $match: baseMatch });
     }
 
+    // Check if we actually need to process tuukh array
+    // If query has no tuukh-related conditions, we can skip the complex unwinding
+    const hasTuukhConditions =
+      (query.$or &&
+        query.$or.some(
+          (or) =>
+            or["tuukh.0.garsanKhaalga"] !== undefined ||
+            or["tuukh.tsagiinTuukh.garsanTsag"] ||
+            or["tuukh.0.tsagiinTuukh.0.garsanTsag"]
+        )) ||
+      query["tuukh.0.garsanKhaalga"] !== undefined ||
+      query["tuukh.tsagiinTuukh.garsanTsag"] ||
+      query["tuukh.0.tsagiinTuukh.0.garsanTsag"] ||
+      (order &&
+        Object.keys(order).some(
+          (k) => k.includes("tuukh") || k.includes("tsagiinTuukh")
+        ));
+
+    // If no tuukh conditions, use simpler pipeline
+    if (!hasTuukhConditions) {
+      // Simple case: no tuukh filtering needed, just paginate and sort
+      if (search) {
+        pipeline.push({
+          $match: {
+            $or: [{ mashiniiDugaar: { $regex: search, $options: "i" } }],
+          },
+        });
+      }
+
+      // Sort
+      if (order && Object.keys(order).length > 0) {
+        pipeline.push({ $sort: order });
+      } else {
+        pipeline.push({ $sort: { createdAt: -1 } });
+      }
+
+      // Pagination with facet
+      const facetPipeline = [
+        {
+          $facet: {
+            total: [{ $count: "count" }],
+            data: [
+              { $skip: (khuudasniiDugaar - 1) * khuudasniiKhemjee },
+              { $limit: khuudasniiKhemjee },
+            ],
+          },
+        },
+        {
+          $project: {
+            jagsaalt: "$data",
+            niitMur: { $ifNull: [{ $arrayElemAt: ["$total.count", 0] }, 0] },
+          },
+        },
+      ];
+
+      const finalPipeline = [...pipeline, ...facetPipeline];
+      const result = await model
+        .aggregate(finalPipeline)
+        .allowDiskUse(false)
+        .exec();
+
+      if (result && result.length > 0) {
+        const data = result[0];
+        const niitKhuudas = Math.ceil(data.niitMur / khuudasniiKhemjee);
+
+        return {
+          jagsaalt: data.jagsaalt || [],
+          niitMur: data.niitMur || 0,
+          niitKhuudas: niitKhuudas,
+          khuudasniiDugaar: khuudasniiDugaar,
+          khuudasniiKhemjee: khuudasniiKhemjee,
+        };
+      }
+
+      return {
+        jagsaalt: [],
+        niitMur: 0,
+        niitKhuudas: 0,
+        khuudasniiDugaar: khuudasniiDugaar,
+        khuudasniiKhemjee: khuudasniiKhemjee,
+      };
+    }
+
     // Stage 2: Store original tuukh array before unwinding and handle missing tuukh
     pipeline.push({
       $addFields: {
@@ -86,7 +169,42 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       },
     });
 
-    // Stage 5: Check if we need to unwind tsagiinTuukh based on query
+    // Stage 5: Early filtering on tuukh level - filter out irrelevant tuukh elements BEFORE further processing
+    // This significantly reduces the number of documents we process
+    const earlyTuukhFilter = {};
+
+    // If query has specific tuukh conditions, apply them early
+    if (query["tuukh.0.garsanKhaalga"] !== undefined) {
+      earlyTuukhFilter["tuukh.garsanKhaalga"] = query["tuukh.0.garsanKhaalga"];
+    }
+
+    // Filter out tuukh without garsanKhaalga if that's what we're looking for
+    if (query.$or) {
+      const hasGarsanKhaalgaCondition = query.$or.some(
+        (or) => or["tuukh.0.garsanKhaalga"] !== undefined
+      );
+      const hasNoGarsanKhaalgaCondition = query.$or.some(
+        (or) =>
+          or["tuukh.0.garsanKhaalga"] === null ||
+          (or["tuukh.0.garsanKhaalga"] &&
+            typeof or["tuukh.0.garsanKhaalga"] === "object" &&
+            or["tuukh.0.garsanKhaalga"].$exists === false)
+      );
+
+      // If we have both conditions in $or, we can't filter early
+      // But if we only have one, we can filter
+      if (hasGarsanKhaalgaCondition && !hasNoGarsanKhaalgaCondition) {
+        // Only keep tuukh with garsanKhaalga
+        earlyTuukhFilter["tuukh.garsanKhaalga"] = { $exists: true, $ne: null };
+      }
+    }
+
+    // Apply early filter if we have conditions
+    if (Object.keys(earlyTuukhFilter).length > 0) {
+      pipeline.push({ $match: earlyTuukhFilter });
+    }
+
+    // Stage 6: Check if we need to unwind tsagiinTuukh based on query
     const needsTsagiinTuukhUnwind =
       (query.$or &&
         query.$or.some(
@@ -95,7 +213,9 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
             or["tuukh.0.tsagiinTuukh.0.garsanTsag"]
         )) ||
       query["tuukh.tsagiinTuukh.garsanTsag"] ||
-      query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
+      query["tuukh.0.tsagiinTuukh.0.garsanTsag"] ||
+      (order &&
+        Object.keys(order).some((k) => k.includes("tsagiinTuukh.garsanTsag")));
 
     if (needsTsagiinTuukhUnwind) {
       // Only unwind tsagiinTuukh if query needs it
@@ -106,9 +226,23 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
           preserveNullAndEmptyArrays: true, // Keep tuukh even if tsagiinTuukh doesn't exist
         },
       });
+
+      // Filter tsagiinTuukh early if we have date conditions
+      if (query.$or) {
+        query.$or.forEach((or) => {
+          if (or["tuukh.tsagiinTuukh.garsanTsag"]) {
+            pipeline.push({
+              $match: {
+                "tuukh.tsagiinTuukh.garsanTsag":
+                  or["tuukh.tsagiinTuukh.garsanTsag"],
+              },
+            });
+          }
+        });
+      }
     }
 
-    // Stage 6: Match on tuukh-specific conditions (after unwind, much more efficient)
+    // Stage 7: Match on tuukh-specific conditions (after unwind, much more efficient)
     const tuukhMatch = {};
 
     // Handle $or conditions - convert nested paths to unwound paths
@@ -170,7 +304,7 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       pipeline.push({ $match: tuukhMatch });
     }
 
-    // Stage 6: Group back to reconstruct documents
+    // Stage 8: Group back to reconstruct documents
     // Use $first to preserve all root fields and collect matched tuukh
     pipeline.push({
       $group: {
@@ -195,7 +329,7 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       },
     });
 
-    // Stage 7: Reconstruct document with original structure
+    // Stage 9: Reconstruct document with original structure
     pipeline.push({
       $project: {
         // Preserve all fields
@@ -247,14 +381,14 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       },
     });
 
-    // Stage 8: Filter out documents with empty tuukh arrays
+    // Stage 10: Filter out documents with empty tuukh arrays
     pipeline.push({
       $match: {
         tuukh: { $exists: true, $ne: [] },
       },
     });
 
-    // Stage 9: Search filter (if provided)
+    // Stage 11: Search filter (if provided)
     if (search) {
       pipeline.push({
         $match: {
@@ -266,7 +400,9 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       });
     }
 
-    // Stage 10: Sort
+    // Stage 12: Sort - optimize to avoid disk usage
+    // Use allowDiskUse: false in aggregation options to prevent disk sorting
+    // But first, try to sort on indexed fields
     if (order && Object.keys(order).length > 0) {
       const sortField = Object.keys(order)[0];
       const sortOrder = order[sortField];
@@ -275,30 +411,40 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
       if (sortField.includes("tuukh.0.tsagiinTuukh.0.garsanTsag")) {
         // Use the stored sort value
         pipeline.push({ $sort: { _sortValue: sortOrder } });
+      } else if (sortField === "createdAt") {
+        // createdAt is indexed, use it directly
+        pipeline.push({ $sort: { createdAt: sortOrder } });
       } else {
         pipeline.push({ $sort: { [sortField]: sortOrder } });
       }
     } else {
-      // Default sort by createdAt descending
+      // Default sort by createdAt descending (indexed field)
       pipeline.push({ $sort: { createdAt: -1 } });
     }
 
-    // Stage 11: Remove temporary sort field and apply pagination
+    // Limit before facet to reduce memory usage
+    // But we need to be careful - we need total count too
+    // So we'll keep facet but optimize it
+
+    // Stage 13: Remove temporary sort field
     pipeline.push({
       $project: {
         _sortValue: 0, // Remove temporary field
       },
     });
 
-    // Stage 11: Use facet for efficient pagination and counting
+    // Stage 14: Use facet for efficient pagination and counting
+    // Optimize: Get count first, then paginate
     const facetPipeline = [
       {
         $facet: {
+          // Get total count (cheaper operation)
+          total: [{ $count: "count" }],
+          // Get paginated data
           data: [
             { $skip: (khuudasniiDugaar - 1) * khuudasniiKhemjee },
             { $limit: khuudasniiKhemjee },
           ],
-          total: [{ $count: "count" }],
         },
       },
       {
@@ -312,8 +458,12 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
     // Combine main pipeline with facet
     const finalPipeline = [...pipeline, ...facetPipeline];
 
-    // Execute aggregation
-    const result = await model.aggregate(finalPipeline).exec();
+    // Execute aggregation with options to prevent disk usage if possible
+    // Note: allowDiskUse might be needed for large sorts, but we'll try without first
+    const result = await model
+      .aggregate(finalPipeline)
+      .allowDiskUse(false)
+      .exec();
 
     if (result && result.length > 0) {
       const data = result[0];
