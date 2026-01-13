@@ -485,7 +485,7 @@ async function archiveUilchluulegchDolooKhonog() {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     const now = new Date();
-    const archiveBeforeDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const archiveBeforeDate = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000);
     archiveBeforeDate.setHours(0, 0, 0, 0);
     const y = archiveBeforeDate.getFullYear();
     const m = archiveBeforeDate.getMonth() + 1;
