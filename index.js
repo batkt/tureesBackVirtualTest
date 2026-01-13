@@ -287,7 +287,7 @@ cron.schedule(
 cron.schedule(
   "20 06 * * *",
   async function () {
-    await zogsool.archiveUilchluulegchDolooKhonog();
+    await zogsool.archiveUilchluulegchKhonog();
   },
   {
     scheduled: true,
