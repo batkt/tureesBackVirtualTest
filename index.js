@@ -285,7 +285,7 @@ cron.schedule(
 // );
 
 cron.schedule(
-  "50 06 * * *",
+  "58 06 * * *",
   async function () {
     await zogsool.archiveUilchluulegchKhonog();
   },
