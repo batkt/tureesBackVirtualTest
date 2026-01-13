@@ -58,8 +58,9 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
     }
 
     // Check if we actually need to process tuukh array
-    // If query has no tuukh-related conditions, we can skip the complex unwinding
-    const hasTuukhConditions =
+    // Only use aggregation for queries that actually filter on tuukh fields
+    // Don't use it just for sorting - khuudaslalt handles sorting fine
+    const hasTuukhQueryConditions =
       (query.$or &&
         query.$or.some(
           (or) =>
@@ -69,26 +70,44 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
         )) ||
       query["tuukh.0.garsanKhaalga"] !== undefined ||
       query["tuukh.tsagiinTuukh.garsanTsag"] ||
-      query["tuukh.0.tsagiinTuukh.0.garsanTsag"] ||
-      (order &&
-        Object.keys(order).some(
-          (k) => k.includes("tuukh") || k.includes("tsagiinTuukh")
-        ));
+      query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
+
+    // Check if we need tuukh processing for sorting (only if it's a complex nested sort)
+    const needsTuukhForSort =
+      order &&
+      Object.keys(order).some(
+        (k) =>
+          k.includes("tuukh.0.tsagiinTuukh.0.garsanTsag") ||
+          (k.includes("tuukh") && k.split(".").length > 2)
+      );
+
+    const hasTuukhConditions = hasTuukhQueryConditions || needsTuukhForSort;
 
     // If no tuukh conditions, fall back to khuudaslalt for better performance
-    // The original khuudaslalt is already optimized for simple queries
+    // The original khuudaslalt is already optimized for simple queries (0.23s)
+    // Aggregation is slower for simple queries, so we should use khuudaslalt
     if (!hasTuukhConditions) {
       // For simple queries without tuukh conditions, use the original method
-      // It's already fast (0.24s) and well-optimized
+      // It's already fast and well-optimized - aggregation is slower for simple queries
       const { khuudaslalt } = require("zevbackv2");
-      return await khuudaslalt(model, {
-        query,
-        khuudasniiDugaar,
-        khuudasniiKhemjee,
-        order,
-        search,
-      });
+      try {
+        // Return khuudaslalt result directly - it's faster for simple queries
+        return await khuudaslalt(model, {
+          query,
+          khuudasniiDugaar,
+          khuudasniiKhemjee,
+          order,
+          search,
+        });
+      } catch (err) {
+        // If khuudaslalt fails, log and rethrow
+        console.error("[AGG] khuudaslalt fallback failed:", err);
+        throw err;
+      }
     }
+
+    // Log that we're using optimized aggregation for complex query
+    console.log("[AGG] Using optimized aggregation for complex tuukh query");
 
     // Stage 2: Store original tuukh array before unwinding and handle missing tuukh
     pipeline.push({

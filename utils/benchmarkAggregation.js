@@ -91,6 +91,7 @@ async function benchmarkMethods(model, query = {}, options = {}) {
 
     // Benchmark optimized aggregation
     console.log("⏱️  Testing optimized aggregation...");
+    console.log("   Note: For simple queries, this will fall back to khuudaslalt");
     const aggStart = Date.now();
     const memBeforeAgg = process.memoryUsage();
 
