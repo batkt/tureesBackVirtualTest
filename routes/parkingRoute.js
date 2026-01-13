@@ -8,6 +8,9 @@ const {
   db,
 } = require("zevbackv2");
 const {
+  executeOptimizedAggregation,
+} = require("../utils/optimizedAggregation");
+const {
   Parking,
   Mashin,
   BlockMashin,
@@ -385,7 +388,7 @@ router.get(
 
       // Query all collections and merge results
       if (collectionsToQuery.length === 1) {
-        // Single collection - use normal flow
+        // Single collection - use optimized aggregation
         const model = collectionsToQuery[0].name
           ? Uilchluulegch(
               req.body.tukhainBaaziinKholbolt,
@@ -394,13 +397,33 @@ router.get(
             )
           : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-        khuudaslalt(model, body)
-          .then((result) => {
-            res.send(result);
-          })
-          .catch((err) => {
-            next(err);
-          });
+        // Use optimized aggregation instead of khuudaslalt
+        try {
+          const result = await executeOptimizedAggregation(
+            model,
+            body.query || {},
+            {
+              khuudasniiDugaar: body.khuudasniiDugaar || 1,
+              khuudasniiKhemjee: body.khuudasniiKhemjee || 500,
+              order: body.order || {},
+              search: body.search || null,
+            }
+          );
+          res.send(result);
+        } catch (err) {
+          // Fallback to khuudaslalt if aggregation fails
+          console.warn(
+            "Aggregation failed, falling back to khuudaslalt:",
+            err.message
+          );
+          khuudaslalt(model, body)
+            .then((result) => {
+              res.send(result);
+            })
+            .catch((fallbackErr) => {
+              next(fallbackErr);
+            });
+        }
       } else {
         // Multiple collections - need to merge
         try {
@@ -421,14 +444,32 @@ router.get(
                 )
               : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-            // Create a copy of body with very high limit to get all results
-            const queryBody = {
-              ...body,
-              khuudasniiDugaar: 1,
-              khuudasniiKhemjee: 999999, // Set very high limit to get all results from each collection
-            };
-
-            const result = await khuudaslalt(model, queryBody);
+            // Use optimized aggregation instead of khuudaslalt
+            let result;
+            try {
+              result = await executeOptimizedAggregation(
+                model,
+                body.query || {},
+                {
+                  khuudasniiDugaar: 1,
+                  khuudasniiKhemjee: 999999, // Get all results from each collection
+                  order: body.order || {},
+                  search: body.search || null,
+                }
+              );
+            } catch (err) {
+              // Fallback to khuudaslalt if aggregation fails
+              console.warn(
+                "Aggregation failed, falling back to khuudaslalt:",
+                err.message
+              );
+              const queryBody = {
+                ...body,
+                khuudasniiDugaar: 1,
+                khuudasniiKhemjee: 999999,
+              };
+              result = await khuudaslalt(model, queryBody);
+            }
 
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
@@ -4561,6 +4602,7 @@ router.post(
         req.body.tukhainBaaziinKholbolt
       ).countDocuments({
         baiguullagiinId,
+
         barilgiinId,
         $or: orFilter.length > 0 ? orFilter : [{}],
       });
