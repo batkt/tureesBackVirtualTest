@@ -8,9 +8,6 @@ const {
   db,
 } = require("zevbackv2");
 const {
-  executeOptimizedAggregation,
-} = require("../utils/optimizedAggregation");
-const {
   Parking,
   Mashin,
   BlockMashin,
@@ -252,36 +249,6 @@ crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
     }
 });*/
 
-// Benchmark endpoint (for testing only - remove in production)
-router.get("/benchmarkUilchluulegch", tokenShalgakh, async (req, res, next) => {
-  try {
-    const {
-      benchmarkMethods,
-      quickBenchmark,
-    } = require("../utils/benchmarkAggregation");
-    const body = req.query;
-    if (!!body?.query) body.query = JSON.parse(body.query);
-    if (!!body?.order) body.order = JSON.parse(body.order);
-    if (!!body?.khuudasniiDugaar)
-      body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-    if (!!body?.khuudasniiKhemjee)
-      body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    if (!!body?.search) body.search = String(body.search);
-
-    const model = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
-    const results = await benchmarkMethods(model, body.query || {}, {
-      khuudasniiDugaar: body.khuudasniiDugaar || 1,
-      khuudasniiKhemjee: body.khuudasniiKhemjee || 100,
-      order: body.order || {},
-      search: body.search || null,
-    });
-
-    res.json(results);
-  } catch (error) {
-    next(error);
-  }
-});
-
 router.get(
   "/zogsoolUilchluulegchJagsaalt",
   tokenShalgakh,
@@ -418,7 +385,7 @@ router.get(
 
       // Query all collections and merge results
       if (collectionsToQuery.length === 1) {
-        // Single collection - use optimized aggregation
+        // Single collection - use normal flow
         const model = collectionsToQuery[0].name
           ? Uilchluulegch(
               req.body.tukhainBaaziinKholbolt,
@@ -427,84 +394,13 @@ router.get(
             )
           : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-        // Use optimized aggregation only for complex tuukh queries
-        // For simple queries, khuudaslalt is already fast (0.24s)
-        const query = body.query || {};
-
-        // Check for tuukh conditions in query (including $exists)
-        const hasTuukhInQuery = (q) => {
-          if (!q) return false;
-
-          // Check direct tuukh fields
-          if (
-            q["tuukh.0.garsanKhaalga"] !== undefined ||
-            q["tuukh.tsagiinTuukh.garsanTsag"] !== undefined ||
-            q["tuukh.0.tsagiinTuukh.0.garsanTsag"] !== undefined
-          ) {
-            return true;
-          }
-
-          // Check for $exists conditions on tuukh fields
-          const tuukhFields = Object.keys(q).filter((k) =>
-            k.startsWith("tuukh.")
-          );
-          if (tuukhFields.length > 0) {
-            return true;
-          }
-
-          // Check $or conditions
-          if (q.$or && Array.isArray(q.$or)) {
-            return q.$or.some((or) => hasTuukhInQuery(or));
-          }
-
-          return false;
-        };
-
-        // Check for tuukh in sort order
-        const hasTuukhInSort =
-          body.order &&
-          Object.keys(body.order).some(
-            (k) =>
-              k.includes("tuukh.0.tsagiinTuukh.0.garsanTsag") ||
-              (k.includes("tuukh") && k.split(".").length > 2)
-          );
-
-        const hasTuukhConditions = hasTuukhInQuery(query) || hasTuukhInSort;
-
-        if (hasTuukhConditions) {
-          // Complex query with tuukh conditions - use optimized aggregation
-          try {
-            const result = await executeOptimizedAggregation(model, query, {
-              khuudasniiDugaar: body.khuudasniiDugaar || 1,
-              khuudasniiKhemjee: body.khuudasniiKhemjee || 500,
-              order: body.order || {},
-              search: body.search || null,
-            });
+        khuudaslalt(model, body)
+          .then((result) => {
             res.send(result);
-          } catch (err) {
-            // Fallback to khuudaslalt if aggregation fails
-            console.warn(
-              "Aggregation failed, falling back to khuudaslalt:",
-              err.message
-            );
-            khuudaslalt(model, body)
-              .then((result) => {
-                res.send(result);
-              })
-              .catch((fallbackErr) => {
-                next(fallbackErr);
-              });
-          }
-        } else {
-          // Simple query - use fast khuudaslalt (0.24s for 200k docs)
-          khuudaslalt(model, body)
-            .then((result) => {
-              res.send(result);
-            })
-            .catch((err) => {
-              next(err);
-            });
-        }
+          })
+          .catch((err) => {
+            next(err);
+          });
       } else {
         // Multiple collections - need to merge
         try {
@@ -525,32 +421,14 @@ router.get(
                 )
               : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-            // Use optimized aggregation instead of khuudaslalt
-            let result;
-            try {
-              result = await executeOptimizedAggregation(
-                model,
-                body.query || {},
-                {
-                  khuudasniiDugaar: 1,
-                  khuudasniiKhemjee: 999999, // Get all results from each collection
-                  order: body.order || {},
-                  search: body.search || null,
-                }
-              );
-            } catch (err) {
-              // Fallback to khuudaslalt if aggregation fails
-              console.warn(
-                "Aggregation failed, falling back to khuudaslalt:",
-                err.message
-              );
-              const queryBody = {
-                ...body,
-                khuudasniiDugaar: 1,
-                khuudasniiKhemjee: 999999,
-              };
-              result = await khuudaslalt(model, queryBody);
-            }
+            // Create a copy of body with very high limit to get all results
+            const queryBody = {
+              ...body,
+              khuudasniiDugaar: 1,
+              khuudasniiKhemjee: 999999, // Set very high limit to get all results from each collection
+            };
+
+            const result = await khuudaslalt(model, queryBody);
 
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
@@ -4683,7 +4561,6 @@ router.post(
         req.body.tukhainBaaziinKholbolt
       ).countDocuments({
         baiguullagiinId,
-
         barilgiinId,
         $or: orFilter.length > 0 ? orFilter : [{}],
       });
