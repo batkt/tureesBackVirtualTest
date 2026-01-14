@@ -2550,6 +2550,7 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
                   } },
               ]);
               await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+              console.log("docs insert length:" + data?.length);
               // --- Delete ---
               const res = await BankniiGuilgee(kholbolt).deleteMany({
                   dansniiDugaar: { $nin: zogsooliinDansuud },
