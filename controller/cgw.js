@@ -2522,7 +2522,7 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
           }
           if (zogsooliinDansuud?.length === 0) continue;
           const months = await BankniiGuilgee(kholbolt).aggregate([
-              { $match: { dansniiDugaar: { $nin: zogsooliinDansuud }, kholbosonTalbainId: { $ne: [] } } },
+              { $match: { dansniiDugaar: { $nin: zogsooliinDansuud }, kholbosonTalbainId: [] } },
               { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
               { $group: { _id: { year: "$year", month: "$month" } } },
               { $sort: { "_id.year": 1, "_id.month": 1 }, },
@@ -2535,17 +2535,17 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
               const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
               const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
                 dansniiDugaar: { $nin: zogsooliinDansuud },
-                kholbosonTalbainId: { $ne: [] },
+                kholbosonTalbainId: [],
                 createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
               });
-              if (docs?.length > 0) continue;
+              // if (docs?.length > 0) continue;
               console.log("Archiving for:", kholbolt.baiguullagiinId, y, m);
               console.log("docs length:" + docs?.length);
               // --- Archive ---
               const data = await BankniiGuilgee(kholbolt).aggregate([
                   { $match: {
                     dansniiDugaar: { $nin: zogsooliinDansuud },
-                    kholbosonTalbainId: { $ne: [] },
+                    kholbosonTalbainId: [],
                     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
                   } },
               ]);
@@ -2554,7 +2554,7 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
               // --- Delete ---
               const res = await BankniiGuilgee(kholbolt).deleteMany({
                   dansniiDugaar: { $nin: zogsooliinDansuud },
-                  kholbosonTalbainId: { $ne: [] },
+                  kholbosonTalbainId: [],
                   createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
               });
           }
