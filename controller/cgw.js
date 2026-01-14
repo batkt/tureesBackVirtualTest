@@ -2544,13 +2544,13 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
           }).lean();
           if (!data.length) continue;
           console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
-          // await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-          // await BankniiGuilgee(kholbolt).deleteMany({
-          //   _id: { $in: data.map(d => d._id) },
-          //   dansniiDugaar: { $in: zogsooliinDansuud },
-          //   kholbosonTalbainId: [],
-          //   createdAt: { $lt: archiveBeforeDate }
-          // });
+          await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+          await BankniiGuilgee(kholbolt).deleteMany({
+            _id: { $in: data.map(d => d._id) },
+            dansniiDugaar: { $in: zogsooliinDansuud },
+            kholbosonTalbainId: [],
+            createdAt: { $lt: archiveBeforeDate }
+          });
         }
     }  
   } catch (err) {

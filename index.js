@@ -263,7 +263,7 @@ cron.schedule(
 // );
 
 cron.schedule(
-  "50 8 * * * ",
+  "40 5 * * * ",
   function () {
     zogsool.zurchilteiTuvulBoluulakh();
   },
@@ -296,7 +296,7 @@ cron.schedule(
 // );
 
 cron.schedule(
-  "40 07 * * *",
+  "50 5 * * *",
   async function () {
     await zogsool.archiveUilchluulegchKhonog();
   },
@@ -307,7 +307,7 @@ cron.schedule(
 );
 
 cron.schedule(
- "28 5 * * * ",
+ "35 5 * * * ",
  function () {
    cgw.archiveBankGuilgeeKhonog();
  },
