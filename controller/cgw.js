@@ -2497,3 +2497,55 @@ exports.archiveBankGuilgee = asyncHandler(async () => {
     }
   }
 );
+
+exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
+  try 
+  { 
+    const { db } = require("zevbackv2");
+    const kholboltuud = db.kholboltuud;
+    const now = new Date();
+    const archiveBeforeDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    archiveBeforeDate.setHours(0, 0, 0, 0);
+    const y = archiveBeforeDate.getFullYear();
+    const m = archiveBeforeDate.getMonth() + 1;
+    const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
+    if (kholboltuud) {
+        for (const kholbolt of kholboltuud) {
+          const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
+          if(!baiguullaga) continue;
+          if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
+          var parkings = await Parking(kholbolt).find({
+            baiguullagiinId: kholbolt.baiguullagiinId,
+            zogsooliinDans: {$exists: true}, 
+          }, { zogsooliinDans: 1 }).lean();
+          if (parkings?.length === 0) continue;
+          const zogsooliinDansuud = new Set(parkings.map(d => String(d.zogsooliinDans)));
+          if (zogsooliinDansuud?.length === 0) continue;
+          const archivedIds = await BankniiGuilgee(
+            kholbolt,
+            false,
+            archiveName
+          ).find({ dansniiDugaar: { $in: zogsooliinDansuud }, kholbosonTalbainId: [] }, { _id: 1 }).lean();
+          const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
+          console.log("archiveBeforeDate --->:", archiveBeforeDate);
+          const data = await BankniiGuilgee(kholbolt).find({
+            _id: { $nin: Array.from(archivedIdSet) },
+            dansniiDugaar: { $in: zogsooliinDansuud },
+            kholbosonTalbainId: [],
+            createdAt: { $lt: archiveBeforeDate }
+          }).lean();
+          if (!data.length) continue;
+          console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
+          // await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+          // await BankniiGuilgee(kholbolt).deleteMany({
+          //   _id: { $in: data.map(d => d._id) },
+          //   dansniiDugaar: { $in: zogsooliinDansuud },
+          //   kholbosonTalbainId: [],
+          //   createdAt: { $lt: archiveBeforeDate }
+          // });
+        }
+    }  
+  } catch (err) {
+    }
+  }
+);
