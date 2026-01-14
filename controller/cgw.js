@@ -2511,6 +2511,7 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
     const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
     if (kholboltuud) {
         for (const kholbolt of kholboltuud) {
+          console.log("baiguullagiinId --->:", kholbolt.baiguullagiinId);
           const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
           if(!baiguullaga) continue;
           if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
