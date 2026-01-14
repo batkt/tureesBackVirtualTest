@@ -285,39 +285,50 @@ router.get(
         return null;
       };
 
+      // Extract start and end dates
       let startDate = null;
       let endDate = null;
+      let dateField = null;
 
       if (body?.query) {
+        // Check createdAt
         if (body.query.createdAt) {
           startDate = extractDate(body.query.createdAt, true);
           endDate = extractDate(body.query.createdAt, false);
+          dateField = "createdAt";
         }
 
+        // Check tuukh.tulbur.ognoo
         if (!startDate && body.query["tuukh.tulbur.ognoo"]) {
           startDate = extractDate(body.query["tuukh.tulbur.ognoo"], true);
           endDate = extractDate(body.query["tuukh.tulbur.ognoo"], false);
+          dateField = "tuukh.tulbur.ognoo";
         }
 
+        // Check in $and array
         if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
           for (const condition of body.query.$and) {
             if (condition.createdAt) {
               startDate = extractDate(condition.createdAt, true);
               endDate = extractDate(condition.createdAt, false);
+              dateField = "createdAt";
               break;
             }
             if (condition["tuukh.tulbur.ognoo"]) {
               startDate = extractDate(condition["tuukh.tulbur.ognoo"], true);
               endDate = extractDate(condition["tuukh.tulbur.ognoo"], false);
+              dateField = "tuukh.tulbur.ognoo";
               break;
             }
           }
         }
       }
 
+      // If only one date found, use it as both start and end
       if (startDate && !endDate) endDate = startDate;
       if (!startDate && endDate) startDate = endDate;
 
+      // Determine which collections to query
       const now = new Date();
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
@@ -331,6 +342,7 @@ router.get(
             ? new Date(endDate)
             : new Date(startDate);
 
+        // Generate list of months between start and end
         const current = new Date(start.getFullYear(), start.getMonth(), 1);
         const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
 
@@ -339,37 +351,23 @@ router.get(
           const month = current.getMonth() + 1;
 
           if (year === currentYear && month === currentMonth) {
-            const archiveName = `Uilchluulegch${year}${String(month).padStart(
-              2,
-              "0"
-            )}`;
-
-            collectionsToQuery.push({
-              name: archiveName,
-              year,
-              month,
-              isCurrent: true,
-              isArchive: true,
-            });
-
+            // Current month - use main collection
             collectionsToQuery.push({
               name: null,
               year,
               month,
               isCurrent: true,
-              isArchive: false,
             });
           } else {
-            const archiveName = `Uilchluulegch${year}${String(month).padStart(
-              2,
-              "0"
-            )}`;
+            // Archived month
+            const collectionName = `Uilchluulegch${year}${String(
+              month
+            ).padStart(2, "0")}`;
             collectionsToQuery.push({
-              name: archiveName,
+              name: collectionName,
               year,
               month,
               isCurrent: false,
-              isArchive: true,
             });
           }
 
@@ -377,15 +375,17 @@ router.get(
         }
       }
 
+      // If no date range found, just use main collection
       if (collectionsToQuery.length === 0) {
         collectionsToQuery.push({
           name: null,
           isCurrent: true,
-          isArchive: false,
         });
       }
 
-      if (collectionsToQuery.length === 1 && !collectionsToQuery[0].isCurrent) {
+      // Query all collections and merge results
+      if (collectionsToQuery.length === 1) {
+        // Single collection - use normal flow
         const model = collectionsToQuery[0].name
           ? Uilchluulegch(
               req.body.tukhainBaaziinKholbolt,
@@ -402,12 +402,16 @@ router.get(
             next(err);
           });
       } else {
+        // Multiple collections - need to merge
         try {
           const allResults = [];
+          let totalCount = 0;
 
+          // Store original pagination values
           const originalPage = body.khuudasniiDugaar || 1;
           const originalLimit = body.khuudasniiKhemjee || 500;
 
+          // Query each collection
           for (const collection of collectionsToQuery) {
             const model = collection.name
               ? Uilchluulegch(
@@ -417,10 +421,11 @@ router.get(
                 )
               : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
+            // Create a copy of body with very high limit to get all results
             const queryBody = {
               ...body,
               khuudasniiDugaar: 1,
-              khuudasniiKhemjee: 999999,
+              khuudasniiKhemjee: 999999, // Set very high limit to get all results from each collection
             };
 
             const result = await khuudaslalt(model, queryBody);
@@ -428,12 +433,16 @@ router.get(
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
             }
+            // Use the actual count from each collection instead of niitMur
+            totalCount += result.jagsaalt?.length || 0;
           }
 
+          // Apply sorting if specified
           if (body.order) {
             const sortField = Object.keys(body.order)[0];
             const sortOrder = body.order[sortField];
             allResults.sort((a, b) => {
+              // Handle nested fields (e.g., "tuukh.0.createdAt")
               const getNestedValue = (obj, path) => {
                 return path.split(".").reduce((curr, prop) => {
                   return curr?.[prop];
@@ -449,6 +458,7 @@ router.get(
             });
           }
 
+          // Apply pagination on merged results
           const startIndex = (originalPage - 1) * originalLimit;
           const endIndex = startIndex + originalLimit;
           const paginatedResults = allResults.slice(startIndex, endIndex);
@@ -457,7 +467,7 @@ router.get(
             khuudasniiDugaar: originalPage,
             khuudasniiKhemjee: originalLimit,
             jagsaalt: paginatedResults,
-            niitMur: allResults.length,
+            niitMur: allResults.length, // Total count of merged results
             niitKhuudas: Math.ceil(allResults.length / originalLimit),
           });
         } catch (err) {
@@ -1378,17 +1388,6 @@ router.post(
           const collectionEnd = moment.min(current.clone().endOf("month"), end);
 
           if (isCurrentMonth) {
-            const y = current.year();
-            const m = String(current.month() + 1).padStart(2, "0");
-            const archiveName = `Uilchluulegch${y}${m}`;
-
-            collectionsToQuery.push({
-              name: archiveName,
-              startDate: collectionStart.toDate(),
-              endDate: collectionEnd.toDate(),
-              isMain: false,
-            });
-
             collectionsToQuery.push({
               name: null,
               startDate: collectionStart.toDate(),
@@ -1517,164 +1516,54 @@ router.post(
           res.status(200).send(finalResult);
         }
       } else {
-        const isCurrentMonth =
-          start.year() === now.year() && start.month() === now.month();
+        let collectionName = null;
 
-        if (isCurrentMonth) {
-          const allResults = {
-            udriinTailan: [],
-            zurchiltei: [],
-            tulburiinZurchiltei: [],
-            unegui: [],
-          };
-
+        if (!(start.year() === now.year() && start.month() === now.month())) {
           const y = start.year();
           const m = String(start.month() + 1).padStart(2, "0");
-          const archiveName = `Uilchluulegch${y}${m}`;
+          collectionName = `Uilchluulegch${y}${m}`;
+        }
 
-          const archiveResult = await aggregateFromCollection(archiveName);
-          allResults.udriinTailan.push(...archiveResult.udriinTailan);
-          allResults.zurchiltei.push(...archiveResult.zurchiltei);
-          allResults.tulburiinZurchiltei.push(
-            ...archiveResult.tulburiinZurchiltei
-          );
-          allResults.unegui.push(...archiveResult.unegui);
+        const result = await aggregateFromCollection(collectionName);
+        finalResult = result.udriinTailan;
 
-          const mainResult = await aggregateFromCollection(null);
-          allResults.udriinTailan.push(...mainResult.udriinTailan);
-          allResults.zurchiltei.push(...mainResult.zurchiltei);
-          allResults.tulburiinZurchiltei.push(
-            ...mainResult.tulburiinZurchiltei
-          );
-          allResults.unegui.push(...mainResult.unegui);
+        if (!!result.zurchiltei && result.zurchiltei.length > 0)
+          finalResult.push(result.zurchiltei[0]);
+        if (!!result.unegui && result.unegui.length > 0)
+          finalResult.push(result.unegui[0]);
 
-          const mergedTailan = {};
-          allResults.udriinTailan.forEach((item) => {
-            if (mergedTailan[item._id]) {
-              mergedTailan[item._id].niitDun += item.niitDun;
-              mergedTailan[item._id].niitToo += item.niitToo;
-            } else {
-              mergedTailan[item._id] = { ...item };
-            }
+        const matchVal = {
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: !!req.body.barilgiinId
+            ? req.body.barilgiinId
+            : { $exists: true },
+          tuluv: 0,
+        };
+
+        const zurchilteTailan = await ZurchilteiMashin(
+          req.body.tukhainBaaziinKholbolt
+        ).aggregate([
+          { $match: matchVal },
+          {
+            $group: {
+              _id: "Авлага",
+              niitDun: { $sum: "$niitDun" },
+              niitToo: { $sum: 1 },
+            },
+          },
+        ]);
+
+        if (zurchilteTailan?.length > 0) finalResult.push(zurchilteTailan[0]);
+        if (result.tulburiinZurchiltei?.length > 0)
+          finalResult.push(result.tulburiinZurchiltei[0]);
+
+        if (req.body.includeMetadata) {
+          res.status(200).send({
+            data: finalResult,
+            archiveName: collectionName,
           });
-
-          finalResult = Object.values(mergedTailan);
-
-          if (allResults.zurchiltei.length > 0) {
-            const mergedZurchiltei = allResults.zurchiltei.reduce(
-              (acc, item) => ({
-                _id: "Зөрчилтэй",
-                niitDun: acc.niitDun + item.niitDun,
-                niitToo: acc.niitToo + item.niitToo,
-              }),
-              { _id: "Зөрчилтэй", niitDun: 0, niitToo: 0 }
-            );
-            finalResult.push(mergedZurchiltei);
-          }
-
-          if (allResults.tulburiinZurchiltei.length > 0) {
-            const mergedTulburiinZurchiltei =
-              allResults.tulburiinZurchiltei.reduce(
-                (acc, item) => ({
-                  _id: "Төлбөрийн зөрчилтэй",
-                  niitDun: acc.niitDun + item.niitDun,
-                  niitToo: acc.niitToo + item.niitToo,
-                }),
-                { _id: "Төлбөрийн зөрчилтэй", niitDun: 0, niitToo: 0 }
-              );
-            finalResult.push(mergedTulburiinZurchiltei);
-          }
-
-          if (allResults.unegui.length > 0) {
-            const mergedUnegui = allResults.unegui.reduce(
-              (acc, item) => ({
-                _id: "Үнэгүй",
-                niitDun: acc.niitDun + item.niitDun,
-                niitToo: acc.niitToo + item.niitToo,
-              }),
-              { _id: "Үнэгүй", niitDun: 0, niitToo: 0 }
-            );
-            finalResult.push(mergedUnegui);
-          }
-
-          const matchVal = {
-            baiguullagiinId: req.body.baiguullagiinId,
-            barilgiinId: !!req.body.barilgiinId
-              ? req.body.barilgiinId
-              : { $exists: true },
-            tuluv: 0,
-          };
-
-          const zurchilteTailan = await ZurchilteiMashin(
-            req.body.tukhainBaaziinKholbolt
-          ).aggregate([
-            { $match: matchVal },
-            {
-              $group: {
-                _id: "Авлага",
-                niitDun: { $sum: "$niitDun" },
-                niitToo: { $sum: 1 },
-              },
-            },
-          ]);
-
-          if (zurchilteTailan?.length > 0) finalResult.push(zurchilteTailan[0]);
-
-          if (req.body.includeMetadata) {
-            res.status(200).send({
-              data: finalResult,
-              archiveName: "current-month",
-              collections: [archiveName, "main"],
-            });
-          } else {
-            res.status(200).send(finalResult);
-          }
         } else {
-          const y = start.year();
-          const m = String(start.month() + 1).padStart(2, "0");
-          const collectionName = `Uilchluulegch${y}${m}`;
-
-          const result = await aggregateFromCollection(collectionName);
-          finalResult = result.udriinTailan;
-
-          if (!!result.zurchiltei && result.zurchiltei.length > 0)
-            finalResult.push(result.zurchiltei[0]);
-          if (!!result.unegui && result.unegui.length > 0)
-            finalResult.push(result.unegui[0]);
-
-          const matchVal = {
-            baiguullagiinId: req.body.baiguullagiinId,
-            barilgiinId: !!req.body.barilgiinId
-              ? req.body.barilgiinId
-              : { $exists: true },
-            tuluv: 0,
-          };
-
-          const zurchilteTailan = await ZurchilteiMashin(
-            req.body.tukhainBaaziinKholbolt
-          ).aggregate([
-            { $match: matchVal },
-            {
-              $group: {
-                _id: "Авлага",
-                niitDun: { $sum: "$niitDun" },
-                niitToo: { $sum: 1 },
-              },
-            },
-          ]);
-
-          if (zurchilteTailan?.length > 0) finalResult.push(zurchilteTailan[0]);
-          if (result.tulburiinZurchiltei?.length > 0)
-            finalResult.push(result.tulburiinZurchiltei[0]);
-
-          if (req.body.includeMetadata) {
-            res.status(200).send({
-              data: finalResult,
-              archiveName: collectionName,
-            });
-          } else {
-            res.status(200).send(finalResult);
-          }
+          res.status(200).send(finalResult);
         }
       }
     } catch (error) {
@@ -3400,15 +3289,20 @@ router.route("/v1/mockPay").post(async (req, res, next) => {
                 res.send({ success: false, message: "Төлөлт хийгдсэн байна!" });
             }
           } else tukhainObject.tuukh[0].tulbur = tulbur;
+
+        // Calculate total paid amount (sum of all payments) BEFORE database update
+        var totalTulburDun = tukhainObject.tuukh[0].tulbur?.reduce(
+          (a, b) => a + (b.dun || 0),
+          0
+        );
+
         var set = {
           "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
           tokiId: "toki",
+          niitDun: totalTulburDun, // Set niitDun to total paid amount (atomic update)
         };
         if (bodsonDun > 0) {
-          var tulburDun = tukhainObject.tuukh[0].tulbur?.reduce(
-            (a, b) => a + (b.dun || 0),
-            0
-          );
+          var tulburDun = totalTulburDun; // Reuse calculated value
           if (bodsonDun == tulburDun) {
             if (!req.body.manually_open)
               set["garakhTsag"] = new Date(
@@ -3488,20 +3382,9 @@ router.route("/v1/mockPay").post(async (req, res, next) => {
             );
           }
         }
-        // Update niitDun (same as production)
-        var totalTulburDun = tukhainObject.tuukh[0].tulbur?.reduce(
-          (a, b) => a + (b.dun || 0),
-          0
-        );
-        tukhainObject.niitDun = totalTulburDun;
 
-        // Update niitDun in database
-        await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
-          tukhainObject._id,
-          {
-            $set: { niitDun: totalTulburDun },
-          }
-        );
+        // Update in-memory object for response
+        tukhainObject.niitDun = totalTulburDun;
 
         // MOCK PAYMENT: Skip ebarimt/receipt generation
         // In production, this would generate real receipts via ebarimtDuudya
