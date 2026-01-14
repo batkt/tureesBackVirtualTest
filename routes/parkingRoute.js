@@ -539,10 +539,41 @@ router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
 });
 
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
-  console.log(
-    "zogsoolSdkService - Request Body:",
-    JSON.stringify(req.body, null, 2)
-  );
+  // Safe logging function to handle circular references
+  const safeStringify = (obj) => {
+    const seen = new WeakSet();
+    return JSON.stringify(
+      obj,
+      (key, value) => {
+        // Skip circular references
+        if (typeof value === "object" && value !== null) {
+          if (seen.has(value)) {
+            return "[Circular]";
+          }
+          seen.add(value);
+        }
+        // Skip Mongoose models and functions
+        if (value && typeof value === "object") {
+          if (value.constructor && value.constructor.name === "model") {
+            return "[Mongoose Model]";
+          }
+          if (typeof value.toObject === "function") {
+            try {
+              return value.toObject();
+            } catch (e) {
+              return "[Mongoose Object]";
+            }
+          }
+        }
+        if (typeof value === "function") {
+          return "[Function]";
+        }
+        return value;
+      },
+      2
+    );
+  };
+  console.log("zogsoolSdkService - Request Body:", safeStringify(req.body));
   try {
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
