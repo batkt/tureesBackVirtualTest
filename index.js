@@ -251,6 +251,17 @@ cron.schedule(
   }
 );
 
+// cron.schedule(
+//   "30 13 * * * ",
+//   function () {
+//     zogsool.zogsoolTseverlye();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
+
 cron.schedule(
   "50 8 * * * ",
   function () {
@@ -293,6 +304,17 @@ cron.schedule(
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
   }
+);
+
+cron.schedule(
+ "10 5 * * * ",
+ function () {
+   cgw.archiveBankGuilgeeKhonog();
+ },
+{
+   scheduled: true,
+   timezone: "Asia/Ulaanbaatar",
+ }
 );
 
 // cron.schedule(

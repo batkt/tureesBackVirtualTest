@@ -2508,7 +2508,7 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
     archiveBeforeDate.setHours(0, 0, 0, 0);
     const y = archiveBeforeDate.getFullYear();
     const m = archiveBeforeDate.getMonth() + 1;
-    const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
+    const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
     if (kholboltuud) {
         for (const kholbolt of kholboltuud) {
           const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
