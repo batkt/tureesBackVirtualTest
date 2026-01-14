@@ -540,105 +540,83 @@ router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
 
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try {
-    console.log('=== zogsoolSdkService START ===');
-    console.log('mashiniiDugaar:', req.body.mashiniiDugaar);
-    console.log('baiguullagiinId:', req.body.baiguullagiinId);
-    
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
     if (!!req?.body?.color) {
     }
-    
     const medegdel = async (uilchluulegch, khariltsagchiinId) => {
-      try {
-        console.log('=== medegdel function called ===');
-        console.log('uilchluulegch:', uilchluulegch?._id);
-        console.log('khariltsagchiinId:', khariltsagchiinId);
-        
-        /**
-         * Web.с машин бүртгэсэн тохиолдолд khariltsagchiinId байхгүй байгаа тул
-         * зарим машин дээр khariltsagchiinId undefined ирж болно.
-         * */
-        var firebaseToken = req.body.firebaseToken;
-        var kharilltsagch = await Khariltsagch(
-          req.body.tukhainBaaziinKholbolt
-        ).findOne({ _id: khariltsagchiinId });
-        
-        if (!!kharilltsagch) {
-          // Check if required data exists before formatting
-          if (!uilchluulegch?.tuukh?.[0]?.tsagiinTuukh?.[0]) {
-            console.error('Missing tuukh data in uilchluulegch');
-            return;
-          }
-          
-          const medeelel = {
-            title: "Зогсоол",
-            body: `<span>
-            <div style="display:flex; flex-direction:row; justify-content:space-between">
-              <p style="width:maxContent; text-align:left">Машин:</p>
-              <p style="width:maxContent; text-align:right; color: #999999">${
-                uilchluulegch.mashiniiDugaar || 'N/A'
-              }</p>
-            </div>
-            <div style="display:flex; flex-direction:row; justify-content:space-between">
-              <p style="width:maxContent; text-align:left">Орсон:</p>
-              <p style="width:maxContent; text-align:right; color: #999999">${moment(
-                uilchluulegch.tuukh[0].tsagiinTuukh[0].orsonTsag
-              ).format("YYYY/MM/DD HH:mm:ss")}</p>
-            </div>
-            <div style="display:flex; flex-direction:row; justify-content:space-between">
-              <p style="width:maxContent; text-align:left">Гарсан:</p>
-              <p style="width:maxContent; text-align:right; color: #999999">${moment(
-                uilchluulegch.tuukh[0].tsagiinTuukh[0].garsanTsag
-              ).format("YYYY/MM/DD HH:mm:ss")}</p>
-            </div>
-            <div style="display:flex; flex-direction:row; justify-content:space-between">
-              <p style="width:maxContent; text-align:left">Хугацаа:</p>
-              <p style="width:maxContent; text-align:right; color: #999999">${
-                uilchluulegch.tuukh[0].niitKhugatsaa || 0
-              } мин</p>
-            </div>
-            <div style="display:flex; flex-direction:row; justify-content:space-between">
-              <p style="width:maxContent; text-align:left">Дүн:</p>
-              <p style="width:maxContent; text-align:right; color: #999999; font-weight: bold">${
-                uilchluulegch.tuukh[0].tulukhDun || 0
-              } </p>
-            </div>
-            </span>`,
-          };
-          firebaseToken = kharilltsagch.firebaseToken;
-          if (!!firebaseToken) {
-            khariltsagchidSonorduulgaIlgeeye(
-              firebaseToken,
-              medeelel,
-              (r) => {
-                var sonorduulga = new Sonorduulga(
-                  req.body.tukhainBaaziinKholbolt
-                )();
-                sonorduulga.khariltsagchiinId = khariltsagchiinId;
-                sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
-                sonorduulga.barilgiinId = req.body.barilgiinId;
-                sonorduulga.zurgiinId = req.body.zurgiinId;
-                if (khariltsagchiinId)
-                  sonorduulga.khuleenAvagchiinId = khariltsagchiinId;
-                if (!req.body.turul) sonorduulga.turul = "medegdel";
-                sonorduulga.title = medeelel.title;
-                sonorduulga.message = medeelel.body;
-                sonorduulga.kharsanEsekh = false;
-                sonorduulga.save();
-                var io = req.app.get("socketio");
-                if (io) io.emit("khariltsagch" + khariltsagchiinId, sonorduulga);
-              },
-              next
-            );
-          }
+      /**
+       * Web.с машин бүртгэсэн тохиолдолд khariltsagchiinId байхгүй байгаа тул
+       * зарим машин дээр khariltsagchiinId undefined ирж болно.
+       * */
+      var firebaseToken = req.body.firebaseToken;
+      var kharilltsagch = await Khariltsagch(
+        req.body.tukhainBaaziinKholbolt
+      ).findOne({ _id: khariltsagchiinId });
+      if (!!kharilltsagch) {
+        const medeelel = {
+          title: "Зогсоол",
+          body: `<span>
+          <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <p style="width:maxContent; text-align:left">Машин:</p>
+            <p style="width:maxContent; text-align:right; color: #999999">${
+              uilchluulegch.mashiniiDugaar
+            }</p>
+          </div>
+          <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <p style="width:maxContent; text-align:left">Орсон:</p>
+            <p style="width:maxContent; text-align:right; color: #999999">${moment(
+              uilchluulegch.tuukh[0].tsagiinTuukh[0].orsonTsag
+            ).format("YYYY/MM/DD HH:mm:ss")}</p>
+          </div>
+          <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <p style="width:maxContent; text-align:left">Гарсан:</p>
+            <p style="width:maxContent; text-align:right; color: #999999">${moment(
+              uilchluulegch.tuukh[0].tsagiinTuukh[0].garsanTsag
+            ).format("YYYY/MM/DD HH:mm:ss")}</p>
+          </div>
+          <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <p style="width:maxContent; text-align:left">Хугацаа:</p>
+            <p style="width:maxContent; text-align:right; color: #999999">${
+              uilchluulegch.tuukh[0].niitKhugatsaa
+            } мин</p>
+          </div>
+          <div style="display:flex; flex-direction:row; justify-content:space-between">
+            <p style="width:maxContent; text-align:left">Дүн:</p>
+            <p style="width:maxContent; text-align:right; color: #999999; font-weight: bold">${
+              uilchluulegch.tuukh[0].tulukhDun
+            } </p>
+          </div>
+          </span>`,
+        };
+        firebaseToken = kharilltsagch.firebaseToken;
+        if (!!firebaseToken) {
+          khariltsagchidSonorduulgaIlgeeye(
+            firebaseToken,
+            medeelel,
+            (r) => {
+              var sonorduulga = new Sonorduulga(
+                req.body.tukhainBaaziinKholbolt
+              )();
+              sonorduulga.khariltsagchiinId = khariltsagchiinId;
+              sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+              sonorduulga.barilgiinId = req.body.barilgiinId;
+              sonorduulga.zurgiinId = req.body.zurgiinId;
+              if (khariltsagchiinId)
+                sonorduulga.khuleenAvagchiinId = khariltsagchiinId;
+              if (!req.body.turul) sonorduulga.turul = "medegdel";
+              sonorduulga.title = medeelel.title;
+              sonorduulga.message = medeelel.body;
+              sonorduulga.kharsanEsekh = false;
+              sonorduulga.save();
+              var io = req.app.get("socketio");
+              if (io) io.emit("khariltsagch" + khariltsagchiinId, sonorduulga);
+            },
+            next
+          );
         }
-      } catch (medegdelErr) {
-        console.error('Error in medegdel function:', medegdelErr);
-        // Don't throw - this is a notification, not critical
       }
     };
-    
     const uneguiMashinOldson = await uneguiMashin(db.erunkhiiKholbolt).findOne({
       mashiniiDugaar: req.body.mashiniiDugaar,
       "zogsool.baiguullagiinId": req.body.baiguullagiinId,
@@ -667,40 +645,9 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
         );
       }
     }
-    
-    console.log('=== Calling sdkData ===');
-    console.log('req.body keys:', Object.keys(req.body));
-    console.log('req.body.tukhainBaaziinKholbolt:', req.body.tukhainBaaziinKholbolt);
-    console.log('req.body.baiguullagiinId:', req.body.baiguullagiinId);
-    
-    // The error is happening inside sdkData - add try/catch
-    let khariu;
-    try {
-      khariu = await sdkData(req, medegdel);
-      console.log('=== sdkData SUCCESS ===');
-    } catch (sdkError) {
-      console.error('=== sdkData ERROR ===');
-      console.error('Error message:', sdkError.message);
-      console.error('Error stack:', sdkError.stack);
-      console.error('Error at line 1513 in parking-v2/lib/serivice/sdkService.js');
-      
-      // Check what data was passed
-      console.error('Request body sample:', {
-        mashiniiDugaar: req.body.mashiniiDugaar,
-        baiguullagiinId: req.body.baiguullagiinId,
-        tukhainBaaziinKholbolt: req.body.tukhainBaaziinKholbolt,
-        hasColor: !!req.body.color,
-        hasFirebaseToken: !!req.body.firebaseToken,
-      });
-      
-      throw sdkError; // Re-throw to let aldaaBarigch handle it
-    }
-    
-    console.log('=== zogsoolSdkService END ===');
+    const khariu = await sdkData(req, medegdel);
     res.send(khariu);
   } catch (err) {
-    console.error('=== zogsoolSdkService OUTER ERROR ===');
-    console.error('Error:', err.message);
     next(err);
   }
 });
@@ -3547,10 +3494,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
 router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
   try {
     let tulbur = [];
-    if (
-      req.body.ajiltniiId == "66384a9061eeda747d01a320" ||
-      req.body.ajiltniiId == "6966f429535c9cddf36c9761"
-    ) {
+    if (req.body.ajiltniiId == "66384a9061eeda747d01a320") {
       if (req.body.paid_amount == 0) {
         tulbur = [
           {
@@ -3783,10 +3727,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           tukhainObject.tuukh[0].tulbur &&
           tukhainObject.tuukh[0].tulbur.length > 0
         ) {
-          if (
-            req.body.ajiltniiId == "66384a9061eeda747d01a320" ||
-            req.body.ajiltniiId == "6966f429535c9cddf36c9761"
-          ) {
+          if (req.body.ajiltniiId == "66384a9061eeda747d01a320") {
             if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Fitness"))
               throw new Error("Хөнгөлөлт оруулсан байна!");
           } else if (req.body.ajiltniiId == "6746b7b1e3a4bd05bbac6880") {
