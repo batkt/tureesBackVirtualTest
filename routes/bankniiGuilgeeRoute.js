@@ -623,7 +623,7 @@ router
                 };
                 var resultRef = await BankniiGuilgee(
                   req.body.tukhainBaaziinKholbolt,
-                  true
+                  false
                 ).find(match);
                 if (resultRef?.length > 0) {
                   var x = resultRef[0];
