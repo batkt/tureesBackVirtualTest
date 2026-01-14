@@ -252,7 +252,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "40 6 * * * ",
+  "10 5 * * * ",
   function () {
     zogsool.zogsoolTseverlye();
   },
@@ -263,9 +263,20 @@ cron.schedule(
 );
 
 cron.schedule(
-  "40 5 * * * ",
+  "05 7 * * * ",
   function () {
     zogsool.zurchilteiTuvulBoluulakh();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
+  "30 5 * * *",
+  async function () {
+    await zogsool.archiveUilchluulegchKhonog();
   },
   {
     scheduled: true,
@@ -294,17 +305,6 @@ cron.schedule(
 //    timezone: "Asia/Ulaanbaatar",
 //  }
 // );
-
-cron.schedule(
-  "45 6 * * *",
-  async function () {
-    await zogsool.archiveUilchluulegchKhonog();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
 
 cron.schedule(
  "42 5 * * * ",
