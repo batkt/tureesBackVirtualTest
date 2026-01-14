@@ -3395,6 +3395,16 @@ router.route("/v1/mockPay").post(async (req, res, next) => {
         // MOCK PAYMENT: Skip ebarimt/receipt generation
         // In production, this would generate real receipts via ebarimtDuudya
         // For mock, we just return success without generating receipts
+
+        // Calculate time parked for response
+        var orsonTsag = tukhainObject.tuukh[0]?.tsagiinTuukh?.[0]?.orsonTsag;
+        var garsanTsag = tukhainObject.tuukh[0]?.tsagiinTuukh?.[0]?.garsanTsag;
+        var parkedMinutes = 0;
+        if (orsonTsag) {
+          var endTime = garsanTsag || new Date();
+          parkedMinutes = Math.floor((endTime - orsonTsag) / (1000 * 60));
+        }
+
         butsaakhKhariu.success = true;
         butsaakhKhariu.message =
           "Mock payment successful (no receipt generated)";
@@ -3403,7 +3413,24 @@ router.route("/v1/mockPay").post(async (req, res, next) => {
           paid_amount: req.body.paid_amount,
           total_paid: totalTulburDun,
           amount_due: bodsonDun,
+          remaining_amount: Math.max(0, bodsonDun - totalTulburDun),
           is_fully_paid: bodsonDun == totalTulburDun,
+          session_id: tukhainObject._id.toString(),
+          payment_details: {
+            base_rate: tukhainObject.tuukh[0]?.undsenUne || 0,
+            parked_minutes: parkedMinutes,
+            parked_hours: (parkedMinutes / 60).toFixed(2),
+            orsonTsag: orsonTsag,
+            garsanTsag: garsanTsag,
+            tuluv: tukhainObject.tuukh[0]?.tuluv || 0,
+            garsanKhaalga: tukhainObject.tuukh[0]?.garsanKhaalga || null,
+          },
+          payments:
+            tukhainObject.tuukh[0]?.tulbur?.map((p) => ({
+              turul: p.turul,
+              dun: p.dun,
+              ognoo: p.ognoo,
+            })) || [],
           note: "This is a mock payment - no real receipt was generated",
         };
         res.send(butsaakhKhariu);
