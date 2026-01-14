@@ -2521,7 +2521,12 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
           });
           console.log("parkings.length --->:", parkings?.length);
           if (parkings?.length === 0) continue;
-          const zogsooliinDansuud = new Set(parkings.map(d => d.zogsooliinDans));
+          var zogsooliinDansuud = [];
+          for (const parking of parkings) {
+            if (!!parking.zogsooliinDans && parking.zogsooliinDans !== "0" && !zogsooliinDansuud.includes(parking.zogsooliinDans)) {
+              zogsooliinDansuud.push(parking.zogsooliinDans);
+            }
+          }
           console.log("zogsooliinDansuud.length --->:", zogsooliinDansuud?.length);
           if (zogsooliinDansuud?.length === 0) continue;
           const archivedIds = await BankniiGuilgee(
@@ -2549,6 +2554,7 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
         }
     }  
   } catch (err) {
+    console.log("err --->:", err);
     }
   }
 );
