@@ -251,14 +251,13 @@ module.exports.zogsoolTseverlye = async (body, next) => {
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
         var zogsooluud = await Parking(kholbolt).find({
-          mashinGargakhKhugatsaa: { $gt: 0 },
           baiguullagiinId: kholbolt.baiguullagiinId,
         });
         if (!!zogsooluud) {
           for await (const zogsool of zogsooluud) {
             var ognoo = new Date();
             ognoo = new Date(
-              ognoo.getTime() - zogsool.mashinGargakhKhugatsaa * 60 * 60000
+              ognoo.getTime() - (zogsool.mashinGargakhKhugatsaa || 120) * 60 * 60000
             );
             await Uilchluulegch(kholbolt).updateMany(
               {
