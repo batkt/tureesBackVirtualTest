@@ -573,7 +573,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
       2
     );
   };
-  console.log("zogsoolSdkService - Request Body:", safeStringify(req.body));
+  // console.log("zogsoolSdkService - Request Body:", safeStringify(req.body));
   try {
     console.log("SDK Zogsool SDK Service called" + JSON.stringify(req.body));
     if (req.body.mashiniiDugaar)
