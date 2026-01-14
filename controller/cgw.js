@@ -2521,7 +2521,8 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
           });
           console.log("parkings.length --->:", parkings?.length);
           if (parkings?.length === 0) continue;
-          const zogsooliinDansuud = new Set(parkings.map(d => String(d.zogsooliinDans)));
+          const zogsooliinDansuud = new Set(parkings.map(d => d.zogsooliinDans));
+          console.log("zogsooliinDansuud.length --->:", zogsooliinDansuud?.length);
           if (zogsooliinDansuud?.length === 0) continue;
           const archivedIds = await BankniiGuilgee(
             kholbolt,
