@@ -651,6 +651,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
     next(err);
   }
 });
+console.log("zogsoolSdk" + zogsoolSdk);
 
 router
   .route("/zogsoolOrlogoGaraas")
