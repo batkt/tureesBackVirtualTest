@@ -263,7 +263,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "05 7 * * * ",
+  "20 5 * * * ",
   function () {
     zogsool.zurchilteiTuvulBoluulakh();
   },
@@ -274,7 +274,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "08 7 * * *",
+  "30 5 * * * ",
   async function () {
     await zogsool.archiveUilchluulegchKhonog();
   },
@@ -307,7 +307,7 @@ cron.schedule(
 // );
 
 cron.schedule(
- "42 5 * * * ",
+ "30 1 * * * ",
  function () {
    cgw.archiveBankGuilgeeKhonog();
  },
@@ -317,16 +317,16 @@ cron.schedule(
  }
 );
 
-// cron.schedule(
-//  "15 3 * * * ",
-//  function () {
-//    cgw.archiveBankGuilgee();
-//  },
-// {
-//    scheduled: true,
-//    timezone: "Asia/Ulaanbaatar",
-//  }
-// );
+cron.schedule(
+ "30 7 * * * ",
+ function () {
+   cgw.archiveBankGuilgeeRently();
+ },
+{
+   scheduled: true,
+   timezone: "Asia/Ulaanbaatar",
+ }
+);
 
 // cron.schedule(
 //   "*/6 * * * * * ",
