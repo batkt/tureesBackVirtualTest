@@ -2514,7 +2514,7 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
           console.log("baiguullagiinId --->:", kholbolt.baiguullagiinId);
           const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
           if(!baiguullaga) continue;
-          if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
+          if (kholbolt.baiguullagiinId === "612f457d185280db676d0b51") continue;
           var parkings = await Parking(kholbolt).find({
             baiguullagiinId: kholbolt.baiguullagiinId,
             zogsooliinDans: {$exists: true}, 
