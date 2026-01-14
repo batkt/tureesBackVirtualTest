@@ -2539,7 +2539,8 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
                 createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
               });
               if (docs?.length > 0) continue;
-              console.log("Archiving for:", kholbolt.baiguullagiinId, y, m, docs?.length);
+              console.log("Archiving for:", kholbolt.baiguullagiinId, y, m);
+              console.log("docs length:" + docs?.length);
               // // --- Archive ---
               // const data = await BankniiGuilgee(kholbolt).aggregate([
               //     { $match: {
