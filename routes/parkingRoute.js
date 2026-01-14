@@ -1378,6 +1378,17 @@ router.post(
           const collectionEnd = moment.min(current.clone().endOf("month"), end);
 
           if (isCurrentMonth) {
+            const y = current.year();
+            const m = String(current.month() + 1).padStart(2, "0");
+            const archiveName = `Uilchluulegch${y}${m}`;
+
+            collectionsToQuery.push({
+              name: archiveName,
+              startDate: collectionStart.toDate(),
+              endDate: collectionEnd.toDate(),
+              isMain: false,
+            });
+
             collectionsToQuery.push({
               name: null,
               startDate: collectionStart.toDate(),
@@ -1506,54 +1517,164 @@ router.post(
           res.status(200).send(finalResult);
         }
       } else {
-        let collectionName = null;
+        const isCurrentMonth =
+          start.year() === now.year() && start.month() === now.month();
 
-        if (!(start.year() === now.year() && start.month() === now.month())) {
+        if (isCurrentMonth) {
+          const allResults = {
+            udriinTailan: [],
+            zurchiltei: [],
+            tulburiinZurchiltei: [],
+            unegui: [],
+          };
+
           const y = start.year();
           const m = String(start.month() + 1).padStart(2, "0");
-          collectionName = `Uilchluulegch${y}${m}`;
-        }
+          const archiveName = `Uilchluulegch${y}${m}`;
 
-        const result = await aggregateFromCollection(collectionName);
-        finalResult = result.udriinTailan;
+          const archiveResult = await aggregateFromCollection(archiveName);
+          allResults.udriinTailan.push(...archiveResult.udriinTailan);
+          allResults.zurchiltei.push(...archiveResult.zurchiltei);
+          allResults.tulburiinZurchiltei.push(
+            ...archiveResult.tulburiinZurchiltei
+          );
+          allResults.unegui.push(...archiveResult.unegui);
 
-        if (!!result.zurchiltei && result.zurchiltei.length > 0)
-          finalResult.push(result.zurchiltei[0]);
-        if (!!result.unegui && result.unegui.length > 0)
-          finalResult.push(result.unegui[0]);
+          const mainResult = await aggregateFromCollection(null);
+          allResults.udriinTailan.push(...mainResult.udriinTailan);
+          allResults.zurchiltei.push(...mainResult.zurchiltei);
+          allResults.tulburiinZurchiltei.push(
+            ...mainResult.tulburiinZurchiltei
+          );
+          allResults.unegui.push(...mainResult.unegui);
 
-        const matchVal = {
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: !!req.body.barilgiinId
-            ? req.body.barilgiinId
-            : { $exists: true },
-          tuluv: 0,
-        };
-
-        const zurchilteTailan = await ZurchilteiMashin(
-          req.body.tukhainBaaziinKholbolt
-        ).aggregate([
-          { $match: matchVal },
-          {
-            $group: {
-              _id: "Авлага",
-              niitDun: { $sum: "$niitDun" },
-              niitToo: { $sum: 1 },
-            },
-          },
-        ]);
-
-        if (zurchilteTailan?.length > 0) finalResult.push(zurchilteTailan[0]);
-        if (result.tulburiinZurchiltei?.length > 0)
-          finalResult.push(result.tulburiinZurchiltei[0]);
-
-        if (req.body.includeMetadata) {
-          res.status(200).send({
-            data: finalResult,
-            archiveName: collectionName,
+          const mergedTailan = {};
+          allResults.udriinTailan.forEach((item) => {
+            if (mergedTailan[item._id]) {
+              mergedTailan[item._id].niitDun += item.niitDun;
+              mergedTailan[item._id].niitToo += item.niitToo;
+            } else {
+              mergedTailan[item._id] = { ...item };
+            }
           });
+
+          finalResult = Object.values(mergedTailan);
+
+          if (allResults.zurchiltei.length > 0) {
+            const mergedZurchiltei = allResults.zurchiltei.reduce(
+              (acc, item) => ({
+                _id: "Зөрчилтэй",
+                niitDun: acc.niitDun + item.niitDun,
+                niitToo: acc.niitToo + item.niitToo,
+              }),
+              { _id: "Зөрчилтэй", niitDun: 0, niitToo: 0 }
+            );
+            finalResult.push(mergedZurchiltei);
+          }
+
+          if (allResults.tulburiinZurchiltei.length > 0) {
+            const mergedTulburiinZurchiltei =
+              allResults.tulburiinZurchiltei.reduce(
+                (acc, item) => ({
+                  _id: "Төлбөрийн зөрчилтэй",
+                  niitDun: acc.niitDun + item.niitDun,
+                  niitToo: acc.niitToo + item.niitToo,
+                }),
+                { _id: "Төлбөрийн зөрчилтэй", niitDun: 0, niitToo: 0 }
+              );
+            finalResult.push(mergedTulburiinZurchiltei);
+          }
+
+          if (allResults.unegui.length > 0) {
+            const mergedUnegui = allResults.unegui.reduce(
+              (acc, item) => ({
+                _id: "Үнэгүй",
+                niitDun: acc.niitDun + item.niitDun,
+                niitToo: acc.niitToo + item.niitToo,
+              }),
+              { _id: "Үнэгүй", niitDun: 0, niitToo: 0 }
+            );
+            finalResult.push(mergedUnegui);
+          }
+
+          const matchVal = {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: !!req.body.barilgiinId
+              ? req.body.barilgiinId
+              : { $exists: true },
+            tuluv: 0,
+          };
+
+          const zurchilteTailan = await ZurchilteiMashin(
+            req.body.tukhainBaaziinKholbolt
+          ).aggregate([
+            { $match: matchVal },
+            {
+              $group: {
+                _id: "Авлага",
+                niitDun: { $sum: "$niitDun" },
+                niitToo: { $sum: 1 },
+              },
+            },
+          ]);
+
+          if (zurchilteTailan?.length > 0) finalResult.push(zurchilteTailan[0]);
+
+          if (req.body.includeMetadata) {
+            res.status(200).send({
+              data: finalResult,
+              archiveName: "current-month",
+              collections: [archiveName, "main"],
+            });
+          } else {
+            res.status(200).send(finalResult);
+          }
         } else {
-          res.status(200).send(finalResult);
+          const y = start.year();
+          const m = String(start.month() + 1).padStart(2, "0");
+          const collectionName = `Uilchluulegch${y}${m}`;
+
+          const result = await aggregateFromCollection(collectionName);
+          finalResult = result.udriinTailan;
+
+          if (!!result.zurchiltei && result.zurchiltei.length > 0)
+            finalResult.push(result.zurchiltei[0]);
+          if (!!result.unegui && result.unegui.length > 0)
+            finalResult.push(result.unegui[0]);
+
+          const matchVal = {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: !!req.body.barilgiinId
+              ? req.body.barilgiinId
+              : { $exists: true },
+            tuluv: 0,
+          };
+
+          const zurchilteTailan = await ZurchilteiMashin(
+            req.body.tukhainBaaziinKholbolt
+          ).aggregate([
+            { $match: matchVal },
+            {
+              $group: {
+                _id: "Авлага",
+                niitDun: { $sum: "$niitDun" },
+                niitToo: { $sum: 1 },
+              },
+            },
+          ]);
+
+          if (zurchilteTailan?.length > 0) finalResult.push(zurchilteTailan[0]);
+          if (result.tulburiinZurchiltei?.length > 0)
+            finalResult.push(result.tulburiinZurchiltei[0]);
+
+          if (req.body.includeMetadata) {
+            res.status(200).send({
+              data: finalResult,
+              archiveName: collectionName,
+            });
+          } else {
+            res.status(200).send(finalResult);
+          }
         }
       }
     } catch (error) {
