@@ -3494,7 +3494,10 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
 router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
   try {
     let tulbur = [];
-    if (req.body.ajiltniiId == "66384a9061eeda747d01a320") {
+    if (
+      req.body.ajiltniiId == "66384a9061eeda747d01a320" ||
+      req.body.ajiltniiId == "6966f429535c9cddf36c9761"
+    ) {
       if (req.body.paid_amount == 0) {
         tulbur = [
           {
@@ -3727,7 +3730,10 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
           tukhainObject.tuukh[0].tulbur &&
           tukhainObject.tuukh[0].tulbur.length > 0
         ) {
-          if (req.body.ajiltniiId == "66384a9061eeda747d01a320") {
+          if (
+            req.body.ajiltniiId == "66384a9061eeda747d01a320" ||
+            req.body.ajiltniiId == "6966f429535c9cddf36c9761"
+          ) {
             if (tukhainObject.tuukh[0].tulbur.find((x) => x.turul == "Fitness"))
               throw new Error("Хөнгөлөлт оруулсан байна!");
           } else if (req.body.ajiltniiId == "6746b7b1e3a4bd05bbac6880") {
