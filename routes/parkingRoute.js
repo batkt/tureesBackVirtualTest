@@ -2330,6 +2330,14 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             }
           }
           if (bodsonDun > 0 && oldsonMashin) {
+            // Recalculate to verify amount matches tulburBodoy calculation
+            const recalculatedDun = await zogsooliinDunAvya(
+              zogsool,
+              oldsonMashin,
+              kholbolt
+            );
+            const amountsMatch = recalculatedDun === bodsonDun;
+
             data = {
               plate_number: req.params.plate_number,
               enter_date: moment(
@@ -2346,17 +2354,37 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
                     oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
                   ).format("YYYY/MM/DD HH:mm:ss")
                 : null,
+              // Verification data
+              verification: {
+                calculated_amount: recalculatedDun,
+                amounts_match: amountsMatch,
+                difference: Math.abs(recalculatedDun - bodsonDun),
+                note: amountsMatch
+                  ? "Amount verified - matches tulburBodoy calculation"
+                  : "WARNING: Amount mismatch detected!",
+              },
             };
             tukhainKholbolt = kholbolt;
             dataList.push(data);
           } else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+            // Recalculate even when bodsonDun is 0 to verify
+            const recalculatedDun = await zogsooliinDunAvya(
+              zogsool,
+              oldsonMashin,
+              kholbolt
+            );
+            const storedAmount = oldsonMashin.niitDun
+              ? oldsonMashin.niitDun
+              : 0;
+            const amountsMatch = recalculatedDun === storedAmount;
+
             tukhainKholbolt = kholbolt;
             data = {
               plate_number: req.params.plate_number,
               enter_date: moment(
                 oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
               ).format("YYYY/MM/DD HH:mm:ss"),
-              pay_amount: oldsonMashin.niitDun ? oldsonMashin.niitDun : 0,
+              pay_amount: storedAmount,
               parking_id: zogsool._id,
               parking_name: zogsool.ner,
               parkingUndsenUne: zogsool.undsenUne,
@@ -2367,6 +2395,16 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
                     oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
                   ).format("YYYY/MM/DD HH:mm:ss")
                 : null,
+              // Verification data
+              verification: {
+                calculated_amount: recalculatedDun,
+                stored_amount: storedAmount,
+                amounts_match: amountsMatch,
+                difference: Math.abs(recalculatedDun - storedAmount),
+                note: amountsMatch
+                  ? "Amount verified - matches tulburBodoy calculation"
+                  : "WARNING: Stored amount differs from calculated amount!",
+              },
             };
             dataList.push(data);
           }
@@ -3296,11 +3334,27 @@ router.route("/v1/mockPay").post(async (req, res, next) => {
           0
         );
 
+        console.log("mockPay - Payment calculation:");
+        console.log("  - paid_amount:", req.body.paid_amount);
+        console.log(
+          "  - totalTulburDun (sum of all payments):",
+          totalTulburDun
+        );
+        console.log(
+          "  - tulbur array:",
+          JSON.stringify(tukhainObject.tuukh[0].tulbur)
+        );
+        console.log("  - bodsonDun (amount due):", bodsonDun);
+        console.log("  - tulukhDun:", tukhainObject.tuukh[0]?.tulukhDun);
+        console.log("  - Current niitDun:", tukhainObject.niitDun);
+
         var set = {
           "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
           tokiId: "toki",
           niitDun: totalTulburDun, // Set niitDun to total paid amount (atomic update)
         };
+
+        console.log("mockPay - Setting niitDun to:", totalTulburDun);
         if (bodsonDun > 0) {
           var tulburDun = totalTulburDun; // Reuse calculated value
           if (bodsonDun == tulburDun) {
@@ -3320,6 +3374,12 @@ router.route("/v1/mockPay").post(async (req, res, next) => {
         )
           //10 * 60 * 1000
           req.body.manually_open = true;
+
+        console.log(
+          "mockPay - Before update: niitDun will be set to",
+          totalTulburDun
+        );
+
         await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
           tukhainObject._id,
           {
@@ -3333,6 +3393,30 @@ router.route("/v1/mockPay").post(async (req, res, next) => {
             ],
           }
         );
+
+        // Verify niitDun was set correctly and correct if needed
+        // This is a safeguard in case another process updates it
+        const verifyDoc = await Uilchluulegch(tukhainKholbolt, true).findById(
+          tukhainObject._id
+        );
+        if (verifyDoc && verifyDoc.niitDun !== totalTulburDun) {
+          console.log("mockPay - WARNING: niitDun mismatch!");
+          console.log("  Expected:", totalTulburDun, "Got:", verifyDoc.niitDun);
+          console.log("  Correcting...");
+          await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
+            tukhainObject._id,
+            {
+              $set: { niitDun: totalTulburDun },
+            }
+          );
+          console.log("mockPay - Corrected niitDun to:", totalTulburDun);
+        } else {
+          console.log(
+            "mockPay - niitDun verified correctly:",
+            verifyDoc?.niitDun
+          );
+        }
+
         if (!!req.body.manually_open) {
           if (
             !!tukhainZogsool.kamerDavkharAshiglakh &&
