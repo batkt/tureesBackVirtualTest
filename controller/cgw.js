@@ -2518,7 +2518,8 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
           var parkings = await Parking(kholbolt).find({
             baiguullagiinId: kholbolt.baiguullagiinId,
             zogsooliinDans: {$exists: true}, 
-          }, { zogsooliinDans: 1 }).lean();
+          });
+          console.log("parkings.length --->:", parkings?.length);
           if (parkings?.length === 0) continue;
           const zogsooliinDansuud = new Set(parkings.map(d => String(d.zogsooliinDans)));
           if (zogsooliinDansuud?.length === 0) continue;
