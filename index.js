@@ -318,7 +318,7 @@ cron.schedule(
 );
 
 cron.schedule(
- "35 7 * * * ",
+ "38 7 * * * ",
  function () {
    cgw.archiveBankGuilgeeRently();
  },

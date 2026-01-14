@@ -2541,21 +2541,21 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
               if (docs?.length > 0) continue;
               console.log("Archiving for:", kholbolt.baiguullagiinId, y, m);
               console.log("docs length:" + docs?.length);
-              // // --- Archive ---
-              // const data = await BankniiGuilgee(kholbolt).aggregate([
-              //     { $match: {
-              //       dansniiDugaar: { $nin: zogsooliinDansuud },
-              //       kholbosonTalbainId: { $ne: [] },
-              //       createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
-              //     } },
-              // ]);
-              // await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-              // // --- Delete ---
-              // const res = await BankniiGuilgee(kholbolt).deleteMany({
-              //     dansniiDugaar: { $nin: zogsooliinDansuud },
-              //     kholbosonTalbainId: { $ne: [] },
-              //     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              // });
+              // --- Archive ---
+              const data = await BankniiGuilgee(kholbolt).aggregate([
+                  { $match: {
+                    dansniiDugaar: { $nin: zogsooliinDansuud },
+                    kholbosonTalbainId: { $ne: [] },
+                    createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
+                  } },
+              ]);
+              await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+              // --- Delete ---
+              const res = await BankniiGuilgee(kholbolt).deleteMany({
+                  dansniiDugaar: { $nin: zogsooliinDansuud },
+                  kholbosonTalbainId: { $ne: [] },
+                  createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+              });
           }
         }
     }  
