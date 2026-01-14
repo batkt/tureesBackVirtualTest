@@ -541,8 +541,6 @@ router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try 
   {
-    console.log("zogsoolSdkService mashiniiDugaar req.body:", req.body.mashiniiDugaar);
-    console.log("zogsoolSdkService baiguullagiinId req.body:", req.body.baiguullagiinId);
     if (req.body.mashiniiDugaar)
       req.body.mashiniiDugaar = req.body.mashiniiDugaar.replace(/\0/g, "");
     if (!!req?.body?.color) {
