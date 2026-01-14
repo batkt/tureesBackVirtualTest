@@ -255,6 +255,7 @@ module.exports.zogsoolTseverlye = async (body, next) => {
         });
         if (!!zogsooluud) {
           for await (const zogsool of zogsooluud) {
+            console.log("zogsoolTseverlye:", zogsool.mashinGargakhKhugatsaa);
             var ognoo = new Date();
             ognoo = new Date(
               ognoo.getTime() - (zogsool.mashinGargakhKhugatsaa || 120) * 60 * 60000

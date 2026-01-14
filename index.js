@@ -252,7 +252,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "36 6 * * * ",
+  "40 6 * * * ",
   function () {
     zogsool.zogsoolTseverlye();
   },
