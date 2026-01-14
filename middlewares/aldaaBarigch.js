@@ -45,10 +45,13 @@ async function aldaagIlgeeye(aldaa, req) {
 
 const aldaaBarigch = (err, req, res, next) => {
   try {
-    // Add logging to see what's happening
+    // Add MORE logging to identify the source
     console.log("=== ALDAA BARIGCH ===");
+    console.log("URL:", req.url); // ← Which endpoint?
+    console.log("Method:", req.method); // ← GET/POST/PUT?
     console.log("Error type:", typeof err);
     console.log("Error message:", err.message);
+    console.log("Error stack:", err.stack); // ← Where did the error originate?
     console.log("Error is Error object?", err instanceof Error);
 
     if (res.headersSent) {
@@ -74,10 +77,9 @@ const aldaaBarigch = (err, req, res, next) => {
       errorMessage = "Лицензийн хэсэгтэй холбогдоход алдаа гарлаа!";
     }
 
-    // CRITICAL FIX: Only send string message, not the error object
     const response = {
       success: false,
-      aldaa: errorMessage || "Алдаа гарлаа", // ← Always a STRING
+      aldaa: errorMessage || "Алдаа гарлаа",
     };
 
     console.log("Sending response:", response);
