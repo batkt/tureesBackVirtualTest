@@ -61,7 +61,7 @@ module.exports.archiveEbarimtKhonog =
             console.log("baiguullagiinId --->:", kholbolt.baiguullagiinId);
             const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
             if(!baiguullaga) continue;
-            if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
+            // if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
             const archivedIds = await EbarimtShine(
             kholbolt,
             archiveName

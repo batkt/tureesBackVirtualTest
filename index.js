@@ -296,7 +296,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "42 9 * * * ",
+  "50 9 * * * ",
   function () {
     ebarimt.archiveEbarimtKhonog();
   },
