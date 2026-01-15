@@ -285,9 +285,20 @@ cron.schedule(
 );
 
 cron.schedule(
-  "20 8 * * * ",
+  "20 8 1 * * ",
   function () {
     ebarimt.archiveEbarimt();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
+  "45 8 * * * ",
+  function () {
+    ebarimt.archiveEbarimtKhonog();
   },
   {
     scheduled: true,
