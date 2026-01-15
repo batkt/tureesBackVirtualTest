@@ -1405,16 +1405,27 @@ router
                     },
                   ],
                   umnukhSariinTulsun: [
+                    // 1️⃣ EARLY MATCH (index-friendly)
+                    {
+                      $match: {
+                        baiguullagiinId: req.body.baiguullagiinId,
+                        tuluv: { $ne: -1 },
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
+                        },
+                      },
+                    },
+
+                    // 2️⃣ UNWIND (now much smaller)
                     {
                       $unwind: {
                         path: "$avlaga.guilgeenuud",
                       },
                     },
+
+                    // 3️⃣ LOGIC MATCH (same business rules)
                     {
                       $match: {
-                        "avlaga.guilgeenuud.ognoo": {
-                          $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
-                        },
                         $or: [
                           {
                             "avlaga.guilgeenuud.turul": {
@@ -1422,22 +1433,14 @@ router
                             },
                           },
                           {
-                            $and: [
-                              {
-                                "avlaga.guilgeenuud.turul": {
-                                  $in: ["baritsaa"],
-                                },
-                              },
-                              {
-                                "avlaga.guilgeenuud.tulsunDun": {
-                                  $gt: 0,
-                                },
-                              },
-                            ],
+                            "avlaga.guilgeenuud.turul": "baritsaa",
+                            "avlaga.guilgeenuud.tulsunDun": { $gt: 0 },
                           },
                         ],
                       },
                     },
+
+                    // 4️⃣ GROUP
                     {
                       $group: {
                         _id: "$gereeniiDugaar",
@@ -1448,13 +1451,17 @@ router
                         },
                       },
                     },
+
+                    // 5️⃣ PROJECT (fixed bug)
                     {
                       $project: {
-                        gereeniiDugaar: "$gereeniiDugaar",
+                        _id: 0,
+                        gereeniiDugaar: "$_id",
                         uldegdel: "$tulsun",
                       },
                     },
                   ],
+
                   umnukhSariinUrTulbur: [
                     {
                       $unwind: {

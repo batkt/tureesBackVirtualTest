@@ -188,62 +188,79 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
+    const parentMatch = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      tuluv: { $ne: -1 },
+      ...(barilgiinId && { barilgiinId }),
+
+      "avlaga.guilgeenuud.ognoo": {
+        $lte: new Date(
+          moment(req.body.duusakhOgnoo)
+            .endOf("month")
+            .format("YYYY-MM-DD 23:59:59")
+        ),
+      },
+    };
+    const childMatch = {
+      $or: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["aldangi", "baritsaa"],
+          },
+        },
+        {
+          "avlaga.guilgeenuud.turul": "baritsaa",
+          "avlaga.guilgeenuud.tulsunDun": { $gt: 0 },
+        },
+      ],
+    };
+
     let query = [
+      {
+        $match: parentMatch,
+      },
+
       {
         $unwind: {
           path: "$avlaga.guilgeenuud",
         },
       },
       {
-        $match: match,
+        $match: childMatch,
       },
+
       {
         $group: {
           _id: "$gereeniiDugaar",
           tulukh: {
-            $sum: {
-              $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
-            },
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
           },
           khyamdral: {
-            $sum: {
-              $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
-            },
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
           },
           tulsun: {
-            $sum: {
-              $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-            },
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
           },
         },
       },
+
       {
         $project: {
           dun: {
-            $subtract: [
-              "$tulukh",
-              {
-                $add: [
-                  { $ifNull: ["$tulsun", 0] },
-                  { $ifNull: ["$khyamdral", 0] },
-                ],
-              },
-            ],
+            $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }],
           },
         },
       },
+
       {
         $group: {
           _id: "avlaga",
-          dun: {
-            $sum: "$dun",
-          },
-          too: {
-            $sum: 1,
-          },
+          dun: { $sum: "$dun" },
+          too: { $sum: 1 },
         },
       },
     ];
+
     var avlaga = await gereeObject.aggregate(query);
     match = {
       baiguullagiinId: req.body.baiguullagiinId,
