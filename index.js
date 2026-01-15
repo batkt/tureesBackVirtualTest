@@ -284,8 +284,8 @@ cron.schedule(
   }
 );
 
-/**cron.schedule(
-  "30 3 5 * * ",
+cron.schedule(
+  "20 8 * * * ",
   function () {
     ebarimt.archiveEbarimt();
   },
@@ -293,18 +293,7 @@ cron.schedule(
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
   }
-);**/
-
-// cron.schedule(
-//  "35 3 * * * ",
-//  function () {
-//    zogsool.archiveUilchluulegch();
-//  },
-// {
-//    scheduled: true,
-//    timezone: "Asia/Ulaanbaatar",
-//  }
-// );
+);
 
 cron.schedule(
  "30 1 * * * ",
@@ -318,7 +307,7 @@ cron.schedule(
 );
 
 cron.schedule(
- "5 8 * * * ",
+ "45 1 5 * * ",
  function () {
    cgw.archiveBankGuilgeeRently();
  },
@@ -327,17 +316,6 @@ cron.schedule(
    timezone: "Asia/Ulaanbaatar",
  }
 );
-
-// cron.schedule(
-//   "*/6 * * * * * ",
-//   function () {
-//     ajiltanController.licenseOgnooShalgakh(io, null); // "612f457d185280db676d0b51" CAdmin
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
 
 io.once("connection", (socket) => {
   socket.on("disconnect", () => {});
