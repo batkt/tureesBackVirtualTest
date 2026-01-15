@@ -61,7 +61,6 @@ module.exports.archiveEbarimtKhonog =
             if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
             const archivedIds = await EbarimtShine(
             kholbolt,
-            false,
             archiveName
             ).find({ mashiniiDugaar: {$exists: true} }, { _id: 1 }).lean();
             const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
@@ -73,7 +72,7 @@ module.exports.archiveEbarimtKhonog =
             }).lean();
             if (!data.length) continue;
             console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
-            // await EbarimtShine(kholbolt, false, archiveName).insertMany(data);
+            // await EbarimtShine(kholbolt, archiveName).insertMany(data);
             // await EbarimtShine(kholbolt).deleteMany({
             // _id: { $in: data.map(d => d._id) },
             // mashiniiDugaar: {$exists: true},
