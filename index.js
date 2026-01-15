@@ -285,7 +285,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "20 8 1 * * ",
+  "20 1 1 * * ",
   function () {
     ebarimt.archiveEbarimt();
   },
@@ -296,7 +296,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "50 9 * * * ",
+  "10 1 * * * ",
   function () {
     ebarimt.archiveEbarimtKhonog();
   },

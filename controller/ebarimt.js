@@ -28,7 +28,7 @@ module.exports.archiveEbarimt =
                         mashiniiDugaar: {$exists: false},
                         createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
                     });
-                    if (docs?.length > 0) continue;
+                    // if (docs?.length > 0) continue;
                     // --- Archive ---
                     const data = await EbarimtShine(kholbolt).aggregate([
                         { $match: { mashiniiDugaar: {$exists: false}, createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } } },
