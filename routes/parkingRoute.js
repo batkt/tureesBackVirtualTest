@@ -48,9 +48,6 @@ const client = require("../routes/redisClient");
 const crypto = require("crypto");
 const { QuickQpayObject } = require("quickqpaypackv2");
 const axios = require("axios");
-const {
-  executeOptimizedAggregation,
-} = require("../utils/optimizedAggregation");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
 });*/
@@ -266,23 +263,6 @@ router.get(
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) body.search = String(body.search);
 
-      // Prevent deep pagination - limit to first 50 pages (5,000 records with 100 per page)
-      // This prevents slow queries from skip operations on large datasets
-      const MAX_PAGE = 50;
-      const MAX_SKIP = MAX_PAGE * (body.khuudasniiKhemjee || 500);
-      const currentSkip =
-        (body.khuudasniiDugaar - 1) * (body.khuudasniiKhemjee || 500);
-
-      if (currentSkip > MAX_SKIP) {
-        return res.status(400).json({
-          error: "Pagination limit exceeded",
-          message: `Cannot skip more than ${MAX_SKIP} records. Please use search/filters to find specific records.`,
-          maxPage: MAX_PAGE,
-          maxSkip: MAX_SKIP,
-          requestedSkip: currentSkip,
-        });
-      }
-
       const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
 
@@ -414,14 +394,7 @@ router.get(
             )
           : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-        // Use optimized aggregation - it will automatically fall back to khuudaslalt
-        // for simple queries without tuukh conditions
-        executeOptimizedAggregation(model, body.query || {}, {
-          khuudasniiDugaar: body.khuudasniiDugaar || 1,
-          khuudasniiKhemjee: body.khuudasniiKhemjee || 500,
-          order: body.order || {},
-          search: body.search || null,
-        })
+        khuudaslalt(model, body)
           .then((result) => {
             res.send(result);
           })
@@ -448,18 +421,14 @@ router.get(
                 )
               : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-            // Use optimized aggregation - it will automatically fall back to khuudaslalt
-            // for simple queries without tuukh conditions
-            const result = await executeOptimizedAggregation(
-              model,
-              body.query || {},
-              {
-                khuudasniiDugaar: 1,
-                khuudasniiKhemjee: 999999, // Set very high limit to get all results from each collection
-                order: body.order || {},
-                search: body.search || null,
-              }
-            );
+            // Create a copy of body with very high limit to get all results
+            const queryBody = {
+              ...body,
+              khuudasniiDugaar: 1,
+              khuudasniiKhemjee: 999999, // Set very high limit to get all results from each collection
+            };
+
+            const result = await khuudaslalt(model, queryBody);
 
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
