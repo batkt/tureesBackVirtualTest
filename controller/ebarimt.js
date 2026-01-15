@@ -72,12 +72,12 @@ module.exports.archiveEbarimtKhonog =
             }).lean();
             if (!data.length) continue;
             console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
-            // await EbarimtShine(kholbolt, archiveName).insertMany(data);
-            // await EbarimtShine(kholbolt).deleteMany({
-            // _id: { $in: data.map(d => d._id) },
-            // mashiniiDugaar: {$exists: true},
-            // createdAt: { $lt: archiveBeforeDate }
-            // });
+            await EbarimtShine(kholbolt, archiveName).insertMany(data);
+            await EbarimtShine(kholbolt).deleteMany({
+            _id: { $in: data.map(d => d._id) },
+            mashiniiDugaar: {$exists: true},
+            createdAt: { $lt: archiveBeforeDate }
+            });
         }
     }
 };
