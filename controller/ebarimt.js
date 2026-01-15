@@ -1,4 +1,5 @@
 const EbarimtShine = require("../models/ebarimtShine");
+const Baiguullaga = require("../models/baiguullaga");
 
 module.exports.archiveEbarimt =
   async function archiveEbarimt() {
