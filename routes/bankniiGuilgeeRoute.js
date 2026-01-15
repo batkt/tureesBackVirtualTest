@@ -135,6 +135,7 @@ router.get(
         barilgiinId: barilgiinId,
         baiguullagiinId: baiguullagiinId,
       });
+
       if (!parkingExists) {
         const model = BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
 
@@ -174,7 +175,6 @@ router.get(
       let endDate = null;
 
       if (body?.query) {
-        // Check TxDt
         if (body.query.TxDt) {
           startDate = extractDate(body.query.TxDt, true);
           endDate = extractDate(body.query.TxDt, false);
@@ -183,7 +183,6 @@ router.get(
           endDate = extractDate(body.query.tranDate, false);
         }
 
-        // Check in $and array
         if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
           for (const condition of body.query.$and) {
             if (condition.$or && Array.isArray(condition.$or)) {
@@ -229,11 +228,25 @@ router.get(
           const month = current.getMonth() + 1;
 
           if (year === currentYear && month === currentMonth) {
+            const archiveName = `bankniiGuilgee${year}${String(month).padStart(
+              2,
+              "0"
+            )}`;
+
+            collectionsToQuery.push({
+              name: archiveName,
+              year,
+              month,
+              isCurrent: true,
+              isArchive: true,
+            });
+
             collectionsToQuery.push({
               name: null,
               year,
               month,
               isCurrent: true,
+              isArchive: false,
             });
           } else {
             const archiveName = `bankniiGuilgee${year}${String(month).padStart(
@@ -245,6 +258,7 @@ router.get(
               year,
               month,
               isCurrent: false,
+              isArchive: true,
             });
           }
 
@@ -256,10 +270,11 @@ router.get(
         collectionsToQuery.push({
           name: null,
           isCurrent: true,
+          isArchive: false,
         });
       }
 
-      if (collectionsToQuery.length === 1) {
+      if (collectionsToQuery.length === 1 && !collectionsToQuery[0].isCurrent) {
         const model = collectionsToQuery[0].name
           ? BankniiGuilgee(
               req.body.tukhainBaaziinKholbolt,
@@ -276,10 +291,11 @@ router.get(
             next(err);
           });
       } else {
-        // Multiple collections - need to merge
-
         try {
           const allResults = [];
+
+          const originalPage = body.khuudasniiDugaar || 1;
+          const originalLimit = body.khuudasniiKhemjee || 100;
 
           for (const collection of collectionsToQuery) {
             const model = collection.name
@@ -290,15 +306,16 @@ router.get(
                 )
               : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
 
-            const queryBody = { ...body };
-            delete queryBody.khuudasniiDugaar;
-            delete queryBody.khuudasniiKhemjee;
+            const queryBody = {
+              ...body,
+              khuudasniiDugaar: 1,
+              khuudasniiKhemjee: 999999,
+            };
 
             const result = await khuudaslalt(model, queryBody);
 
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
-            } else {
             }
           }
 
@@ -306,33 +323,37 @@ router.get(
             const sortField = Object.keys(body.order)[0];
             const sortOrder = body.order[sortField];
             allResults.sort((a, b) => {
-              const aVal = a[sortField];
-              const bVal = b[sortField];
+              const getNestedValue = (obj, path) => {
+                return path.split(".").reduce((curr, prop) => {
+                  return curr?.[prop];
+                }, obj);
+              };
+
+              const aVal = getNestedValue(a, sortField);
+              const bVal = getNestedValue(b, sortField);
+
               if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
               if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
               return 0;
             });
           }
 
-          const page = body.khuudasniiDugaar || 1;
-          const limit = body.khuudasniiKhemjee || 100;
-          const startIndex = (page - 1) * limit;
-          const endIndex = startIndex + limit;
+          const startIndex = (originalPage - 1) * originalLimit;
+          const endIndex = startIndex + originalLimit;
           const paginatedResults = allResults.slice(startIndex, endIndex);
 
           res.send({
-            khuudasniiDugaar: page,
-            khuudasniiKhemjee: limit,
+            khuudasniiDugaar: originalPage,
+            khuudasniiKhemjee: originalLimit,
             jagsaalt: paginatedResults,
             niitMur: allResults.length,
-            niitKhuudas: Math.ceil(allResults.length / limit),
+            niitKhuudas: Math.ceil(allResults.length / originalLimit),
           });
         } catch (err) {
           next(err);
         }
       }
     } catch (error) {
-      console.error("❌ Route error:", error);
       next(error);
     }
   }
