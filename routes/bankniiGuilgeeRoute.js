@@ -282,7 +282,7 @@ router.get(
           console.log("  Query:", JSON.stringify(queryBody.query, null, 2));
 
           try {
-            console.log("------------------>>>>>>>", khuudasniiKhemjee);
+            console.log("------------------>>>>>>>", body?.khuudasniiKhemjee);
             const result = await khuudaslalt(model, queryBody);
             const count = result.jagsaalt?.length || 0;
 
