@@ -107,6 +107,22 @@ router.get(
   tokenShalgakh,
   async (req, res, next) => {
     try {
+      const normalizeDateFilter = (query) => {
+        if (!query) return;
+
+        const dateFilter = query.tranDate || query.TxDt;
+        if (!dateFilter) return;
+
+        query.createdAt = {};
+
+        if (dateFilter.$gte) query.createdAt.$gte = new Date(dateFilter.$gte);
+        if (dateFilter.$lte) query.createdAt.$lte = new Date(dateFilter.$lte);
+        if (dateFilter.$eq) query.createdAt.$eq = new Date(dateFilter.$eq);
+
+        delete query.tranDate;
+        delete query.TxDt;
+      };
+
       const body = req.query;
       if (!!body?.query) body.query = JSON.parse(body.query);
       if (!!body?.order) body.order = JSON.parse(body.order);
@@ -128,25 +144,25 @@ router.get(
         });
       }
 
-      const parkingExists = await Parking(
-        req.body.tukhainBaaziinKholbolt
-      ).findOne({
-        zogsooliinDans: dansniiDugaar,
-        barilgiinId: barilgiinId,
-        baiguullagiinId: baiguullagiinId,
-      });
-      if (!parkingExists) {
-        const model = BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
+      // const parkingExists = await Parking(
+      //   req.body.tukhainBaaziinKholbolt
+      // ).findOne({
+      //   zogsooliinDans: dansniiDugaar,
+      //   barilgiinId: barilgiinId,
+      //   baiguullagiinId: baiguullagiinId,
+      // });
+      // if (!parkingExists) {
+      //   const model = BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
 
-        khuudaslalt(model, body)
-          .then((result) => {
-            res.send(result);
-          })
-          .catch((err) => {
-            next(err);
-          });
-        return;
-      }
+      //   khuudaslalt(model, body)
+      //     .then((result) => {
+      //       res.send(result);
+      //     })
+      //     .catch((err) => {
+      //       next(err);
+      //     });
+      //   return;
+      // }
 
       const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
@@ -173,36 +189,9 @@ router.get(
       let startDate = null;
       let endDate = null;
 
-      if (body?.query) {
-        // Check TxDt
-        if (body.query.TxDt) {
-          startDate = extractDate(body.query.TxDt, true);
-          endDate = extractDate(body.query.TxDt, false);
-        } else if (body.query.tranDate) {
-          startDate = extractDate(body.query.tranDate, true);
-          endDate = extractDate(body.query.tranDate, false);
-        }
-
-        // Check in $and array
-        if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
-          for (const condition of body.query.$and) {
-            if (condition.$or && Array.isArray(condition.$or)) {
-              for (const orCondition of condition.$or) {
-                if (orCondition.TxDt) {
-                  startDate = extractDate(orCondition.TxDt, true);
-                  endDate = extractDate(orCondition.TxDt, false);
-                  break;
-                }
-                if (orCondition.tranDate) {
-                  startDate = extractDate(orCondition.tranDate, true);
-                  endDate = extractDate(orCondition.tranDate, false);
-                  break;
-                }
-              }
-            }
-            if (startDate) break;
-          }
-        }
+      if (body?.query?.createdAt) {
+        startDate = extractDate(body.query.createdAt, true);
+        endDate = extractDate(body.query.createdAt, false);
       }
 
       if (startDate && !endDate) endDate = startDate;
@@ -276,8 +265,6 @@ router.get(
             next(err);
           });
       } else {
-        // Multiple collections - need to merge
-
         try {
           const allResults = [];
 
