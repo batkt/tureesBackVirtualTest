@@ -249,7 +249,7 @@ router.get(
         });
       }
 
-      if (collectionsToQuery.length === 1) {
+      if (collectionsToQuery.length >= 1) {
         const model = collectionsToQuery[0].name
           ? BankniiGuilgee(
               req.body.tukhainBaaziinKholbolt,
