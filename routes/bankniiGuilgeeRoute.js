@@ -236,17 +236,26 @@ router.get(
           const isCurrentMonth = year === currentYear && month === currentMonth;
 
           if (isSingleMonth) {
-            const archiveName = `bankniiGuilgee${year}${String(month).padStart(
-              2,
-              "0"
-            )}`;
-            collectionsToQuery.push({
-              name: archiveName,
-              year,
-              month,
-              isCurrent: isCurrentMonth,
-              isArchive: true,
-            });
+            if (isCurrentMonth) {
+              collectionsToQuery.push({
+                name: null,
+                year,
+                month,
+                isCurrent: true,
+                isArchive: false,
+              });
+            } else {
+              const archiveName = `bankniiGuilgee${year}${String(
+                month
+              ).padStart(2, "0")}`;
+              collectionsToQuery.push({
+                name: archiveName,
+                year,
+                month,
+                isCurrent: false,
+                isArchive: true,
+              });
+            }
           } else {
             if (isCurrentMonth) {
               collectionsToQuery.push({
