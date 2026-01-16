@@ -237,7 +237,7 @@ router.get(
               isCurrent: false,
             });
           }
-          console.log("------>>>", collectionsToQuery);
+
           current.setMonth(current.getMonth() + 1);
         }
       }
@@ -260,6 +260,7 @@ router.get(
 
         khuudaslalt(model, body)
           .then((result) => {
+            console.log("------>>>", collectionsToQuery);
             res.send(result);
           })
           .catch((err) => {
