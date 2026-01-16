@@ -124,20 +124,17 @@ router.get(
       };
 
       const body = req.query;
-      if (!!body?.query) body.query = JSON.parse(body.query);
-      if (!!body?.order) body.order = JSON.parse(body.order);
+      if (body?.query) body.query = JSON.parse(body.query);
+      if (body?.order) body.order = JSON.parse(body.order);
       normalizeDateFilter(body.query);
-      if (!!body?.khuudasniiDugaar)
+
+      if (body?.khuudasniiDugaar)
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-      if (!!body?.khuudasniiKhemjee)
+      if (body?.khuudasniiKhemjee)
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-      if (!!body?.search) body.search = String(body.search);
+      if (body?.search) body.search = String(body.search);
 
       const dansniiDugaar = body.dansniiDugaar || body.query?.dansniiDugaar;
-      const barilgiinId = body.barilgiinId || body.query?.barilgiinId;
-      const baiguullagiinId =
-        body.baiguullagiinId || body.query?.baiguullagiinId;
-
       if (!dansniiDugaar) {
         return res.status(400).send({
           success: false,
@@ -148,7 +145,6 @@ router.get(
       // --- Date extraction ---
       const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
-
         if (preferStart && dateFilter.$gte) return new Date(dateFilter.$gte);
         if (!preferStart && dateFilter.$lte) return new Date(dateFilter.$lte);
         if (dateFilter.$gte) return new Date(dateFilter.$gte);
@@ -161,19 +157,16 @@ router.get(
 
       let startDate = null;
       let endDate = null;
-
       if (body?.query?.createdAt) {
         startDate = extractDate(body.query.createdAt, true);
         endDate = extractDate(body.query.createdAt, false);
       }
-
       if (startDate && !endDate) endDate = startDate;
       if (!startDate && endDate) startDate = endDate;
 
       const now = new Date();
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
-
       const collectionsToQuery = [];
 
       // --- Build collections list ---
@@ -201,7 +194,6 @@ router.get(
             month,
             isCurrent: false,
           });
-          console.log("📦 Added archive collection:", archiveName);
 
           if (year === currentYear && month === currentMonth) {
             collectionsToQuery.push({
@@ -210,7 +202,6 @@ router.get(
               month,
               isCurrent: true,
             });
-            console.log("📦 Added live/current collection");
           }
 
           current.setMonth(current.getMonth() + 1);
@@ -218,11 +209,7 @@ router.get(
       }
 
       if (collectionsToQuery.length === 0) {
-        collectionsToQuery.push({
-          name: null,
-          isCurrent: true,
-        });
-        console.log("📦 Default live collection added (no date filter)");
+        collectionsToQuery.push({ name: null, isCurrent: true });
       }
 
       try {
@@ -237,29 +224,17 @@ router.get(
               )
             : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
 
-          console.log(
-            "🔍 Querying collection:",
-            collection.name || "CURRENT_COLLECTION"
-          );
-
           const queryBody = { ...body };
           delete queryBody.khuudasniiDugaar;
           delete queryBody.khuudasniiKhemjee;
-          console.log("🔹 Querying MongoDB with filter:", queryBody);
-          const result = await khuudaslalt(model, queryBody);
-          console.log("🔹 Mongo returned records:", result.jagsaalt.length);
-          console.log(
-            `📊 ${collection.name || "CURRENT_COLLECTION"} returned ${
-              result?.jagsaalt?.length || 0
-            } records`
-          );
 
+          const result = await khuudaslalt(model, queryBody);
           if (result.jagsaalt && result.jagsaalt.length > 0) {
             allResults.push(...result.jagsaalt);
           }
-          console.log("etssiin---->", allResults);
         }
 
+        // --- Sorting ---
         if (body.order) {
           const sortField = Object.keys(body.order)[0];
           const sortOrder = body.order[sortField];
@@ -290,7 +265,6 @@ router.get(
         next(err);
       }
     } catch (error) {
-      console.error("❌ Route error:", error);
       next(error);
     }
   }
