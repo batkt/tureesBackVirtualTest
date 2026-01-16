@@ -107,53 +107,9 @@ router.get(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      const toDate = (value) => {
-        if (!value) return undefined;
-        if (value instanceof Date) return value;
-
-        if (typeof value === "string") {
-          return new Date(value.replace(" ", "T") + ".000Z");
-        }
-
-        return new Date(value);
-      };
-
-      const normalizeDateFilter = (query) => {
-        if (!query) return;
-
-        const dateFilter = query.TxDt || query.tranDate;
-        if (!dateFilter) return;
-
-        query.createdAt = {};
-
-        if (dateFilter.$gte) query.createdAt.$gte = toDate(dateFilter.$gte);
-        if (dateFilter.$lte) query.createdAt.$lte = toDate(dateFilter.$lte);
-        if (dateFilter.$eq) query.createdAt.$eq = toDate(dateFilter.$eq);
-
-        delete query.TxDt;
-        delete query.tranDate;
-      };
-
-      const normalizeOrder = (order) => {
-        if (!order) return;
-
-        if (order.TxDt) {
-          order.createdAt = order.TxDt;
-          delete order.TxDt;
-        }
-
-        if (order.tranDate) {
-          order.createdAt = order.tranDate;
-          delete order.tranDate;
-        }
-      };
       const body = req.query;
-
-      if (body?.query) body.query = JSON.parse(body.query);
-      if (body?.order) body.order = JSON.parse(body.order);
-
-      normalizeDateFilter(body.query);
-      normalizeOrder(body.order);
+      if (!!body?.query) body.query = JSON.parse(body.query);
+      if (!!body?.order) body.order = JSON.parse(body.order);
       if (!!body?.khuudasniiDugaar)
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
       if (!!body?.khuudasniiKhemjee)
@@ -179,7 +135,6 @@ router.get(
         barilgiinId: barilgiinId,
         baiguullagiinId: baiguullagiinId,
       });
-
       if (!parkingExists) {
         const model = BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
 
@@ -218,9 +173,36 @@ router.get(
       let startDate = null;
       let endDate = null;
 
-      if (body?.query?.createdAt) {
-        startDate = extractDate(body.query.createdAt, true);
-        endDate = extractDate(body.query.createdAt, false);
+      if (body?.query) {
+        // Check TxDt
+        if (body.query.TxDt) {
+          startDate = extractDate(body.query.TxDt, true);
+          endDate = extractDate(body.query.TxDt, false);
+        } else if (body.query.tranDate) {
+          startDate = extractDate(body.query.tranDate, true);
+          endDate = extractDate(body.query.tranDate, false);
+        }
+
+        // Check in $and array
+        if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
+          for (const condition of body.query.$and) {
+            if (condition.$or && Array.isArray(condition.$or)) {
+              for (const orCondition of condition.$or) {
+                if (orCondition.TxDt) {
+                  startDate = extractDate(orCondition.TxDt, true);
+                  endDate = extractDate(orCondition.TxDt, false);
+                  break;
+                }
+                if (orCondition.tranDate) {
+                  startDate = extractDate(orCondition.tranDate, true);
+                  endDate = extractDate(orCondition.tranDate, false);
+                  break;
+                }
+              }
+            }
+            if (startDate) break;
+          }
+        }
       }
 
       if (startDate && !endDate) endDate = startDate;
@@ -239,63 +221,31 @@ router.get(
             ? new Date(endDate)
             : new Date(startDate);
 
-        const startYear = start.getFullYear();
-        const startMonth = start.getMonth() + 1;
-        const endYear = end.getFullYear();
-        const endMonth = end.getMonth() + 1;
-
-        const isSingleMonth = startYear === endYear && startMonth === endMonth;
-
         const current = new Date(start.getFullYear(), start.getMonth(), 1);
-        const endMonthDate = new Date(end.getFullYear(), end.getMonth(), 1);
+        const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
 
-        while (current <= endMonthDate) {
+        while (current <= endMonth) {
           const year = current.getFullYear();
           const month = current.getMonth() + 1;
-          const isCurrentMonth = year === currentYear && month === currentMonth;
 
-          if (isSingleMonth) {
-            if (isCurrentMonth) {
-              collectionsToQuery.push({
-                name: null,
-                year,
-                month,
-                isCurrent: true,
-                isArchive: false,
-              });
-            } else {
-              const archiveName = `bankniiGuilgee${year}${String(
-                month
-              ).padStart(2, "0")}`;
-              collectionsToQuery.push({
-                name: archiveName,
-                year,
-                month,
-                isCurrent: false,
-                isArchive: true,
-              });
-            }
+          if (year === currentYear && month === currentMonth) {
+            collectionsToQuery.push({
+              name: null,
+              year,
+              month,
+              isCurrent: true,
+            });
           } else {
-            if (isCurrentMonth) {
-              collectionsToQuery.push({
-                name: null,
-                year,
-                month,
-                isCurrent: true,
-                isArchive: false,
-              });
-            } else {
-              const archiveName = `bankniiGuilgee${year}${String(
-                month
-              ).padStart(2, "0")}`;
-              collectionsToQuery.push({
-                name: archiveName,
-                year,
-                month,
-                isCurrent: false,
-                isArchive: true,
-              });
-            }
+            const archiveName = `bankniiGuilgee${year}${String(month).padStart(
+              2,
+              "0"
+            )}`;
+            collectionsToQuery.push({
+              name: archiveName,
+              year,
+              month,
+              isCurrent: false,
+            });
           }
 
           current.setMonth(current.getMonth() + 1);
@@ -306,7 +256,6 @@ router.get(
         collectionsToQuery.push({
           name: null,
           isCurrent: true,
-          isArchive: false,
         });
       }
 
@@ -327,11 +276,10 @@ router.get(
             next(err);
           });
       } else {
+        // Multiple collections - need to merge
+
         try {
           const allResults = [];
-
-          const originalPage = body.khuudasniiDugaar || 1;
-          const originalLimit = body.khuudasniiKhemjee || 100;
 
           for (const collection of collectionsToQuery) {
             const model = collection.name
@@ -342,58 +290,49 @@ router.get(
                 )
               : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
 
-            const queryBody = {
-              ...body,
-              khuudasniiDugaar: 1,
-              khuudasniiKhemjee: 1000,
-            };
+            const queryBody = { ...body };
+            delete queryBody.khuudasniiDugaar;
+            delete queryBody.khuudasniiKhemjee;
 
             const result = await khuudaslalt(model, queryBody);
 
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
+            } else {
             }
           }
 
-          if (body.order && Object.keys(body.order).length > 0) {
+          if (body.order) {
             const sortField = Object.keys(body.order)[0];
             const sortOrder = body.order[sortField];
-
-            if (sortField) {
-              allResults.sort((a, b) => {
-                const getNestedValue = (obj, path) => {
-                  if (!path || typeof path !== "string") return undefined;
-                  return path.split(".").reduce((curr, prop) => {
-                    return curr?.[prop];
-                  }, obj);
-                };
-
-                const aVal = getNestedValue(a, sortField);
-                const bVal = getNestedValue(b, sortField);
-
-                if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
-                if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
-                return 0;
-              });
-            }
+            allResults.sort((a, b) => {
+              const aVal = a[sortField];
+              const bVal = b[sortField];
+              if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
+              if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
+              return 0;
+            });
           }
 
-          const startIndex = (originalPage - 1) * originalLimit;
-          const endIndex = startIndex + originalLimit;
+          const page = body.khuudasniiDugaar || 1;
+          const limit = body.khuudasniiKhemjee || 100;
+          const startIndex = (page - 1) * limit;
+          const endIndex = startIndex + limit;
           const paginatedResults = allResults.slice(startIndex, endIndex);
 
           res.send({
-            khuudasniiDugaar: originalPage,
-            khuudasniiKhemjee: originalLimit,
+            khuudasniiDugaar: page,
+            khuudasniiKhemjee: limit,
             jagsaalt: paginatedResults,
             niitMur: allResults.length,
-            niitKhuudas: Math.ceil(allResults.length / originalLimit),
+            niitKhuudas: Math.ceil(allResults.length / limit),
           });
         } catch (err) {
           next(err);
         }
       }
     } catch (error) {
+      console.error("❌ Route error:", error);
       next(error);
     }
   }
