@@ -1252,6 +1252,13 @@ router.post(
               },
             };
 
+        console.log(
+          `[aggregateFromCollection] Collection: ${collectionName || "main"},`,
+          `Match filter:`,
+          JSON.stringify(match),
+          `Date range: ${actualStartDate} to ${actualEndDate}`
+        );
+
         if (!!req.body.burtgesenAjiltaniiId)
           match["tuukh.burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
 
@@ -1445,8 +1452,9 @@ router.post(
         const collectionEnd = moment.min(month.clone().endOf("month"), end);
 
         // Always query archived collection for the month
+        const collectionName = getCollectionName(month.year(), month.month());
         collectionsToQuery.push({
-          name: getCollectionName(month.year(), month.month()),
+          name: collectionName,
           startDate: collectionStart.toDate(),
           endDate: collectionEnd.toDate(),
         });
@@ -1468,6 +1476,22 @@ router.post(
         }
       });
 
+      console.log(
+        `[zogsooliinUdriinTailanAvya] Query params:`,
+        JSON.stringify({
+          ekhlekhOgnoo: req.body.ekhlekhOgnoo,
+          duusakhOgnoo: req.body.duusakhOgnoo,
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          garsanKhaalga: req.body.garsanKhaalga,
+          collectionsToQuery: collectionsToQuery.map((c) => ({
+            name: c.name || "main",
+            startDate: c.startDate,
+            endDate: c.endDate,
+          })),
+        })
+      );
+
       // Query all collections
       const allResults = {
         udriinTailan: [],
@@ -1478,10 +1502,25 @@ router.post(
 
       for (const collection of collectionsToQuery) {
         try {
+          console.log(
+            `[zogsooliinUdriinTailanAvya] Querying collection: ${
+              collection.name || "main"
+            }`,
+            `from ${collection.startDate} to ${collection.endDate}`
+          );
           const result = await aggregateFromCollection(
             collection.name,
             collection.startDate,
             collection.endDate
+          );
+          console.log(
+            `[zogsooliinUdriinTailanAvya] Collection ${
+              collection.name || "main"
+            } results:`,
+            `udriinTailan: ${result.udriinTailan.length},`,
+            `zurchiltei: ${result.zurchiltei.length},`,
+            `tulburiinZurchiltei: ${result.tulburiinZurchiltei.length},`,
+            `unegui: ${result.unegui.length}`
           );
           allResults.udriinTailan.push(...result.udriinTailan);
           allResults.zurchiltei.push(...result.zurchiltei);
@@ -1489,8 +1528,11 @@ router.post(
           allResults.unegui.push(...result.unegui);
         } catch (err) {
           console.error(
-            `Error querying collection ${collection.name || "main"}:`,
-            err.message
+            `[zogsooliinUdriinTailanAvya] Error querying collection ${
+              collection.name || "main"
+            }:`,
+            err.message,
+            err.stack
           );
         }
       }
