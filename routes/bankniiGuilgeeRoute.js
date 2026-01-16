@@ -107,6 +107,7 @@ router.get(
   tokenShalgakh,
   async (req, res, next) => {
     try {
+      // --- Normalize tranDate / TxDt to createdAt ---
       const normalizeDateFilter = (query) => {
         if (!query) return;
 
@@ -114,7 +115,6 @@ router.get(
         if (!dateFilter) return;
 
         query.createdAt = {};
-
         if (dateFilter.$gte) query.createdAt.$gte = new Date(dateFilter.$gte);
         if (dateFilter.$lte) query.createdAt.$lte = new Date(dateFilter.$lte);
         if (dateFilter.$eq) query.createdAt.$eq = new Date(dateFilter.$eq);
@@ -145,45 +145,17 @@ router.get(
         });
       }
 
-      // const parkingExists = await Parking(
-      //   req.body.tukhainBaaziinKholbolt
-      // ).findOne({
-      //   zogsooliinDans: dansniiDugaar,
-      //   barilgiinId: barilgiinId,
-      //   baiguullagiinId: baiguullagiinId,
-      // });
-      // if (!parkingExists) {
-      //   const model = BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
-
-      //   khuudaslalt(model, body)
-      //     .then((result) => {
-      //       res.send(result);
-      //     })
-      //     .catch((err) => {
-      //       next(err);
-      //     });
-      //   return;
-      // }
-
+      // --- Date extraction ---
       const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
 
-        if (preferStart && dateFilter.$gte) {
-          return new Date(dateFilter.$gte);
-        } else if (!preferStart && dateFilter.$lte) {
-          return new Date(dateFilter.$lte);
-        } else if (dateFilter.$gte) {
-          return new Date(dateFilter.$gte);
-        } else if (dateFilter.$lte) {
-          return new Date(dateFilter.$lte);
-        } else if (dateFilter.$eq) {
-          return new Date(dateFilter.$eq);
-        } else if (
-          typeof dateFilter === "string" ||
-          dateFilter instanceof Date
-        ) {
+        if (preferStart && dateFilter.$gte) return new Date(dateFilter.$gte);
+        if (!preferStart && dateFilter.$lte) return new Date(dateFilter.$lte);
+        if (dateFilter.$gte) return new Date(dateFilter.$gte);
+        if (dateFilter.$lte) return new Date(dateFilter.$lte);
+        if (dateFilter.$eq) return new Date(dateFilter.$eq);
+        if (typeof dateFilter === "string" || dateFilter instanceof Date)
           return new Date(dateFilter);
-        }
         return null;
       };
 
@@ -204,6 +176,7 @@ router.get(
 
       const collectionsToQuery = [];
 
+      // --- Build collections list ---
       if (startDate && !isNaN(startDate.getTime())) {
         const start = new Date(startDate);
         const end =
@@ -218,24 +191,28 @@ router.get(
           const year = current.getFullYear();
           const month = current.getMonth() + 1;
 
+          // --- Always add archive collection for this month ---
+          const archiveName = `bankniiGuilgee${year}${String(month).padStart(
+            2,
+            "0"
+          )}`;
+          collectionsToQuery.push({
+            name: archiveName,
+            year,
+            month,
+            isCurrent: false,
+          });
+          console.log("📦 Added archive collection:", archiveName);
+
+          // --- If it's the current month, also add live collection ---
           if (year === currentYear && month === currentMonth) {
             collectionsToQuery.push({
-              name: null,
+              name: null, // live collection
               year,
               month,
               isCurrent: true,
             });
-          } else {
-            const archiveName = `bankniiGuilgee${year}${String(month).padStart(
-              2,
-              "0"
-            )}`;
-            collectionsToQuery.push({
-              name: archiveName,
-              year,
-              month,
-              isCurrent: false,
-            });
+            console.log("📦 Added live/current collection");
           }
 
           current.setMonth(current.getMonth() + 1);
@@ -247,78 +224,73 @@ router.get(
           name: null,
           isCurrent: true,
         });
+        console.log("📦 Default live collection added (no date filter)");
       }
 
-      if (collectionsToQuery.length >= 1) {
-        const model = collectionsToQuery[0].name
-          ? BankniiGuilgee(
-              req.body.tukhainBaaziinKholbolt,
-              false,
-              collectionsToQuery[0].name
-            )
-          : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
+      // --- Fetch results from collections ---
+      try {
+        const allResults = [];
 
-        khuudaslalt(model, body)
-          .then((result) => {
-            console.log("------>>>", collectionsToQuery);
-            res.send(result);
-          })
-          .catch((err) => {
-            next(err);
-          });
-      } else {
-        try {
-          const allResults = [];
+        for (const collection of collectionsToQuery) {
+          const model = collection.name
+            ? BankniiGuilgee(
+                req.body.tukhainBaaziinKholbolt,
+                false,
+                collection.name
+              )
+            : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
 
-          for (const collection of collectionsToQuery) {
-            const model = collection.name
-              ? BankniiGuilgee(
-                  req.body.tukhainBaaziinKholbolt,
-                  false,
-                  collection.name
-                )
-              : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
+          console.log(
+            "🔍 Querying collection:",
+            collection.name || "CURRENT_COLLECTION"
+          );
 
-            const queryBody = { ...body };
-            delete queryBody.khuudasniiDugaar;
-            delete queryBody.khuudasniiKhemjee;
+          const queryBody = { ...body };
+          delete queryBody.khuudasniiDugaar;
+          delete queryBody.khuudasniiKhemjee;
 
-            const result = await khuudaslalt(model, queryBody);
+          const result = await khuudaslalt(model, queryBody);
 
-            if (result.jagsaalt && result.jagsaalt.length > 0) {
-              allResults.push(...result.jagsaalt);
-            } else {
-            }
+          console.log(
+            `📊 ${collection.name || "CURRENT_COLLECTION"} returned ${
+              result?.jagsaalt?.length || 0
+            } records`
+          );
+
+          if (result.jagsaalt && result.jagsaalt.length > 0) {
+            allResults.push(...result.jagsaalt);
           }
-
-          if (body.order) {
-            const sortField = Object.keys(body.order)[0];
-            const sortOrder = body.order[sortField];
-            allResults.sort((a, b) => {
-              const aVal = a[sortField];
-              const bVal = b[sortField];
-              if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
-              if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
-              return 0;
-            });
-          }
-
-          const page = body.khuudasniiDugaar || 1;
-          const limit = body.khuudasniiKhemjee || 100;
-          const startIndex = (page - 1) * limit;
-          const endIndex = startIndex + limit;
-          const paginatedResults = allResults.slice(startIndex, endIndex);
-
-          res.send({
-            khuudasniiDugaar: page,
-            khuudasniiKhemjee: limit,
-            jagsaalt: paginatedResults,
-            niitMur: allResults.length,
-            niitKhuudas: Math.ceil(allResults.length / limit),
-          });
-        } catch (err) {
-          next(err);
         }
+
+        // --- Sort ---
+        if (body.order) {
+          const sortField = Object.keys(body.order)[0];
+          const sortOrder = body.order[sortField];
+          allResults.sort((a, b) => {
+            const aVal = a[sortField];
+            const bVal = b[sortField];
+            if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
+            if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
+            return 0;
+          });
+        }
+
+        // --- Pagination ---
+        const page = body.khuudasniiDugaar || 1;
+        const limit = body.khuudasniiKhemjee || 100;
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedResults = allResults.slice(startIndex, endIndex);
+
+        res.send({
+          khuudasniiDugaar: page,
+          khuudasniiKhemjee: limit,
+          jagsaalt: paginatedResults,
+          niitMur: allResults.length,
+          niitKhuudas: Math.ceil(allResults.length / limit),
+        });
+      } catch (err) {
+        next(err);
       }
     } catch (error) {
       console.error("❌ Route error:", error);
@@ -326,6 +298,7 @@ router.get(
     }
   }
 );
+
 router
   .route("/davkhardsanDansniiKhuulga")
   .post(tokenShalgakh, async (req, res, next) => {
