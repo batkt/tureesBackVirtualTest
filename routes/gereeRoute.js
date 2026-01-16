@@ -2140,10 +2140,12 @@ router
                 x.talbainNiitUne = x.tukhainSariinTureesiinTulukhDun;
                 if (req.body.olnoorSaraarEsekh) {
                   // olon saraar nekhemjlekh
-                  let diffMonth = moment(req.body.duusakhOgnoo).diff(
-                    moment(),
-                    "months"
-                  );
+                  let diffMonth = moment(req.body.duusakhOgnoo)
+                    .startOf("month")
+                    .diff(
+                      moment(req.body.ekhlekhOgnoo).startOf("month"),
+                      "months"
+                    );
                   if (diffMonth) {
                     x.sariinTurees = (diffMonth + 1) * x.sariinTurees;
                     x.talbainNiitUne = (diffMonth + 1) * x.talbainNiitUne;
