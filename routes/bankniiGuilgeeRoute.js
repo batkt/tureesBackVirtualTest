@@ -194,7 +194,7 @@ router.get(
 
           if (year === currentYear && month === currentMonth) {
             collectionsToQuery.push({
-              name: null,
+              name: `bankniiGuilgee${year}${String(month).padStart(2, "0")}`,
               year,
               month,
               isCurrent: true,
@@ -231,7 +231,6 @@ router.get(
           }
         }
 
-      
         const page = body.khuudasniiDugaar || 1;
         const limit = body.khuudasniiKhemjee || 1000;
         const startIndex = (page - 1) * limit;
