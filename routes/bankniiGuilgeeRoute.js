@@ -319,23 +319,27 @@ router.get(
             }
           }
 
-          if (body.order) {
+          if (body.order && Object.keys(body.order).length > 0) {
             const sortField = Object.keys(body.order)[0];
             const sortOrder = body.order[sortField];
-            allResults.sort((a, b) => {
-              const getNestedValue = (obj, path) => {
-                return path.split(".").reduce((curr, prop) => {
-                  return curr?.[prop];
-                }, obj);
-              };
 
-              const aVal = getNestedValue(a, sortField);
-              const bVal = getNestedValue(b, sortField);
+            if (sortField) {
+              allResults.sort((a, b) => {
+                const getNestedValue = (obj, path) => {
+                  if (!path || typeof path !== "string") return undefined;
+                  return path.split(".").reduce((curr, prop) => {
+                    return curr?.[prop];
+                  }, obj);
+                };
 
-              if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
-              if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
-              return 0;
-            });
+                const aVal = getNestedValue(a, sortField);
+                const bVal = getNestedValue(b, sortField);
+
+                if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
+                if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
+                return 0;
+              });
+            }
           }
 
           const startIndex = (originalPage - 1) * originalLimit;
