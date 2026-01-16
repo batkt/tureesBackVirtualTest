@@ -107,7 +107,6 @@ router.get(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      // --- Normalize tranDate / TxDt to createdAt ---
       const normalizeDateFilter = (query) => {
         if (!query) return;
 
@@ -142,7 +141,6 @@ router.get(
         });
       }
 
-      // --- Date extraction ---
       const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
         if (preferStart && dateFilter.$gte) return new Date(dateFilter.$gte);
@@ -169,7 +167,6 @@ router.get(
       const currentMonth = now.getMonth() + 1;
       const collectionsToQuery = [];
 
-      // --- Build collections list ---
       if (startDate && !isNaN(startDate.getTime())) {
         const start = new Date(startDate);
         const end =
@@ -234,20 +231,7 @@ router.get(
           }
         }
 
-        // --- Sorting ---
-        if (body.order) {
-          const sortField = Object.keys(body.order)[0];
-          const sortOrder = body.order[sortField];
-          allResults.sort((a, b) => {
-            const aVal = a[sortField];
-            const bVal = b[sortField];
-            if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
-            if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
-            return 0;
-          });
-        }
-
-        // --- Pagination ---
+      
         const page = body.khuudasniiDugaar || 1;
         const limit = body.khuudasniiKhemjee || 1000;
         const startIndex = (page - 1) * limit;
