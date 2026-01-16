@@ -1431,7 +1431,7 @@ router.post(
             }
             return months;
           })()
-        : [start];
+        : [start.clone().startOf("month")];
 
       const includeTodayYesterday = hasTodayOrYesterday();
 
@@ -1488,7 +1488,10 @@ router.post(
           allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
           allResults.unegui.push(...result.unegui);
         } catch (err) {
-          console.error(`Error querying collection ${collection.name}:`, err);
+          console.error(
+            `Error querying collection ${collection.name || "main"}:`,
+            err.message
+          );
         }
       }
 
