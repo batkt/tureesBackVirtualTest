@@ -107,9 +107,53 @@ router.get(
   tokenShalgakh,
   async (req, res, next) => {
     try {
+      const toDate = (value) => {
+        if (!value) return undefined;
+        if (value instanceof Date) return value;
+
+        if (typeof value === "string") {
+          return new Date(value.replace(" ", "T") + ".000Z");
+        }
+
+        return new Date(value);
+      };
+
+      const normalizeDateFilter = (query) => {
+        if (!query) return;
+
+        const dateFilter = query.TxDt || query.tranDate;
+        if (!dateFilter) return;
+
+        query.createdAt = {};
+
+        if (dateFilter.$gte) query.createdAt.$gte = toDate(dateFilter.$gte);
+        if (dateFilter.$lte) query.createdAt.$lte = toDate(dateFilter.$lte);
+        if (dateFilter.$eq) query.createdAt.$eq = toDate(dateFilter.$eq);
+
+        delete query.TxDt;
+        delete query.tranDate;
+      };
+
+      const normalizeOrder = (order) => {
+        if (!order) return;
+
+        if (order.TxDt) {
+          order.createdAt = order.TxDt;
+          delete order.TxDt;
+        }
+
+        if (order.tranDate) {
+          order.createdAt = order.tranDate;
+          delete order.tranDate;
+        }
+      };
       const body = req.query;
-      if (!!body?.query) body.query = JSON.parse(body.query);
-      if (!!body?.order) body.order = JSON.parse(body.order);
+
+      if (body?.query) body.query = JSON.parse(body.query);
+      if (body?.order) body.order = JSON.parse(body.order);
+
+      normalizeDateFilter(body.query);
+      normalizeOrder(body.order);
       if (!!body?.khuudasniiDugaar)
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
       if (!!body?.khuudasniiKhemjee)
@@ -174,34 +218,9 @@ router.get(
       let startDate = null;
       let endDate = null;
 
-      if (body?.query) {
-        if (body.query.TxDt) {
-          startDate = extractDate(body.query.TxDt, true);
-          endDate = extractDate(body.query.TxDt, false);
-        } else if (body.query.tranDate) {
-          startDate = extractDate(body.query.tranDate, true);
-          endDate = extractDate(body.query.tranDate, false);
-        }
-
-        if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
-          for (const condition of body.query.$and) {
-            if (condition.$or && Array.isArray(condition.$or)) {
-              for (const orCondition of condition.$or) {
-                if (orCondition.TxDt) {
-                  startDate = extractDate(orCondition.TxDt, true);
-                  endDate = extractDate(orCondition.TxDt, false);
-                  break;
-                }
-                if (orCondition.tranDate) {
-                  startDate = extractDate(orCondition.tranDate, true);
-                  endDate = extractDate(orCondition.tranDate, false);
-                  break;
-                }
-              }
-            }
-            if (startDate) break;
-          }
-        }
+      if (body?.query?.createdAt) {
+        startDate = extractDate(body.query.createdAt, true);
+        endDate = extractDate(body.query.createdAt, false);
       }
 
       if (startDate && !endDate) endDate = startDate;
@@ -326,7 +345,7 @@ router.get(
             const queryBody = {
               ...body,
               khuudasniiDugaar: 1,
-              khuudasniiKhemjee: 999999,
+              khuudasniiKhemjee: 1000,
             };
 
             const result = await khuudaslalt(model, queryBody);
