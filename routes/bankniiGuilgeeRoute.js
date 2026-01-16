@@ -260,6 +260,7 @@ router.get(
           if (result.jagsaalt && result.jagsaalt.length > 0) {
             allResults.push(...result.jagsaalt);
           }
+          console.log("etssiin---->", allResults);
         }
 
         // --- Sort ---
