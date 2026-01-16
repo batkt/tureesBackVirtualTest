@@ -1212,8 +1212,15 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      const ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
-      const duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+      // Parse dates correctly - treat input as local time and convert to UTC for MongoDB
+      const ekhlekhOgnoo = moment(
+        req.body.ekhlekhOgnoo,
+        "YYYY-MM-DD HH:mm:ss"
+      ).toDate();
+      const duusakhOgnoo = moment(
+        req.body.duusakhOgnoo,
+        "YYYY-MM-DD HH:mm:ss"
+      ).toDate();
       const start = moment(ekhlekhOgnoo);
       const end = moment(duusakhOgnoo);
       const now = moment();
@@ -1251,13 +1258,6 @@ router.post(
                 $lte: actualEndDate,
               },
             };
-
-        console.log(
-          `[aggregateFromCollection] Collection: ${collectionName || "main"},`,
-          `Match filter:`,
-          JSON.stringify(match),
-          `Date range: ${actualStartDate} to ${actualEndDate}`
-        );
 
         if (!!req.body.burtgesenAjiltaniiId)
           match["tuukh.burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
@@ -1378,7 +1378,6 @@ router.post(
         return { udriinTailan, zurchiltei, tulburiinZurchiltei, unegui };
       };
 
-      // Helper functions
       const getCollectionName = (year, month) =>
         `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
 
@@ -1426,7 +1425,6 @@ router.post(
         return result;
       };
 
-      // Build collections to query
       const collectionsToQuery = [];
       const months = isMultiMonth
         ? (() => {
@@ -1451,7 +1449,6 @@ router.post(
         );
         const collectionEnd = moment.min(month.clone().endOf("month"), end);
 
-        // Always query archived collection for the month
         const collectionName = getCollectionName(month.year(), month.month());
         collectionsToQuery.push({
           name: collectionName,
@@ -1459,7 +1456,6 @@ router.post(
           endDate: collectionEnd.toDate(),
         });
 
-        // If current month and includes today/yesterday, also query main collection
         if (isCurrentMonth && includeTodayYesterday) {
           const todayStart = moment.max(
             collectionStart,
@@ -1476,23 +1472,6 @@ router.post(
         }
       });
 
-      console.log(
-        `[zogsooliinUdriinTailanAvya] Query params:`,
-        JSON.stringify({
-          ekhlekhOgnoo: req.body.ekhlekhOgnoo,
-          duusakhOgnoo: req.body.duusakhOgnoo,
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-          garsanKhaalga: req.body.garsanKhaalga,
-          collectionsToQuery: collectionsToQuery.map((c) => ({
-            name: c.name || "main",
-            startDate: c.startDate,
-            endDate: c.endDate,
-          })),
-        })
-      );
-
-      // Query all collections
       const allResults = {
         udriinTailan: [],
         zurchiltei: [],
@@ -1502,25 +1481,10 @@ router.post(
 
       for (const collection of collectionsToQuery) {
         try {
-          console.log(
-            `[zogsooliinUdriinTailanAvya] Querying collection: ${
-              collection.name || "main"
-            }`,
-            `from ${collection.startDate} to ${collection.endDate}`
-          );
           const result = await aggregateFromCollection(
             collection.name,
             collection.startDate,
             collection.endDate
-          );
-          console.log(
-            `[zogsooliinUdriinTailanAvya] Collection ${
-              collection.name || "main"
-            } results:`,
-            `udriinTailan: ${result.udriinTailan.length},`,
-            `zurchiltei: ${result.zurchiltei.length},`,
-            `tulburiinZurchiltei: ${result.tulburiinZurchiltei.length},`,
-            `unegui: ${result.unegui.length}`
           );
           allResults.udriinTailan.push(...result.udriinTailan);
           allResults.zurchiltei.push(...result.zurchiltei);
@@ -1528,11 +1492,8 @@ router.post(
           allResults.unegui.push(...result.unegui);
         } catch (err) {
           console.error(
-            `[zogsooliinUdriinTailanAvya] Error querying collection ${
-              collection.name || "main"
-            }:`,
-            err.message,
-            err.stack
+            `Error querying collection ${collection.name || "main"}:`,
+            err.message
           );
         }
       }
