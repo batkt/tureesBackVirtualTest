@@ -285,27 +285,23 @@ router.get(
         return null;
       };
 
-      // Extract start and end dates
       let startDate = null;
       let endDate = null;
       let dateField = null;
 
       if (body?.query) {
-        // Check createdAt
         if (body.query.createdAt) {
           startDate = extractDate(body.query.createdAt, true);
           endDate = extractDate(body.query.createdAt, false);
           dateField = "createdAt";
         }
 
-        // Check tuukh.tulbur.ognoo
         if (!startDate && body.query["tuukh.tulbur.ognoo"]) {
           startDate = extractDate(body.query["tuukh.tulbur.ognoo"], true);
           endDate = extractDate(body.query["tuukh.tulbur.ognoo"], false);
           dateField = "tuukh.tulbur.ognoo";
         }
 
-        // Check in $and array
         if (!startDate && body.query.$and && Array.isArray(body.query.$and)) {
           for (const condition of body.query.$and) {
             if (condition.createdAt) {
@@ -324,11 +320,9 @@ router.get(
         }
       }
 
-      // If only one date found, use it as both start and end
       if (startDate && !endDate) endDate = startDate;
       if (!startDate && endDate) startDate = endDate;
 
-      // Determine which collections to query
       const now = moment();
       const getCollectionName = (year, month) =>
         `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
@@ -342,7 +336,6 @@ router.get(
             ? moment(endDate)
             : moment(startDate);
 
-        // Check if date range includes today or yesterday
         const hasTodayOrYesterday = () => {
           const today = now.clone().startOf("day");
           const yesterday = now.clone().subtract(1, "day").startOf("day");
@@ -356,7 +349,6 @@ router.get(
         };
         const includeTodayYesterday = hasTodayOrYesterday();
 
-        // Generate list of months between start and end
         let current = start.clone().startOf("month");
         const endMonth = end.clone().startOf("month");
 
@@ -364,7 +356,6 @@ router.get(
           const isCurrentMonth =
             current.year() === now.year() && current.month() === now.month();
 
-          // Always query archived collection for the month
           collectionsToQuery.push({
             name: getCollectionName(current.year(), current.month()),
             year: current.year(),
@@ -372,7 +363,6 @@ router.get(
             isCurrent: false,
           });
 
-          // If current month and includes today/yesterday, also query main collection
           if (isCurrentMonth && includeTodayYesterday) {
             collectionsToQuery.push({
               name: null,
@@ -386,7 +376,6 @@ router.get(
         }
       }
 
-      // If no date range found, just use main collection
       if (collectionsToQuery.length === 0) {
         collectionsToQuery.push({
           name: null,
@@ -394,9 +383,7 @@ router.get(
         });
       }
 
-      // Query all collections and merge results
       if (collectionsToQuery.length === 1) {
-        // Single collection - use normal flow
         const model = collectionsToQuery[0].name
           ? Uilchluulegch(
               req.body.tukhainBaaziinKholbolt,
@@ -413,16 +400,13 @@ router.get(
             next(err);
           });
       } else {
-        // Multiple collections - need to merge
         try {
           const allResults = [];
           let totalCount = 0;
 
-          // Store original pagination values
           const originalPage = body.khuudasniiDugaar || 1;
           const originalLimit = body.khuudasniiKhemjee || 500;
 
-          // Query each collection
           for (const collection of collectionsToQuery) {
             const model = collection.name
               ? Uilchluulegch(
@@ -432,11 +416,10 @@ router.get(
                 )
               : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
-            // Create a copy of body with very high limit to get all results
             const queryBody = {
               ...body,
               khuudasniiDugaar: 1,
-              khuudasniiKhemjee: 999999, // Set very high limit to get all results from each collection
+              khuudasniiKhemjee: 999999,
             };
 
             const result = await khuudaslalt(model, queryBody);
@@ -444,16 +427,13 @@ router.get(
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
             }
-            // Use the actual count from each collection instead of niitMur
             totalCount += result.jagsaalt?.length || 0;
           }
 
-          // Apply sorting if specified
           if (body.order) {
             const sortField = Object.keys(body.order)[0];
             const sortOrder = body.order[sortField];
             allResults.sort((a, b) => {
-              // Handle nested fields (e.g., "tuukh.0.createdAt")
               const getNestedValue = (obj, path) => {
                 return path.split(".").reduce((curr, prop) => {
                   return curr?.[prop];
@@ -469,7 +449,6 @@ router.get(
             });
           }
 
-          // Apply pagination on merged results
           const startIndex = (originalPage - 1) * originalLimit;
           const endIndex = startIndex + originalLimit;
           const paginatedResults = allResults.slice(startIndex, endIndex);
@@ -478,7 +457,7 @@ router.get(
             khuudasniiDugaar: originalPage,
             khuudasniiKhemjee: originalLimit,
             jagsaalt: paginatedResults,
-            niitMur: allResults.length, // Total count of merged results
+            niitMur: allResults.length,
             niitKhuudas: Math.ceil(allResults.length / originalLimit),
           });
         } catch (err) {
