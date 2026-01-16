@@ -107,8 +107,6 @@ router.get(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      console.log("\n========== NEW REQUEST ==========");
-
       const normalizeDateFilter = (query) => {
         if (!query) return;
 
@@ -165,13 +163,6 @@ router.get(
       if (startDate && !endDate) endDate = startDate;
       if (!startDate && endDate) startDate = endDate;
 
-      console.log(
-        "📅 Date range:",
-        startDate?.toISOString(),
-        "to",
-        endDate?.toISOString()
-      );
-
       const now = new Date();
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
@@ -205,7 +196,6 @@ router.get(
               2,
               "0"
             )}`;
-            console.log(`  → Using archive: ${archiveName} (current month)`);
             collectionsToQuery.push({
               name: archiveName,
               year,
@@ -213,8 +203,6 @@ router.get(
               isCurrent: true,
               isArchive: true,
             });
-
-            console.log(`  → Using MAIN collection (current month)`);
             collectionsToQuery.push({
               name: null,
               year,
@@ -227,7 +215,6 @@ router.get(
               2,
               "0"
             )}`;
-            console.log(`  → Using archive: ${archiveName} (past month)`);
             collectionsToQuery.push({
               name: archiveName,
               year,
@@ -240,9 +227,6 @@ router.get(
               const archiveName = `bankniiGuilgee${year}${String(
                 month
               ).padStart(2, "0")}`;
-              console.log(
-                `  → Using archive: ${archiveName} (current month in range)`
-              );
               collectionsToQuery.push({
                 name: archiveName,
                 year,
@@ -250,8 +234,6 @@ router.get(
                 isCurrent: true,
                 isArchive: true,
               });
-
-              console.log(`  → Using MAIN collection (current month in range)`);
               collectionsToQuery.push({
                 name: null,
                 year,
@@ -263,9 +245,6 @@ router.get(
               const archiveName = `bankniiGuilgee${year}${String(
                 month
               ).padStart(2, "0")}`;
-              console.log(
-                `  → Using archive: ${archiveName} (past month in range)`
-              );
               collectionsToQuery.push({
                 name: archiveName,
                 year,
@@ -284,19 +263,12 @@ router.get(
         collectionsToQuery.push({ name: null, isCurrent: true });
       }
 
-      console.log(
-        "📚 Collections:",
-        collectionsToQuery.map((c) => c.name || "MAIN")
-      );
-
       try {
         const allResults = [];
         const originalPage = body.khuudasniiDugaar || 1;
         const originalLimit = body.khuudasniiKhemjee || 1000;
 
         for (const collection of collectionsToQuery) {
-          console.log(`\n📥 Querying: ${collection.name || "MAIN"}`);
-
           const model = collection.name
             ? BankniiGuilgee(
                 req.body.tukhainBaaziinKholbolt,
@@ -313,47 +285,23 @@ router.get(
 
           try {
             const result = await khuudaslalt(model, queryBody);
-            const count = result.jagsaalt?.length || 0;
-
-            console.log(`  ✅ Returned: ${count} records`);
-
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
             }
           } catch (collectionError) {
-            console.error(`  ❌ Error:`, collectionError.message);
+            next(collectionError);
           }
         }
 
-        console.log(`\n📊 Total records before sorting: ${allResults.length}`);
-
-        // Sort by createdAt - newest to oldest (descending)
         allResults.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
-          return dateB - dateA; // Descending order (newest first)
+          return dateB - dateA;
         });
-
-        console.log(`✅ Sorted by createdAt (newest to oldest)`);
-        if (allResults.length > 0) {
-          console.log(
-            `  First record: ${new Date(allResults[0].createdAt).toISOString()}`
-          );
-          console.log(
-            `  Last record: ${new Date(
-              allResults[allResults.length - 1].createdAt
-            ).toISOString()}`
-          );
-        }
 
         const startIndex = (originalPage - 1) * originalLimit;
         const endIndex = startIndex + originalLimit;
         const paginatedResults = allResults.slice(startIndex, endIndex);
-
-        console.log(
-          `📄 Returning ${paginatedResults.length} records (page ${originalPage})`
-        );
-        console.log("========== END ==========\n");
 
         res.send({
           khuudasniiDugaar: originalPage,
@@ -363,11 +311,9 @@ router.get(
           niitKhuudas: Math.ceil(allResults.length / originalLimit),
         });
       } catch (err) {
-        console.error("❌ Error:", err);
         next(err);
       }
     } catch (error) {
-      console.error("❌ Route error:", error);
       next(error);
     }
   }
