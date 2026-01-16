@@ -194,7 +194,9 @@ router.get(
 
           if (year === currentYear && month === currentMonth) {
             collectionsToQuery.push({
-              name: null, // live/current collection
+              name: `bankniiGuilgee${year}${String(month).padStart(2, "0")}`,
+              year,
+              month,
               isCurrent: true,
             });
           }
@@ -225,12 +227,7 @@ router.get(
 
           const result = await khuudaslalt(model, queryBody);
           if (result.jagsaalt && result.jagsaalt.length > 0) {
-            const taggedResults = result.jagsaalt.map((doc) => ({
-              ...doc,
-              __sourceCollection: collection.name,
-            }));
-
-            allResults.push(...taggedResults);
+            allResults.push(...result.jagsaalt);
           }
         }
 
