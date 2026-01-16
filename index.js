@@ -307,7 +307,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "10 1 * * * ",
+  "33 16 * * * ",
   function () {
     cgw.archiveBankGuilgeeKhonog();
   },
@@ -318,7 +318,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "20 1 5 * * ",
+  "35 16 * * * ",
   function () {
     cgw.archiveBankGuilgeeRently();
   },
