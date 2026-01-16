@@ -126,11 +126,6 @@ router.get(
       if (body?.query) body.query = JSON.parse(body.query);
       if (body?.order) body.order = JSON.parse(body.order);
       normalizeDateFilter(body.query);
-      console.log("📥 REQUEST QUERY (raw):", req.query);
-      console.log(
-        "📥 REQUEST QUERY (parsed):",
-        JSON.stringify(body.query, null, 2)
-      );
 
       if (body?.khuudasniiDugaar)
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
@@ -171,10 +166,6 @@ router.get(
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
       const collectionsToQuery = [];
-      console.log("📆 DATE RANGE USED:", {
-        startDate,
-        endDate,
-      });
 
       if (startDate && !isNaN(startDate.getTime())) {
         const start = new Date(startDate);
@@ -220,15 +211,6 @@ router.get(
         const allResults = [];
 
         for (const collection of collectionsToQuery) {
-          console.log("📦 COLLECTIONS TO QUERY:");
-          collectionsToQuery.forEach((c, i) => {
-            console.log(
-              `  ${i + 1}.`,
-              c.isCurrent ? "CURRENT" : "ARCHIVE",
-              "→",
-              c.name
-            );
-          });
           const model = collection.name
             ? BankniiGuilgee(
                 req.body.tukhainBaaziinKholbolt,
@@ -257,14 +239,6 @@ router.get(
         const startIndex = (page - 1) * limit;
         const endIndex = startIndex + limit;
         const paginatedResults = allResults.slice(startIndex, endIndex);
-        console.log(
-          "🧩 MERGED RESULTS:",
-          allResults.map((r) => ({
-            id: r._id,
-            createdAt: r.createdAt,
-            source: r.__sourceCollection,
-          }))
-        );
 
         res.send({
           khuudasniiDugaar: page,
