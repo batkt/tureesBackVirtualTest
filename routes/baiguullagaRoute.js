@@ -37,7 +37,7 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
           "admin"
         );
         //production
-        // db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
+        db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
         if (req.body.ajiltan) {
           let ajiltan = new Ajiltan(db.erunkhiiKholbolt)(req.body.ajiltan);
           ajiltan.erkh = "Admin";
