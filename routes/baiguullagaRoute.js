@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const Baiguullaga = require("../models/baiguullaga");
 const Ajiltan = require("../models/ajiltan");
 //const { crudWithFile, crud } = require("../components/crud");
@@ -26,17 +27,17 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
     baiguullaga
       .save()
       .then((result) => {
-        // test
-        // db.kholboltNemye(
-        //   baiguullaga._id,
-        //   req.body.baaziinNer,
-        //   true,
-        //   "127.0.0.1:27017",
-        //   "Br1stelback1",
-        //   "admin"
-        // );
+        test
+        db.kholboltNemye(
+          baiguullaga._id,
+          req.body.baaziinNer,
+          true,
+          "127.0.0.1:27017",
+          "Br1stelback1",
+          "admin"
+        );
         //production
-        db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
+        // db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
         if (req.body.ajiltan) {
           let ajiltan = new Ajiltan(db.erunkhiiKholbolt)(req.body.ajiltan);
           ajiltan.erkh = "Admin";
@@ -130,6 +131,13 @@ router.post(
     try {
       const { db } = require("zevbackv2");
       if (!!req.body) {
+        if (!mongoose.Types.ObjectId.isValid(req.body.baiguullagiinId)) {
+          return next(
+            new Error(
+              "Буруу баигуулагын ID формат: " + req.body.baiguullagiinId
+            )
+          );
+        }
         var update = {};
         for (var field in req.body.tokhirgoo) {
           if (field != "baiguullagiinId")
