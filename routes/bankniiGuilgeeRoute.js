@@ -201,7 +201,6 @@ router.get(
           const isCurrentMonth = year === currentYear && month === currentMonth;
 
           if (isSingleMonth && isCurrentMonth) {
-            // Single month filter for current month - use BOTH archive and main
             const archiveName = `bankniiGuilgee${year}${String(month).padStart(
               2,
               "0"
@@ -224,7 +223,6 @@ router.get(
               isArchive: false,
             });
           } else if (isSingleMonth && !isCurrentMonth) {
-            // Single month filter for past month - use archive only
             const archiveName = `bankniiGuilgee${year}${String(month).padStart(
               2,
               "0"
@@ -238,9 +236,7 @@ router.get(
               isArchive: true,
             });
           } else {
-            // Multi-month filter
             if (isCurrentMonth) {
-              // Current month in multi-month range - use BOTH archive and main
               const archiveName = `bankniiGuilgee${year}${String(
                 month
               ).padStart(2, "0")}`;
@@ -264,7 +260,6 @@ router.get(
                 isArchive: false,
               });
             } else {
-              // Past month in multi-month range - use archive only
               const archiveName = `bankniiGuilgee${year}${String(
                 month
               ).padStart(2, "0")}`;
@@ -296,8 +291,8 @@ router.get(
 
       try {
         const allResults = [];
-        const originalPage = body.khuudasniiDugaar || 100;
-        const originalLimit = body.khuudasniiKhemjee || 500;
+        const originalPage = body.khuudasniiDugaar || 1;
+        const originalLimit = body.khuudasniiKhemjee || 1000;
 
         for (const collection of collectionsToQuery) {
           console.log(`\n📥 Querying: ${collection.name || "MAIN"}`);
@@ -330,7 +325,26 @@ router.get(
           }
         }
 
-        console.log(`\n📊 Total records: ${allResults.length}`);
+        console.log(`\n📊 Total records before sorting: ${allResults.length}`);
+
+        // Sort by createdAt - newest to oldest (descending)
+        allResults.sort((a, b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+          return dateB - dateA; // Descending order (newest first)
+        });
+
+        console.log(`✅ Sorted by createdAt (newest to oldest)`);
+        if (allResults.length > 0) {
+          console.log(
+            `  First record: ${new Date(allResults[0].createdAt).toISOString()}`
+          );
+          console.log(
+            `  Last record: ${new Date(
+              allResults[allResults.length - 1].createdAt
+            ).toISOString()}`
+          );
+        }
 
         const startIndex = (originalPage - 1) * originalLimit;
         const endIndex = startIndex + originalLimit;
