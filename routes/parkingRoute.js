@@ -1212,8 +1212,15 @@ router.post(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      const ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
-      const duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+      // Parse dates correctly - treat input as local time and convert to UTC for MongoDB
+      const ekhlekhOgnoo = moment(
+        req.body.ekhlekhOgnoo,
+        "YYYY-MM-DD HH:mm:ss"
+      ).toDate();
+      const duusakhOgnoo = moment(
+        req.body.duusakhOgnoo,
+        "YYYY-MM-DD HH:mm:ss"
+      ).toDate();
       const start = moment(ekhlekhOgnoo);
       const end = moment(duusakhOgnoo);
       const now = moment();
@@ -1257,6 +1264,17 @@ router.post(
           `Match filter:`,
           JSON.stringify(match),
           `Date range: ${actualStartDate} to ${actualEndDate}`
+        );
+
+        // Debug: Check document count before filtering
+        const docCount = await model.countDocuments({
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: !!req.body.barilgiinId
+            ? req.body.barilgiinId
+            : { $exists: true },
+        });
+        console.log(
+          `[aggregateFromCollection] Total documents in collection before filtering: ${docCount}`
         );
 
         if (!!req.body.burtgesenAjiltaniiId)
