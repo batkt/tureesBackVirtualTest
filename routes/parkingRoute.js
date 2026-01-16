@@ -1371,200 +1371,163 @@ router.post(
         return { udriinTailan, zurchiltei, tulburiinZurchiltei, unegui };
       };
 
-      let finalResult = [];
+      // Helper functions
+      const getCollectionName = (year, month) =>
+        `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
 
-      if (isMultiMonth) {
-        const collectionsToQuery = [];
-        let current = start.clone().startOf("month");
+      const hasTodayOrYesterday = () => {
+        const today = now.clone().startOf("day");
+        const yesterday = now.clone().subtract(1, "day").startOf("day");
+        return (
+          (start.isSameOrBefore(today) && end.isSameOrAfter(today)) ||
+          (start.isSameOrBefore(yesterday) && end.isSameOrAfter(yesterday))
+        );
+      };
 
-        while (current.isSameOrBefore(end, "month")) {
-          const isCurrentMonth =
-            current.year() === now.year() && current.month() === now.month();
-
-          const collectionStart = moment.max(
-            current.clone().startOf("month"),
-            start
-          );
-          const collectionEnd = moment.min(current.clone().endOf("month"), end);
-
-          if (isCurrentMonth) {
-            collectionsToQuery.push({
-              name: null,
-              startDate: collectionStart.toDate(),
-              endDate: collectionEnd.toDate(),
-              isMain: true,
-            });
-          } else {
-            const y = current.year();
-            const m = String(current.month() + 1).padStart(2, "0");
-            const archiveName = `Uilchluulegch${y}${m}`;
-
-            collectionsToQuery.push({
-              name: archiveName,
-              startDate: collectionStart.toDate(),
-              endDate: collectionEnd.toDate(),
-              isMain: false,
-            });
-          }
-
-          current.add(1, "month");
-        }
-
-        const allResults = {
-          udriinTailan: [],
-          zurchiltei: [],
-          tulburiinZurchiltei: [],
-          unegui: [],
-        };
-
-        for (const collection of collectionsToQuery) {
-          try {
-            const result = await aggregateFromCollection(
-              collection.name,
-              collection.startDate,
-              collection.endDate
-            );
-
-            allResults.udriinTailan.push(...result.udriinTailan);
-            allResults.zurchiltei.push(...result.zurchiltei);
-            allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
-            allResults.unegui.push(...result.unegui);
-          } catch (err) {
-            console.error(`Error querying collection ${collection.name}:`, err);
-          }
-        }
-
-        const mergedTailan = {};
+      const mergeResults = (allResults) => {
+        const merged = {};
         allResults.udriinTailan.forEach((item) => {
-          if (mergedTailan[item._id]) {
-            mergedTailan[item._id].niitDun += item.niitDun;
-            mergedTailan[item._id].niitToo += item.niitToo;
-          } else {
-            mergedTailan[item._id] = { ...item };
-          }
+          merged[item._id] = merged[item._id]
+            ? {
+                ...merged[item._id],
+                niitDun: merged[item._id].niitDun + item.niitDun,
+                niitToo: merged[item._id].niitToo + item.niitToo,
+              }
+            : { ...item };
         });
 
-        finalResult = Object.values(mergedTailan);
+        const result = Object.values(merged);
 
-        if (allResults.zurchiltei.length > 0) {
-          const mergedZurchiltei = allResults.zurchiltei.reduce(
-            (acc, item) => ({
-              _id: "Зөрчилтэй",
-              niitDun: acc.niitDun + item.niitDun,
-              niitToo: acc.niitToo + item.niitToo,
-            }),
-            { _id: "Зөрчилтэй", niitDun: 0, niitToo: 0 }
+        const mergeArray = (arr, id) =>
+          arr.length > 0
+            ? arr.reduce(
+                (acc, item) => ({
+                  _id: id,
+                  niitDun: acc.niitDun + item.niitDun,
+                  niitToo: acc.niitToo + item.niitToo,
+                }),
+                { _id: id, niitDun: 0, niitToo: 0 }
+              )
+            : null;
+
+        [
+          mergeArray(allResults.zurchiltei, "Зөрчилтэй"),
+          mergeArray(allResults.tulburiinZurchiltei, "Төлбөрийн зөрчилтэй"),
+          mergeArray(allResults.unegui, "Үнэгүй"),
+        ].forEach((item) => item && result.push(item));
+
+        return result;
+      };
+
+      // Build collections to query
+      const collectionsToQuery = [];
+      const months = isMultiMonth
+        ? (() => {
+            const months = [];
+            let current = start.clone().startOf("month");
+            while (current.isSameOrBefore(end, "month")) {
+              months.push(current.clone());
+              current.add(1, "month");
+            }
+            return months;
+          })()
+        : [start];
+
+      const includeTodayYesterday = hasTodayOrYesterday();
+
+      months.forEach((month) => {
+        const isCurrentMonth =
+          month.year() === now.year() && month.month() === now.month();
+        const collectionStart = moment.max(
+          month.clone().startOf("month"),
+          start
+        );
+        const collectionEnd = moment.min(month.clone().endOf("month"), end);
+
+        // Always query archived collection for the month
+        collectionsToQuery.push({
+          name: getCollectionName(month.year(), month.month()),
+          startDate: collectionStart.toDate(),
+          endDate: collectionEnd.toDate(),
+        });
+
+        // If current month and includes today/yesterday, also query main collection
+        if (isCurrentMonth && includeTodayYesterday) {
+          const todayStart = moment.max(
+            collectionStart,
+            now.clone().subtract(1, "day").startOf("day")
           );
-          finalResult.push(mergedZurchiltei);
+          const todayEnd = moment.min(collectionEnd, now.clone().endOf("day"));
+          if (todayStart.isSameOrBefore(todayEnd)) {
+            collectionsToQuery.push({
+              name: null,
+              startDate: todayStart.toDate(),
+              endDate: todayEnd.toDate(),
+            });
+          }
         }
+      });
 
-        if (allResults.tulburiinZurchiltei.length > 0) {
-          const mergedTulburiinZurchiltei =
-            allResults.tulburiinZurchiltei.reduce(
-              (acc, item) => ({
-                _id: "Төлбөрийн зөрчилтэй",
-                niitDun: acc.niitDun + item.niitDun,
-                niitToo: acc.niitToo + item.niitToo,
-              }),
-              { _id: "Төлбөрийн зөрчилтэй", niitDun: 0, niitToo: 0 }
-            );
-          finalResult.push(mergedTulburiinZurchiltei);
-        }
+      // Query all collections
+      const allResults = {
+        udriinTailan: [],
+        zurchiltei: [],
+        tulburiinZurchiltei: [],
+        unegui: [],
+      };
 
-        if (allResults.unegui.length > 0) {
-          const mergedUnegui = allResults.unegui.reduce(
-            (acc, item) => ({
-              _id: "Үнэгүй",
-              niitDun: acc.niitDun + item.niitDun,
-              niitToo: acc.niitToo + item.niitToo,
-            }),
-            { _id: "Үнэгүй", niitDun: 0, niitToo: 0 }
+      for (const collection of collectionsToQuery) {
+        try {
+          const result = await aggregateFromCollection(
+            collection.name,
+            collection.startDate,
+            collection.endDate
           );
-          finalResult.push(mergedUnegui);
+          allResults.udriinTailan.push(...result.udriinTailan);
+          allResults.zurchiltei.push(...result.zurchiltei);
+          allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
+          allResults.unegui.push(...result.unegui);
+        } catch (err) {
+          console.error(`Error querying collection ${collection.name}:`, err);
         }
+      }
 
-        const matchVal = {
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: !!req.body.barilgiinId
-            ? req.body.barilgiinId
-            : { $exists: true },
-          tuluv: 0,
-        };
+      // Merge and build final result
+      let finalResult = mergeResults(allResults);
 
-        const zurchilteTailan = await ZurchilteiMashin(
-          req.body.tukhainBaaziinKholbolt
-        ).aggregate([
-          { $match: matchVal },
-          {
-            $group: {
-              _id: "Авлага",
-              niitDun: { $sum: "$niitDun" },
-              niitToo: { $sum: 1 },
-            },
+      // Add Авлага from ZurchilteiMashin
+      const zurchilteTailan = await ZurchilteiMashin(
+        req.body.tukhainBaaziinKholbolt
+      ).aggregate([
+        {
+          $match: {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId || { $exists: true },
+            tuluv: 0,
           },
-        ]);
+        },
+        {
+          $group: {
+            _id: "Авлага",
+            niitDun: { $sum: "$niitDun" },
+            niitToo: { $sum: 1 },
+          },
+        },
+      ]);
 
-        if (zurchilteTailan?.length > 0) finalResult.push(zurchilteTailan[0]);
+      if (zurchilteTailan?.length > 0) finalResult.push(zurchilteTailan[0]);
 
-        if (req.body.includeMetadata) {
-          res.status(200).send({
-            data: finalResult,
-            archiveName: "multi-month",
-            collections: collectionsToQuery.map((c) => c.name || "main"),
-          });
-        } else {
-          res.status(200).send(finalResult);
-        }
+      // Send response
+      if (req.body.includeMetadata) {
+        res.status(200).send({
+          data: finalResult,
+          archiveName: isMultiMonth
+            ? "multi-month"
+            : getCollectionName(start.year(), start.month()),
+          collections: collectionsToQuery.map((c) => c.name || "main"),
+        });
       } else {
-        let collectionName = null;
-
-        if (!(start.year() === now.year() && start.month() === now.month())) {
-          const y = start.year();
-          const m = String(start.month() + 1).padStart(2, "0");
-          collectionName = `Uilchluulegch${y}${m}`;
-        }
-
-        const result = await aggregateFromCollection(collectionName);
-        finalResult = result.udriinTailan;
-
-        if (!!result.zurchiltei && result.zurchiltei.length > 0)
-          finalResult.push(result.zurchiltei[0]);
-        if (!!result.unegui && result.unegui.length > 0)
-          finalResult.push(result.unegui[0]);
-
-        const matchVal = {
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: !!req.body.barilgiinId
-            ? req.body.barilgiinId
-            : { $exists: true },
-          tuluv: 0,
-        };
-
-        const zurchilteTailan = await ZurchilteiMashin(
-          req.body.tukhainBaaziinKholbolt
-        ).aggregate([
-          { $match: matchVal },
-          {
-            $group: {
-              _id: "Авлага",
-              niitDun: { $sum: "$niitDun" },
-              niitToo: { $sum: 1 },
-            },
-          },
-        ]);
-
-        if (zurchilteTailan?.length > 0) finalResult.push(zurchilteTailan[0]);
-        if (result.tulburiinZurchiltei?.length > 0)
-          finalResult.push(result.tulburiinZurchiltei[0]);
-
-        if (req.body.includeMetadata) {
-          res.status(200).send({
-            data: finalResult,
-            archiveName: collectionName,
-          });
-        } else {
-          res.status(200).send(finalResult);
-        }
+        res.status(200).send(finalResult);
       }
     } catch (error) {
       next(error);
