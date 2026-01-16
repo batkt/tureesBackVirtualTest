@@ -220,46 +220,54 @@ router.get(
             ? new Date(endDate)
             : new Date(startDate);
 
-        const current = new Date(start.getFullYear(), start.getMonth(), 1);
-        const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
+        const startYear = start.getFullYear();
+        const startMonth = start.getMonth() + 1;
+        const endYear = end.getFullYear();
+        const endMonth = end.getMonth() + 1;
 
-        while (current <= endMonth) {
+        const isSingleMonth = startYear === endYear && startMonth === endMonth;
+
+        const current = new Date(start.getFullYear(), start.getMonth(), 1);
+        const endMonthDate = new Date(end.getFullYear(), end.getMonth(), 1);
+
+        while (current <= endMonthDate) {
           const year = current.getFullYear();
           const month = current.getMonth() + 1;
+          const isCurrentMonth = year === currentYear && month === currentMonth;
 
-          if (year === currentYear && month === currentMonth) {
+          if (isSingleMonth) {
             const archiveName = `bankniiGuilgee${year}${String(month).padStart(
               2,
               "0"
             )}`;
-
             collectionsToQuery.push({
               name: archiveName,
               year,
               month,
-              isCurrent: true,
+              isCurrent: isCurrentMonth,
               isArchive: true,
-            });
-
-            collectionsToQuery.push({
-              name: null,
-              year,
-              month,
-              isCurrent: true,
-              isArchive: false,
             });
           } else {
-            const archiveName = `bankniiGuilgee${year}${String(month).padStart(
-              2,
-              "0"
-            )}`;
-            collectionsToQuery.push({
-              name: archiveName,
-              year,
-              month,
-              isCurrent: false,
-              isArchive: true,
-            });
+            if (isCurrentMonth) {
+              collectionsToQuery.push({
+                name: null,
+                year,
+                month,
+                isCurrent: true,
+                isArchive: false,
+              });
+            } else {
+              const archiveName = `bankniiGuilgee${year}${String(
+                month
+              ).padStart(2, "0")}`;
+              collectionsToQuery.push({
+                name: archiveName,
+                year,
+                month,
+                isCurrent: false,
+                isArchive: true,
+              });
+            }
           }
 
           current.setMonth(current.getMonth() + 1);
@@ -274,7 +282,7 @@ router.get(
         });
       }
 
-      if (collectionsToQuery.length === 1 && !collectionsToQuery[0].isCurrent) {
+      if (collectionsToQuery.length === 1) {
         const model = collectionsToQuery[0].name
           ? BankniiGuilgee(
               req.body.tukhainBaaziinKholbolt,
