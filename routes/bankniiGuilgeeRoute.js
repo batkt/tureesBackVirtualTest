@@ -126,6 +126,7 @@ router.get(
       const body = req.query;
       if (!!body?.query) body.query = JSON.parse(body.query);
       if (!!body?.order) body.order = JSON.parse(body.order);
+      normalizeDateFilter(body.query);
       if (!!body?.khuudasniiDugaar)
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
       if (!!body?.khuudasniiKhemjee)
