@@ -329,49 +329,60 @@ router.get(
       if (!startDate && endDate) startDate = endDate;
 
       // Determine which collections to query
-      const now = new Date();
-      const currentYear = now.getFullYear();
-      const currentMonth = now.getMonth() + 1;
+      const now = moment();
+      const getCollectionName = (year, month) =>
+        `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
 
       const collectionsToQuery = [];
 
       if (startDate && !isNaN(startDate.getTime())) {
-        const start = new Date(startDate);
+        const start = moment(startDate);
         const end =
           endDate && !isNaN(endDate.getTime())
-            ? new Date(endDate)
-            : new Date(startDate);
+            ? moment(endDate)
+            : moment(startDate);
+
+        // Check if date range includes today or yesterday
+        const hasTodayOrYesterday = () => {
+          const today = now.clone().startOf("day");
+          const yesterday = now.clone().subtract(1, "day").startOf("day");
+          const startDay = start.clone().startOf("day");
+          const endDay = end.clone().startOf("day");
+          return (
+            (startDay.isSameOrBefore(today) && endDay.isSameOrAfter(today)) ||
+            (startDay.isSameOrBefore(yesterday) &&
+              endDay.isSameOrAfter(yesterday))
+          );
+        };
+        const includeTodayYesterday = hasTodayOrYesterday();
 
         // Generate list of months between start and end
-        const current = new Date(start.getFullYear(), start.getMonth(), 1);
-        const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
+        let current = start.clone().startOf("month");
+        const endMonth = end.clone().startOf("month");
 
-        while (current <= endMonth) {
-          const year = current.getFullYear();
-          const month = current.getMonth() + 1;
+        while (current.isSameOrBefore(endMonth, "month")) {
+          const isCurrentMonth =
+            current.year() === now.year() && current.month() === now.month();
 
-          if (year === currentYear && month === currentMonth) {
-            // Current month - use main collection
+          // Always query archived collection for the month
+          collectionsToQuery.push({
+            name: getCollectionName(current.year(), current.month()),
+            year: current.year(),
+            month: current.month() + 1,
+            isCurrent: false,
+          });
+
+          // If current month and includes today/yesterday, also query main collection
+          if (isCurrentMonth && includeTodayYesterday) {
             collectionsToQuery.push({
               name: null,
-              year,
-              month,
+              year: current.year(),
+              month: current.month() + 1,
               isCurrent: true,
-            });
-          } else {
-            // Archived month
-            const collectionName = `Uilchluulegch${year}${String(
-              month
-            ).padStart(2, "0")}`;
-            collectionsToQuery.push({
-              name: collectionName,
-              year,
-              month,
-              isCurrent: false,
             });
           }
 
-          current.setMonth(current.getMonth() + 1);
+          current.add(1, "month");
         }
       }
 
