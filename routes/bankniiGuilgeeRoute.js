@@ -107,16 +107,29 @@ router.get(
   tokenShalgakh,
   async (req, res, next) => {
     try {
+      console.log("\n========== NEW REQUEST ==========");
+      console.log("📥 Raw query params:", JSON.stringify(req.query, null, 2));
+
       const normalizeDateFilter = (query) => {
         if (!query) return;
 
         const dateFilter = query.tranDate || query.TxDt;
-        if (!dateFilter) return;
+        if (!dateFilter) {
+          console.log("⚠️ No date filter found (tranDate or TxDt)");
+          return;
+        }
+
+        console.log("📅 Original date filter:", JSON.stringify(dateFilter));
 
         query.createdAt = {};
         if (dateFilter.$gte) query.createdAt.$gte = new Date(dateFilter.$gte);
         if (dateFilter.$lte) query.createdAt.$lte = new Date(dateFilter.$lte);
         if (dateFilter.$eq) query.createdAt.$eq = new Date(dateFilter.$eq);
+
+        console.log(
+          "📅 Normalized to createdAt:",
+          JSON.stringify(query.createdAt)
+        );
 
         delete query.tranDate;
         delete query.TxDt;
@@ -125,7 +138,16 @@ router.get(
       const body = req.query;
       if (body?.query) body.query = JSON.parse(body.query);
       if (body?.order) body.order = JSON.parse(body.order);
+
+      console.log(
+        "🔍 Query before normalization:",
+        JSON.stringify(body.query, null, 2)
+      );
       normalizeDateFilter(body.query);
+      console.log(
+        "🔍 Query after normalization:",
+        JSON.stringify(body.query, null, 2)
+      );
 
       if (body?.khuudasniiDugaar)
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
@@ -140,6 +162,8 @@ router.get(
           aldaa: "dansniiDugaar required",
         });
       }
+
+      console.log("💳 Account number:", dansniiDugaar);
 
       const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
@@ -162,9 +186,20 @@ router.get(
       if (startDate && !endDate) endDate = startDate;
       if (!startDate && endDate) startDate = endDate;
 
+      console.log("📅 Extracted date range:");
+      console.log("  Start:", startDate ? startDate.toISOString() : "null");
+      console.log("  End:", endDate ? endDate.toISOString() : "null");
+
       const now = new Date();
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
+      console.log(
+        `📆 Current date: ${currentYear}-${String(currentMonth).padStart(
+          2,
+          "0"
+        )}`
+      );
+
       const collectionsToQuery = [];
 
       if (startDate && !isNaN(startDate.getTime())) {
@@ -177,6 +212,8 @@ router.get(
         const current = new Date(start.getFullYear(), start.getMonth(), 1);
         const endMonth = new Date(end.getFullYear(), end.getMonth(), 1);
 
+        console.log("🔄 Building collection list...");
+
         while (current <= endMonth) {
           const year = current.getFullYear();
           const month = current.getMonth() + 1;
@@ -185,6 +222,9 @@ router.get(
             2,
             "0"
           )}`;
+
+          console.log(`  → Adding archive: ${archiveName}`);
+
           collectionsToQuery.push({
             name: archiveName,
             year,
@@ -193,6 +233,7 @@ router.get(
           });
 
           if (year === currentYear && month === currentMonth) {
+            console.log(`  → Adding main collection for current month`);
             collectionsToQuery.push({
               name: `bankniiGuilgee${year}${String(month).padStart(2, "0")}`,
               year,
@@ -206,13 +247,26 @@ router.get(
       }
 
       if (collectionsToQuery.length === 0) {
+        console.log("⚠️ No collections determined, using main collection");
         collectionsToQuery.push({ name: null, isCurrent: true });
       }
 
+      console.log("\n📚 Collections to query:");
+      collectionsToQuery.forEach((c, i) => {
+        console.log(
+          `  ${i + 1}. ${c.name || "bankniiGuilgee (main)"} ${
+            c.isCurrent ? "(current)" : ""
+          }`
+        );
+      });
+
       try {
         const allResults = [];
+        const collectionStats = [];
 
         for (const collection of collectionsToQuery) {
+          console.log(`\n📥 Querying: ${collection.name || "main"}`);
+
           const model = collection.name
             ? BankniiGuilgee(
                 req.body.tukhainBaaziinKholbolt,
@@ -225,11 +279,60 @@ router.get(
           delete queryBody.khuudasniiDugaar;
           delete queryBody.khuudasniiKhemjee;
 
-          const result = await khuudaslalt(model, queryBody);
-          if (result.jagsaalt && result.jagsaalt.length > 0) {
-            allResults.push(...result.jagsaalt);
+          console.log("  Query:", JSON.stringify(queryBody.query, null, 2));
+
+          try {
+            const result = await khuudaslalt(model, queryBody);
+            const count = result.jagsaalt?.length || 0;
+
+            console.log(`  ✅ Found: ${count} records`);
+
+            collectionStats.push({
+              collection: collection.name || "main",
+              count: count,
+            });
+
+            if (result.jagsaalt && result.jagsaalt.length > 0) {
+              allResults.push(...result.jagsaalt);
+
+              // Log first and last record dates
+              const dates = result.jagsaalt
+                .map((r) => r.createdAt || r.tranDate || r.TxDt)
+                .filter((d) => d)
+                .sort();
+
+              if (dates.length > 0) {
+                console.log(
+                  `  📅 Date range in results: ${new Date(
+                    dates[0]
+                  ).toISOString()} to ${new Date(
+                    dates[dates.length - 1]
+                  ).toISOString()}`
+                );
+              }
+            }
+          } catch (collectionError) {
+            console.error(
+              `  ❌ Error querying ${collection.name}:`,
+              collectionError.message
+            );
+            collectionStats.push({
+              collection: collection.name || "main",
+              count: 0,
+              error: collectionError.message,
+            });
           }
         }
+
+        console.log("\n📊 Collection stats:");
+        collectionStats.forEach((stat) => {
+          console.log(
+            `  ${stat.collection}: ${stat.count} records ${
+              stat.error ? `(ERROR: ${stat.error})` : ""
+            }`
+          );
+        });
+        console.log(`  TOTAL: ${allResults.length} records`);
 
         const page = body.khuudasniiDugaar || 1;
         const limit = body.khuudasniiKhemjee || 1000;
@@ -237,17 +340,34 @@ router.get(
         const endIndex = startIndex + limit;
         const paginatedResults = allResults.slice(startIndex, endIndex);
 
-        res.send({
+        console.log(`\n📄 Pagination: Page ${page}, Limit ${limit}`);
+        console.log(`  Returning records ${startIndex} to ${endIndex}`);
+        console.log(`  Paginated results: ${paginatedResults.length} records`);
+
+        const response = {
           khuudasniiDugaar: page,
           khuudasniiKhemjee: limit,
           jagsaalt: paginatedResults,
           niitMur: allResults.length,
           niitKhuudas: Math.ceil(allResults.length / limit),
+        };
+
+        console.log("✅ Sending response:", {
+          page: response.khuudasniiDugaar,
+          limit: response.khuudasniiKhemjee,
+          returned: response.jagsaalt.length,
+          total: response.niitMur,
+          totalPages: response.niitKhuudas,
         });
+        console.log("========== END REQUEST ==========\n");
+
+        res.send(response);
       } catch (err) {
+        console.error("❌ Error in collection loop:", err);
         next(err);
       }
     } catch (error) {
+      console.error("❌ Route error:", error);
       next(error);
     }
   }
