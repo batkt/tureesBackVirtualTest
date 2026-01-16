@@ -191,7 +191,6 @@ router.get(
           const year = current.getFullYear();
           const month = current.getMonth() + 1;
 
-          // --- Always add archive collection for this month ---
           const archiveName = `bankniiGuilgee${year}${String(month).padStart(
             2,
             "0"
@@ -204,10 +203,9 @@ router.get(
           });
           console.log("📦 Added archive collection:", archiveName);
 
-          // --- If it's the current month, also add live collection ---
           if (year === currentYear && month === currentMonth) {
             collectionsToQuery.push({
-              name: null, // live collection
+              name: null,
               year,
               month,
               isCurrent: true,
@@ -227,7 +225,6 @@ router.get(
         console.log("📦 Default live collection added (no date filter)");
       }
 
-      // --- Fetch results from collections ---
       try {
         const allResults = [];
 
@@ -248,9 +245,9 @@ router.get(
           const queryBody = { ...body };
           delete queryBody.khuudasniiDugaar;
           delete queryBody.khuudasniiKhemjee;
-
+          console.log("🔹 Querying MongoDB with filter:", queryBody);
           const result = await khuudaslalt(model, queryBody);
-
+          console.log("🔹 Mongo returned records:", result.jagsaalt.length);
           console.log(
             `📊 ${collection.name || "CURRENT_COLLECTION"} returned ${
               result?.jagsaalt?.length || 0
@@ -263,7 +260,6 @@ router.get(
           console.log("etssiin---->", allResults);
         }
 
-        // --- Sort ---
         if (body.order) {
           const sortField = Object.keys(body.order)[0];
           const sortOrder = body.order[sortField];
@@ -278,7 +274,7 @@ router.get(
 
         // --- Pagination ---
         const page = body.khuudasniiDugaar || 1;
-        const limit = body.khuudasniiKhemjee || 100;
+        const limit = body.khuudasniiKhemjee || 1000;
         const startIndex = (page - 1) * limit;
         const endIndex = startIndex + limit;
         const paginatedResults = allResults.slice(startIndex, endIndex);
