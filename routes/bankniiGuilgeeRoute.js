@@ -296,8 +296,8 @@ router.get(
 
       try {
         const allResults = [];
-        const originalPage = body.khuudasniiDugaar || 1;
-        const originalLimit = body.khuudasniiKhemjee || 1000;
+        const originalPage = body.khuudasniiDugaar || 100;
+        const originalLimit = body.khuudasniiKhemjee || 500;
 
         for (const collection of collectionsToQuery) {
           console.log(`\n📥 Querying: ${collection.name || "MAIN"}`);
