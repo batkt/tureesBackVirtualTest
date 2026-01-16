@@ -268,6 +268,10 @@ router.get(
       } else {
         try {
           const allResults = [];
+          console.log(
+            "📦 Querying collection:",
+            collection.name || "CURRENT_COLLECTION"
+          );
 
           for (const collection of collectionsToQuery) {
             const model = collection.name
