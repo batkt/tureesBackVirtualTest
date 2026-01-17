@@ -317,21 +317,21 @@ cron.schedule(
   }
 );
 
-cron.schedule(
-  "20 1 5 * * ",
-  function () {
-    cgw.archiveBankGuilgeeRently();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
+// cron.schedule(
+//   "5 13 * * * ",
+//   function () {
+//     cgw.archiveBankGuilgeeRently();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 
 cron.schedule(
-  "55 12 * * * ",
+  "10 13 * * * ",
   function () {
-    cgw.archiveBankGuilgeeRentlyFirst();
+    cgw.archiveBankGuilgeeKhonogFirst();
   },
   {
     scheduled: true,
