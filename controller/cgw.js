@@ -2521,13 +2521,14 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
             }
           }
           if (zogsooliinDansuud?.length === 0) continue;
+          console.log("zogsooliinDansuud: --->" + JSON.stringify(zogsooliinDansuud));
           const months = await BankniiGuilgee(kholbolt).aggregate([
               { $match: { dansniiDugaar: { $nin: zogsooliinDansuud } } },
               { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
               { $group: { _id: { year: "$year", month: "$month" } } },
               { $sort: { "_id.year": 1, "_id.month": 1 }, },
           ]);
-          
+          console.log("months: --->" + JSON.stringify(months));
           for (const { _id } of months) {
               const y = _id.year;
               const m = _id.month;
@@ -2541,19 +2542,19 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
               console.log("Archiving for:", kholbolt.baiguullagiinId, y, m);
               console.log("docs length:" + docs?.length);
               // --- Archive ---
-              const data = await BankniiGuilgee(kholbolt).aggregate([
-                  { $match: {
-                    dansniiDugaar: { $nin: zogsooliinDansuud },
-                    createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
-                  } },
-              ]);
-              await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-              console.log("docs insert length:" + data?.length);
-              // --- Delete ---
-              const res = await BankniiGuilgee(kholbolt).deleteMany({
-                  dansniiDugaar: { $nin: zogsooliinDansuud },
-                  createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
+              // const data = await BankniiGuilgee(kholbolt).aggregate([
+              //     { $match: {
+              //       dansniiDugaar: { $nin: zogsooliinDansuud },
+              //       createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
+              //     } },
+              // ]);
+              // await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+              // console.log("docs insert length:" + data?.length);
+              // // --- Delete ---
+              // const res = await BankniiGuilgee(kholbolt).deleteMany({
+              //     dansniiDugaar: { $nin: zogsooliinDansuud },
+              //     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+              // });
           }
         }
     }  
