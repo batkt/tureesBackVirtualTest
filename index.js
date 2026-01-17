@@ -317,27 +317,27 @@ cron.schedule(
   }
 );
 
-// cron.schedule(
-//   "5 13 * * * ",
-//   function () {
-//     cgw.archiveBankGuilgeeRently();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   }
-// );
-
 cron.schedule(
-  "10 13 * * * ",
+  "15 13 * * * ",
   function () {
-    cgw.archiveBankGuilgeeKhonogFirst();
+    cgw.archiveBankGuilgeeRently();
   },
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
   }
 );
+
+// cron.schedule(
+//   "10 13 * * * ",
+//   function () {
+//     cgw.archiveBankGuilgeeKhonogFirst();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 
 io.once("connection", (socket) => {
   socket.on("disconnect", () => {});

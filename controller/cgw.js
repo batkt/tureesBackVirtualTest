@@ -2508,7 +2508,7 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
     const currentMonth = now.getMonth() + 1;
     if (kholboltuud) {
         for (const kholbolt of kholboltuud) {
-          // if (kholbolt.baiguullagiinId === "612f457d185280db676d0b51") continue;
+          if (kholbolt.baiguullagiinId !== "6731b43bc23730ac1908da2d") continue;
           var parkings = await Parking(kholbolt).find({
             baiguullagiinId: kholbolt.baiguullagiinId,
             zogsooliinDans: {$exists: true}, 
