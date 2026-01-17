@@ -328,6 +328,17 @@ cron.schedule(
   }
 );
 
+cron.schedule(
+  "55 12 * * * ",
+  function () {
+    cgw.archiveBankGuilgeeRentlyFirst();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
 io.once("connection", (socket) => {
   socket.on("disconnect", () => {});
   socket.on("error", function (err) {
