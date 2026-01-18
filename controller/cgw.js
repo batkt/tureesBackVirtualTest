@@ -2781,15 +2781,25 @@ exports.archiveBankGuilgeeFirst = asyncHandler(async () => {
                 createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
               });
               // if (docs?.length > 0) continue;
+              const archivedIds = await BankniiGuilgee(
+                kholbolt,
+                false,
+                archiveName
+              ).find({}, { _id: 1 }).lean();
+              const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
               // --- Archive ---
               const data = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").aggregate([
                   { $match: {
+                    _id: { $nin: Array.from(archivedIdSet) },
                     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
                   } },
               ]);
+              console.log("Archiving for:", kholbolt.baiguullagiinId, y, m);
+              console.log("docs insert length:" + data?.length);
               await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
               // --- Delete ---
               const res = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").deleteMany({
+                  _id: { $in: data.map(d => d._id) },
                   createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
               });
           }
