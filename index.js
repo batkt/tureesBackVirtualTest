@@ -351,7 +351,7 @@ cron.schedule(
 // );
 
 cron.schedule(
-  "10 7 * * * ",
+  "16 7 * * * ",
   function () {
     cgw.archiveBankGuilgeeFirst();
   },

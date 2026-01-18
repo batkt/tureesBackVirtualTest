@@ -2753,7 +2753,7 @@ exports.archiveBankGuilgeeFirst = asyncHandler(async () => {
     const currentMonth = now.getMonth() + 1;
     if (kholboltuud) {
         for (const kholbolt of kholboltuud) {
-          if (kholbolt.baiguullagiinId !== "6731b43bc23730ac1908da2d") continue;
+          if (kholbolt.baiguullagiinId !== "6115f350b35689cdbf1b9da3") continue;
           var parkings = await Parking(kholbolt).find({
             baiguullagiinId: kholbolt.baiguullagiinId,
             zogsooliinDans: {$exists: true}, 
