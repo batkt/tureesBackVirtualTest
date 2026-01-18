@@ -2699,7 +2699,8 @@ exports.archiveBankGuilgeeRentlyNoZogsool = asyncHandler(async () => {
     const currentMonth = now.getMonth() + 1;
     if (kholboltuud) {
         for (const kholbolt of kholboltuud) {
-          if (kholbolt.baiguullagiinId === "612f457d185280db676d0b51") continue;
+          const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
+          if(!baiguullaga) continue;
           var parkings = await Parking(kholbolt).find({
             baiguullagiinId: kholbolt.baiguullagiinId,
             zogsooliinDans: {$exists: true}, 
