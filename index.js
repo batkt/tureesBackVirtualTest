@@ -329,7 +329,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "30 6 * * * ",
+  "33 6 * * * ",
   function () {
     cgw.archiveBankGuilgeeRentlyNoZogsool();
   },
