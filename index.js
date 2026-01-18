@@ -285,7 +285,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "20 1 1 * * ",
+  "20 2 1 * * ",
   function () {
     ebarimt.archiveEbarimt();
   },
@@ -296,7 +296,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "10 1 * * * ",
+  "10 2 * * * ",
   function () {
     ebarimt.archiveEbarimtKhonog();
   },
@@ -318,9 +318,20 @@ cron.schedule(
 );
 
 cron.schedule(
-  "58 13 * * * ",
+  "20 1 5 * * ",
   function () {
     cgw.archiveBankGuilgeeRently();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
+
+cron.schedule(
+  "30 6 * * * ",
+  function () {
+    cgw.archiveBankGuilgeeRentlyNoZogsool();
   },
   {
     scheduled: true,
