@@ -350,16 +350,16 @@ cron.schedule(
 //   }
 // );
 
-cron.schedule(
-  "45 7 * * * ",
-  function () {
-    cgw.archiveBankGuilgeeFirst();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  }
-);
+// cron.schedule(
+//   "45 7 * * * ",
+//   function () {
+//     cgw.archiveBankGuilgeeFirst();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   }
+// );
 
 io.once("connection", (socket) => {
   socket.on("disconnect", () => {});
