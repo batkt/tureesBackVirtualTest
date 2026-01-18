@@ -2742,3 +2742,60 @@ exports.archiveBankGuilgeeRentlyNoZogsool = asyncHandler(async () => {
     }
   }
 );
+
+exports.archiveBankGuilgeeFirst = asyncHandler(async () => {
+  try 
+  { 
+    const { db } = require("zevbackv2");
+    const kholboltuud = db.kholboltuud;
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    if (kholboltuud) {
+        for (const kholbolt of kholboltuud) {
+          if (kholbolt.baiguullagiinId !== "6731b43bc23730ac1908da2d") continue;
+          var parkings = await Parking(kholbolt).find({
+            baiguullagiinId: kholbolt.baiguullagiinId,
+            zogsooliinDans: {$exists: true}, 
+          });
+          if (parkings?.length === 0) continue;
+          var zogsooliinDansuud = [];
+          for (const parking of parkings) {
+            if (!!parking.zogsooliinDans && parking.zogsooliinDans !== "0" && !zogsooliinDansuud.includes(parking.zogsooliinDans)) {
+              zogsooliinDansuud.push(parking.zogsooliinDans);
+            }
+          }
+          if (zogsooliinDansuud?.length === 0) continue;
+          const months = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").aggregate([
+              { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
+              { $group: { _id: { year: "$year", month: "$month" } } },
+              { $sort: { "_id.year": 1, "_id.month": 1 }, },
+          ]);
+          
+          for (const { _id } of months) {
+              const y = _id.year;
+              const m = _id.month;
+              if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
+              const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+              const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
+                createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+              });
+              // if (docs?.length > 0) continue;
+              // --- Archive ---
+              const data = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").aggregate([
+                  { $match: {
+                    createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
+                  } },
+              ]);
+              await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+              // --- Delete ---
+              const res = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").deleteMany({
+                  createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+              });
+          }
+        }
+    }  
+  } catch (err) {
+    }
+  }
+);

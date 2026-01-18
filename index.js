@@ -329,7 +329,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "53 6 * * * ",
+  "30 1 5 * * ",
   function () {
     cgw.archiveBankGuilgeeRentlyNoZogsool();
   },
@@ -349,6 +349,17 @@ cron.schedule(
 //     timezone: "Asia/Ulaanbaatar",
 //   }
 // );
+
+cron.schedule(
+  "10 7 * * * ",
+  function () {
+    cgw.archiveBankGuilgeeFirst();
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Ulaanbaatar",
+  }
+);
 
 io.once("connection", (socket) => {
   socket.on("disconnect", () => {});
