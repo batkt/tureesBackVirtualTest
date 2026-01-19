@@ -396,18 +396,22 @@ router.get(
           const garsanTsagCondition = body.query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
           delete body.query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
           
-          if (!body.query.$or) {
-            body.query.$or = [];
+          if (!body.query.$and) {
+            body.query.$and = [];
           }
-          if (!Array.isArray(body.query.$or)) {
-            body.query.$or = [body.query.$or];
+          if (!Array.isArray(body.query.$and)) {
+            body.query.$and = [body.query.$and];
           }
           
-          body.query.$or.push({
-            "tuukh.0.tsagiinTuukh.0.garsanTsag": garsanTsagCondition
-          });
-          body.query.$or.push({
-            freezeOgnoo: { $exists: true }
+          body.query.$and.push({
+            $or: [
+              {
+                "tuukh.0.tsagiinTuukh.0.garsanTsag": garsanTsagCondition
+              },
+              {
+                freezeOgnoo: { $exists: true }
+              }
+            ]
           });
         }
 
@@ -430,18 +434,22 @@ router.get(
             const garsanTsagCondition = body.query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
             delete body.query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
             
-            if (!body.query.$or) {
-              body.query.$or = [];
+            if (!body.query.$and) {
+              body.query.$and = [];
             }
-            if (!Array.isArray(body.query.$or)) {
-              body.query.$or = [body.query.$or];
+            if (!Array.isArray(body.query.$and)) {
+              body.query.$and = [body.query.$and];
             }
             
-            body.query.$or.push({
-              "tuukh.0.tsagiinTuukh.0.garsanTsag": garsanTsagCondition
-            });
-            body.query.$or.push({
-              freezeOgnoo: { $exists: true }
+            body.query.$and.push({
+              $or: [
+                {
+                  "tuukh.0.tsagiinTuukh.0.garsanTsag": garsanTsagCondition
+                },
+                {
+                  freezeOgnoo: { $exists: true }
+                }
+              ]
             });
           }
 
