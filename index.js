@@ -64,19 +64,19 @@ app.use(
   express.json({
     limit: "50mb",
     extended: true,
-  })
+  }),
 );
 // // test;
-// db.kholboltUusgey(
-//   app,
-//   "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin"
-// );
+db.kholboltUusgey(
+  app,
+  "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin",
+);
 
 //production
-db.kholboltUusgey(app);
+// db.kholboltUusgey(app);
 
 app.use(
-  express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
+  express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }),
 );
 
 app.use(baiguullagaRoute);
@@ -119,7 +119,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -130,7 +130,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -141,7 +141,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -152,7 +152,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 cron.schedule(
   "1 20 * * * ",
@@ -162,7 +162,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 cron.schedule(
   "1 22 * * * ",
@@ -172,7 +172,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -183,7 +183,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -194,7 +194,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -205,7 +205,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -216,7 +216,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -227,7 +227,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 cron.schedule(
   "32 2 * * *",
@@ -237,7 +237,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -248,7 +248,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -259,7 +259,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -270,7 +270,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -281,7 +281,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -292,7 +292,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -303,7 +303,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -314,7 +314,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -325,7 +325,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 cron.schedule(
@@ -336,7 +336,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Ulaanbaatar",
-  }
+  },
 );
 
 // cron.schedule(

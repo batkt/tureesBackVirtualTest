@@ -28,16 +28,16 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
       .save()
       .then((result) => {
         // test
-        // db.kholboltNemye(
-        //   baiguullaga._id,
-        //   req.body.baaziinNer,
-        //   true,
-        //   "127.0.0.1:27017",
-        //   "Br1stelback1",
-        //   "admin"
-        // );
+        db.kholboltNemye(
+          baiguullaga._id,
+          req.body.baaziinNer,
+          true,
+          "127.0.0.1:27017",
+          "Br1stelback1",
+          "admin",
+        );
         //production
-        db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
+        // db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
         if (req.body.ajiltan) {
           let ajiltan = new Ajiltan(db.erunkhiiKholbolt)(req.body.ajiltan);
           ajiltan.erkh = "Admin";
@@ -75,7 +75,7 @@ router.post("/salbarBurtgey", async (req, res, next) => {
               khayag: req.body.khayag,
             },
           },
-        }
+        },
       )
       .then((result) => {
         res.send("Amjilttai");
@@ -93,7 +93,7 @@ router.post(
   tokenShalgakh,
   (req, res, next) => {
     res.send({});
-  }
+  },
 );
 
 router.post("/baiguullagaAvya", (req, res, next) => {
@@ -116,7 +116,7 @@ router.post("/moduliinMedeelelAvya", tokenShalgakh, async (req, res, next) => {
       "http://103.143.40.123:8282/moduliinMedeelelAvya",
       {
         register: req.body.register,
-      }
+      },
     );
     if (axiosKhariu && axiosKhariu.data) res.send(axiosKhariu.data);
     else res.send("Мэдээлэл олдсонгүй!");
@@ -134,8 +134,8 @@ router.post(
         if (!mongoose.Types.ObjectId.isValid(req.body.baiguullagiinId)) {
           return next(
             new Error(
-              "Буруу баигуулагын ID формат: " + req.body.baiguullagiinId
-            )
+              "Буруу баигуулагын ID формат: " + req.body.baiguullagiinId,
+            ),
           );
         }
         var update = {};
@@ -145,14 +145,14 @@ router.post(
         }
         await Baiguullaga(db.erunkhiiKholbolt).findOneAndUpdate(
           { _id: req.body.baiguullagiinId },
-          update
+          update,
         );
         res.send("Amjilttai");
       } else next(new aldaa("Засах боломжгүй байна"));
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 router.post("/nevtreltiinTuukhAvya", tokenShalgakh, async (req, res, next) => {
@@ -169,7 +169,7 @@ router.post("/nevtreltiinTuukhAvya", tokenShalgakh, async (req, res, next) => {
       });
       for await (const element of khariu) {
         var baiguullaga = baiguullaguud.find(
-          (x) => x._id.toString() == element._id
+          (x) => x._id.toString() == element._id,
         );
         if (!!baiguullaga) element.register = baiguullaga.register;
       }
@@ -183,13 +183,14 @@ router.post("/nevtreltiinTuukhAvya", tokenShalgakh, async (req, res, next) => {
 
 router.get("/tatvaraasBaiguullagaAvya/:regno", (req, res, next) => {
   var url = encodeURI(
-    "https://api.ebarimt.mn/api/info/check/getTinInfo?regNo=" + req.params.regno
+    "https://api.ebarimt.mn/api/info/check/getTinInfo?regNo=" +
+      req.params.regno,
   );
   request(url, { json: true }, (err, res1, body) => {
     if (err) next(err);
     else {
       url = encodeURI(
-        "https://api.ebarimt.mn/api/info/check/getInfo?tin=" + body.data
+        "https://api.ebarimt.mn/api/info/check/getInfo?tin=" + body.data,
       );
       request(url, { json: true }, (err2, res2, body2) => {
         if (err2) next(err2);

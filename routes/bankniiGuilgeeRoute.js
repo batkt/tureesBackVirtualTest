@@ -16,12 +16,12 @@ crud(
   router,
   "bankniiGuilgee",
   (conn) => BankniiGuilgee(conn, true),
-  UstsanBarimt
+  UstsanBarimt,
 );
 router.post(
   "/bankniiGuilgeeToololtAvya",
   tokenShalgakh,
-  bankniiGuilgeeToololtAvya
+  bankniiGuilgeeToololtAvya,
 );
 router.post("/tdbcer", tdbcer);
 
@@ -107,26 +107,11 @@ router.get(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      const normalizeDateFilter = (query) => {
-        if (!query) return;
-
-        const dateFilter = query.tranDate || query.TxDt;
-        if (!dateFilter) return;
-
-        query.createdAt = {};
-        if (dateFilter.$gte) query.createdAt.$gte = new Date(dateFilter.$gte);
-        if (dateFilter.$lte) query.createdAt.$lte = new Date(dateFilter.$lte);
-        if (dateFilter.$eq) query.createdAt.$eq = new Date(dateFilter.$eq);
-
-        delete query.tranDate;
-        delete query.TxDt;
-      };
+      console.log("\n========== NEW REQUEST ==========");
 
       const body = req.query;
       if (body?.query) body.query = JSON.parse(body.query);
       if (body?.order) body.order = JSON.parse(body.order);
-
-      normalizeDateFilter(body.query);
 
       if (body?.khuudasniiDugaar)
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
@@ -142,6 +127,8 @@ router.get(
         });
       }
 
+      console.log("🔍 Query:", JSON.stringify(body.query, null, 2));
+
       const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
         if (preferStart && dateFilter.$gte) return new Date(dateFilter.$gte);
@@ -154,20 +141,64 @@ router.get(
         return null;
       };
 
+      // Extract date from various query structures
       let startDate = null;
       let endDate = null;
-      if (body?.query?.createdAt) {
-        startDate = extractDate(body.query.createdAt, true);
-        endDate = extractDate(body.query.createdAt, false);
+
+      // Check direct fields
+      let dateFilter = body.query?.tranDate || body.query?.TxDt;
+
+      // Check in $and array
+      if (!dateFilter && body.query?.$and && Array.isArray(body.query.$and)) {
+        for (const condition of body.query.$and) {
+          // Check for direct date fields
+          if (condition.tranDate) {
+            dateFilter = condition.tranDate;
+            break;
+          }
+          if (condition.TxDt) {
+            dateFilter = condition.TxDt;
+            break;
+          }
+
+          // Check in $or array within $and
+          if (condition.$or && Array.isArray(condition.$or)) {
+            for (const orCondition of condition.$or) {
+              if (orCondition.tranDate) {
+                dateFilter = orCondition.tranDate;
+                break;
+              }
+              if (orCondition.TxDt) {
+                dateFilter = orCondition.TxDt;
+                break;
+              }
+            }
+            if (dateFilter) break;
+          }
+        }
       }
+
+      if (dateFilter) {
+        startDate = extractDate(dateFilter, true);
+        endDate = extractDate(dateFilter, false);
+      }
+
       if (startDate && !endDate) endDate = startDate;
       if (!startDate && endDate) startDate = endDate;
+
+      console.log(
+        "📅 Transaction date range:",
+        startDate?.toISOString(),
+        "to",
+        endDate?.toISOString(),
+      );
 
       const now = new Date();
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
 
       const collectionsToQuery = [];
+      const addedCollections = new Set();
 
       if (startDate && !isNaN(startDate.getTime())) {
         const start = new Date(startDate);
@@ -176,82 +207,73 @@ router.get(
             ? new Date(endDate)
             : new Date(startDate);
 
-        const startYear = start.getFullYear();
-        const startMonth = start.getMonth() + 1;
-        const endYear = end.getFullYear();
-        const endMonth = end.getMonth() + 1;
+        // Add ±1 month buffer
+        const bufferedStart = new Date(start);
+        bufferedStart.setMonth(bufferedStart.getMonth() - 1);
 
-        const isSingleMonth = startYear === endYear && startMonth === endMonth;
+        const bufferedEnd = new Date(end);
+        bufferedEnd.setMonth(bufferedEnd.getMonth() + 1);
 
-        const current = new Date(start.getFullYear(), start.getMonth(), 1);
-        const endMonthDate = new Date(end.getFullYear(), end.getMonth(), 1);
+        console.log(
+          "📅 Buffered range:",
+          bufferedStart.toISOString(),
+          "to",
+          bufferedEnd.toISOString(),
+        );
+
+        const current = new Date(
+          bufferedStart.getFullYear(),
+          bufferedStart.getMonth(),
+          1,
+        );
+        const endMonthDate = new Date(
+          bufferedEnd.getFullYear(),
+          bufferedEnd.getMonth(),
+          1,
+        );
 
         while (current <= endMonthDate) {
           const year = current.getFullYear();
           const month = current.getMonth() + 1;
           const isCurrentMonth = year === currentYear && month === currentMonth;
 
-          if (isSingleMonth && isCurrentMonth) {
-            const archiveName = `bankniiGuilgee${year}${String(month).padStart(
-              2,
-              "0"
-            )}`;
-            collectionsToQuery.push({
-              name: archiveName,
-              year,
-              month,
-              isCurrent: true,
-              isArchive: true,
-            });
-            collectionsToQuery.push({
-              name: null,
-              year,
-              month,
-              isCurrent: true,
-              isArchive: false,
-            });
-          } else if (isSingleMonth && !isCurrentMonth) {
-            const archiveName = `bankniiGuilgee${year}${String(month).padStart(
-              2,
-              "0"
-            )}`;
-            collectionsToQuery.push({
-              name: archiveName,
-              year,
-              month,
-              isCurrent: false,
-              isArchive: true,
-            });
-          } else {
-            if (isCurrentMonth) {
-              const archiveName = `bankniiGuilgee${year}${String(
-                month
-              ).padStart(2, "0")}`;
+          if (isCurrentMonth) {
+            const archiveName = `bankniiGuilgee${year}${String(month).padStart(2, "0")}`;
+
+            if (!addedCollections.has(archiveName)) {
+              console.log(`  → ${archiveName} (current month archive)`);
               collectionsToQuery.push({
                 name: archiveName,
                 year,
                 month,
                 isCurrent: true,
-                isArchive: true,
               });
+              addedCollections.add(archiveName);
+            }
+
+            // Always add bankniiGuilgee (main collection) for current month
+            if (!addedCollections.has("bankniiGuilgee")) {
+              console.log(`  → bankniiGuilgee (main collection)`);
               collectionsToQuery.push({
-                name: null,
+                name: null, // null = main bankniiGuilgee collection
                 year,
                 month,
                 isCurrent: true,
-                isArchive: false,
               });
-            } else {
-              const archiveName = `bankniiGuilgee${year}${String(
-                month
-              ).padStart(2, "0")}`;
+              addedCollections.add("bankniiGuilgee");
+            }
+          } else {
+            const archiveName = `bankniiGuilgee${year}${String(month).padStart(2, "0")}`;
+
+            if (!addedCollections.has(archiveName)) {
+              console.log(`  → ${archiveName} (archive)`);
               collectionsToQuery.push({
                 name: archiveName,
                 year,
                 month,
                 isCurrent: false,
-                isArchive: true,
               });
+              addedCollections.add(archiveName);
             }
           }
 
@@ -260,8 +282,14 @@ router.get(
       }
 
       if (collectionsToQuery.length === 0) {
+        console.log("⚠️ No date found, using bankniiGuilgee (main collection)");
         collectionsToQuery.push({ name: null, isCurrent: true });
       }
+
+      console.log(
+        "📚 Collections:",
+        collectionsToQuery.map((c) => c.name || "bankniiGuilgee"),
+      );
 
       try {
         const allResults = [];
@@ -269,11 +297,13 @@ router.get(
         const originalLimit = body.khuudasniiKhemjee || 1000;
 
         for (const collection of collectionsToQuery) {
+          console.log(`\n📥 Querying: ${collection.name || "bankniiGuilgee"}`);
+
           const model = collection.name
             ? BankniiGuilgee(
                 req.body.tukhainBaaziinKholbolt,
                 false,
-                collection.name
+                collection.name,
               )
             : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
 
@@ -285,23 +315,37 @@ router.get(
 
           try {
             const result = await khuudaslalt(model, queryBody);
+            const count = result.jagsaalt?.length || 0;
+
+            console.log(`  ✅ Returned: ${count} records`);
+
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
             }
           } catch (collectionError) {
-            next(collectionError);
+            console.error(`  ❌ Error:`, collectionError.message);
           }
         }
 
+        console.log(`\n📊 Total records: ${allResults.length}`);
+
+        // Sort by createdAt - newest to oldest
         allResults.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
           return dateB - dateA;
         });
 
+        console.log(`✅ Sorted by createdAt`);
+
         const startIndex = (originalPage - 1) * originalLimit;
         const endIndex = startIndex + originalLimit;
         const paginatedResults = allResults.slice(startIndex, endIndex);
+
+        console.log(
+          `📄 Returning ${paginatedResults.length} records (page ${originalPage})`,
+        );
+        console.log("========== END ==========\n");
 
         res.send({
           khuudasniiDugaar: originalPage,
@@ -311,12 +355,14 @@ router.get(
           niitKhuudas: Math.ceil(allResults.length / originalLimit),
         });
       } catch (err) {
+        console.error("❌ Error:", err);
         next(err);
       }
     } catch (error) {
+      console.error("❌ Route error:", error);
       next(error);
     }
-  }
+  },
 );
 
 router
@@ -339,14 +385,14 @@ router
       bank === "khanbank"
         ? "$record"
         : bank === "golomt"
-        ? "$tranId"
-        : bank === "bogd"
-        ? "$recNum"
-        : bank === "tran"
-        ? "$jrno"
-        : bank === "tdb"
-        ? "$NtryRef"
-        : "$refno";
+          ? "$tranId"
+          : bank === "bogd"
+            ? "$recNum"
+            : bank === "tran"
+              ? "$jrno"
+              : bank === "tdb"
+                ? "$NtryRef"
+                : "$refno";
     let query = [
       {
         $match: match,
@@ -363,7 +409,7 @@ router
 
     var result = await BankniiGuilgee(
       req.body.tukhainBaaziinKholbolt,
-      true
+      true,
     ).aggregate(query);
     var filterResult = result?.filter((e) => e.countRef > 1);
     for await (const val of filterResult) {
@@ -378,7 +424,7 @@ router
       else if (bank === "tdb") match["NtryRef"] = val?._id;
       var resultRef = await BankniiGuilgee(
         req.body.tukhainBaaziinKholbolt,
-        true
+        true,
       ).find(match);
       if (resultRef?.length > 0) {
         if (req.body.type === 1) {
@@ -386,7 +432,7 @@ router
           var ustgakhJagsaalt = [];
           ustgakhJagsaalt.push(resultRef[0]);
           var fRemove = resultRef.filter(
-            (el) => !ustgakhJagsaalt.includes(el) && !el.ebarimtAvsanEsekh
+            (el) => !ustgakhJagsaalt.includes(el) && !el.ebarimtAvsanEsekh,
           );
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({
             _id: { $in: fRemove?.map((e) => e._id) },
@@ -401,11 +447,11 @@ router
           });
         } else {
           var filterKholboson = resultRef?.filter(
-            (e) => e.kholbosonTalbainId?.length > 0
+            (e) => e.kholbosonTalbainId?.length > 0,
           );
           if (filterKholboson?.length > 0) {
             var filterRemove = resultRef?.filter(
-              (e) => e.kholbosonTalbainId?.length === 0
+              (e) => e.kholbosonTalbainId?.length === 0,
             );
             await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({
               _id: { $in: filterRemove?.map((e) => e._id) },
@@ -414,7 +460,7 @@ router
             var ustgakhJagsaalt = [];
             ustgakhJagsaalt.push(resultRef[0]);
             var fRemove = resultRef.filter(
-              (el) => !ustgakhJagsaalt.includes(el) && !el.ebarimtAvsanEsekh
+              (el) => !ustgakhJagsaalt.includes(el) && !el.ebarimtAvsanEsekh,
             );
             await BankniiGuilgee(req.body.tukhainBaaziinKholbolt).deleteMany({
               _id: { $in: fRemove?.map((e) => e._id) },
@@ -438,7 +484,7 @@ router
 
     var result = await BankniiGuilgee(
       req.body.tukhainBaaziinKholbolt,
-      true
+      true,
     ).find(match);
     for await (const val of result) {
       match = {
@@ -449,7 +495,7 @@ router
       };
       var resultRef = await BankniiGuilgee(
         req.body.tukhainBaaziinKholbolt,
-        true
+        true,
       ).find(match);
       if (resultRef?.length === 0) {
         var guilgee = new BankniiGuilgee(req.body.tukhainBaaziinKholbolt)();
@@ -530,28 +576,28 @@ router.route("/bankIndexTalbar").post(async (req, res, next) => {
             guilgee.bank === "khanbank"
               ? guilgee.record
               : guilgee.bank === "golomt"
-              ? guilgee.tranId
-              : guilgee.bank === "bogd"
-              ? guilgee.recNum
-              : guilgee.bank === "tran"
-              ? guilgee.jrno
-              : guilgee.bank === "tdb" && !!guilgee.NtryRef
-              ? guilgee.NtryRef
-              : guilgee.refno;
+                ? guilgee.tranId
+                : guilgee.bank === "bogd"
+                  ? guilgee.recNum
+                  : guilgee.bank === "tran"
+                    ? guilgee.jrno
+                    : guilgee.bank === "tdb" && !!guilgee.NtryRef
+                      ? guilgee.NtryRef
+                      : guilgee.refno;
           var mungunDun =
             guilgee.bank === "khanbank"
               ? guilgee.amount
               : guilgee.bank === "golomt"
-              ? guilgee.tranAmount
-              : guilgee.bank === "bogd"
-              ? guilgee.amount
-              : guilgee.bank === "tran"
-              ? guilgee.income > 0
-                ? guilgee.income
-                : guilgee.outcome
-              : guilgee.bank === "tdb"
-              ? guilgee.Amt
-              : 0;
+                ? guilgee.tranAmount
+                : guilgee.bank === "bogd"
+                  ? guilgee.amount
+                  : guilgee.bank === "tran"
+                    ? guilgee.income > 0
+                      ? guilgee.income
+                      : guilgee.outcome
+                    : guilgee.bank === "tdb"
+                      ? guilgee.Amt
+                      : 0;
           indexTalbar =
             guilgee.barilgiinId +
             guilgee.bank +
@@ -589,7 +635,7 @@ router
             (e) =>
               e.ognoo > moment(req.body.ognoo) &&
               e.turul === "bank" &&
-              e.dansniiDugaar === "5100229713"
+              e.dansniiDugaar === "5100229713",
           );
           if (filteredGeree?.length > 0) {
             for (const data of filteredGeree) {
@@ -607,7 +653,7 @@ router
                 };
                 var resultRef = await BankniiGuilgee(
                   req.body.tukhainBaaziinKholbolt,
-                  false
+                  false,
                 ).find(match);
                 if (resultRef?.length > 0) {
                   var x = resultRef[0];
@@ -669,7 +715,7 @@ router.route("/davkhardsanIndexTalbar").post(async (req, res, next) => {
           var ustgakhJagsaalt = [];
           ustgakhJagsaalt.push(guilgee.ids[0]);
           var fRemove = guilgee.ids.filter(
-            (el) => !ustgakhJagsaalt.includes(el)
+            (el) => !ustgakhJagsaalt.includes(el),
           );
           await BankniiGuilgee(kholbolt).deleteMany({ _id: { $in: fRemove } });
         }
