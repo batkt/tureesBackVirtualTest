@@ -173,7 +173,7 @@ const baiguullagaSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 //const BaiguullagaModel = mongoose.model("baiguullaga", baiguullagaSchema);
