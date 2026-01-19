@@ -392,6 +392,25 @@ router.get(
             )
           : Uilchluulegch(req.body.tukhainBaaziinKholbolt);
 
+        if (body.query && body.query["tuukh.0.tsagiinTuukh.0.garsanTsag"]?.$exists === true) {
+          const garsanTsagCondition = body.query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
+          delete body.query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
+          
+          if (!body.query.$or) {
+            body.query.$or = [];
+          }
+          if (!Array.isArray(body.query.$or)) {
+            body.query.$or = [body.query.$or];
+          }
+          
+          body.query.$or.push({
+            "tuukh.0.tsagiinTuukh.0.garsanTsag": garsanTsagCondition
+          });
+          body.query.$or.push({
+            freezeOgnoo: { $exists: true }
+          });
+        }
+
         khuudaslalt(model, body)
           .then((result) => {
             res.send(result);
@@ -406,6 +425,25 @@ router.get(
 
           const originalPage = body.khuudasniiDugaar || 1;
           const originalLimit = body.khuudasniiKhemjee || 500;
+
+          if (body.query && body.query["tuukh.0.tsagiinTuukh.0.garsanTsag"]?.$exists === true) {
+            const garsanTsagCondition = body.query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
+            delete body.query["tuukh.0.tsagiinTuukh.0.garsanTsag"];
+            
+            if (!body.query.$or) {
+              body.query.$or = [];
+            }
+            if (!Array.isArray(body.query.$or)) {
+              body.query.$or = [body.query.$or];
+            }
+            
+            body.query.$or.push({
+              "tuukh.0.tsagiinTuukh.0.garsanTsag": garsanTsagCondition
+            });
+            body.query.$or.push({
+              freezeOgnoo: { $exists: true }
+            });
+          }
 
           for (const collection of collectionsToQuery) {
             const model = collection.name
