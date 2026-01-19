@@ -155,6 +155,7 @@ const baiguullagaSchema = new Schema(
       togloomiinTuvDavkhardsanShalgakh: Boolean,
       dotorGadnaTsagEsekh: Boolean,
       dolooKhonogTutamArchiveEsekh: Boolean, // долоо хоног тутам архив эсэх
+      tokiEsekh: Boolean, // toki ашиглах эсэх
     },
     erkhuud: [
       {
@@ -173,7 +174,7 @@ const baiguullagaSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 //const BaiguullagaModel = mongoose.model("baiguullaga", baiguullagaSchema);
