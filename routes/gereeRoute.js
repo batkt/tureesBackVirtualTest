@@ -43,6 +43,7 @@ const {
   tulultUstgaya,
   baritsaaniiGuilgeeUstgaya,
   tulultTaniya,
+  tulultTaniyaGar,
   gereeniiGuilgeeKhadgalya,
   khuvaariUusgey,
   uldegdelBodyo,
@@ -75,7 +76,7 @@ const {
   ashiglakhKhonogTootsoolokh,
   aldangiUstgayaa,
 } = require("../controller/tulbur");
-router.route("/tulultTaniya").get(tulultTaniya);
+router.route("/tulultTaniya").get(tulultTaniyaGar);
 const lodash = require("lodash");
 
 const {
