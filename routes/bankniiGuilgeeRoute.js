@@ -107,8 +107,6 @@ router.get(
   tokenShalgakh,
   async (req, res, next) => {
     try {
-      console.log("\n========== NEW REQUEST ==========");
-
       const body = req.query;
       if (body?.query) body.query = JSON.parse(body.query);
       if (body?.order) body.order = JSON.parse(body.order);
@@ -127,8 +125,6 @@ router.get(
         });
       }
 
-      console.log("🔍 Query:", JSON.stringify(body.query, null, 2));
-
       const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
         if (preferStart && dateFilter.$gte) return new Date(dateFilter.$gte);
@@ -141,17 +137,13 @@ router.get(
         return null;
       };
 
-      // Extract date from various query structures
       let startDate = null;
       let endDate = null;
 
-      // Check direct fields
       let dateFilter = body.query?.tranDate || body.query?.TxDt;
 
-      // Check in $and array
       if (!dateFilter && body.query?.$and && Array.isArray(body.query.$and)) {
         for (const condition of body.query.$and) {
-          // Check for direct date fields
           if (condition.tranDate) {
             dateFilter = condition.tranDate;
             break;
@@ -161,7 +153,6 @@ router.get(
             break;
           }
 
-          // Check in $or array within $and
           if (condition.$or && Array.isArray(condition.$or)) {
             for (const orCondition of condition.$or) {
               if (orCondition.tranDate) {
@@ -186,13 +177,6 @@ router.get(
       if (startDate && !endDate) endDate = startDate;
       if (!startDate && endDate) startDate = endDate;
 
-      console.log(
-        "📅 Transaction date range:",
-        startDate?.toISOString(),
-        "to",
-        endDate?.toISOString(),
-      );
-
       const now = new Date();
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
@@ -207,19 +191,11 @@ router.get(
             ? new Date(endDate)
             : new Date(startDate);
 
-        // Add ±1 month buffer
         const bufferedStart = new Date(start);
         bufferedStart.setMonth(bufferedStart.getMonth() - 1);
 
         const bufferedEnd = new Date(end);
         bufferedEnd.setMonth(bufferedEnd.getMonth() + 1);
-
-        console.log(
-          "📅 Buffered range:",
-          bufferedStart.toISOString(),
-          "to",
-          bufferedEnd.toISOString(),
-        );
 
         const current = new Date(
           bufferedStart.getFullYear(),
@@ -241,7 +217,6 @@ router.get(
             const archiveName = `bankniiGuilgee${year}${String(month).padStart(2, "0")}`;
 
             if (!addedCollections.has(archiveName)) {
-              console.log(`  → ${archiveName} (current month archive)`);
               collectionsToQuery.push({
                 name: archiveName,
                 year,
@@ -251,9 +226,7 @@ router.get(
               addedCollections.add(archiveName);
             }
 
-            // Always add bankniiGuilgee (main collection) for current month
             if (!addedCollections.has("bankniiGuilgee")) {
-              console.log(`  → bankniiGuilgee (main collection)`);
               collectionsToQuery.push({
                 name: null, // null = main bankniiGuilgee collection
                 year,
@@ -266,7 +239,6 @@ router.get(
             const archiveName = `bankniiGuilgee${year}${String(month).padStart(2, "0")}`;
 
             if (!addedCollections.has(archiveName)) {
-              console.log(`  → ${archiveName} (archive)`);
               collectionsToQuery.push({
                 name: archiveName,
                 year,
@@ -282,14 +254,8 @@ router.get(
       }
 
       if (collectionsToQuery.length === 0) {
-        console.log("⚠️ No date found, using bankniiGuilgee (main collection)");
         collectionsToQuery.push({ name: null, isCurrent: true });
       }
-
-      console.log(
-        "📚 Collections:",
-        collectionsToQuery.map((c) => c.name || "bankniiGuilgee"),
-      );
 
       try {
         const allResults = [];
@@ -297,8 +263,6 @@ router.get(
         const originalLimit = body.khuudasniiKhemjee || 1000;
 
         for (const collection of collectionsToQuery) {
-          console.log(`\n📥 Querying: ${collection.name || "bankniiGuilgee"}`);
-
           const model = collection.name
             ? BankniiGuilgee(
                 req.body.tukhainBaaziinKholbolt,
@@ -317,8 +281,6 @@ router.get(
             const result = await khuudaslalt(model, queryBody);
             const count = result.jagsaalt?.length || 0;
 
-            console.log(`  ✅ Returned: ${count} records`);
-
             if (result.jagsaalt && result.jagsaalt.length > 0) {
               allResults.push(...result.jagsaalt);
             }
@@ -327,25 +289,15 @@ router.get(
           }
         }
 
-        console.log(`\n📊 Total records: ${allResults.length}`);
-
-        // Sort by createdAt - newest to oldest
         allResults.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
           return dateB - dateA;
         });
 
-        console.log(`✅ Sorted by createdAt`);
-
         const startIndex = (originalPage - 1) * originalLimit;
         const endIndex = startIndex + originalLimit;
         const paginatedResults = allResults.slice(startIndex, endIndex);
-
-        console.log(
-          `📄 Returning ${paginatedResults.length} records (page ${originalPage})`,
-        );
-        console.log("========== END ==========\n");
 
         res.send({
           khuudasniiDugaar: originalPage,
