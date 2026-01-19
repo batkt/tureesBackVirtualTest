@@ -155,7 +155,6 @@ const baiguullagaSchema = new Schema(
       togloomiinTuvDavkhardsanShalgakh: Boolean,
       dotorGadnaTsagEsekh: Boolean,
       dolooKhonogTutamArchiveEsekh: Boolean, // долоо хоног тутам архив эсэх
-      tokiEsekh: Boolean, // toki ашиглах эсэх
     },
     erkhuud: [
       {
