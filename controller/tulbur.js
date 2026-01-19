@@ -497,7 +497,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
         var dansnuud = await Dans(kholbolt).find({
           corporateAshiglakhEsekh: true,
           oirkhonTatakhEsekh: { $exists: false },
-        }).lean();
+        });
         for await (const dans of dansnuud) {
           if (!!dans.bank) {
             var match = {
@@ -530,7 +530,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             }
             var guilgeenuudQPAY = await BankniiGuilgee(kholbolt, true).find(
               match1
-            ).lean();
+            );
             var match2 = match;
             const qpayRegexNot = {
               $nin: [/qpay/i, /QPAY/i],
@@ -549,11 +549,10 @@ module.exports.tulultTaniya = async function tulultTaniya() {
             }
             var guilgeenuudNOTQPAY = await BankniiGuilgee(kholbolt, true).find(
               match2
-            ).lean();
+            );
             var khaikhNukhtsul;
             var tailbar = [];
             var bankniiGuilgeeniiIds = [];
-            var bankBulk = [];
             if (guilgeenuudQPAY?.length > 0) {
               guilgeenuudQPAY.forEach(async (x) => {
                 if (bankniiGuilgeeniiIds?.includes(x._id)) return;
@@ -564,30 +563,19 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                   gereeniiDugaar: { $in: tailbar },
                   tuluv: 1,
                   barilgiinId: x.barilgiinId,
-                }).lean();
+                });
                 if (oldsonGereenuud != null && oldsonGereenuud.length == 1) {
                   var jagsaalt = [];
                   var dugaar = oldsonGereenuud[0].talbainDugaar;
                   if (dugaar.includes(",")) {
                     jagsaalt = [...jagsaalt, ...dugaar.split(",")];
                   } else jagsaalt.push(dugaar);
-                  let upsertGuilgee = {
-                    updateOne: {
-                      filter: {
-                        _id: x._id,
-                        baiguullagiinId: dans.baiguullagiinId,
-                        barilgiinId: dans.barilgiinId,
-                      },
-                      update: {
-                        kholbosonGereeniiId: [oldsonGereenuud[0]._id],
-                        kholbosonTalbainId: jagsaalt,
-                        kholbosonDun: x.amount || x.Amt || x.tranAmount,
-                        isNew: false,
-                        burtgesenAjiltaniiNer: "систем автомат qpay",
-                      },
-                    },
-                  };
-                  bankBulk.push(upsertGuilgee);
+                  x.kholbosonGereeniiId = [oldsonGereenuud[0]._id];
+                  x.kholbosonTalbainId = jagsaalt;
+                  x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
+                  x.isNew = false;
+                  x.burtgesenAjiltaniiNer = "систем автомат qpay";
+                  x.save();
                   bankniiGuilgeeniiIds.push(x._id);
                   var ognoo =
                     dans.bank == "tdb"
@@ -601,7 +589,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                   var geree = await Geree(kholbolt, true).findOne({
                     _id: oldsonGereenuud[0]._id,
                   });
-                  var qpayAmount = x.amount || x.Amt || x.tranAmount;
+                  var qpayAmount = x.kholbosonDun;
                   if (geree.aldangiinUldegdel && geree.aldangiinUldegdel > 0) {
                     var tulsunDun = 0;
                     if (geree.aldangiinUldegdel >= qpayAmount) {
@@ -712,7 +700,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                     "avlaga.guilgeenuud.dansniiDugaar": x.relatedAccount,
                     tuluv: 1,
                     barilgiinId: x.barilgiinId,
-                  }).lean();
+                  });
                   if (oldsonGereenuudRelatedAccount?.length > 0)
                     oldsonGereenuud.push(...oldsonGereenuudRelatedAccount);
                 } else if (x.CtAcntOrg != null) {
@@ -723,7 +711,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                     "avlaga.guilgeenuud.dansniiDugaar": x.CtAcntOrg,
                     tuluv: 1,
                     barilgiinId: x.barilgiinId,
-                  }).lean();
+                  });
                   if (oldsonGereenuudCtAcntOrg?.length > 0)
                     oldsonGereenuud.push(...oldsonGereenuudCtAcntOrg);
                 }
@@ -731,14 +719,14 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                   utas: { $in: tailbar },
                   tuluv: 1,
                   barilgiinId: x.barilgiinId,
-                }).lean();
+                });
                 if (oldsonGereenuudUtas)
                   oldsonGereenuud.push(...oldsonGereenuudUtas);
                 var oldsonGereenuudRegister = await Geree(kholbolt, true).find({
                   register: { $in: tailbar },
                   tuluv: 1,
                   barilgiinId: x.barilgiinId,
-                }).lean();
+                });
                 if (oldsonGereenuudRegister)
                   oldsonGereenuud.push(...oldsonGereenuudRegister);
 
@@ -753,40 +741,32 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                   $or: khaikhNukhtsul,
                   tuluv: 1,
                   barilgiinId: x.barilgiinId,
-                }).lean();
-                var magadlaltaiGereenuud = [];
+                });
                 if (oldsonGereenuud != null && oldsonGereenuud.length > 0) {
                   oldsonGereenuud.forEach((a) => {
                     if (
-                      magadlaltaiGereenuud != null &&
-                      !magadlaltaiGereenuud.includes(a._id)
+                      x.magadlaltaiGereenuud != null &&
+                      !x.magadlaltaiGereenuud.includes(a._id)
                     )
-                      magadlaltaiGereenuud.push(a._id);
-                    else magadlaltaiGereenuud = [a._id];
+                      x.magadlaltaiGereenuud.push(a._id);
+                    else x.magadlaltaiGereenuud = [a._id];
                   });
                   try {
-                    let upsertGuilgee = {
-                      updateOne: {
-                        filter: {
-                          _id: x._id,
-                          baiguullagiinId: dans.baiguullagiinId,
-                          barilgiinId: dans.barilgiinId,
-                        },
-                        update: {
-                          magadlaltaiGereenuud: magadlaltaiGereenuud,
-                        },
-                      },
-                    };
-                    bankBulk.push(upsertGuilgee);  
-                  } catch (saveError) {}
+                    await x.save();
+                  } catch (saveError) {
+                    if (saveError.name === "VersionError") {
+                      const reloaded = await x.constructor.findById(x._id);
+                      if (reloaded) {
+                        reloaded.magadlaltaiGereenuud = x.magadlaltaiGereenuud;
+                        await reloaded.save();
+                      }
+                    } else {
+                      throw saveError;
+                    }
+                  }
                 }
               });
             }
-            if (bankBulk?.length > 0)
-              BankniiGuilgee(kholbolt)
-                .bulkWrite(bankBulk)
-                .then((result) => {})
-                .catch((err) => {});
           }
         }
       }
