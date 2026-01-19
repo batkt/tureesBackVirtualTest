@@ -2701,7 +2701,6 @@ exports.archiveBankGuilgeeRentlyNoZogsool = asyncHandler(async () => {
         for (const kholbolt of kholboltuud) {
           const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
           if(!baiguullaga) continue;
-          if (kholbolt.baiguullagiinId !== "6735c77a7fc60cd66deb2909") continue;
           var parkings = await Parking(kholbolt).find({
             baiguullagiinId: kholbolt.baiguullagiinId,
             zogsooliinDans: {$exists: true}, 
@@ -2722,11 +2721,18 @@ exports.archiveBankGuilgeeRentlyNoZogsool = asyncHandler(async () => {
                 createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
               });
               // if (docs?.length > 0) continue;
+              const archivedIds = await BankniiGuilgee(
+                kholbolt,
+                false,
+                archiveName
+              ).find({}, { _id: 1 }).lean();
+              const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
               console.log("Archiving for:", kholbolt.baiguullagiinId, y, m);
               console.log("docs length:" + docs?.length);
               // --- Archive ---
               const data = await BankniiGuilgee(kholbolt).aggregate([
                   { $match: {
+                    _id: { $nin: Array.from(archivedIdSet) },
                     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
                   } },
               ]);
@@ -2734,7 +2740,8 @@ exports.archiveBankGuilgeeRentlyNoZogsool = asyncHandler(async () => {
               console.log("docs insert length:" + data?.length);
               // --- Delete ---
               const res = await BankniiGuilgee(kholbolt).deleteMany({
-                  createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
+                _id: { $in: data.map(d => d._id) },
+                createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
               });
           }
         }
