@@ -76,7 +76,11 @@ const {
   ashiglakhKhonogTootsoolokh,
   aldangiUstgayaa,
 } = require("../controller/tulbur");
-router.route("/tulultTaniya").get(tulultTaniyaGar);
+router.route("/tulultTaniya").get(tulultTaniya);
+router.route("/tulultTaniyaGar").post(tokenShalgakh, async (req, res, next) => {
+  await tulultTaniyaGar(req.body.baiguullagiinId)
+  res.send("Amjilttai");
+});
 const lodash = require("lodash");
 
 const {

@@ -775,10 +775,16 @@ module.exports.tulultTaniya = async function tulultTaniya() {
   }
 };
 
-module.exports.tulultTaniyaGar = async function tulultTaniyaGar() {
+module.exports.tulultTaniyaGar = async function tulultTaniyaGar(baiguullagiinId = null) {
   try {
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
+    var localEsekh = !!baiguullagiinId;
+    if (localEsekh) {
+      kholboltuud = kholboltuud.filter(
+        (a) => a.baiguullagiinId == baiguullagiinId
+      );
+    }
     if (kholboltuud) {
       for await (const kholbolt of kholboltuud) {
         var dansnuud = await Dans(kholbolt).find({
