@@ -7,8 +7,6 @@ const ExcelJS = require("exceljs");
 const { toWords } = require("mon_num");
 const XLSX = require("xlsx");
 
-crud(router, "nekhemjlekhiinZagvar", nekhemjlekhiinZagvar, UstsanBarimt);
-
 router.put("/:id", tokenShalgakh, async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -35,6 +33,8 @@ router.put("/:id", tokenShalgakh, async (req, res, next) => {
     next(error);
   }
 });
+
+crud(router, "nekhemjlekhiinZagvar", nekhemjlekhiinZagvar, UstsanBarimt);
 
 const multer = require("multer");
 const aldaa = require("../components/aldaa");
