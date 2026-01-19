@@ -9,6 +9,33 @@ const XLSX = require("xlsx");
 
 crud(router, "nekhemjlekhiinZagvar", nekhemjlekhiinZagvar, UstsanBarimt);
 
+router.put("/:id", tokenShalgakh, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    delete updateData._id;
+    delete updateData.__v;
+    delete updateData.createdAt;
+
+    const Zagvar = nekhemjlekhiinZagvar(UstsanBarimt());
+
+    const updatedZagvar = await Zagvar.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true, runValidators: true },
+    );
+
+    if (!updatedZagvar) {
+      return res.status(404).json({ message: "Загвар олдсонгүй" });
+    }
+
+    res.json(updatedZagvar);
+  } catch (error) {
+    next(error);
+  }
+});
+
 const multer = require("multer");
 const aldaa = require("../components/aldaa");
 const storage = multer.memoryStorage();
@@ -160,7 +187,7 @@ function textSolyo(text, body) {
       Math.abs(body[shineKey]),
       { fixed: 2, suffix: "n" },
       "төгрөг",
-      "мөнгө"
+      "мөнгө",
     );
   }
   if (text === "<talbainNiitUneNuat>" || text === "<niitUldegdelNuat>") {
@@ -251,7 +278,7 @@ router
             baritsaaniiTalbaruud,
             tulburiinTalbaruud,
             nekhemjlekhiinTalbaruud,
-            nekhemjlekhiinNemelt
+            nekhemjlekhiinNemelt,
           );
           if (!!ashiglaltiinZardluud && ashiglaltiinZardluud.length > 0) {
             var oruulakhTalbar = [];
@@ -316,11 +343,11 @@ router
                   ) {
                     cell.value = cell.value.replace(
                       solikhText.talbar,
-                      shineText
+                      shineText,
                     );
                   }
                 });
-              }
+              },
             );
           });
           const htmlContent = exceleesHtmlAvya(worksheet);
