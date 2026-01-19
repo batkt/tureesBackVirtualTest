@@ -127,7 +127,7 @@ router.get(
         });
       }
 
-      console.log("🔍 Original query:", JSON.stringify(body.query, null, 2));
+      console.log("🔍 Query:", JSON.stringify(body.query, null, 2));
 
       const extractDate = (dateFilter, preferStart = true) => {
         if (!dateFilter) return null;
@@ -141,11 +141,43 @@ router.get(
         return null;
       };
 
-      // Extract date filter for collection selection (don't modify original query)
+      // Extract date from various query structures
       let startDate = null;
       let endDate = null;
 
-      const dateFilter = body.query?.tranDate || body.query?.TxDt;
+      // Check direct fields
+      let dateFilter = body.query?.tranDate || body.query?.TxDt;
+
+      // Check in $and array
+      if (!dateFilter && body.query?.$and && Array.isArray(body.query.$and)) {
+        for (const condition of body.query.$and) {
+          // Check for direct date fields
+          if (condition.tranDate) {
+            dateFilter = condition.tranDate;
+            break;
+          }
+          if (condition.TxDt) {
+            dateFilter = condition.TxDt;
+            break;
+          }
+
+          // Check in $or array within $and
+          if (condition.$or && Array.isArray(condition.$or)) {
+            for (const orCondition of condition.$or) {
+              if (orCondition.tranDate) {
+                dateFilter = orCondition.tranDate;
+                break;
+              }
+              if (orCondition.TxDt) {
+                dateFilter = orCondition.TxDt;
+                break;
+              }
+            }
+            if (dateFilter) break;
+          }
+        }
+      }
+
       if (dateFilter) {
         startDate = extractDate(dateFilter, true);
         endDate = extractDate(dateFilter, false);
@@ -183,7 +215,7 @@ router.get(
         bufferedEnd.setMonth(bufferedEnd.getMonth() + 1);
 
         console.log(
-          "📅 Buffered range (for collections):",
+          "📅 Buffered range:",
           bufferedStart.toISOString(),
           "to",
           bufferedEnd.toISOString(),
@@ -219,21 +251,22 @@ router.get(
               addedCollections.add(archiveName);
             }
 
-            if (!addedCollections.has("MAIN")) {
-              console.log(`  → MAIN (current month)`);
+            // Always add bankniiGuilgee (main collection) for current month
+            if (!addedCollections.has("bankniiGuilgee")) {
+              console.log(`  → bankniiGuilgee (main collection)`);
               collectionsToQuery.push({
-                name: null,
+                name: null, // null = main bankniiGuilgee collection
                 year,
                 month,
                 isCurrent: true,
               });
-              addedCollections.add("MAIN");
+              addedCollections.add("bankniiGuilgee");
             }
           } else {
             const archiveName = `bankniiGuilgee${year}${String(month).padStart(2, "0")}`;
 
             if (!addedCollections.has(archiveName)) {
-              console.log(`  → ${archiveName}`);
+              console.log(`  → ${archiveName} (archive)`);
               collectionsToQuery.push({
                 name: archiveName,
                 year,
@@ -249,12 +282,13 @@ router.get(
       }
 
       if (collectionsToQuery.length === 0) {
+        console.log("⚠️ No date found, using bankniiGuilgee (main collection)");
         collectionsToQuery.push({ name: null, isCurrent: true });
       }
 
       console.log(
-        "📚 Collections to query:",
-        collectionsToQuery.map((c) => c.name || "MAIN"),
+        "📚 Collections:",
+        collectionsToQuery.map((c) => c.name || "bankniiGuilgee"),
       );
 
       try {
@@ -263,7 +297,7 @@ router.get(
         const originalLimit = body.khuudasniiKhemjee || 1000;
 
         for (const collection of collectionsToQuery) {
-          console.log(`\n📥 Querying: ${collection.name || "MAIN"}`);
+          console.log(`\n📥 Querying: ${collection.name || "bankniiGuilgee"}`);
 
           const model = collection.name
             ? BankniiGuilgee(
@@ -273,22 +307,11 @@ router.get(
               )
             : BankniiGuilgee(req.body.tukhainBaaziinKholbolt, true);
 
-          // Keep original query with TxDt or tranDate
           const queryBody = {
             ...body,
             khuudasniiDugaar: 1,
             khuudasniiKhemjee: 999999,
           };
-
-          console.log("  Query fields:", Object.keys(queryBody.query));
-          console.log(
-            "  Date field:",
-            queryBody.query.TxDt
-              ? "TxDt"
-              : queryBody.query.tranDate
-                ? "tranDate"
-                : "none",
-          );
 
           try {
             const result = await khuudaslalt(model, queryBody);
@@ -306,7 +329,7 @@ router.get(
 
         console.log(`\n📊 Total records: ${allResults.length}`);
 
-        // Sort by createdAt
+        // Sort by createdAt - newest to oldest
         allResults.sort((a, b) => {
           const dateA = new Date(a.createdAt);
           const dateB = new Date(b.createdAt);
