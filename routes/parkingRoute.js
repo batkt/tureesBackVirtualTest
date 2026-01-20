@@ -829,11 +829,14 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
           "tuukh.0.tulbur": { $size: 0 },
         });
         if (!oldsonMashin) continue;
-        try {
+        if(nemeltUtga?.includes(oldsonMashin.mashiniiDugaar) && guilgee.qpay?.description?.includes(oldsonMashin.mashiniiDugaar))
+        {
+          try {
           const resCallBack = await axios.get(
-            encodeURI(guilgee.qpay?.callback_url)
-          );
-        } catch (err) {}
+              encodeURI(guilgee.qpay?.callback_url)
+            );
+          } catch (err) {}
+        }
       }
     } else if (nemeltUtga?.includes("kiosk") || nemeltUtga?.includes("KIOSK")) {
     } else {
