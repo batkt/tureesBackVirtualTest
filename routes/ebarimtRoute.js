@@ -52,7 +52,7 @@ async function guilgeeneesEbarimtUusgye(
   register,
   turul,
   tukhainBaaziinKholbolt,
-  nuatTulukhEsekh = true
+  nuatTulukhEsekh = true,
 ) {
   var dun = guilgee.amount ? guilgee.amount : guilgee.Amt || guilgee.tranAmount;
   var ognoo = guilgee.TxPostDate ? guilgee.TxPostDate : guilgee.postDate;
@@ -111,7 +111,7 @@ async function guilgeeneesEbarimtShineUusgye(
   merchantTin,
   districtCode,
   tukhainBaaziinKholbolt,
-  nuatTulukhEsekh = true
+  nuatTulukhEsekh = true,
 ) {
   var dun = guilgee.amount ? guilgee.amount : guilgee.Amt || guilgee.tranAmount;
   var ognoo =
@@ -198,7 +198,7 @@ async function togloomoosEbarimtUusgye(
   register,
   turul,
   tukhainBaaziinKholbolt,
-  nuatTulukhEsekh = true
+  nuatTulukhEsekh = true,
 ) {
   var ebarimt = new Ebarimt(tukhainBaaziinKholbolt)();
   if (register) {
@@ -241,7 +241,7 @@ async function togloomoosEbarimtShineUusgye(
   merchantTin,
   districtCode,
   tukhainBaaziinKholbolt,
-  nuatTulukhEsekh = true
+  nuatTulukhEsekh = true,
 ) {
   var ebarimt = new EbarimtShine(tukhainBaaziinKholbolt)();
   if (!!customerTin) {
@@ -308,7 +308,7 @@ async function zogsooloosEbarimtUusgye(
   register,
   turul,
   tukhainBaaziinKholbolt,
-  nuatTulukhEsekh = true
+  nuatTulukhEsekh = true,
 ) {
   var ebarimt = new Ebarimt(tukhainBaaziinKholbolt)();
   if (register) {
@@ -352,7 +352,7 @@ async function zogsooloosEbarimtShineUusgye(
   merchantTin,
   districtCode,
   tukhainBaaziinKholbolt,
-  nuatTulukhEsekh = true
+  nuatTulukhEsekh = true,
 ) {
   var ebarimt = new EbarimtShine(tukhainBaaziinKholbolt)();
   if (!!customerTin) {
@@ -440,7 +440,7 @@ async function ebarimtMedeelelAvya(
   ugugdul,
   onFinish,
   next,
-  ebarimtShine = false
+  ebarimtShine = false,
 ) {
   if (!!ebarimtShine) {
     var url = "";
@@ -463,10 +463,10 @@ async function ebarimtMedeelelAvya(
 router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
   try {
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      req.body.baiguullagiinId
+      req.body.baiguullagiinId,
     );
     var tuxainSalbar = baiguullaga?.barilguud?.find(
-      (e) => e._id.toString() == req.body.barilgiinId
+      (e) => e._id.toString() == req.body.barilgiinId,
     )?.tokhirgoo;
     ebarimtMedeelelAvya(
       req.body.barilgiinId,
@@ -474,7 +474,7 @@ router.post("/ebarimtMedeelelAvya", tokenShalgakh, async (req, res, next) => {
         res.send(d);
       },
       next,
-      tuxainSalbar?.eBarimtShine
+      tuxainSalbar?.eBarimtShine,
     );
   } catch (error) {
     if (error.status === 500) {
@@ -501,7 +501,7 @@ async function ebarimtButsaaya(ugugdul, onFinish, next, ebarimtShine = false) {
         } else {
           onFinish(body);
         }
-      }
+      },
     );
   } else if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
 }
@@ -511,7 +511,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
   barilgiinId,
   next,
   shiveeguiTuukhuud,
-  dugaar
+  dugaar,
 ) {
   var guilgee = {
     niitDun: shivekhDun,
@@ -523,16 +523,16 @@ async function zogsoolNiitDungeerEbarimtShivye(
     ? shiveeguiTuukhuud[0]?.mashiniiDugaar
     : "0000ЮЮЮ";
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-    kholbolt.baiguullagiinId
+    kholbolt.baiguullagiinId,
   );
   var tuxainSalbar = baiguullaga?.barilguud?.find(
-    (e) => e._id.toString() == guilgee.barilgiinId
+    (e) => e._id.toString() == guilgee.barilgiinId,
   )?.tokhirgoo;
   var nuatTulukhEsekh = false;
   nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
   if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
   tuxainSalbar = baiguullaga?.barilguud?.find(
-    (e) => e._id.toString() == guilgee.barilgiinId
+    (e) => e._id.toString() == guilgee.barilgiinId,
   )?.tokhirgoo;
   var ebarimt;
   if (!!tuxainSalbar?.eBarimtShine)
@@ -543,7 +543,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
       tuxainSalbar.merchantTin, //"37900846788",
       tuxainSalbar.districtCode, //,"0023"
       kholbolt,
-      nuatTulukhEsekh
+      nuatTulukhEsekh,
     );
   else
     ebarimt = await zogsooloosEbarimtUusgye(
@@ -551,7 +551,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
       null,
       null,
       kholbolt,
-      nuatTulukhEsekh
+      nuatTulukhEsekh,
     );
   var butsaakhMethod = function (d, khariuObject) {
     try {
@@ -606,7 +606,7 @@ async function zogsoolNiitDungeerEbarimtShivye(
             [],
             0,
             kholbolt,
-            ebarimt?.baiguullagiinId
+            ebarimt?.baiguullagiinId,
           );
         }
       }
@@ -621,14 +621,14 @@ async function ebarimtShivye(req, res, next) {
   try {
     var ebarimtiinTurul = req.body.ebarimtiinTurul;
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      req.body.baiguullagiinId
+      req.body.baiguullagiinId,
     );
     var butsaakhMethod;
     var ebarimt;
     var tuxainSalbar;
     if (ebarimtiinTurul == "togloom") {
       var guilgee = await TogloomiinTuv(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).findOneAndUpdate(
         {
           _id: req.body.id,
@@ -638,7 +638,7 @@ async function ebarimtShivye(req, res, next) {
           ],
         },
         { ebarimtProcessing: true },
-        { new: true }
+        { new: true },
       );
 
       if (!guilgee) {
@@ -649,19 +649,19 @@ async function ebarimtShivye(req, res, next) {
       if (guilgee.ebarimtAvsanEsekh && niitDun == guilgee.niitDun) {
         await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
           req.body.id,
-          { ebarimtProcessing: false }
+          { ebarimtProcessing: false },
         );
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
       }
       if (!guilgee.ebarimtAvakhDun || guilgee.ebarimtAvakhDun == 0) {
         await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
           req.body.id,
-          { ebarimtProcessing: false }
+          { ebarimtProcessing: false },
         );
         throw new aldaa("Ибаримтын дүн авах шаардлагагүй!");
       }
       tuxainSalbar = baiguullaga?.barilguud?.find(
-        (e) => e._id.toString() == guilgee.barilgiinId
+        (e) => e._id.toString() == guilgee.barilgiinId,
       )?.tokhirgoo;
       var nuatTulukhEsekh = false;
       nuatTulukhEsekh = tuxainSalbar.nuatTulukhEsekh;
@@ -674,7 +674,7 @@ async function ebarimtShivye(req, res, next) {
           tuxainSalbar.merchantTin,
           tuxainSalbar.districtCode,
           req.body.tukhainBaaziinKholbolt,
-          nuatTulukhEsekh
+          nuatTulukhEsekh,
         );
       else if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
       butsaakhMethod = function (d, khariuObject) {
@@ -726,7 +726,7 @@ async function ebarimtShivye(req, res, next) {
             ],
           },
           { "tuukh.0.ebarimtProcessing": true },
-          { new: true }
+          { new: true },
         )
         .lean();
 
@@ -737,15 +737,15 @@ async function ebarimtShivye(req, res, next) {
       if (guilgee.tuukh?.length > 0 && guilgee.tuukh[0].ebarimtAvsanEsekh) {
         await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
           req.body.id,
-          { "tuukh.0.ebarimtProcessing": false }
+          { "tuukh.0.ebarimtProcessing": false },
         );
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
       }
       tuxainSalbar = baiguullaga?.barilguud?.find(
-        (e) => e._id.toString() == guilgee.barilgiinId
+        (e) => e._id.toString() == guilgee.barilgiinId,
       )?.tokhirgoo;
       var nuatTulukhEsekh = baiguullaga.barilguud.find(
-        (x) => x._id.toString() == guilgee.barilgiinId
+        (x) => x._id.toString() == guilgee.barilgiinId,
       )?.tokhirgoo?.nuatTulukhEsekh;
       if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
       if (!!tuxainSalbar?.eBarimtShine)
@@ -756,7 +756,7 @@ async function ebarimtShivye(req, res, next) {
           tuxainSalbar.merchantTin, //"37900846788",
           tuxainSalbar.districtCode, //,"0023"
           req.body.tukhainBaaziinKholbolt,
-          nuatTulukhEsekh
+          nuatTulukhEsekh,
         );
       else if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
       butsaakhMethod = function (d, khariuObject) {
@@ -808,7 +808,7 @@ async function ebarimtShivye(req, res, next) {
     } else {
       var guilgee = await BankniiGuilgee(
         req.body.tukhainBaaziinKholbolt,
-        true
+        true,
       ).findOneAndUpdate(
         {
           _id: req.body.id,
@@ -818,7 +818,7 @@ async function ebarimtShivye(req, res, next) {
           ],
         },
         { ebarimtProcessing: true },
-        { new: true }
+        { new: true },
       );
 
       if (!guilgee) {
@@ -828,20 +828,20 @@ async function ebarimtShivye(req, res, next) {
       if (guilgee.ebarimtAvsanEsekh) {
         await BankniiGuilgee(
           req.body.tukhainBaaziinKholbolt,
-          true
+          true,
         ).findByIdAndUpdate(req.body.id, { ebarimtProcessing: false });
         throw new aldaa("Ибаримт хэвлэж авсан байна!");
       }
       var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findById(
-        guilgee.kholbosonGereeniiId[0]
+        guilgee.kholbosonGereeniiId[0],
       );
       if (!geree) {
         await BankniiGuilgee(
           req.body.tukhainBaaziinKholbolt,
-          true
+          true,
         ).findByIdAndUpdate(req.body.id, { ebarimtProcessing: false });
         throw new aldaa(
-          "Холбогдсон гэрээ байхгүй тул ибаримт хэвлэх боломжгүй"
+          "Холбогдсон гэрээ байхгүй тул ибаримт хэвлэх боломжгүй",
         );
       }
       if (
@@ -853,7 +853,7 @@ async function ebarimtShivye(req, res, next) {
         req.body.turul = "3";
       }
       tuxainSalbar = baiguullaga?.barilguud?.find(
-        (e) => e._id.toString() == guilgee.barilgiinId
+        (e) => e._id.toString() == guilgee.barilgiinId,
       )?.tokhirgoo;
       butsaakhMethod = function (d, khariuObject) {
         try {
@@ -873,7 +873,7 @@ async function ebarimtShivye(req, res, next) {
           BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(
               { _id: req.body.id },
-              { ebarimtAvsanEsekh: true, ebarimtProcessing: false }
+              { ebarimtAvsanEsekh: true, ebarimtProcessing: false },
             )
             .then((xariu) => {})
             .catch((err) => {
@@ -900,7 +900,7 @@ async function ebarimtShivye(req, res, next) {
           tuxainSalbar.merchantTin, //"37900846788",
           tuxainSalbar.districtCode, //,"0023"
           req.body.tukhainBaaziinKholbolt,
-          nuatTulukhEsekh
+          nuatTulukhEsekh,
         );
       else if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
     }
@@ -937,7 +937,7 @@ router.post("/ebarimtZasya", tokenShalgakh, async (req, res, next) => {
         });
         res.send(d);
       },
-      next
+      next,
     );
   } catch (error) {
     next(error);
@@ -949,15 +949,15 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
     var butsaakhBarimt;
     var ebarimtShine = false;
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      req.body.baiguullagiinId
+      req.body.baiguullagiinId,
     );
     var tuxainSalbar = baiguullaga?.barilguud?.find(
-      (e) => e._id.toString() == req.body?.barilgiinId
+      (e) => e._id.toString() == req.body?.barilgiinId,
     )?.tokhirgoo;
     if (!!tuxainSalbar.eBarimtShine) ebarimtShine = true;
     if (!!ebarimtShine)
       butsaakhBarimt = await EbarimtShine(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).findById(req.body._id);
     else {
       butsaakhBarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(req.body);
@@ -974,7 +974,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
 
         try {
           var ustsanBarimt = new UstsanBarimt(
-            req.body.tukhainBaaziinKholbolt
+            req.body.tukhainBaaziinKholbolt,
           )();
           ustsanBarimt.class = "eBarimt";
           ustsanBarimt.object = butsaakhBarimt.toObject();
@@ -989,7 +989,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(
               { _id: butsaakhBarimt.guilgeeniiId },
-              { ebarimtAvsanEsekh: false }
+              { ebarimtAvsanEsekh: false },
             )
             .catch((err) => {
               next(err);
@@ -1002,7 +1002,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
                 ebarimtAvsanEsekh: false,
                 ebarimtAvakhDun:
                   butsaakhBarimt.amount || butsaakhBarimt.totalAmount,
-              }
+              },
             )
             .catch((err) => {
               next(err);
@@ -1011,7 +1011,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
           await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
             .findByIdAndUpdate(
               { _id: butsaakhBarimt.zogsooliinId },
-              { "tuukh.0.ebarimtAvsanEsekh": false }
+              { "tuukh.0.ebarimtAvsanEsekh": false },
             )
             .catch((err) => {
               next(err);
@@ -1020,7 +1020,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
         res.send("Amjilttai");
       },
       next,
-      ebarimtShine
+      ebarimtShine,
     );
   } catch (error) {
     next(error);
@@ -1032,10 +1032,10 @@ router.post("/ebarimtIlgeeye", tokenShalgakh, async (req, res, next) => {
     var shine = false;
     if (req.body.barilgiinId) {
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-        req.body.baiguullagiinId
+        req.body.baiguullagiinId,
       );
       var tuxainSalbar = baiguullaga?.barilguud?.find(
-        (e) => e._id.toString() == req.body?.barilgiinId
+        (e) => e._id.toString() == req.body?.barilgiinId,
       )?.tokhirgoo;
       if (!!tuxainSalbar.eBarimtShine) shine = true;
     }
@@ -1076,121 +1076,185 @@ router.get("/ebarimtJagsaaltAvya", tokenShalgakh, async (req, res, next) => {
 
     if (body?.query?.barilgiinId) {
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-        req.body.baiguullagiinId
+        req.body.baiguullagiinId,
       );
       var tuxainSalbar = baiguullaga?.barilguud?.find(
-        (e) => e._id.toString() == body?.query?.barilgiinId
+        (e) => e._id.toString() == body?.query?.barilgiinId,
       )?.tokhirgoo;
       if (!!tuxainSalbar.eBarimtShine) shine = true;
     }
 
     const createdAt = body.query?.createdAt;
-    if (shine && createdAt && createdAt.$gte && createdAt.$lte) {
-      const start = moment(createdAt.$gte);
-      const end = moment(createdAt.$lte);
-      const now = moment();
 
-      const isMultiMonth =
-        start.year() !== end.year() || start.month() !== end.month();
+    if (shine && createdAt && (createdAt.$gte || createdAt.$lte)) {
+      const extractDate = (dateFilter, preferStart = true) => {
+        if (!dateFilter) return null;
+        if (preferStart && dateFilter.$gte) return new Date(dateFilter.$gte);
+        if (!preferStart && dateFilter.$lte) return new Date(dateFilter.$lte);
+        if (dateFilter.$gte) return new Date(dateFilter.$gte);
+        if (dateFilter.$lte) return new Date(dateFilter.$lte);
+        if (dateFilter.$eq) return new Date(dateFilter.$eq);
+        if (typeof dateFilter === "string" || dateFilter instanceof Date)
+          return new Date(dateFilter);
+        return null;
+      };
 
-      if (isMultiMonth) {
+      let startDate = extractDate(createdAt, true);
+      let endDate = extractDate(createdAt, false);
+
+      if (startDate && !endDate) endDate = startDate;
+      if (!startDate && endDate) startDate = endDate;
+
+      if (startDate && !isNaN(startDate.getTime())) {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth() + 1;
+
+        const start = new Date(startDate);
+        const end =
+          endDate && !isNaN(endDate.getTime())
+            ? new Date(endDate)
+            : new Date(startDate);
+
+        // Add ±1 month buffer
+        const bufferedStart = new Date(start);
+        bufferedStart.setMonth(bufferedStart.getMonth() - 1);
+
+        const bufferedEnd = new Date(end);
+        bufferedEnd.setMonth(bufferedEnd.getMonth() + 1);
+
         const collectionsToQuery = [];
-        let current = start.clone().startOf("month");
+        const addedCollections = new Set();
 
-        while (current.isSameOrBefore(end, "month")) {
-          const isCurrentMonth =
-            current.year() === now.year() && current.month() === now.month();
+        const current = new Date(
+          bufferedStart.getFullYear(),
+          bufferedStart.getMonth(),
+          1,
+        );
+        const endMonthDate = new Date(
+          bufferedEnd.getFullYear(),
+          bufferedEnd.getMonth(),
+          1,
+        );
+
+        while (current <= endMonthDate) {
+          const year = current.getFullYear();
+          const month = current.getMonth() + 1;
+          const isCurrentMonth = year === currentYear && month === currentMonth;
 
           if (isCurrentMonth) {
-            collectionsToQuery.push({
-              name: null,
-              startDate: current.clone().startOf("month").toDate(),
-              endDate: current.clone().endOf("month").toDate(),
-              isMain: true,
-            });
-          } else {
-            const y = current.year();
-            const m = String(current.month() + 1).padStart(2, "0");
-            const archiveName = `ebarimtShine${y}${m}`;
+            // Current month - add both archive and main
+            const archiveName = `ebarimtShine${year}${String(month).padStart(2, "0")}`;
 
-            collectionsToQuery.push({
-              name: archiveName,
-              startDate: current.clone().startOf("month").toDate(),
-              endDate: current.clone().endOf("month").toDate(),
-              isMain: false,
-            });
+            if (!addedCollections.has(archiveName)) {
+              collectionsToQuery.push({
+                name: archiveName,
+                year,
+                month,
+                isCurrent: true,
+              });
+              addedCollections.add(archiveName);
+            }
+
+            if (!addedCollections.has("ebarimtShine")) {
+              collectionsToQuery.push({
+                name: null,
+                year,
+                month,
+                isCurrent: true,
+              });
+              addedCollections.add("ebarimtShine");
+            }
+          } else {
+            // Past/future month - add archive only
+            const archiveName = `ebarimtShine${year}${String(month).padStart(2, "0")}`;
+
+            if (!addedCollections.has(archiveName)) {
+              collectionsToQuery.push({
+                name: archiveName,
+                year,
+                month,
+                isCurrent: false,
+              });
+              addedCollections.add(archiveName);
+            }
           }
 
-          current.add(1, "month");
+          current.setMonth(current.getMonth() + 1);
         }
 
+        // Query all collections and merge
         const allResults = [];
+        const originalPage = body.khuudasniiDugaar || 1;
+        const originalLimit = body.khuudasniiKhemjee || 100;
 
         for (const collection of collectionsToQuery) {
           try {
-            const collectionQuery = { ...body.query };
-            collectionQuery.createdAt = {
-              $gte:
-                collection.startDate > new Date(createdAt.$gte)
-                  ? collection.startDate
-                  : new Date(createdAt.$gte),
-              $lte:
-                collection.endDate < new Date(createdAt.$lte)
-                  ? collection.endDate
-                  : new Date(createdAt.$lte),
+            const model = collection.name
+              ? EbarimtShine(req.body.tukhainBaaziinKholbolt, collection.name)
+              : EbarimtShine(req.body.tukhainBaaziinKholbolt);
+
+            const queryBody = {
+              ...body,
+              khuudasniiDugaar: 1,
+              khuudasniiKhemjee: 999999,
             };
 
-            const model = collection.isMain
-              ? EbarimtShine(req.body.tukhainBaaziinKholbolt)
-              : EbarimtShine(req.body.tukhainBaaziinKholbolt, collection.name);
+            const result = await khuudaslalt(model, queryBody);
 
-            const results = await model
-              .find(collectionQuery)
-              .sort(body.order)
-              .lean();
-
-            allResults.push(...results);
-          } catch (err) {}
+            if (result.jagsaalt && result.jagsaalt.length > 0) {
+              allResults.push(...result.jagsaalt);
+            }
+          } catch (err) {
+            console.error(
+              `Error querying ${collection.name || "ebarimtShine"}:`,
+              err.message,
+            );
+          }
         }
 
-        const orderKey =
-          Object.keys(body.order || { createdAt: -1 })[0] || "createdAt";
-        const orderDir = body.order?.[orderKey] || -1;
+        // Sort merged results
+        if (body.order && Object.keys(body.order).length > 0) {
+          const sortField = Object.keys(body.order)[0];
+          const sortOrder = body.order[sortField];
 
-        allResults.sort((a, b) => {
-          let aVal = a[orderKey];
-          let bVal = b[orderKey];
+          if (sortField) {
+            allResults.sort((a, b) => {
+              const getNestedValue = (obj, path) => {
+                if (!path || typeof path !== "string") return undefined;
+                return path.split(".").reduce((curr, prop) => {
+                  return curr?.[prop];
+                }, obj);
+              };
 
-          if (orderKey === "createdAt" || orderKey === "dateOgnoo") {
-            aVal = new Date(aVal);
-            bVal = new Date(bVal);
+              const aVal = getNestedValue(a, sortField);
+              const bVal = getNestedValue(b, sortField);
+
+              if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
+              if (aVal > bVal) return sortOrder === 1 ? 1 : -1;
+              return 0;
+            });
           }
+        }
 
-          if (aVal instanceof Date && bVal instanceof Date) {
-            const diff = aVal.getTime() - bVal.getTime();
-            return orderDir === -1 ? -diff : diff;
-          }
-
-          if (aVal < bVal) return orderDir === -1 ? 1 : -1;
-          if (aVal > bVal) return orderDir === -1 ? -1 : 1;
-          return 0;
-        });
-
-        const startIndex = (body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee;
-        const endIndex = startIndex + body.khuudasniiKhemjee;
+        // Paginate
+        const startIndex = (originalPage - 1) * originalLimit;
+        const endIndex = startIndex + originalLimit;
         const paginatedResults = allResults.slice(startIndex, endIndex);
 
         return res.send({
+          khuudasniiDugaar: originalPage,
+          khuudasniiKhemjee: originalLimit,
           jagsaalt: paginatedResults,
           niitMur: allResults.length,
-          khuudasniiDugaar: body.khuudasniiDugaar,
-          khuudasniiKhemjee: body.khuudasniiKhemjee,
-          archiveName: "multi-month",
-          collections: collectionsToQuery.map((c) => c.name || "main"),
+          niitKhuudas: Math.ceil(allResults.length / originalLimit),
+          archiveName: "multi-collection",
+          collections: collectionsToQuery.map((c) => c.name || "ebarimtShine"),
         });
       }
     }
 
+    // Fallback to old logic for non-shine or manual archiveName
     var archiveName = null;
     if (body?.query?.archiveName) {
       archiveName = body.query.archiveName;
@@ -1225,10 +1289,10 @@ router.post("/ebarimtToololtAvya", tokenShalgakh, async (req, res, next) => {
   try {
     var ebarimtShine = false;
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      req.body.baiguullagiinId
+      req.body.baiguullagiinId,
     );
     var tuxainSalbar = baiguullaga?.barilguud?.find(
-      (e) => e._id.toString() == req.body?.barilgiinId
+      (e) => e._id.toString() == req.body?.barilgiinId,
     )?.tokhirgoo;
     if (!!tuxainSalbar && !!tuxainSalbar?.eBarimtShine) ebarimtShine = true;
 
@@ -1450,7 +1514,7 @@ router.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 router.post(
@@ -1484,7 +1548,7 @@ router.post(
       // }
       // ];
       var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(
-        match
+        match,
       );
       if (ebarimtuud?.length > 0) {
         for await (const butsaakhBarimt of ebarimtuud) {
@@ -1503,7 +1567,7 @@ router.post(
               // res.send("Amjilttai");
             },
             next,
-            true
+            true,
           );
           // }
         }
@@ -1512,7 +1576,7 @@ router.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 module.exports = router;
