@@ -29,13 +29,13 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
         Sonorduulga.ilgeeye(
           (io = req.app.get("socketio")),
           medegdel,
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt,
         );
         res.send("Amjilttai");
       } else {
         var firebaseToken = req.body.firebaseToken;
         var kharilltsagch = await Khariltsagch(
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt,
         ).findOne({
           _id: req.body.khariltsagchiinId,
         });
@@ -45,7 +45,9 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
         //     firebaseToken,
         //     { title: khariu.title, body: khariu.body },
         //     (r) => {
-        var sonorduulga = new SonorduulgaObject(req.body.tukhainBaaziinKholbolt)();
+        var sonorduulga = new SonorduulgaObject(
+          req.body.tukhainBaaziinKholbolt,
+        )();
         sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
         sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
         sonorduulga.barilgiinId = req.body.barilgiinId;
@@ -79,7 +81,7 @@ exports.sanalKharlaa = asyncHandler((req, res, next) => {
     if (req.body.sonorduulgaId)
       Sonorduulga.sonorduulgauzsenbolgoyo(
         req.body.sonorduulgaId,
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       );
     res.send("Amjilttai");
   } catch (err) {
@@ -91,7 +93,7 @@ exports.sonorduulgaKharlaa = asyncHandler((req, res, next) => {
   try {
     Sonorduulga.sonorduulgauzsenbolgoyo(
       req.body.id,
-      req.body.tukhainBaaziinKholbolt
+      req.body.tukhainBaaziinKholbolt,
     );
     res.send("Amjilttai");
   } catch (err) {
@@ -131,9 +133,11 @@ exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
     sonorduulga.tuluv = 0;
     sonorduulga.save();
 
-  
-    if (req.user && req.user._id && req.user._id.toString() !== req.body.khariltsagchiinId) {
-      var khereglegchiiSonorduulga = new SonorduulgaObject(req.body.tukhainBaaziinKholbolt)();
+    // ALWAYS create caller record if we have req.user
+    if (req.user && req.user._id) {
+      var khereglegchiiSonorduulga = new SonorduulgaObject(
+        req.body.tukhainBaaziinKholbolt,
+      )();
       khereglegchiiSonorduulga.khariltsagchiinId = req.user._id;
       khereglegchiiSonorduulga.khariltsagchiinNer = req.user.ner;
       khereglegchiiSonorduulga.khariltsagchiinUtas = req.user.utas;
@@ -146,7 +150,6 @@ exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
       khereglegchiiSonorduulga.duudlagiinTurul = req.body.duudlagiinTurul;
       khereglegchiiSonorduulga.kharsanEsekh = false;
       khereglegchiiSonorduulga.tuluv = 0;
- 
       khereglegchiiSonorduulga.khereglegchiiKhuur = true;
       khereglegchiiSonorduulga.save();
     }
