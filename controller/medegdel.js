@@ -131,7 +131,10 @@ exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
     sonorduulga.tuluv = 0;
     sonorduulga.save();
     var io = req.app.get("socketio");
-    if (io) io.emit("appWebDuudlaga" + req.body.baiguullagiinId, sonorduulga);
+    if (io) {
+      io.emit("appWebDuudlaga" + req.body.baiguullagiinId, sonorduulga);
+      io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
+    }
     res.send(sonorduulga);
   } catch (err) {
     next(err);
