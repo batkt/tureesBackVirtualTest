@@ -957,6 +957,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
     if (!!tuxainSalbar.eBarimtShine) ebarimtShine = true;
     if (!!ebarimtShine)
     {
+      console.log("ebarimtShineButsaaya createdAt --->" + req.body.createdAt);
       var odooOgnoo = new Date();
       odooOgnoo.setHours(0, 0, 0, 0);
       const archiveBeforeDate = new Date(req.body.createdAt);
