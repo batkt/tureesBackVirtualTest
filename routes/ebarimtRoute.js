@@ -951,7 +951,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
     var ebarimtShine = false;
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       req.body.baiguullagiinId,
-    );
+    ).select("+barilguud");
     console.log("ebarimtShineButsaaya ---> baiguullaga.ner ebarimtButsaaya" + baiguullaga.ner);
     console.log("ebarimtShineButsaaya ---> barilgiinId " + req.body?.barilgiinId);
     var tuxainSalbar = baiguullaga?.barilguud?.find(
