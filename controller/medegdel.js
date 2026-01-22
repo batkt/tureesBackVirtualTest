@@ -130,6 +130,27 @@ exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
     sonorduulga.kharsanEsekh = false;
     sonorduulga.tuluv = 0;
     sonorduulga.save();
+
+  
+    if (req.user && req.user._id && req.user._id.toString() !== req.body.khariltsagchiinId) {
+      var khereglegchiiSonorduulga = new SonorduulgaObject(req.body.tukhainBaaziinKholbolt)();
+      khereglegchiiSonorduulga.khariltsagchiinId = req.user._id;
+      khereglegchiiSonorduulga.khariltsagchiinNer = req.user.ner;
+      khereglegchiiSonorduulga.khariltsagchiinUtas = req.user.utas;
+      khereglegchiiSonorduulga.khariltsagchiinRegister = req.user.register;
+      khereglegchiiSonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+      khereglegchiiSonorduulga.barilgiinId = req.body.barilgiinId;
+      khereglegchiiSonorduulga.title = req.body.title;
+      khereglegchiiSonorduulga.message = req.body.message;
+      khereglegchiiSonorduulga.turul = "duudlaga";
+      khereglegchiiSonorduulga.duudlagiinTurul = req.body.duudlagiinTurul;
+      khereglegchiiSonorduulga.kharsanEsekh = false;
+      khereglegchiiSonorduulga.tuluv = 0;
+ 
+      khereglegchiiSonorduulga.khereglegchiiKhuur = true;
+      khereglegchiiSonorduulga.save();
+    }
+
     var io = req.app.get("socketio");
     if (io) {
       io.emit("appWebDuudlaga" + req.body.baiguullagiinId, sonorduulga);
