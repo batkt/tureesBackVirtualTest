@@ -971,6 +971,8 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
       const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
       console.log("ebarimtButsaaya --->" + archiveName);
       butsaakhBarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt, (odooOgnoo > archiveBeforeDate ? archiveName : "ebarimtShine")).findById(req.body._id);
+      if(!butsaakhBarimt)
+        butsaakhBarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt).findById(req.body._id);
     }
     else {
       butsaakhBarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(req.body);
