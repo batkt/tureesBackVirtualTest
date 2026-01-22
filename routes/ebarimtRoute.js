@@ -956,9 +956,17 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
     )?.tokhirgoo;
     if (!!tuxainSalbar.eBarimtShine) ebarimtShine = true;
     if (!!ebarimtShine)
-      butsaakhBarimt = await EbarimtShine(
-        req.body.tukhainBaaziinKholbolt,
-      ).findById(req.body._id);
+    {
+      var odooOgnoo = new Date();
+      odooOgnoo.setHours(0, 0, 0, 0);
+      const archiveBeforeDate = new Date(req.body.createdAt);
+      archiveBeforeDate.setHours(0, 0, 0, 0);
+      const y = archiveBeforeDate.getFullYear();
+      const m = archiveBeforeDate.getMonth() + 1;
+      const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
+      console.log("ebarimtButsaaya --->" + archiveName);
+      butsaakhBarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt, (odooOgnoo > archiveBeforeDate ? archiveName : "ebarimtShine")).findById(req.body._id);
+    }
     else {
       butsaakhBarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(req.body);
       butsaakhBarimt.returnBillId = butsaakhBarimt.billId;
