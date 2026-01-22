@@ -2293,7 +2293,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               matchMashin["barilgiinId"] = req.query.barilgiinId;
             oldsonMashin = await Uilchluulegch(kholbolt, true)
               .findOne(matchMashin)
-              .sort({ updatedAt: -1 });
+              .sort({ createdAt: -1 });
             if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
               oldsonMashin.freezeOgnoo =
                 oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag;
@@ -2922,7 +2922,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
               "tuukh.0.zogsooliinId": zogsoolId,
               "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
               updatedAt: { $gt: fiveMinutesAgo },
-            }).sort({ updatedAt: -1 });
+            }).sort({ createdAt: -1 });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
