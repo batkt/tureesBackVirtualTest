@@ -2324,6 +2324,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
           }
           if (bodsonDun > 0 && oldsonMashin) {
             data = {
+              baiguullagiinId: zogsool.baiguullagiinId,
               plate_number: req.params.plate_number,
               enter_date: moment(
                 oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag,
@@ -2345,6 +2346,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
           } else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
             tukhainKholbolt = kholbolt;
             data = {
+              baiguullagiinId: zogsool.baiguullagiinId,
               plate_number: req.params.plate_number,
               enter_date: moment(
                 oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag,
