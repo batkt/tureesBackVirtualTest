@@ -946,22 +946,17 @@ router.post("/ebarimtZasya", tokenShalgakh, async (req, res, next) => {
 
 router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
   try {
-    console.log("ebarimtShineButsaaya ---> ebarimtButsaaya");
     var butsaakhBarimt;
     var ebarimtShine = false;
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
       req.body.baiguullagiinId,
-    ).select("+barilguud");
-    console.log("ebarimtShineButsaaya ---> baiguullaga.ner ebarimtButsaaya" + baiguullaga.ner);
-    console.log("ebarimtShineButsaaya ---> barilgiinId " + req.body?.barilgiinId);
+    );
     var tuxainSalbar = baiguullaga?.barilguud?.find(
       (e) => e._id.toString() == req.body?.barilgiinId,
     )?.tokhirgoo;
-    console.log("ebarimtShineButsaaya ---> tuxainSalbar?.eBarimtShine " + tuxainSalbar?.eBarimtShine);
     if (!!tuxainSalbar.eBarimtShine) ebarimtShine = true;
     if (!!ebarimtShine)
     {
-      console.log("ebarimtShineButsaaya createdAt --->" + req.body.createdAt);
       var odooOgnoo = new Date();
       odooOgnoo.setHours(0, 0, 0, 0);
       const archiveBeforeDate = new Date(req.body.createdAt);
@@ -969,7 +964,6 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
       const y = archiveBeforeDate.getFullYear();
       const m = archiveBeforeDate.getMonth() + 1;
       const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
-      console.log("ebarimtButsaaya --->" + archiveName);
       butsaakhBarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt, (odooOgnoo > archiveBeforeDate ? archiveName : "ebarimtShine")).findById(req.body._id);
       if(!butsaakhBarimt)
         butsaakhBarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt).findById(req.body._id);

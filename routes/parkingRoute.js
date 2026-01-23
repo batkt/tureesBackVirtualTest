@@ -2922,7 +2922,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
               "tuukh.0.zogsooliinId": zogsoolId,
               "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
               updatedAt: { $gt: fiveMinutesAgo },
-            }).sort({ createdAt: -1 });
+            }).sort({ updatedAt: -1 });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
