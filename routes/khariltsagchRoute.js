@@ -190,10 +190,11 @@ router
           tuluv: { $nin: [-1] },
         };
 
+      
         if (req.body.idevkhiteiEsekh == 1) {
-          matchGeree.idevkhiteiEsekh = true;
+          matchGeree.tuluv = 1;  
         } else if (req.body.idevkhiteiEsekh == 0) {
-          matchGeree.idevkhiteiEsekh = false;
+          matchGeree.tuluv = -1;  
         }
 
         if (davkhar?.length > 0) {
