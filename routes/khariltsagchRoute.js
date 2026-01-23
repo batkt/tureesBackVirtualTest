@@ -293,7 +293,15 @@ router
               khariltsagch.gereenuud.push(geree);
             }
           }
-          result = jagsaalt;
+
+          if (req.body.idevkhiteiEsekh == 1) {
+            result = jagsaalt.filter(
+              (khariltsagch) =>
+                khariltsagch.gereenuud && khariltsagch.gereenuud.length > 0,
+            );
+          } else {
+            result = jagsaalt;
+          }
         }
       }
 
