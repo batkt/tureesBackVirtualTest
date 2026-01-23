@@ -286,6 +286,13 @@ router
                   geree.register === khariltsagch.customerTin),
             );
 
+        
+            if (req.body.idevkhiteiEsekh == 1) {
+              filteredGeree = filteredGeree?.filter(geree => geree.tuluv === 1);
+            } else if (req.body.idevkhiteiEsekh == 0) {
+              filteredGeree = filteredGeree?.filter(geree => geree.tuluv === -1);
+            }
+
             for (const geree of filteredGeree) {
               // ЗАСВАР: Helper function ашиглах
               const talbainDugaarList = parseTalbainDugaar(geree.talbainDugaar);
