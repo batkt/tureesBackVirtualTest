@@ -162,57 +162,16 @@ router
     try {
       const { db } = require("zevbackv2");
       var davkhar = req.body.davkhar;
-
-      var matchGeree = {
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        gereeniiDugaar: { $exists: true },
-      };
-
-      if (req.body.idevkhiteiEsekh == 1) {
-        matchGeree.tuluv = { $ne: -1 };
-      } else if (req.body.idevkhiteiEsekh == 0) {
-        matchGeree.tuluv = -1;
-      }
-
-      if (davkhar?.length > 0) {
-        matchGeree["davkhar"] = { $in: davkhar };
-      }
-
-      var gereeResult = await Geree(
-        req.body.tukhainBaaziinKholbolt,
-        true,
-      ).aggregate([{ $match: matchGeree }]);
-
-      var registerSet = new Set();
-      var customerTinSet = new Set();
-      for (const geree of gereeResult) {
-        if (geree.register) registerSet.add(geree.register);
-        if (geree.customerTin) customerTinSet.add(geree.customerTin);
-      }
-
       var matchQuery = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
       };
+      if (req.body.query) matchQuery = req.body.query;
 
-      if (req.body.query) {
-        matchQuery = { ...matchQuery, ...req.body.query };
-      }
-
-      if (registerSet.size > 0 || customerTinSet.size > 0) {
-        var orConditions = [];
-        if (registerSet.size > 0) {
-          orConditions.push({ register: { $in: Array.from(registerSet) } });
-          orConditions.push({ customerTin: { $in: Array.from(registerSet) } });
-        }
-        if (customerTinSet.size > 0) {
-          orConditions.push({ register: { $in: Array.from(customerTinSet) } });
-          orConditions.push({
-            customerTin: { $in: Array.from(customerTinSet) },
-          });
-        }
-        matchQuery.$or = orConditions;
+      if (req.body.idevkhiteiEsekh == 1) {
+        matchQuery.idevkhiteiEsekh = true;
+      } else if (req.body.idevkhiteiEsekh == 0) {
+        matchQuery.idevkhiteiEsekh = false;
       }
 
       var query = [
@@ -223,7 +182,29 @@ router
       var result = [];
       var jagsaalt = await Khariltsagch(db.erunkhiiKholbolt).aggregate(query);
 
-      if (jagsaalt?.length > 0 && gereeResult?.length > 0) {
+      if (jagsaalt?.length > 0) {
+        var matchGeree = {
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          gereeniiDugaar: { $exists: true },
+          tuluv: { $nin: [-1] },
+        };
+
+        if (davkhar?.length > 0) {
+          matchGeree["davkhar"] = { $in: davkhar };
+        }
+
+        query = [
+          {
+            $match: matchGeree,
+          },
+        ];
+
+        var gereeResult = await Geree(
+          req.body.tukhainBaaziinKholbolt,
+          true,
+        ).aggregate(query);
+
         const parseTalbainDugaar = (talbainDugaar) => {
           if (!talbainDugaar || typeof talbainDugaar !== "string") {
             return [];
@@ -296,26 +277,23 @@ router
                   geree.register === khariltsagch.customerTin),
             );
 
-            if (filteredGeree?.length > 0) {
-              for (const geree of filteredGeree) {
-                const talbainDugaarList = parseTalbainDugaar(
-                  geree.talbainDugaar,
-                );
+            for (const geree of filteredGeree) {
+              // ЗАСВАР: Helper function ашиглах
+              const talbainDugaarList = parseTalbainDugaar(geree.talbainDugaar);
 
-                khariltsagch.talbainDugaar = khariltsagch.talbainDugaar || [];
-                if (talbainDugaarList.length > 0) {
-                  khariltsagch.talbainDugaar.push(...talbainDugaarList);
-                }
-                khariltsagch.davkhar = khariltsagch.davkhar || [];
-                if (geree.davkhar) {
-                  khariltsagch.davkhar.push(geree.davkhar);
-                }
-                khariltsagch.gereenuud = khariltsagch.gereenuud || [];
-                khariltsagch.gereenuud.push(geree);
+              khariltsagch.talbainDugaar = khariltsagch.talbainDugaar || [];
+              if (talbainDugaarList.length > 0) {
+                khariltsagch.talbainDugaar.push(...talbainDugaarList);
               }
-              result.push(khariltsagch);
+              khariltsagch.davkhar = khariltsagch.davkhar || [];
+              if (geree.davkhar) {
+                khariltsagch.davkhar.push(geree.davkhar);
+              }
+              khariltsagch.gereenuud = khariltsagch.gereenuud || [];
+              khariltsagch.gereenuud.push(geree);
             }
           }
+          result = jagsaalt;
         }
       }
 
