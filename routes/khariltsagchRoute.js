@@ -46,7 +46,7 @@ crud(
       const { db } = require("zevbackv2");
       if (!req.body.register && !req.body.customerTin)
         throw new Error(
-          "Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!"
+          "Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!",
         );
       else {
         if (!!req.body.register) {
@@ -57,7 +57,7 @@ crud(
           });
           if (khariltsagch)
             throw new Error(
-              "Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!"
+              "Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!",
             );
         }
         if (!!req.body.customerTin) {
@@ -68,7 +68,7 @@ crud(
           });
           if (khariltsagch)
             throw new Error(
-              "Тухайн бүртгэлийн дугаараар харилцагч бүртгэлтэй байна!"
+              "Тухайн бүртгэлийн дугаараар харилцагч бүртгэлтэй байна!",
             );
         }
       }
@@ -76,7 +76,7 @@ crud(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 router.route("/khariltsagchNevtrey").post(khariltsagchNevtrey);
@@ -116,7 +116,7 @@ router
         .then(async (result) => {
           var geree = await Geree(
             req.body.tukhainBaaziinKholbolt,
-            true
+            true,
           ).findOne({
             tuluv: 1,
             register: result.register,
@@ -125,7 +125,7 @@ router
           });
           if (geree)
             throw new Error(
-              "Тухайн харилцагч дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!"
+              "Тухайн харилцагч дээр идэвхитэй гэрээ байгаа тул устгах боломжгүй!",
             );
           var barimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
           barimt.class = "Khariltsagch";
@@ -155,8 +155,6 @@ router
       next(err2);
     }
   });
-
-
 
 router
   .route("/khariltsagchDavkhraarAvya")
@@ -192,6 +190,12 @@ router
           tuluv: { $nin: [-1] },
         };
 
+        if (req.body.idevkhiteiEsekh == 1) {
+          matchGeree.idevkhiteiEsekh = true;
+        } else if (req.body.idevkhiteiEsekh == 0) {
+          matchGeree.idevkhiteiEsekh = false;
+        }
+
         if (davkhar?.length > 0) {
           matchGeree["davkhar"] = { $in: davkhar };
         }
@@ -204,7 +208,7 @@ router
 
         var gereeResult = await Geree(
           req.body.tukhainBaaziinKholbolt,
-          true
+          true,
         ).aggregate(query);
 
         const parseTalbainDugaar = (talbainDugaar) => {
@@ -228,7 +232,7 @@ router
               (a) =>
                 (!!a.register && geree.register === a.register) ||
                 (!!a.register && geree.customerTin === a.register) ||
-                (!!a.customerTin && geree.register === a.customerTin)
+                (!!a.customerTin && geree.register === a.customerTin),
             );
 
             const talbainDugaarList = parseTalbainDugaar(geree.talbainDugaar);
@@ -250,7 +254,7 @@ router
                 (a) =>
                   (!!a.register && geree.register === a.register) ||
                   (!!a.register && geree.customerTin === a.register) ||
-                  (!!a.customerTin && geree.register === a.customerTin)
+                  (!!a.customerTin && geree.register === a.customerTin),
               );
 
               if (filteredData?.length > 0) {
@@ -276,7 +280,7 @@ router
                 (!!khariltsagch.register &&
                   geree.customerTin === khariltsagch.register) ||
                 (!!khariltsagch.customerTin &&
-                  geree.register === khariltsagch.customerTin)
+                  geree.register === khariltsagch.customerTin),
             );
 
             for (const geree of filteredGeree) {
@@ -315,7 +319,7 @@ router
       if (!!req.body.barilgiinId)
         matchQuery["barilgiinId"] = req.body.barilgiinId;
       var resultTukhain = await Khariltsagch(db.erunkhiiKholbolt).find(
-        matchQuery
+        matchQuery,
       );
       if (resultTukhain?.length > 0) {
         for await (const data of resultTukhain) {
@@ -326,7 +330,7 @@ router
           if (!!req.body.barilgiinId)
             matchQuery["barilgiinId"] = req.body.barilgiinId;
           var result = await Khariltsagch(req.body.tukhainBaaziinKholbolt).find(
-            matchQuery
+            matchQuery,
           );
           if (result?.length === 0) jagsaalt.push(data);
         }
@@ -338,7 +342,7 @@ router
             next(err);
           }
           res.status(200).send("Amjilttai");
-        }
+        },
       );
     } catch (error) {
       next(error);
