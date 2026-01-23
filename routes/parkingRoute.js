@@ -2343,27 +2343,28 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             };
             tukhainKholbolt = kholbolt;
             dataList.push(data);
-          } else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-            tukhainKholbolt = kholbolt;
-            data = {
-              baiguullagiinId: zogsool.baiguullagiinId,
-              plate_number: req.params.plate_number,
-              enter_date: moment(
-                oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag,
-              ).format("YYYY/MM/DD HH:mm:ss"),
-              parking_id: zogsool._id,
-              parking_name: zogsool.ner,
-              parkingUndsenUne: zogsool.undsenUne,
-              session_id: oldsonMashin._id,
-              garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
-              garsanTsag: oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
-                ? moment(
-                    oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag,
-                  ).format("YYYY/MM/DD HH:mm:ss")
-                : null,
-            };
-            dataList.push(data);
           }
+          // else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+          //   tukhainKholbolt = kholbolt;
+          //   data = {
+          //     baiguullagiinId: zogsool.baiguullagiinId,
+          //     plate_number: req.params.plate_number,
+          //     enter_date: moment(
+          //       oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag,
+          //     ).format("YYYY/MM/DD HH:mm:ss"),
+          //     parking_id: zogsool._id,
+          //     parking_name: zogsool.ner,
+          //     parkingUndsenUne: zogsool.undsenUne,
+          //     session_id: oldsonMashin._id,
+          //     garsanCameraIP: oldsonMashin.tuukh[0].garsanKhaalga,
+          //     garsanTsag: oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+          //       ? moment(
+          //           oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag,
+          //         ).format("YYYY/MM/DD HH:mm:ss")
+          //       : null,
+          //   };
+          //   dataList.push(data);
+          // }
         }
         //if (data && data.plate_number) break;
       }
