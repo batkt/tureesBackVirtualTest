@@ -2345,7 +2345,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             dataList.push(data);
           }
           else if (oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-            message = "Машины мэдээлэл олдсонгүй!";
+            message = "Машин гарсан!";
             success = false;
           }
         }
