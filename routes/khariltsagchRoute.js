@@ -286,30 +286,37 @@ router
                   geree.register === khariltsagch.customerTin),
             );
 
-        
             if (req.body.idevkhiteiEsekh == 1) {
-              filteredGeree = filteredGeree?.filter(geree => geree.tuluv === 1);
+              filteredGeree = filteredGeree?.filter(
+                (geree) => geree.tuluv === 1,
+              );
             } else if (req.body.idevkhiteiEsekh == 0) {
-              filteredGeree = filteredGeree?.filter(geree => geree.tuluv === -1);
+              filteredGeree = filteredGeree?.filter(
+                (geree) => geree.tuluv === -1,
+              );
             }
 
-            for (const geree of filteredGeree) {
-              // ЗАСВАР: Helper function ашиглах
-              const talbainDugaarList = parseTalbainDugaar(geree.talbainDugaar);
+            // Only include customers with matching contracts
+            if (filteredGeree?.length > 0) {
+              for (const geree of filteredGeree) {
+                const talbainDugaarList = parseTalbainDugaar(
+                  geree.talbainDugaar,
+                );
 
-              khariltsagch.talbainDugaar = khariltsagch.talbainDugaar || [];
-              if (talbainDugaarList.length > 0) {
-                khariltsagch.talbainDugaar.push(...talbainDugaarList);
+                khariltsagch.talbainDugaar = khariltsagch.talbainDugaar || [];
+                if (talbainDugaarList.length > 0) {
+                  khariltsagch.talbainDugaar.push(...talbainDugaarList);
+                }
+                khariltsagch.davkhar = khariltsagch.davkhar || [];
+                if (geree.davkhar) {
+                  khariltsagch.davkhar.push(geree.davkhar);
+                }
+                khariltsagch.gereenuud = khariltsagch.gereenuud || [];
+                khariltsagch.gereenuud.push(geree);
               }
-              khariltsagch.davkhar = khariltsagch.davkhar || [];
-              if (geree.davkhar) {
-                khariltsagch.davkhar.push(geree.davkhar);
-              }
-              khariltsagch.gereenuud = khariltsagch.gereenuud || [];
-              khariltsagch.gereenuud.push(geree);
+              result.push(khariltsagch);
             }
           }
-          result = jagsaalt;
         }
       }
 
