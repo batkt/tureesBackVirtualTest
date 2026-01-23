@@ -166,7 +166,10 @@ router
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
       };
-      if (req.body.query) matchQuery = req.body.query;
+
+      if (req.body.query) {
+        matchQuery = { ...matchQuery, ...req.body.query };
+      }
 
       if (req.body.idevkhiteiEsekh == 1) {
         matchQuery.idevkhiteiEsekh = true;
@@ -190,11 +193,10 @@ router
           tuluv: { $nin: [-1] },
         };
 
-      
         if (req.body.idevkhiteiEsekh == 1) {
-          matchGeree.tuluv = 1;  
+          matchGeree.tuluv = 1;
         } else if (req.body.idevkhiteiEsekh == 0) {
-          matchGeree.tuluv = -1;  
+          matchGeree.tuluv = -1;
         }
 
         if (davkhar?.length > 0) {
