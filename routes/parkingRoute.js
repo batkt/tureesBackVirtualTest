@@ -668,19 +668,42 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
 
     const khariu = await sdkData(req, medegdel);
 
+   
     const uilchluulegchModel = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
-    await uilchluulegchModel.updateMany(
-      {
-        mashiniiDugaar: req.body.mashiniiDugaar,
-        "tuukh.0.tuluv": -2,
-        "tuukh.0.garsanKhaalga": "zurchiltei",
-      },
-      {
-        $set: {
-          "tuukh.0.tuluv": -4,
+    const todorkhoiguiEntries = await uilchluulegchModel.find({
+      mashiniiDugaar: req.body.mashiniiDugaar,
+      "tuukh.0.tuluv": -2,
+      "tuukh.0.garsanKhaalga": "zurchiltei",
+    });
+
+    const zogsool = await Parking(req.body.tukhainBaaziinKholbolt).findOne({
+      _id: req.body.zogsooliinId,
+    });
+
+    for (const entry of todorkhoiguiEntries) {
+      let bodsonDun = 0;
+      if (zogsool && entry) {
+        try {
+          bodsonDun = await zogsooliinDunAvya(
+            zogsool,
+            entry,
+            req.body.tukhainBaaziinKholbolt,
+          );
+        } catch (e) {
+          bodsonDun = 0;
+        }
+      }
+
+      await uilchluulegchModel.updateOne(
+        { _id: entry._id },
+        {
+          $set: {
+            "tuukh.0.tuluv": -4,
+            niitDun: bodsonDun,
+          },
         },
-      },
-    );
+      );
+    }
 
     res.send(khariu);
   } catch (err) {
