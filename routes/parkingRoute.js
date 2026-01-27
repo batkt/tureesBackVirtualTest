@@ -1343,8 +1343,7 @@ router.post(
           },
         ]);
 
-        const shalgakhTsag = new Date(Date.now() - 18 * 60 * 60 * 1000);
-        const todorkholgui = await model.aggregate([
+        const tulburiinZurchiltei = await model.aggregate([
           {
             $match: {
               baiguullagiinId: req.body.baiguullagiinId,
@@ -1354,25 +1353,21 @@ router.post(
             },
           },
           { $unwind: "$tuukh" },
+          { $unwind: "$tuukh.tulbur" },
           {
             $match: {
-              "tuukh.tsagiinTuukh.garsanTsag": { $exists: false },
-              "tuukh.tsagiinTuukh.orsonTsag": { $lt: shalgakhTsag },
+              "tuukh.tsagiinTuukh.garsanTsag": {
+                $gte: actualStartDate,
+                $lte: actualEndDate,
+              },
               "tuukh.tuluv": -4,
             },
           },
           {
             $group: {
-              _id: "Тодорхойгүй",
-              niitDun: { $sum: "$niitDun" },
-              ids: { $addToSet: "$_id" },
-            },
-          },
-          {
-            $project: {
-              _id: 1,
-              niitDun: 1,
-              niitToo: { $size: "$ids" },
+              _id: "Төлбөрийн зөрчилтэй",
+              niitDun: { $sum: "$tuukh.tulbur.dun" },
+              niitToo: { $sum: 1 },
             },
           },
         ]);
@@ -1405,7 +1400,7 @@ router.post(
           },
         ]);
 
-        return { udriinTailan, zurchiltei, todorkholgui, unegui };
+        return { udriinTailan, zurchiltei, tulburiinZurchiltei, unegui };
       };
 
       const getCollectionName = (year, month) =>
@@ -1448,7 +1443,7 @@ router.post(
 
         [
           mergeArray(allResults.zurchiltei, "Зөрчилтэй"),
-          mergeArray(allResults.todorkholgui, "Тодорхойгүй"),
+          mergeArray(allResults.tulburiinZurchiltei, "Төлбөрийн зөрчилтэй"),
           mergeArray(allResults.unegui, "Үнэгүй"),
         ].forEach((item) => item && result.push(item));
 
@@ -1505,7 +1500,7 @@ router.post(
       const allResults = {
         udriinTailan: [],
         zurchiltei: [],
-        todorkholgui: [],
+        tulburiinZurchiltei: [],
         unegui: [],
       };
 
@@ -1518,7 +1513,7 @@ router.post(
           );
           allResults.udriinTailan.push(...result.udriinTailan);
           allResults.zurchiltei.push(...result.zurchiltei);
-          allResults.todorkholgui.push(...result.todorkholgui);
+          allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
           allResults.unegui.push(...result.unegui);
         } catch (err) {
           console.error(
@@ -2904,14 +2899,12 @@ router.route("/v1/pay").post(async (req, res, next) => {
             const plateNumber = req.body.plate_number;
             const zogsoolId = zogsool._id;
             const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-            oldsonMashin = await Uilchluulegch(kholbolt, true)
-              .findOne({
-                mashiniiDugaar: plateNumber,
-                "tuukh.0.zogsooliinId": zogsoolId,
-                "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
-                updatedAt: { $gt: fiveMinutesAgo },
-              })
-              .sort({ updatedAt: -1 });
+            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
+              mashiniiDugaar: plateNumber,
+              "tuukh.0.zogsooliinId": zogsoolId,
+              "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
+              updatedAt: { $gt: fiveMinutesAgo },
+            }).sort({ updatedAt: -1 });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
