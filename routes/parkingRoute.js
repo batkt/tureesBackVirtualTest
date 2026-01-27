@@ -683,6 +683,7 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
       let bodsonDun = 0;
       if (zogsool && entry) {
         try {
+          const orsonTsag = entry.tuukh?.[0]?.tsagiinTuukh?.[0]?.orsonTsag;
           const garsanTsag =
             entry.tuukh?.[0]?.tsagiinTuukh?.[0]?.garsanTsag || new Date();
 
