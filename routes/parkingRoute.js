@@ -1343,34 +1343,40 @@ router.post(
           },
         ]);
 
-        // const tulburiinZurchiltei = await model.aggregate([
-        //   {
-        //     $match: {
-        //       baiguullagiinId: req.body.baiguullagiinId,
-        //       barilgiinId: !!req.body.barilgiinId
-        //         ? req.body.barilgiinId
-        //         : { $exists: true },
-        //     },
-        //   },
-        //   { $unwind: "$tuukh" },
-        //   { $unwind: "$tuukh.tulbur" },
-        //   {
-        //     $match: {
-        //       "tuukh.tsagiinTuukh.garsanTsag": {
-        //         $gte: actualStartDate,
-        //         $lte: actualEndDate,
-        //       },
-        //       "tuukh.tuluv": -4,
-        //     },
-        //   },
-        //   {
-        //     $group: {
-        //       _id: "Төлбөрийн зөрчилтэй",
-        //       niitDun: { $sum: "$tuukh.tulbur.dun" },
-        //       niitToo: { $sum: 1 },
-        //     },
-        //   },
-        // ]);
+        const todorkholgui = await model.aggregate([
+          {
+            $match: {
+              baiguullagiinId: req.body.baiguullagiinId,
+              barilgiinId: !!req.body.barilgiinId
+                ? req.body.barilgiinId
+                : { $exists: true },
+            },
+          },
+          { $unwind: "$tuukh" },
+          {
+            $match: {
+              createdAt: {
+                $gte: actualStartDate,
+                $lte: actualEndDate,
+              },
+              "tuukh.tuluv": -4,
+            },
+          },
+          {
+            $group: {
+              _id: "Тодорхойгүй",
+              niitDun: { $sum: "$niitDun" },
+              ids: { $addToSet: "$_id" },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              niitDun: 1,
+              niitToo: { $size: "$ids" },
+            },
+          },
+        ]);
 
         const unegui = await model.aggregate([
           {
@@ -1400,7 +1406,7 @@ router.post(
           },
         ]);
 
-        return { udriinTailan, zurchiltei, unegui };
+        return { udriinTailan, zurchiltei, todorkholgui, unegui };
       };
 
       const getCollectionName = (year, month) =>
@@ -1443,7 +1449,7 @@ router.post(
 
         [
           mergeArray(allResults.zurchiltei, "Зөрчилтэй"),
-          // mergeArray(allResults.tulburiinZurchiltei, "Төлбөрийн зөрчилтэй"),
+          mergeArray(allResults.todorkholgui, "Тодорхойгүй"),
           mergeArray(allResults.unegui, "Үнэгүй"),
         ].forEach((item) => item && result.push(item));
 
@@ -1500,7 +1506,7 @@ router.post(
       const allResults = {
         udriinTailan: [],
         zurchiltei: [],
-        // tulburiinZurchiltei: [],
+        todorkholgui: [],
         unegui: [],
       };
 
@@ -1513,7 +1519,7 @@ router.post(
           );
           allResults.udriinTailan.push(...result.udriinTailan);
           allResults.zurchiltei.push(...result.zurchiltei);
-          // allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
+          allResults.todorkholgui.push(...result.todorkholgui);
           allResults.unegui.push(...result.unegui);
         } catch (err) {
           console.error(
