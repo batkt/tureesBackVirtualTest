@@ -566,7 +566,7 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
             'tuukh.0.tsagiinTuukh.0.garsanTsag': { $exists: false },
             'tuukh.0.tuluv': 0,
             zurchil: { $exists: false },
-            createdAt: {
+            'tuukh.0.tsagiinTuukh.0.orsonTsag': {
               $lt: moment().startOf('day').toDate(),
             },
           });
