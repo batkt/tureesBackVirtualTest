@@ -668,7 +668,6 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
 
     const khariu = await sdkData(req, medegdel);
 
-   
     const uilchluulegchModel = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
     const todorkhoiguiEntries = await uilchluulegchModel.find({
       mashiniiDugaar: req.body.mashiniiDugaar,
@@ -684,12 +683,24 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
       let bodsonDun = 0;
       if (zogsool && entry) {
         try {
-          bodsonDun = await zogsooliinDunAvya(
-            zogsool,
-            entry,
-            req.body.tukhainBaaziinKholbolt,
-          );
+          const garsanTsag =
+            entry.tuukh?.[0]?.tsagiinTuukh?.[0]?.garsanTsag || new Date();
+
+          if (orsonTsag) {
+            const khugatsaa = Math.ceil(
+              (new Date(garsanTsag) - new Date(orsonTsag)) / (1000 * 60),
+            ); // minutes
+            const undsenUne =
+              zogsool.undsenUne || entry.tuukh?.[0]?.undsenUne || 3000;
+            const uneguiKhugatsaa = zogsool.uneguiKhugatsaa || 0;
+
+            if (khugatsaa > uneguiKhugatsaa) {
+              const tulburiinKhugatsaa = khugatsaa - uneguiKhugatsaa;
+              bodsonDun = Math.ceil(tulburiinKhugatsaa / 60) * undsenUne;
+            }
+          }
         } catch (e) {
+          console.log("Error calculating payment for todorkhoigui:", e);
           bodsonDun = 0;
         }
       }
