@@ -1343,6 +1343,7 @@ router.post(
           },
         ]);
 
+        const shalgakhTsag = new Date(Date.now() - 18 * 60 * 60 * 1000);
         const todorkholgui = await model.aggregate([
           {
             $match: {
@@ -1355,10 +1356,8 @@ router.post(
           { $unwind: "$tuukh" },
           {
             $match: {
-              createdAt: {
-                $gte: actualStartDate,
-                $lte: actualEndDate,
-              },
+              "tuukh.tsagiinTuukh.garsanTsag": { $exists: false },
+              "tuukh.tsagiinTuukh.orsonTsag": { $lt: shalgakhTsag },
               "tuukh.tuluv": -4,
             },
           },
