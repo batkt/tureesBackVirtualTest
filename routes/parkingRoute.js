@@ -1373,7 +1373,6 @@ router.post(
           {
             $match: {
               "tuukh.tuluv": -4,
-              "tuukh.tsagiinTuukh.garsanTsag": { $exists: false },
             },
           },
           {
