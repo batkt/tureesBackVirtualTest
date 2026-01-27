@@ -666,13 +666,15 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
       }
     }
 
-    // Mark previous active entries (tuluv: 0) without garsanTsag as -4 (Тодорхойгүй)
+    const khariu = await sdkData(req, medegdel);
+
+    
     const uilchluulegchModel = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
     await uilchluulegchModel.updateMany(
       {
         mashiniiDugaar: req.body.mashiniiDugaar,
-        "tuukh.0.tuluv": 0,
-        "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: false },
+        "tuukh.0.tuluv": -2,
+        "tuukh.0.garsanKhaalga": "zurchiltei",
       },
       {
         $set: {
@@ -681,7 +683,6 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
       },
     );
 
-    const khariu = await sdkData(req, medegdel);
     res.send(khariu);
   } catch (err) {
     next(err);
