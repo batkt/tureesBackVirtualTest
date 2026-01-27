@@ -665,7 +665,70 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
         );
       }
     }
+
     const khariu = await sdkData(req, medegdel);
+
+    const uilchluulegchModel = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+    
+ 
+    const todorkhoiguiEntries = await uilchluulegchModel.find({
+      mashiniiDugaar: req.body.mashiniiDugaar,
+      "tuukh.0.tuluv": -2,
+      "tuukh.0.garsanKhaalga": "zurchiltei",
+    });
+
+    
+
+    const zogsool = await Parking(req.body.tukhainBaaziinKholbolt).findOne({
+      _id: req.body.zogsooliinId,
+    });
+
+    
+
+    for (const entry of todorkhoiguiEntries) {
+      let bodsonDun = 0;
+      if (entry) {
+        try {
+          const orsonTsag = entry.tuukh?.[0]?.tsagiinTuukh?.[0]?.orsonTsag;
+          const garsanTsag = entry.tuukh?.[0]?.tsagiinTuukh?.[0]?.garsanTsag || new Date();
+          const undsenUne = zogsool?.undsenUne || entry.tuukh?.[0]?.undsenUne || 3000;
+          const uneguiKhugatsaa = zogsool?.uneguiKhugatsaa || 0;
+
+           
+
+          if (orsonTsag) {
+            const khugatsaa = Math.ceil(
+              (new Date(garsanTsag) - new Date(orsonTsag)) / (1000 * 60)
+            );  
+            
+             
+
+            if (khugatsaa > uneguiKhugatsaa) {
+              const tulburiinKhugatsaa = khugatsaa - uneguiKhugatsaa;
+              bodsonDun = Math.ceil(tulburiinKhugatsaa / 60) * undsenUne;
+            }
+            
+          
+          }
+        } catch (e) {
+          
+          bodsonDun = 0;
+        }
+      }
+
+      await uilchluulegchModel.updateOne(
+        { _id: entry._id },
+        {
+          $set: {
+            "tuukh.0.tuluv": -4,
+            niitDun: bodsonDun,
+          },
+        },
+      );
+      
+  
+    }
+
     res.send(khariu);
   } catch (err) {
     next(err);
@@ -1343,34 +1406,40 @@ router.post(
           },
         ]);
 
-        // const tulburiinZurchiltei = await model.aggregate([
-        //   {
-        //     $match: {
-        //       baiguullagiinId: req.body.baiguullagiinId,
-        //       barilgiinId: !!req.body.barilgiinId
-        //         ? req.body.barilgiinId
-        //         : { $exists: true },
-        //     },
-        //   },
-        //   { $unwind: "$tuukh" },
-        //   { $unwind: "$tuukh.tulbur" },
-        //   {
-        //     $match: {
-        //       "tuukh.tsagiinTuukh.garsanTsag": {
-        //         $gte: actualStartDate,
-        //         $lte: actualEndDate,
-        //       },
-        //       "tuukh.tuluv": -4,
-        //     },
-        //   },
-        //   {
-        //     $group: {
-        //       _id: "Төлбөрийн зөрчилтэй",
-        //       niitDun: { $sum: "$tuukh.tulbur.dun" },
-        //       niitToo: { $sum: 1 },
-        //     },
-        //   },
-        // ]);
+        const todorkhoigui = await model.aggregate([
+          {
+            $match: {
+              baiguullagiinId: req.body.baiguullagiinId,
+              barilgiinId: !!req.body.barilgiinId
+                ? req.body.barilgiinId
+                : { $exists: true },
+            },
+          },
+          { $unwind: "$tuukh" },
+          {
+            $match: {
+              "tuukh.tuluv": -4,
+              "tuukh.tsagiinTuukh.garsanTsag": {
+                $gte: actualStartDate,
+                $lte: actualEndDate,
+              },
+            },
+          },
+          {
+            $group: {
+              _id: "Тодорхойгүй",
+              niitDun: { $sum: "$niitDun" },
+              ids: { $addToSet: "$_id" },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              niitDun: 1,
+              niitToo: { $size: "$ids" },
+            },
+          },
+        ]);
 
         const unegui = await model.aggregate([
           {
@@ -1400,7 +1469,7 @@ router.post(
           },
         ]);
 
-        return { udriinTailan, zurchiltei, unegui };
+        return { udriinTailan, zurchiltei, todorkhoigui, unegui };
       };
 
       const getCollectionName = (year, month) =>
@@ -1443,7 +1512,7 @@ router.post(
 
         [
           mergeArray(allResults.zurchiltei, "Зөрчилтэй"),
-          // mergeArray(allResults.tulburiinZurchiltei, "Төлбөрийн зөрчилтэй"),
+          mergeArray(allResults.todorkhoigui, "Тодорхойгүй"),
           mergeArray(allResults.unegui, "Үнэгүй"),
         ].forEach((item) => item && result.push(item));
 
@@ -1500,7 +1569,7 @@ router.post(
       const allResults = {
         udriinTailan: [],
         zurchiltei: [],
-        // tulburiinZurchiltei: [],
+        todorkhoigui: [],
         unegui: [],
       };
 
@@ -1513,7 +1582,7 @@ router.post(
           );
           allResults.udriinTailan.push(...result.udriinTailan);
           allResults.zurchiltei.push(...result.zurchiltei);
-          // allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
+          allResults.todorkhoigui.push(...result.todorkhoigui);
           allResults.unegui.push(...result.unegui);
         } catch (err) {
           console.error(
