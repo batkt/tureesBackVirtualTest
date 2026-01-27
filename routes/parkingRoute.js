@@ -2521,7 +2521,7 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
               tuukh: {
                 $elemMatch: {
                   zogsooliinId: zogsool._id,
-                  tuluv: { $nin: [-2, -3] },
+                  tuluv: { $nin: [-2, -3, -4] },
                   $or: [
                     {
                       "tsagiinTuukh.0.garsanTsag": {
@@ -2624,7 +2624,7 @@ router.get(
                 },
               ],
               "tuukh.0.tuluv": {
-                $nin: [-2, -3],
+                $nin: [-2, -3, -4],
               },
             });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar)
@@ -2899,12 +2899,14 @@ router.route("/v1/pay").post(async (req, res, next) => {
             const plateNumber = req.body.plate_number;
             const zogsoolId = zogsool._id;
             const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
-              mashiniiDugaar: plateNumber,
-              "tuukh.0.zogsooliinId": zogsoolId,
-              "tuukh.0.tuluv": { $nin: [-2, -3] },
-              updatedAt: { $gt: fiveMinutesAgo },
-            }).sort({ updatedAt: -1 });
+            oldsonMashin = await Uilchluulegch(kholbolt, true)
+              .findOne({
+                mashiniiDugaar: plateNumber,
+                "tuukh.0.zogsooliinId": zogsoolId,
+                "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
+                updatedAt: { $gt: fiveMinutesAgo },
+              })
+              .sort({ updatedAt: -1 });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
@@ -3193,7 +3195,7 @@ router.route("/v2/pay").post(async (req, res, next) => {
             oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
               mashiniiDugaar: plateNumber,
               "tuukh.0.zogsooliinId": zogsoolId,
-              "tuukh.0.tuluv": { $nin: [-2, -3] },
+              "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
               updatedAt: { $gt: fiveMinutesAgo },
             });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
@@ -3451,7 +3453,7 @@ router.route("/v2/pay").post(async (req, res, next) => {
             var queryOne = {
               mashiniiDugaar: plateNumber,
               "tuukh.0.zogsooliinId": zogsoolId,
-              "tuukh.0.tuluv": { $nin: [-2, -3] },
+              "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
               updatedAt: { $gt: fiveMinutesAgo },
             };
             oldsonMashin = await getUilchluulegchfindOne(
@@ -3527,7 +3529,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
                 },
               ],
               "tuukh.0.tuluv": {
-                $nin: [-2, -3],
+                $nin: [-2, -3, -4],
               },
             });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
