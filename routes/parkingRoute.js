@@ -668,7 +668,6 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
 
     const khariu = await sdkData(req, medegdel);
 
-    
     const uilchluulegchModel = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
     await uilchluulegchModel.updateMany(
       {
@@ -1373,13 +1372,24 @@ router.post(
           {
             $match: {
               "tuukh.tuluv": -4,
+              "tuukh.tsagiinTuukh.garsanTsag": {
+                $gte: actualStartDate,
+                $lte: actualEndDate,
+              },
             },
           },
           {
             $group: {
               _id: "Тодорхойгүй",
               niitDun: { $sum: "$niitDun" },
-              niitToo: { $sum: 1 },
+              ids: { $addToSet: "$_id" },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              niitDun: 1,
+              niitToo: { $size: "$ids" },
             },
           },
         ]);
@@ -2911,12 +2921,14 @@ router.route("/v1/pay").post(async (req, res, next) => {
             const plateNumber = req.body.plate_number;
             const zogsoolId = zogsool._id;
             const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
-              mashiniiDugaar: plateNumber,
-              "tuukh.0.zogsooliinId": zogsoolId,
-              "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
-              updatedAt: { $gt: fiveMinutesAgo },
-            }).sort({ updatedAt: -1 });
+            oldsonMashin = await Uilchluulegch(kholbolt, true)
+              .findOne({
+                mashiniiDugaar: plateNumber,
+                "tuukh.0.zogsooliinId": zogsoolId,
+                "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
+                updatedAt: { $gt: fiveMinutesAgo },
+              })
+              .sort({ updatedAt: -1 });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
               tukhainKholbolt = kholbolt;
               tukhainZogsool = zogsool;
