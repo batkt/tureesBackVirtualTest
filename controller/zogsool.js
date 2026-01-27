@@ -531,6 +531,7 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
         kholboltuud = [ kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId), ];
       if (kholboltuud) {
         for (const kholbolt of kholboltuud) {
+   
           const zurchilteiUilchluulegch = await Uilchluulegch(kholbolt).find({
             baiguullagiinId: kholbolt?.baiguullagiinId,
             'tuukh.0.tsagiinTuukh.0.garsanTsag': { $exists: true },
@@ -557,6 +558,33 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
               bulkOps.push(upsertDoc);
             }
             await Uilchluulegch(kholbolt).bulkWrite(bulkOps).then((bulkWriteOpResult) => {}).catch((err) => {});
+          }
+
+       
+          const todorkhoiguiUilchluulegch = await Uilchluulegch(kholbolt).find({
+            baiguullagiinId: kholbolt?.baiguullagiinId,
+            'tuukh.0.tsagiinTuukh.0.garsanTsag': { $exists: false },
+            'tuukh.0.tuluv': 0,
+            zurchil: { $exists: false },
+            createdAt: {
+              $lt: moment().startOf('day').toDate(),
+            },
+          });
+          var bulkOpsTodorkholgui = [];
+          if (todorkhoiguiUilchluulegch?.length > 0) {
+            for (const todorkholgui of todorkhoiguiUilchluulegch) {
+              var update = {"tuukh.0.tuluv": -4, zurchil: "Тодорхойгүй зөрчилтэй!"};
+              update["tuukh.0.burtgesenAjiltaniiNer"] = "систем";
+              console.log("todorkhoiguiTuvulBoluulakh:", todorkholgui._id, update);
+              let upsertDoc = {
+                updateOne: {
+                  filter: { _id: todorkholgui._id },
+                  update: update,
+                },
+              };
+              bulkOpsTodorkholgui.push(upsertDoc);
+            }
+            await Uilchluulegch(kholbolt).bulkWrite(bulkOpsTodorkholgui).then((bulkWriteOpResult) => {}).catch((err) => {});
           }
         } 
       }   
