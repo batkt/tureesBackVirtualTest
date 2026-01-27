@@ -1343,34 +1343,34 @@ router.post(
           },
         ]);
 
-        const tulburiinZurchiltei = await model.aggregate([
-          {
-            $match: {
-              baiguullagiinId: req.body.baiguullagiinId,
-              barilgiinId: !!req.body.barilgiinId
-                ? req.body.barilgiinId
-                : { $exists: true },
-            },
-          },
-          { $unwind: "$tuukh" },
-          { $unwind: "$tuukh.tulbur" },
-          {
-            $match: {
-              "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: actualStartDate,
-                $lte: actualEndDate,
-              },
-              "tuukh.tuluv": -4,
-            },
-          },
-          {
-            $group: {
-              _id: "Төлбөрийн зөрчилтэй",
-              niitDun: { $sum: "$tuukh.tulbur.dun" },
-              niitToo: { $sum: 1 },
-            },
-          },
-        ]);
+        // const tulburiinZurchiltei = await model.aggregate([
+        //   {
+        //     $match: {
+        //       baiguullagiinId: req.body.baiguullagiinId,
+        //       barilgiinId: !!req.body.barilgiinId
+        //         ? req.body.barilgiinId
+        //         : { $exists: true },
+        //     },
+        //   },
+        //   { $unwind: "$tuukh" },
+        //   { $unwind: "$tuukh.tulbur" },
+        //   {
+        //     $match: {
+        //       "tuukh.tsagiinTuukh.garsanTsag": {
+        //         $gte: actualStartDate,
+        //         $lte: actualEndDate,
+        //       },
+        //       "tuukh.tuluv": -4,
+        //     },
+        //   },
+        //   {
+        //     $group: {
+        //       _id: "Төлбөрийн зөрчилтэй",
+        //       niitDun: { $sum: "$tuukh.tulbur.dun" },
+        //       niitToo: { $sum: 1 },
+        //     },
+        //   },
+        // ]);
 
         const unegui = await model.aggregate([
           {
@@ -1400,7 +1400,7 @@ router.post(
           },
         ]);
 
-        return { udriinTailan, zurchiltei, tulburiinZurchiltei, unegui };
+        return { udriinTailan, zurchiltei, unegui };
       };
 
       const getCollectionName = (year, month) =>
@@ -1443,7 +1443,7 @@ router.post(
 
         [
           mergeArray(allResults.zurchiltei, "Зөрчилтэй"),
-          mergeArray(allResults.tulburiinZurchiltei, "Төлбөрийн зөрчилтэй"),
+          // mergeArray(allResults.tulburiinZurchiltei, "Төлбөрийн зөрчилтэй"),
           mergeArray(allResults.unegui, "Үнэгүй"),
         ].forEach((item) => item && result.push(item));
 
@@ -1500,7 +1500,7 @@ router.post(
       const allResults = {
         udriinTailan: [],
         zurchiltei: [],
-        tulburiinZurchiltei: [],
+        // tulburiinZurchiltei: [],
         unegui: [],
       };
 
@@ -1513,7 +1513,7 @@ router.post(
           );
           allResults.udriinTailan.push(...result.udriinTailan);
           allResults.zurchiltei.push(...result.zurchiltei);
-          allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
+          // allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
           allResults.unegui.push(...result.unegui);
         } catch (err) {
           console.error(
@@ -2521,7 +2521,7 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
               tuukh: {
                 $elemMatch: {
                   zogsooliinId: zogsool._id,
-                  tuluv: { $nin: [-2, -3, -4] },
+                  tuluv: { $nin: [-2, -3] },
                   $or: [
                     {
                       "tsagiinTuukh.0.garsanTsag": {
@@ -2624,7 +2624,7 @@ router.get(
                 },
               ],
               "tuukh.0.tuluv": {
-                $nin: [-2, -3, -4],
+                $nin: [-2, -3],
               },
             });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar)
@@ -2902,7 +2902,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
             oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
               mashiniiDugaar: plateNumber,
               "tuukh.0.zogsooliinId": zogsoolId,
-              "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
+              "tuukh.0.tuluv": { $nin: [-2, -3] },
               updatedAt: { $gt: fiveMinutesAgo },
             }).sort({ updatedAt: -1 });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
@@ -3193,7 +3193,7 @@ router.route("/v2/pay").post(async (req, res, next) => {
             oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
               mashiniiDugaar: plateNumber,
               "tuukh.0.zogsooliinId": zogsoolId,
-              "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
+              "tuukh.0.tuluv": { $nin: [-2, -3] },
               updatedAt: { $gt: fiveMinutesAgo },
             });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
@@ -3451,7 +3451,7 @@ router.route("/v2/pay").post(async (req, res, next) => {
             var queryOne = {
               mashiniiDugaar: plateNumber,
               "tuukh.0.zogsooliinId": zogsoolId,
-              "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
+              "tuukh.0.tuluv": { $nin: [-2, -3] },
               updatedAt: { $gt: fiveMinutesAgo },
             };
             oldsonMashin = await getUilchluulegchfindOne(
@@ -3527,7 +3527,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
                 },
               ],
               "tuukh.0.tuluv": {
-                $nin: [-2, -3, -4],
+                $nin: [-2, -3],
               },
             });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
