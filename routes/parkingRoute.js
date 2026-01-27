@@ -665,6 +665,22 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
         );
       }
     }
+
+    // Mark previous active entries (tuluv: 0) without garsanTsag as -4 (Тодорхойгүй)
+    const uilchluulegchModel = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
+    await uilchluulegchModel.updateMany(
+      {
+        mashiniiDugaar: req.body.mashiniiDugaar,
+        "tuukh.0.tuluv": 0,
+        "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: false },
+      },
+      {
+        $set: {
+          "tuukh.0.tuluv": -4,
+        },
+      },
+    );
+
     const khariu = await sdkData(req, medegdel);
     res.send(khariu);
   } catch (err) {
@@ -1343,7 +1359,7 @@ router.post(
           },
         ]);
 
-        const tulburiinZurchiltei = await model.aggregate([
+        const todorkhoigui = await model.aggregate([
           {
             $match: {
               baiguullagiinId: req.body.baiguullagiinId,
@@ -1353,20 +1369,16 @@ router.post(
             },
           },
           { $unwind: "$tuukh" },
-          { $unwind: "$tuukh.tulbur" },
           {
             $match: {
-              "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: actualStartDate,
-                $lte: actualEndDate,
-              },
               "tuukh.tuluv": -4,
+              "tuukh.tsagiinTuukh.garsanTsag": { $exists: false },
             },
           },
           {
             $group: {
-              _id: "Төлбөрийн зөрчилтэй",
-              niitDun: { $sum: "$tuukh.tulbur.dun" },
+              _id: "Тодорхойгүй",
+              niitDun: { $sum: "$niitDun" },
               niitToo: { $sum: 1 },
             },
           },
@@ -1400,7 +1412,7 @@ router.post(
           },
         ]);
 
-        return { udriinTailan, zurchiltei, tulburiinZurchiltei, unegui };
+        return { udriinTailan, zurchiltei, todorkhoigui, unegui };
       };
 
       const getCollectionName = (year, month) =>
@@ -1443,7 +1455,7 @@ router.post(
 
         [
           mergeArray(allResults.zurchiltei, "Зөрчилтэй"),
-          mergeArray(allResults.tulburiinZurchiltei, "Төлбөрийн зөрчилтэй"),
+          mergeArray(allResults.todorkhoigui, "Тодорхойгүй"),
           mergeArray(allResults.unegui, "Үнэгүй"),
         ].forEach((item) => item && result.push(item));
 
@@ -1500,7 +1512,7 @@ router.post(
       const allResults = {
         udriinTailan: [],
         zurchiltei: [],
-        tulburiinZurchiltei: [],
+        todorkhoigui: [],
         unegui: [],
       };
 
@@ -1513,7 +1525,7 @@ router.post(
           );
           allResults.udriinTailan.push(...result.udriinTailan);
           allResults.zurchiltei.push(...result.zurchiltei);
-          allResults.tulburiinZurchiltei.push(...result.tulburiinZurchiltei);
+          allResults.todorkhoigui.push(...result.todorkhoigui);
           allResults.unegui.push(...result.unegui);
         } catch (err) {
           console.error(
