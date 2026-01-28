@@ -884,10 +884,7 @@ router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) =>
 
     var query = [
       {
-        $match: {
-          ...match,
-          "avlaga.guilgeenuud.ognoo": { $gte: ehlehOgnoo, $lte: duusakhOgnoo },
-        },
+        $match: match,
       },
       {
         $unwind: {
@@ -896,6 +893,7 @@ router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) =>
       },
       {
         $match: {
+          "avlaga.guilgeenuud.ognoo": { $gte: ehlehOgnoo, $lte: duusakhOgnoo },
           $or: [
             {
               "avlaga.guilgeenuud.turul": {
