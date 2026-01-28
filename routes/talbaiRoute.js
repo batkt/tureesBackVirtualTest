@@ -875,10 +875,12 @@ router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) =>
 
     // Эхлэх огноо: 2025-01 сараас
     var ehlehOgnoo = moment("2025-01-01").startOf("month").toDate();
-    // Дуусах огноо: request-оор ирсэн эсвэл өнөөдрийн сүүлийн өдөр
-    var duusakhOgnoo = moment(req.body.duusakhOgnoo || new Date())
-      .endOf("month")
-      .toDate();
+    // Дуусах огноо: request-оор ирсэн эсвэл өнөөдрийн сүүлийн өдөр, ГЭХДЭЭ 2026-01 сараас хэтрэхгүй
+    var requestDuusakh = moment(req.body.duusakhOgnoo || new Date()).endOf(
+      "month"
+    );
+    var maxDuusakh = moment("2026-01-01").endOf("month");
+    var duusakhOgnoo = moment.min(requestDuusakh, maxDuusakh).toDate();
 
     var query = [
       {
