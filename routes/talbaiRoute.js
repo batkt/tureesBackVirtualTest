@@ -863,4 +863,368 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
   }
 });
 
+router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      tuluv: { $ne: -1 },
+    };
+    if (req.body.query) match["$or"] = req.body.query["$or"];
+    if (req.body.registeruud) match["register"] = { $in: req.body.registeruud };
+    var duusakhOgnoo = moment(req.body.duusakhOgnoo)
+      .endOf("month")
+      .format("YYYY-MM-DD 23:59:59");
+    var duusakhOgnoo30 = moment(req.body.duusakhOgnoo)
+      .subtract(1, "month")
+      .endOf("month")
+      .format("YYYY-MM-DD 23:59:59");
+    var duusakhOgnoo60 = moment(req.body.duusakhOgnoo)
+      .subtract(2, "month")
+      .endOf("month")
+      .format("YYYY-MM-DD 23:59:59");
+    var duusakhOgnoo90 = moment(req.body.duusakhOgnoo)
+      .subtract(3, "month")
+      .endOf("month")
+      .format("YYYY-MM-DD 23:59:59");
+    var duusakhOgnoo120 = moment(req.body.duusakhOgnoo)
+      .subtract(4, "month")
+      .endOf("month")
+      .format("YYYY-MM-DD 23:59:59");
+
+    var query = [
+      {
+        $match: match,
+      },
+      {
+        $unwind: {
+          path: "$avlaga.guilgeenuud",
+        },
+      },
+      {
+        $match: {
+          $or: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $nin: ["baritsaa", "aldangi"],
+              },
+            },
+            {
+              $and: [
+                {
+                  "avlaga.guilgeenuud.turul": {
+                    $in: ["baritsaa"],
+                  },
+                },
+                {
+                  "avlaga.guilgeenuud.tulsunDun": {
+                    $gt: 0,
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      },
+      {
+        $group: {
+          _id: {
+            gereeniiDugaar: "$gereeniiDugaar",
+            talbainDugaar: "$talbainDugaar",
+            ner: "$ner",
+            register: "$register",
+          },
+          tulsunDun: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(duusakhOgnoo),
+                      ],
+                    },
+                  ],
+                },
+                {
+                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                },
+                0,
+              ],
+            },
+          },
+          avalaga0: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $gt: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(duusakhOgnoo30),
+                      ],
+                    },
+                    {
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(duusakhOgnoo),
+                      ],
+                    },
+                  ],
+                },
+                {
+                  $subtract: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                    {
+                      $add: [
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                        },
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                        },
+                      ],
+                    },
+                  ],
+                },
+                0,
+              ],
+            },
+          },
+          avlaga31: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $gt: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(duusakhOgnoo60),
+                      ],
+                    },
+                    {
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(duusakhOgnoo30),
+                      ],
+                    },
+                  ],
+                },
+                {
+                  $subtract: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                    {
+                      $add: [
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                        },
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                        },
+                      ],
+                    },
+                  ],
+                },
+                0,
+              ],
+            },
+          },
+          avlaga61: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $gt: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(duusakhOgnoo90),
+                      ],
+                    },
+                    {
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(duusakhOgnoo60),
+                      ],
+                    },
+                  ],
+                },
+                {
+                  $subtract: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                    {
+                      $add: [
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                        },
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                        },
+                      ],
+                    },
+                  ],
+                },
+                0,
+              ],
+            },
+          },
+          avlaga91: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $gt: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(duusakhOgnoo120),
+                      ],
+                    },
+                    {
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(duusakhOgnoo90),
+                      ],
+                    },
+                  ],
+                },
+                {
+                  $subtract: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                    {
+                      $add: [
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                        },
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                        },
+                      ],
+                    },
+                  ],
+                },
+                0,
+              ],
+            },
+          },
+          avlaga120: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(duusakhOgnoo120),
+                      ],
+                    },
+                  ],
+                },
+                {
+                  $subtract: [
+                    {
+                      $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                    },
+                    {
+                      $add: [
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                        },
+                        {
+                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                        },
+                      ],
+                    },
+                  ],
+                },
+                0,
+              ],
+            },
+          },
+          avlaga: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(req.body.duusakhOgnoo),
+                      ],
+                    },
+                  ],
+                },
+                "$avlaga.guilgeenuud.tulukhDun",
+                0,
+              ],
+            },
+          },
+          khungulult: {
+            $sum: {
+              $cond: [
+                {
+                  $and: [
+                    {
+                      $lte: [
+                        "$avlaga.guilgeenuud.ognoo",
+                        new Date(req.body.duusakhOgnoo),
+                      ],
+                    },
+                  ],
+                },
+                "$avlaga.guilgeenuud.khyamdral",
+                0,
+              ],
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          gereeniiDugaar: "$_id.gereeniiDugaar",
+          talbainDugaar: "$_id.talbainDugaar",
+          ner: "$_id.ner",
+          register: "$_id.register",
+          avalaga0: "$avalaga0",
+          avlaga31: "$avlaga31",
+          avlaga61: "$avlaga61",
+          avlaga91: "$avlaga91",
+          avlaga120: "$avlaga120",
+          tulsunDun: "$tulsunDun",
+          niitDun: "$avlaga",
+          khungulult: "$khungulult",
+          tulukhDun: {
+            $subtract: [
+              {
+                $ifNull: ["$avlaga", 0],
+              },
+              {
+                $add: [
+                  {
+                    $ifNull: ["$tulsunDun", 0],
+                  },
+                  {
+                    $ifNull: ["$khungulult", 0],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    ];
+    var khariu = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(query);
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
