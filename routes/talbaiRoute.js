@@ -981,6 +981,7 @@ router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) =>
       },
       {
         $sort: {
+          "register": 1,
           "gereeniiDugaar": 1,
           sar: 1,
         },
