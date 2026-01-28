@@ -868,7 +868,6 @@ router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) =>
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
-      tuluv: { $ne: -1 },
     };
     if (req.body.query) match["$or"] = req.body.query["$or"];
     if (req.body.registeruud) match["register"] = { $in: req.body.registeruud };
@@ -936,6 +935,22 @@ router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) =>
             talbainDugaar: "$talbainDugaar",
             ner: "$ner",
             register: "$register",
+            gereeniiOgnoo: "$gereeniiOgnoo",
+            duusakhOgnoo: "$duusakhOgnoo",
+            khugatsaa: "$khugatsaa",
+            turul: "$turul",
+            davkhar: "$davkhar",
+            tuluv: "$tuluv",
+            sariinTurees: "$sariinTurees",
+            talbainNegjUne: "$talbainNegjUne",
+            talbainNiitUne: "$talbainNiitUne",
+            talbainKhemjee: "$talbainKhemjee",
+            talbainKhemjeeMetrKube: "$talbainKhemjeeMetrKube",
+            baritsaaAvakhDun: "$baritsaaAvakhDun",
+            baritsaaniiAvsan: "$baritsaaniiUldegdel",
+            baritsaaAvakhKhugatsaa: "$baritsaaAvakhKhugatsaa",
+            aldangiinUldegdel: "$aldangiinUldegdel",
+            niitTulsunAldangi: "$niitTulsunAldangi",
             sar: "$avlaga.guilgeenuud.yearMonth",
           },
           sariinTulukhDun: {
@@ -960,7 +975,36 @@ router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) =>
           gereeniiDugaar: "$_id.gereeniiDugaar",
           talbainDugaar: "$_id.talbainDugaar",
           ner: "$_id.ner",
-          register: "$_id.register",
+          register: "$_id.register",  
+          gereeniiOgnoo: "$_id.gereeniiOgnoo",
+          duusakhOgnoo: "$_id.duusakhOgnoo",
+          khugatsaa: "$_id.khugatsaa",
+          turul: "$_id.turul",
+          davkhar: "$_id.davkhar",
+          tuluv: "$_id.tuluv",
+          tuluvText: {
+            $cond: [
+              { $eq: ["$_id.tuluv", -1] },
+              "цуцалсан",
+              "идэвхтэй",
+            ],
+          },
+          sariinTurees: "$_id.sariinTurees",
+          talbainNegjUne: "$_id.talbainNegjUne",
+          talbainNiitUne: "$_id.talbainNiitUne",
+          talbainKhemjee: "$_id.talbainKhemjee",
+          talbainKhemjeeMetrKube: "$_id.talbainKhemjeeMetrKube",
+          baritsaaAvakhDun: "$_id.baritsaaAvakhDun",
+          baritsaaniiAvsan: "$_id.baritsaaniiAvsan",
+          baritsaaAvakhKhugatsaa: "$_id.baritsaaAvakhKhugatsaa",
+          baritsaaniiUldegdel: {
+            $subtract: [
+              { $ifNull: ["$_id.baritsaaAvakhDun", 0] },
+              { $ifNull: ["$_id.baritsaaniiAvsan", 0] },
+            ],
+          },
+          aldangiinUldegdel: "$_id.aldangiinUldegdel",
+          niitTulsunAldangi: "$_id.niitTulsunAldangi", 
           sar: "$_id.sar", // жишээ: "2025-01"
           sariinTulukhDun: 1,
           sariinTulsunDun: 1,
