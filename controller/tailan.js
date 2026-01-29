@@ -1163,6 +1163,12 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     req.body.baiguullagiinId
   );
+  const start = new Date(new Date().getFullYear(), 0, 1);
+  const end = new Date(new Date().getFullYear(), 11, 31);
+  const elemMatch = {
+    ognoo: { $gte: start, $lte: end },
+    turul: { $nin: ["baritsaa"] },
+  };
   var group = {
     _id: "$barilgiinId",
     tulukh: {
@@ -1179,6 +1185,9 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
     {
       $match: {
         baiguullagiinId: req.body.baiguullagiinId,
+        tuluv: { $ne: -1 },
+        // reduce work before unwind
+        "avlaga.guilgeenuud": { $elemMatch: elemMatch },
       },
     },
     {
@@ -1193,12 +1202,9 @@ exports.avlagiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
     },
     {
       $match: {
-        tuluv: {
-          $ne: -1,
-        },
         "avlaga.guilgeenuud.ognoo": {
-          $gte: new Date(new Date().getFullYear(), 0, 1),
-          $lte: new Date(new Date().getFullYear(), 11, 31),
+          $gte: start,
+          $lte: end,
         },
         "avlaga.guilgeenuud.turul": {
           $nin: ["baritsaa"],
@@ -1257,6 +1263,12 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     req.body.baiguullagiinId
   );
+  const start = new Date(new Date().getFullYear(), 0, 1);
+  const end = new Date(new Date().getFullYear(), 11, 31);
+  const elemMatch = {
+    ognoo: { $gte: start, $lte: end },
+    turul: { $nin: ["baritsaa"] },
+  };
   var group = {
     _id: "$barilgiinId",
     tulsun: {
@@ -1267,6 +1279,9 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
     {
       $match: {
         baiguullagiinId: req.body.baiguullagiinId,
+        tuluv: { $ne: -1 },
+        // reduce work before unwind
+        "avlaga.guilgeenuud": { $elemMatch: elemMatch },
       },
     },
     {
@@ -1281,12 +1296,9 @@ exports.orlogiinChartSalbaraarAvya = asyncHandler(async (req, res, next) => {
     },
     {
       $match: {
-        tuluv: {
-          $ne: -1,
-        },
         "avlaga.guilgeenuud.ognoo": {
-          $gte: new Date(new Date().getFullYear(), 0, 1),
-          $lte: new Date(new Date().getFullYear(), 11, 31),
+          $gte: start,
+          $lte: end,
         },
         "avlaga.guilgeenuud.turul": {
           $nin: ["baritsaa"],
