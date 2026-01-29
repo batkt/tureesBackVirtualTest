@@ -336,14 +336,11 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
         return a - b;
       });
 
-      console.log("📦 Received zardluud:", zardluud); // ✅ ADD THIS
-    console.log("📅 ekhlekhOgnoo:", ekhlekhOgnoo); // ✅ ADD THIS
-    console.log("📅 duusakhOgnoo:", duusakhOgnoo); 
+    
     await new Array(khugatsaa).fill("").map((mur, index) => {
       tulukhUdruud?.forEach((udur) => {
 
-        console.log("🔄 Processing turOgnoo:", turOgnoo); // ✅ ADD THIS
-        console.log("✅ turOgnoo >= ekhlekhOgnoo?", turOgnoo >= ekhlekhOgnoo); 
+      
         if (!duussanEsekh) {
           suuliinUdur = moment(tukhainSar).endOf("month").date();
           if (suuliinUdur < udur) {
