@@ -392,7 +392,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                     zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
                   if (zardal.turul == "1м3/талбай")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.metrKube);
-                  if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
+                  if (zardal.turul == "Тогтмол" || (zardal.ner?.includes("Цахилгаан") &&  zardal.turul == "Дурын")) zardal.dun = zardal.tariff;
                   var zardalDun = !body.garaasKhonogOruulakhEsekh
                     ? zardal.dun
                     : ekhniiSariinDunZasyaSync(
