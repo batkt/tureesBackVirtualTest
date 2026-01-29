@@ -277,6 +277,7 @@ module.exports.zogsoolTseverlye = async (body, next) => {
                   "tuukh.0.garsanKhaalga": "tseverlesen",
                   "tuukh.0.tsagiinTuukh.0.garsanTsag": new Date(),
                   "tuukh.0.tuluv": -3, //Tseverlesen tuluv
+                  "tuukh.0.burtgesenAjiltaniiNer": "систем",
                   zurchil: "Гарсан цаг тодорхойгүй!",
                 },
               }
