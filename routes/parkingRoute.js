@@ -667,68 +667,6 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
     }
 
     const khariu = await sdkData(req, medegdel);
-
-    const uilchluulegchModel = Uilchluulegch(req.body.tukhainBaaziinKholbolt);
-    
- 
-    const todorkhoiguiEntries = await uilchluulegchModel.find({
-      mashiniiDugaar: req.body.mashiniiDugaar,
-      "tuukh.0.tuluv": -2,
-      "tuukh.0.garsanKhaalga": "zurchiltei",
-    });
-
-    
-
-    const zogsool = await Parking(req.body.tukhainBaaziinKholbolt).findOne({
-      _id: req.body.zogsooliinId,
-    });
-
-    
-
-    for (const entry of todorkhoiguiEntries) {
-      let bodsonDun = 0;
-      if (entry) {
-        try {
-          const orsonTsag = entry.tuukh?.[0]?.tsagiinTuukh?.[0]?.orsonTsag;
-          const garsanTsag = entry.tuukh?.[0]?.tsagiinTuukh?.[0]?.garsanTsag || new Date();
-          const undsenUne = zogsool?.undsenUne || entry.tuukh?.[0]?.undsenUne || 3000;
-          const uneguiKhugatsaa = zogsool?.uneguiKhugatsaa || 0;
-
-           
-
-          if (orsonTsag) {
-            const khugatsaa = Math.ceil(
-              (new Date(garsanTsag) - new Date(orsonTsag)) / (1000 * 60)
-            );  
-            
-             
-
-            if (khugatsaa > uneguiKhugatsaa) {
-              const tulburiinKhugatsaa = khugatsaa - uneguiKhugatsaa;
-              bodsonDun = Math.ceil(tulburiinKhugatsaa / 60) * undsenUne;
-            }
-            
-          
-          }
-        } catch (e) {
-          
-          bodsonDun = 0;
-        }
-      }
-
-      await uilchluulegchModel.updateOne(
-        { _id: entry._id },
-        {
-          $set: {
-            "tuukh.0.tuluv": -4,
-            niitDun: bodsonDun,
-          },
-        },
-      );
-      
-  
-    }
-
     res.send(khariu);
   } catch (err) {
     next(err);
