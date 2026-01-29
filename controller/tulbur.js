@@ -1137,6 +1137,13 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
           };
           if (barilga?.tokhirgoo?.aldangiGereeTusBur)
             match["aldangiinKhuvi"] = { $gt: 0 };
+          const elemMatchThisMonth = {
+            ognoo: { $gte: start, $lte: end },
+            $or: [
+              { turul: { $nin: ["aldangi", "baritsaa"] } },
+              { turul: "baritsaa", tulsunDun: { $gt: 0 } },
+            ],
+          };
           const bagaUldegdel = barilga?.tokhirgoo?.aldangiinBagaUldegdel || 0;
           const gereenuud = await Geree(kholbolt, true).aggregate([
             {
@@ -1147,6 +1154,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 aldangiTsartsaakhEsekh: { $exists: false },
               },
             },
+            // Avoid unwinding every guilgee: pre-filter docs that have at least one matching entry
+            { $match: { "avlaga.guilgeenuud": { $elemMatch: elemMatchThisMonth } } },
             { $unwind: "$avlaga.guilgeenuud" },
             { $match: match },
             {
@@ -1207,6 +1216,13 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 },
               ],
             };
+            const elemMatchBeforeStart = {
+              ognoo: { $lt: start },
+              $or: [
+                { turul: { $nin: ["aldangi", "baritsaa"] } },
+                { turul: "baritsaa", tulsunDun: { $gt: 0 } },
+              ],
+            };
             const songosonGereenuud = await Geree(kholbolt, true).aggregate([
               {
                 $match: {
@@ -1214,6 +1230,12 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   baiguullagiinId: baiguullaga._id.toString(),
                   barilgiinId: barilga._id.toString(),
                   tuluv: { $nin: [-1] },
+                },
+              },
+              // Same idea: pre-filter before unwind
+              {
+                $match: {
+                  "avlaga.guilgeenuud": { $elemMatch: elemMatchBeforeStart },
                 },
               },
               { $unwind: "$avlaga.guilgeenuud" },

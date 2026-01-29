@@ -202,6 +202,13 @@ const gereeSchema = new Schema(
   }
 );
 
+// Performance indexes (safe: do not change behavior, only speed up common filters)
+// Used heavily in `aldangiBodyo()` aggregations.
+gereeSchema.index({ baiguullagiinId: 1, barilgiinId: 1, tuluv: 1 });
+gereeSchema.index({ baiguullagiinId: 1, barilgiinId: 1, aldangiTsartsaakhEsekh: 1 });
+gereeSchema.index({ "avlaga.guilgeenuud.ognoo": 1 });
+gereeSchema.index({ "avlaga.guilgeenuud.turul": 1, "avlaga.guilgeenuud.tulsunDun": 1 });
+
 module.exports = function a(conn, read = false) {
   if (!conn || !conn.kholbolt)
     throw new Error("Холболтын мэдээлэл заавал бөглөх шаардлагатай!");
