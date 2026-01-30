@@ -1626,8 +1626,9 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         },
       },
     ]);
+    var tuxainGuilgee;
     if (ustgaxObject1?.length > 0) {
-      var tuxainGuilgee = ustgaxObject1[0].avlaga?.guilgeenuud;
+      tuxainGuilgee = ustgaxObject1[0].avlaga?.guilgeenuud;
       if (tuxainGuilgee) {
         tuxainGuilgee.gereeniiDugaar = req.body.gereeniiDugaar;
         var ustsanBarimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
@@ -1677,6 +1678,27 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         next(err);
       });
     if (req.body.guilgeeniiId) {
+      const archiveBeforeDate = new Date(tuxainGuilgee?.ognoo);
+      archiveBeforeDate.setHours(0, 0, 0, 0);
+      const y = archiveBeforeDate.getFullYear();
+      const m = archiveBeforeDate.getMonth() + 1;
+      const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
+        .updateOne({ _id: req.body.guilgeeniiId }, [
+          {
+            $set: {
+              kholbosonDun: {
+                $add: [
+                  { $ifNull: ["$kholbosonDun", 0] },
+                  req.body.zarlaga - req.body.orlogo,
+                ],
+              },
+            },
+          },
+        ])
+        .catch((err) => {
+          next(err);
+        });
       await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
         .updateOne({ _id: req.body.guilgeeniiId }, [
           {
@@ -1700,7 +1722,8 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         (a) => a.guilgeeniiId === req.body.guilgeeniiId
       );
       if (filteredGuilgee?.length === 0)
-        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+      {
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
           .updateOne(
             { _id: req.body.guilgeeniiId },
             {
@@ -1713,6 +1736,20 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
           .catch((err) => {
             next(err);
           });
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+          .updateOne(
+            { _id: req.body.guilgeeniiId },
+            {
+              $pull: {
+                kholbosonGereeniiId: req.body.gereeniiId,
+                kholbosonTalbainId: updatedGeree.talbainDugaar,
+              },
+            }
+          )
+          .catch((err) => {
+            next(err);
+          });  
+      }
     }
     await daraagiinTulukhOgnooZasya(
       req.body.gereeniiId,
