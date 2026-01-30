@@ -65,8 +65,15 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         var filteredGuilgee = tempGeree?.avlaga?.guilgeenuud?.filter(
           (a) => a.guilgeeniiId === tulbur.guilgeeniiId
         );
+        const archiveBeforeDate = new Date(tulbur.ognoo);
+        archiveBeforeDate.setHours(0, 0, 0, 0);
+        const y = archiveBeforeDate.getFullYear();
+        const m = archiveBeforeDate.getMonth() + 1;
+        const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
+        console.log("archiveName", archiveName);
         if (filteredBaritsaa?.length === 0 && filteredGuilgee?.length === 0)
-          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+        {
+          var updatedGuilgee = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
             .updateOne(
               { _id: tulbur.guilgeeniiId },
               {
@@ -79,7 +86,22 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
             .catch((err) => {
               next(err);
             });
-        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+          if(!updatedGuilgee)
+            await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+            .updateOne(
+              { _id: tulbur.guilgeeniiId },
+              {
+                $push: {
+                  kholbosonGereeniiId: tulbur.gereeniiId,
+                  kholbosonTalbainId: updatedGeree.talbainDugaar,
+                },
+              }
+            )
+            .catch((err) => {
+              next(err);
+            });
+        }
+        var temp = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
           .updateOne({ _id: tulbur.guilgeeniiId }, [
             {
               $set: {
@@ -94,6 +116,22 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
           .catch((err) => {
             next(err);
           });
+        if(!temp)
+          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+            .updateOne({ _id: tulbur.guilgeeniiId }, [
+              {
+                $set: {
+                  kholbosonDun: {
+                    $add: [{ $ifNull: ["$kholbosonDun", 0] }, dun],
+                  },
+                  burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
+                  burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
+                },
+              },
+            ])
+            .catch((err) => {
+              next(err);
+            });
       }
     }
     if (!aldaaniiMsg) {
