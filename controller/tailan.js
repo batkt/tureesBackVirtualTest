@@ -2211,8 +2211,9 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
       tuluv: {
         $ne: -1,
       },
+
     };
-    if (req.body.query) match["$or"] = req.body.query["$or"];
+    if (req.body.$or) match["$or"] = req.body.$or;
     var matchGroup = {};
     if (!!req.body.khariltsagchiinId)
       matchGroup["_id.register"] = { $in: req.body.khariltsagchiinId };
