@@ -73,7 +73,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         console.log("archiveName", archiveName);
         if (filteredBaritsaa?.length === 0 && filteredGuilgee?.length === 0)
         {
-          var updatedGuilgee = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
+          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
             .updateOne(
               { _id: tulbur.guilgeeniiId },
               {
@@ -86,22 +86,21 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
             .catch((err) => {
               next(err);
             });
-          if(!updatedGuilgee)
-            await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
-            .updateOne(
-              { _id: tulbur.guilgeeniiId },
-              {
-                $push: {
-                  kholbosonGereeniiId: tulbur.gereeniiId,
-                  kholbosonTalbainId: updatedGeree.talbainDugaar,
-                },
-              }
-            )
-            .catch((err) => {
-              next(err);
-            });
+          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+          .updateOne(
+            { _id: tulbur.guilgeeniiId },
+            {
+              $push: {
+                kholbosonGereeniiId: tulbur.gereeniiId,
+                kholbosonTalbainId: updatedGeree.talbainDugaar,
+              },
+            }
+          )
+          .catch((err) => {
+            next(err);
+          });
         }
-        var temp = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
           .updateOne({ _id: tulbur.guilgeeniiId }, [
             {
               $set: {
@@ -116,22 +115,21 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
           .catch((err) => {
             next(err);
           });
-        if(!temp)
-          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
-            .updateOne({ _id: tulbur.guilgeeniiId }, [
-              {
-                $set: {
-                  kholbosonDun: {
-                    $add: [{ $ifNull: ["$kholbosonDun", 0] }, dun],
-                  },
-                  burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
-                  burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+          .updateOne({ _id: tulbur.guilgeeniiId }, [
+            {
+              $set: {
+                kholbosonDun: {
+                  $add: [{ $ifNull: ["$kholbosonDun", 0] }, dun],
                 },
+                burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
+                burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
               },
-            ])
-            .catch((err) => {
-              next(err);
-            });
+            },
+          ])
+          .catch((err) => {
+            next(err);
+          });
       }
     }
     if (!aldaaniiMsg) {
@@ -210,7 +208,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
       console.log("archiveName", archiveName);
       if (filteredGuilgee?.length === 0)
       {
-        var temp = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
           .updateOne(
             { _id: guilgee.guilgeeniiId },
             {
@@ -224,23 +222,22 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
             aldaaniiMsg = aldaaniiMsg + err.message;
             next(err);
           });
-        if(!temp)  
-          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
-            .updateOne(
-              { _id: guilgee.guilgeeniiId },
-              {
-                $push: {
-                  kholbosonGereeniiId: guilgee.gereeniiId,
-                  kholbosonTalbainId: updatedGeree.talbainDugaar,
-                },
-              }
-            )
-            .catch((err) => {
-              aldaaniiMsg = aldaaniiMsg + err.message;
-              next(err);
-            });
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+          .updateOne(
+            { _id: guilgee.guilgeeniiId },
+            {
+              $push: {
+                kholbosonGereeniiId: guilgee.gereeniiId,
+                kholbosonTalbainId: updatedGeree.talbainDugaar,
+              },
+            }
+          )
+          .catch((err) => {
+            aldaaniiMsg = aldaaniiMsg + err.message;
+            next(err);
+          });
       }
-      var tempData = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
+      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
         .updateOne({ _id: guilgee.guilgeeniiId }, [
           {
             $set: {
@@ -259,26 +256,25 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
           aldaaniiMsg = aldaaniiMsg + err.message;
           next(err);
         });
-      if(!tempData)
-        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
-          .updateOne({ _id: guilgee.guilgeeniiId }, [
-            {
-              $set: {
-                kholbosonDun: {
-                  $add: [
-                    { $ifNull: ["$kholbosonDun", 0] },
-                    guilgee.orlogo - guilgee.zarlaga,
-                  ],
-                },
-                burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
-                burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
+      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+        .updateOne({ _id: guilgee.guilgeeniiId }, [
+          {
+            $set: {
+              kholbosonDun: {
+                $add: [
+                  { $ifNull: ["$kholbosonDun", 0] },
+                  guilgee.orlogo - guilgee.zarlaga,
+                ],
               },
+              burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
+              burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
             },
-          ])
-          .catch((err) => {
-            aldaaniiMsg = aldaaniiMsg + err.message;
-            next(err);
-          });
+          },
+        ])
+        .catch((err) => {
+          aldaaniiMsg = aldaaniiMsg + err.message;
+          next(err);
+        });
     }
     daraagiinTulukhOgnooZasya(
       guilgee.gereeniiId,
