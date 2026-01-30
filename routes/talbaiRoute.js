@@ -951,6 +951,9 @@ router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) =>
             baritsaaAvakhKhugatsaa: "$baritsaaAvakhKhugatsaa",
             aldangiinUldegdel: "$aldangiinUldegdel",
             niitTulsunAldangi: "$niitTulsunAldangi",
+            zoriulalt: "$zoriulalt",
+            tusgaiZoriulalt: "$tusgaiZoriulalt",
+            khariltsagchiinNershil: "$khariltsagchiinNershil",
             sar: "$avlaga.guilgeenuud.yearMonth",
           },
           sariinTulukhDun: {
@@ -1005,6 +1008,9 @@ router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) =>
           },
           aldangiinUldegdel: "$_id.aldangiinUldegdel",
           niitTulsunAldangi: "$_id.niitTulsunAldangi", 
+          zoriulalt: "$_id.zoriulalt",
+          tusgaiZoriulalt: "$_id.tusgaiZoriulalt",
+          khariltsagchiinNershil: "$_id.khariltsagchiinNershil",
           sar: "$_id.sar", // жишээ: "2025-01"
           sariinTulukhDun: 1,
           sariinTulsunDun: 1,
