@@ -202,8 +202,15 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
       var filteredGuilgee = tempGeree?.avlaga?.guilgeenuud?.filter(
         (a) => a.guilgeeniiId === guilgee.guilgeeniiId
       );
+      const archiveBeforeDate = new Date(guilgee.ognoo);
+      archiveBeforeDate.setHours(0, 0, 0, 0);
+      const y = archiveBeforeDate.getFullYear();
+      const m = archiveBeforeDate.getMonth() + 1;
+      const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
+      console.log("archiveName", archiveName);
       if (filteredGuilgee?.length === 0)
-        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+      {
+        var temp = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
           .updateOne(
             { _id: guilgee.guilgeeniiId },
             {
@@ -217,7 +224,23 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
             aldaaniiMsg = aldaaniiMsg + err.message;
             next(err);
           });
-      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+        if(!temp)  
+          await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+            .updateOne(
+              { _id: guilgee.guilgeeniiId },
+              {
+                $push: {
+                  kholbosonGereeniiId: guilgee.gereeniiId,
+                  kholbosonTalbainId: updatedGeree.talbainDugaar,
+                },
+              }
+            )
+            .catch((err) => {
+              aldaaniiMsg = aldaaniiMsg + err.message;
+              next(err);
+            });
+      }
+      var tempData = await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
         .updateOne({ _id: guilgee.guilgeeniiId }, [
           {
             $set: {
@@ -236,6 +259,26 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
           aldaaniiMsg = aldaaniiMsg + err.message;
           next(err);
         });
+      if(!tempData)
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+          .updateOne({ _id: guilgee.guilgeeniiId }, [
+            {
+              $set: {
+                kholbosonDun: {
+                  $add: [
+                    { $ifNull: ["$kholbosonDun", 0] },
+                    guilgee.orlogo - guilgee.zarlaga,
+                  ],
+                },
+                burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
+                burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
+              },
+            },
+          ])
+          .catch((err) => {
+            aldaaniiMsg = aldaaniiMsg + err.message;
+            next(err);
+          });
     }
     daraagiinTulukhOgnooZasya(
       guilgee.gereeniiId,
