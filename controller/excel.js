@@ -1041,6 +1041,11 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
     {
+      header: "Зориулалт",
+      key: "Зориулалт",
+      width: 20,
+    },
+    {
       header: "Талбайн код",
       key: "Талбайн код",
       width: 20,
@@ -1243,6 +1248,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             tolgoinObject.khugatsaa = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Авлага үүсэх өдөр"))
             tolgoinObject.tulukhUdur = cellAsString[0];
+          else if (worksheet[cellAsString].v.includes("Зориулалт"))
+            tolgoinObject.tulukhUdur = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Талбайн код"))
             tolgoinObject.talbainDugaar = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Барьцаа авах хугацаа"))
@@ -1313,8 +1320,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             tolgoinObject30.gereeniiOgnoo = cellAsString[0];
           else if (worksheet30[cellAsString].v.includes("Хугацаа(Сараар)"))
             tolgoinObject30.khugatsaa = cellAsString[0];
-          else if (worksheet30[cellAsString].v.includes("Авлага үүсэх өдөр"))
-            tolgoinObject30.tulukhUdur = cellAsString[0];
+            else if (worksheet30[cellAsString].v.includes("Авлага үүсэх өдөр"))
+              tolgoinObject30.tulukhUdur = cellAsString[0];
           else if (worksheet30[cellAsString].v.includes("Талбайн код"))
             tolgoinObject30.talbainDugaar = cellAsString[0];
           else if (worksheet30[cellAsString].v.includes("Барьцаа авах хугацаа"))
@@ -1407,6 +1414,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             usegTooruuKhurvuulekh(tolgoinObject.baritsaaBairshuulakhKhugatsaa)
           ];
         object.uldegdel = mur[usegTooruuKhurvuulekh(tolgoinObject.avlaga)];
+        object.zoriulalt = mur[usegTooruuKhurvuulekh(tolgoinObject.zoriulalt)];
         object.dans = mur[usegTooruuKhurvuulekh(tolgoinObject.dans)];
         object.ekhniiSariinKhonog =
           mur[usegTooruuKhurvuulekh(tolgoinObject.ekhniiSariinKhonog)];
@@ -1540,6 +1548,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             usegTooruuKhurvuulekh(tolgoinObject30.baritsaaBairshuulakhKhugatsaa)
           ];
         object.uldegdel = mur[usegTooruuKhurvuulekh(tolgoinObject30.avlaga)];
+        object.zoriulalt = mur[usegTooruuKhurvuulekh(tolgoinObject30.zoriulalt)];
         object.dans = mur[usegTooruuKhurvuulekh(tolgoinObject30.dans)];
         object.ekhniiSariinKhonog =
           mur[usegTooruuKhurvuulekh(tolgoinObject30.ekhniiSariinKhonog)];
