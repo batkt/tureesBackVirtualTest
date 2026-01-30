@@ -1507,7 +1507,14 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
         (tuxainGuilgee.tulsunDun ? tuxainGuilgee.tulsunDun : 0) +
           (tuxainGuilgee.tulsunAldangi ? tuxainGuilgee.tulsunAldangi : 0)
       );
-      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+      const archiveBeforeDate = new Date(tuxainGuilgee?.ognoo);
+      archiveBeforeDate.setHours(0, 0, 0, 0);
+      const y = archiveBeforeDate.getFullYear();
+      const m = archiveBeforeDate.getMonth() + 1;
+      const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+      console.log("tuxainGuilgee?.ognoo:", tuxainGuilgee?.ognoo);
+      console.log("baritsaa ustakh archiveName:", archiveName);
+      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
         .updateOne({ _id: req.body.guilgeeniiId }, [
           {
             $set: {
@@ -1520,6 +1527,19 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
         .catch((err) => {
           next(err);
         });
+      await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+        .updateOne({ _id: req.body.guilgeeniiId }, [
+          {
+            $set: {
+              kholbosonDun: {
+                $add: [{ $ifNull: ["$kholbosonDun", 0] }, dun * -1],
+              },
+            },
+          },
+        ])
+        .catch((err) => {
+          next(err);
+        });  
       var tempGeree = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findById(req.body.gereeniiId)
         .select("avlaga");
@@ -1530,7 +1550,8 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
         (a) => a.guilgeeniiId === req.body.guilgeeniiId
       );
       if (filteredBaritsaa?.length === 0 && filteredGuilgee?.length === 0)
-        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+      {
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
           .updateOne(
             { _id: req.body.guilgeeniiId },
             {
@@ -1543,6 +1564,20 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
           .catch((err) => {
             next(err);
           });
+        await BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
+          .updateOne(
+            { _id: req.body.guilgeeniiId },
+            {
+              $pull: {
+                kholbosonGereeniiId: req.body.gereeniiId,
+                kholbosonTalbainId: req.body.talbainDugaar,
+              },
+            }
+          )
+          .catch((err) => {
+            next(err);
+          });  
+      }
     }
     await session.commitTransaction();
     session.endSession();
