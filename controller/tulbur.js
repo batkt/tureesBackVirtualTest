@@ -69,7 +69,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         archiveBeforeDate.setHours(0, 0, 0, 0);
         const y = archiveBeforeDate.getFullYear();
         const m = archiveBeforeDate.getMonth() + 1;
-        const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
+        const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
         console.log("archiveName", archiveName);
         if (filteredBaritsaa?.length === 0 && filteredGuilgee?.length === 0)
         {
@@ -206,7 +206,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
       archiveBeforeDate.setHours(0, 0, 0, 0);
       const y = archiveBeforeDate.getFullYear();
       const m = archiveBeforeDate.getMonth() + 1;
-      const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
+      const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
       console.log("archiveName", archiveName);
       if (filteredGuilgee?.length === 0)
       {
