@@ -1595,8 +1595,9 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
     //   if(ustgaxObjectAvlaga?.length > 0)
     //     throw new Error("Гүйлгээний түүхээс устгах үйлдэл хийнэ үү!");
     // }
+    var tuxainBaritsaa;
     if (ustgaxObject?.length > 0) {
-      var tuxainBaritsaa = ustgaxObject[0].avlaga?.baritsaa;
+      tuxainBaritsaa = ustgaxObject[0].avlaga?.baritsaa;
       if (tuxainBaritsaa) {
         tuxainBaritsaa.turul = "baritsaa";
         tuxainBaritsaa.gereeniiDugaar = req.body.gereeniiDugaar;
@@ -1678,7 +1679,7 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
         next(err);
       });
     if (req.body.guilgeeniiId) {
-      const archiveBeforeDate = new Date(tuxainGuilgee?.ognoo);
+      const archiveBeforeDate = new Date(tuxainBaritsaa?.ognoo || tuxainGuilgee?.ognoo);
       archiveBeforeDate.setHours(0, 0, 0, 0);
       const y = archiveBeforeDate.getFullYear();
       const m = archiveBeforeDate.getMonth() + 1;
