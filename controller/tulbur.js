@@ -1683,6 +1683,8 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
       const y = archiveBeforeDate.getFullYear();
       const m = archiveBeforeDate.getMonth() + 1;
       const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+      console.log("tuxainGuilgee?.ognoo:", tuxainGuilgee?.ognoo);
+      console.log("baritsaa ustakh archiveName:", archiveName);
       await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
         .updateOne({ _id: req.body.guilgeeniiId }, [
           {
