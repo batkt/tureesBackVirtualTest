@@ -1249,7 +1249,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
           else if (worksheet[cellAsString].v.includes("Авлага үүсэх өдөр"))
             tolgoinObject.tulukhUdur = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Зориулалт"))
-            tolgoinObject.tulukhUdur = cellAsString[0];
+            tolgoinObject.zoriulalt = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Талбайн код"))
             tolgoinObject.talbainDugaar = cellAsString[0];
           else if (worksheet[cellAsString].v.includes("Барьцаа авах хугацаа"))
