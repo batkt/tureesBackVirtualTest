@@ -487,7 +487,7 @@ async function archiveUilchluulegchKhonog() {
     const kholboltuud = db.kholboltuud;
     const now = new Date();
     const archiveBeforeDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    archiveBeforeDate.setHours(0, 0, 0, 0);
+    archiveBeforeDate.setHours(23, 59, 59, 999);
     const y = archiveBeforeDate.getFullYear();
     const m = archiveBeforeDate.getMonth() + 1;
     const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
@@ -506,7 +506,7 @@ async function archiveUilchluulegchKhonog() {
       const data = await Uilchluulegch(kholbolt).find({
         _id: { $nin: Array.from(archivedIdSet) },
         "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true },
-        createdAt: { $lt: archiveBeforeDate }
+        createdAt: { $lte: archiveBeforeDate }
       }).lean();
       if (!data.length) continue;
       console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
@@ -514,7 +514,7 @@ async function archiveUilchluulegchKhonog() {
       await Uilchluulegch(kholbolt).deleteMany({
         _id: { $in: data.map(d => d._id) },
         "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: true },
-        createdAt: { $lt: archiveBeforeDate }
+        createdAt: { $lte: archiveBeforeDate }
       });
     }
   } catch (error) {
