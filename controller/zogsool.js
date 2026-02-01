@@ -496,7 +496,7 @@ async function archiveUilchluulegchKhonog() {
       const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
       if(!baiguullaga) continue;
       // if (!baiguullaga?.tokhirgoo?.dolooKhonogTutamArchiveEsekh) continue;
-      if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
+      // if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
       const archivedIds = await Uilchluulegch(
         kholbolt,
         false,
