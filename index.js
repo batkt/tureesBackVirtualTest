@@ -274,7 +274,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "20 7 * * * ",
+  "0 7 * * * ",
   async function () {
     await zogsool.archiveUilchluulegchKhonog();
   },
