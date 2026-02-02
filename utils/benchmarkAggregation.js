@@ -20,11 +20,6 @@ async function benchmarkMethods(model, query = {}, options = {}) {
     comparison: null,
   };
 
-  console.log("🔍 Starting benchmark...");
-  console.log(`📊 Query:`, JSON.stringify(query, null, 2));
-  console.log(`⚙️  Options:`, JSON.stringify(options, null, 2));
-  console.log("");
-
   // First, get document count
   try {
     const countQuery = { ...query };
@@ -37,11 +32,6 @@ async function benchmarkMethods(model, query = {}, options = {}) {
     });
 
     const totalDocs = await model.countDocuments(countQuery);
-    console.log(`📈 Total documents matching base query: ${totalDocs.toLocaleString()}`);
-    console.log("");
-
-    // Benchmark khuudaslalt (current method)
-    console.log("⏱️  Testing khuudaslalt (current method)...");
     const khuudaslaltStart = Date.now();
     const memBeforeKhuudaslalt = process.memoryUsage();
 
@@ -65,33 +55,19 @@ async function benchmarkMethods(model, query = {}, options = {}) {
         resultCount: khuudaslaltResult?.jagsaalt?.length || 0,
         totalCount: khuudaslaltResult?.niitMur || 0,
       };
-
-      console.log(
-        `✅ khuudaslalt completed in ${results.khuudaslalt.durationSeconds}s`
-      );
-      console.log(
-        `   Memory used: ${results.khuudaslalt.memoryUsed}MB`
-      );
-      console.log(
-        `   Results returned: ${results.khuudaslalt.resultCount}`
-      );
     } catch (err) {
       results.khuudaslalt = {
         success: false,
         error: err.message,
         duration: Date.now() - khuudaslaltStart,
       };
-      console.log(`❌ khuudaslalt failed: ${err.message}`);
     }
 
-    console.log("");
 
     // Wait a bit between tests
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Benchmark optimized aggregation
-    console.log("⏱️  Testing optimized aggregation...");
-    console.log("   Note: For simple queries, this will fall back to khuudaslalt");
     const aggStart = Date.now();
     const memBeforeAgg = process.memoryUsage();
 
@@ -110,26 +86,14 @@ async function benchmarkMethods(model, query = {}, options = {}) {
         resultCount: aggResult?.jagsaalt?.length || 0,
         totalCount: aggResult?.niitMur || 0,
       };
-
-      console.log(
-        `✅ Optimized aggregation completed in ${results.optimizedAggregation.durationSeconds}s`
-      );
-      console.log(
-        `   Memory used: ${results.optimizedAggregation.memoryUsed}MB`
-      );
-      console.log(
-        `   Results returned: ${results.optimizedAggregation.resultCount}`
-      );
     } catch (err) {
       results.optimizedAggregation = {
         success: false,
         error: err.message,
         duration: Date.now() - aggStart,
       };
-      console.log(`❌ Optimized aggregation failed: ${err.message}`);
     }
 
-    console.log("");
 
     // Calculate comparison
     if (
@@ -153,20 +117,6 @@ async function benchmarkMethods(model, query = {}, options = {}) {
         memoryDiff: `${memoryDiff > 0 ? "+" : ""}${memoryDiff}MB`,
         faster: speedup > 1,
       };
-
-      console.log("📊 COMPARISON RESULTS:");
-      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-      console.log(
-        `⚡ Speed: ${results.comparison.speedup} ${
-          results.comparison.faster ? "FASTER" : "SLOWER"
-        }`
-      );
-      console.log(`⏱️  Time saved: ${results.comparison.timeSaved}`);
-      console.log(
-        `📈 Performance improvement: ${results.comparison.timeSavedPercent}`
-      );
-      console.log(`💾 Memory difference: ${results.comparison.memoryDiff}`);
-      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
 
     // Estimate for 200,000 documents
@@ -174,17 +124,6 @@ async function benchmarkMethods(model, query = {}, options = {}) {
       const timePerDoc = results.optimizedAggregation.duration / totalDocs;
       const estimated200k = timePerDoc * 200000;
       const estimated200kSeconds = (estimated200k / 1000).toFixed(2);
-
-      console.log("");
-      console.log("🔮 ESTIMATION FOR 200,000 DOCUMENTS:");
-      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-      console.log(
-        `⏱️  Estimated time: ~${estimated200kSeconds}s (~${(estimated200kSeconds / 60).toFixed(1)} minutes)`
-      );
-      console.log(
-        `📊 Based on current test: ${totalDocs.toLocaleString()} docs in ${results.optimizedAggregation.durationSeconds}s`
-      );
-      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
 
     return results;
@@ -202,7 +141,6 @@ async function benchmarkMethods(model, query = {}, options = {}) {
  * @returns {Promise<Object>} Performance metrics
  */
 async function quickBenchmark(model, query = {}, options = {}) {
-  console.log("⚡ Quick benchmark - measuring current performance...");
   
   const start = Date.now();
   const memBefore = process.memoryUsage();

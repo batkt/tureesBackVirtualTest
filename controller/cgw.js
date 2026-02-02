@@ -904,7 +904,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     .then((result) => {
                       if (res) res.send("Amjilttai");
                     })
-                    .catch((err) => { console.log("banknii khuulga --->" + err); } );
+                    .catch((err) => {} );
                 }
               } else if (dans.bank == "tdb") {
                 if (
@@ -1437,7 +1437,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       }
     }
   } catch (err) {
-    console.log("bankniiKhuulgaTatajKhadgalya --->" + err);
     if (next) next(err);
   }
 });
@@ -2521,14 +2520,12 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
             }
           }
           if (zogsooliinDansuud?.length === 0) continue;
-          console.log("zogsooliinDansuud: --->" + JSON.stringify(zogsooliinDansuud));
           const months = await BankniiGuilgee(kholbolt).aggregate([
               { $match: { dansniiDugaar: { $nin: zogsooliinDansuud } } },
               { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
               { $group: { _id: { year: "$year", month: "$month" } } },
               { $sort: { "_id.year": 1, "_id.month": 1 }, },
           ]);
-          console.log("months: --->" + JSON.stringify(months));
           for (const { _id } of months) {
               const y = _id.year;
               const m = _id.month;
@@ -2539,8 +2536,6 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
                 createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
               });
               // if (docs?.length > 0) continue;
-              console.log("Archiving for:", kholbolt.baiguullagiinId, y, m);
-              console.log("docs length:" + docs?.length);
               // --- Archive ---
               const data = await BankniiGuilgee(kholbolt).aggregate([
                   { $match: {
@@ -2549,7 +2544,6 @@ exports.archiveBankGuilgeeRently = asyncHandler(async () => {
                   } },
               ]);
               await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-              console.log("docs insert length:" + data?.length);
               // --- Delete ---
               const res = await BankniiGuilgee(kholbolt).deleteMany({
                   dansniiDugaar: { $nin: zogsooliinDansuud },
@@ -2640,7 +2634,6 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
     const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
     if (kholboltuud) {
         for (const kholbolt of kholboltuud) {
-          console.log("baiguullagiinId --->:", kholbolt.baiguullagiinId);
           const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
           if(!baiguullaga) continue;
           if (kholbolt.baiguullagiinId === "612f457d185280db676d0b51") continue;
@@ -2648,7 +2641,6 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
             baiguullagiinId: kholbolt.baiguullagiinId,
             zogsooliinDans: {$exists: true}, 
           });
-          console.log("parkings.length --->:", parkings?.length);
           if (parkings?.length === 0) continue;
           var zogsooliinDansuud = [];
           for (const parking of parkings) {
@@ -2656,7 +2648,6 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
               zogsooliinDansuud.push(parking.zogsooliinDans);
             }
           }
-          console.log("zogsooliinDansuud.length --->:", zogsooliinDansuud?.length);
           if (zogsooliinDansuud?.length === 0) continue;
           const archivedIds = await BankniiGuilgee(
             kholbolt,
@@ -2664,7 +2655,6 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
             archiveName
           ).find({ dansniiDugaar: { $in: zogsooliinDansuud }, kholbosonTalbainId: [] }, { _id: 1 }).lean();
           const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
-          console.log("archiveBeforeDate --->:", archiveBeforeDate);
           const data = await BankniiGuilgee(kholbolt).find({
             _id: { $nin: Array.from(archivedIdSet) },
             dansniiDugaar: { $in: zogsooliinDansuud },
@@ -2672,7 +2662,6 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
             createdAt: { $lt: archiveBeforeDate }
           }).lean();
           if (!data.length) continue;
-          console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
           await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
           await BankniiGuilgee(kholbolt).deleteMany({
             _id: { $in: data.map(d => d._id) },
@@ -2683,7 +2672,6 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
         }
     }  
   } catch (err) {
-    console.log("err --->:", err);
     }
   }
 );
@@ -2711,7 +2699,6 @@ exports.archiveBankGuilgeeRentlyNoZogsool = asyncHandler(async () => {
               { $group: { _id: { year: "$year", month: "$month" } } },
               { $sort: { "_id.year": 1, "_id.month": 1 }, },
           ]);
-          console.log("months: --->" + JSON.stringify(months));
           for (const { _id } of months) {
               const y = _id.year;
               const m = _id.month;
@@ -2727,8 +2714,6 @@ exports.archiveBankGuilgeeRentlyNoZogsool = asyncHandler(async () => {
                 archiveName
               ).find({}, { _id: 1 }).lean();
               const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
-              console.log("Archiving for:", kholbolt.baiguullagiinId, y, m);
-              console.log("docs length:" + docs?.length);
               // --- Archive ---
               const data = await BankniiGuilgee(kholbolt).aggregate([
                   { $match: {
@@ -2737,7 +2722,6 @@ exports.archiveBankGuilgeeRentlyNoZogsool = asyncHandler(async () => {
                   } },
               ]);
               await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-              console.log("docs insert length:" + data?.length);
               // --- Delete ---
               const res = await BankniiGuilgee(kholbolt).deleteMany({
                 _id: { $in: data.map(d => d._id) },
@@ -2802,8 +2786,6 @@ exports.archiveBankGuilgeeFirst = asyncHandler(async () => {
                     createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
                   } },
               ]);
-              console.log("Archiving for:", kholbolt.baiguullagiinId, y, m);
-              console.log("docs insert length:" + data?.length);
               await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
               // --- Delete ---
               const res = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").deleteMany({

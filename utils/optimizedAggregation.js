@@ -123,8 +123,7 @@ async function executeOptimizedAggregation(model, query = {}, options = {}) {
     }
 
     // Log that we're using optimized aggregation for complex query
-    console.log("[AGG] Using optimized aggregation for complex tuukh query");
-
+    
     // Stage 2: Store original tuukh array before unwinding and handle missing tuukh
     pipeline.push({
       $addFields: {

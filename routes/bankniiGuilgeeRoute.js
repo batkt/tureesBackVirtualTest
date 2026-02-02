@@ -593,9 +593,6 @@ router
             for (const data of filteredGeree) {
               if (data.dansniiDugaar == "5100229713" && data.turul == "bank") {
                 let tulsunDun = data.tulsunDun + (data.tulsunAldangi || 0);
-                console.log("tulsunDun", tulsunDun);
-                console.log("data.ognoo", data.ognoo);
-                console.log("barilgiinId", req.body.barilgiinId);
                 var match = {
                   amount: tulsunDun,
                   barilgiinId: req.body.barilgiinId,
@@ -626,7 +623,6 @@ router
       }
       res.send("Амжилт");
     } catch (error) {
-      console.log("error", error);
       next(error);
     }
   });

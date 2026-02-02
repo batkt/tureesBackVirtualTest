@@ -58,7 +58,6 @@ module.exports.archiveEbarimtKhonog =
     const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
     if (kholboltuud) {
         for (const kholbolt of kholboltuud) {
-            console.log("baiguullagiinId --->:", kholbolt.baiguullagiinId);
             const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
             if(!baiguullaga) continue;
             // if (kholbolt.baiguullagiinId !== "612f457d185280db676d0b51") continue;
@@ -67,14 +66,12 @@ module.exports.archiveEbarimtKhonog =
             archiveName
             ).find({ mashiniiDugaar: {$exists: true} }, { _id: 1 }).lean();
             const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
-            console.log("archiveBeforeDate --->:", archiveBeforeDate);
             const data = await EbarimtShine(kholbolt).find({
             _id: { $nin: Array.from(archivedIdSet) },
             mashiniiDugaar: {$exists: true},
             createdAt: { $lt: archiveBeforeDate }
             }).lean();
             if (!data.length) continue;
-            console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
             await EbarimtShine(kholbolt, archiveName).insertMany(data);
             await EbarimtShine(kholbolt).deleteMany({
             _id: { $in: data.map(d => d._id) },

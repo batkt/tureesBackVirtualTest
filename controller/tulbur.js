@@ -70,7 +70,6 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         const y = archiveBeforeDate.getFullYear();
         const m = archiveBeforeDate.getMonth() + 1;
         const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
-        console.log("archiveName", archiveName);
         if (filteredBaritsaa?.length === 0 && filteredGuilgee?.length === 0)
         {
           await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
@@ -205,7 +204,6 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
       const y = archiveBeforeDate.getFullYear();
       const m = archiveBeforeDate.getMonth() + 1;
       const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
-      console.log("archiveName", archiveName);
       if (filteredGuilgee?.length === 0)
       {
         await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
@@ -840,7 +838,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                       magadlaltaiGereenuud: magadlaltaiGereenuud,
                     });
                   } catch (saveError) {
-                    console.log("tulultTaniya --->" + saveError);
+                    
                   }
                 }
               });
@@ -1512,8 +1510,6 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
       const y = archiveBeforeDate.getFullYear();
       const m = archiveBeforeDate.getMonth() + 1;
       const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
-      console.log("tuxainGuilgee?.ognoo:", tuxainGuilgee?.ognoo);
-      console.log("baritsaa ustakh archiveName:", archiveName);
       await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
         .updateOne({ _id: req.body.guilgeeniiId }, [
           {
@@ -1719,8 +1715,6 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
       const y = archiveBeforeDate.getFullYear();
       const m = archiveBeforeDate.getMonth() + 1;
       const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
-      console.log("tuxainGuilgee?.ognoo:", tuxainGuilgee?.ognoo);
-      console.log("baritsaa ustakh archiveName:", archiveName);
       await BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
         .updateOne({ _id: req.body.guilgeeniiId }, [
           {

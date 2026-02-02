@@ -15,9 +15,7 @@ const API_URL = process.env.API_URL || "http://localhost:8081";
 const API_TOKEN = process.env.API_TOKEN || ""; // You'll need to provide a valid token
 
 async function testViaAPI() {
-  console.log("🚀 Testing performance via API...\n");
-  console.log(`📡 API URL: ${API_URL}\n`);
-
+  
   // Example query - adjust based on your needs
   const query = {
     baiguullagiinId: "your-baiguullagiinId-here", // Replace with actual ID
@@ -53,17 +51,11 @@ async function testViaAPI() {
         if (res.statusCode === 200) {
           try {
             const result = JSON.parse(data);
-            console.log("✅ Benchmark Results:");
-            console.log(JSON.stringify(result, null, 2));
             resolve(result);
           } catch (err) {
-            console.error("❌ Error parsing response:", err);
-            console.log("Raw response:", data);
             reject(err);
           }
         } else {
-          console.error(`❌ API Error: ${res.statusCode}`);
-          console.log("Response:", data);
           reject(new Error(`HTTP ${res.statusCode}`));
         }
       });
@@ -94,7 +86,6 @@ if (require.main === module) {
 
   testViaAPI()
     .then(() => {
-      console.log("\n✅ Test completed");
       process.exit(0);
     })
     .catch((err) => {

@@ -255,7 +255,6 @@ module.exports.zogsoolTseverlye = async (body, next) => {
         });
         if (!!zogsooluud) {
           for await (const zogsool of zogsooluud) {
-            console.log("zogsoolTseverlye:", zogsool.mashinGargakhKhugatsaa);
             var ognoo = new Date();
             ognoo = new Date(
               ognoo.getTime() - (zogsool.mashinGargakhKhugatsaa || 120) * 60 * 60000
@@ -492,7 +491,6 @@ async function archiveUilchluulegchKhonog() {
     const m = archiveBeforeDate.getMonth() + 1;
     const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
     for (const kholbolt of kholboltuud) {
-      console.log(`Processing kholbolt: ${kholbolt.baiguullagiinId}`);
       const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
       if(!baiguullaga) continue;
       // if (!baiguullaga?.tokhirgoo?.dolooKhonogTutamArchiveEsekh) continue;
@@ -503,14 +501,12 @@ async function archiveUilchluulegchKhonog() {
         archiveName
       ).find({}, { _id: 1 }).lean();
       const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
-      console.log("archiveBeforeDate --->:", archiveBeforeDate);
       const data = await Uilchluulegch(kholbolt).find({
         _id: { $nin: Array.from(archivedIdSet) },
         "tuukh.0.garsanKhaalga": { $exists: true },
         createdAt: { $lte: archiveBeforeDate }
       }).lean();
       if (!data.length) continue;
-      console.log(`Archiving ${data.length} docs for ${baiguullaga?.ner} (${kholbolt.baiguullagiinId})`);
       await Uilchluulegch(kholbolt, false, archiveName).insertMany(data);
       await Uilchluulegch(kholbolt).deleteMany({
         _id: { $in: data.map(d => d._id) },
@@ -549,7 +545,6 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
               var dun = zurchiltei?.tuukh[0]?.tulbur?.length > 0 ? zurchiltei?.tuukh[0]?.tulbur.reduce((a, b) => a + b.dun || 0, 0) : 0;
               var update = (dun > 0 && zurchiltei.niitDun === dun) ? {"tuukh.0.tuluv": 2 } : {"tuukh.0.tuluv": -4, zurchil: zurchiltei.niitDun > 0 ? "Төлбөрийн зөрчилтэй" : "Тодорхойгүй зөрчилтэй!"};
               update["tuukh.0.burtgesenAjiltaniiNer"] = "систем";
-              console.log("zurchilteiTuvulBoluulakh:", zurchiltei._id, update);
               let upsertDoc = {
                 updateOne: {
                   filter: { _id: zurchiltei._id },
