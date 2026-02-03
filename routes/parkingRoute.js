@@ -639,29 +639,29 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
     };
     
     
-    const existUilchluulegch = await Uilchluulegch(
-      req.body.tukhainBaaziinKholbolt
-    ).findOne({
-      mashiniiDugaar: req.body.mashiniiDugaar,
-      "tuukh.0.tuluv": 0,
-    }).sort({ createdAt: -1 });
+    // const existUilchluulegch = await Uilchluulegch(
+    //   req.body.tukhainBaaziinKholbolt
+    // ).findOne({
+    //   mashiniiDugaar: req.body.mashiniiDugaar,
+    //   "tuukh.0.tuluv": 0,
+    // }).sort({ createdAt: -1 });
 
-    if (existUilchluulegch && existUilchluulegch.tuukh && existUilchluulegch.tuukh.length > 0) {
-      const lastTuukh = existUilchluulegch.tuukh[0];
-      if (lastTuukh.tsagiinTuukh && lastTuukh.tsagiinTuukh.length > 0) {
-        const lastTsag = lastTuukh.tsagiinTuukh[lastTuukh.tsagiinTuukh.length - 1];
-        if (!lastTsag.garsanTsag) {
-           await Uilchluulegch(req.body.tukhainBaaziinKholbolt).updateOne(
-             { _id: existUilchluulegch._id },
-             {
-               $set: {
-                 [`tuukh.0.tsagiinTuukh.${lastTuukh.tsagiinTuukh.length - 1}.orsonTsag`]: new Date(),
-               }
-             }
-           );
-        }
-      }
-    }
+    // if (existUilchluulegch && existUilchluulegch.tuukh && existUilchluulegch.tuukh.length > 0) {
+    //   const lastTuukh = existUilchluulegch.tuukh[0];
+    //   if (lastTuukh.tsagiinTuukh && lastTuukh.tsagiinTuukh.length > 0) {
+    //     const lastTsag = lastTuukh.tsagiinTuukh[lastTuukh.tsagiinTuukh.length - 1];
+    //     if (!lastTsag.garsanTsag) {
+    //        await Uilchluulegch(req.body.tukhainBaaziinKholbolt).updateOne(
+    //          { _id: existUilchluulegch._id },
+    //          {
+    //            $set: {
+    //              [`tuukh.0.tsagiinTuukh.${lastTuukh.tsagiinTuukh.length - 1}.orsonTsag`]: new Date(),
+    //            }
+    //          }
+    //        );
+    //     }
+    //   }
+    // }
 
     const uneguiMashinOldson = await uneguiMashin(db.erunkhiiKholbolt).findOne({
       mashiniiDugaar: req.body.mashiniiDugaar,
