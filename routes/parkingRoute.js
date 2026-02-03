@@ -285,16 +285,16 @@ router.get(
         return null;
       };
 
-      // Extract date from query (don't modify original query)
+      
       let startDate = null;
       let endDate = null;
       let dateFilter = null;
 
       if (body?.query) {
-        // Check direct fields
+        
         dateFilter = body.query.createdAt || body.query["tuukh.tulbur.ognoo"];
 
-        // Check in $and array
+       
         if (!dateFilter && body.query.$and && Array.isArray(body.query.$and)) {
           for (const condition of body.query.$and) {
             if (condition.createdAt) {
@@ -331,12 +331,12 @@ router.get(
             ? new Date(endDate)
             : new Date(startDate);
 
-        // Add ±1 month buffer
+      
         const bufferedStart = new Date(start);
-        bufferedStart.setMonth(bufferedStart.getMonth() - 1);
+        // bufferedStart.setMonth(bufferedStart.getMonth() - 1);
 
         const bufferedEnd = new Date(end);
-        bufferedEnd.setMonth(bufferedEnd.getMonth() + 1);
+        // bufferedEnd.setMonth(bufferedEnd.getMonth() + 1);
 
         const current = new Date(
           bufferedStart.getFullYear(),
@@ -355,7 +355,7 @@ router.get(
           const isCurrentMonth = year === currentYear && month === currentMonth;
 
           if (isCurrentMonth) {
-            // Current month - add both archive and main
+           
             const archiveName = `Uilchluulegch${year}${String(month).padStart(2, "0")}`;
 
             if (!addedCollections.has(archiveName)) {
