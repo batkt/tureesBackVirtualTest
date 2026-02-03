@@ -940,7 +940,8 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                   " Zurchiltei- " +
                   (await formatNumber(zurchiluud[0].niitDun)) +
                   " avlaga uussen baina. ";
-              if (zogsool && zogsool.length > 0 && zogsool[0].niitDun > 0) {
+              if ((zogsool && zogsool.length > 0 && zogsool[0].niitDun > 0) ||
+                  (zogsoolArchiveName && zogsoolArchiveName.length > 0 && zogsoolArchiveName[0].niitDun > 0)) {
                 const shineSession = new session(db.erunkhiiKholbolt)();
                 const gishuun = new Ajiltan(kholbolt)();
                 shineSession.sessionToken = await gishuun.zochinTokenUusgye(
