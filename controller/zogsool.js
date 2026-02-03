@@ -543,7 +543,7 @@ exports.zurchilteiTuvulBoluulakh = asyncHandler(
           if (zurchilteiUilchluulegch?.length > 0) {
             for (const zurchiltei of zurchilteiUilchluulegch) {
               var dun = zurchiltei?.tuukh[0]?.tulbur?.length > 0 ? zurchiltei?.tuukh[0]?.tulbur.reduce((a, b) => a + b.dun || 0, 0) : 0;
-              var update = (dun > 0 && zurchiltei.niitDun === dun) ? {"tuukh.0.tuluv": 2 } : {"tuukh.0.tuluv": -4, zurchil: zurchiltei.niitDun > 0 ? "Төлбөрийн зөрчилтэй" : "Тодорхойгүй зөрчилтэй!"};
+              var update = (dun > 0 && zurchiltei.niitDun === dun) ? {"tuukh.0.tuluv": 2 } : {"tuukh.0.tuluv": -4 };
               update["tuukh.0.burtgesenAjiltaniiNer"] = "систем";
               let upsertDoc = {
                 updateOne: {

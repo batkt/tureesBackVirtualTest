@@ -251,16 +251,16 @@ cron.schedule(
   },
 );
 
-cron.schedule(
-  "10 5 * * * ",
-  function () {
-    zogsool.zogsoolTseverlye();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  },
-);
+// cron.schedule(
+//   "10 5 * * * ",
+//   function () {
+//     zogsool.zogsoolTseverlye();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "Asia/Ulaanbaatar",
+//   },
+// );
 
 cron.schedule(
   "20 5 * * * ",
