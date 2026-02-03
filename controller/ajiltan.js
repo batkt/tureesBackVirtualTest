@@ -783,7 +783,42 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
             ]);
+
+            const archiveBeforeDate = new Date(ekhlekhOgnoo);
+            archiveBeforeDate.setHours(0, 0, 0, 0);
+            const y = archiveBeforeDate.getFullYear();
+            const m = archiveBeforeDate.getMonth() + 1;
+            const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
             var zogsool = await Uilchluulegch(kholbolt, true).aggregate([
+              {
+                $match: {
+                  baiguullagiinId: baiguullaga._id.toString(),
+                },
+              },
+              {
+                $unwind: "$tuukh",
+              },
+              {
+                $unwind: "$tuukh.tulbur",
+              },
+              {
+                $match: {
+                  "tuukh.tulbur.ognoo": {
+                    $gte: ekhlekhOgnoo,
+                    $lte: duusakhOgnoo,
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: "niit",
+                  niitDun: {
+                    $sum: "$tuukh.tulbur.dun",
+                  },
+                },
+              },
+            ]);
+            var zogsoolArchiveName = await Uilchluulegch(kholbolt, true, archiveName).aggregate([
               {
                 $match: {
                   baiguullagiinId: baiguullaga._id.toString(),
@@ -868,6 +903,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             if (
               (togloom && togloom.length > 0) ||
               (zogsool && zogsool.length > 0) ||
+              (zogsoolArchiveName && zogsoolArchiveName.length > 0) ||
               (turees && turees.length > 0) ||
               (zurchiluud && zurchiluud.length > 0)
             ) {
@@ -879,11 +915,12 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                   (await formatNumber(togloom[0].niitDun)) +
                   ",";
               }
-              if (zogsool && zogsool.length > 0) {
+              if ((zogsool && zogsool.length > 0) || (zogsoolArchiveName && zogsoolArchiveName.length > 0)) {
+                const totalZogsoolDun = (zogsool && zogsool.length > 0 ? zogsool[0].niitDun : 0) + (zogsoolArchiveName && zogsoolArchiveName.length > 0 ? zogsoolArchiveName[0].niitDun : 0);
                 text =
                   text +
                   "Zogsool-" +
-                  (await formatNumber(zogsool[0].niitDun)) +
+                  (await formatNumber(totalZogsoolDun)) +
                   ",";
               }
               if (turees && turees.length > 0) {
