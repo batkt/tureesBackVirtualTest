@@ -1878,13 +1878,13 @@ router.get("/v1/parking", async (req, res, next) => {
       var query = { tokiNer: { $exists: true } };
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var zogsooluud = await getParkingFind(
           kholbolt,
           kholbolt.baiguullagiinId,
           query,
         );
-        for await (const zogsool of zogsooluud) {
+        for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             var dotorZogsool;
             if (!!zogsool.dotorZogsooliinId) {
@@ -1998,11 +1998,12 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
     .digest("hex");
   const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
-  if (cached) {
-    return JSON.parse(cached);
-  }
-  const data = await Parking(kholbolt).find(query);
-  await client.setEx(cacheKey, 60, JSON.stringify(data)); // 60sec TTL
+  if (cached) return JSON.parse(cached);
+  const data = await Parking(kholbolt)
+    .find(query)
+    .lean()
+    .exec();
+  await client.setEx(cacheKey, 60, JSON.stringify(data));
   return data;
 }
 
@@ -2078,14 +2079,14 @@ router.get("/v2/parking", async (req, res, next) => {
       var query = { tokiNer: { $exists: true } };
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var zogsooluud = await getParkingFind(
           kholbolt,
           kholbolt.baiguullagiinId,
           query,
         );
         if (zogsooluud?.length > 0)
-          for await (const zogsool of zogsooluud) {
+          for (const zogsool of zogsooluud) {
             if (!!zogsool) {
               var dotorZogsool;
               if (!!zogsool.dotorZogsooliinId) {
@@ -2302,7 +2303,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
       );
     }
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var query = localEsekh
           ? { baiguullagiinId: req.query.baiguullagiinId }
           : {
@@ -2314,7 +2315,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
           kholbolt.baiguullagiinId,
           query,
         );
-        for await (const zogsool of zogsooluud) {
+        for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             var matchMashin = {
               mashiniiDugaar: req.params.plate_number,
@@ -2418,7 +2419,7 @@ router.get("/v2/search_car/:plate_number", async (req, res, next) => {
       );
     }
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var query = localEsekh
           ? { baiguullagiinId: req.query.baiguullagiinId }
           : {
@@ -2429,7 +2430,7 @@ router.get("/v2/search_car/:plate_number", async (req, res, next) => {
           kholbolt.baiguullagiinId,
           query,
         );
-        for await (const zogsool of zogsooluud) {
+        for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             oldsonMashin = await Uilchluulegch(kholbolt, true)
               .findOne({
@@ -2535,7 +2536,7 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
       );
     }
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var query = localEsekh
           ? { baiguullagiinId: req.query.baiguullagiinId }
           : {
@@ -2546,7 +2547,7 @@ router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
           kholbolt.baiguullagiinId,
           query,
         );
-        for await (const zogsool of zogsooluud) {
+        for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             tukhainKholbolt = kholbolt;
             oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
@@ -2630,7 +2631,7 @@ router.get(
     var freeze = req.query.freeze;
     var tukhainKholbolt;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var query = {
           passNer: { $exists: true },
         };
@@ -2639,7 +2640,7 @@ router.get(
           kholbolt.baiguullagiinId,
           query,
         );
-        for await (const zogsool of zogsooluud) {
+        for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
               "tuukh.0.zogsooliinId": zogsool._id,
@@ -2921,13 +2922,13 @@ router.route("/v1/pay").post(async (req, res, next) => {
       var query = { tokiNer: { $exists: true } };
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var zogsooluud = await getParkingFind(
           kholbolt,
           kholbolt.baiguullagiinId,
           query,
         );
-        for await (const zogsool of zogsooluud) {
+        for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             const plateNumber = req.body.plate_number;
             const zogsoolId = zogsool._id;
@@ -3214,13 +3215,13 @@ router.route("/v2/pay").post(async (req, res, next) => {
       var query = { tokiNer: { $exists: true } };
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var zogsooluud = await getParkingFind(
           kholbolt,
           kholbolt.baiguullagiinId,
           query,
         );
-        for await (const zogsool of zogsooluud) {
+        for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             const plateNumber = req.body.plate_number;
             const zogsoolId = zogsool._id;
@@ -3472,13 +3473,13 @@ router.route("/v2/pay").post(async (req, res, next) => {
       var query = { tokiNer: { $exists: true } };
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var zogsooluud = await getParkingFind(
           kholbolt,
           kholbolt.baiguullagiinId,
           query,
         );
-        for await (const zogsool of zogsooluud) {
+        for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             const plateNumber = req.body.plate_number;
             const zogsoolId = zogsool._id;
@@ -4623,7 +4624,7 @@ router.get("/notTokiParking", async (req, res, next) => {
       var query = { tokiNer: { $exists: false } };
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
           kholbolt.baiguullagiinId,
         );
