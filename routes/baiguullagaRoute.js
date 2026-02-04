@@ -167,7 +167,7 @@ router.post("/nevtreltiinTuukhAvya", tokenShalgakh, async (req, res, next) => {
       var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
         "barilguud.0": { $exists: true },
       });
-      for await (const element of khariu) {
+      for (const element of khariu) {
         var baiguullaga = baiguullaguud.find(
           (x) => x._id.toString() == element._id,
         );

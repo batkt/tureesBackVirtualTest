@@ -634,7 +634,7 @@ router
       var oldAvlaga = [];
       oldAvlaga.push(...gereeOld?.avlaga?.guilgeenuud);
       if (oldAvlaga) {
-        for await (const item of oldAvlaga) {
+        for (const item of oldAvlaga) {
           await Geree(req.body.tukhainBaaziinKholbolt)
             .updateOne(
               {
@@ -653,7 +653,7 @@ router
           ustgakhJagsaalt.push(JSON.stringify(item._id));
         }
         if (!!ustgakhJagsaalt) {
-          for await (const key of ustgakhJagsaalt) {
+          for (const key of ustgakhJagsaalt) {
             var filterAvlaga = oldAvlaga.filter(
               (e) => JSON.stringify(e._id) === key,
             );
@@ -731,7 +731,7 @@ router
       }
 
       if (!!geree.zardluud && !!ashiglaltiinZardluud) {
-        for await (const zardal of geree.zardluud) {
+        for (const zardal of geree.zardluud) {
           var tukhainZardal = ashiglaltiinZardluud.find(
             (x) => x.ner == zardal.ner,
           );
@@ -1051,7 +1051,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
   if (gereeniiIdnuud && gereeniiIdnuud.length > 0) {
     var talbainBulk = [];
     var khariltsagchiinBulk = [];
-    for await (const id of gereeniiIdnuud) {
+    for (const id of gereeniiIdnuud) {
       let geree = await Geree(tukhainBaaziinKholbolt, true).findById(id);
       let busadGereenuud;
       if (!!geree.customerTin) {
@@ -1070,7 +1070,7 @@ async function talbaiKhariltsagchiinTuluvUurchluy(
       var talbainuud = await Talbai(tukhainBaaziinKholbolt).find({
         _id: { $in: geree.talbainIdnuud },
       });
-      for await (const talbai of talbainuud) {
+      for (const talbai of talbainuud) {
         if (talbai.niitiinTalbaiEsekh) {
           let tukhainTalbainGereenuud = await Geree(
             tukhainBaaziinKholbolt,
@@ -3512,7 +3512,7 @@ router
           },
         },
       ]);
-      for await (const a of gereenuud) {
+      for (const a of gereenuud) {
         try {
           delete a._id;
           if (a.khugatsaaKhetersen < 0) a.khugatsaaKhetersen = 0;
@@ -3598,7 +3598,7 @@ router.route("/talbaiZasayNiit").get(tokenShalgakh, async (req, res, next) => {
       barilgiinId: req.body.barilgiinId,
     });
     var talbainBulk = [];
-    for await (const talbai of talbainuud) {
+    for (const talbai of talbainuud) {
       var niitUne = talbai.talbainKhemjee * talbai.talbainNegjUne;
       let upsertTalbai = {
         updateOne: {
@@ -3655,14 +3655,14 @@ router.route("/khungulultZasya").get(tokenShalgakh, async (req, res, next) => {
           _id: { $in: gereeniiDugaaruud },
         })
         .select("+avlaga");
-      for await (const geree of gereenuud) {
+      for (const geree of gereenuud) {
         khyamdraluud = [];
         for (const x of khungulult) {
           var khungulultiinDun = x.khamaataiGereenuud?.find(
             (x) => x.gereeniiId == geree._id,
           )?.khymdarsanDun;
           if (khungulultiinDun > 0) {
-            for await (const ognoo of x.ognoonuud) {
+            for (const ognoo of x.ognoonuud) {
               var filterGuilgeenuud = geree.avlaga?.guilgeenuud.filter(
                 (a) =>
                   a.turul === "khuvaari" &&
@@ -3816,7 +3816,7 @@ router
       tuluv: 1,
     });
     if (gereenuud?.length > 0) {
-      for await (const geree of gereenuud) {
+      for (const geree of gereenuud) {
         talbaiKhariltsagchiinTuluvUurchluy(
           [geree._id],
           req.body.tukhainBaaziinKholbolt,
@@ -3953,7 +3953,7 @@ router
       ).findById(req.body.ashiglaltiinId);
       const jagsaalt = req.body.jagsaalt;
       var talbainDugaaruud = [];
-      for await (const mur of jagsaalt) {
+      for (const mur of jagsaalt) {
         talbainDugaaruud.push(mur.talbainId);
       }
       var niitGereenuud = [];
@@ -3989,7 +3989,7 @@ router
       var bulkOps = [];
       var updateObject;
       if (niitGereenuud.length > 0) {
-        for await (const tukhainZardal of jagsaalt) {
+        for (const tukhainZardal of jagsaalt) {
           var geree = niitGereenuud.find((x) =>
             x.talbainIdnuud.includes(tukhainZardal.talbainId),
           );
@@ -4153,7 +4153,7 @@ router.route("/zaaltTegBolgoy").post(tokenShalgakh, async (req, res, next) => {
       .find(match)
       .select("+avlaga");
     if (gereenuud?.length > 0) {
-      for await (const geree of gereenuud) {
+      for (const geree of gereenuud) {
         var lastAvlaga = geree?.avlaga?.guilgeenuud.filter(
           (a) =>
             a.ognoo < new Date(req.body.ognoo) &&
@@ -4203,7 +4203,7 @@ router
         .find(match)
         .select("+avlaga");
       if (gereenuud?.length > 0) {
-        for await (const geree of gereenuud) {
+        for (const geree of gereenuud) {
           var dun =
             (geree.baritsaaAvakhDun || 0) - (geree.baritsaaniiUldegdel || 0);
           var baritsaa = {
@@ -4239,11 +4239,11 @@ async function sarBuriinKhungulultBodoy() {
     var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
       "barilguud.tokhirgoo.sarBurAutoKhungulultOruulakhEsekh": true,
     });
-    for await (const baiguullaga of baiguullaguud) {
+    for (const baiguullaga of baiguullaguud) {
       var kholbolt = kholboltuud.find(
         (a) => a.baiguullagiinId == baiguullaga._id.toString(),
       );
-      for await (const barilga of baiguullaga?.barilguud) {
+      for (const barilga of baiguullaga?.barilguud) {
         var mainMatch = {
           baiguullagiinId: baiguullaga._id.toString(),
           barilgiinId: barilga?._id.toString(),
@@ -4353,11 +4353,11 @@ async function sarBuriinKhungulultBodoy() {
         };
         var gereenuud = await Geree(kholbolt, true).find(mainMatch);
         if (gereenuud?.length > 0) {
-          for await (const geree of gereenuud)
+          for (const geree of gereenuud)
             khariu.push({ _id: geree._id, uldegdel: 0 });
         }
         if (khariu?.length > 0) {
-          for await (const data of khariu) {
+          for (const data of khariu) {
             var geree = await Geree(kholbolt, true)
               .findById(data._id)
               .select("+avlaga");
@@ -4416,7 +4416,7 @@ async function sarBuriinKhungulultBodoy() {
                 a.sarBurAutoKhungulultOruulakhEsekh,
             );
             if (filteredData?.length > 0) {
-              for await (const avlagaData of filteredData) {
+              for (const avlagaData of filteredData) {
                 await Geree(kholbolt).findByIdAndUpdate(
                   { _id: geree?._id.toString() },
                   {
@@ -4494,11 +4494,11 @@ async function duusakhGereeAutomataarTalbainTulburNemekh() {
     var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
       "barilguud.tokhirgoo.gereeDuusakhTalbaiTulburNemekhEsekh": true,
     });
-    for await (const baiguullaga of baiguullaguud) {
+    for (const baiguullaga of baiguullaguud) {
       var kholbolt = kholboltuud.find(
         (a) => a.baiguullagiinId == baiguullaga._id.toString(),
       );
-      for await (const barilga of baiguullaga?.barilguud) {
+      for (const barilga of baiguullaga?.barilguud) {
         if (
           barilga.tokhirgoo?.gereeDuusakhTalbaiTulburNemekhEsekh &&
           barilga.tokhirgoo?.gereeDuusakhTulbur > 0
@@ -4516,9 +4516,9 @@ async function duusakhGereeAutomataarTalbainTulburNemekh() {
           };
           var gereenuud = await Geree(kholbolt, true).find(mainMatch);
           if (gereenuud?.length > 0) {
-            for await (const geree of gereenuud) {
+            for (const geree of gereenuud) {
               if (geree.talbainIdnuud?.length > 0) {
-                for await (const talbainId of geree.talbainIdnuud) {
+                for (const talbainId of geree.talbainIdnuud) {
                   var khuuchinTalbai =
                     await Talbai(kholbolt).findById(talbainId);
                 }
@@ -4540,11 +4540,11 @@ async function jilBurAutomataarTalbainTulburNemekh() {
     var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
       "barilguud.tokhirgoo.jilBurTalbaiTulburNemekhEsekh": true,
     });
-    for await (const baiguullaga of baiguullaguud) {
+    for (const baiguullaga of baiguullaguud) {
       var kholbolt = kholboltuud.find(
         (a) => a.baiguullagiinId == baiguullaga._id.toString(),
       );
-      for await (const barilga of baiguullaga?.barilguud) {
+      for (const barilga of baiguullaga?.barilguud) {
         if (
           barilga.tokhirgoo?.jilBurTalbaiTulburNemekhEsekh &&
           barilga.tokhirgoo?.jilBurTulbur > 0
@@ -4573,7 +4573,7 @@ router
       //     })
       //     .select("+avlaga");
       //   if (gereenuud?.length > 0) {
-      //     for await (const geree of gereenuud) {
+      //     for (const geree of gereenuud) {
       //       var ekhlekhOgnoo;
       //       var today = new Date();
       //       if (geree.baiguullagiinId === "63c0f31efe522048bf02086d") {
@@ -4863,7 +4863,7 @@ router.route("/menejmentZasay").post(tokenShalgakh, async (req, res, next) => {
       true,
     ).aggregate(query);
     if (gereenuud?.length > 0) {
-      for await (const geree of gereenuud) {
+      for (const geree of gereenuud) {
         var avlagaMatch = {
           ognoo: {
             $gte: new Date(req.body.duusakhOgnoo),
@@ -4973,7 +4973,7 @@ router
         gereeniiDugaar: { $regex: /\s+/ },
       });
       if (gereenuud?.length > 0) {
-        for await (const geree of gereenuud) {
+        for (const geree of gereenuud) {
           await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
             { _id: geree?._id },
             {
@@ -5022,7 +5022,7 @@ router
           },
         },
       ]);
-      for await (const geree of aldangiTulsunDunguud) {
+      for (const geree of aldangiTulsunDunguud) {
         await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
           { _id: geree?._id },
           {
@@ -5087,7 +5087,7 @@ router.route("/aldangiButsaakh").post(tokenShalgakh, async (req, res, next) => {
     const bulkOps = [];
     const gereenuudIds = [];
     if (aldangiinTuukh?.length > 0) {
-      for await (const aldangiData of aldangiinTuukh) {
+      for (const aldangiData of aldangiinTuukh) {
         gereenuudIds.push(aldangiData._id.gereeniiId);
         bulkOps.push({
           updateOne: {

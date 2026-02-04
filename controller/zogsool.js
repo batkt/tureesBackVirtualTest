@@ -18,7 +18,7 @@ module.exports.khungulultKhugatsaaShinechlyaSar =
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         const mashinuud = await ParkingMashin(kholbolt).find({
           turul: "Түрээслэгч",
           khungulultTurul: "togtmolTsag",
@@ -63,7 +63,7 @@ module.exports.khungulultKhugatsaaShinechlyaUdur =
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         const mashinuud = await ParkingMashin(kholbolt).find({
           turul: "Түрээслэгч",
           khungulultTurul: "togtmolTsag",
@@ -119,12 +119,12 @@ module.exports.zogsoolMsgIlgeeye = async function zogsoolMsgIlgeeye() {
     );
     var daraagiinUdur = new Date();
     daraagiinUdur.setDate(unuudur.getDate() + 3);
-    for await (const baiguullaga of baiguullaguud) {
+    for (const baiguullaga of baiguullaguud) {
       var tukhainKholbolt = kholboltuud.find(
         (x) => x.baiguullagiinId == baiguullaga._id.toString()
       );
       var msgnuud = [];
-      for await (const barilga of baiguullaga.barilguud) {
+      for (const barilga of baiguullaga.barilguud) {
         var mashinuud = await ParkingMashin(tukhainKholbolt).find({
           barilgiinId: barilga._id.toString(),
           duusakhOgnoo: {
@@ -134,7 +134,7 @@ module.exports.zogsoolMsgIlgeeye = async function zogsoolMsgIlgeeye() {
           ezemshigchiinUtas: { $exists: true },
         });
         if (!!mashinuud && mashinuud.length > 0) {
-          for await (const mashin of mashinuud) {
+          for (const mashin of mashinuud) {
             var text =
               "Tanii zogsooliin geree " +
               moment(mashin.duusakhOgnoo).format("MM/DD") +
@@ -249,12 +249,12 @@ module.exports.zogsoolTseverlye = async (body, next) => {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var zogsooluud = await Parking(kholbolt).find({
           baiguullagiinId: kholbolt.baiguullagiinId,
         });
         if (!!zogsooluud) {
-          for await (const zogsool of zogsooluud) {
+          for (const zogsool of zogsooluud) {
             var ognoo = new Date();
             ognoo = new Date(
               ognoo.getTime() - (zogsool.mashinGargakhKhugatsaa || 120) * 60 * 60000
@@ -295,13 +295,13 @@ module.exports.zogsooloosUstgay = async (body, next) => {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var zogsooluud = await Parking(kholbolt).find({
           mashinUstgakhKhugatsaa: { $gt: 1 },
           baiguullagiinId: kholbolt.baiguullagiinId,
         });
         if (!!zogsooluud) {
-          for await (const zogsool of zogsooluud) {
+          for (const zogsool of zogsooluud) {
             var ognoo = new Date();
             ognoo = new Date(
               ognoo.getTime() - zogsool.mashinUstgakhKhugatsaa * 24 * 60 * 60000
@@ -329,7 +329,7 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
     if (!!baiguullaguud) {
       const kholboltuud = db.kholboltuud;
       if (kholboltuud) {
-        for await (const baiguullaga of baiguullaguud) {
+        for (const baiguullaga of baiguullaguud) {
           var tukhainKholbolt = kholboltuud.find(
             (x) => x.baiguullagiinId == baiguullaga._id.toString()
           );
@@ -348,9 +348,9 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
           var uilchluulegchBulk = [];
           if (!!shiveeguiTuukhuud) {
             var niitDun = 0;
-            for await (const object of shiveeguiTuukhuud) {
+            for (const object of shiveeguiTuukhuud) {
               var niilberDun = 0;
-              for await (const tulbur of object.tuukh[0]?.tulbur) {
+              for (const tulbur of object.tuukh[0]?.tulbur) {
                 if (
                   !!tulbur.turul &&
                   tulbur.turul != "khungulult" &&

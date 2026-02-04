@@ -2125,7 +2125,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         var dataNiit = {
           currency: "MNT",
         };
-        for await (const dun of dunguud) {
+        for (const dun of dunguud) {
           dataNiit[dun._id.turul] = dun.dun;
         }
         data.push(dataNiit);
@@ -2191,7 +2191,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         data = {
           currency: "MNT",
         };
-        for await (const dun of dunguud) {
+        for (const dun of dunguud) {
           data[dun._id] = dun.dun;
         }
         butsaakhKhariu.data = data;

@@ -114,7 +114,7 @@ router.route("/AdminMedegellgeeye").post(async (req, res, next) => {
       (a) => a.baiguullagiinId == baiguullaga?._id.toString()
     );
     var medegdeluud = [];
-    for await (const barilga of baiguullaga.barilguud) {
+    for (const barilga of baiguullaga.barilguud) {
       const medegdel = new Sonorduulga(kholbolt)();
       medegdel.baiguullagiinId = baiguullaga?._id.toString();
       medegdel.barilgiinId = barilga._id.toString();
@@ -152,7 +152,7 @@ router
         var sonorduulguud = await Sonorduulga(
           req.body.tukhainBaaziinKholbolt
         ).find({ adminMedegdelId: req.body.adminMedegdelId });
-        for await (const sonorduulga of sonorduulguud) {
+        for (const sonorduulga of sonorduulguud) {
           await Sonorduulga(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
             sonorduulga._id,
             {
@@ -176,11 +176,11 @@ router
       const { db } = require("zevbackv2");
       var kholboltuud = db.kholboltuud;
       if (kholboltuud) {
-        for await (const kholbolt of kholboltuud) {
+        for (const kholbolt of kholboltuud) {
           var sonorduulguud = await Sonorduulga(kholbolt).find({
             turul: "medegdelAdmin",
           });
-          for await (const sonorduulga of sonorduulguud) {
+          for (const sonorduulga of sonorduulguud) {
             await Sonorduulga(kholbolt).findByIdAndUpdate(sonorduulga._id, {
               $set: {
                 dakhijKharikhEsekh: true,
@@ -200,11 +200,11 @@ router.route("/adminMedegdelUstgakh").post(async (req, res, next) => {
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var sonorduulguud = await Sonorduulga(kholbolt).find({
           turul: "medegdelAdmin",
         });
-        for await (const sonorduulga of sonorduulguud) {
+        for (const sonorduulga of sonorduulguud) {
           await Sonorduulga(kholbolt).deleteOne({
             _id: sonorduulga._id,
           });

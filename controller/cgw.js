@@ -785,7 +785,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       );
     }
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         if (!req)
           dansnuud = await Dans(kholbolt)
             .find({
@@ -802,7 +802,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
             .lean();
         }
         if (dansnuud)
-          for await (const dans of dansnuud) {
+          for (const dans of dansnuud) {
             try {
               if (dans.bank == "khanbank") {
                 var query = {
@@ -878,7 +878,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   });
                   if (guilgeenuud) {
                     var ustgakhJagsaalt = [];
-                    for await (const item of guilgeenuud) {
+                    for (const item of guilgeenuud) {
                       var indexTalbar =
                         item.barilgiinId +
                         item.bank +
@@ -1405,7 +1405,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 });
                 if (guilgeenuud) {
                   var ustgakhJagsaalt = [];
-                  for await (const item of guilgeenuud) {
+                  for (const item of guilgeenuud) {
                     var guilgee = await BankniiGuilgee(kholbolt, true).findOne({
                       requestId: item.requestId,
                       recNum: item.recNum,
@@ -1549,7 +1549,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
     var kholboltuud = db.kholboltuud;
     var dansnuud;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         // if(kholbolt.baiguullagiinId !== "65cf2f027fbc788f85e50b90") continue;
         var firstDay;
         var lastDay;
@@ -1566,7 +1566,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
           })
           .lean();
         if (dansnuud)
-          for await (const dans of dansnuud) {
+          for (const dans of dansnuud) {
             try {
               if (dans.bank == "khanbank") {
                 var query = {
@@ -1629,7 +1629,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   });
                   if (guilgeenuud) {
                     var ustgakhJagsaalt = [];
-                    for await (const item of guilgeenuud) {
+                    for (const item of guilgeenuud) {
                       var indexTalbar =
                         item.barilgiinId +
                         item.bank +
@@ -1650,7 +1650,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       );
                     }
                   }
-                  for await (const item of guilgeenuud) {
+                  for (const item of guilgeenuud) {
                     if (!!dans.zogsooliinId) {
                       var url =
                         process.env.UNDSEN_SERVER + "/zogsooliinTulburOrjIrlee";
@@ -1824,7 +1824,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       });
                       if (guilgeenuud) {
                         var ustgakhJagsaalt = [];
-                        for await (const item of guilgeenuud) {
+                        for (const item of guilgeenuud) {
                           if (!!dans.zogsooliinId) {
                             var url =
                               process.env.UNDSEN_SERVER +
@@ -1939,7 +1939,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   });
                   if (guilgeenuud) {
                     var ustgakhJagsaalt = [];
-                    for await (const item of guilgeenuud) {
+                    for (const item of guilgeenuud) {
                       var indexTalbar =
                         item.barilgiinId +
                         item.bank +
@@ -1960,7 +1960,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       );
                     }
                   }
-                  for await (const item of guilgeenuud) {
+                  for (const item of guilgeenuud) {
                     if (!!dans.zogsooliinId) {
                       var url =
                         process.env.UNDSEN_SERVER + "/zogsooliinTulburOrjIrlee";
@@ -2075,7 +2075,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   });
                   if (guilgeenuud) {
                     var ustgakhJagsaalt = [];
-                    for await (const item of guilgeenuud) {
+                    for (const item of guilgeenuud) {
                       var guilgee = await BankniiGuilgee(
                         kholbolt,
                         true
@@ -2090,7 +2090,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         (el) => !ustgakhJagsaalt.includes(el)
                       );
                     }
-                    for await (const item of guilgeenuud) {
+                    for (const item of guilgeenuud) {
                       if (!!dans.zogsooliinId && item.income > 0) {
                         var url =
                           process.env.UNDSEN_SERVER +
@@ -2246,7 +2246,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
     if (baiguullaguud?.length > 0) {
       var result = [];
       var resultDotor = [];
-      for await (const baiguullaga of baiguullaguud) {
+      for (const baiguullaga of baiguullaguud) {
         var kholboltuud = db.kholboltuud;
         var kholbolt = kholboltuud.find(
           (a) => a.baiguullagiinId == baiguullaga._id.toString()
@@ -2272,7 +2272,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           if (req?.body?.mashiniiDugaar)
             match["mashiniiDugaar"] = req?.body?.mashiniiDugaar;
           var mashinuud = await Uilchluulegch(kholbolt, true).find(match);
-          for await (const data of mashinuud) {
+          for (const data of mashinuud) {
             if (data.tuukh?.length > 0) {
               var tuukh = data.tuukh?.filter(
                 (e) => e.orsonKhaalga === "192.168.2.234"
@@ -2301,7 +2301,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           };
         }
         if (!!gadnaParkuud?.length > 0) {
-          for await (const gadnaParking of gadnaParkuud) {
+          for (const gadnaParking of gadnaParkuud) {
             var match = {
               baiguullagiinId: gadnaParking.baiguullagiinId,
               barilgiinId: gadnaParking.barilgiinId,
@@ -2329,7 +2329,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
             if (groupCounts?.length > 0) {
               var filterGroupCounts = groupCounts?.filter((a) => a.too > 1);
               if (filterGroupCounts?.length > 0) {
-                for await (const groupCount of filterGroupCounts) {
+                for (const groupCount of filterGroupCounts) {
                   match["mashiniiDugaar"] = groupCount._id;
                   const uilchluulegchuud = await Uilchluulegch(kholbolt, true)
                     .find(match)
@@ -2359,12 +2359,12 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(
       const { db } = require("zevbackv2");
       var kholboltuud = db.kholboltuud;
       if (kholboltuud) {
-        for await (const kholbolt of kholboltuud) {
+        for (const kholbolt of kholboltuud) {
           var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
             kholbolt.baiguullagiinId
           );
           if (baiguullaga?.tokhirgoo?.togloomiinTuvDavkhardsanShalgakh) {
-            for await (const barilga of baiguullaga.barilguud) {
+            for (const barilga of baiguullaga.barilguud) {
               var match = {
                 createdAt: {
                   $gt: new Date(new Date().getTime() - 10 * 60000),
@@ -2403,7 +2403,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(
                 },
               ];
               const togloomuud = await TogloomiinTuv(kholbolt).aggregate(query);
-              for await (const togloom of togloomuud) {
+              for (const togloom of togloomuud) {
                 if (togloom.tulbur > togloom._id?.niitDun) {
                   var data = await TogloomiinTuv(kholbolt).findById(
                     togloom._id?.id

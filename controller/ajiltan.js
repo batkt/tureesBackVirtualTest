@@ -97,7 +97,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
               salbariinId: baiguullaga?.barilguud?.[0]?._id,
               duusakhOgnoo: khariu.duusakhOgnoo,
             });
-            for await (const salbar of khariu.salbaruud) {
+            for (const salbar of khariu.salbaruud) {
               var tukhainSalbar = baiguullaga?.barilguud?.find((x) => {
                 return (
                   !!x.licenseRegister && x.licenseRegister == salbar.register
@@ -652,7 +652,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
       );
       ekhlekhOgnoo.setHours(0, 0, 0, 0);
       duusakhOgnoo.setHours(23, 59, 59, 999);
-      for await (const baiguullaga of baiguullaguud) {
+      for (const baiguullaga of baiguullaguud) {
         try {
           var kholboltuud = db.kholboltuud;
           var kholbolt = kholboltuud.find(
@@ -728,7 +728,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 (await formatNumber(niitDun)) +
                 " orlogo burtgegdej ";
 
-              for await (const a of result) {
+              for (const a of result) {
                 var barilgiinNer = "";
                 try {
                   barilgiinNer = baiguullaga.barilguud.find(
@@ -963,8 +963,8 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
           }
           if (textuud.length > 0) {
             var ilgeexList = [];
-            for await (const dugaar of baiguullaga.tokhirgoo.msgAvakhDugaar)
-              for await (const text of textuud)
+            for (const dugaar of baiguullaga.tokhirgoo.msgAvakhDugaar)
+              for (const text of textuud)
                 ilgeexList.push({ to: dugaar, text });
             /*[{
             to: "88880140",
@@ -1019,7 +1019,7 @@ exports.licenseOgnooShalgakh = asyncHandler(
           kholboltuud.find((a) => a.baiguullagiinId == baiguullagiinId),
         ];
       if (kholboltuud) {
-        for await (const kholbolt of kholboltuud) {
+        for (const kholbolt of kholboltuud) {
           var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
             kholbolt.baiguullagiinId
           );

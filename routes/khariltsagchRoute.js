@@ -266,7 +266,7 @@ router
           }
           result = tempKhariltsagch;
         } else {
-          for await (const khariltsagch of jagsaalt) {
+          for (const khariltsagch of jagsaalt) {
             var filteredGeree = gereeResult?.filter(
               (geree) =>
                 (!!khariltsagch.register &&
@@ -324,7 +324,7 @@ router
         matchQuery,
       );
       if (resultTukhain?.length > 0) {
-        for await (const data of resultTukhain) {
+        for (const data of resultTukhain) {
           matchQuery = {
             baiguullagiinId: req.body.baiguullagiinId,
             register: data?.register,

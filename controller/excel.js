@@ -542,7 +542,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     });
     var kodnuud = [];
     var aldaaniiMsg = "";
-    for await (const mur of data) {
+    for (const mur of data) {
       if (!mur || mur.length === 0 || mur.every((cell) => !cell)) continue;
       muriinDugaar++;
       let object = new Talbai(req.body.tukhainBaaziinKholbolt)();
@@ -648,7 +648,7 @@ exports.talbaiTatya = asyncHandler(async (req, res, next) => {
     });
     if (talbainuud && talbainuud.length > 0) {
       var talbainDugaaruud = [];
-      for await (const talbai of talbainuud) {
+      for (const talbai of talbainuud) {
         talbainDugaaruud.push(talbai.kod);
       }
       throw new aldaa(
@@ -3174,7 +3174,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
     var registeruud = [];
     var talbainDugaaruud = [];
     var gereeniiDugaaruud = [];
-    for await (const mur of jagsaalt) {
+    for (const mur of jagsaalt) {
       if (!!mur.register) {
         registeruud.push(mur.register);
       } else if (!!mur.talbainDugaar) {
@@ -3253,7 +3253,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
     var bulkOps = [];
     var updateObject;
     if (niitGereenuud.length > 0) {
-      for await (const geree of niitGereenuud) {
+      for (const geree of niitGereenuud) {
         updateObject = {};
         if (
           ashiglaltiinZardal.turul == "кВт" ||
@@ -3701,7 +3701,7 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
     var registeruud = [];
     var talbainDugaaruud = [];
     var gereeniiDugaaruud = [];
-    for await (const mur of jagsaalt) {
+    for (const mur of jagsaalt) {
       if (!!mur.register) {
         registeruud.push(mur.register);
       } else if (!!mur.talbainDugaar) {
@@ -3780,7 +3780,7 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
     var bulkOps = [];
     var updateObject;
     if (niitGereenuud.length > 0) {
-      for await (const geree of niitGereenuud) {
+      for (const geree of niitGereenuud) {
         updateObject = {};
         var tukhainZardal;
         if (!!geree.register) {

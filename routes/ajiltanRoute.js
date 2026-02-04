@@ -190,7 +190,7 @@ router.post(
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
         register: req.body.register,
       });
-      for await (const element of moduluud) {
+      for (const element of moduluud) {
         var queryAjiltan = {
           tsonkhniiErkhuud: element.zam,
           baiguullagiinId: baiguullaga._id,
@@ -237,7 +237,7 @@ router.post(
       const { db } = require("zevbackv2");
       if (!!req.body) {
         const { turul, ajiltnuud } = req.body;
-        for await (const ajiltan of ajiltnuud) {
+        for (const ajiltan of ajiltnuud) {
           await Ajiltan(db.erunkhiiKholbolt)
             .updateOne(
               { _id: ajiltan._id },
@@ -281,7 +281,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
       );
 
       if (req.body.erkhuud && req.body.erkhuud.length > 0) {
-        for await (const element of req.body.erkhuud) {
+        for (const element of req.body.erkhuud) {
           var queryAjiltan = {
             tsonkhniiErkhuud: element.zam,
             baiguullagiinId: req.body.baiguullagiinId,

@@ -306,7 +306,7 @@ exports.qpayGuilgeeUtgaAvya = asyncHandler(async (req, res, next) => {
       var tokenO = await tokenSungaya(tokenObject.refreshToken, next);
       token = tokenO.access_token;
     }
-    for await (const guilgee of guilgeenuud) {
+    for (const guilgee of guilgeenuud) {
       var khariu = await qpayMedeelelAvya(
         token,
         { invoice_id: guilgee.invoice_id },

@@ -1560,10 +1560,10 @@ router.post(
         match,
       );
       if (ebarimtuud?.length > 0) {
-        for await (const butsaakhBarimt of ebarimtuud) {
+        for (const butsaakhBarimt of ebarimtuud) {
           // var ebarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find({_id: barimt?._id});
           // ebarimt?.shift();
-          // for await (const butsaakhBarimt of ebarimt)
+          // for (const butsaakhBarimt of ebarimt)
           // {
           ebarimtButsaaya(
             butsaakhBarimt,

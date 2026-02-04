@@ -364,7 +364,7 @@ router
       true,
     ).aggregate(query);
     var filterResult = result?.filter((e) => e.countRef > 1);
-    for await (const val of filterResult) {
+    for (const val of filterResult) {
       match = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
@@ -438,7 +438,7 @@ router
       req.body.tukhainBaaziinKholbolt,
       true,
     ).find(match);
-    for await (const val of result) {
+    for (const val of result) {
       match = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.insertBarilgiinId,
@@ -486,12 +486,12 @@ router.route("/bankniiGuilgeeBankSet").post(async (req, res, next) => {
       kholboltuud = db.kholboltuud;
     }
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var guilgeenuud = await BankniiGuilgee(kholbolt, true).find({
           baiguullagiinId: kholbolt.baiguullagiinId,
           bank: { $exists: false },
         });
-        for await (const guilgee of guilgeenuud) {
+        for (const guilgee of guilgeenuud) {
           var dans = await Dans(kholbolt).findOne({
             baiguullagiinId: kholbolt.baiguullagiinId,
             dugaar: guilgee.dansniiDugaar,
@@ -519,11 +519,11 @@ router.route("/bankIndexTalbar").post(async (req, res, next) => {
       kholboltuud = db.kholboltuud;
     }
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var guilgeenuud = await BankniiGuilgee(kholbolt, true).find({
           baiguullagiinId: kholbolt.baiguullagiinId,
         });
-        for await (const guilgee of guilgeenuud) {
+        for (const guilgee of guilgeenuud) {
           var dugaar =
             guilgee.bank === "khanbank"
               ? guilgee.record
@@ -637,7 +637,7 @@ router.route("/davkhardsanIndexTalbar").post(async (req, res, next) => {
       kholboltuud = db.kholboltuud;
     }
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         // if(kholbolt?.baiguullagiinId !== "6800b91480a007fe5ab34436") continue;
         var guilgeenuud = await BankniiGuilgee(kholbolt, true).aggregate([
           {
@@ -659,7 +659,7 @@ router.route("/davkhardsanIndexTalbar").post(async (req, res, next) => {
             },
           },
         ]);
-        for await (const guilgee of guilgeenuud) {
+        for (const guilgee of guilgeenuud) {
           var ustgakhJagsaalt = [];
           ustgakhJagsaalt.push(guilgee.ids[0]);
           var fRemove = guilgee.ids.filter(

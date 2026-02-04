@@ -279,7 +279,7 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
       const { db } = require("zevbackv2");
       var kholboltuud = db.kholboltuud;
       if (kholboltuud) {
-        for await (const kholbolt of kholboltuud) {
+        for (const kholbolt of kholboltuud) {
           let gereeniiIdnuud = await Geree(kholbolt, true).aggregate([
             {
               $project: {
@@ -304,7 +304,7 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
           if (gereeniiIdnuud && gereeniiIdnuud.length > 0) {
             var talbainBulk = [];
             var khariltsagchiinBulk = [];
-            for await (const id of gereeniiIdnuud) {
+            for (const id of gereeniiIdnuud) {
               let geree = await Geree(kholbolt, true).findById(id);
               let busadGereenuud;
               if (!!geree.register) {
@@ -324,7 +324,7 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
               var talbainuud = await Talbai(kholbolt).find({
                 _id: { $in: geree.talbainIdnuud },
               });
-              for await (const talbai of talbainuud) {
+              for (const talbai of talbainuud) {
                 if (talbai.niitiinTalbaiEsekh) {
                   let tukhainTalbainGereenuud = await Geree(
                     kholbolt,

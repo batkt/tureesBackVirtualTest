@@ -206,7 +206,7 @@ router.post("/setgegdelBichie", tokenShalgakh, async (req, res, next) => {
 module.exports.tuluvluguuniiSanuulgaIlgeeye = async function tuluvluguuniiSanuulgaIlgeeye() {
   var duusaaguiDaalgavruud = await Daalgavar.find({ tuluv: { $ne: 2 }, duusakhOgnoo: { $lte: new Date() } });
   if (duusaaguiDaalgavruud && duusaaguiDaalgavruud.length > 0) {
-    for await (const daalgavar of duusaaguiDaalgavruud) {
+    for (const daalgavar of duusaaguiDaalgavruud) {
       sonorduulgaIlgeeye(zakhiral.firebaseToken, {
         title: "Хугацаа хэтэрсэн ажлын мэдэгдэл",
         body: daalgavar.ajiltniiNer + " ажилтанд даалгасан ажлын хугацаа хэтэрсэн байна!",

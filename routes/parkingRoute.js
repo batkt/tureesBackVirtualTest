@@ -225,7 +225,7 @@ crud(router, "zogsoolUilchluulegch", async (req, res, next) => {
         const body = req.body.query;
         let bulk = [];
         if(body.khaalga?.length > 0){
-            for await (const id of body.khaalga) {
+            for (const id of body.khaalga) {
                 bulk.push({
                         updateOne: {
                             filter: { "khaalga._id": id },
@@ -2193,11 +2193,11 @@ router.get("/pass/zogsool", tokenShalgakh, async (req, res, next) => {
     ekhlekhOgnoo.setHours(0, 0, 0, 0);
     duusakhOgnoo.setHours(23, 59, 59, 999);
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var zogsooluud = await Parking(kholbolt).find({
           passNer: { $exists: true },
         });
-        for await (const zogsool of zogsooluud) {
+        for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             var dotorZogsool;
             if (!!zogsool.dotorZogsooliinId) {
@@ -2728,11 +2728,11 @@ router.get("/v1/car/:session_id", async (req, res, next) => {
   var oldsonMashin;
   var success = true;
   if (kholboltuud) {
-    for await (const kholbolt of kholboltuud) {
+    for (const kholbolt of kholboltuud) {
       var zogsooluud = await Parking(kholbolt).find({
         tokiNer: { $exists: true },
       });
-      for await (const zogsool of zogsooluud) {
+      for (const zogsool of zogsooluud) {
         if (!!zogsool) {
           oldsonMashin = await Uilchluulegch(kholbolt, true).findById(
             req.params.session_id,
@@ -2845,7 +2845,7 @@ router.post("/v1/tulburMedeelelAvya", async (req, res, next) => {
     var oldsonMashin;
     var success = true;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var zogsool = await Parking(kholbolt).findById(parking_id);
         if (!!zogsool) {
           oldsonMashin = await Uilchluulegch(kholbolt, true).findById(
@@ -3541,11 +3541,11 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
     var success = true;
     var bodsonDun = 0;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var zogsooluud = await Parking(kholbolt).find({
           passNer: { $exists: true },
         });
-        for await (const zogsool of zogsooluud) {
+        for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
               "tuukh.0.zogsooliinId": zogsool._id,
@@ -4268,7 +4268,7 @@ router.post(
       ).find(match);
       var ebarimtuud = [];
       if (uilchluulegchuud?.length > 0) {
-        for await (const data of uilchluulegchuud) {
+        for (const data of uilchluulegchuud) {
           ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(
             {
               baiguullagiinId: req.body.baiguullagiinId,
@@ -4295,7 +4295,7 @@ router.post(
               },
             });
             if (ebarimtuud?.length > 0) {
-              for await (const saveEBarimt of ebarimtuud) {
+              for (const saveEBarimt of ebarimtuud) {
                 saveEBarimt.zogsooliinId = data?._id;
                 await saveEBarimt.save().catch((err) => {
                   next(err);
@@ -4327,7 +4327,7 @@ router.post(
         match,
       );
       if (ebarimtuud?.length > 0) {
-        for await (const ebarimt of ebarimtuud) {
+        for (const ebarimt of ebarimtuud) {
           var update = {
             ebarimtAvsanDun: ebarimt.cashAmount || ebarimt.totalAmount,
           };
@@ -4362,7 +4362,7 @@ router.post("/davkharBarimtZasakh", tokenShalgakh, async (req, res, next) => {
       true,
     ).find(match);
     if (uilchluulegchuud?.length > 0) {
-      for await (const data of uilchluulegchuud) {
+      for (const data of uilchluulegchuud) {
         var filteredData = data.tuukh[0]?.tulbur?.filter(
           (a) => a.turul === req.body.turul,
         );
@@ -4410,7 +4410,7 @@ router.post(
           niitDun: { $gt: zogsool?.tulburiinLimitDun || 0 },
         });
         if (zurchilteiUilchluulegch?.length > 0) {
-          for await (const zurchil of zurchilteiUilchluulegch) {
+          for (const zurchil of zurchilteiUilchluulegch) {
             const zurchilteiData = await ZurchilteiMashin(
               req.body.tukhainBaaziinKholbolt,
             ).findOne({
@@ -4491,7 +4491,7 @@ router.post(
           req.body.tukhainBaaziinKholbolt,
         ).aggregate(query);
         if (zurchiluud?.length > 0) {
-          for await (const dugaar of zogsool?.zurchilMsgilgeekhDugaar) {
+          for (const dugaar of zogsool?.zurchilMsgilgeekhDugaar) {
             var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
             msg.baiguullagiinId = req.body.baiguullagiinId;
             msg.barilgiinId = req.body.barilgiinId;
@@ -4663,7 +4663,7 @@ router.post(
         true,
       ).find(match);
       var result = [];
-      for await (const data of mashinuud) {
+      for (const data of mashinuud) {
         var tuukh = data.tuukh?.filter(
           (e) => e.orsonKhaalga === req.body.cameraIPGadna,
         );
@@ -4703,10 +4703,10 @@ router.post("/zochinAjiltaniiIdTseverlekh", async (req, res, next) => {
       var query = { "tuukh.burtgesenAjiltaniiId": "zochin" };
       if (!!req.body.baiguullagiinId)
         query["baiguullagiinId"] = req.body.baiguullagiinId;
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var mashinuud = await Uilchluulegch(kholbolt, true).find(query);
         if (mashinuud?.length > 0) {
-          for await (const data of mashinuud) {
+          for (const data of mashinuud) {
             await Uilchluulegch(kholbolt).findByIdAndUpdate(data._id, {
               $unset: {
                 "tuukh.0.burtgesenAjiltaniiId": 1,
@@ -4765,7 +4765,7 @@ router.post(
         baiguullagiinId: req.body.baiguullagiinId,
       });
       if (mashinuud?.length > 0) {
-        for await (const mashin of mashinuud) {
+        for (const mashin of mashinuud) {
           await Mashin(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
             mashin?._id.toString(),
             {
@@ -4782,7 +4782,7 @@ router.post(
       //   baiguullagiinId: req.body.baiguullagiinId,
       // });
       // if (uilchluulegchuud?.length > 0) {
-      //   for await (const data of uilchluulegchuud) {
+      //   for (const data of uilchluulegchuud) {
       //     await Uilchluulegch(
       //       req.body.tukhainBaaziinKholbolt
       //     ).findByIdAndUpdate(data?._id.toString(), {

@@ -271,7 +271,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     var avlagaAldangi = await gereeObject.aggregate(query);
     if (avlagaAldangi?.length > 0) {
       if (avlaga?.length > 0) {
-        for await (const val of avlaga) val.dun += avlagaAldangi?.[0]?.dun;
+        for (const val of avlaga) val.dun += avlagaAldangi?.[0]?.dun;
       } else avlaga = avlagaAldangi;
     }
 

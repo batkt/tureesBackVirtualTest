@@ -229,7 +229,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
         })
         .select("+avlaga +gereeniiTuukhuud +khungulultuud");
       if (gereenuud)
-        for await (const geree of gereenuud) {
+        for (const geree of gereenuud) {
           talbai.idevkhiteiEsekh = true;
           var tuukh = {
             talbainDugaar: khuuchinTalbai.kod,

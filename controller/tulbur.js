@@ -21,7 +21,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
   session.startTransaction();
   try {
     var aldaaniiMsg;
-    for await (const tulbur of guilgeenuud) {
+    for (const tulbur of guilgeenuud) {
       tulbur.guilgeeKhiisenOgnoo = new Date();
       var dun = await tooZasya(
         (tulbur.tulsunDun ? tulbur.tulsunDun : 0) +
@@ -572,12 +572,12 @@ module.exports.tulultTaniya = async function tulultTaniya() {
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var dansnuud = await Dans(kholbolt).find({
           corporateAshiglakhEsekh: true,
           oirkhonTatakhEsekh: { $exists: false },
         }).lean();
-        for await (const dans of dansnuud) {
+        for (const dans of dansnuud) {
           if (!!dans.bank) {
             var match = {
               createdAt: {
@@ -862,12 +862,12 @@ module.exports.tulultTaniyaGar = async function tulultTaniyaGar(baiguullagiinId 
       );
     }
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var dansnuud = await Dans(kholbolt).find({
           corporateAshiglakhEsekh: true,
           oirkhonTatakhEsekh: { $exists: false },
         });
-        for await (const dans of dansnuud) {
+        for (const dans of dansnuud) {
           if (!!dans.bank) {
             var match = {
               createdAt: {
@@ -1162,14 +1162,14 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
       .lean();
     if (!baiguullaguud?.length) return;
 
-    for await (const baiguullaga of baiguullaguud) {
+    for (const baiguullaga of baiguullaguud) {
       const kholbolt = kholboltuud.find(
         (a) => a.baiguullagiinId == baiguullaga._id.toString()
       );
       const bulkOps = [];
       const aldangiinTuukh = [];
 
-      for await (const barilga of baiguullaga.barilguud) {
+      for (const barilga of baiguullaga.barilguud) {
         if (
           !barilga.tokhirgoo ||
           !barilga.tokhirgoo.aldangiinKhuvi ||
@@ -1919,7 +1919,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
           _id: { $in: gereeniiDugaaruud },
         })
         .select("+avlaga");
-      for await (const geree of gereenuud) {
+      for (const geree of gereenuud) {
         khyamdraluud = [];
         var khungulultiinDun = khungulult.khamaataiGereenuud?.find(
           (x) => x.gereeniiId == geree._id
@@ -1943,7 +1943,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
           };
           khyamdraluud.push(khyamdral);
         } else
-          for await (const ognoo of khungulult.ognoonuud) {
+          for (const ognoo of khungulult.ognoonuud) {
             var filterGuilgeenuud = geree.avlaga?.guilgeenuud.filter(
               (a) =>
                 (a.turul === "khuvaari" || a.turul === "avlaga") &&
@@ -2000,7 +2000,7 @@ exports.khungulultUstgaya = asyncHandler(async (req, res, next) => {
           gereeniiDugaaruud.push(x);
         }
       });
-      for await (const gereeniiDugaar of gereeniiDugaaruud) {
+      for (const gereeniiDugaar of gereeniiDugaaruud) {
         khyamdraluud = [];
         await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
           { _id: gereeniiDugaar },
@@ -2042,7 +2042,7 @@ exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
       });
       var khariu = [];
       if (gereenuud)
-        for await (const element of gereenuud) {
+        for (const element of gereenuud) {
           if (element.zardluud && element.zardluud.length > 0) {
             var butsaakhJagsaalt = [];
             element.zardluud.forEach((zardal) => {
@@ -2102,7 +2102,7 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
       var khariu = [];
       var object;
       if (gereenuud)
-        for await (const element of gereenuud) {
+        for (const element of gereenuud) {
           var oruulakhOgnoo = moment(req.body.duusakhOgnoo).set(
             "date",
             element.tulukhUdur[0]
@@ -2149,7 +2149,7 @@ exports.tukhainOgnoogoorAvlagaZasajOruulya = asyncHandler(
       });
       var khariu = [];
       if (gereenuud)
-        for await (const element of gereenuud) {
+        for (const element of gereenuud) {
           await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
             { gereeniiDugaar: element.gereeniiDugaar },
             {
@@ -2193,7 +2193,7 @@ exports.talbainIdnuudOruulya = asyncHandler(async (req, res, next) => {
     });
     var bulkOps = [];
     if (gereenuud)
-      for await (const element of gereenuud) {
+      for (const element of gereenuud) {
         var dugaaruud = element.talbainDugaar.split(",");
         var talbainuud = await Talbai(req.body.tukhainBaaziinKholbolt)
           .find({
@@ -2234,7 +2234,7 @@ exports.bankniiGuilgeegeerOruulya = asyncHandler(async (req, res, next) => {
       TxPostDate: { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
     });
     var oldooguiGuilgeenuud = [];
-    for await (const guilgee of guilgeenuud) {
+    for (const guilgee of guilgeenuud) {
       var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
         $or: [
           { "avlaga.guilgeenuud.guilgeeniiId": guilgee._id },
@@ -2257,7 +2257,7 @@ exports.aldaataiBankniiGuilgeeZasya = asyncHandler(async (req, res, next) => {
       req.body.tukhainBaaziinKholbolt,
       true
     ).find({ _id: { $in: idnuud } });
-    for await (const guilgee of guilgeenuud) {
+    for (const guilgee of guilgeenuud) {
       var geree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
         $or: [
           { "avlaga.guilgeenuud.guilgeeniiId": guilgee._id },
@@ -2328,7 +2328,7 @@ exports.qpayGuilgeeGereeOnooyo = asyncHandler(async (req, res, next) => {
       ],
     });
     var khaikhNukhtsul;
-    for await (const x of qpayGuilgeenuud) {
+    for (const x of qpayGuilgeenuud) {
       khaikhNukhtsul = [];
       var tailbar;
       if (x.description) tailbar = x.description.split(/,| /);
@@ -2396,7 +2396,7 @@ exports.qpayGuilgeeTalbainDugaarOnooyo = asyncHandler(
           },
         ],
       });
-      for await (const guilgee of guilgeenuud) {
+      for (const guilgee of guilgeenuud) {
         var oldsonGeree = await Geree(
           req.body.tukhainBaaziinKholbolt,
           true
@@ -2434,7 +2434,7 @@ exports.tukhainOgnoogoorBukhAvlagaBodojOruulya = asyncHandler(
         })
         .select("+avlaga");
       var ajillakhGereenuud = [];
-      for await (const x of gereenuud) {
+      for (const x of gereenuud) {
         var tukhainSariinMur = await x.avlaga.guilgeenuud.find(
           (a) =>
             a.ognoo > new Date(req.body.ekhlekhOgnoo) &&
@@ -2448,7 +2448,7 @@ exports.tukhainOgnoogoorBukhAvlagaBodojOruulya = asyncHandler(
       var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
       duusakhOgnoo.setHours(0, 0, 0, 0);
       if (gereenuud)
-        for await (const element of ajillakhGereenuud) {
+        for (const element of ajillakhGereenuud) {
           object = {
             tulukhDun: element.sariinTurees,
             undsenDun: element.sariinTurees,
@@ -2497,7 +2497,7 @@ exports.gereenuudedZalruulgaOruulya = asyncHandler(async (req, res, next) => {
     )
       throw new Error("Талбар дутуу!");
     if (objectuud)
-      for await (const element of objectuud) {
+      for (const element of objectuud) {
         var geree = await Geree(
           req.body.tukhainBaaziinKholbolt,
           true
@@ -2668,7 +2668,7 @@ exports.tsutsalsanGereenuudedZalruulgaOruulya = asyncHandler(
         },
       ]);
       if (gereenuud && gereenuud?.length > 0) {
-        for await (const geree of gereenuud) {
+        for (const geree of gereenuud) {
           var zoruu = geree.uldegdel || 0;
           var object;
           if (zoruu !== 0) {
@@ -2731,7 +2731,7 @@ exports.tsutsalgdanGuilgeeZasya = asyncHandler(async (req, res, next) => {
     );
     if (jagsaalt && jagsaalt.length > 0) {
       var bulkOps = [];
-      for await (const x of jagsaalt) {
+      for (const x of jagsaalt) {
         let upsertDoc = {
           updateOne: {
             filter: { _id: x._id },
@@ -2777,7 +2777,7 @@ exports.tukhainOgnoogoorGuilgeegOruulya = asyncHandler(
       });
       var khariu = [];
       if (guilgeenuud) {
-        for await (const guilgee of guilgeenuud) {
+        for (const guilgee of guilgeenuud) {
           var geree = await Geree(
             req.body.tukhainBaaziinKholbolt,
             true
@@ -2841,7 +2841,7 @@ exports.testiinBankniiGuilgee = asyncHandler(async (req, res, next) => {
       dansniiDugaar: req.body.dans,
     });
     if (guilgeenuud) {
-      for await (const guilgee of guilgeenuud) {
+      for (const guilgee of guilgeenuud) {
         guilgee._id = null;
         guilgee.baiguullagiinId = req.body.baiguullagiinId;
         guilgee.barilgiinId = req.body.barilgiinId;
@@ -2913,13 +2913,13 @@ exports.gereeAutomataarSungaya = asyncHandler(async (req, res, next) => {
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     if (kholboltuud) {
-      for await (const kholbolt of kholboltuud) {
+      for (const kholbolt of kholboltuud) {
         var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
           "tokhirgoo.gereeAvtomataarSungakhEsekh": true,
         });
         var tulultiinJagsaalt = [];
         if (baiguullaguud)
-          for await (const baiguullaga of baiguullaguud) {
+          for (const baiguullaga of baiguullaguud) {
             var gereenuud = await Geree(kholbolt, true).find({
               tuluv: {
                 $ne: -1,
@@ -2930,7 +2930,7 @@ exports.gereeAutomataarSungaya = asyncHandler(async (req, res, next) => {
               },
             });
             if (gereenuud) {
-              for await (const geree of gereenuud) {
+              for (const geree of gereenuud) {
                 tulultiinJagsaalt = [];
                 var shineDuusakhOgnoo = new Date(
                   moment(geree.duusakhOgnoo).add(geree.khugatsaa, "month")
@@ -3024,7 +3024,7 @@ async function daraagiinTulukhOgnooZasya(gereeniiId, tukhainBaaziinKholbolt) {
 exports.tulukhOgnooZasya = asyncHandler(async (req, res, next) => {
   try {
     var idnuud = req.body.idnuud;
-    for await (const id of idnuud) {
+    for (const id of idnuud) {
       await daraagiinTulukhOgnooZasya(id, req.body.tukhainBaaziinKholbolt);
     }
     res.send("Amjilttai");
@@ -3043,7 +3043,7 @@ exports.gereenuudedAvlagaOruulya = asyncHandler(async (req, res, next) => {
     if (!req.body.oruulakhOgnoo || !req.body.objectuud)
       throw new Error("Талбар дутуу!");
     if (objectuud)
-      for await (const element of objectuud) {
+      for (const element of objectuud) {
         var geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
           .findOne({
             gereeniiDugaar: element.gereeniiDugaar,
@@ -3100,7 +3100,7 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
       .select("+avlaga")
       .lean();
     if (gereenuud)
-      for await (const geree of gereenuud) {
+      for (const geree of gereenuud) {
         if (geree) {
           var objectuud = [];
           if (geree?.avlaga?.guilgeenuud) {
@@ -3108,7 +3108,7 @@ exports.khungulultNukhujOruulya = asyncHandler(async (req, res, next) => {
               (x) => x.ognoo < new Date(2024, 0, 2) && x.khyamdral > 0
             );
             if (!!guilgeenuud) {
-              for await (const mur of guilgeenuud) {
+              for (const mur of guilgeenuud) {
                 objectuud.push({
                   ognoo: new Date(2023, 11, 1),
                   khyamdral: mur.khyamdral,
@@ -3153,7 +3153,7 @@ exports.talbainKubeOruulya = asyncHandler(async (req, res, next) => {
       })
       .lean();
     if (gereenuud)
-      for await (const geree of gereenuud) {
+      for (const geree of gereenuud) {
         var talbai = await Talbai(req.body.tukhainBaaziinKholbolt).findOne({
           baiguullagiinId: geree.baiguullagiinId,
           kod: geree.talbainDugaar,
@@ -3185,13 +3185,13 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
       ).find({
         baiguullagiinId: req.body.baiguullagiinId,
       });
-      for await (const geree of gereenuud) {
+      for (const geree of gereenuud) {
         var talbai = await Talbai(req.body.tukhainBaaziinKholbolt).findOne({
           baiguullagiinId: geree.baiguullagiinId,
           kod: geree.talbainDugaar,
         });
         if (!!geree.zardluud && !!ashiglaltiinZardluud) {
-          for await (const zardal of geree.zardluud) {
+          for (const zardal of geree.zardluud) {
             var tukhainZardal = ashiglaltiinZardluud.find(
               (x) => x.ner == zardal.ner
             );
@@ -3350,8 +3350,8 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
       .select("+avlaga");
     var bulkOps = [];
     if (gereenuud)
-      for await (const geree of gereenuud) {
-        for await (const guilgee of geree?.niitTulbur) {
+      for (const geree of gereenuud) {
+        for (const guilgee of geree?.niitTulbur) {
           if (guilgee.turul == "khunglukh") {
             guilgee.turul = "khungulult";
           }
@@ -3533,12 +3533,12 @@ module.exports.aldangiTegBolgoy = async function aldangiTegBolgoy(
         .find(query)
         .lean();
       if (baiguullaguud && baiguullaguud.length > 0) {
-        for await (const baiguullaga of baiguullaguud) {
+        for (const baiguullaga of baiguullaguud) {
           var kholbolt = kholboltuud.find(
             (a) => a.baiguullagiinId == baiguullaga._id.toString()
           );
           var bulkOps = [];
-          for await (const barilga of baiguullaga.barilguud) {
+          for (const barilga of baiguullaga.barilguud) {
             if (
               barilga.tokhirgoo &&
               barilga.tokhirgoo.aldangiinKhuvi &&

@@ -592,7 +592,7 @@ router
           return a.minut - b.minut;
         });
         maxTsag = khariu.tariffuud[khariu.tariffuud.length - 1].minut;
-        for await (const x of khariu.tariffuud) {
+        for (const x of khariu.tariffuud) {
           if (minut > 0) {
             dun = x.tariff;
           }
@@ -780,7 +780,7 @@ async function dunBoduulya(
       return a.minut - b.minut;
     });
     maxTsag = khariu.tariffuud[khariu.tariffuud.length - 1].minut;
-    for await (const x of khariu.tariffuud) {
+    for (const x of khariu.tariffuud) {
       dun = x.tariff;
       if (minut <= x.minut) break;
     }
@@ -1047,7 +1047,7 @@ router
         req.body.tukhainBaaziinKholbolt
       ).aggregate(query);
       var khariu = [];
-      for await (const togloom of togloomuud) {
+      for (const togloom of togloomuud) {
         if (togloom.tulbur > togloom._id?.niitDun) {
           var data = await TogloomiinTuv(
             req.body.tukhainBaaziinKholbolt
@@ -1096,7 +1096,7 @@ router.post(
         match
       );
       if (ebarimtuud?.length > 0) {
-        for await (const ebarimt of ebarimtuud) {
+        for (const ebarimt of ebarimtuud) {
           var update = { ebarimtAvsanDun: ebarimt.totalAmount };
           TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
             .findOneAndUpdate(
@@ -1132,7 +1132,7 @@ router.post(
       });
       var result = [];
       if (tuvuud?.length > 0) {
-        for await (const tuv of tuvuud) {
+        for (const tuv of tuvuud) {
           var match = {
             baiguullagiinId: tuv.baiguullagiinId,
             barilgiinId: tuv.barilgiinId,
@@ -1143,7 +1143,7 @@ router.post(
             req.body.tukhainBaaziinKholbolt
           ).find(match);
           if (ebarimtuud?.length > 0) {
-            for await (const ebarimt of ebarimtuud) {
+            for (const ebarimt of ebarimtuud) {
               await EbarimtShine(req.body.tukhainBaaziinKholbolt)
                 .findByIdAndUpdate(
                   { _id: ebarimt._id },

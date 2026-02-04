@@ -77,7 +77,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
           body
         );
       }
-      for await (const tempData of req.body.gereenuud) {
+      for (const tempData of req.body.gereenuud) {
         const tuukh = new NekhemjlekhiinTuukh(
           req.body.tukhainBaaziinKholbolt
         )();
@@ -180,7 +180,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       }
       res.send(body);
     } else {
-      for await (const mail of req.body.mailuud) {
+      for (const mail of req.body.mailuud) {
         await MailIlgeeye.duriinMailIlgeeye(
           baiguullaga.tokhirgoo.mailNevtrekhNer,
           baiguullaga.tokhirgoo.mailPassword,
@@ -347,7 +347,7 @@ async function msgIlgeeyeUnitel(
   res
 ) {
   try {
-    for await (const data of jagsaalt) {
+    for (const data of jagsaalt) {
       const form = new FormData();
       form.append("token_id", key);
       form.append("extension_number", "11");
@@ -488,7 +488,7 @@ router.post("/msgTuukhEBarimtZogsool", async (req, res, next) => {
     });
     var result = [];
     if (kholboltuud && baiguullaguud?.length) {
-      for await (const baiguullaga of baiguullaguud) {
+      for (const baiguullaga of baiguullaguud) {
         var kholbolt = kholboltuud.find(
           (a) => a.baiguullagiinId == baiguullaga._id.toString()
         );
