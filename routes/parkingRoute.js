@@ -2978,7 +2978,16 @@ router.route("/v1/pay").post(async (req, res, next) => {
       // }
 
       // tulbur[0].turul = mashinTurul;
-
+      if(!tukhainObject?.freezeOgnoo)
+      {
+        tukhainObject.freezeOgnoo = tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag ? tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag : new Date();
+        await Uilchluulegch(tukhainKholbolt).updateOne(
+          { _id: tukhainObject._id },
+          {
+            freezeOgnoo: tukhainObject.freezeOgnoo,
+          },
+        );
+      }
       bodsonDun = await zogsooliinDunAvya(
         tukhainZogsool,
         tukhainObject,
