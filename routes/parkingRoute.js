@@ -1026,7 +1026,7 @@ router.route("/zogsooliinTulburOrjIrlee").post(async (req, res, next) => {
         const io = req.app.get("socketio");
         if (io) {
           io.emit(
-            `zogsoolGarahTulsun${baiguullagiinId}${oldsonData.tuukh[0].garsanKhaalga}`,
+            "zogsoolGarahTulsun",
             {
               baiguullagiinId: baiguullagiinId,
               khaalgaTurul: "garsan",
@@ -3070,7 +3070,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
             });
             const io = req.app.get("socketio");
             io.emit(
-              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${garsanObject.tuukh[0].garsanKhaalga}`,
+              "zogsoolGarahTulsun",
               {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
                 khaalgaTurul: "garsan",
@@ -3082,7 +3082,7 @@ router.route("/v1/pay").post(async (req, res, next) => {
           } else {
             const io = req.app.get("socketio");
             io.emit(
-              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
+              "zogsoolGarahTulsun",
               {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
                 khaalgaTurul: "garsan",
@@ -3369,7 +3369,7 @@ router.route("/v2/pay").post(async (req, res, next) => {
             });
             const io = req.app.get("socketio");
             io.emit(
-              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${garsanObject.tuukh[0].garsanKhaalga}`,
+              "zogsoolGarahTulsun",
               {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
                 khaalgaTurul: "garsan",
@@ -3381,7 +3381,7 @@ router.route("/v2/pay").post(async (req, res, next) => {
           } else {
             const io = req.app.get("socketio");
             io.emit(
-              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
+              "zogsoolGarahTulsun",
               {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
                 khaalgaTurul: "garsan",
@@ -3655,7 +3655,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
             });
             const io = req.app.get("socketio");
             io.emit(
-              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${garsanObject.tuukh[0].garsanKhaalga}`,
+              "zogsoolGarahTulsun",
               {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
                 khaalgaTurul: "garsan",
@@ -3667,7 +3667,7 @@ router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
           } else {
             const io = req.app.get("socketio");
             io.emit(
-              `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
+              "zogsoolGarahTulsun",
               {
                 baiguullagiinId: tukhainObject.baiguullagiinId,
                 khaalgaTurul: "garsan",
@@ -4061,7 +4061,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
             if (!!tukhainObject.tuukh[0]?.garsanKhaalga) {
               const io = req.app.get("socketio");
               io.emit(
-                `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
+                "zogsoolGarahTulsun",
                 {
                   baiguullagiinId: tukhainObject.baiguullagiinId,
                   khaalgaTurul: "garsan",
@@ -4105,7 +4105,7 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       if (req.body.turul == "Пос үнэгүй") {
         const io = req.app.get("socketio");
         io.emit(
-          `zogsoolGarahTulsun${tukhainObject.baiguullagiinId}${tukhainObject.tuukh[0].garsanKhaalga}`,
+          "zogsoolGarahTulsun",
           {
             baiguullagiinId: tukhainObject.baiguullagiinId,
             khaalgaTurul: "garsan",
