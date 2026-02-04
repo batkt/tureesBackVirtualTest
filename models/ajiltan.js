@@ -119,7 +119,7 @@ ajiltanSchema.methods.khugatsaaguiTokenUusgeye = function () {
 
 ajiltanSchema.methods.zochinTokenUusgye = function (
   baiguullagiinId,
-  gishuunEsekh
+  gishuunEsekh = false,
 ) {
   const token = jwt.sign(
     {

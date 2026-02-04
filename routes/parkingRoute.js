@@ -2328,7 +2328,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
             oldsonMashin = await Uilchluulegch(kholbolt, true)
               .findOne(matchMashin)
               .sort({ createdAt: -1 });
-            if ((!!freeze || !!localEsekh) && !!oldsonMashin) {
+            if (!!oldsonMashin) {
               oldsonMashin.freezeOgnoo =
                 oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag;
               await Uilchluulegch(kholbolt).updateOne(
