@@ -2930,15 +2930,12 @@ router.route("/v1/pay").post(async (req, res, next) => {
         );
         for (const zogsool of zogsooluud) {
           if (!!zogsool) {
-            const plateNumber = req.body.plate_number;
-            const zogsoolId = zogsool._id;
-            const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
             oldsonMashin = await Uilchluulegch(kholbolt, true)
               .findOne({
-                mashiniiDugaar: plateNumber,
-                "tuukh.0.zogsooliinId": zogsoolId,
-                "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
-                updatedAt: { $gt: fiveMinutesAgo },
+                mashiniiDugaar: req.body.plate_number,
+                "tuukh.0.zogsooliinId": zogsool._id,
+                "tuukh.0.tuluv": 0,
+                zurchil: { $exists: false },
               })
               .sort({ updatedAt: -1 });
             if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
