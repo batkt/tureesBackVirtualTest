@@ -3101,19 +3101,6 @@ router.route("/v1/pay").post(async (req, res, next) => {
             );
           }
         }
-        else {
-          const io = req.app.get("socketio");
-          io.emit(
-            "zogsoolRefreshRef",
-            {
-              baiguullagiinId: tukhainObject.baiguullagiinId,
-              khaalgaTurul: "garsan",
-              turul: "toki",
-              mashiniiDugaar: tukhainObject.mashiniiDugaar,
-              cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
-            },
-          );
-        }
         tukhainObject.niitDun = req.body.paid_amount;
         var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
           tukhainObject.baiguullagiinId,
