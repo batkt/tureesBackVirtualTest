@@ -1154,6 +1154,11 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 if (max?.length > 0) {
                   firstDay = new Date(max[0].tranDate);
                 }
+                if(dans.dugaar == "2255101080")
+                {
+                  firstDay = new Date(new Date().getFullYear(), 0, 1);
+                  console.log("special case for 2255101080" + firstDay);
+                }
                 var yawuulaxBody = {
                   registerNo: dans.register,
                   accountId: dans.dugaar,
