@@ -1153,10 +1153,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 if (max?.length > 0) {
                   firstDay = new Date(max[0].tranDate);
                 }
-                if(dans.dugaar == "2255101080")
-                {
-                  firstDay = new Date(2025, 11, 12);
-                }
                 var yawuulaxBody = {
                   registerNo: dans.register,
                   accountId: dans.dugaar,
@@ -1880,6 +1876,10 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 ]);
                 if (max?.length > 0) {
                   firstDay = new Date(max[0].tranDate);
+                }
+                if(dans.dugaar == "2255101080")
+                {
+                  firstDay = new Date(2025, 11, 12);
                 }
                 var yawuulaxBody = {
                   registerNo: dans.register,
