@@ -3985,7 +3985,6 @@ router.route("/v1/kioskPay").post(tokenShalgakh, async (req, res, next) => {
       bodsonDun = tukhainObject.niitDun;
     } else
     {
-      console.log("mashiniiDugaar :", tukhainObject?.mashiniiDugaar);
       if(!tukhainObject?.freezeOgnoo)
       {
         tukhainObject.freezeOgnoo = tukhainObject?.tuukh?.[0].tsagiinTuukh?.[0].garsanTsag ? tukhainObject?.tuukh?.[0].tsagiinTuukh?.[0].garsanTsag : new Date();

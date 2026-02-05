@@ -79,10 +79,6 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     });
     if (!tokenObject) {
       var { username, password, sessionKey, ivKey } = dans;
-      // console.log("username new login"+ JSON.stringify(username));
-      // console.log("password new login"+ JSON.stringify(password));
-      // console.log("sessionKey new login"+ JSON.stringify(sessionKey));
-      // console.log("ivKey new login"+ JSON.stringify(ivKey));
       if (!sessionKey || !ivKey) return tokenObject;
       var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
       var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
@@ -91,7 +87,6 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
         iv: ivKey,
       });
       var url = process.env.GOLOMT_SERVER + "/v1/auth/login";
-      console.log("url login"+ JSON.stringify(url));
       const response = await got
         .post(url, {
           headers: {
@@ -100,7 +95,6 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
           json: { name: username, password: encryptedPass.toString() },
         })
         .catch((err) => {
-          console.log("golomtTokenAvya" + err);
         });
       var khariu = JSON.parse(response.body);
       Token(tukhainBaaziinKholbolt)
@@ -1161,9 +1155,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 }
                 if(dans.dugaar == "2255101080" || dans.dugaar == "2255101184")
                 {
-                  console.log("dans dugaar " + dans.dugaar);
                   firstDay = new Date(new Date().getFullYear(), 0, 1);
-                  console.log("special case for 2255101080" + firstDay);
                 }
                 var yawuulaxBody = {
                   registerNo: dans.register,
