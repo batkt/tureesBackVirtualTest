@@ -1153,9 +1153,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 if (max?.length > 0) {
                   firstDay = new Date(max[0].tranDate);
                 }
-                if(dans.dugaar == "2255101080" || dans.dugaar == "2255101184")
+                if(dans.dugaar == "2255101080")
                 {
-                  firstDay = new Date(2025, 10, 1);
+                  firstDay = new Date(2025, 11, 12);
                 }
                 var yawuulaxBody = {
                   registerNo: dans.register,
