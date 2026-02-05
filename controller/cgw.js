@@ -1901,6 +1901,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate(),
                 };
+                console.log("Golomt khuulga tatakh ognoo:", JSON.stringify(yawuulaxBody));
                 var khariu = await golomtServiceDuudya(
                   dans,
                   yawuulaxBody,
