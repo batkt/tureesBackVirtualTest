@@ -79,10 +79,10 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     });
     if (!tokenObject) {
       var { username, password, sessionKey, ivKey } = dans;
-      console.log("username new login"+ JSON.stringify(username));
-      console.log("password new login"+ JSON.stringify(password));
-      console.log("sessionKey new login"+ JSON.stringify(sessionKey));
-      console.log("ivKey new login"+ JSON.stringify(ivKey));
+      // console.log("username new login"+ JSON.stringify(username));
+      // console.log("password new login"+ JSON.stringify(password));
+      // console.log("sessionKey new login"+ JSON.stringify(sessionKey));
+      // console.log("ivKey new login"+ JSON.stringify(ivKey));
       if (!sessionKey || !ivKey) return tokenObject;
       var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
       var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
@@ -1159,8 +1159,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 if (max?.length > 0) {
                   firstDay = new Date(max[0].tranDate);
                 }
-                if(dans.dugaar == "2255101080")
+                if(dans.dugaar == "2255101080" || dans.dugaar == "2255101184")
                 {
+                  console.log("dans dugaar " + dans.dugaar);
                   firstDay = new Date(new Date().getFullYear(), 0, 1);
                   console.log("special case for 2255101080" + firstDay);
                 }
