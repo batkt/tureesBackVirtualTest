@@ -79,6 +79,10 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
     });
     if (!tokenObject) {
       var { username, password, sessionKey, ivKey } = dans;
+      console.log("username new login"+ JSON.stringify(username));
+      console.log("password new login"+ JSON.stringify(password));
+      console.log("sessionKey new login"+ JSON.stringify(sessionKey));
+      console.log("ivKey new login"+ JSON.stringify(ivKey));
       if (!sessionKey || !ivKey) return tokenObject;
       var sessionKey = CryptoJS.enc.Latin1.parse(sessionKey);
       var ivKey = CryptoJS.enc.Latin1.parse(ivKey);
@@ -87,6 +91,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
         iv: ivKey,
       });
       var url = process.env.GOLOMT_SERVER + "/v1/auth/login";
+      console.log("url login"+ JSON.stringify(url));
       const response = await got
         .post(url, {
           headers: {
