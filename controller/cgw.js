@@ -95,7 +95,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
           json: { name: username, password: encryptedPass.toString() },
         })
         .catch((err) => {
-          throw err;
+          console.log("golomtTokenAvya" + err);
         });
       var khariu = JSON.parse(response.body);
       Token(tukhainBaaziinKholbolt)
