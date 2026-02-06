@@ -1835,7 +1835,7 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
   const cached = await client.get(cacheKey);
   if (cached) return decode(cached);
   const data = await Parking(kholbolt).find(query).lean();
-  if(data && data.length > 0) {
+  if(data?.length > 0) {
     await client.setEx(cacheKey, 300, Buffer.from(encode(data)));
   }
   return data;
