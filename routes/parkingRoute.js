@@ -48,6 +48,7 @@ const client = require("../routes/redisClient");
 const crypto = require("crypto");
 const { QuickQpayObject } = require("quickqpaypackv2");
 const axios = require("axios");
+const { encode, decode } = require("@msgpack/msgpack");
 
 /*crud(router, "parking", Parking, UstsanBarimt, async (req, res, next) => {
 });*/
@@ -1992,6 +1993,11 @@ function stableStringify(obj) {
 }
 
 async function getParkingFind(kholbolt, baiguullagiinId, query) {
+  
+  const buf = encode({ hello: "world" });
+  const obj = decode(buf);
+  console.log("obj 1 ---> " + obj);
+  console.log("obj ---> " + JSON.stringify(obj));
   const queryKey = crypto
     .createHash("md5")
     .update(stableStringify(query))
