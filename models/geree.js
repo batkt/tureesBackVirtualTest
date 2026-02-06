@@ -101,6 +101,8 @@ const gereeSchema = new Schema(
     khugatsaa: Number,
     duusakhOgnoo: Date,
     tsutsalsanOgnoo: Date,
+    tsutsalsanTuluvluguut: Number,
+    tsutsalsanUldegdel: Number,
     khungulukhKhugatsaa: Number,
     sariinTurees: Number,
     gerchilgeeniiZurag: String,
