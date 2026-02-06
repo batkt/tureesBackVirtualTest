@@ -3915,25 +3915,29 @@ router
                     (tsutslagdsanMapByRegister[reg] || 0) + avlaga;
                 });
                 result.jagsaalt.forEach((x) => {
-                  x.tsutslagdsanAvlaga =
+                  const avlagaFromMap =
                     tsutslagdsanMapByGereeniiDugaar[x.gereeniiDugaar] ??
                     tsutslagdsanMapByRegister[x.register] ??
                     0;
                   if (x.tuluv === -1) {
                     const stored = storedValuesMap[x.gereeniiDugaar];
-                    const storedTuluvluguut =
-                      stored?.tuluvluguut ??
-                      x.tsutsalsanTuluvluguut ??
-                      tuluvluguutMapForCancelled[x.gereeniiDugaar];
                     const storedUldegdel =
                       stored?.uldegdel ??
                       x.tsutsalsanUldegdel ??
                       tuluvluguutMapForCancelled[x.gereeniiDugaar];
-                    if (storedTuluvluguut != null) x.tuluvluguut = storedTuluvluguut;
-                    if (storedUldegdel != null) {
-                      x.niitUldegdel = storedUldegdel;
-                      x.uldegdel = storedUldegdel;
-                    }
+                    const storedTuluvluguut =
+                      stored?.tuluvluguut ??
+                      x.tsutsalsanTuluvluguut ??
+                      tuluvluguutMapForCancelled[x.gereeniiDugaar];
+                    x.tsutslagdsanAvlaga =
+                      storedUldegdel != null ? storedUldegdel : avlagaFromMap;
+                    x.uldegdel =
+                      storedUldegdel != null ? storedUldegdel : avlagaFromMap;
+                    x.niitUldegdel = x.uldegdel;
+                    if (storedTuluvluguut != null)
+                      x.tuluvluguut = storedTuluvluguut;
+                  } else {
+                    x.tsutslagdsanAvlaga = avlagaFromMap;
                   }
                 });
               }
