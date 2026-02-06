@@ -3679,6 +3679,8 @@ router
         const cancelledWithTuluvluguut = new Set(
           (tsutslagdsanTuluvluguutList || []).map((r) => r._id),
         );
+        const ekhlekhDate = new Date(req.body.ekhlekhOgnoo);
+        const duusakhDate = new Date(req.body.duusakhOgnoo);
         const cancelledWithStoredValues = await Geree(
           req.body.tukhainBaaziinKholbolt,
           true,
@@ -3687,22 +3689,39 @@ router
             {
               ...tsutslagdsanMatch,
               tsutsalsanOgnoo: {
-                $gte: new Date(req.body.ekhlekhOgnoo),
-                $lte: new Date(req.body.duusakhOgnoo),
+                $gte: ekhlekhDate,
+                $lte: duusakhDate,
               },
-              $or: [
-                { tsutsalsanTuluvluguut: { $gt: 0 } },
-                { tsutsalsanUldegdel: { $exists: true } },
-              ],
             },
             { gereeniiDugaar: 1 },
           )
           .lean();
-        const cancelledWithStoredIds = new Set(
+        let cancelledWithStoredIds = new Set(
           (cancelledWithStoredValues || [])
             .map((r) => r.gereeniiDugaar)
             .filter(Boolean),
         );
+        const cancelledViaTuukh = await Geree(
+          req.body.tukhainBaaziinKholbolt,
+          true,
+        )
+          .aggregate([
+            { $match: { ...tsutslagdsanMatch, tsutsalsanOgnoo: { $exists: false } } },
+            { $unwind: "$gereeniiTuukhuud" },
+            {
+              $match: {
+                "gereeniiTuukhuud.turul": "Tsutslakh",
+                "gereeniiTuukhuud.khiisenOgnoo": {
+                  $gte: ekhlekhDate,
+                  $lte: duusakhDate,
+                },
+              },
+            },
+            { $group: { _id: "$gereeniiDugaar" } },
+          ]);
+        (cancelledViaTuukh || []).forEach((r) => {
+          if (r._id) cancelledWithStoredIds.add(r._id);
+        });
         const allCancelledIds = new Set([
           ...cancelledWithTuluvluguut,
           ...cancelledWithStoredIds,
@@ -3760,12 +3779,17 @@ router
             gereeniiDugaar: 1,
             tsutsalsanTuluvluguut: 1,
             tsutsalsanUldegdel: 1,
+            sariinTurees: 1,
           })
           .lean();
         (storedDocs || []).forEach((d) => {
           if (d.gereeniiDugaar) {
+            const tuluvluguut =
+              d.tsutsalsanTuluvluguut != null && d.tsutsalsanTuluvluguut > 0
+                ? d.tsutsalsanTuluvluguut
+                : d.sariinTurees ?? 0;
             storedValuesMap[d.gereeniiDugaar] = {
-              tuluvluguut: d.tsutsalsanTuluvluguut,
+              tuluvluguut,
               uldegdel: d.tsutsalsanUldegdel,
             };
           }
@@ -3891,25 +3915,29 @@ router
                     (tsutslagdsanMapByRegister[reg] || 0) + avlaga;
                 });
                 result.jagsaalt.forEach((x) => {
-                  x.tsutslagdsanAvlaga =
+                  const avlagaFromMap =
                     tsutslagdsanMapByGereeniiDugaar[x.gereeniiDugaar] ??
                     tsutslagdsanMapByRegister[x.register] ??
                     0;
                   if (x.tuluv === -1) {
                     const stored = storedValuesMap[x.gereeniiDugaar];
-                    const storedTuluvluguut =
-                      stored?.tuluvluguut ??
-                      x.tsutsalsanTuluvluguut ??
-                      tuluvluguutMapForCancelled[x.gereeniiDugaar];
                     const storedUldegdel =
                       stored?.uldegdel ??
                       x.tsutsalsanUldegdel ??
                       tuluvluguutMapForCancelled[x.gereeniiDugaar];
-                    if (storedTuluvluguut != null) x.tuluvluguut = storedTuluvluguut;
-                    if (storedUldegdel != null) {
-                      x.niitUldegdel = storedUldegdel;
-                      x.uldegdel = storedUldegdel;
-                    }
+                    const storedTuluvluguut =
+                      stored?.tuluvluguut ??
+                      x.tsutsalsanTuluvluguut ??
+                      tuluvluguutMapForCancelled[x.gereeniiDugaar];
+                    x.tsutslagdsanAvlaga =
+                      storedUldegdel != null ? storedUldegdel : avlagaFromMap;
+                    x.uldegdel =
+                      storedUldegdel != null ? storedUldegdel : avlagaFromMap;
+                    x.niitUldegdel = x.uldegdel;
+                    if (storedTuluvluguut != null)
+                      x.tuluvluguut = storedTuluvluguut;
+                  } else {
+                    x.tsutslagdsanAvlaga = avlagaFromMap;
                   }
                 });
               }
