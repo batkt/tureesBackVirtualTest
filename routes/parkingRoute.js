@@ -1824,9 +1824,6 @@ function stableStringify(obj) {
 }
 
 async function getParkingFind(kholbolt, baiguullagiinId, query) {
-  
-  const buf = encode({ hello: "world" });
-  const obj = decode(buf);
   const queryKey = crypto
     .createHash("md5")
     .update(stableStringify(query))
