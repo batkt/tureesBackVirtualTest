@@ -3199,11 +3199,31 @@ router
             req.body.tukhainBaaziinKholbolt,
           );
           if (showTsutslagdsanAvlaga) {
+            let monthStart = moment(
+              req.params.ekhlekhOgnoo,
+              ["YYYY-MM-DD HH:mm:ss", "YYYY-MM-DD", moment.ISO_8601],
+              true
+            )
+              .startOf("day")
+              .toDate();
+            let monthEnd = moment(
+              req.params.duusakhOgnoo,
+              ["YYYY-MM-DD HH:mm:ss", "YYYY-MM-DD", moment.ISO_8601],
+              true
+            )
+              .endOf("day")
+              .toDate();
+            if (isNaN(monthStart.getTime()))
+              monthStart = new Date(req.params.ekhlekhOgnoo);
+            if (isNaN(monthEnd.getTime()))
+              monthEnd = new Date(req.params.duusakhOgnoo);
             const tsutslagdsanMatch = { tuluv: -1 };
             if (body.query?.baiguullagiinId)
               tsutslagdsanMatch.baiguullagiinId = body.query.baiguullagiinId;
             if (!!body.query?.barilgiinId)
               tsutslagdsanMatch.barilgiinId = body.query.barilgiinId;
+            if (body.query?.davkhar != null)
+              tsutslagdsanMatch.davkhar = body.query.davkhar;
             const tsutslagdsanQuery = [
               { $match: tsutslagdsanMatch },
               { $unwind: { path: "$avlaga.guilgeenuud" } },
@@ -3299,8 +3319,8 @@ router
                 {
                   ...tsutslagdsanMatch,
                   tsutsalsanOgnoo: {
-                    $gte: new Date(req.params.ekhlekhOgnoo),
-                    $lte: new Date(req.params.duusakhOgnoo),
+                    $gte: monthStart,
+                    $lte: monthEnd,
                   },
                 },
                 { gereeniiDugaar: 1, tsutsalsanTulsunDun: 1 },
@@ -3317,8 +3337,8 @@ router
                   $match: {
                     "gereeniiTuukhuud.turul": "Tsutslakh",
                     "gereeniiTuukhuud.khiisenOgnoo": {
-                      $gte: new Date(req.params.ekhlekhOgnoo),
-                      $lte: new Date(req.params.duusakhOgnoo),
+                      $gte: monthStart,
+                      $lte: monthEnd,
                     },
                   },
                 },
