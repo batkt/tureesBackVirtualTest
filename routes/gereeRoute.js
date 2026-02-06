@@ -3199,10 +3199,9 @@ router
             req.body.tukhainBaaziinKholbolt,
           );
           if (showTsutslagdsanAvlaga) {
-            const tsutslagdsanMatch = {
-              baiguullagiinId: body.query?.baiguullagiinId,
-              tuluv: -1,
-            };
+            const tsutslagdsanMatch = { tuluv: -1 };
+            if (body.query?.baiguullagiinId)
+              tsutslagdsanMatch.baiguullagiinId = body.query.baiguullagiinId;
             if (!!body.query?.barilgiinId)
               tsutslagdsanMatch.barilgiinId = body.query.barilgiinId;
             const tsutslagdsanQuery = [
@@ -3312,13 +3311,8 @@ router
               true,
             )
               .aggregate([
-                {
-                  $match: {
-                    ...tsutslagdsanMatch,
-                    tsutsalsanOgnoo: { $exists: false },
-                  },
-                },
-                { $unwind: "$gereeniiTuukhuud" },
+                { $match: tsutslagdsanMatch },
+                { $unwind: { path: "$gereeniiTuukhuud", preserveNullAndEmptyArrays: false } },
                 {
                   $match: {
                     "gereeniiTuukhuud.turul": "Tsutslakh",
