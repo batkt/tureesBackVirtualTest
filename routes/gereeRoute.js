@@ -3560,6 +3560,7 @@ router
         });
       }
       let tsutslagdsanTuluvluguutList = [];
+      let allCancelledIds = new Set();
       if (req.body.showTsutslagdsanAvlaga) {
         const tsutslagdsanMatch = {
           baiguullagiinId: req.body.baiguullagiinId,
@@ -3722,7 +3723,7 @@ router
         (cancelledViaTuukh || []).forEach((r) => {
           if (r._id) cancelledWithStoredIds.add(r._id);
         });
-        const allCancelledIds = new Set([
+        allCancelledIds = new Set([
           ...cancelledWithTuluvluguut,
           ...cancelledWithStoredIds,
         ]);
@@ -3759,6 +3760,9 @@ router
         ? { $in: [1, -1] }
         : { $ne: -1 };
       body.lean = true;
+      if (req.body.showTsutslagdsanAvlaga && body.select && typeof body.select === "object") {
+        body.select.tuluv = 1;
+      }
 
       const tuluvluguutMapForCancelled = {};
       if (req.body.showTsutslagdsanAvlaga && tsutslagdsanTuluvluguutList) {
@@ -3798,6 +3802,11 @@ router
       khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt, true), body)
           .then(async (result) => {
             if (result && result.jagsaalt && result.jagsaalt.length > 0) {
+              if (req.body.showTsutslagdsanAvlaga && allCancelledIds.size > 0) {
+                result.jagsaalt.forEach((x) => {
+                  if (allCancelledIds.has(x.gereeniiDugaar)) x.tuluv = -1;
+                });
+              }
               result.jagsaalt.forEach((x) => {
                 if (
                   gereenuud.length > 0 &&
