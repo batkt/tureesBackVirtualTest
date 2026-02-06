@@ -3311,6 +3311,38 @@ router
             const cancelledWithAvlaga = tsutslagdsanByContract.filter(
               (r) => r.tsutslagdsanAvlaga > 0 && !existingIds.has(r._id),
             );
+            const cancelledWithPaymentsInMonth = await Geree(
+              req.body.tukhainBaaziinKholbolt,
+              true,
+            ).aggregate([
+              { $match: tsutslagdsanMatch },
+              { $unwind: { path: "$avlaga.guilgeenuud", preserveNullAndEmptyArrays: false } },
+              {
+                $match: {
+                  "avlaga.guilgeenuud.ognoo": {
+                    $gte: monthStart,
+                    $lte: monthEnd,
+                  },
+                  "avlaga.guilgeenuud.tulsunDun": { $gt: 0 },
+                  "avlaga.guilgeenuud.turul": {
+                    $nin: ["baritsaa", "aldangi", "zalruulga"],
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: "$gereeniiDugaar",
+                  tulsun: { $sum: "$avlaga.guilgeenuud.tulsunDun" },
+                },
+              },
+            ]);
+            const cancelledWithPaymentsMap = {};
+            (cancelledWithPaymentsInMonth || []).forEach((r) => {
+              if (r._id && !existingIds.has(r._id)) {
+                cancelledWithPaymentsMap[r._id] = r.tulsun || 0;
+              }
+            });
+            const cancelledWithPaymentsToAdd = Object.keys(cancelledWithPaymentsMap);
             const cancelledWithStoredTulsunDun = await Geree(
               req.body.tukhainBaaziinKholbolt,
               true,
@@ -3405,6 +3437,34 @@ router
                   ...c,
                   tulsunDun: 0,
                   tsutslagdsanAvlaga: avlagaMap[c.gereeniiDugaar] ?? 0,
+                });
+              });
+            }
+            const alreadyAddedCancelled = new Set([
+              ...cancelledWithTulsunDunToAdd,
+              ...cancelledWithAvlaga.map((r) => r._id),
+            ]);
+            const cancelledWithPaymentsToAddFiltered = cancelledWithPaymentsToAdd.filter(
+              (id) => !alreadyAddedCancelled.has(id),
+            );
+            if (cancelledWithPaymentsToAddFiltered.length > 0) {
+              const cancelledPaymentsContracts = await Geree(
+                req.body.tukhainBaaziinKholbolt,
+                true,
+              )
+                .find({
+                  ...tsutslagdsanMatch,
+                  gereeniiDugaar: { $in: cancelledWithPaymentsToAddFiltered },
+                })
+                .lean();
+              cancelledPaymentsContracts.forEach((c) => {
+                result.jagsaalt.push({
+                  ...c,
+                  tulsunDun: cancelledWithPaymentsMap[c.gereeniiDugaar] ?? 0,
+                  tsutslagdsanAvlaga:
+                    tsutslagdsanMapByGereeniiDugaar[c.gereeniiDugaar] ??
+                    tsutslagdsanMapByRegister[c.register] ??
+                    0,
                 });
               });
             }
