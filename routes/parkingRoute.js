@@ -889,28 +889,38 @@ router.post(
 );
 router.post("/uilchluulegchUstgay", tokenShalgakh, async (req, res, next) => {
   try {
-    const { id } = req.body; 
+    const { ids } = req.body;
     
-    if (!id) {
-      return res.status(400).send({ 
-        success: false, 
-        message: "ID заавал шаардлагатай" 
-      });
-    }
-    const result = await Uilchluulegch.deleteOne({ _id: id });
-    if (!result) {
-      return res.status(404).send({ 
-        success: false, 
-        message: "Үйлчлүүлэгч олдсонгүй" 
-      });
+    console.log("Received ids:", ids); // Debug log
+    
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).send("ID заавал шаардлагатай");
     }
     
-    res.send({ 
-      success: true, 
-      message: "Үйлчлүүлэгч амжилттай устгагдлаа",
-      data: result 
+    // Import mongoose to validate ObjectIds
+    const mongoose = require('mongoose');
+    
+    // Validate all IDs are valid ObjectIds
+    const validIds = ids.filter(id => mongoose.Types.ObjectId.isValid(id));
+    
+    if (validIds.length === 0) {
+      return res.status(400).send("Буруу ID формат");
+    }
+    
+    // Delete multiple records
+    const result = await Uilchluulegch.deleteMany({ 
+      _id: { $in: validIds.map(id => mongoose.Types.ObjectId(id)) } 
     });
+    
+    console.log("Delete result:", result); // Debug log
+    
+    if (result.deletedCount === 0) {
+      return res.status(404).send("Үйлчлүүлэгч олдсонгүй");
+    }
+    
+    res.send("Amjilttai");
   } catch (err) {
+    console.error("Delete error:", err); // Debug log
     next(err);
   }
 });
