@@ -720,6 +720,7 @@ router
       });
       var talbai = await Talbai(req.body.tukhainBaaziinKholbolt).findOne({
         baiguullagiinId: geree.baiguullagiinId,
+        barilgiinId: geree.barilgiinId,
         kod: geree.talbainDugaar,
       });
 
