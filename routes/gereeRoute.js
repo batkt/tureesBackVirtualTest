@@ -3583,10 +3583,7 @@ router
         const cancelledWithTuluvluguut = new Set(
           (tsutslagdsanTuluvluguutList || []).map((r) => r._id),
         );
-        const allCancelledIds = new Set([
-          ...cancelledWithAvlaga,
-          ...cancelledWithTuluvluguut,
-        ]);
+        const allCancelledIds = new Set([...cancelledWithTuluvluguut]);
         const tsutslagdsanContracts = [
           ...(tsutslagdsanAvlagaList || []).map((r) => ({
             _id: r._id,
