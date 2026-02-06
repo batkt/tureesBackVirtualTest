@@ -2020,7 +2020,11 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
               tokiNer: { $exists: true },
             };
         if (req.query.barilgiinId) query["barilgiinId"] = req.query.barilgiinId;
-        var zogsooluud = await Parking(kholbolt).find(query).lean();
+        var zogsooluud = await getParkingFind(
+          kholbolt,
+          kholbolt.baiguullagiinId,
+          query,
+        );
         for (const zogsool of zogsooluud) {
           if (!!zogsool) {
             var matchMashin = {
