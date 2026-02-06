@@ -2186,6 +2186,7 @@ router.get("/v1/search_car/:plate_number", async (req, res, next) => {
         (a) => a.baiguullagiinId == req.query.baiguullagiinId,
       );
     }
+    console.log("req.query.baiguullagiinId baiguullagiinId: ", req.query.baiguullagiinId);
     if (kholboltuud) {
       for (const kholbolt of kholboltuud) {
         var query = localEsekh
