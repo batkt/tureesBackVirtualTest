@@ -1165,7 +1165,9 @@ router
         .select({
           gereeniiTuukhuud: 1,
           duusakhOgnoo: 1,
-        });
+          avlaga: 1,
+        })
+        .lean();
       var tuukh = {
         umnukhDuusakhOgnoo: geree.duusakhOgnoo,
         tsutslasanShaltgaan: req.body.shaltgaan,
@@ -1182,6 +1184,49 @@ router
             tulukhDun: { $gt: 0 },
           }
         : { ognoo: { $gt: new Date() } };
+      let tsutsalsanTuluvluguut = 0;
+      let tsutsalsanUldegdel = 0;
+      if (req.body.udruurBodokhEsekh && geree.avlaga?.guilgeenuud?.length > 0) {
+        const monthStart = new Date(
+          moment(req.body.tsutslakhOgnoo).startOf("month"),
+        );
+        const monthEnd = new Date(
+          moment(req.body.tsutslakhOgnoo).endOf("month"),
+        );
+        const duusakhOgnoo = new Date(
+          moment(req.body.tsutslakhOgnoo).endOf("month"),
+        );
+        for (const g of geree.avlaga.guilgeenuud) {
+          const ognoo = g.ognoo ? new Date(g.ognoo) : null;
+          if (!ognoo || ognoo > duusakhOgnoo) continue;
+          const turul = g.turul || "";
+          const isBaritsaaOrAldangi =
+            turul === "baritsaa" || turul === "aldangi";
+          const tulukh = (g.tulukhDun || 0) - (g.khyamdral || 0);
+          const uldegdel =
+            (g.tulukhDun || 0) -
+            (g.tulsunDun || 0) -
+            (g.khyamdral || 0);
+          if (isBaritsaaOrAldangi && !(turul === "baritsaa" && (g.tulsunDun || 0) > 0))
+            continue;
+          tsutsalsanUldegdel += uldegdel;
+          if (
+            ognoo >= monthStart &&
+            ognoo <= monthEnd &&
+            (g.tulukhDun || 0) > 0 &&
+            !isBaritsaaOrAldangi
+          ) {
+            tsutsalsanTuluvluguut += tulukh;
+          }
+        }
+      }
+      const updateSet = {
+        tsutsalsanOgnoo: new Date(),
+        tuluv: -1,
+        ...(tsutsalsanTuluvluguut > 0 || tsutsalsanUldegdel !== 0
+          ? { tsutsalsanTuluvluguut, tsutsalsanUldegdel }
+          : {}),
+      };
       if (geree.gereeniiTuukhuud) {
         Geree(req.body.tukhainBaaziinKholbolt)
           .findOneAndUpdate(
@@ -1190,10 +1235,7 @@ router
               $push: {
                 [`gereeniiTuukhuud`]: tuukh,
               },
-              $set: {
-                tsutsalsanOgnoo: new Date(),
-                tuluv: -1,
-              },
+              $set: updateSet,
               $pull: { "avlaga.guilgeenuud": avlagaMatch },
             },
           )
@@ -1215,8 +1257,7 @@ router
             {
               $set: {
                 gereeniiTuukhuud: tuukh,
-                tsutsalsanOgnoo: new Date(),
-                tuluv: -1,
+                ...updateSet,
               },
               $pull: { "avlaga.guilgeenuud": avlagaMatch },
             },
@@ -3646,11 +3687,11 @@ router
                   x.tuluvluguut = x.tuluvluguut ?? 0;
                   x.niitUldegdel = x.niitUldegdel ?? 0;
                 }
-                if (x.tuluv === -1 && tuluvluguutMapForCancelled[x.gereeniiDugaar]) {
-                  x.tuluvluguut = tuluvluguutMapForCancelled[x.gereeniiDugaar];
-                  if (!x.niitUldegdel && x.niitUldegdel !== 0) {
-                    x.niitUldegdel = tuluvluguutMapForCancelled[x.gereeniiDugaar];
-                  }
+                if (x.tuluv === -1) {
+                  const storedTuluvluguut = x.tsutsalsanTuluvluguut ?? tuluvluguutMapForCancelled[x.gereeniiDugaar];
+                  const storedUldegdel = x.tsutsalsanUldegdel ?? tuluvluguutMapForCancelled[x.gereeniiDugaar];
+                  if (storedTuluvluguut != null) x.tuluvluguut = storedTuluvluguut;
+                  if (storedUldegdel != null) x.niitUldegdel = storedUldegdel;
                 }
               });
               if (req.body.showTsutslagdsanAvlaga) {
@@ -3739,13 +3780,17 @@ router
                     tsutslagdsanMapByRegister[x.register] ??
                     0;
                   if (x.tuluv === -1) {
-                    const avlaga =
-                      tsutslagdsanMapByGereeniiDugaar[x.gereeniiDugaar] ?? 0;
-                    const tuluvluguutVal =
-                      tuluvluguutMapForCancelled[x.gereeniiDugaar] ?? 0;
-                    x.niitUldegdel = avlaga > 0 ? avlaga : tuluvluguutVal;
-                    x.tuluvluguut =
-                      avlaga > 0 ? 0 : tuluvluguutVal;
+                    if (x.tsutsalsanTuluvluguut != null || x.tsutsalsanUldegdel != null) {
+                      if (x.tsutsalsanTuluvluguut != null) x.tuluvluguut = x.tsutsalsanTuluvluguut;
+                      if (x.tsutsalsanUldegdel != null) x.niitUldegdel = x.tsutsalsanUldegdel;
+                    } else {
+                      const avlaga =
+                        tsutslagdsanMapByGereeniiDugaar[x.gereeniiDugaar] ?? 0;
+                      const tuluvluguutVal =
+                        tuluvluguutMapForCancelled[x.gereeniiDugaar] ?? 0;
+                      x.niitUldegdel = avlaga > 0 ? avlaga : tuluvluguutVal;
+                      x.tuluvluguut = avlaga > 0 ? 0 : tuluvluguutVal;
+                    }
                   }
                 });
               }
