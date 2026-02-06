@@ -3135,6 +3135,9 @@ router
           },
         },
       };
+      if (showTsutslagdsanAvlaga) {
+        body.query["tuluv"] = { $in: [1, -1] };
+      }
       body.lean = true;
       khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt, true), body)
         .then(async (result) => {
@@ -3145,7 +3148,7 @@ router
             null,
             req.body.tukhainBaaziinKholbolt,
           );
-          if (showTsutslagdsanAvlaga && result?.jagsaalt?.length > 0) {
+          if (showTsutslagdsanAvlaga) {
             const tsutslagdsanMatch = {
               baiguullagiinId: body.query?.baiguullagiinId,
               tuluv: -1,
@@ -3181,7 +3184,8 @@ router
               },
               {
                 $group: {
-                  _id: "$register",
+                  _id: "$gereeniiDugaar",
+                  register: { $first: "$register" },
                   tulukh: {
                     $sum: {
                       $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -3201,28 +3205,68 @@ router
               },
               {
                 $project: {
-                  register: "$_id",
                   tsutslagdsanAvlaga: {
                     $subtract: [
                       "$tulukh",
                       { $add: ["$tulsun", "$khyamdral"] },
                     ],
                   },
+                  register: 1,
                 },
               },
             ];
-            const tsutslagdsanByRegister = await Geree(
+            const tsutslagdsanByContract = await Geree(
               req.body.tukhainBaaziinKholbolt,
               true,
             ).aggregate(tsutslagdsanQuery);
-            const tsutslagdsanMap = {};
-            (tsutslagdsanByRegister || []).forEach((r) => {
-              tsutslagdsanMap[r.register || ""] =
+            const tsutslagdsanMapByGereeniiDugaar = {};
+            const tsutslagdsanMapByRegister = {};
+            (tsutslagdsanByContract || []).forEach((r) => {
+              const avlaga =
                 r.tsutslagdsanAvlaga > 0 ? r.tsutslagdsanAvlaga : 0;
+              tsutslagdsanMapByGereeniiDugaar[r._id] = avlaga;
+              const reg = r.register || "";
+              tsutslagdsanMapByRegister[reg] =
+                (tsutslagdsanMapByRegister[reg] || 0) + avlaga;
             });
+            if (!result.jagsaalt) result.jagsaalt = [];
             result.jagsaalt.forEach((x) => {
-              x.tsutslagdsanAvlaga = tsutslagdsanMap[x.register] || 0;
+              x.tsutslagdsanAvlaga =
+                tsutslagdsanMapByGereeniiDugaar[x.gereeniiDugaar] ??
+                tsutslagdsanMapByRegister[x.register] ??
+                0;
             });
+            const existingIds = new Set(
+              result.jagsaalt.map((x) => x.gereeniiDugaar),
+            );
+            const cancelledWithAvlaga = tsutslagdsanByContract.filter(
+              (r) => r.tsutslagdsanAvlaga > 0 && !existingIds.has(r._id),
+            );
+            if (cancelledWithAvlaga.length > 0) {
+              const cancelledGereeniiDugaar = cancelledWithAvlaga.map(
+                (r) => r._id,
+              );
+              const cancelledContracts = await Geree(
+                req.body.tukhainBaaziinKholbolt,
+                true,
+              )
+                .find({
+                  ...tsutslagdsanMatch,
+                  gereeniiDugaar: { $in: cancelledGereeniiDugaar },
+                })
+                .lean();
+              const avlagaMap = {};
+              cancelledWithAvlaga.forEach((r) => {
+                avlagaMap[r._id] = r.tsutslagdsanAvlaga;
+              });
+              cancelledContracts.forEach((c) => {
+                result.jagsaalt.push({
+                  ...c,
+                  tulsunDun: 0,
+                  tsutslagdsanAvlaga: avlagaMap[c.gereeniiDugaar] ?? 0,
+                });
+              });
+            }
           }
           res.send(result);
         })
@@ -3406,36 +3450,211 @@ router
         req.body.tukhainBaaziinKholbolt,
         true,
       ).aggregate(query);
-      if (gereenuud.length < 0 || gereenuud[0].tuluvluguut.length < 1)
-        res.send([]);
-      else {
-        var turJagsaalt = [];
+      const hasTuluvluguut =
+        gereenuud?.length > 0 &&
+        gereenuud[0]?.tuluvluguut?.length > 0;
+      if (!hasTuluvluguut && !req.body.showTsutslagdsanAvlaga) {
+        res.send({ jagsaalt: [], niitMur: 0, khuudasniiDugaar: 1 });
+        return;
+      }
+      var turJagsaalt = [];
+      if (gereenuud.length > 0 && gereenuud[0].tuluvluguut?.length > 0) {
         gereenuud[0].tuluvluguut.forEach((x) => {
           if (!x.tulsun || x.tulsun == 0) turJagsaalt.push(x._id);
         });
-        const body = req.body.query;
-        if (!!body?.khuudasniiDugaar)
-          body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-        if (!!body?.khuudasniiKhemjee)
-          body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-        if (!!body?.search) body.search = String(body.search);
-        body.query["gereeniiDugaar"] = { $in: turJagsaalt };
-        ((body.query["tuluv"] = { $ne: -1 }), (body.lean = true));
+      }
+      let tsutslagdsanTuluvluguutList = [];
+      if (req.body.showTsutslagdsanAvlaga) {
+        const tsutslagdsanMatch = {
+          baiguullagiinId: req.body.baiguullagiinId,
+          tuluv: -1,
+        };
+        if (!!req.body.barilgiinId)
+          tsutslagdsanMatch.barilgiinId = req.body.barilgiinId;
+        const tsutslagdsanAvlagaQuery = [
+          { $match: tsutslagdsanMatch },
+          { $unwind: { path: "$avlaga.guilgeenuud" } },
+          {
+            $match: {
+              $or: [
+                {
+                  "avlaga.guilgeenuud.turul": {
+                    $nin: ["aldangi", "baritsaa"],
+                  },
+                },
+                {
+                  $and: [
+                    {
+                      "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] },
+                    },
+                    {
+                      "avlaga.guilgeenuud.tulsunDun": { $gt: 0 },
+                    },
+                  ],
+                },
+              ],
+              "avlaga.guilgeenuud.ognoo": {
+                $lte: new Date(req.body.duusakhOgnoo),
+              },
+            },
+          },
+          {
+            $group: {
+              _id: "$gereeniiDugaar",
+              tulukh: {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                },
+              },
+              khyamdral: {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                },
+              },
+              tulsun: {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              tsutslagdsanAvlaga: {
+                $subtract: [
+                  "$tulukh",
+                  { $add: ["$tulsun", "$khyamdral"] },
+                ],
+              },
+            },
+          },
+          { $match: { tsutslagdsanAvlaga: { $gt: 0 } } },
+        ];
+        const tsutslagdsanTuluvluguutQuery = [
+          { $match: tsutslagdsanMatch },
+          { $unwind: { path: "$avlaga.guilgeenuud" } },
+          {
+            $match: {
+              "avlaga.guilgeenuud.ognoo": {
+                $lte: new Date(req.body.duusakhOgnoo),
+                $gte: new Date(req.body.ekhlekhOgnoo),
+              },
+              "avlaga.guilgeenuud.turul": {
+                $nin: ["baritsaa", "aldangi"],
+              },
+            },
+          },
+          {
+            $group: {
+              _id: "$gereeniiDugaar",
+              tulukh: {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                },
+              },
+              khyamdral: {
+                $sum: {
+                  $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              tuluvluguut: {
+                $subtract: ["$tulukh", "$khyamdral"],
+              },
+            },
+          },
+          { $match: { tuluvluguut: { $gt: 0 } } },
+        ];
+        const [tsutslagdsanAvlagaList, tsutslagdsanTuluvluguutList] =
+          await Promise.all([
+            Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
+              tsutslagdsanAvlagaQuery,
+            ),
+            Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(
+              tsutslagdsanTuluvluguutQuery,
+            ),
+          ]);
+        const cancelledWithAvlaga = new Set(
+          (tsutslagdsanAvlagaList || []).map((r) => r._id),
+        );
+        const cancelledWithTuluvluguut = new Set(
+          (tsutslagdsanTuluvluguutList || []).map((r) => r._id),
+        );
+        const allCancelledIds = new Set([
+          ...cancelledWithAvlaga,
+          ...cancelledWithTuluvluguut,
+        ]);
+        const tsutslagdsanContracts = [
+          ...(tsutslagdsanAvlagaList || []).map((r) => ({
+            _id: r._id,
+            tsutslagdsanAvlaga: r.tsutslagdsanAvlaga,
+          })),
+          ...(tsutslagdsanTuluvluguutList || [])
+            .filter((r) => !cancelledWithAvlaga.has(r._id))
+            .map((r) => ({
+              _id: r._id,
+              tsutslagdsanAvlaga: 0,
+            })),
+        ];
+        allCancelledIds.forEach((id) => {
+          if (id && !turJagsaalt.includes(id)) {
+            turJagsaalt.push(id);
+          }
+        });
+      }
+      if (turJagsaalt.length < 1) {
+        res.send({ jagsaalt: [], niitMur: 0, khuudasniiDugaar: 1 });
+        return;
+      }
+      const body = req.body.query;
+      if (!!body?.khuudasniiDugaar)
+        body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+      if (!!body?.khuudasniiKhemjee)
+        body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+      if (!!body?.search) body.search = String(body.search);
+      body.query["gereeniiDugaar"] = { $in: turJagsaalt };
+      body.query["tuluv"] = req.body.showTsutslagdsanAvlaga
+        ? { $in: [1, -1] }
+        : { $ne: -1 };
+      body.lean = true;
 
-        khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt, true), body)
+      const tuluvluguutMapForCancelled = {};
+      if (req.body.showTsutslagdsanAvlaga && tsutslagdsanTuluvluguutList) {
+        tsutslagdsanTuluvluguutList.forEach((r) => {
+          tuluvluguutMapForCancelled[r._id] = r.tuluvluguut || 0;
+        });
+      }
+      khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt, true), body)
           .then(async (result) => {
             if (result && result.jagsaalt && result.jagsaalt.length > 0) {
               result.jagsaalt.forEach((x) => {
-                x.tuluvluguut =
-                  gereenuud[0].tuluvluguut.find(
-                    (a) => a._id == x.gereeniiDugaar,
-                  )?.tulukh || 0;
-                x.niitUldegdel =
-                  gereenuud[0].niitUldegdel.find(
-                    (a) => a._id == x.gereeniiDugaar,
-                  )?.uldegdel || 0;
-                if (x.tuluvluguut < 0) x.tuluvluguut = 0;
-                if (x.niitUldegdel < 0) x.niitUldegdel = 0;
+                if (
+                  gereenuud.length > 0 &&
+                  gereenuud[0].tuluvluguut?.length > 0
+                ) {
+                  x.tuluvluguut =
+                    gereenuud[0].tuluvluguut.find(
+                      (a) => a._id == x.gereeniiDugaar,
+                    )?.tulukh || 0;
+                  x.niitUldegdel =
+                    gereenuud[0].niitUldegdel.find(
+                      (a) => a._id == x.gereeniiDugaar,
+                    )?.uldegdel || 0;
+                  if (x.tuluvluguut < 0) x.tuluvluguut = 0;
+                  if (x.niitUldegdel < 0) x.niitUldegdel = 0;
+                } else {
+                  x.tuluvluguut = x.tuluvluguut ?? 0;
+                  x.niitUldegdel = x.niitUldegdel ?? 0;
+                }
+                if (x.tuluv === -1 && tuluvluguutMapForCancelled[x.gereeniiDugaar]) {
+                  x.tuluvluguut = tuluvluguutMapForCancelled[x.gereeniiDugaar];
+                  if (!x.niitUldegdel && x.niitUldegdel !== 0) {
+                    x.niitUldegdel = tuluvluguutMapForCancelled[x.gereeniiDugaar];
+                  }
+                }
               });
               if (req.body.showTsutslagdsanAvlaga) {
                 const tsutslagdsanMatch = {
@@ -3445,14 +3664,8 @@ router
                 if (!!req.body.barilgiinId)
                   tsutslagdsanMatch.barilgiinId = req.body.barilgiinId;
                 const tsutslagdsanQuery = [
-                  {
-                    $match: tsutslagdsanMatch,
-                  },
-                  {
-                    $unwind: {
-                      path: "$avlaga.guilgeenuud",
-                    },
-                  },
+                  { $match: tsutslagdsanMatch },
+                  { $unwind: { path: "$avlaga.guilgeenuud" } },
                   {
                     $match: {
                       $or: [
@@ -3479,7 +3692,8 @@ router
                   },
                   {
                     $group: {
-                      _id: "$register",
+                      _id: "$gereeniiDugaar",
+                      register: { $first: "$register" },
                       tulukh: {
                         $sum: {
                           $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -3499,28 +3713,43 @@ router
                   },
                   {
                     $project: {
-                      register: "$_id",
                       tsutslagdsanAvlaga: {
                         $subtract: [
                           "$tulukh",
                           { $add: ["$tulsun", "$khyamdral"] },
                         ],
                       },
+                      register: 1,
                     },
                   },
                 ];
-                const tsutslagdsanByRegister = await Geree(
+                const tsutslagdsanByContract = await Geree(
                   req.body.tukhainBaaziinKholbolt,
                   true,
                 ).aggregate(tsutslagdsanQuery);
-                const tsutslagdsanMap = {};
-                (tsutslagdsanByRegister || []).forEach((r) => {
-                  tsutslagdsanMap[r.register || ""] =
-                    r.tsutslagdsanAvlaga > 0 ? r.tsutslagdsanAvlaga : 0;
+                const tsutslagdsanMapByGereeniiDugaar = {};
+                const tsutslagdsanMapByRegister = {};
+                (tsutslagdsanByContract || []).forEach((r) => {
+                  const avlaga = r.tsutslagdsanAvlaga > 0 ? r.tsutslagdsanAvlaga : 0;
+                  tsutslagdsanMapByGereeniiDugaar[r._id] = avlaga;
+                  const reg = r.register || "";
+                  tsutslagdsanMapByRegister[reg] =
+                    (tsutslagdsanMapByRegister[reg] || 0) + avlaga;
                 });
                 result.jagsaalt.forEach((x) => {
                   x.tsutslagdsanAvlaga =
-                    tsutslagdsanMap[x.register] || 0;
+                    tsutslagdsanMapByGereeniiDugaar[x.gereeniiDugaar] ??
+                    tsutslagdsanMapByRegister[x.register] ??
+                    0;
+                  if (x.tuluv === -1) {
+                    const avlaga =
+                      tsutslagdsanMapByGereeniiDugaar[x.gereeniiDugaar] ?? 0;
+                    const tuluvluguutVal =
+                      tuluvluguutMapForCancelled[x.gereeniiDugaar] ?? 0;
+                    x.niitUldegdel = avlaga > 0 ? avlaga : tuluvluguutVal;
+                    x.tuluvluguut =
+                      avlaga > 0 ? 0 : tuluvluguutVal;
+                  }
                 });
               }
             }
@@ -3529,7 +3758,6 @@ router
           .catch((err) => {
             next(err);
           });
-      }
     } catch (error) {
       next(error);
     }
