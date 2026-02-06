@@ -1833,11 +1833,11 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
     .digest("hex");
   const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
-  if (cached) return JSON.parse(cached);
-  const data = await Parking(kholbolt)
-    .find(query)
-    .lean();
-  await client.setEx(cacheKey, 60, JSON.stringify(data));
+  if (cached) return decode(cached);
+  const data = await Parking(kholbolt).find(query).lean();
+  if(data && data.length > 0) {
+    await client.setEx(cacheKey, 300, Buffer.from(encode(data)));
+  }
   return data;
 }
 
