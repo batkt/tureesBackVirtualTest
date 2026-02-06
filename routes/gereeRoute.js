@@ -1186,6 +1186,7 @@ router
         : { ognoo: { $gt: new Date() } };
       let tsutsalsanTuluvluguut = 0;
       let tsutsalsanUldegdel = 0;
+      let tsutsalsanTulsunDun = 0;
       if (geree.avlaga?.guilgeenuud?.length > 0) {
         const monthStart = new Date(
           moment(req.body.tsutslakhOgnoo).startOf("month"),
@@ -1218,6 +1219,14 @@ router
           ) {
             tsutsalsanTuluvluguut += tulukh;
           }
+          if (
+            ognoo >= monthStart &&
+            ognoo <= monthEnd &&
+            (g.tulsunDun || 0) > 0 &&
+            !["baritsaa", "aldangi", "zalruulga"].includes(turul)
+          ) {
+            tsutsalsanTulsunDun += g.tulsunDun || 0;
+          }
         }
       }
       const updateSet = {
@@ -1225,6 +1234,7 @@ router
         tuluv: -1,
         tsutsalsanTuluvluguut,
         tsutsalsanUldegdel,
+        tsutsalsanTulsunDun,
       };
       if (geree.gereeniiTuukhuud) {
         Geree(req.body.tukhainBaaziinKholbolt)
@@ -3282,6 +3292,52 @@ router
             const cancelledWithAvlaga = tsutslagdsanByContract.filter(
               (r) => r.tsutslagdsanAvlaga > 0 && !existingIds.has(r._id),
             );
+            const cancelledWithStoredTulsunDun = await Geree(
+              req.body.tukhainBaaziinKholbolt,
+              true,
+            )
+              .find(
+                {
+                  ...tsutslagdsanMatch,
+                  tsutsalsanOgnoo: {
+                    $gte: new Date(req.params.ekhlekhOgnoo),
+                    $lte: new Date(req.params.duusakhOgnoo),
+                  },
+                  tsutsalsanTulsunDun: { $gt: 0 },
+                },
+                { gereeniiDugaar: 1, tsutsalsanTulsunDun: 1 },
+              )
+              .lean();
+            const cancelledWithTulsunDunToAdd = (
+              cancelledWithStoredTulsunDun || []
+            ).filter((r) => r.gereeniiDugaar && !existingIds.has(r.gereeniiDugaar));
+            if (cancelledWithTulsunDunToAdd.length > 0) {
+              const cancelledTulsunDunContracts = await Geree(
+                req.body.tukhainBaaziinKholbolt,
+                true,
+              )
+                .find({
+                  ...tsutslagdsanMatch,
+                  gereeniiDugaar: {
+                    $in: cancelledWithTulsunDunToAdd.map((r) => r.gereeniiDugaar),
+                  },
+                })
+                .lean();
+              const tulsunDunMap = {};
+              cancelledWithTulsunDunToAdd.forEach((r) => {
+                tulsunDunMap[r.gereeniiDugaar] = r.tsutsalsanTulsunDun || 0;
+              });
+              cancelledTulsunDunContracts.forEach((c) => {
+                result.jagsaalt.push({
+                  ...c,
+                  tulsunDun: tulsunDunMap[c.gereeniiDugaar] ?? 0,
+                  tsutslagdsanAvlaga:
+                    tsutslagdsanMapByGereeniiDugaar[c.gereeniiDugaar] ??
+                    tsutslagdsanMapByRegister[c.register] ??
+                    0,
+                });
+              });
+            }
             if (cancelledWithAvlaga.length > 0) {
               const cancelledGereeniiDugaar = cancelledWithAvlaga.map(
                 (r) => r._id,
@@ -3623,7 +3679,34 @@ router
         const cancelledWithTuluvluguut = new Set(
           (tsutslagdsanTuluvluguutList || []).map((r) => r._id),
         );
-        const allCancelledIds = new Set([...cancelledWithTuluvluguut]);
+        const cancelledWithStoredValues = await Geree(
+          req.body.tukhainBaaziinKholbolt,
+          true,
+        )
+          .find(
+            {
+              ...tsutslagdsanMatch,
+              tsutsalsanOgnoo: {
+                $gte: new Date(req.body.ekhlekhOgnoo),
+                $lte: new Date(req.body.duusakhOgnoo),
+              },
+              $or: [
+                { tsutsalsanTuluvluguut: { $gt: 0 } },
+                { tsutsalsanUldegdel: { $exists: true } },
+              ],
+            },
+            { gereeniiDugaar: 1 },
+          )
+          .lean();
+        const cancelledWithStoredIds = new Set(
+          (cancelledWithStoredValues || [])
+            .map((r) => r.gereeniiDugaar)
+            .filter(Boolean),
+        );
+        const allCancelledIds = new Set([
+          ...cancelledWithTuluvluguut,
+          ...cancelledWithStoredIds,
+        ]);
         const tsutslagdsanContracts = [
           ...(tsutslagdsanAvlagaList || []).map((r) => ({
             _id: r._id,
