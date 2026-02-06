@@ -1079,6 +1079,33 @@ router.post(
     }
   },
 );
+router.post("/uilchluulegchUstgay", tokenShalgakh, async (req, res, next) => {
+  try {
+    const { id } = req.body; 
+    
+    if (!id) {
+      return res.status(400).send({ 
+        success: false, 
+        message: "ID заавал шаардлагатай" 
+      });
+    }
+    const result = await Uilchluulegch.deleteOne({ _id: id });
+    if (!result) {
+      return res.status(404).send({ 
+        success: false, 
+        message: "Үйлчлүүлэгч олдсонгүй" 
+      });
+    }
+    
+    res.send({ 
+      success: true, 
+      message: "Үйлчлүүлэгч амжилттай устгагдлаа",
+      data: result 
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.post(
   "/zogsooliinAjiltniiUdriinTailanAvya",
