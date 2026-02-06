@@ -3303,14 +3303,43 @@ router
                     $gte: new Date(req.params.ekhlekhOgnoo),
                     $lte: new Date(req.params.duusakhOgnoo),
                   },
-                  tsutsalsanTulsunDun: { $gt: 0 },
                 },
                 { gereeniiDugaar: 1, tsutsalsanTulsunDun: 1 },
               )
               .lean();
-            const cancelledWithTulsunDunToAdd = (
-              cancelledWithStoredTulsunDun || []
-            ).filter((r) => r.gereeniiDugaar && !existingIds.has(r.gereeniiDugaar));
+            const cancelledViaTuukh = await Geree(
+              req.body.tukhainBaaziinKholbolt,
+              true,
+            )
+              .aggregate([
+                {
+                  $match: {
+                    ...tsutslagdsanMatch,
+                    tsutsalsanOgnoo: { $exists: false },
+                  },
+                },
+                { $unwind: "$gereeniiTuukhuud" },
+                {
+                  $match: {
+                    "gereeniiTuukhuud.turul": "Tsutslakh",
+                    "gereeniiTuukhuud.khiisenOgnoo": {
+                      $gte: new Date(req.params.ekhlekhOgnoo),
+                      $lte: new Date(req.params.duusakhOgnoo),
+                    },
+                  },
+                },
+                { $group: { _id: "$gereeniiDugaar" } },
+              ]);
+            const cancelledIdsFromTuukh = new Set(
+              (cancelledViaTuukh || []).map((r) => r._id).filter(Boolean),
+            );
+            const allCancelledInMonth = new Set([
+              ...(cancelledWithStoredTulsunDun || []).map((r) => r.gereeniiDugaar),
+              ...cancelledIdsFromTuukh,
+            ]);
+            const cancelledWithTulsunDunToAdd = [...allCancelledInMonth].filter(
+              (id) => id && !existingIds.has(id),
+            );
             if (cancelledWithTulsunDunToAdd.length > 0) {
               const cancelledTulsunDunContracts = await Geree(
                 req.body.tukhainBaaziinKholbolt,
@@ -3318,14 +3347,16 @@ router
               )
                 .find({
                   ...tsutslagdsanMatch,
-                  gereeniiDugaar: {
-                    $in: cancelledWithTulsunDunToAdd.map((r) => r.gereeniiDugaar),
-                  },
+                  gereeniiDugaar: { $in: cancelledWithTulsunDunToAdd },
                 })
                 .lean();
               const tulsunDunMap = {};
-              cancelledWithTulsunDunToAdd.forEach((r) => {
-                tulsunDunMap[r.gereeniiDugaar] = r.tsutsalsanTulsunDun || 0;
+              (cancelledWithStoredTulsunDun || []).forEach((r) => {
+                if (r.gereeniiDugaar)
+                  tulsunDunMap[r.gereeniiDugaar] = r.tsutsalsanTulsunDun || 0;
+              });
+              cancelledWithTulsunDunToAdd.forEach((id) => {
+                if (tulsunDunMap[id] == null) tulsunDunMap[id] = 0;
               });
               cancelledTulsunDunContracts.forEach((c) => {
                 result.jagsaalt.push({
