@@ -3721,7 +3721,10 @@ router
                     x.tsutsalsanUldegdel ??
                     tuluvluguutMapForCancelled[x.gereeniiDugaar];
                   if (storedTuluvluguut != null) x.tuluvluguut = storedTuluvluguut;
-                  if (storedUldegdel != null) x.niitUldegdel = storedUldegdel;
+                  if (storedUldegdel != null) {
+                    x.niitUldegdel = storedUldegdel;
+                    x.uldegdel = storedUldegdel;
+                  }
                 }
               });
               if (req.body.showTsutslagdsanAvlaga) {
@@ -3820,7 +3823,10 @@ router
                       x.tsutsalsanUldegdel ??
                       tuluvluguutMapForCancelled[x.gereeniiDugaar];
                     if (storedTuluvluguut != null) x.tuluvluguut = storedTuluvluguut;
-                    if (storedUldegdel != null) x.niitUldegdel = storedUldegdel;
+                    if (storedUldegdel != null) {
+                      x.niitUldegdel = storedUldegdel;
+                      x.uldegdel = storedUldegdel;
+                    }
                   }
                 });
               }
