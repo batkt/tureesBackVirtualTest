@@ -56,6 +56,7 @@ const zogsoolSDK = require("../controller/zogsoolSDK");
 const zogsooliinTulburController = require("../controller/zogsooliinTulburController");
 const zogsoolTailanController = require("../controller/zogsoolTailanController");
 const parkingController = require("../controller/parkingController");
+const parkingUneguiController = require("../controller/parkingUneguiController");
 const tsenegleltController = require("../controller/tsenegleltController");
 const passController = require("../controller/passController");
 
@@ -88,104 +89,7 @@ router.post("/tsenegleltKhiiy", tokenShalgakh, tsenegleltController.tsenegleltKh
 router.get("/pass/zogsool", tokenShalgakh, passController.getPassZogsool);
 router.get("/v1/search_car/:plate_number", searchCarToki);
 router.get("/v1/search_carQR/:plate_number", searchCarQR);
-router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
-  try {
-    const { db } = require("zevbackv2");
-    var ObjectId = require("mongodb").ObjectId;
-    var kholboltuud = db.kholboltuud;
-    var data;
-    var message = "Amjilttai";
-    var success = true;
-    var oldsonMashin;
-    var tukhainKholbolt;
-    var localEsekh = !!req.query.baiguullagiinId;
-    var tulburData = [];
-    if (localEsekh) {
-      kholboltuud = kholboltuud.filter(
-        (a) => a.baiguullagiinId == req.query.baiguullagiinId,
-      );
-    }
-    if (kholboltuud) {
-      for (const kholbolt of kholboltuud) {
-        var query = localEsekh
-          ? { baiguullagiinId: req.query.baiguullagiinId }
-          : {
-              tokiNer: { $exists: true },
-            };
-        var zogsooluud = await getParkingFind(
-          kholbolt,
-          kholbolt.baiguullagiinId,
-          query,
-        );
-        for (const zogsool of zogsooluud) {
-          if (!!zogsool) {
-            tukhainKholbolt = kholbolt;
-            oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
-              mashiniiDugaar: req.params.plate_number,
-              tuukh: {
-                $elemMatch: {
-                  zogsooliinId: zogsool._id,
-                  tuluv: { $nin: [-2, -3, -4] },
-                  $or: [
-                    {
-                      "tsagiinTuukh.0.garsanTsag": {
-                        $gt: new Date(Date.now() - 15 * 100000),
-                      },
-                    },
-                    { "tsagiinTuukh.0.garsanTsag": { $exists: false } },
-                  ],
-                },
-              },
-            });
-          }
-          if (!!localEsekh && !!oldsonMashin) {
-            if (req.query.baiguullagiinId === "670f3437b41a478195dd3d4b") {
-              data = {
-                plate_number: req.params.plate_number,
-                text: "Үнэгүй зочид",
-              };
-              tulburData = [{ ognoo: new Date(), turul: "Үнэгүй", dun: 0 }];
-            } else if (
-              req.query.baiguullagiinId === "670f3437b41a478195dd3d4b"
-            ) {
-              tulbur = [
-                {
-                  ognoo: new Date(),
-                  turul: "Соёолж Ц/Д",
-                  dun: 4000,
-                },
-              ];
-            }
-          }
-          if (data && data.plate_number) break;
-        }
-        if (data && data.plate_number) break;
-      }
-    }
-
-    if (!oldsonMashin) {
-      message = "Машины мэдээлэл олдсонгүй!";
-      success = false;
-    }
-    if (!!localEsekh && !!oldsonMashin) {
-      await Uilchluulegch(tukhainKholbolt).updateOne(
-        { _id: oldsonMashin._id },
-        {
-          "tuukh.0.uneguiGarsan": data.text,
-          "tuukh.0.tulbur": tulburData,
-        },
-      );
-    }
-    var butsaakhKhariu = {
-      success,
-      message,
-      data,
-    };
-    res.send(butsaakhKhariu);
-  } catch (err) {
-    next(err);
-  }
-});
+router.get("/v1/search_car_unegui/:plate_number", tokenShalgakh, parkingUneguiController.searchCarUnegui);
 
 router.get(
   "/pass/mashinKhaikh/:dugaar",
