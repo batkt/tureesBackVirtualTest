@@ -55,4 +55,11 @@ async function getAggregateUilchluulegch(
   await client.setEx(cacheKey, 60, JSON.stringify(xariu));
   return xariu;
 }
-module.exports = { getParkingFind, getDotorZogsoolById, getAggregateUilchluulegch };
+async function delParkingFind(baiguullagiinId) {
+  const keys = await client.keys(`parkingFind:${baiguullagiinId}:*`);
+  if (keys.length > 0) {
+    await client.del(keys);
+    console.log(`${keys.length} cache keys removed`);
+  }
+}
+module.exports = { getParkingFind, getDotorZogsoolById, getAggregateUilchluulegch, delParkingFind };

@@ -43,4 +43,12 @@ async function getParkingV1(req, res, next) {
     next(err);
   }
 };
-module.exports = { getZogsooliinIpAvaya, mashiniiTooAvya, getParkingV1 };
+async function removeParkingFind(req, res, next) {
+  try {
+    await parkingService.removeParkingFind(req.body.baiguullagiinId);
+    res.send({ success: true, message: "Cache data removed successfully" });
+  } catch (err) {
+    next(err);
+  }
+}
+module.exports = { getZogsooliinIpAvaya, mashiniiTooAvya, getParkingV1, removeParkingFind };

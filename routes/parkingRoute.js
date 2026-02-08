@@ -60,7 +60,7 @@ const parkingUneguiController = require("../controller/parkingUneguiController")
 const tsenegleltController = require("../controller/tsenegleltController");
 const passController = require("../controller/passController");
 
-crud(router, "parking", Parking, UstsanBarimt);
+crud(router, "parking", Parking, UstsanBarimt, parkingController.removeParkingFind);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
 crud(router, "mashin", Mashin, UstsanBarimt);
 crud(router, "blockMashin", BlockMashin, UstsanBarimt);
