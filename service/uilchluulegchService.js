@@ -220,5 +220,5 @@ exports.tulburTulye = async (body) => {
     }
   );
 
-  return "Амжилттай";
+  return "Amjilttai";
 };
