@@ -79,33 +79,8 @@ router.post("/zogsooliinAjiltniiUdriinTailanAvya", tokenShalgakh, zogsoolTailanC
 router.post("/zogsooliinUdriinTailanAvya", tokenShalgakh, zogsoolTailanController.udriinTailan);
 router.get("/zogsooliinIpAvaya/:barilgiinId", tokenShalgakh, parkingController.getZogsooliinIpAvaya);
 router.post("/tsenegleltKhiiy", tokenShalgakh, tsenegleltController.tsenegleltKhiiy);
-
-router.post(
-  "/zogsoolUilchluulegchdiinToo",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      const result = await uilchluulegchdiinToo(req.body);
-      res.send(result);
-    } catch (err) {
-      next(err);
-    }
-  },
-);
-
-router.post(
-  "/zogsoolTusBurUilchluulegchdiinToo",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      const result = await zogsoolTusBurUilchluulegchdiinToo(req.body);
-      res.send(result);
-    } catch (err) {
-      next(err);
-    }
-  },
-);
-
+router.post("/zogsoolUilchluulegchdiinToo", tokenShalgakh, uilchluulegchController.tooAvya);
+router.post("/zogsoolTusBurUilchluulegchdiinToo", tokenShalgakh, uilchluulegchController.tusBuriinTooAvya);
 router.post(
   "/zogsoolUilchluulegchdiinDunAvay",
   tokenShalgakh,

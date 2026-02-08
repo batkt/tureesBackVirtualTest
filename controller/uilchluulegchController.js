@@ -64,3 +64,19 @@ exports.ustgah = async (req, res, next) => {
     next(err);
   }
 };
+exports.tooAvya = async (req, res, next) => {
+  try {
+    const response = await uilchluulegchService.tooAvya(req.body);
+    res.status(200).send(response);
+  } catch (err) {
+    next(err);
+  }
+};
+exports.tusBuriinTooAvya = async (req, res, next) => {
+  try {
+    const response = await uilchluulegchService.tusBuriinTooAvya(req.body);
+    res.status(200).send(response);
+  } catch (err) {
+    next(err);
+  }
+};

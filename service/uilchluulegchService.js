@@ -1,4 +1,4 @@
-const { Uilchluulegch, Parking, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy } = require("parking-v2");
+const { Uilchluulegch, Parking, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy, uilchluulegchdiinToo, zogsoolTusBurUilchluulegchdiinToo } = require("parking-v2");
 const { khuudaslalt, } = require("zevbackv2");
 
 const extractDate = (dateFilter, preferStart = true) => {
@@ -237,3 +237,11 @@ exports.ustgah = async (ids, conn) => {
   }
   return "Amjilttai";
 };
+exports.tooAvya = async (body) => {
+  const result = await uilchluulegchdiinToo(body);
+  return result;
+}
+exports.tusBuriinTooAvya = async (body) => {
+  const result = await zogsoolTusBurUilchluulegchdiinToo(body);
+  return result;
+}
