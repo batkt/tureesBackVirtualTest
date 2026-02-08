@@ -68,21 +68,9 @@ router.get("/zogsoolJagsaalt", tokenShalgakh, uilchluulegchController.zogsoolJag
 router.post("/zogsoolUstgay", tokenShalgakh, uilchluulegchController.zogsoolUstgah);
 router.post("/zogsoolOrlogoGaraas", tokenShalgakh, uilchluulegchController.orlogoGaraas);
 router.post("/zogsooliinTulburTulye", tokenShalgakh, uilchluulegchController.tulburTulye);
+router.post("/uilchluulegchTseverliy", tokenShalgakh, uilchluulegchController.tseverliy);
 router.post("/zogsoolSdkService", tokenShalgakh, zogsoolSDK.zogsoolSdkService);
 router.post("/zogsooliinTulburOrjIrlee", zogsooliinTulburController.tulburOrjIrlee);
-
-router.post(
-  "/uilchluulegchTseverliy",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      const result = await uilchluulegchTseverliy(req.body);
-      res.send(result);
-    } catch (err) {
-      next(err);
-    }
-  },
-);
 router.post("/uilchluulegchUstgay", tokenShalgakh, async (req, res, next) => {
   try {
     const { ids } = req.body;

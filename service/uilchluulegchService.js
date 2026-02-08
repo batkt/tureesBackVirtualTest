@@ -1,4 +1,4 @@
-const { Uilchluulegch, Parking, uilchluulegchGaraasBurtgey } = require("parking-v2");
+const { Uilchluulegch, Parking, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy } = require("parking-v2");
 const { khuudaslalt, } = require("zevbackv2");
 
 const extractDate = (dateFilter, preferStart = true) => {
@@ -222,3 +222,8 @@ exports.tulburTulye = async (body) => {
 
   return "Amjilttai";
 };
+
+exports.tseverliy = async (body) => {
+  const result = await uilchluulegchTseverliy(body);
+  return result;
+}

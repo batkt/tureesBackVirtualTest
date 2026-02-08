@@ -46,3 +46,12 @@ exports.tulburTulye = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.tseverliy = async (req, res, next) => {
+  try {
+    const response = await uilchluulegchService.tseverliy(req.body);
+    res.status(200).send(response);
+  } catch (err) {
+    next(err);
+  }
+};
