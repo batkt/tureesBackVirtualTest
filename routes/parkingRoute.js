@@ -61,35 +61,8 @@ crud(router, "zogsoolUilchluulegch", Uilchluulegch, UstsanBarimt);
 crud(router, "uilchluulegch", Uilchluulegch, UstsanBarimt);
 crud(router, "kassCameraKhaalt", KassCameraKhaalt, UstsanBarimt);
 
-router.get(
-  "/zogsoolUilchluulegchJagsaalt",
-  tokenShalgakh,
-  uilchluulegchController.getJagsaalt
-);
-
-router.get("/zogsoolJagsaalt", tokenShalgakh, async (req, res, next) => {
-  try {
-    const body = req.query;
-    if (!!body?.query) body.query = JSON.parse(body.query);
-    if (!!body?.order) body.order = JSON.parse(body.order);
-    if (!!body?.khuudasniiDugaar)
-      body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-    if (!!body?.khuudasniiKhemjee)
-      body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-    if (!!body?.search) body.search = String(body.search);
-
-    khuudaslalt(Parking(req.body.tukhainBaaziinKholbolt), body)
-      .then((result) => {
-        res.send(result);
-      })
-      .catch((err) => {
-        next(err);
-      });
-  } catch (error) {
-    next(error);
-  }
-});
-
+router.get("/zogsoolUilchluulegchJagsaalt", tokenShalgakh, uilchluulegchController.getJagsaalt);
+router.get("/zogsoolJagsaalt", tokenShalgakh, uilchluulegchController.zogsoolJagsaalt);
 router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
   try {
     Parking(req.body.tukhainBaaziinKholbolt)

@@ -1,4 +1,4 @@
-const { Uilchluulegch, } = require("parking-v2");
+const { Uilchluulegch, Parking, } = require("parking-v2");
 const { khuudaslalt, } = require("zevbackv2");
 
 const extractDate = (dateFilter, preferStart = true) => {
@@ -126,4 +126,16 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
     niitMur: allResults.length,
     niitKhuudas: Math.ceil(allResults.length / originalLimit),
   };
+};
+exports.zogsoolJagsaalt = async (body, baaziinKholbolt) => {
+  if (body?.query) body.query = JSON.parse(body.query);
+  if (body?.order) body.order = JSON.parse(body.order);
+  if (body?.khuudasniiDugaar)
+    body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+  if (body?.khuudasniiKhemjee)
+    body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+  if (body?.search) body.search = String(body.search);
+
+  const model = Parking(baaziinKholbolt);
+  return await khuudaslalt(model, body);
 };
