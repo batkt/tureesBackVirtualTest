@@ -85,7 +85,7 @@ exports.searchCar = async ({ plateNumber, query }) => {
           },
         );
       }
-
+      console.log("Calculatding bodsonDun for mashin:", oldsonMashin.freezeOgnoo, "in zogsool:", zogsool.ner);
       const bodsonDun = await tootsoolohTulbur({
         zogsool,
         oldsonMashin,
