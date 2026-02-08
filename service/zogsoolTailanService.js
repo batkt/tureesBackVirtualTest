@@ -96,7 +96,7 @@ exports.udriinTailan = async (body) => {
   const getCollectionName = (year, month) => `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
 
   // Collection-үүдийг тодорхойлох
-  const collectionsToQuery = [];
+  const collectionsToQuery = [{ name: null, startDate: ekhlekhOgnoo, endDate: duusakhOgnoo }];
   const months = isMultiMonth
     ? (() => {
         const list = [];
