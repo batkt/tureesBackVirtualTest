@@ -6,7 +6,7 @@ const { QuickQpayObject } = require("quickqpaypackv2");
 const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
 const { db } = require("zevbackv2");
 
-exports.tulburOrjIrlee = async (body, next) => {
+exports.tulburOrjIrlee = async (req, body, next) => {
   const {
     baiguullagiinId,
     barilgiinId,
@@ -14,7 +14,7 @@ exports.tulburOrjIrlee = async (body, next) => {
     nemeltUtga,
     tulsunDun: tulsunDunInput,
   } = body;
-
+  console.log("Tulbur orj irlee:", body);
   let tulsunDun = Number(tulsunDunInput || 0);
   let shineDun = 0;
 
@@ -24,6 +24,7 @@ exports.tulburOrjIrlee = async (body, next) => {
 
   // Quick Qpay логик
   if (nemeltUtga?.toLowerCase().includes("qrgadaa")) {
+    console.log("Tulbur nemeltUtga orj irlee:", nemeltUtga);
     const guilgeenuud = await QuickQpayObject(kholbolt).find({
       tulsunEsekh: false,
       zogsooliinId,
@@ -103,8 +104,8 @@ exports.tulburOrjIrlee = async (body, next) => {
   // Машины дугаар шалгах
   const regex = /\b\d{4}[А-ЯӨҮ]{2,3}\b/gu;
   const result = nemeltUtga?.match(regex);
+  console.log("Tulbur nemeltUtga orj irlee:", result);
   if (result) query["mashiniiDugaar"] = result[0];
-
   const oldsonData = await Uilchluulegch(kholbolt, true).findOne(query);
 
   if (oldsonData) {
@@ -129,7 +130,7 @@ exports.tulburOrjIrlee = async (body, next) => {
     );
 
     // Socket.io мэдэгдэл
-    const io = body.app?.get("socketio");
+    const io = req.app?.get("socketio");
     if (io) {
       io.emit("zogsoolGarahTulsun", {
         baiguullagiinId,
