@@ -17,5 +17,17 @@ async function getZogsooliinIpAvaya(req, res, next) {
     next(err);
   }
 }
+async function mashiniiTooAvya(req, res, next) {
+  try {
+    const result = await parkingService.mashiniiTooAvakh({
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      tukhainBaaziinKholbolt: req.body.tukhainBaaziinKholbolt,
+    });
 
-module.exports = { getZogsooliinIpAvaya };
+    res.send(result);
+  } catch (err) {
+    next(err);
+  }
+}
+module.exports = { getZogsooliinIpAvaya, mashiniiTooAvya, };

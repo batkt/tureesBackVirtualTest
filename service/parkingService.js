@@ -1,5 +1,7 @@
 const {
     Parking,
+    Mashin,
+    BlockMashin,
 } = require("parking-v2");
 
 async function getCameraIPsByBarilgiinId(req, barilgiinId) {
@@ -15,5 +17,49 @@ async function getCameraIPsByBarilgiinId(req, barilgiinId) {
     });
     return yavuulakhIp;
 }
+async function mashiniiTooAvakh({
+  baiguullagiinId,
+  barilgiinId,
+  tukhainBaaziinKholbolt,
+}) {
+  const mashinQuery = [
+    {
+      $match: {
+        baiguullagiinId,
+        barilgiinId,
+      },
+    },
+    {
+      $group: {
+        _id: "$turul",
+        too: { $sum: 1 },
+      },
+    },
+  ];
 
-module.exports = { getCameraIPsByBarilgiinId };
+  const mashinResult = await Mashin(
+    tukhainBaaziinKholbolt,
+  ).aggregate(mashinQuery);
+
+  const blockQuery = [
+    {
+      $match: {
+        baiguullagiinId,
+        barilgiinId,
+      },
+    },
+    {
+      $group: {
+        _id: "Block",
+        too: { $sum: 1 },
+      },
+    },
+  ];
+
+  const blockResult = await BlockMashin(
+    tukhainBaaziinKholbolt,
+  ).aggregate(blockQuery);
+
+  return [...mashinResult, ...blockResult];
+}
+module.exports = { getCameraIPsByBarilgiinId, mashiniiTooAvakh };

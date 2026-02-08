@@ -16,3 +16,24 @@ exports.udriinTailan = async (req, res, next) => {
     next(error);
   }
 };
+async function zogsoolUilchluulegchdiinDunAvay(req, res, next) {
+  try {
+    const khariu = await zogsoolTailanService.zogsoolUilchluulegchdiinDunAvakh({
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      ekhlekhOgnoo: req.body.ekhlekhOgnoo,
+      duusakhOgnoo: req.body.duusakhOgnoo,
+      garakhKhaalgaIp: req.body.garakhKhaalgaIp,
+      tukhainBaaziinKholbolt: req.body.tukhainBaaziinKholbolt,
+    });
+
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = {
+  zogsoolUilchluulegchdiinDunAvay,
+};
+

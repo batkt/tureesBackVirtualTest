@@ -72,158 +72,17 @@ router.post("/zogsoolUstgay", tokenShalgakh, uilchluulegchController.zogsoolUstg
 router.post("/zogsoolOrlogoGaraas", tokenShalgakh, uilchluulegchController.orlogoGaraas);
 router.post("/zogsooliinTulburTulye", tokenShalgakh, uilchluulegchController.tulburTulye);
 router.post("/uilchluulegchTseverliy", tokenShalgakh, uilchluulegchController.tseverliy);
-router.post("/zogsoolSdkService", tokenShalgakh, zogsoolSDK.zogsoolSdkService);
-router.post("/zogsooliinTulburOrjIrlee", zogsooliinTulburController.tulburOrjIrlee);
 router.post("/uilchluulegchUstgay", tokenShalgakh, uilchluulegchController.ustgah);
-router.post("/zogsooliinAjiltniiUdriinTailanAvya", tokenShalgakh, zogsoolTailanController.ajiltniiUdriinTailan);
-router.post("/zogsooliinUdriinTailanAvya", tokenShalgakh, zogsoolTailanController.udriinTailan);
-router.get("/zogsooliinIpAvaya/:barilgiinId", tokenShalgakh, parkingController.getZogsooliinIpAvaya);
-router.post("/tsenegleltKhiiy", tokenShalgakh, tsenegleltController.tsenegleltKhiiy);
 router.post("/zogsoolUilchluulegchdiinToo", tokenShalgakh, uilchluulegchController.tooAvya);
 router.post("/zogsoolTusBurUilchluulegchdiinToo", tokenShalgakh, uilchluulegchController.tusBuriinTooAvya);
-router.post(
-  "/zogsoolUilchluulegchdiinDunAvay",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      const match = {
-        baiguullagiinId: req.body.baiguullagiinId,
-        mashiniiDugaar: { $regex: "[a-z\u0400-\u04FF]" },
-        // "tuukh.tsagiinTuukh.garsanTsag": {
-        //   $gte: new Date(req.body.ekhlekhOgnoo),
-        //   $lte: new Date(req.body.duusakhOgnoo),
-        // },
-        // "tuukh.zogsooliinId": { $exists: true },
-        //"tuukh.zogsooliinId": req.body.zogsooliinId,
-      };
-      if (!!req.body.barilgiinId) match.barilgiinId = req.body.barilgiinId;
-      const query = [
-        {
-          $match: match,
-        },
-        { $unwind: "$tuukh" },
-        {
-          $unwind: { path: "$tuukh.tulbur", preserveNullAndEmptyArrays: true },
-        },
-        {
-          $match: {
-            "tuukh.tulbur.ognoo": {
-              $gte: new Date(req.body.ekhlekhOgnoo),
-              $lte: new Date(req.body.duusakhOgnoo),
-            },
-          },
-        },
-        {
-          $group: {
-            _id: {
-              id: "$tuukh._id",
-              tuluv: "$tuukh.tuluv",
-              tulukhDun: "$tuukh.tulukhDun",
-            },
-            tulsunDun: {
-              $sum: {
-                $cond: [
-                  { $ne: ["$tuukh.tulbur.turul", "khungulult"] },
-                  { $ifNull: ["$tuukh.tulbur.dun", 0] },
-                  0,
-                ],
-              },
-            },
-            khungulult: {
-              $sum: {
-                $cond: [
-                  { $eq: ["$tuukh.tulbur.turul", "khungulult"] },
-                  { $ifNull: ["$tuukh.tulbur.dun", 0] },
-                  0,
-                ],
-              },
-            },
-          },
-        },
-        {
-          $group: {
-            _id: "id",
-            dun: { $sum: "$tulsunDun" },
-            garsanKhaalga: !!req.body.garakhKhaalgaIp
-              ? {
-                  $sum: {
-                    $cond: [
-                      {
-                        $eq: ["$garsanKhaalga", req.body.garakhKhaalgaIp],
-                      },
-                      { $ifNull: ["$_id.tulukhDun", 0] },
-                      0,
-                    ],
-                  },
-                }
-              : { $sum: 0 },
-            niitDun: {
-              $sum: { $ifNull: ["$_id.tulukhDun", 0] },
-            },
-            khungulsun: {
-              $sum: { $ifNull: ["$khungulult", 0] },
-            },
-          },
-        },
-      ];
-      const khariu = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt,
-        true,
-      ).aggregate(query);
-      res.send(khariu);
-    } catch (err) {
-      next(err);
-    }
-  },
-);
-
-router.post("/mashiniiTooAvya", tokenShalgakh, async (req, res, next) => {
-  try {
-    var query = [
-      {
-        $match: {
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-        },
-      },
-      {
-        $group: {
-          _id: "$turul",
-          too: {
-            $sum: 1,
-          },
-        },
-      },
-    ];
-    var mashinResult = await Mashin(req.body.tukhainBaaziinKholbolt).aggregate(
-      query,
-    );
-    query = [
-      {
-        $match: {
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-        },
-      },
-      {
-        $group: {
-          _id: "Block",
-          too: {
-            $sum: 1,
-          },
-        },
-      },
-    ];
-    var blockResult = await BlockMashin(
-      req.body.tukhainBaaziinKholbolt,
-    ).aggregate(query);
-    mashinResult.push(...blockResult);
-    res.send(mashinResult);
-  } catch (err) {
-    next(err);
-  }
-});
-
+router.post("/zogsoolSdkService", tokenShalgakh, zogsoolSDK.zogsoolSdkService);
+router.post("/zogsooliinTulburOrjIrlee", zogsooliinTulburController.tulburOrjIrlee);
+router.post("/zogsooliinAjiltniiUdriinTailanAvya", tokenShalgakh, zogsoolTailanController.ajiltniiUdriinTailan);
+router.post("/zogsooliinUdriinTailanAvya", tokenShalgakh, zogsoolTailanController.udriinTailan);
+router.post("/zogsoolUilchluulegchdiinDunAvay", tokenShalgakh, zogsoolTailanController.zogsoolUilchluulegchdiinDunAvay);
+router.get("/zogsooliinIpAvaya/:barilgiinId", tokenShalgakh, parkingController.getZogsooliinIpAvaya);
+router.post("/tsenegleltKhiiy", tokenShalgakh, tsenegleltController.tsenegleltKhiiy);
+router.post("/mashiniiTooAvya", tokenShalgakh, parkingController.mashiniiTooAvya);
 router.get("/v1/parking", async (req, res, next) => {
   try {
     var jagsaalt = [];

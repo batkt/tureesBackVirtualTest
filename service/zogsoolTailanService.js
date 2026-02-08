@@ -230,3 +230,93 @@ exports.udriinTailan = async (body) => {
   }
   return finalResult;
 };
+async function zogsoolUilchluulegchdiinDunAvakh({
+  baiguullagiinId,
+  barilgiinId,
+  ekhlekhOgnoo,
+  duusakhOgnoo,
+  garakhKhaalgaIp,
+  tukhainBaaziinKholbolt,
+}) {
+  const match = {
+    baiguullagiinId,
+    mashiniiDugaar: { $regex: "[a-z\u0400-\u04FF]" },
+  };
+
+  if (barilgiinId) match.barilgiinId = barilgiinId;
+
+  const query = [
+    { $match: match },
+    { $unwind: "$tuukh" },
+    {
+      $unwind: {
+        path: "$tuukh.tulbur",
+        preserveNullAndEmptyArrays: true,
+      },
+    },
+    {
+      $match: {
+        "tuukh.tulbur.ognoo": {
+          $gte: new Date(ekhlekhOgnoo),
+          $lte: new Date(duusakhOgnoo),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          id: "$tuukh._id",
+          tuluv: "$tuukh.tuluv",
+          tulukhDun: "$tuukh.tulukhDun",
+        },
+        tulsunDun: {
+          $sum: {
+            $cond: [
+              { $ne: ["$tuukh.tulbur.turul", "khungulult"] },
+              { $ifNull: ["$tuukh.tulbur.dun", 0] },
+              0,
+            ],
+          },
+        },
+        khungulult: {
+          $sum: {
+            $cond: [
+              { $eq: ["$tuukh.tulbur.turul", "khungulult"] },
+              { $ifNull: ["$tuukh.tulbur.dun", 0] },
+              0,
+            ],
+          },
+        },
+      },
+    },
+    {
+      $group: {
+        _id: "id",
+        dun: { $sum: "$tulsunDun" },
+        garsanKhaalga: garakhKhaalgaIp
+          ? {
+              $sum: {
+                $cond: [
+                  { $eq: ["$garsanKhaalga", garakhKhaalgaIp] },
+                  { $ifNull: ["$_id.tulukhDun", 0] },
+                  0,
+                ],
+              },
+            }
+          : { $sum: 0 },
+        niitDun: {
+          $sum: { $ifNull: ["$_id.tulukhDun", 0] },
+        },
+        khungulsun: {
+          $sum: { $ifNull: ["$khungulult", 0] },
+        },
+      },
+    },
+  ];
+
+  return await Uilchluulegch(tukhainBaaziinKholbolt, true).aggregate(query);
+}
+
+module.exports = {
+  zogsoolUilchluulegchdiinDunAvakh,
+};
