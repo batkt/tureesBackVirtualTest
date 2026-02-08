@@ -80,12 +80,7 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
 
   if (collectionsToQuery.length === 0) collectionsToQuery.push({ name: null, isCurrent: true });
 
-  // Query collections
-  const allResults = [];
-  const originalPage = body.khuudasniiDugaar || 1;
-  const originalLimit = body.khuudasniiKhemjee || 500;
-
-  for (const collection of collectionsToQuery) {
+  const queryPromises = collectionsToQuery.map(async (collection) => {
     const model = collection.name
       ? Uilchluulegch(baaziinKholbolt, false, collection.name)
       : Uilchluulegch(baaziinKholbolt);
@@ -94,11 +89,14 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
 
     try {
       const result = await khuudaslalt(model, queryBody);
-      if (result.jagsaalt?.length > 0) allResults.push(...result.jagsaalt);
+      return result.jagsaalt || [];
     } catch (err) {
       console.error(`Error querying ${collection.name || "Uilchluulegch"}:`, err.message);
+      return [];
     }
-  }
+  });
+
+  const allResults = (await Promise.all(queryPromises)).flat();
 
   // Sort if needed
   if (body.order && Object.keys(body.order).length > 0) {
@@ -116,6 +114,8 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
   }
 
   // Pagination
+  const originalPage = body.khuudasniiDugaar || 1;
+  const originalLimit = body.khuudasniiKhemjee || 500;
   const startIndex = (originalPage - 1) * originalLimit;
   const endIndex = startIndex + originalLimit;
 
