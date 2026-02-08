@@ -169,3 +169,56 @@ exports.orlogoGaraasBurtgeh = async (utguud) => {
   const result = await uilchluulegchGaraasBurtgey({ body: utguud });
   return result;
 };
+exports.tulburTulye = async (body) => {
+  if (!Array.isArray(body.tulbur) || body.tulbur.length === 0) {
+    throw new Error("Төлбөрийн мэдээлэл хоосон байна");
+  }
+
+  const guilgeenuud = body.tulbur;
+  let tulburArray = [];
+  let ebarimtAvakhDun = 0;
+
+  guilgeenuud.forEach((guilgee) => {
+    const ignoreTypes = [
+      "khariult",
+      "khungulult",
+      "Соёолж Ц/Д",
+      "Хөнгөлөлт/ 24 цаг",
+      "Хөнгөлөлт/ 2 цаг",
+      "Fitness",
+    ];
+
+    const isIgnored =
+      ignoreTypes.includes(guilgee.turul) ||
+      guilgee.turul?.includes("Божон") ||
+      guilgee.turul?.includes("ugaalga");
+
+    if (!isIgnored) ebarimtAvakhDun += guilgee.dun;
+
+    tulburArray.push({
+      ognoo: guilgee.ognoo,
+      turul: guilgee.turul,
+      dun: guilgee.dun,
+    });
+  });
+
+  const uurchlukhTuluv = body.urdchilsan ? 0 : 1;
+
+  await Uilchluulegch(body.tukhainBaaziinKholbolt).updateOne(
+    {
+      _id: body.id,
+      tuukh: { $elemMatch: { zogsooliinId: guilgeenuud[0].zogsooliinId } },
+    },
+    {
+      $set: {
+        ebarimtAvakhDun: ebarimtAvakhDun,
+        "tuukh.$.burtgesenAjiltaniiId": guilgeenuud[0].burtgesenAjiltaniiId,
+        "tuukh.$.burtgesenAjiltaniiNer": guilgeenuud[0].burtgesenAjiltaniiNer,
+        "tuukh.$.tulbur": tulburArray,
+        "tuukh.$.tuluv": uurchlukhTuluv,
+      },
+    }
+  );
+
+  return "Амжилттай";
+};

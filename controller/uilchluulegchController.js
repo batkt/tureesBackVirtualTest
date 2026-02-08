@@ -38,3 +38,11 @@ exports.orlogoGaraas = async (req, res, next) => {
     next(error);
   }
 };
+exports.tulburTulye = async (req, res, next) => {
+  try {
+    const response = await uilchluulegchService.tulburTulye(req.body);
+    res.status(200).send(response);
+  } catch (err) {
+    next(err);
+  }
+};
