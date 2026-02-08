@@ -2,7 +2,7 @@ const zogsoolTailanService = require("../service/zogsoolTailanService");
 
 exports.ajiltniiUdriinTailan = async (req, res, next) => {
   try {
-    const response = await zogsoolTailanService.ajiltniiUdriinTailan(req.body);
+    const response = await zogsoolTailanService.ajiltniiUdriinTailan({ body: req.body });   
     res.status(200).send(response);
   } catch (error) {
     next(error);
@@ -10,7 +10,7 @@ exports.ajiltniiUdriinTailan = async (req, res, next) => {
 };
 exports.udriinTailan = async (req, res, next) => {
   try {
-    const response = await zogsoolTailanService.udriinTailan(req.body);
+    const response = await zogsoolTailanService.udriinTailan({ body: req.body });
     res.status(200).send(response);
   } catch (error) {
     next(error);

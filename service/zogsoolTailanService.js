@@ -1,7 +1,7 @@
 const { Uilchluulegch, ZurchilteiMashin } = require("parking-v2");
 const moment = require("moment");
 
-exports.ajiltniiUdriinTailan = async (body) => {
+async function ajiltniiUdriinTailan({ body }) {
   const ekhlekhOgnoo = new Date(body.ekhlekhOgnoo);
   const duusakhOgnoo = new Date(body.duusakhOgnoo);
 
@@ -83,7 +83,7 @@ exports.ajiltniiUdriinTailan = async (body) => {
 
   return niilberTailan;
 };
-exports.udriinTailan = async (body) => {
+async function udriinTailan({ body }) {
   const ekhlekhOgnoo = moment(body.ekhlekhOgnoo, "YYYY-MM-DD HH:mm:ss").toDate();
   const duusakhOgnoo = moment(body.duusakhOgnoo, "YYYY-MM-DD HH:mm:ss").toDate();
   const start = moment(ekhlekhOgnoo);
@@ -319,4 +319,6 @@ async function zogsoolUilchluulegchdiinDunAvakh({
 
 module.exports = {
   zogsoolUilchluulegchdiinDunAvakh,
+  udriinTailan,
+  ajiltniiUdriinTailan,
 };
