@@ -44,6 +44,7 @@ const Baiguullaga = require("../models/baiguullaga");
 const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
 const { msgIlgeeye } = require("../controller/khariltsagch");
 const { searchCarToki } = require("../controller/parkingToki");
+const { searchCarQR } = require("../controller/parkingQR");
 const MsgTuukh = require("../models/msgTuukh");
 const client = require("../routes/redisClient");
 const crypto = require("crypto");
@@ -1994,6 +1995,7 @@ router.get("/pass/zogsool", tokenShalgakh, async (req, res, next) => {
 });
 
 router.get("/v1/search_car/:plate_number", searchCarToki);
+router.get("/v1/search_carQR/:plate_number", searchCarQR);
 
 router.get("/v1/search_car_unegui/:plate_number", async (req, res, next) => {
   try {

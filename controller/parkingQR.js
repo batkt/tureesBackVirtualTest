@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const searchCar = require("../service/searchCar");
-exports.searchCarToki = asyncHandler(async (req, res) => {
+exports.searchCarQR = asyncHandler(async (req, res) => {
   const { plate_number } = req.params;
   const query = req.query;
   const result = await searchCar.searchCar({

@@ -33,7 +33,7 @@ async function findActiveCar({ kholbolt, zogsool, plateNumber, barilgiinId }) {
     .sort({ createdAt: -1 });
 }
 
-exports.searchCarToki = async ({ plateNumber, query }) => {
+exports.searchCar = async ({ plateNumber, query }) => {
   let kholboltuud = db.kholboltuud;
   let dataList = [];
   let message = "Amjilttai";
