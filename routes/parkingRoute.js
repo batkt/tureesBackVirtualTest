@@ -57,6 +57,7 @@ const zogsooliinTulburController = require("../controller/zogsooliinTulburContro
 const zogsoolTailanController = require("../controller/zogsoolTailanController");
 const parkingController = require("../controller/parkingController");
 const tsenegleltController = require("../controller/tsenegleltController");
+const passController = require("../controller/passController");
 
 crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
@@ -84,6 +85,7 @@ router.get("/zogsooliinIpAvaya/:barilgiinId", tokenShalgakh, parkingController.g
 router.post("/mashiniiTooAvya", tokenShalgakh, parkingController.mashiniiTooAvya);
 router.get("/v1/parking", parkingController.getParkingV1);
 router.post("/tsenegleltKhiiy", tokenShalgakh, tsenegleltController.tsenegleltKhiiy);
+router.get("/pass/zogsool", tokenShalgakh, passController.getPassZogsool);
 
 function stableStringify(obj) {
   if (obj === null || typeof obj !== "object") return JSON.stringify(obj);
@@ -162,106 +164,6 @@ async function getUilchluulegchfindOne(
   return xariu;
 }
 
-router.get("/pass/zogsool", tokenShalgakh, async (req, res, next) => {
-  try {
-    var jagsaalt = [];
-    const { db } = require("zevbackv2");
-    var kholboltuud = db.kholboltuud;
-    var ekhlekhOgnoo = new Date(Date.now() - 86400000);
-    var duusakhOgnoo = new Date(Date.now() - 86400000);
-    ekhlekhOgnoo.setHours(0, 0, 0, 0);
-    duusakhOgnoo.setHours(23, 59, 59, 999);
-    if (kholboltuud) {
-      for (const kholbolt of kholboltuud) {
-        var zogsooluud = await Parking(kholbolt).find({
-          passNer: { $exists: true },
-        });
-        for (const zogsool of zogsooluud) {
-          if (!!zogsool) {
-            var dotorZogsool;
-            if (!!zogsool.dotorZogsooliinId) {
-              dotorZogsool = await Parking(kholbolt).findById(
-                zogsool.dotorZogsooliinId,
-              );
-            }
-            var xariu = await Uilchluulegch(kholbolt, true).aggregate([
-              {
-                $match: {
-                  createdAt: {
-                    $gte: ekhlekhOgnoo,
-                    $lte: duusakhOgnoo,
-                  },
-                  baiguullagiinId: zogsool.baiguullagiinId,
-                },
-              },
-              {
-                $unwind: { path: "$tuukh" },
-              },
-              {
-                $match: {
-                  "tuukh.garsanKhaalga": {
-                    $exists: false,
-                  },
-                },
-              },
-              {
-                $group: {
-                  _id: "$tuukh.zogsooliinId",
-                  too: {
-                    $sum: 1,
-                  },
-                },
-              },
-            ]);
-            var parked = 0;
-            var dotor = {};
-            if (xariu && xariu.length > 0) {
-              if (!!dotorZogsool && !!zogsool.dotorZogsooliinId) {
-                dotor.niit = dotorZogsool.too;
-                dotor.zogsson = xariu.find(
-                  (x) => x._id == dotorZogsool._id.toString(),
-                )?.too;
-                if (!dotor.zogsson) dotor.zogsson = 0;
-                parked = xariu.find(
-                  (x) => x._id == zogsool._id.toString(),
-                )?.too;
-              } else {
-                parked = xariu[0].too;
-              }
-            }
-            var slot = {
-              gadna: {
-                garakhTsag: zogsool.garakhTsag || 30,
-                tulburuud: zogsool.tulburuud,
-                niit: zogsool.too,
-                zogsson: parked,
-              },
-            };
-            if (!!dotorZogsool && !!zogsool.dotorZogsooliinId)
-              slot.dotor = dotor;
-            var filterZogsool = jagsaalt.filter(
-              (e) => e.id === zogsool._id.toString(),
-            );
-            if (filterZogsool?.length === 0)
-              jagsaalt.push({
-                id: zogsool._id.toString(),
-                ner: zogsool.passNer,
-                bagtaamj: slot,
-              });
-          }
-        }
-      }
-    }
-    var butsaakhKhariu = {
-      success: true,
-      message: "Amjilttai",
-    };
-    if (jagsaalt && jagsaalt.length > 0) butsaakhKhariu.data = jagsaalt;
-    res.send(butsaakhKhariu);
-  } catch (err) {
-    next(err);
-  }
-});
 
 router.get("/v1/search_car/:plate_number", searchCarToki);
 router.get("/v1/search_carQR/:plate_number", searchCarQR);
