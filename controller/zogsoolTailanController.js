@@ -8,3 +8,11 @@ exports.ajiltniiUdriinTailan = async (req, res, next) => {
     next(error);
   }
 };
+exports.udriinTailan = async (req, res, next) => {
+  try {
+    const response = await zogsoolTailanService.udriinTailan(req.body);
+    res.status(200).send(response);
+  } catch (error) {
+    next(error);
+  }
+};

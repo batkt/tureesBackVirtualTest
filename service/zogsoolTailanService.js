@@ -1,4 +1,5 @@
-const { Uilchluulegch, } = require("parking-v2");
+const { Uilchluulegch, ZurchilteiMashin } = require("parking-v2");
+const moment = require("moment");
 
 exports.ajiltniiUdriinTailan = async (body) => {
   const ekhlekhOgnoo = new Date(body.ekhlekhOgnoo);
@@ -81,4 +82,150 @@ exports.ajiltniiUdriinTailan = async (body) => {
   if (Array.isArray(unegui) && unegui.length > 0) niilberTailan.push(unegui[0]);
 
   return niilberTailan;
+};
+exports.udriinTailan = async (body) => {
+  const ekhlekhOgnoo = moment(body.ekhlekhOgnoo, "YYYY-MM-DD HH:mm:ss").toDate();
+  const duusakhOgnoo = moment(body.duusakhOgnoo, "YYYY-MM-DD HH:mm:ss").toDate();
+  const start = moment(ekhlekhOgnoo);
+  const end = moment(duusakhOgnoo);
+  const now = moment();
+
+  const isMultiMonth = start.year() !== end.year() || start.month() !== end.month();
+
+  const aggregateFromCollection = async (collectionName = null, dateStart = null, dateEnd = null) => {
+    const model = collectionName
+      ? Uilchluulegch(body.tukhainBaaziinKholbolt, false, collectionName)
+      : Uilchluulegch(body.tukhainBaaziinKholbolt, true);
+
+    const actualStartDate = dateStart || ekhlekhOgnoo;
+    const actualEndDate = dateEnd || duusakhOgnoo;
+
+    const match = body.garsanKhaalga
+      ? {
+          "tuukh.garsanKhaalga": body.garsanKhaalga,
+          "tuukh.tsagiinTuukh.garsanTsag": { $gte: actualStartDate, $lte: actualEndDate },
+        }
+      : { "tuukh.tulbur.ognoo": { $gte: actualStartDate, $lte: actualEndDate } };
+
+    if (body.burtgesenAjiltaniiId) match["tuukh.burtgesenAjiltaniiId"] = body.burtgesenAjiltaniiId;
+
+    const baseMatch = {
+      baiguullagiinId: body.baiguullagiinId,
+      barilgiinId: body.barilgiinId ? body.barilgiinId : { $exists: true },
+    };
+
+    const aggregatePipeline = (additionalMatch) => [
+      { $match: baseMatch },
+      { $unwind: "$tuukh" },
+      { $unwind: "$tuukh.tulbur" },
+      { $match: additionalMatch },
+      { $group: { _id: "$tuukh.tulbur.turul", niitDun: { $sum: "$tuukh.tulbur.dun" }, niitToo: { $sum: 1 } } },
+    ];
+
+    const udriinTailan = await model.aggregate(aggregatePipeline(match));
+
+    const specialMatch = (status) => ({
+      "tuukh.tsagiinTuukh.garsanTsag": { $gte: actualStartDate, $lte: actualEndDate },
+      ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
+      ...(status === "Todorkhoigui" && { "tuukh.tuluv": -4 }),
+      ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
+      ...(body.burtgesenAjiltaniiId && { "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId }),
+    });
+
+    const specialPipeline = (status) => [
+      { $match: baseMatch },
+      { $unwind: "$tuukh" },
+      { $match: specialMatch(status) },
+      {
+        $group: {
+          _id: status === "Zurchiltei" ? "Зөрчилтэй" : status === "Todorkhoigui" ? "Тодорхойгүй" : "Үнэгүй",
+          niitDun: { $sum: "$niitDun" },
+          ids: { $addToSet: "$_id" },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          niitDun: 1,
+          niitToo: status === "Zurchiltei" || status === "Todorkhoigui" ? { $size: "$ids" } : 1,
+        },
+      },
+    ];
+
+    const [zurchiltei, todorkhoigui, unegui] = await Promise.all([
+      model.aggregate(specialPipeline("Zurchiltei")),
+      model.aggregate(specialPipeline("Todorkhoigui")),
+      model.aggregate(specialPipeline("Unegui")),
+    ]);
+
+    return { udriinTailan, zurchiltei, todorkhoigui, unegui };
+  };
+
+  const getCollectionName = (year, month) => `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
+
+  const collectionsToQuery = [];
+  const months = isMultiMonth
+    ? (() => {
+        const list = [];
+        let current = start.clone().startOf("month");
+        while (current.isSameOrBefore(end, "month")) {
+          list.push(current.clone());
+          current.add(1, "month");
+        }
+        return list;
+      })()
+    : [start.clone().startOf("month")];
+
+  months.forEach((month) => {
+    const collectionStart = moment.max(month.clone().startOf("month"), start);
+    const collectionEnd = moment.min(month.clone().endOf("month"), end);
+    collectionsToQuery.push({ name: getCollectionName(month.year(), month.month()), startDate: collectionStart.toDate(), endDate: collectionEnd.toDate() });
+  });
+
+  const allResults = { udriinTailan: [], zurchiltei: [], todorkhoigui: [], unegui: [] };
+  for (const collection of collectionsToQuery) {
+    try {
+      const result = await aggregateFromCollection(collection.name, collection.startDate, collection.endDate);
+      allResults.udriinTailan.push(...result.udriinTailan);
+      allResults.zurchiltei.push(...result.zurchiltei);
+      allResults.todorkhoigui.push(...result.todorkhoigui);
+      allResults.unegui.push(...result.unegui);
+    } catch (err) {
+      console.error(`Error querying collection ${collection.name}:`, err.message);
+    }
+  }
+
+  const mergeResults = (allResults) => {
+    const merged = {};
+    allResults.udriinTailan.forEach((item) => {
+      merged[item._id] = merged[item._id]
+        ? { ...merged[item._id], niitDun: merged[item._id].niitDun + item.niitDun, niitToo: merged[item._id].niitToo + item.niitToo }
+        : { ...item };
+    });
+
+    const result = Object.values(merged);
+
+    const mergeArray = (arr, id) =>
+      arr.length
+        ? arr.reduce((acc, item) => ({ _id: id, niitDun: acc.niitDun + item.niitDun, niitToo: acc.niitToo + item.niitToo }), { _id: id, niitDun: 0, niitToo: 0 })
+        : null;
+
+    [mergeArray(allResults.zurchiltei, "Зөрчилтэй"), mergeArray(allResults.todorkhoigui, "Тодорхойгүй"), mergeArray(allResults.unegui, "Үнэгүй")].forEach((item) => item && result.push(item));
+    return result;
+  };
+
+  let finalResult = mergeResults(allResults);
+
+  // Add Авлага from ZurchilteiMashin
+  const zurchilteTailan = await ZurchilteiMashin(body.tukhainBaaziinKholbolt).aggregate([
+    { $match: { baiguullagiinId: body.baiguullagiinId, barilgiinId: body.barilgiinId || { $exists: true }, tuluv: 0 } },
+    { $group: { _id: "Авлага", niitDun: { $sum: "$niitDun" }, niitToo: { $sum: 1 } } },
+  ]);
+
+  if (zurchilteTailan?.length) finalResult.push(zurchilteTailan[0]);
+
+  if (body.includeMetadata) {
+    return { data: finalResult, archiveName: isMultiMonth ? "multi-month" : getCollectionName(start.year(), start.month()), collections: collectionsToQuery.map((c) => c.name) };
+  }
+  return finalResult;
 };
