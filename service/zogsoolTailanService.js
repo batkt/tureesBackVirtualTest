@@ -93,21 +93,42 @@ exports.udriinTailan = async (body) => {
 
   const isMultiMonth = start.year() !== end.year() || start.month() !== end.month();
 
-  const aggregateFromCollection = async (collectionName = null, dateStart = null, dateEnd = null) => {
-    const model = collectionName
-      ? Uilchluulegch(body.tukhainBaaziinKholbolt, false, collectionName)
-      : Uilchluulegch(body.tukhainBaaziinKholbolt, true);
+  const getCollectionName = (year, month) => `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
+
+  // Collection-үүдийг тодорхойлох
+  const collectionsToQuery = [];
+  const months = isMultiMonth
+    ? (() => {
+        const list = [];
+        let current = start.clone().startOf("month");
+        while (current.isSameOrBefore(end, "month")) {
+          list.push(current.clone());
+          current.add(1, "month");
+        }
+        return list;
+      })()
+    : [start.clone().startOf("month")];
+
+  months.forEach((month) => {
+    const collectionStart = moment.max(month.clone().startOf("month"), start);
+    const collectionEnd = moment.min(month.clone().endOf("month"), end);
+    const collectionName = getCollectionName(month.year(), month.month());
+    collectionsToQuery.push({ name: collectionName, startDate: collectionStart.toDate(), endDate: collectionEnd.toDate() });
+  });
+
+  // Aggregation function
+  const aggregateFromCollection = async (collectionName, dateStart, dateEnd) => {
+    // Хэрэв collectionName байхгүй бол default collection авна
+    const model = Uilchluulegch(body.tukhainBaaziinKholbolt, !collectionName, collectionName || undefined);
+
     console.log(`Querying collection: ${collectionName || "default"} for dates:`, dateStart, "to", dateEnd);
-    const actualStartDate = dateStart || ekhlekhOgnoo;
-    const actualEndDate = dateEnd || duusakhOgnoo;
-    console.log(`Querying collection: ${collectionName || "default"} for dates:`, actualStartDate, "to", actualEndDate);
 
     const match = body.garsanKhaalga
       ? {
           "tuukh.garsanKhaalga": body.garsanKhaalga,
-          "tuukh.tsagiinTuukh.garsanTsag": { $gte: actualStartDate, $lte: actualEndDate },
+          "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
         }
-      : { "tuukh.tulbur.ognoo": { $gte: actualStartDate, $lte: actualEndDate } };
+      : { "tuukh.tulbur.ognoo": { $gte: dateStart, $lte: dateEnd } };
 
     if (body.burtgesenAjiltaniiId) match["tuukh.burtgesenAjiltaniiId"] = body.burtgesenAjiltaniiId;
 
@@ -126,8 +147,9 @@ exports.udriinTailan = async (body) => {
 
     const udriinTailan = await model.aggregate(aggregatePipeline(match));
 
+    // Special cases
     const specialMatch = (status) => ({
-      "tuukh.tsagiinTuukh.garsanTsag": { $gte: actualStartDate, $lte: actualEndDate },
+      "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
       ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
       ...(status === "Todorkhoigui" && { "tuukh.tuluv": -4 }),
       ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
@@ -163,27 +185,7 @@ exports.udriinTailan = async (body) => {
     return { udriinTailan, zurchiltei, todorkhoigui, unegui };
   };
 
-  const getCollectionName = (year, month) => `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
-
-  const collectionsToQuery = [];
-  const months = isMultiMonth
-    ? (() => {
-        const list = [];
-        let current = start.clone().startOf("month");
-        while (current.isSameOrBefore(end, "month")) {
-          list.push(current.clone());
-          current.add(1, "month");
-        }
-        return list;
-      })()
-    : [start.clone().startOf("month")];
-
-  months.forEach((month) => {
-    const collectionStart = moment.max(month.clone().startOf("month"), start);
-    const collectionEnd = moment.min(month.clone().endOf("month"), end);
-    collectionsToQuery.push({ name: getCollectionName(month.year(), month.month()), startDate: collectionStart.toDate(), endDate: collectionEnd.toDate() });
-  });
-
+  // Бүх collection-үүдийг aggregate хийх
   const allResults = { udriinTailan: [], zurchiltei: [], todorkhoigui: [], unegui: [] };
   for (const collection of collectionsToQuery) {
     try {
@@ -197,6 +199,7 @@ exports.udriinTailan = async (body) => {
     }
   }
 
+  // Merge results
   const mergeResults = (allResults) => {
     const merged = {};
     allResults.udriinTailan.forEach((item) => {
