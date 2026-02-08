@@ -32,7 +32,7 @@ async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
     return JSON.parse(cached);
   }
   const dotorZogsool = await Parking(kholbolt).findById(id);
-  await client.setEx(cacheKey, 60, JSON.stringify(dotorZogsool));
+  await client.setEx(cacheKey, 300, JSON.stringify(dotorZogsool));
   return dotorZogsool;
 }
 async function getAggregateUilchluulegch(
@@ -52,7 +52,7 @@ async function getAggregateUilchluulegch(
   }
 
   const xariu = await Uilchluulegch(kholbolt, true).aggregate(query);
-  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
+  await client.setEx(cacheKey, 300, JSON.stringify(xariu));
   return xariu;
 }
 async function delParkingFind(baiguullagiinId) {
