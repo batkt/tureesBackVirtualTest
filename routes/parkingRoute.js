@@ -71,29 +71,7 @@ router.post("/zogsooliinTulburTulye", tokenShalgakh, uilchluulegchController.tul
 router.post("/uilchluulegchTseverliy", tokenShalgakh, uilchluulegchController.tseverliy);
 router.post("/zogsoolSdkService", tokenShalgakh, zogsoolSDK.zogsoolSdkService);
 router.post("/zogsooliinTulburOrjIrlee", zogsooliinTulburController.tulburOrjIrlee);
-router.post("/uilchluulegchUstgay", tokenShalgakh, async (req, res, next) => {
-  try {
-    const { ids } = req.body;
-    
-    if (!ids || !Array.isArray(ids) || ids.length === 0) {
-      return res.status(400).send("ID заавал шаардлагатай");
-    }
-    
-    // Initialize the model with your database connection
-    // Replace 'conn' with your actual connection object
-    const UilchluulegchModel = Uilchluulegch(conn); // or however you pass your connection
-    
-    const result = await UilchluulegchModel.deleteMany({ _id: { $in: ids } });
-    
-    if (result.deletedCount === 0) {
-      return res.status(404).send("Үйлчлүүлэгч олдсонгүй");
-    }
-    
-    res.send("Amjilttai");
-  } catch (err) {
-    next(err);
-  }
-});
+router.post("/uilchluulegchUstgay", tokenShalgakh, uilchluulegchController.ustgah);
 
 router.post(
   "/zogsooliinAjiltniiUdriinTailanAvya",

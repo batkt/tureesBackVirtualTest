@@ -222,8 +222,18 @@ exports.tulburTulye = async (body) => {
 
   return "Amjilttai";
 };
-
 exports.tseverliy = async (body) => {
   const result = await uilchluulegchTseverliy(body);
   return result;
 }
+exports.ustgah = async (ids, conn) => {
+  if (!ids || !Array.isArray(ids) || ids.length === 0) {
+    throw new Error("ID заавал шаардлагатай");
+  }
+  const UilchluulegchModel = Uilchluulegch(conn);
+  const result = await UilchluulegchModel.deleteMany({ _id: { $in: ids } });
+  if (result.deletedCount === 0) {
+    throw new Error("Үйлчлүүлэгч олдсонгүй");
+  }
+  return "Amjilttai";
+};
