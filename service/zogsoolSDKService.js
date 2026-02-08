@@ -3,8 +3,8 @@ const Khariltsagch = require("../models/khariltsagch");
 const {
   Uilchluulegch,
   sdkData,
-  db,
 } = require("parking-v2");
+const { db, } = require("zevbackv2");
 const { sendFirebase, } = require("./notificationService");     
 const { buildMessage } = require("../utils/buildMessage");
 
