@@ -89,14 +89,14 @@ exports.searchCar = async ({ plateNumber, query }) => {
 
       const bodsonDun = await tootsoolohTulbur({
         zogsool,
-        mashin,
+        oldsonMashin,
         kholbolt,
       });
-      console.log("Calculated bodsonDun for mashin:", mashin?.mashiniiDugaar, "is", bodsonDun);
+      console.log("Calculated bodsonDun for mashin:", oldsonMashin?.mashiniiDugaar, "is", bodsonDun);
       if (bodsonDun > 0) {
         dataList.push(buildResponseData({
           zogsool,
-          mashin,
+          oldsonMashin,
           plateNumber,
           bodsonDun,
         }));
