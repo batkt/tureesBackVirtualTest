@@ -16,7 +16,7 @@ exports.udriinTailan = async (req, res, next) => {
     next(error);
   }
 };
-async function zogsoolUilchluulegchdiinDunAvay(req, res, next) {
+exports.zogsoolUilchluulegchdiinDunAvay = async (req, res, next) => {
   try {
     const khariu = await zogsoolTailanService.zogsoolUilchluulegchdiinDunAvakh({
       baiguullagiinId: req.body.baiguullagiinId,
@@ -32,8 +32,4 @@ async function zogsoolUilchluulegchdiinDunAvay(req, res, next) {
     next(err);
   }
 }
-
-module.exports = {
-  zogsoolUilchluulegchdiinDunAvay,
-};
 
