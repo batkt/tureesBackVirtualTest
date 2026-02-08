@@ -85,7 +85,7 @@ router.get("/zogsooliinIpAvaya/:barilgiinId", tokenShalgakh, parkingController.g
 router.post("/mashiniiTooAvya", tokenShalgakh, parkingController.mashiniiTooAvya);
 router.get("/v1/parking", parkingController.getParkingV1);
 router.post("/tsenegleltKhiiy", tokenShalgakh, tsenegleltController.tsenegleltKhiiy);
-router.get("/pass/zogsool", passController.getPassZogsool);
+router.get("/pass/zogsool", tokenShalgakh, passController.getPassZogsool);
 
 function stableStringify(obj) {
   if (obj === null || typeof obj !== "object") return JSON.stringify(obj);
