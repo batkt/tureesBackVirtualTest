@@ -14,7 +14,6 @@ exports.tulburOrjIrlee = async (req, body, next) => {
     nemeltUtga,
     tulsunDun: tulsunDunInput,
   } = body;
-  console.log("Tulbur orj irlee:", body);
   let tulsunDun = Number(tulsunDunInput || 0);
   let shineDun = 0;
 
@@ -24,7 +23,6 @@ exports.tulburOrjIrlee = async (req, body, next) => {
 
   // Quick Qpay логик
   if (nemeltUtga?.toLowerCase().includes("qrgadaa")) {
-    console.log("Tulbur nemeltUtga orj irlee:", nemeltUtga);
     const guilgeenuud = await QuickQpayObject(kholbolt).find({
       tulsunEsekh: false,
       zogsooliinId,
@@ -57,7 +55,7 @@ exports.tulburOrjIrlee = async (req, body, next) => {
   }
   if (baiguullagiinId === "663da696aa6bedd9ae0567f0") tulsunDun += 50;
   shineDun = Math.round((tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100) / 100;
-  const shuukhKhugatsaa = new Date(Date.now() - 30 * 60 * 1000);
+  const shuukhKhugatsaa = new Date(Date.now() - 5 * 60 * 1000);
   const query = {
     $or: [
       { niitDun: tulsunDun },
@@ -104,7 +102,6 @@ exports.tulburOrjIrlee = async (req, body, next) => {
   // Машины дугаар шалгах
   const regex = /\b\d{4}[А-ЯӨҮ]{2,3}\b/gu;
   const result = nemeltUtga?.match(regex);
-  console.log("Tulbur nemeltUtga orj irlee:", result);
   if (result) query["mashiniiDugaar"] = result[0];
   const oldsonData = await Uilchluulegch(kholbolt, true).findOne(query);
 
