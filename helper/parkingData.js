@@ -1,6 +1,6 @@
 const moment = require("moment");
 
-function buildResponseData({ zogsool, mashin, plateNumber, bodsonDun }) {
+function buildResponseData(zogsool, mashin, plateNumber, bodsonDun) {
   const tuukh = mashin.tuukh?.[0];
   const tsag = tuukh?.tsagiinTuukh?.[0];
 

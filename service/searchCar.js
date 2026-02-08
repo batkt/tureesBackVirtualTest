@@ -93,12 +93,12 @@ exports.searchCar = async ({ plateNumber, query }) => {
       );
       console.log("Calculated bodsonDun for mashin:", oldsonMashin?.mashiniiDugaar, "is", bodsonDun);
       if (bodsonDun > 0) {
-        dataList.push(buildResponseData({
+        dataList.push(buildResponseData(
           zogsool,
           oldsonMashin,
           plateNumber,
           bodsonDun,
-        }));
+        ));
       }
     }
   }
