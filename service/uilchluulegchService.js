@@ -139,3 +139,23 @@ exports.zogsoolJagsaalt = async (body, baaziinKholbolt) => {
   const model = Parking(baaziinKholbolt);
   return await khuudaslalt(model, body);
 };
+
+exports.zogsoolUstgah = async (body, baaziinKholbolt) => {
+  const parkingModel = Parking(baaziinKholbolt);
+  const oldData = await parkingModel.findOne({ _id: body.id });
+  if (!oldData) {
+    throw new Error("Зогсоол олдсонгүй");
+  }
+  const barimt = new (UstsanBarimt(baaziinKholbolt))();
+  barimt.class = "Zogsool";
+  barimt.object = oldData;
+  if (body.nevtersenAjiltniiToken) {
+    barimt.ajiltniiNer = body.nevtersenAjiltniiToken.ner;
+    barimt.ajiltniiId = body.nevtersenAjiltniiToken.id;
+  }
+  barimt.baiguullagiinId = body.baiguullagiinId;
+  barimt.isNew = true;
+  await barimt.save();
+  await parkingModel.deleteOne({ _id: body.id });
+  return { message: "Amjilttai" };
+};

@@ -18,3 +18,16 @@ exports.zogsoolJagsaalt = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.zogsoolUstgah = async (req, res, next) => {
+  try {
+    const result = await uilchluulegchService.zogsoolUstgah(
+      req.body,
+      req.body.tukhainBaaziinKholbolt
+    );
+
+    res.status(200).send(result);
+  } catch (error) {
+    next(error);
+  }
+};

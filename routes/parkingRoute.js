@@ -52,6 +52,7 @@ const { QuickQpayObject } = require("quickqpaypackv2");
 const axios = require("axios");
 const { encode, decode } = require("@msgpack/msgpack");
 const uilchluulegchController = require("../controller/uilchluulegchController");
+const zogsoolSDK = require("../controller/zogsoolSDK");
 
 crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
@@ -63,42 +64,8 @@ crud(router, "kassCameraKhaalt", KassCameraKhaalt, UstsanBarimt);
 
 router.get("/zogsoolUilchluulegchJagsaalt", tokenShalgakh, uilchluulegchController.getJagsaalt);
 router.get("/zogsoolJagsaalt", tokenShalgakh, uilchluulegchController.zogsoolJagsaalt);
-router.post("/zogsoolUstgay", tokenShalgakh, async (req, res, next) => {
-  try {
-    Parking(req.body.tukhainBaaziinKholbolt)
-      .findOne({
-        _id: req.body.id,
-      })
-      .then(async (result) => {
-        var barimt = new UstsanBarimt(req.body.tukhainBaaziinKholbolt)();
-        barimt.class = "Zogsool";
-        barimt.object = result;
-        if (req.body.nevtersenAjiltniiToken) {
-          barimt.ajiltniiNer = req.body.nevtersenAjiltniiToken.ner;
-          barimt.ajiltniiId = req.body.nevtersenAjiltniiToken.id;
-        }
-        barimt.baiguullagiinId = req.body.baiguullagiinId;
-        barimt.isNew = true;
-        barimt.save();
-        Parking(req.body.tukhainBaaziinKholbolt)
-          .deleteOne({
-            _id: req.body.id,
-          })
-          .then((result1) => {
-            res.send("Amjilttai");
-          })
-          .catch((err) => {
-            next(err);
-          });
-      })
-      .catch((err1) => {
-        next(err1);
-      });
-  } catch (error) {
-    next(error);
-  }
-});
-
+router.post("/zogsoolUstgay", tokenShalgakh, uilchluulegchController.zogsoolUstgah);
+router.post("/zogsoolSdkService", tokenShalgakh, zogsoolSDK.zogsoolSdkService);
 router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
   try {
     if (req.body.mashiniiDugaar)
@@ -178,32 +145,6 @@ router.post("/zogsoolSdkService", tokenShalgakh, async (req, res, next) => {
         }
       }
     };
-    
-    
-    // const existUilchluulegch = await Uilchluulegch(
-    //   req.body.tukhainBaaziinKholbolt
-    // ).findOne({
-    //   mashiniiDugaar: req.body.mashiniiDugaar,
-    //   "tuukh.0.tuluv": 0,
-    // }).sort({ createdAt: -1 });
-
-    // if (existUilchluulegch && existUilchluulegch.tuukh && existUilchluulegch.tuukh.length > 0) {
-    //   const lastTuukh = existUilchluulegch.tuukh[0];
-    //   if (lastTuukh.tsagiinTuukh && lastTuukh.tsagiinTuukh.length > 0) {
-    //     const lastTsag = lastTuukh.tsagiinTuukh[lastTuukh.tsagiinTuukh.length - 1];
-    //     if (!lastTsag.garsanTsag) {
-    //        await Uilchluulegch(req.body.tukhainBaaziinKholbolt).updateOne(
-    //          { _id: existUilchluulegch._id },
-    //          {
-    //            $set: {
-    //              [`tuukh.0.tsagiinTuukh.${lastTuukh.tsagiinTuukh.length - 1}.orsonTsag`]: new Date(),
-    //            }
-    //          }
-    //        );
-    //     }
-    //   }
-    // }
-
     const uneguiMashinOldson = await uneguiMashin(db.erunkhiiKholbolt).findOne({
       mashiniiDugaar: req.body.mashiniiDugaar,
       "zogsool.baiguullagiinId": req.body.baiguullagiinId,
