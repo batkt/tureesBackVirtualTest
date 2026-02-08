@@ -66,14 +66,26 @@ exports.searchCar = async ({ plateNumber, query }) => {
 
     for (const zogsool of zogsooluud) {
       console.log("Checking zogsool:", zogsool.ner, "for plate number:", plateNumber);
-      const mashin = await findActiveCar({
+      const oldsonMashin = await findActiveCar({
         kholbolt,
         zogsool,
         plateNumber,
         barilgiinId: query.barilgiinId,
       });
-      console.log("Found active car:", mashin?.mashiniiDugaar);
-      if (!mashin) continue;
+      console.log("Found active car:", oldsonMashin?.mashiniiDugaar);
+      if (!oldsonMashin) continue;
+      if (!!oldsonMashin) {
+          oldsonMashin.freezeOgnoo =
+          oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag;
+        await Uilchluulegch(kholbolt).updateOne(
+          { _id: oldsonMashin._id },
+          {
+            freezeOgnoo: oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+              ? oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+              : new Date(),
+          },
+        );
+      }
 
       const bodsonDun = await tootsoolohTulbur({
         zogsool,
