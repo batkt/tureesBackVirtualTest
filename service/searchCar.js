@@ -6,7 +6,7 @@ const {
 const { getParkingFind } = require("../middlewares/parkingMiddle");
 const { buildResponseData } = require("../helper/parkingData");
 
-async function tootsoolohTulbur({ zogsool, mashin, kholbolt }) {
+async function tootsoolohTulbur(zogsool, mashin, kholbolt) {
   if (
     zogsool?.togtmolTulburEsekh &&
     zogsool?.togtmolTulburiinDun > 0 &&
@@ -86,11 +86,11 @@ exports.searchCar = async ({ plateNumber, query }) => {
         );
       }
       console.log("Calculatding bodsonDun for mashin:", oldsonMashin.freezeOgnoo, "in zogsool:", zogsool.ner);
-      const bodsonDun = await tootsoolohTulbur({
+      const bodsonDun = await tootsoolohTulbur(
         zogsool,
         oldsonMashin,
         kholbolt,
-      });
+      );
       console.log("Calculated bodsonDun for mashin:", oldsonMashin?.mashiniiDugaar, "is", bodsonDun);
       if (bodsonDun > 0) {
         dataList.push(buildResponseData({
