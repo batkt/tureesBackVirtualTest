@@ -19,6 +19,8 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
   const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
   // if (cached) return JSON.parse(cached);
+  console.log("Cache miss for key:", cacheKey);
+  console.log("query miss for key:", query);
   const data = await Parking(kholbolt)
     .find(query)
     .lean();
