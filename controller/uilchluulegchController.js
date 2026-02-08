@@ -56,8 +56,8 @@ exports.tseverliy = async (req, res, next) => {
 };
 exports.ustgah = async (req, res, next) => {
   try {
-    const { ids, conn } = req.body;
-    const response = await uilchluulegchService.ustgah(ids, conn);
+    const { ids, tukhainBaaziinKholbolt } = req.body;
+    const response = await uilchluulegchService.ustgah(ids, tukhainBaaziinKholbolt);
 
     res.status(200).send(response);
   } catch (err) {
