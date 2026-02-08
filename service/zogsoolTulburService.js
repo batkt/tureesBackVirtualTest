@@ -57,7 +57,7 @@ exports.tulburOrjIrlee = async (req, body, next) => {
   }
   if (baiguullagiinId === "663da696aa6bedd9ae0567f0") tulsunDun += 50;
   shineDun = Math.round((tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100) / 100;
-  const shuukhKhugatsaa = new Date(Date.now() - 15 * 60 * 1000);
+  const shuukhKhugatsaa = new Date(Date.now() - 30 * 60 * 1000);
   const query = {
     $or: [
       { niitDun: tulsunDun },
