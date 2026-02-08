@@ -65,6 +65,7 @@ exports.searchCar = async ({ plateNumber, query }) => {
     );
 
     for (const zogsool of zogsooluud) {
+      console.log("Checking zogsool:", zogsool.ner, "for plate number:", plateNumber);
       const mashin = await findActiveCar({
         kholbolt,
         zogsool,
