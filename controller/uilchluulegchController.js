@@ -9,7 +9,6 @@ exports.getJagsaalt = async (req, res, next) => {
     next(error);
   }
 };
-
 exports.zogsoolJagsaalt = async (req, res, next) => {
   try {
     const result = await uilchluulegchService.zogsoolJagsaalt(req.query, req.body?.tukhainBaaziinKholbolt);
@@ -18,7 +17,6 @@ exports.zogsoolJagsaalt = async (req, res, next) => {
     next(error);
   }
 };
-
 exports.zogsoolUstgah = async (req, res, next) => {
   try {
     const result = await uilchluulegchService.zogsoolUstgah(
@@ -27,6 +25,15 @@ exports.zogsoolUstgah = async (req, res, next) => {
     );
 
     res.status(200).send(result);
+  } catch (error) {
+    next(error);
+  }
+};
+exports.orlogoGaraas = async (req, res, next) => {
+  try {
+    const utguud = req.body;
+    const response = await uilchluulegchService.orlogoGaraasBurtgeh(utguud);
+    res.status(200).send(response);
   } catch (error) {
     next(error);
   }

@@ -1,4 +1,4 @@
-const { Uilchluulegch, Parking, } = require("parking-v2");
+const { Uilchluulegch, Parking, uilchluulegchGaraasBurtgey } = require("parking-v2");
 const { khuudaslalt, } = require("zevbackv2");
 
 const extractDate = (dateFilter, preferStart = true) => {
@@ -158,4 +158,14 @@ exports.zogsoolUstgah = async (body, baaziinKholbolt) => {
   await barimt.save();
   await parkingModel.deleteOne({ _id: body.id });
   return { message: "Amjilttai" };
+};
+exports.orlogoGaraasBurtgeh = async (utguud) => {
+  if (!utguud.mashiniiDugaar) throw new Error("Машиний дугаар оруулна уу");
+  if (!utguud.tulukhDun) throw new Error("Төлөх дүн оруулна уу");
+  if (!utguud.orsonCamera) throw new Error("Орох камер бүртгэгдээгүй байна");
+  if (!utguud.garsanCamera) throw new Error("Гарах камер бүртгэгдээгүй байна");
+
+  // Шинэ орлого үүсгэх
+  const result = await uilchluulegchGaraasBurtgey({ body: utguud });
+  return result;
 };

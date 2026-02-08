@@ -65,34 +65,8 @@ crud(router, "kassCameraKhaalt", KassCameraKhaalt, UstsanBarimt);
 router.get("/zogsoolUilchluulegchJagsaalt", tokenShalgakh, uilchluulegchController.getJagsaalt);
 router.get("/zogsoolJagsaalt", tokenShalgakh, uilchluulegchController.zogsoolJagsaalt);
 router.post("/zogsoolUstgay", tokenShalgakh, uilchluulegchController.zogsoolUstgah);
+router.post("/zogsoolOrlogoGaraas", tokenShalgakh, uilchluulegchController.orlogoGaraas);
 router.post("/zogsoolSdkService", tokenShalgakh, zogsoolSDK.zogsoolSdkService);
-
-router
-  .route("/zogsoolOrlogoGaraas")
-  .post(tokenShalgakh, async (req, res, next) => {
-    try {
-      const utguud = req.body;
-      if (!utguud.mashiniiDugaar) {
-        throw new Error("Машиний дугаар оруулна уу");
-      }
-      if (!utguud.tulukhDun) {
-        throw new Error("Төлөх дүн оруулна уу");
-      }
-      if (!utguud.orsonCamera) {
-        throw new Error("Орох камер бүртгэгдээгүй байна");
-      }
-      if (!utguud.garsanCamera) {
-        throw new Error("Гарах камер бүртгэгдээгүй байна");
-      }
-      const response = await uilchluulegchGaraasBurtgey({ body: utguud });
-      if (response) {
-        res.status(200).send(response);
-      }
-    } catch (error) {
-      next(error);
-    }
-  });
-
 router
   .route("/zogsooliinTulburTulye")
   .post(tokenShalgakh, async (req, res, next) => {
