@@ -1,5 +1,6 @@
 const { Uilchluulegch, Parking, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy, uilchluulegchdiinToo, zogsoolTusBurUilchluulegchdiinToo } = require("parking-v2");
 const { khuudaslalt, } = require("zevbackv2");
+const { delParkingFind } = require("../middlewares/parkingMiddle");
 
 const extractDate = (dateFilter, preferStart = true) => {
   if (!dateFilter) return null;
@@ -135,7 +136,7 @@ exports.zogsoolJagsaalt = async (body, baaziinKholbolt) => {
   if (body?.khuudasniiKhemjee)
     body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
   if (body?.search) body.search = String(body.search);
-
+  await delParkingFind(body?.baiguullagiinId);
   const model = Parking(baaziinKholbolt);
   return await khuudaslalt(model, body);
 };

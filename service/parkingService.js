@@ -3,7 +3,7 @@ const {
     Mashin,
     BlockMashin,
 } = require("parking-v2");
-const { getParkingFind, getDotorZogsoolById, getAggregateUilchluulegch, delParkingFind } = require("../middlewares/parkingMiddle");
+const { getParkingFind, getDotorZogsoolById, getAggregateUilchluulegch } = require("../middlewares/parkingMiddle");
 const { db } = require("zevbackv2");
 
 async function getCameraIPsByBarilgiinId(req, barilgiinId) {
@@ -187,7 +187,4 @@ async function getParkingStatus(body) {
 
   return jagsaalt;
 }
-async function removeParkingFind(baiguullagiinId) {
-  await delParkingFind(baiguullagiinId);
-}
-module.exports = { getCameraIPsByBarilgiinId, mashiniiTooAvakh, getParkingStatus, removeParkingFind };
+module.exports = { getCameraIPsByBarilgiinId, mashiniiTooAvakh, getParkingStatus };
