@@ -75,8 +75,7 @@ exports.searchCar = async ({ plateNumber, query }) => {
       console.log("Found active car:", oldsonMashin?.mashiniiDugaar);
       if (!oldsonMashin) continue;
       if (!!oldsonMashin) {
-          oldsonMashin.freezeOgnoo =
-          oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag;
+        oldsonMashin.freezeOgnoo = oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag;
         await Uilchluulegch(kholbolt).updateOne(
           { _id: oldsonMashin._id },
           {
