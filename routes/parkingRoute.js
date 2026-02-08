@@ -55,6 +55,7 @@ const uilchluulegchController = require("../controller/uilchluulegchController")
 const zogsoolSDK = require("../controller/zogsoolSDK");
 const zogsooliinTulburController = require("../controller/zogsooliinTulburController");
 const zogsoolTailanController = require("../controller/zogsoolTailanController");
+const parkingController = require("../controller/parkingController");
 
 crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
@@ -75,43 +76,7 @@ router.post("/zogsooliinTulburOrjIrlee", zogsooliinTulburController.tulburOrjIrl
 router.post("/uilchluulegchUstgay", tokenShalgakh, uilchluulegchController.ustgah);
 router.post("/zogsooliinAjiltniiUdriinTailanAvya", tokenShalgakh, zogsoolTailanController.ajiltniiUdriinTailan);
 router.post("/zogsooliinUdriinTailanAvya", tokenShalgakh, zogsoolTailanController.udriinTailan);
-router.get(
-  "/zogsooliinIpAvaya/:barilgiinId",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      //const { db } = require("zevbackv2");
-      if (req.params.barilgiinId) {
-        Parking(req.body.tukhainBaaziinKholbolt)
-          .find({
-            barilgiinId: req.params.barilgiinId,
-          })
-          .then((result) => {
-            let yavuulakhIp = [];
-            let yavuulakhData = {};
-            if (result.length > 0) {
-              for (const zogsool of result) {
-                for (const khaalga of zogsool.khaalga) {
-                  for (const cameraIp of khaalga.camera) {
-                    yavuulakhIp.push(cameraIp.cameraIP);
-                  }
-                }
-              }
-            }
-            yavuulakhData.ip = yavuulakhIp;
-            yavuulakhData.baiguullagiinId = req.body.baiguullagiinId;
-            yavuulakhData.barilgiinId = req.params.barilgiinId;
-            res.send(yavuulakhData);
-          })
-          .catch((err1) => {
-            next(err1);
-          });
-      } else res.send("BarilgiinId baihgui bn");
-    } catch (err) {
-      next(err);
-    }
-  },
-);
+router.get("/zogsooliinIpAvaya/:barilgiinId", tokenShalgakh, parkingController.getZogsooliinIpAvaya);
 
 router.post("/tsenegleltKhiiy", tokenShalgakh, async (req, res, next) => {
   try {
