@@ -72,7 +72,7 @@ exports.searchCar = async ({ plateNumber, query }) => {
         plateNumber,
         barilgiinId: query.barilgiinId,
       });
-
+      console.log("Found active car:", mashin?.mashiniiDugaar);
       if (!mashin) continue;
 
       const bodsonDun = await tootsoolohTulbur({
@@ -80,7 +80,7 @@ exports.searchCar = async ({ plateNumber, query }) => {
         mashin,
         kholbolt,
       });
-
+      console.log("Calculated bodsonDun for mashin:", mashin?.mashiniiDugaar, "is", bodsonDun);
       if (bodsonDun > 0) {
         dataList.push(buildResponseData({
           zogsool,
