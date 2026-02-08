@@ -27,7 +27,7 @@ async function findActiveCar({ kholbolt, zogsool, plateNumber, barilgiinId }) {
   };
 
   if (barilgiinId) match.barilgiinId = barilgiinId;
-
+  console.log("Finding active car with match:", match);
   return Uilchluulegch(kholbolt, true)
     .findOne(match)
     .sort({ createdAt: -1 });
