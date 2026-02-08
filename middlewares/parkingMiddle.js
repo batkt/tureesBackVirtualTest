@@ -18,9 +18,7 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
     .digest("hex");
   const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
   const cached = await client.get(cacheKey);
-  // if (cached) return JSON.parse(cached);
-  console.log("Cache miss for key:", cacheKey);
-  console.log("query miss for key:", query);
+  if (cached) return JSON.parse(cached);
   const data = await Parking(kholbolt)
     .find(query)
     .lean();
@@ -58,7 +56,6 @@ async function getAggregateUilchluulegch(
   return xariu;
 }
 async function delParkingFind(baiguullagiinId) {
-  console.log("Removing parking find for baiguullagiinId:", baiguullagiinId);
   const keys = await client.keys(`parkingFind:${baiguullagiinId}:*`);
   if (keys.length > 0) {
     await client.del(keys);

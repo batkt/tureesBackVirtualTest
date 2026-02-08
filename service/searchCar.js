@@ -27,7 +27,6 @@ async function findActiveCar({ kholbolt, zogsool, plateNumber, barilgiinId }) {
   };
 
   if (barilgiinId) match.barilgiinId = barilgiinId;
-  console.log("Finding active car with match:", match);
   return Uilchluulegch(kholbolt, true)
     .findOne(match)
     .sort({ createdAt: -1 });
@@ -65,14 +64,12 @@ exports.searchCar = async ({ plateNumber, query }) => {
     );
 
     for (const zogsool of zogsooluud) {
-      console.log("Checking zogsool:", zogsool.ner, "for plate number:", plateNumber);
       var oldsonMashin = await findActiveCar({
         kholbolt,
         zogsool,
         plateNumber,
         barilgiinId: query.barilgiinId,
       });
-      console.log("Found active car:", oldsonMashin?.mashiniiDugaar);
       if (!oldsonMashin) continue;
       if (!!oldsonMashin) {
         oldsonMashin.freezeOgnoo = oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag;
@@ -85,13 +82,11 @@ exports.searchCar = async ({ plateNumber, query }) => {
           },
         );
       }
-      console.log("Calculatding bodsonDun for mashin:", oldsonMashin.freezeOgnoo, "in zogsool:", zogsool.ner);
       const bodsonDun = await tootsoolohTulbur(
         zogsool,
         oldsonMashin,
         kholbolt,
       );
-      console.log("Calculated bodsonDun for mashin:", oldsonMashin?.mashiniiDugaar, "is", bodsonDun);
       if (bodsonDun > 0) {
         dataList.push(buildResponseData(
           zogsool,
