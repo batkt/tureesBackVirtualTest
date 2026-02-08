@@ -86,6 +86,7 @@ exports.ajiltniiUdriinTailan = async (body) => {
 exports.udriinTailan = async (body) => {
   const ekhlekhOgnoo = moment(body.ekhlekhOgnoo, "YYYY-MM-DD HH:mm:ss").toDate();
   const duusakhOgnoo = moment(body.duusakhOgnoo, "YYYY-MM-DD HH:mm:ss").toDate();
+  console.log("Generating report from", ekhlekhOgnoo, "to", duusakhOgnoo);
   const start = moment(ekhlekhOgnoo);
   const end = moment(duusakhOgnoo);
   const now = moment();
@@ -227,5 +228,6 @@ exports.udriinTailan = async (body) => {
   if (body.includeMetadata) {
     return { data: finalResult, archiveName: isMultiMonth ? "multi-month" : getCollectionName(start.year(), start.month()), collections: collectionsToQuery.map((c) => c.name) };
   }
+  console.log("Final report generated with", finalResult?.length, "entries.");
   return finalResult;
 };
