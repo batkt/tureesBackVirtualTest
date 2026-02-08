@@ -30,4 +30,17 @@ async function mashiniiTooAvya(req, res, next) {
     next(err);
   }
 }
-module.exports = { getZogsooliinIpAvaya, mashiniiTooAvya, };
+async function getParkingV1(req, res, next) {
+  try {
+    const data = await parkingService.getParkingStatus(req.body);
+
+    res.send({
+      success: true,
+      message: "Amjilttai",
+      data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+module.exports = { getZogsooliinIpAvaya, mashiniiTooAvya, getParkingV1 };

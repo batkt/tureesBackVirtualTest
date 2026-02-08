@@ -25,5 +25,34 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
   await client.setEx(cacheKey, 300, JSON.stringify(data));
   return data;
 }
+async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
+  const cacheKey = `dotorZogsoolFindById:${baiguullagiinId}:${barilgiinId}:${id}`;
+  const cached = await client.get(cacheKey);
+  if (cached) {
+    return JSON.parse(cached);
+  }
+  const dotorZogsool = await Parking(kholbolt).findById(id);
+  await client.setEx(cacheKey, 60, JSON.stringify(dotorZogsool));
+  return dotorZogsool;
+}
+async function getAggregateUilchluulegch(
+  kholbolt,
+  baiguullagiinId,
+  barilgiinId,
+  query,
+) {
+  const queryKey = crypto
+    .createHash("md5")
+    .update(stableStringify(query))
+    .digest("hex");
+  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
+  const cached = await client.get(cacheKey);
+  if (cached) {
+    return JSON.parse(cached);
+  }
 
-module.exports = { getParkingFind };
+  const xariu = await Uilchluulegch(kholbolt, true).aggregate(query);
+  await client.setEx(cacheKey, 60, JSON.stringify(xariu));
+  return xariu;
+}
+module.exports = { getParkingFind, getDotorZogsoolById, getAggregateUilchluulegch };
