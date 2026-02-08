@@ -45,6 +45,7 @@ async function getParkingV1(req, res, next) {
 };
 async function removeParkingFind(req, res, next) {
   try {
+    console.log("Removing parking find for baiguullagiinId:", req.body.baiguullagiinId);
     await parkingService.removeParkingFind(req.body.baiguullagiinId);
     res.send({ success: true, message: "Cache data removed successfully" });
   } catch (err) {

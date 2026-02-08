@@ -58,6 +58,7 @@ async function getAggregateUilchluulegch(
   return xariu;
 }
 async function delParkingFind(baiguullagiinId) {
+  console.log("Removing parking find for baiguullagiinId:", baiguullagiinId);
   const keys = await client.keys(`parkingFind:${baiguullagiinId}:*`);
   if (keys.length > 0) {
     await client.del(keys);
