@@ -97,9 +97,10 @@ exports.udriinTailan = async (body) => {
     const model = collectionName
       ? Uilchluulegch(body.tukhainBaaziinKholbolt, false, collectionName)
       : Uilchluulegch(body.tukhainBaaziinKholbolt, true);
-
+    console.log(`Querying collection: ${collectionName || "default"} for dates:`, dateStart, "to", dateEnd);
     const actualStartDate = dateStart || ekhlekhOgnoo;
     const actualEndDate = dateEnd || duusakhOgnoo;
+    console.log(`Querying collection: ${collectionName || "default"} for dates:`, actualStartDate, "to", actualEndDate);
 
     const match = body.garsanKhaalga
       ? {
