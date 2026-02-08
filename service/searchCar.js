@@ -21,7 +21,7 @@ async function tootsoolohTulbur({ zogsool, mashin, kholbolt }) {
 async function findActiveCar({ kholbolt, zogsool, plateNumber, barilgiinId }) {
   const match = {
     mashiniiDugaar: plateNumber,
-    "tuukh.0.zogsooliinId": zogsool._id,
+    "tuukh.0.zogsooliinId": zogsool._id?.toString(),
     "tuukh.0.tuluv": 0,
     zurchil: { $exists: false },
   };
