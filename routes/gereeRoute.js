@@ -3170,7 +3170,7 @@ router
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) body.search = String(body.search);
       if (!body.query) body.query = {};
-      const showTsutslagdsanAvlaga = !!body.query?.showTsutslagdsanAvlaga;
+      const showTsutslagdsanAvlaga = body.query?.showTsutslagdsanAvlaga === true;
       delete body.query.showTsutslagdsanAvlaga;
       body.query["avlaga.guilgeenuud"] = {
         $elemMatch: {
@@ -3309,9 +3309,7 @@ router
             const existingIds = new Set(
               result.jagsaalt.map((x) => x.gereeniiDugaar),
             );
-            const cancelledWithAvlaga = tsutslagdsanByContract.filter(
-              (r) => r.tsutslagdsanAvlaga > 0 && !existingIds.has(r._id),
-            );
+            const cancelledWithAvlaga = [];
             const cancelledWithPaymentsInMonth = await Geree(
               req.body.tukhainBaaziinKholbolt,
               true,
@@ -3380,9 +3378,16 @@ router
             const cancelledIdsFromTuukh = new Set(
               (cancelledViaTuukh || []).map((r) => r._id).filter(Boolean),
             );
+            const cancelledWithPaymentsInMonthIds = new Set(
+              Object.keys(cancelledWithPaymentsMap),
+            );
             const allCancelledInMonth = new Set([
-              ...(cancelledWithStoredTulsunDun || []).map((r) => r.gereeniiDugaar),
-              ...cancelledIdsFromTuukh,
+              ...(cancelledWithStoredTulsunDun || [])
+                .filter((r) => (r.tsutsalsanTulsunDun || 0) > 0)
+                .map((r) => r.gereeniiDugaar),
+              ...[...cancelledIdsFromTuukh].filter((id) =>
+                cancelledWithPaymentsInMonthIds.has(id),
+              ),
             ]);
             const cancelledWithTulsunDunToAdd = [...allCancelledInMonth].filter(
               (id) => id && !existingIds.has(id),
@@ -3862,7 +3867,7 @@ router
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) body.search = String(body.search);
       body.query["gereeniiDugaar"] = { $in: turJagsaalt };
-      body.query["tuluv"] = req.body.showTsutslagdsanAvlaga
+      body.query["tuluv"] = req.body.showTsutslagdsanAvlaga === true
         ? { $in: [1, -1] }
         : { $ne: -1 };
       body.lean = true;
