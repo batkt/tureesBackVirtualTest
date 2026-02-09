@@ -1,4 +1,4 @@
-const { Uilchluulegch, Parking, UstsanBarimt, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy, uilchluulegchdiinToo, zogsoolTusBurUilchluulegchdiinToo } = require("parking-v2");
+const { Uilchluulegch, Parking, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy, uilchluulegchdiinToo, zogsoolTusBurUilchluulegchdiinToo } = require("parking-v2");
 const { khuudaslalt, } = require("zevbackv2");
 const { delParkingFind } = require("../middlewares/parkingMiddle");
 
@@ -234,9 +234,8 @@ exports.ustgah = async (ids, conn) => {
   }
   const UilchluulegchModel = Uilchluulegch(conn);
   const oldData = await UilchluulegchModel.find({ _id: { $in: ids } });
-  const UstsanBermitModel = UstsanBarimt(conn);
   for (const doc of oldData) {
-    const barimt = new UstsanBermitModel();
+    const barimt = new (UstsanBarimt(conn))();
     barimt.class = "Uilchluulegch";
     barimt.object = doc;
     barimt.isNew = true;
