@@ -59,7 +59,6 @@ async function delParkingFind(baiguullagiinId) {
   const keys = await client.keys(`parkingFind:${baiguullagiinId}:*`);
   if (keys.length > 0) {
     await client.del(keys);
-    console.log(`${keys.length} cache keys removed ${baiguullagiinId} baiguullagiin parkingFind cache`);
   }
 }
 module.exports = { getParkingFind, getDotorZogsoolById, getAggregateUilchluulegch, delParkingFind };
