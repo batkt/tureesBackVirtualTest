@@ -1,4 +1,4 @@
-const { Uilchluulegch, Parking, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy, uilchluulegchdiinToo, zogsoolTusBurUilchluulegchdiinToo } = require("parking-v2");
+const { Uilchluulegch, Parking, UstsanBarimt, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy, uilchluulegchdiinToo, zogsoolTusBurUilchluulegchdiinToo } = require("parking-v2");
 const { khuudaslalt, } = require("zevbackv2");
 const { delParkingFind } = require("../middlewares/parkingMiddle");
 
