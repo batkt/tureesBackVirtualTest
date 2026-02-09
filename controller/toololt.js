@@ -158,6 +158,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     const tuluvFilter = showTsutslagdsanAvlagaColumn
       ? {}
       : { tuluv: { $ne: -1 } };
+    const uldegdelFilter = showTsutslagdsanAvlagaColumn
+      ? {}
+      : { uldegdel: { $gte: 0 } };
     var match = {
       "avlaga.guilgeenuud.ognoo": {
         $lte: new Date(
@@ -337,9 +340,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       ],
       baiguullagiinId: req.body.baiguullagiinId,
       ...tuluvFilter,
-      uldegdel: {
-        $gte: 0,
-      },
+      ...uldegdelFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
