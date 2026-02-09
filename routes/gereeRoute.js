@@ -3661,7 +3661,7 @@ router
         gereenuud?.length > 0 &&
         gereenuud[0]?.tuluvluguut?.length > 0;
       if (!hasTuluvluguut && !req.body.showTsutslagdsanAvlaga) {
-        res.send({ jagsaalt: [], niitMur: 0, khuudasniiDugaar: 1 });
+        res.send({ jagsaalt: [], niitMur: 0, khuudasniiDugaar: 1, niitTuluvluguut: 0 });
         return;
       }
       var turJagsaalt = [];
@@ -3857,7 +3857,7 @@ router
         });
       }
       if (turJagsaalt.length < 1) {
-        res.send({ jagsaalt: [], niitMur: 0, khuudasniiDugaar: 1 });
+        res.send({ jagsaalt: [], niitMur: 0, khuudasniiDugaar: 1, niitTuluvluguut: 0 });
         return;
       }
       const body = req.body.query;
@@ -4062,6 +4062,24 @@ router
                 });
               }
             }
+            const tuluvluguutList = gereenuud[0]?.tuluvluguut || [];
+            let niitTuluvluguut = 0;
+            for (const id of turJagsaalt) {
+              if (req.body.showTsutslagdsanAvlaga && allCancelledIds.has(id)) {
+                const stored = storedValuesMap[id];
+                const val =
+                  stored?.tuluvluguut ??
+                  tuluvluguutMapForCancelled[id] ??
+                  0;
+                niitTuluvluguut += Math.max(0, val);
+              } else {
+                const fromFacet = tuluvluguutList.find(
+                  (a) => a._id == id,
+                )?.tulukh;
+                niitTuluvluguut += Math.max(0, fromFacet ?? 0);
+              }
+            }
+            result.niitTuluvluguut = niitTuluvluguut;
             res.send(result);
           })
           .catch((err) => {

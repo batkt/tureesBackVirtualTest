@@ -393,37 +393,65 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     ];
 
     var khugatsaaKhetersen = await gereeObject.aggregate(query);
-    const eneSardTulukhMatch = {
+    match = {
+      "avlaga.guilgeenuud.ognoo": {
+        $lte: new Date(req.body.duusakhOgnoo),
+        $gte: new Date(req.body.ekhlekhOgnoo),
+      },
       baiguullagiinId: req.body.baiguullagiinId,
+      $or: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["aldangi", "baritsaa"],
+          },
+        },
+        {
+          $and: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $in: ["baritsaa"],
+              },
+            },
+            {
+              "avlaga.guilgeenuud.tulsunDun": {
+                $gt: 0,
+              },
+            },
+          ],
+        },
+      ],
       ...tuluvFilter,
     };
-    if (!!barilgiinId) eneSardTulukhMatch["barilgiinId"] = barilgiinId;
+    if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
-      { $match: eneSardTulukhMatch },
-      { $unwind: { path: "$avlaga.guilgeenuud" } },
       {
-        $match: {
-          "avlaga.guilgeenuud.ognoo": {
-            $lte: new Date(req.body.duusakhOgnoo),
-            $gte: new Date(req.body.ekhlekhOgnoo),
-          },
-          "avlaga.guilgeenuud.turul": { $nin: ["baritsaa", "aldangi"] },
+        $unwind: {
+          path: "$avlaga.guilgeenuud",
         },
+      },
+      {
+        $match: match,
       },
       {
         $group: {
           _id: "$gereeniiDugaar",
           tulukh: {
-            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+            },
           },
           khyamdral: {
-            $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+            },
           },
         },
       },
       {
         $project: {
-          dun: { $subtract: ["$tulukh", "$khyamdral"] },
+          dun: {
+            $subtract: ["$tulukh", "$khyamdral"],
+          },
         },
       },
     ];
