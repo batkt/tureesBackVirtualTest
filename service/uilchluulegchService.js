@@ -1,4 +1,4 @@
-const { Uilchluulegch, Parking, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy, uilchluulegchdiinToo, zogsoolTusBurUilchluulegchdiinToo } = require("parking-v2");
+const { Uilchluulegch, Parking, UstsanBarimt, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy, uilchluulegchdiinToo, zogsoolTusBurUilchluulegchdiinToo } = require("parking-v2");
 const { khuudaslalt, } = require("zevbackv2");
 const { delParkingFind } = require("../middlewares/parkingMiddle");
 
@@ -233,10 +233,17 @@ exports.ustgah = async (ids, conn) => {
     throw new Error("ID заавал шаардлагатай");
   }
   const UilchluulegchModel = Uilchluulegch(conn);
-  const result = await UilchluulegchModel.deleteMany({ _id: { $in: ids } });
-  if (result.deletedCount === 0) {
-    throw new Error("Үйлчлүүлэгч олдсонгүй");
+  const oldData = await UilchluulegchModel.find({ _id: { $in: ids } });
+  const UstsanBermitModel = UstsanBarimt(conn);
+  for (const doc of oldData) {
+    const barimt = new UstsanBermitModel();
+    barimt.class = "Uilchluulegch";
+    barimt.object = doc;
+    barimt.isNew = true;
+    await barimt.save();
   }
+  await UilchluulegchModel.deleteMany({ _id: { $in: ids } });
+  
   return "Amjilttai";
 };
 exports.tooAvya = async (body) => {
