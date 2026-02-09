@@ -137,7 +137,7 @@ exports.zogsoolJagsaalt = async (body, baaziinKholbolt) => {
     body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
   if (body?.search) body.search = String(body.search);
   // await delParkingFind(body?.query?.baiguullagiinId);
-  console.log("Zogsool jagsaalt query:", body.query);
+  // console.log("Zogsool jagsaalt query:", body.query);
   const model = Parking(baaziinKholbolt);
   return await khuudaslalt(model, body);
 };
