@@ -153,6 +153,11 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
     var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
     var barilgiinId = req.body.barilgiinId;
+    const showTsutslagdsanAvlagaColumn =
+      !!req.body.showTsutslagdsanAvlagaColumn;
+    const tuluvFilter = showTsutslagdsanAvlagaColumn
+      ? {}
+      : { tuluv: { $ne: -1 } };
     var match = {
       "avlaga.guilgeenuud.ognoo": {
         $lte: new Date(
@@ -183,9 +188,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         },
       ],
       baiguullagiinId: req.body.baiguullagiinId,
-      tuluv: {
-        $ne: -1,
-      },
+      ...tuluvFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     let query = [
@@ -247,9 +250,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     var avlaga = await gereeObject.aggregate(query);
     match = {
       baiguullagiinId: req.body.baiguullagiinId,
-      tuluv: {
-        $ne: -1,
-      },
+      ...tuluvFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
@@ -282,9 +283,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
       "avlaga.guilgeenuud.turul": "voucher",
       baiguullagiinId: req.body.baiguullagiinId,
-      tuluv: {
-        $ne: -1,
-      },
+      ...tuluvFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
@@ -337,9 +336,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         },
       ],
       baiguullagiinId: req.body.baiguullagiinId,
-      tuluv: {
-        $ne: -1,
-      },
+      ...tuluvFilter,
       uldegdel: {
         $gte: 0,
       },
@@ -423,9 +420,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           ],
         },
       ],
-      tuluv: {
-        $ne: -1,
-      },
+      ...tuluvFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
@@ -501,9 +496,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
           ],
         },
       ],
-      tuluv: {
-        $ne: -1,
-      },
+      ...tuluvFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
@@ -554,9 +547,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         },
       ],
       baiguullagiinId: req.body.baiguullagiinId,
-      tuluv: {
-        $ne: -1,
-      },
+      ...tuluvFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
