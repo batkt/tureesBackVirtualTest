@@ -3,6 +3,8 @@ const {
     Uilchluulegch,
 } = require("parking-v2");
 const { db } = require("zevbackv2");
+const moment = require("moment");
+const { getParkingFind } = require("../middlewares/parkingMiddle");
 
 async function getPassZogsool(body) {
   const jagsaalt = [];
@@ -94,7 +96,98 @@ async function getPassZogsool(body) {
 
   return jagsaalt;
 }
+async function mashinKhaikhService (dugaar, freeze) {
+  const kholboltuud = db.kholboltuud;
+
+  let bodsonDun = 0;
+  let data = null;
+  let oldsonMashin = null;
+  let tukhainKholbolt = null;
+
+  if (kholboltuud) {
+    for (const kholbolt of kholboltuud) {
+      const query = { passNer: { $exists: true } };
+
+      const zogsooluud = await getParkingFind(
+        kholbolt,
+        kholbolt.baiguullagiinId,
+        query
+      );
+
+      for (const zogsool of zogsooluud) {
+        if (!zogsool) continue;
+
+        oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
+          "tuukh.0.zogsooliinId": zogsool._id,
+          mashiniiDugaar: dugaar,
+          $or: [
+            {
+              "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                $gt: new Date(Date.now() - 100000),
+              },
+            },
+            {
+              "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                $exists: false,
+              },
+            },
+          ],
+          "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
+        });
+
+        if (oldsonMashin?.mashiniiDugaar) {
+          bodsonDun = await zogsooliinDunAvya(
+            zogsool,
+            oldsonMashin,
+            kholbolt
+          );
+        }
+
+        if (oldsonMashin?.mashiniiDugaar) {
+          tukhainKholbolt = kholbolt;
+
+          data = {
+            dugaar,
+            orsonTsag: moment(
+              oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
+            ).format("YYYY/MM/DD HH:mm:ss"),
+            tulukhDun: bodsonDun || 0,
+            zogsoolId: zogsool._id,
+            garakhKhugatsaa: zogsool?.garakhTsag || 30,
+            id: oldsonMashin._id,
+          };
+          break;
+        }
+      }
+
+      if (data) break;
+    }
+  }
+
+  if (!oldsonMashin) {
+    return {
+      success: false,
+      message: "Машины мэдээлэл олдсонгүй!",
+      data: null,
+    };
+  }
+
+  if (freeze) {
+    await Uilchluulegch(tukhainKholbolt).updateOne(
+      { _id: oldsonMashin._id },
+      { freezeOgnoo: new Date() }
+    );
+  }
+
+  return {
+    success: true,
+    message: "Amjilttai",
+    data,
+  };
+};
+
 
 module.exports = {
   getPassZogsool,
+  mashinKhaikhService,
 };

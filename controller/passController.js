@@ -13,3 +13,13 @@ exports.getPassZogsool = async (req, res, next) => {
     next(err);
   }
 };
+exports.mashinKhaikh = async (req, res, next) => {
+  try {
+    const { dugaar } = req.params;
+    const { freeze } = req.query;
+    const result = await passService.mashinKhaikhService(dugaar, freeze);
+    res.send(result);
+  } catch (err) {
+    next(err);
+  }
+};
