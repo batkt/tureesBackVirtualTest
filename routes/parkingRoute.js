@@ -95,7 +95,316 @@ router.post("/v1/tulburMedeelelAvya", passController.getTulburMedeelel);
 router.get("/v1/search_car/:plate_number", searchCarToki);
 router.get("/v1/search_carQR/:plate_number", searchCarQR);
 router.get("/v1/search_car_unegui/:plate_number", tokenShalgakh, parkingUneguiController.searchCarUnegui);
-router.post("/v1/pay", tokiPayController.tokiPay);
+// router.post("/v1/pay", tokiPayController.tokiPay);
+router.route("/v1/pay").post(async (req, res, next) => {
+  try {
+    /*{nevtreltiinTuukhAvya
+      "session_id":"",
+      "paid_amount": 1622.0,
+      "plate_number": "7120СЭА",
+      "individual": true, //true = xuwi xun, false = baiguullaga
+      "customer_no": "",
+      "door_id": "",
+      "manually_open": true
+     }*/
+    let tulbur = [
+      {
+        ognoo: new Date(),
+        turul: "toki",
+        dun: req.body.paid_amount,
+      },
+    ];
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+    var message = "Amjilttai";
+    var oldsonMashin;
+    var tukhainKholbolt;
+    var tukhainObject;
+    var tukhainZogsool;
+    var success = true;
+    var bodsonDun = 0;
+    var localEsekh = !!req.body.baiguullagiinId;
+    if (localEsekh) {
+      kholboltuud = kholboltuud.filter(
+        (a) => a.baiguullagiinId == req.body.baiguullagiinId,
+      );
+    }
+    if (kholboltuud) {
+      var query = { tokiNer: { $exists: true } };
+      if (!!req.body.baiguullagiinId)
+        query["baiguullagiinId"] = req.body.baiguullagiinId;
+      for (const kholbolt of kholboltuud) {
+        var zogsooluud = await getParkingFind(
+          kholbolt,
+          kholbolt.baiguullagiinId,
+          query,
+        );
+        for (const zogsool of zogsooluud) {
+          if (!!zogsool) {
+            const plateNumber = req.body.plate_number;
+            const zogsoolId = zogsool._id;
+            const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+            oldsonMashin = await Uilchluulegch(kholbolt, true)
+              .findOne({
+                mashiniiDugaar: plateNumber,
+                "tuukh.0.zogsooliinId": zogsoolId,
+                "tuukh.0.tuluv": { $nin: [-2, -3, -4] },
+                updatedAt: { $gt: fiveMinutesAgo },
+              })
+              .sort({ updatedAt: -1 });
+            if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
+              tukhainKholbolt = kholbolt;
+              tukhainZogsool = zogsool;
+              tukhainObject = oldsonMashin;
+              break;
+            }
+          }
+          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
+        }
+        if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
+      }
+    }
+    var butsaakhKhariu = {
+      success,
+      message,
+    };
+    if (!tukhainObject) {
+      res.send({ success: false, message: "Машины мэдээлэл олдсонгүй!" });
+    } else {
+      // var mashinTurul = "toki"; // default value
+
+      // if (!!tukhainObject.turul) {
+      //   mashinTurul = tukhainObject.turul;
+      // } else if (!!tukhainObject.mashiniiDugaar) {
+      //   try {
+      //     const mashin = await Mashin(tukhainKholbolt).findOne({
+      //       dugaar: tukhainObject.mashiniiDugaar,
+      //       baiguullagiinId: tukhainObject.baiguullagiinId,
+      //       barilgiinId: tukhainObject.barilgiinId,
+      //     });
+      //     if (!!mashin && !!mashin.turul) {
+      //       mashinTurul = mashin.turul;
+      //     }
+      //   } catch (err) {}
+      // }
+
+      // tulbur[0].turul = mashinTurul;
+      if(!tukhainObject?.freezeOgnoo)
+      {
+        tukhainObject.freezeOgnoo = tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag ? tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag : new Date();
+        await Uilchluulegch(tukhainKholbolt).updateOne(
+          { _id: tukhainObject._id },
+          {
+            freezeOgnoo: tukhainObject.freezeOgnoo,
+          },
+        );
+      }
+      bodsonDun = await zogsooliinDunAvya(
+        tukhainZogsool,
+        tukhainObject,
+        tukhainKholbolt,
+      );
+      if (
+        tukhainObject &&
+        tukhainObject.tuukh &&
+        tukhainObject.tuukh.length > 0
+      ) {
+        if (tukhainObject.tuukh && tukhainObject.tuukh.length > 0)
+          if (
+            tukhainObject.tuukh[0].tulbur &&
+            tukhainObject.tuukh[0].tulbur.length > 0
+          ) {
+            var tulburDun = tukhainObject.tuukh[0].tulbur?.reduce(
+              (a, b) => a + (b.dun || 0),
+              0,
+            );
+            if (tulburDun > 0 && bodsonDun > 0) {
+              if (bodsonDun == req.body.paid_amount + tulburDun)
+                tukhainObject.tuukh[0].tulbur.push(...tulbur);
+              else if (bodsonDun < req.body.paid_amount + tulburDun)
+                res.send({ success: false, message: "Төлөлт хийгдсэн байна!" });
+            }
+          } else tukhainObject.tuukh[0].tulbur = tulbur;
+        var set = {
+          "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
+          tokiId: "toki",
+        };
+        if (bodsonDun > 0) {
+          var tulburDun = tukhainObject.tuukh[0].tulbur?.reduce(
+            (a, b) => a + (b.dun || 0),
+            0,
+          );
+          if (bodsonDun == tulburDun) {
+            if (!req.body.manually_open)
+              set["garakhTsag"] = new Date(
+                new Date().getTime() +
+                  (tukhainZogsool?.garakhTsag || 30) * 60000,
+              );
+            if (!!tukhainObject.tuukh[0].garsanKhaalga)
+              set["tuukh.$[t].tuluv"] = 1;
+          }
+        }
+        if (
+          !!tukhainObject.tuukh[0].tsagiinTuukh?.[0].garsanTsag &&
+          tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag >
+            new Date(Date.now() - 600000)
+        )
+          req.body.manually_open = true;
+        await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
+          tukhainObject._id,
+          {
+            $set: set,
+          },
+          {
+            arrayFilters: [
+              {
+                "t.zogsooliinId": tukhainZogsool._id,
+              },
+            ],
+          },
+        );
+        if (!!req.body.manually_open) {
+          if (
+            !!tukhainZogsool.kamerDavkharAshiglakh &&
+            !tukhainObject?.tuukh[0]?.garsanKhaalga
+          ) {
+            var nemeltZogsool = await Parking(tukhainKholbolt).findOne({
+              _id: { $ne: tukhainZogsool._id },
+            });
+            var garsanObject = await Uilchluulegch(
+              tukhainKholbolt,
+              true,
+            ).findOne({
+              mashiniiDugaar: req.body.plate_number,
+              "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
+              "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
+                $exists: true,
+              },
+              updatedAt: {
+                $gt: new Date(Date.now() - 300000), //5min dotor
+              },
+              "tuukh.0.tuluv": {
+                $ne: -2,
+              },
+            });
+            const io = req.app.get("socketio");
+            io.emit(
+              "zogsoolGarahTulsun",
+              {
+                baiguullagiinId: tukhainObject.baiguullagiinId,
+                khaalgaTurul: "garsan",
+                turul: "toki",
+                mashiniiDugaar: tukhainObject.mashiniiDugaar,
+                cameraIP: garsanObject.tuukh[0].garsanKhaalga,
+              },
+            );
+          } else {
+            const io = req.app.get("socketio");
+            io.emit(
+              "zogsoolGarahTulsun",
+              {
+                baiguullagiinId: tukhainObject.baiguullagiinId,
+                khaalgaTurul: "garsan",
+                turul: "toki",
+                mashiniiDugaar: tukhainObject.mashiniiDugaar,
+                cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
+              },
+            );
+          }
+        }
+        tukhainObject.niitDun = req.body.paid_amount;
+        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+          tukhainObject.baiguullagiinId,
+        );
+        // var ebarimtAshiglakhEsekh = false;
+        // if (!!baiguullaga)
+        //   ebarimtAshiglakhEsekh = baiguullaga?.tokhirgoo?.ebarimtAshiglakhEsekh;
+        // if (!!ebarimtAshiglakhEsekh) {
+        var tuxainSalbar = baiguullaga?.barilguud?.find(
+          (e) => e._id.toString() == tukhainObject.barilgiinId,
+        )?.tokhirgoo;
+        var nuatTulukhEsekh = baiguullaga.barilguud.find(
+          (x) => x._id.toString() == tukhainObject.barilgiinId,
+        )?.tokhirgoo?.nuatTulukhEsekh;
+        if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
+        if (tuxainSalbar?.eBarimtShine === true) {
+          var ebarimt = await zogsooloosEbarimtShineUusgye(
+            tukhainObject,
+            req.body.customerNo,
+            req.body.customerTin,
+            tuxainSalbar.merchantTin, //"37900846788",
+            tuxainSalbar.districtCode, //,"0023"
+            tukhainKholbolt,
+            nuatTulukhEsekh,
+          );
+          butsaakhMethod = function (d, khariuObject) {
+            try {
+              if (d?.status != "SUCCESS" && !d.success) {
+                delete d.baiguullagiinId;
+                delete d.zogsooliinId;
+                delete d.barilgiinId;
+                delete d._id;
+                butsaakhKhariu.data = d;
+                if (!res.headersSent) {
+                  res.send(butsaakhKhariu);
+                }
+              } else {
+                var ebarimt;
+                if (!!tuxainSalbar.eBarimtShine)
+                  ebarimt = new EbarimtShine(tukhainKholbolt)(d);
+                else ebarimt = new Ebarimt(tukhainKholbolt)(d);
+                ebarimt.zogsooliinId = tukhainObject._id;
+                ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
+                ebarimt.barilgiinId = khariuObject.barilgiinId;
+                ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
+                ebarimt.save().catch((err) => {
+                  if (!res.headersSent && next) next(err);
+                });
+                var update = {
+                  ebarimtAvsanEsekh: true,
+                  ebarimtAvsanDun: ebarimt.cashAmount || ebarimt.totalAmount,
+                };
+                if (ebarimt.customerNo)
+                  update = {
+                    ...update,
+                    ebarimtRegister: ebarimt.customerNo,
+                  };
+                Uilchluulegch(tukhainKholbolt)
+                  .findByIdAndUpdate(tukhainObject._id, update)
+                  .then((xariu) => {})
+                  .catch((err) => {
+                    if (!res.headersSent && next) next(err);
+                  });
+                delete d.baiguullagiinId;
+                delete d.zogsooliinId;
+                delete d.barilgiinId;
+                delete d._id;
+                butsaakhKhariu.data = d;
+                if (!res.headersSent) {
+                  res.send(butsaakhKhariu);
+                }
+              }
+            } catch (err) {
+              if (!res.headersSent && next) next(err);
+            }
+          };
+          ebarimtDuudya(
+            ebarimt,
+            butsaakhMethod,
+            next,
+            tuxainSalbar.eBarimtShine,
+          );
+        } else {
+          butsaakhKhariu.success = true;
+          butsaakhKhariu.message = "ИБаримт dll холболт хийгдээгүй байна!";
+          res.send(butsaakhKhariu);
+        }
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
+});
 router.route("/pass/pay").post(tokenShalgakh, async (req, res, next) => {
   try {
     let tulbur = [
