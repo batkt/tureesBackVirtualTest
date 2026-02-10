@@ -31,3 +31,11 @@ exports.getCarBySession = async (req, res, next) => {
     next(error);
   }
 };
+exports.carAddSession = async (req, res, next) => {
+  try {
+    const result = await passService.carAddSession(req);
+    res.send(result);
+  } catch (error) {
+    next(error);
+  }
+};

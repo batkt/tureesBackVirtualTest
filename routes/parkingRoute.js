@@ -89,36 +89,10 @@ router.post("/tsenegleltKhiiy", tokenShalgakh, tsenegleltController.tsenegleltKh
 router.get("/pass/zogsool", tokenShalgakh, passController.getPassZogsool);
 router.get("/pass/mashinKhaikh/:dugaar", tokenShalgakh, passController.mashinKhaikh);
 router.get("/v1/car/:session_id", passController.getCarBySession);
+router.post("/v1/car_add", passController.carAddSession);
 router.get("/v1/search_car/:plate_number", searchCarToki);
 router.get("/v1/search_carQR/:plate_number", searchCarQR);
 router.get("/v1/search_car_unegui/:plate_number", tokenShalgakh, parkingUneguiController.searchCarUnegui);
-router.post("/v1/car_add", async (req, res, next) => {
-  try {
-    var message = "Amjilttai";
-    var mashinuud = await TokiMashin.find(req.body.plate_number);
-    if (!mashinuud || mashinuud.length == 0) {
-      await TokiMashin.insertOne({
-        mashiniiDugaar: req.body.plate_number,
-      });
-    } else if (mashinuud.length > 1) {
-      await TokiMashin.deleteMany({
-        mashiniiDugaar: req.body.plate_number,
-      });
-      await TokiMashin.insertOne({
-        mashiniiDugaar: req.body.plate_number,
-      });
-    }
-    var success = true;
-    var butsaakhKhariu = {
-      success,
-      message,
-    };
-    res.send(butsaakhKhariu);
-  } catch (err) {
-    next(err);
-  }
-});
-
 router.post("/v1/tulburMedeelelAvya", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");

@@ -2,6 +2,7 @@ const {
     Parking,
     Uilchluulegch,
     zogsooliinDunAvya,
+    TokiMashin,
 } = require("parking-v2");
 const { db } = require("zevbackv2");
 const moment = require("moment");
@@ -239,9 +240,31 @@ async function getCarBySession(sessionId) {
     data,
   };
 };
-
+async function carAddSession(req) {
+  var message = "Amjilttai";
+  var mashinuud = await TokiMashin.find(req.body.plate_number);
+  if (!mashinuud || mashinuud.length == 0) {
+    await TokiMashin.insertOne({
+      mashiniiDugaar: req.body.plate_number,
+    });
+  } else if (mashinuud.length > 1) {
+    await TokiMashin.deleteMany({
+      mashiniiDugaar: req.body.plate_number,
+    });
+    await TokiMashin.insertOne({
+      mashiniiDugaar: req.body.plate_number,
+    });
+  }
+  var success = true;
+  var butsaakhKhariu = {
+    success,
+    message,
+  };
+  return butsaakhKhariu;
+};
 module.exports = {
   getPassZogsool,
   mashinKhaikhService,
   getCarBySession,
+  carAddSession,
 };
