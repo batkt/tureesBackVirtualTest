@@ -7,7 +7,7 @@ const {
   pubClient,
   subClient,
   connectRedis,
-} = require("./routes/redisClient");
+} = require("./utils/redisClient");
 const server = http.Server(app);
 const io = require("socket.io")(server, {
   pingTimeout: 20000,
