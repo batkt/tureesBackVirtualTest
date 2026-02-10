@@ -87,99 +87,11 @@ router.post("/mashiniiTooAvya", tokenShalgakh, parkingController.mashiniiTooAvya
 router.get("/v1/parking", parkingController.getParkingV1);
 router.post("/tsenegleltKhiiy", tokenShalgakh, tsenegleltController.tsenegleltKhiiy);
 router.get("/pass/zogsool", tokenShalgakh, passController.getPassZogsool);
+router.get("/pass/mashinKhaikh/:dugaar", tokenShalgakh, passController.mashinKhaikh);
+router.get("/v1/car/:session_id", passController.getCarBySession);
 router.get("/v1/search_car/:plate_number", searchCarToki);
 router.get("/v1/search_carQR/:plate_number", searchCarQR);
 router.get("/v1/search_car_unegui/:plate_number", tokenShalgakh, parkingUneguiController.searchCarUnegui);
-router.get("/pass/mashinKhaikh/:dugaar", tokenShalgakh, passController.mashinKhaikh);
-
-router.get("/v1/car/:session_id", async (req, res, next) => {
-  const { db } = require("zevbackv2");
-  var kholboltuud = db.kholboltuud;
-  var data;
-  var message = "Amjilttai";
-  var oldsonMashin;
-  var success = true;
-  if (kholboltuud) {
-    for (const kholbolt of kholboltuud) {
-      var zogsooluud = await Parking(kholbolt).find({
-        tokiNer: { $exists: true },
-      });
-      for (const zogsool of zogsooluud) {
-        if (!!zogsool) {
-          oldsonMashin = await Uilchluulegch(kholbolt, true).findById(
-            req.params.session_id,
-          );
-          if (!oldsonMashin) {
-            message = "Мэдээлэл олдсонгүй!";
-            success = false;
-          }
-          if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) {
-            data = {
-              plate_number: req.params.plate_number,
-              enter_date: moment(
-                oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag,
-              ).format("YYYY/MM/DD HH:mm:ss"),
-              out_date: moment(
-                oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag,
-              ).format("YYYY/MM/DD HH:mm:ss"),
-              pay_amount: oldsonMashin.niitDun,
-              paid_amount:
-                (oldsonMashin.tuukh[0].tulbur &&
-                  oldsonMashin.tuukh[0].tulbur.length) > 0
-                  ? oldsonMashin.niitDun
-                  : 0,
-              parking_id: zogsool._id,
-              session_id: oldsonMashin._id,
-            };
-            break;
-          }
-        }
-      }
-      if (!!oldsonMashin && !!oldsonMashin.mashiniiDugaar) break;
-    }
-  }
-  var butsaakhKhariu = {
-    success,
-    message,
-    data,
-  };
-  res.send(butsaakhKhariu);
-});
-
-// router.post("/v1/car_add", async (req, res, next) => {
-//   const { db } = require("zevbackv2");
-//   var erunkhiiKholbolt = db.erunkhiiKholbolt;
-//   var message = "Amjilttai";
-//   var mashiniiToo = await TokiMashin(erunkhiiKholbolt).countDocuments({
-//     mashiniiDugaar: req.body.plate_number,
-//   });
-//   if (mashiniiToo == 0) {
-//     await TokiMashin(erunkhiiKholbolt).insertMany([
-//       {
-//         mashiniiDugaar: req.body.plate_number,
-//       },
-//     ]);
-//   } else if (mashiniiToo > 1) {
-//     await TokiMashin(erunkhiiKholbolt).deleteMany([
-//       {
-//         mashiniiDugaar: req.body.plate_number,
-//       },
-//     ]);
-//     await TokiMashin(erunkhiiKholbolt).insertMany([
-//       {
-//         mashiniiDugaar: req.body.plate_number,
-//       },
-//     ]);
-//   }
-
-//   var success = true;
-//   var butsaakhKhariu = {
-//     success,
-//     message,
-//   };
-//   res.send(butsaakhKhariu);
-// });
-
 router.post("/v1/car_add", async (req, res, next) => {
   try {
     var message = "Amjilttai";

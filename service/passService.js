@@ -186,9 +186,62 @@ async function mashinKhaikhService (dugaar, freeze) {
     data,
   };
 };
+async function getCarBySession(sessionId) {
+  const kholboltuud = db.kholboltuud;
 
+  let data;
+  let message = "Amjilttai";
+  let success = true;
+  let oldsonMashin;
+
+  if (kholboltuud) {
+    for (const kholbolt of kholboltuud) {
+      const zogsooluud = await Parking(kholbolt).find({
+        tokiNer: { $exists: true },
+      });
+
+      for (const zogsool of zogsooluud) {
+        oldsonMashin = await Uilchluulegch(kholbolt, true).findById(sessionId);
+
+        if (!oldsonMashin) {
+          message = "Мэдээлэл олдсонгүй!";
+          success = false;
+          continue;
+        }
+
+        if (oldsonMashin?.mashiniiDugaar) {
+          data = {
+            plate_number: oldsonMashin.mashiniiDugaar,
+            enter_date: moment(
+              oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
+            ).format("YYYY/MM/DD HH:mm:ss"),
+            out_date: moment(
+              oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+            ).format("YYYY/MM/DD HH:mm:ss"),
+            pay_amount: oldsonMashin.niitDun,
+            paid_amount:
+              oldsonMashin.tuukh[0].tulbur?.length > 0
+                ? oldsonMashin.niitDun
+                : 0,
+            parking_id: zogsool._id,
+            session_id: oldsonMashin._id,
+          };
+          break;
+        }
+      }
+      if (oldsonMashin?.mashiniiDugaar) break;
+    }
+  }
+
+  return {
+    success,
+    message,
+    data,
+  };
+};
 
 module.exports = {
   getPassZogsool,
   mashinKhaikhService,
+  getCarBySession,
 };

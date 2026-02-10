@@ -23,3 +23,11 @@ exports.mashinKhaikh = async (req, res, next) => {
     next(err);
   }
 };
+exports.getCarBySession = async (req, res, next) => {
+  try {
+    const result = await passService.getCarBySession(req.params.session_id);
+    res.send(result);
+  } catch (error) {
+    next(error);
+  }
+};
