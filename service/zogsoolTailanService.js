@@ -147,7 +147,7 @@ async function udriinTailan({ body }) {
     const specialMatch = (status) => ({
       "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
       ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
-      ...(status === "Todorkhoigui" && { "tuukh.tuluv": -4 }),
+      ...(status === "Tulburtei" && { "tuukh.tuluv": -4 }),
       ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
       ...(body.burtgesenAjiltaniiId && { "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId }),
     });
@@ -158,7 +158,7 @@ async function udriinTailan({ body }) {
       { $match: specialMatch(status) },
       {
         $group: {
-          _id: status === "Zurchiltei" ? "Зөрчилтэй" : status === "Todorkhoigui" ? "Тодорхойгүй" : "Үнэгүй",
+          _id: status === "Zurchiltei" ? "Зөрчилтэй" : status === "Tulburtei" ? "Төлбөртэй" : "Үнэгүй",
           niitDun: { $sum: "$niitDun" },
           ids: { $addToSet: "$_id" },
         },
@@ -167,28 +167,28 @@ async function udriinTailan({ body }) {
         $project: {
           _id: 1,
           niitDun: 1,
-          niitToo: status === "Zurchiltei" || status === "Todorkhoigui" ? { $size: "$ids" } : 1,
+          niitToo: status === "Zurchiltei" || status === "Tulburtei" ? { $size: "$ids" } : 1,
         },
       },
     ];
 
-    const [zurchiltei, todorkhoigui, unegui] = await Promise.all([
+    const [zurchiltei, tulburtei, unegui] = await Promise.all([
       model.aggregate(specialPipeline("Zurchiltei")),
-      model.aggregate(specialPipeline("Todorkhoigui")),
+      model.aggregate(specialPipeline("Tulburtei")),
       model.aggregate(specialPipeline("Unegui")),
     ]);
 
-    return { udriinTailan, zurchiltei, todorkhoigui, unegui };
+    return { udriinTailan, zurchiltei, tulburtei, unegui };
   };
 
   // Бүх collection-үүдийг aggregate хийх
-  const allResults = { udriinTailan: [], zurchiltei: [], todorkhoigui: [], unegui: [] };
+  const allResults = { udriinTailan: [], zurchiltei: [], tulburtei: [], unegui: [] };
   for (const collection of collectionsToQuery) {
     try {
       const result = await aggregateFromCollection(collection.name, collection.startDate, collection.endDate);
       allResults.udriinTailan.push(...result.udriinTailan);
       allResults.zurchiltei.push(...result.zurchiltei);
-      allResults.todorkhoigui.push(...result.todorkhoigui);
+      allResults.tulburtei.push(...result.tulburtei);
       allResults.unegui.push(...result.unegui);
     } catch (err) {
       console.error(`Error querying collection ${collection.name}:`, err.message);
@@ -211,7 +211,7 @@ async function udriinTailan({ body }) {
         ? arr.reduce((acc, item) => ({ _id: id, niitDun: acc.niitDun + item.niitDun, niitToo: acc.niitToo + item.niitToo }), { _id: id, niitDun: 0, niitToo: 0 })
         : null;
 
-    [mergeArray(allResults.zurchiltei, "Зөрчилтэй"), mergeArray(allResults.todorkhoigui, "Тодорхойгүй"), mergeArray(allResults.unegui, "Үнэгүй")].forEach((item) => item && result.push(item));
+    [mergeArray(allResults.zurchiltei, "Зөрчилтэй"), mergeArray(allResults.tulburtei, "Төлбөртэй"), mergeArray(allResults.unegui, "Үнэгүй")].forEach((item) => item && result.push(item));
     return result;
   };
 
