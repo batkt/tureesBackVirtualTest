@@ -1,4 +1,4 @@
-const client = require("../routes/redisClient");
+const { pubClient } = require("../utils/redisClient");
 const crypto = require("crypto");
 const { Parking, Uilchluulegch } = require("parking-v2");
 
@@ -17,22 +17,22 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
     .update(stableStringify(query))
     .digest("hex");
   const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
-  const cached = await client.get(cacheKey);
+  const cached = await pubClient.get(cacheKey);
   if (cached) return JSON.parse(cached);
   const data = await Parking(kholbolt)
     .find(query)
     .lean();
-  await client.setEx(cacheKey, 36000, JSON.stringify(data));
+  await pubClient.setEx(cacheKey, 36000, JSON.stringify(data));
   return data;
 }
 async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
   const cacheKey = `dotorZogsoolFindById:${baiguullagiinId}:${barilgiinId}:${id}`;
-  const cached = await client.get(cacheKey);
+  const cached = await pubClient.get(cacheKey);
   if (cached) {
     return JSON.parse(cached);
   }
   const dotorZogsool = await Parking(kholbolt).findById(id);
-  await client.setEx(cacheKey, 300, JSON.stringify(dotorZogsool));
+  await pubClient.setEx(cacheKey, 300, JSON.stringify(dotorZogsool));
   return dotorZogsool;
 }
 async function getAggregateUilchluulegch(
@@ -46,19 +46,19 @@ async function getAggregateUilchluulegch(
     .update(stableStringify(query))
     .digest("hex");
   const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
-  const cached = await client.get(cacheKey);
+  const cached = await pubClient.get(cacheKey);
   if (cached) {
     return JSON.parse(cached);
   }
 
   const xariu = await Uilchluulegch(kholbolt, true).aggregate(query);
-  await client.setEx(cacheKey, 300, JSON.stringify(xariu));
+  await pubClient.setEx(cacheKey, 300, JSON.stringify(xariu));
   return xariu;
 }
 async function delParkingFind(baiguullagiinId) {
-  const keys = await client.keys(`parkingFind:${baiguullagiinId}:*`);
+  const keys = await pubClient.keys(`parkingFind:${baiguullagiinId}:*`);
   if (keys.length > 0) {
-    await client.del(keys);
+    await pubClient.del(keys);
   }
 }
 module.exports = { getParkingFind, getDotorZogsoolById, getAggregateUilchluulegch, delParkingFind };

@@ -2,6 +2,12 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const cors = require("cors");
+const { createAdapter } = require("@socket.io/redis-adapter");
+const {
+  pubClient,
+  subClient,
+  connectRedis,
+} = require("./routes/redisClient");
 const server = http.Server(app);
 const io = require("socket.io")(server, {
   pingTimeout: 20000,
@@ -360,6 +366,15 @@ cron.schedule(
 //     timezone: "Asia/Ulaanbaatar",
 //   }
 // );
+(async () => {
+  // Redis холболт
+  await connectRedis();
+
+  // Socket.IO Redis adapter
+  io.adapter(createAdapter(pubClient, subClient));
+
+  console.log("✅ Socket.IO Redis adapter connected");
+})();
 
 io.on("connection", (socket) => {
   socket.on("disconnect", () => {});
