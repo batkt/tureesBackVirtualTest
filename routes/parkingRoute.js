@@ -90,6 +90,7 @@ router.get("/pass/zogsool", tokenShalgakh, passController.getPassZogsool);
 router.get("/pass/mashinKhaikh/:dugaar", tokenShalgakh, passController.mashinKhaikh);
 router.get("/v1/car/:session_id", passController.getCarBySession);
 router.post("/v1/car_add", passController.carAddSession);
+router.post("/v1/tulburMedeelelAvya", passController.getTulburMedeelel);
 router.get("/v1/search_car/:plate_number", searchCarToki);
 router.get("/v1/search_carQR/:plate_number", searchCarQR);
 router.get("/v1/search_car_unegui/:plate_number", tokenShalgakh, parkingUneguiController.searchCarUnegui);

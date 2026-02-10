@@ -262,9 +262,59 @@ async function carAddSession(req) {
   };
   return butsaakhKhariu;
 };
+async function getTulburMedeelel(sessionId, parkingId) {
+  const kholboltuud = db.kholboltuud;
+
+  let data;
+  let message = "Amjilttai";
+  let success = true;
+  let oldsonMashin;
+
+  if (kholboltuud) {
+    for (const kholbolt of kholboltuud) {
+      const zogsool = await Parking(kholbolt).findById(parkingId);
+
+      if (!zogsool) continue;
+
+      oldsonMashin = await Uilchluulegch(kholbolt, true).findById(
+        sessionId
+      );
+
+      if (!oldsonMashin) {
+        message = "Мэдээлэл олдсонгүй!";
+        success = false;
+        continue;
+      }
+
+      if (oldsonMashin?.mashiniiDugaar) {
+        data = {
+          plate_number: oldsonMashin.mashiniiDugaar,
+          enter_date: moment(
+            oldsonMashin.tuukh[0].tsagiinTuukh[0].orsonTsag
+          ).format("YYYY/MM/DD HH:mm:ss"),
+          out_date: moment(
+            oldsonMashin.tuukh[0].tsagiinTuukh[0].garsanTsag
+          ).format("YYYY/MM/DD HH:mm:ss"),
+          tulburuud: oldsonMashin.tuukh[0].tulbur,
+          parking_id: parkingId,
+          session_id: sessionId,
+        };
+        break;
+      }
+    }
+  }
+
+  return {
+    success,
+    message,
+    data,
+  };
+};
+
 module.exports = {
   getPassZogsool,
   mashinKhaikhService,
   getCarBySession,
   carAddSession,
+  getTulburMedeelel,
 };

@@ -39,3 +39,15 @@ exports.carAddSession = async (req, res, next) => {
     next(error);
   }
 };
+exports.getTulburMedeelel = async (req, res, next) => {
+  try {
+    const { session_id, parking_id } = req.body;
+    const result = await passService.getTulburMedeelel(
+      session_id,
+      parking_id
+    );
+    res.send(result);
+  } catch (err) {
+    next(err);
+  }
+};
