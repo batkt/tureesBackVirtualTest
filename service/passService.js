@@ -1,6 +1,7 @@
 const {
     Parking,
     Uilchluulegch,
+    zogsooliinDunAvya,
 } = require("parking-v2");
 const { db } = require("zevbackv2");
 const moment = require("moment");
