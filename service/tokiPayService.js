@@ -46,7 +46,7 @@ exports.tokiPay = async (req, res, next) => {
         );
 
         for (const zogsool of zogsooluud) {
-          const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+          const fiveMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
           oldsonMashin = await Uilchluulegch(kholbolt, true)
             .findOne({
               mashiniiDugaar: req.body.plate_number,
@@ -93,11 +93,12 @@ exports.tokiPay = async (req, res, next) => {
       (a, b) => a + (b.dun || 0),
       0,
     );
-
+    console.log("-----tulburDun---->>" + tulburDun);
     if (bodsonDun < req.body.paid_amount + tulburDun) {
       return { success: false, message: "Төлөлт хийгдсэн байна!" };
     }
-
+    console.log("----bodsonDun----->>" + bodsonDun);
+    console.log("--req.body.paid_amount------->>" + req.body.paid_amount);
     if (bodsonDun === req.body.paid_amount + tulburDun) {
       tukhainObject.tuukh[0].tulbur.push(...tulbur);
     }
