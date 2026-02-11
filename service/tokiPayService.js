@@ -80,6 +80,10 @@ exports.tokiPay = async (req, res, next) => {
         message: "Машины мэдээлэл олдсонгүй!",
       };
     }
+    var butsaakhKhariu = {
+      success,
+      message,
+    };
     if (!tukhainObject.freezeOgnoo) {
       tukhainObject.freezeOgnoo = tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag || new Date();
       await Uilchluulegch(tukhainKholbolt).updateOne(
@@ -208,6 +212,7 @@ exports.tokiPay = async (req, res, next) => {
             delete d.barilgiinId;
             delete d._id;
             butsaakhKhariu.data = d;
+            console.log("------- false ----->>" + JSON.stringify(butsaakhKhariu));
             if (!res.headersSent) {
               return butsaakhKhariu;
             }
@@ -243,6 +248,7 @@ exports.tokiPay = async (req, res, next) => {
             delete d.barilgiinId;
             delete d._id;
             butsaakhKhariu.data = d;
+            console.log("-------- true ---->>" + JSON.stringify(butsaakhKhariu));
             if (!res.headersSent) {
               return butsaakhKhariu;
             }
