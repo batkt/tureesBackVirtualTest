@@ -95,6 +95,8 @@ exports.passPay = async (req) => {
       ],
     }
   );
+  if (!!tukhainObject.tuukh[0].tsagiinTuukh?.[0].garsanTsag && tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag > new Date(Date.now() - 600000))
+      req.body.manually_open = true;
   if (!!req.body.manually_open) {
     if (
       !!tukhainZogsool.kamerDavkharAshiglakh &&
