@@ -8,6 +8,7 @@ const { ebarimtDuudya } = require("./ebarimtDuudya");
 const {
   zogsooloosEbarimtShineUusgye,
 } = require("../routes/ebarimtRoute");
+const { handleEbarimt } = require("./tokiEbarimtService");
 const Baiguullaga = require("../models/baiguullaga");
 const Ebarimt = require("../models/ebarimt");
 const EbarimtShine = require("../models/ebarimtShine");
@@ -62,8 +63,6 @@ exports.passPay = async (req) => {
     tukhainObject,
     tukhainKholbolt
   );
-  console.log("------bodsonDun-------> " + bodsonDun);
-  console.log("------tulukhDun-------> " + req.body.tulukhDun);
   if (bodsonDun !== req.body.tulukhDun) {
     return { success: false, message: "Төлөх дүн зөрүүтэй байна!" };
   }
@@ -145,44 +144,23 @@ exports.passPay = async (req) => {
       );
     }
   }
-  const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-    tukhainObject.baiguullagiinId
+  tukhainObject.niitDun = req.body.tulukhDun;
+  var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+    tukhainObject.baiguullagiinId,
   );
-
-  const tuxainSalbar = baiguullaga?.barilguud?.find(
-    (e) => e._id.toString() == tukhainObject.barilgiinId
+  var tuxainSalbar = baiguullaga?.barilguud?.find(
+    (e) => e._id.toString() == tukhainObject.barilgiinId,
   )?.tokhirgoo;
-
-  if (!tuxainSalbar?.eBarimtShine) {
-    return { success: true, message: "Амжилттай (ИБаримтгүй)" };
-  }
-
-  const payload = await zogsooloosEbarimtShineUusgye(
+  var nuatTulukhEsekh = baiguullaga.barilguud.find(
+    (x) => x._id.toString() == tukhainObject.barilgiinId,
+  )?.tokhirgoo?.nuatTulukhEsekh;
+  if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
+  const ebarimtResult = await handleEbarimt({
+    tuxainSalbar,
     tukhainObject,
-    req.body.customerNo,
-    req.body.customerTin,
-    tuxainSalbar.merchantTin,
-    tuxainSalbar.districtCode,
     tukhainKholbolt,
-    true
-  );
-
-  const ebarimtResponse = await ebarimtDuudya(
-    payload,
-    tuxainSalbar.eBarimtShine
-  );
-
-  if (ebarimtResponse?.status !== "SUCCESS") {
-    return {
-      success: false,
-      message: "Ebarimt алдаа",
-      data: ebarimtResponse,
-    };
-  }
-
-  return {
-    success: true,
-    message: "Амжилттай",
-    data: ebarimtResponse,
-  };
+    req,
+    nuatTulukhEsekh,
+  });
+  return ebarimtResult;
 };
