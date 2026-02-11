@@ -50,6 +50,13 @@ exports.passPay = async (req) => {
   if (!tukhainObject) {
     return { success: false, message: "Машины мэдээлэл олдсонгүй!" };
   }
+  if (!tukhainObject.freezeOgnoo) {
+    tukhainObject.freezeOgnoo = tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag || new Date();
+    await Uilchluulegch(tukhainKholbolt).updateOne(
+      { _id: tukhainObject._id },
+      { freezeOgnoo: tukhainObject.freezeOgnoo },
+    );
+  }
   const bodsonDun = await zogsooliinDunAvya(
     tukhainZogsool,
     tukhainObject,
