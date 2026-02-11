@@ -1038,7 +1038,6 @@ exports.licenseOgnooShalgakh = asyncHandler(
                       )
                     )
                     {
-                      console.log("autoLogout ----------->>" + JSON.stringify(khariu));
                       io.emit(`autoLogout${baiguullagiinId}`, khariu);
                     }
                   }

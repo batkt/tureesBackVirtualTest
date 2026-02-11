@@ -94,15 +94,9 @@ exports.tokiPay = async (req, res, next) => {
       (a, b) => a + (b.dun || 0),
       0,
     );
-    console.log("-----tulburDun---->>" + tulburDun);
-    console.log("-----bodsonDun---->>" + bodsonDun);
-    console.log("-----req.body.paid_amount---->>" + req.body.paid_amount);
-    console.log("------>" + (req.body.paid_amount + tulburDun))
     if (tulburDun > 0 && bodsonDun < (req.body.paid_amount + tulburDun)) {
       return { success: false, message: "Төлөлт хийгдсэн байна!" };
     }
-    console.log("----bodsonDun----->>" + bodsonDun);
-    console.log("--req.body.paid_amount------->>" + req.body.paid_amount);
     if (bodsonDun === req.body.paid_amount + tulburDun) {
       tukhainObject.tuukh[0].tulbur.push(...tulbur);
     }
