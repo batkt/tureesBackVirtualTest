@@ -118,7 +118,8 @@ exports.tokiPay = async (req, res, next) => {
           Date.now() + (tukhainZogsool?.garakhTsag || 30) * 60000,
         );
       }
-      set["tuukh.$[t].tuluv"] = 1;
+      if (!!tukhainObject.tuukh[0].garsanKhaalga)
+        set["tuukh.$[t].tuluv"] = 1;
     }
     await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
       tukhainObject._id,
