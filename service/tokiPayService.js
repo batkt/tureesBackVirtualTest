@@ -100,7 +100,10 @@ exports.tokiPay = async (req, res, next) => {
       0,
     );
     console.log("-----tulburDun---->>" + tulburDun);
-    if (bodsonDun < req.body.paid_amount + tulburDun) {
+    console.log("-----bodsonDun---->>" + bodsonDun);
+    console.log("-----req.body.paid_amount---->>" + req.body.paid_amount);
+    console.log("------>" + (req.body.paid_amount + tulburDun))
+    if (tukhainObject.tuukh[0].tulbur?.length > 0 && bodsonDun < (req.body.paid_amount + tulburDun)) {
       return { success: false, message: "Төлөлт хийгдсэн байна!" };
     }
     console.log("----bodsonDun----->>" + bodsonDun);
