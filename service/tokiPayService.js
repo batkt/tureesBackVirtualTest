@@ -103,7 +103,7 @@ exports.tokiPay = async (req, res, next) => {
     console.log("-----bodsonDun---->>" + bodsonDun);
     console.log("-----req.body.paid_amount---->>" + req.body.paid_amount);
     console.log("------>" + (req.body.paid_amount + tulburDun))
-    if (tukhainObject.tuukh[0].tulbur?.length > 0 && bodsonDun < (req.body.paid_amount + tulburDun)) {
+    if (tulburDun > 0 && bodsonDun < (req.body.paid_amount + tulburDun)) {
       return { success: false, message: "Төлөлт хийгдсэн байна!" };
     }
     console.log("----bodsonDun----->>" + bodsonDun);
@@ -111,6 +111,8 @@ exports.tokiPay = async (req, res, next) => {
     if (bodsonDun === req.body.paid_amount + tulburDun) {
       tukhainObject.tuukh[0].tulbur.push(...tulbur);
     }
+    else
+      return { success: false, message: "Төлөх дүн буруу байна!" };
     let set = {
       "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
       tokiId: "toki",
