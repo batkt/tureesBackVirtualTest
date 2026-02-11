@@ -100,7 +100,7 @@ exports.passPay = async (req) => {
         tukhainKholbolt,
         true,
       ).findOne({
-        mashiniiDugaar: req.body.plate_number,
+        mashiniiDugaar: req.body.dugaar,
         "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
         "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
           $exists: true,
