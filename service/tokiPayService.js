@@ -5,12 +5,7 @@ const {
 } = require("parking-v2");
 const { getParkingFind } = require("../middlewares/parkingMiddle");
 const Baiguullaga = require("../models/baiguullaga");
-const {
-  zogsooloosEbarimtShineUusgye,
-  ebarimtDuudya,
-} = require("../routes/ebarimtRoute");
-const Ebarimt = require("../models/ebarimt");
-const EbarimtShine = require("../models/ebarimtShine");
+const { handleEbarimt } = require("./tokiEbarimtService");
 
 exports.tokiPay = async (req, res, next) => {
   try {
@@ -194,82 +189,14 @@ exports.tokiPay = async (req, res, next) => {
       (x) => x._id.toString() == tukhainObject.barilgiinId,
     )?.tokhirgoo?.nuatTulukhEsekh;
     if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-    if (tuxainSalbar?.eBarimtShine === true) {
-      var ebarimt = await zogsooloosEbarimtShineUusgye(
-        tukhainObject,
-        req.body.customerNo,
-        req.body.customerTin,
-        tuxainSalbar.merchantTin, //"37900846788",
-        tuxainSalbar.districtCode, //,"0023"
-        tukhainKholbolt,
-        nuatTulukhEsekh,
-      );
-      butsaakhMethod = function (d, khariuObject) {
-        try {
-          if (d?.status != "SUCCESS" && !d.success) {
-            delete d.baiguullagiinId;
-            delete d.zogsooliinId;
-            delete d.barilgiinId;
-            delete d._id;
-            butsaakhKhariu.data = d;
-            console.log("------- false ----->>" + JSON.stringify(butsaakhKhariu));
-            if (!res.headersSent) {
-              return butsaakhKhariu;
-            }
-          } else {
-            var ebarimt;
-            if (!!tuxainSalbar.eBarimtShine)
-              ebarimt = new EbarimtShine(tukhainKholbolt)(d);
-            else ebarimt = new Ebarimt(tukhainKholbolt)(d);
-            ebarimt.zogsooliinId = tukhainObject._id;
-            ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
-            ebarimt.barilgiinId = khariuObject.barilgiinId;
-            ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
-            ebarimt.save().catch((err) => {
-              if (!res.headersSent && next) next(err);
-            });
-            var update = {
-              ebarimtAvsanEsekh: true,
-              ebarimtAvsanDun: ebarimt.cashAmount || ebarimt.totalAmount,
-            };
-            if (ebarimt.customerNo)
-              update = {
-                ...update,
-                ebarimtRegister: ebarimt.customerNo,
-              };
-            Uilchluulegch(tukhainKholbolt)
-              .findByIdAndUpdate(tukhainObject._id, update)
-              .then((xariu) => {})
-              .catch((err) => {
-                if (!res.headersSent && next) next(err);
-              });
-            delete d.baiguullagiinId;
-            delete d.zogsooliinId;
-            delete d.barilgiinId;
-            delete d._id;
-            butsaakhKhariu.data = d;
-            console.log("-------- true ---->>" + JSON.stringify(butsaakhKhariu));
-            if (!res.headersSent) {
-              return butsaakhKhariu;
-            }
-          }
-        } catch (err) {
-          if (!res.headersSent && next) next(err);
-        }
-      };
-      ebarimtDuudya(
-        ebarimt,
-        butsaakhMethod,
-        next,
-        tuxainSalbar.eBarimtShine,
-      );
-    } else {
-      return { success: false, message: "ИБаримт dll холболт хийгдээгүй байна!" };
-    }
-    return {
-      success,
-      message,
-    };
+    const ebarimtResult = await handleEbarimt({
+      tuxainSalbar,
+      tukhainObject,
+      tukhainKholbolt,
+      req,
+      nuatTulukhEsekh,
+    });
+    return ebarimtResult;
   } catch (err) {
     if (next) next(err);
   }
