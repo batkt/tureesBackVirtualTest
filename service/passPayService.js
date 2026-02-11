@@ -62,7 +62,8 @@ exports.passPay = async (req) => {
     tukhainObject,
     tukhainKholbolt
   );
-
+  console.log("------bodsonDun-------> " + bodsonDun);
+  console.log("------tulukhDun-------> " + req.body.tulukhDun);
   if (bodsonDun !== req.body.tulukhDun) {
     return { success: false, message: "Төлөх дүн зөрүүтэй байна!" };
   }
