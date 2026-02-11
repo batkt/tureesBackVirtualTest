@@ -68,17 +68,12 @@ exports.tokiPay = async (req, res, next) => {
         if (tukhainObject) break;
       }
     }
-
     if (!tukhainObject) {
       return {
         success: false,
         message: "Машины мэдээлэл олдсонгүй!",
       };
     }
-    var butsaakhKhariu = {
-      success,
-      message,
-    };
     if (!tukhainObject.freezeOgnoo) {
       tukhainObject.freezeOgnoo = tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag || new Date();
       await Uilchluulegch(tukhainKholbolt).updateOne(
