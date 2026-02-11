@@ -4,6 +4,13 @@ const {
   zogsooliinDunAvya,
 } = require("parking-v2");
 const { getParkingFind } = require("../middlewares/parkingMiddle");
+const Baiguullaga = require("../models/baiguullaga");
+const {
+  zogsooloosEbarimtShineUusgye,
+  ebarimtDuudya,
+} = require("../routes/ebarimtRoute");
+const Ebarimt = require("../models/ebarimt");
+const EbarimtShine = require("../models/ebarimtShine");
 
 exports.tokiPay = async (req, res, next) => {
   try {
@@ -114,8 +121,6 @@ exports.tokiPay = async (req, res, next) => {
       }
       set["tuukh.$[t].tuluv"] = 1;
     }
-    if (!!tukhainObject.tuukh[0].tsagiinTuukh?.[0].garsanTsag && tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag > new Date(Date.now() - 600000))
-      req.body.manually_open = true;
     await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
       tukhainObject._id,
       { $set: set },
@@ -123,6 +128,8 @@ exports.tokiPay = async (req, res, next) => {
         arrayFilters: [{ "t.zogsooliinId": tukhainZogsool._id }],
       },
     );
+    if (!!tukhainObject.tuukh[0].tsagiinTuukh?.[0].garsanTsag && tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag > new Date(Date.now() - 600000))
+      req.body.manually_open = true;
     if (!!req.body.manually_open) {
       if (
         !!tukhainZogsool.kamerDavkharAshiglakh &&
@@ -171,6 +178,87 @@ exports.tokiPay = async (req, res, next) => {
           },
         );
       }
+    }
+    tukhainObject.niitDun = req.body.paid_amount;
+    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      tukhainObject.baiguullagiinId,
+    );
+    var tuxainSalbar = baiguullaga?.barilguud?.find(
+      (e) => e._id.toString() == tukhainObject.barilgiinId,
+    )?.tokhirgoo;
+    var nuatTulukhEsekh = baiguullaga.barilguud.find(
+      (x) => x._id.toString() == tukhainObject.barilgiinId,
+    )?.tokhirgoo?.nuatTulukhEsekh;
+    if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
+    if (tuxainSalbar?.eBarimtShine === true) {
+      var ebarimt = await zogsooloosEbarimtShineUusgye(
+        tukhainObject,
+        req.body.customerNo,
+        req.body.customerTin,
+        tuxainSalbar.merchantTin, //"37900846788",
+        tuxainSalbar.districtCode, //,"0023"
+        tukhainKholbolt,
+        nuatTulukhEsekh,
+      );
+      butsaakhMethod = function (d, khariuObject) {
+        try {
+          if (d?.status != "SUCCESS" && !d.success) {
+            delete d.baiguullagiinId;
+            delete d.zogsooliinId;
+            delete d.barilgiinId;
+            delete d._id;
+            butsaakhKhariu.data = d;
+            if (!res.headersSent) {
+              return butsaakhKhariu;
+            }
+          } else {
+            var ebarimt;
+            if (!!tuxainSalbar.eBarimtShine)
+              ebarimt = new EbarimtShine(tukhainKholbolt)(d);
+            else ebarimt = new Ebarimt(tukhainKholbolt)(d);
+            ebarimt.zogsooliinId = tukhainObject._id;
+            ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
+            ebarimt.barilgiinId = khariuObject.barilgiinId;
+            ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
+            ebarimt.save().catch((err) => {
+              if (!res.headersSent && next) next(err);
+            });
+            var update = {
+              ebarimtAvsanEsekh: true,
+              ebarimtAvsanDun: ebarimt.cashAmount || ebarimt.totalAmount,
+            };
+            if (ebarimt.customerNo)
+              update = {
+                ...update,
+                ebarimtRegister: ebarimt.customerNo,
+              };
+            Uilchluulegch(tukhainKholbolt)
+              .findByIdAndUpdate(tukhainObject._id, update)
+              .then((xariu) => {})
+              .catch((err) => {
+                if (!res.headersSent && next) next(err);
+              });
+            delete d.baiguullagiinId;
+            delete d.zogsooliinId;
+            delete d.barilgiinId;
+            delete d._id;
+            butsaakhKhariu.data = d;
+            if (!res.headersSent) {
+              return butsaakhKhariu;
+            }
+          }
+        } catch (err) {
+          if (!res.headersSent && next) next(err);
+        }
+      };
+      ebarimtDuudya(
+        ebarimt,
+        butsaakhMethod,
+        next,
+        tuxainSalbar.eBarimtShine,
+      );
+    } else {
+      return { success: false, message: "ИБаримт dll холболт хийгдээгүй байна!" };
     }
     return {
       success,

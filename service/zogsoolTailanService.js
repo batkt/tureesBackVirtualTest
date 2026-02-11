@@ -219,7 +219,7 @@ async function udriinTailan({ body }) {
 
   // Add Авлага from ZurchilteiMashin
   const zurchilteTailan = await ZurchilteiMashin(body.tukhainBaaziinKholbolt).aggregate([
-    { $match: { baiguullagiinId: body.baiguullagiinId, barilgiinId: body.barilgiinId || { $exists: true }, tuluv: 0 } },
+    { $match: { baiguullagiinId: body.baiguullagiinId, barilgiinId: body.barilgiinId || { $exists: true }, tuluv: 0, createdAt: { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo } } },
     { $group: { _id: "Авлага", niitDun: { $sum: "$niitDun" }, niitToo: { $sum: 1 } } },
   ]);
 
