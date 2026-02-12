@@ -1735,16 +1735,27 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     lastDay.getDate() +
                     "&page=0&size=100";
                   console.log("url --------------->>" + url);
-                  var response = await axios
-                    .get(url, {
+                  var response;
+                  try {
+                    response = await axios.get(url, {
                       headers: {
                         "Content-Type": "application/json",
                         Authorization: "Bearer " + tokenObject.token,
                       },
                       responseType: "json",
-                    })
-                    .catch((err) => { console.log("oirkhon --->" + err) });
-                  console.log("body --------------->>" + JSON.stringify(response?.body));
+                    });
+                    console.log("khariu --------------->>", JSON.stringify(response.data));
+                  } catch (err) {
+                    if (err.response) {
+                      console.log("Status:", err.response.status);
+                      console.log("Data:", err.response.data);
+                      if (err.response.status === 429) {
+                        console.log("Too many requests. Try again later or reduce request frequency.");
+                      }
+                    } else {
+                      console.log("Request error:", err.message);
+                    }
+                  }
                   var khariu = response?.data;
                   console.log("khariu --------------->>" + JSON.stringify(khariu));
                   if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
