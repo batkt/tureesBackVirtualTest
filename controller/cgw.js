@@ -1699,6 +1699,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 ) {
                   console.log("dugaar ----->" + dans.dugaar);
                   var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
+                  console.log("tokenObject ----->" + tokenObject?.dugaar);
                   var url =
                     process.env.TDB_SERVER +
                     "/accounts/statement/" +
@@ -1713,6 +1714,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   if (!!max) {
                     firstDay = new Date(max.TxDt);
                   } else firstDay = new Date();
+                  console.log("max ----->" + max);
                   url =
                     url +
                     "?from=" +
