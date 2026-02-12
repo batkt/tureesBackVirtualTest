@@ -153,10 +153,11 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
       baiguullagiinId: dans.baiguullagiinId,
       ognoo: { $gte: new Date(new Date().getTime() - 50000) },
     });
+    var response;
     if (!tokenObject) {
       var url = process.env.TDB_SERVER + "/oauth2/token";
       try {
-        const response = await got.post(url, {
+        response = await got.post(url, {
           headers: {
             "Content-Type": "application/json",
           },
