@@ -1741,6 +1741,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         "Content-Type": "application/json",
                         Authorization: "Bearer " + tokenObject.token,
                       },
+                      responseType: "json",
                     })
                     .catch((err) => { console.log("oirkhon --->" + err) });
                   console.log("body --------------->>" + JSON.stringify(response?.body));
