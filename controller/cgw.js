@@ -1697,9 +1697,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
-                  console.log("dugaar ----->" + dans.dugaar);
                   var tokenObject = await tdbTokenAvya(dans, kholbolt, null);
-                  console.log("tokenObject ----->" + tokenObject?.dugaar);
                   var url =
                     process.env.TDB_SERVER +
                     "/accounts/statement/" +
@@ -1714,7 +1712,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   if (!!max) {
                     firstDay = new Date(max.TxDt);
                   } else firstDay = new Date();
-                  console.log("max ----->" + max);
                   url =
                     url +
                     "?from=" +
@@ -1734,7 +1731,6 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate() +
                     "&page=0&size=100";
-                  console.log("url --------------->>" + url);
                   var response;
                   try {
                     response = await axios.get(url, {
@@ -1744,20 +1740,16 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       },
                       responseType: "json",
                     });
-                    console.log("khariu --------------->>", JSON.stringify(response.data));
                   } catch (err) {
                     if (err.response) {
-                      console.log("Status:", err.response.status);
-                      console.log("Data:", err.response.data);
                       if (err.response.status === 429) {
                         console.log("Too many requests. Try again later or reduce request frequency.");
                       }
                     } else {
-                      console.log("Request error:", err.message);
+                      console.log("Request error:", err.message); 
                     }
                   }
                   var khariu = response?.data;
-                  console.log("khariu --------------->>" + JSON.stringify(khariu));
                   if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
                     var guilgeenuud = [];
                     khariu.txn.forEach((mur) => {
