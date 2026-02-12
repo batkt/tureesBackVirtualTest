@@ -4727,8 +4727,7 @@ router
               return (
                 x.khemjikhNegj == ashiglaltiinZardal.turul &&
                 x.tailbar == ashiglaltiinZardal.ner &&
-                (!x.tooluuriinDugaar ||
-                  tukhainZardal.tooluuriinDugaar == x.tooluuriinDugaar)
+                x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar
               );
             });
             if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
