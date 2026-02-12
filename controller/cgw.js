@@ -171,7 +171,8 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
         })
         .catch((err) => { console.log("tdb token Avya" + err)});
       if (!response || !response?.body) {
-        console.log("response " + response?.body);
+        console.log("response success " + JSON.stringify(response?.success));
+        console.log("response message " + JSON.stringify(response?.message));
         throw new Error(
           "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
         );
