@@ -1743,6 +1743,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       },
                     })
                     .catch((err) => { console.log("oirkhon --->" + err) });
+                  console.log("body --------------->>" + JSON.stringify(response?.body));
                   var khariu = response?.data;
                   console.log("khariu --------------->>" + JSON.stringify(khariu));
                   if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
