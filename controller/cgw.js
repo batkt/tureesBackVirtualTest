@@ -158,8 +158,8 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
       console.log("turul --------->>" + turul);
       console.log("dans.dugaar --------->>" + dans.dugaar);
       console.log("url --------->>" + url);
-      const response = await got
-        .post(url, {
+      try {
+        const response = await got.post(url, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -168,13 +168,18 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
             client_id: dans.corporateNevtrekhNer,
             client_secret: dans.corporateNuutsUg,
           },
-        })
-        .catch((err) => { console.log("tdb token Avya" + err)});
-      if (!response || !response?.body) {
-        console.log("response message " + JSON.stringify(response));
-        throw new Error(
-          "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
-        );
+          responseType: "json",
+        });
+
+        console.log("TDB response:", response?.body);
+
+        if (!response.body.success) {
+          throw new Error(response.body.message);
+        }
+
+      } catch (err) {
+        console.log("TDB TOKEN ERROR:", err.response?.body || err.message);
+        throw new Error("Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!");
       }
       var khariu = JSON.parse(response?.body);
       Token(tukhainBaaziinKholbolt)
