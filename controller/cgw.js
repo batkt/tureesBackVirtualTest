@@ -1697,6 +1697,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
+                  console.log("dugaar ----->" + dans.dugaar);
                   var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
                   var url =
                     process.env.TDB_SERVER +
@@ -1731,6 +1732,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate() +
                     "&page=0&size=100";
+                  console.log("url --------------->>" + url);
                   var response = await axios
                     .get(url, {
                       headers: {
@@ -1738,8 +1740,9 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         Authorization: "Bearer " + tokenObject.token,
                       },
                     })
-                    .catch((err) => {});
-                  var khariu = response.data;
+                    .catch((err) => { console.log("oirkhon --->" + err) });
+                  var khariu = response?.data;
+                  console.log("khariu --------------->>" + JSON.stringify(khariu));
                   if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
                     var guilgeenuud = [];
                     khariu.txn.forEach((mur) => {
