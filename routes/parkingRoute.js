@@ -62,6 +62,7 @@ const passController = require("../controller/passController");
 const tokiPayController = require("../controller/tokiPayController");
 const passPayController = require("../controller/passPayController");
 const kioskPayController = require("../controller/kioskPayController");
+const kioskEbarimtController = require("../controller/kioskEbarimtController"); 
 
 crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
@@ -100,98 +101,7 @@ router.get("/v1/search_car_unegui/:plate_number", tokenShalgakh, parkingUneguiCo
 router.post("/v1/pay", tokiPayController.tokiPay);
 router.post("/pass/pay", tokenShalgakh, passPayController.passPay);
 router.post("/v1/kioskPay", tokenShalgakh, kioskPayController.kioskPay);
-router
-  .route("/v1/kioskEbarimtAvya")
-  .post(tokenShalgakh, async (req, res, next) => {
-    try {
-      var tukhainKholbolt = req.body.tukhainBaaziinKholbolt;
-      var tukhainObject = await Uilchluulegch(tukhainKholbolt, true).findById(
-        req.body.uilchluulegchiinId,
-      );
-      if (!!tukhainObject) {
-        tukhainObject.niitDun = req.body.paid_amount;
-        const { db } = require("zevbackv2");
-        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-          tukhainObject.baiguullagiinId,
-        );
-        tuxainSalbar = baiguullaga?.barilguud?.find(
-          (e) => e._id.toString() == tukhainObject.barilgiinId,
-        )?.tokhirgoo;
-        var nuatTulukhEsekh = baiguullaga.barilguud.find(
-          (x) => x._id.toString() == tukhainObject.barilgiinId,
-        )?.tokhirgoo?.nuatTulukhEsekh;
-        if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
-        if (!!tuxainSalbar?.eBarimtShine)
-          ebarimt = await zogsooloosEbarimtShineUusgye(
-            tukhainObject,
-            req.body.customerNo,
-            req.body.customerTin,
-            tuxainSalbar.merchantTin, //"37900846788",
-            tuxainSalbar.districtCode, //,"0023"
-            tukhainKholbolt,
-            nuatTulukhEsekh,
-          );
-        else
-          var ebarimt = await zogsooloosEbarimtUusgye(
-            tukhainObject,
-            req.body.customer_no,
-            req.body.individual ? null : "3",
-            tukhainKholbolt,
-            nuatTulukhEsekh,
-          );
-        butsaakhMethod = function (d, khariuObject) {
-          try {
-            if (d?.status != "SUCCESS" && !d.success)
-              throw new Error(d.message);
-            var ebarimt;
-            if (!!tuxainSalbar.eBarimtShine)
-              ebarimt = new EbarimtShine(tukhainKholbolt)(d);
-            else ebarimt = new Ebarimt(tukhainKholbolt)(d);
-            ebarimt.zogsooliinId = tukhainObject._id;
-            ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
-            ebarimt.barilgiinId = khariuObject.barilgiinId;
-            ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
-            ebarimt.save().catch((err) => {
-              if (!res.headersSent && next) next(err);
-            });
-            var update = {
-              ebarimtAvsanEsekh: true,
-              ebarimtAvsanDun: ebarimt.cashAmount || ebarimt.totalAmount,
-            };
-            if (ebarimt.customerNo)
-              update = {
-                ...update,
-                ebarimtRegister: ebarimt.customerNo,
-              };
-            Uilchluulegch(tukhainKholbolt)
-              .findByIdAndUpdate(tukhainObject._id, update)
-              .then((xariu) => {})
-              .catch((err) => {
-                if (!res.headersSent && next) next(err);
-              });
-            delete d.baiguullagiinId;
-            delete d.zogsooliinId;
-            delete d.barilgiinId;
-            delete d._id;
-            var butsaakhKhariu = {
-              success: true,
-              message: "Amjilttai",
-            };
-            butsaakhKhariu.data = d;
-            if (!res.headersSent) {
-              res.send(butsaakhKhariu);
-            }
-          } catch (err) {
-            if (!res.headersSent && next) next(err);
-          }
-        };
-        ebarimtDuudya(ebarimt, butsaakhMethod, next, tuxainSalbar.eBarimtShine);
-      } else res.send(null);
-    } catch (err) {
-      next(err);
-    }
-  });
-
+router.post("/v1/kioskEbarimtAvya", tokenShalgakh, kioskEbarimtController.kioskEbarimtAvya);
 router.route("/mashinUpdate").post(tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
