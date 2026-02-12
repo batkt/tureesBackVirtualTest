@@ -1698,7 +1698,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
                   console.log("dugaar ----->" + dans.dugaar);
-                  var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
+                  var tokenObject = await tdbTokenAvya(dans, kholbolt, null);
                   console.log("tokenObject ----->" + tokenObject?.dugaar);
                   var url =
                     process.env.TDB_SERVER +
