@@ -62,7 +62,7 @@ async function handleEbarimt({
       ebarimtAvsanEsekh: true,
       ebarimtAvsanDun:
         ebarimtModel.cashAmount || ebarimtModel.totalAmount,
-      ebarimtRegister: ebarimtModel.customerNo || null,
+      ebarimtRegister: ebarimtModel.customerNo || req.body.customerNo,
     }
   );
 
