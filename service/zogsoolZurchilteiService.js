@@ -66,4 +66,8 @@ async function niitZurchilteiMashinOlokh(req) {
     return "Amjilttai";
 }
 
-module.exports = { niitZurchilteiMashinOlokh };
+async function zurchilteiMashinMsgilgeekh(req) {
+
+}
+
+module.exports = { niitZurchilteiMashinOlokh, zurchilteiMashinMsgilgeekh };

@@ -517,4 +517,65 @@ router.post("/msgTuukhEBarimtZogsool", async (req, res, next) => {
     next(err);
   }
 });
+
+router.post("/msgTuukhEBarimtZogsoolSarBur", async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    var kholboltuud = db.kholboltuud;
+
+    var baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).find({
+      "barilguud.tokhirgoo.eBarimtMessageIlgeekhEsekh": true,
+    });
+
+    var result = [];
+
+    if (kholboltuud && baiguullaguud?.length) {
+      for (const baiguullaga of baiguullaguud) {
+        var kholbolt = kholboltuud.find(
+          (a) => a.baiguullagiinId == baiguullaga._id.toString()
+        );
+
+        if (kholbolt) {
+          var matchQuery = {
+            baiguullagiinId: kholbolt.baiguullagiinId,
+            mashiniiDugaar: { $exists: true },
+          };
+
+          if (req.body.ekhlekhOgnoo && req.body.duusakhOgnoo) {
+            matchQuery.createdAt = {
+              $gte: new Date(req.body.ekhlekhOgnoo),
+              $lte: new Date(req.body.duusakhOgnoo),
+            };
+          }
+
+          var monthlyData = await MsgTuukh(kholbolt).aggregate([
+            { $match: matchQuery },
+            {
+              $group: {
+                _id: {
+                  year: { $year: "$createdAt" },
+                  month: { $month: "$createdAt" },
+                },
+                count: { $sum: 1 },
+              },
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1 } },
+          ]);
+
+          result.push({
+            register: baiguullaga.register,
+            ner: baiguullaga.ner,
+            dotoodNer: baiguullaga.dotoodNer,
+            monthly: monthlyData,
+          });
+        }
+      }
+    }
+
+    res.send(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
