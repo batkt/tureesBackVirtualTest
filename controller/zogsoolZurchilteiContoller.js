@@ -16,3 +16,19 @@ exports.zurchilteiMashinMsgilgeekh = async (req, res, next) => {
     next(err);
   }
 };
+exports.zurchiluudTulsunBolgoy = async (req, res, next) => {
+  try {
+    const result = await zogsoolZurchilteiService.zurchiluudTulsunBolgoy(req);
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+exports.zogsooliinTuluuguiMashiniiTailanAvya = async (req, res, next) => {
+  try {
+    const result = await zogsoolZurchilteiService.zogsooliinTuluuguiMashiniiTailanAvya(req);
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};

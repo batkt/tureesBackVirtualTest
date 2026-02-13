@@ -111,87 +111,8 @@ router.post("/ebarimtAvsanDunOruulakh", tokenShalgakh, busadDataZogsoolControlle
 router.post("/davkharBarimtZasakh", tokenShalgakh, busadDataZogsoolController.davkharBarimtZasakh);
 router.post("/niitZurchilteiMashinOlokh", tokenShalgakh, zogsoolZurchilteiContoller.niitZurchilteiMashinOlokh);
 router.post("/zurchilteiMashinMsgilgeekh", tokenShalgakh, zogsoolZurchilteiContoller.zurchilteiMashinMsgilgeekh);
-router.post(
-  "/zurchiluudTulsunBolgoy",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      await ZurchilteiMashin(req.body.tukhainBaaziinKholbolt).updateMany(
-        { _id: { $in: req.body.utguud } },
-        {
-          $set: {
-            tuluv: 1,
-            tailbar: req.body.shaltgaan,
-          },
-        },
-      );
-      res.send("Amjilttai");
-    } catch (err) {
-      next(err);
-    }
-  },
-);
-
-function formatNumber(num, fixed = 2) {
-  if (num === undefined || num === null || num === "")
-    return formatNumber("0.00", fixed);
-  var fixedNum = parseFloat(num).toFixed(fixed).toString();
-  var numSplit = fixedNum.split(".");
-  if (numSplit === null || numSplit.length === 0) {
-    return formatNumber("0.00", fixed);
-  }
-  var firstFormatNum = numSplit[0]
-    .toString()
-    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-  if (lodash.isNaN(firstFormatNum)) firstFormatNum = "0";
-  if (fixed === 0) return firstFormatNum;
-  return firstFormatNum + "." + numSplit[1];
-}
-
-router.post(
-  "/zogsooliinTuluuguiMashiniiTailanAvya",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      var match = {
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: !!req.body.barilgiinId
-          ? req.body.barilgiinId
-          : { $exists: true },
-        mashiniiDugaar: !!req.body.searchUtga
-          ? { $regex: req.body.searchUtga, $options: "i" }
-          : { $exists: true },
-        tuluv: 0,
-        createdAt: {
-          $lte: new Date(moment(req.body.ognoo).format("YYYY-MM-DD 23:59:59")),
-        },
-      };
-      var query = [
-        {
-          $match: match,
-        },
-        {
-          $group: {
-            _id: "$mashiniiDugaar",
-            dun: {
-              $sum: "$niitDun",
-            },
-            too: {
-              $sum: 1,
-            },
-          },
-        },
-      ];
-      var tailan = await ZurchilteiMashin(
-        req.body.tukhainBaaziinKholbolt,
-      ).aggregate(query);
-      res.send(tailan);
-    } catch (err) {
-      next(err);
-    }
-  },
-);
-
+router.post("/zurchiluudTulsunBolgoy", tokenShalgakh, zogsoolZurchilteiContoller.zurchiluudTulsunBolgoy);
+router.post("/zogsooliinTuluuguiMashiniiTailanAvya", tokenShalgakh, zogsoolZurchilteiContoller.zogsooliinTuluuguiMashiniiTailanAvya);
 router.get("/notTokiParking", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");

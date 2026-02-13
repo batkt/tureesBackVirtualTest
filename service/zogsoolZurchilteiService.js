@@ -136,5 +136,50 @@ async function zurchilteiMashinMsgilgeekh(req) {
     }
     return msgnuud;
 }
+async function zurchiluudTulsunBolgoy(req) {
+    await ZurchilteiMashin(req.body.tukhainBaaziinKholbolt).updateMany(
+    { _id: { $in: req.body.utguud } },
+    {
+        $set: {
+        tuluv: 1,
+        tailbar: req.body.shaltgaan,
+        },
+    },
+    );
+    return "Amjilttai";
+}
+async function zogsooliinTuluuguiMashiniiTailanAvya(req) {
+    var match = {
+    baiguullagiinId: req.body.baiguullagiinId,
+    barilgiinId: !!req.body.barilgiinId
+        ? req.body.barilgiinId
+        : { $exists: true },
+    mashiniiDugaar: !!req.body.searchUtga
+        ? { $regex: req.body.searchUtga, $options: "i" }
+        : { $exists: true },
+    tuluv: 0,
+    createdAt: {
+        $lte: new Date(moment(req.body.ognoo).format("YYYY-MM-DD 23:59:59")),
+    },
+    };
+    var query = [
+    {
+        $match: match,
+    },
+    {
+        $group: {
+        _id: "$mashiniiDugaar",
+        dun: {
+            $sum: "$niitDun",
+        },
+        too: {
+            $sum: 1,
+        },
+        },
+    },
+    ];
+    var tailan = await ZurchilteiMashin(req.body.tukhainBaaziinKholbolt).aggregate(query);
+    return tailan;
+}
 
-module.exports = { niitZurchilteiMashinOlokh, zurchilteiMashinMsgilgeekh };
+module.exports = { niitZurchilteiMashinOlokh, zurchilteiMashinMsgilgeekh, zurchiluudTulsunBolgoy, zogsooliinTuluuguiMashiniiTailanAvya };
