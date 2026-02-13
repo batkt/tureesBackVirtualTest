@@ -8,3 +8,11 @@ exports.notTokiParking = async (req, res, next) => {
     next(err);
   }
 };
+exports.zochinAjiltaniiIdTseverlekh = async (req, res, next) => {
+  try {
+    const result = await notTokiParkingService.zochinAjiltaniiIdTseverlekh(req);
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};

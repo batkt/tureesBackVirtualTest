@@ -117,41 +117,7 @@ router.post("/zurchiluudTulsunBolgoy", tokenShalgakh, zogsoolZurchilteiContoller
 router.post("/zogsooliinTuluuguiMashiniiTailanAvya", tokenShalgakh, zogsoolZurchilteiContoller.zogsooliinTuluuguiMashiniiTailanAvya);
 router.get("/notTokiParking", notTokiParkingController.notTokiParking);
 router.post("/dotorZogsoolDavhkardsanMashin", tokenShalgakh, dotorZogsoolController.dotorZogsoolDavhkardsanMashin);
-router.post("/zochinAjiltaniiIdTseverlekh", async (req, res, next) => {
-  try {
-    const { db } = require("zevbackv2");
-    var kholboltuud = db.kholboltuud;
-    var localEsekh = !!req.body.baiguullagiinId;
-    if (localEsekh) {
-      kholboltuud = kholboltuud.filter(
-        (a) => a.baiguullagiinId == req.body.baiguullagiinId,
-      );
-    }
-    var result = [];
-    if (kholboltuud) {
-      var query = { "tuukh.burtgesenAjiltaniiId": "zochin" };
-      if (!!req.body.baiguullagiinId)
-        query["baiguullagiinId"] = req.body.baiguullagiinId;
-      for (const kholbolt of kholboltuud) {
-        var mashinuud = await Uilchluulegch(kholbolt, true).find(query);
-        if (mashinuud?.length > 0) {
-          for (const data of mashinuud) {
-            await Uilchluulegch(kholbolt).findByIdAndUpdate(data._id, {
-              $unset: {
-                "tuukh.0.burtgesenAjiltaniiId": 1,
-              },
-            });
-            result.push(data);
-          }
-        }
-      }
-    }
-    res.send(result);
-  } catch (err) {
-    next(err);
-  }
-});
-
+router.post("/zochinAjiltaniiIdTseverlekh", notTokiParkingController.zochinAjiltaniiIdTseverlekh)
 router.post("/mashiniiDugaarZasakh", tokenShalgakh, async (req, res, next) => {
   try {
     var uilchluulegch = await Uilchluulegch(
