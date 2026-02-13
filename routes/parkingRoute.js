@@ -64,6 +64,7 @@ const passPayController = require("../controller/passPayController");
 const kioskPayController = require("../controller/kioskPayController");
 const kioskEbarimtController = require("../controller/kioskEbarimtController"); 
 const mashinController = require("../controller/mashinController");
+const busadDataZogsoolController = require("../controller/busadDataZogsoolController");
 
 crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
@@ -104,70 +105,7 @@ router.post("/pass/pay", tokenShalgakh, passPayController.passPay);
 router.post("/v1/kioskPay", tokenShalgakh, kioskPayController.kioskPay);
 router.post("/v1/kioskEbarimtAvya", tokenShalgakh, kioskEbarimtController.kioskEbarimtAvya);
 router.post("/mashinUpdate", tokenShalgakh, mashinController.mashinUpdate);
-router.post(
-  "/turluurZogsoolIdOruulakh",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      var match = {
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        ebarimtAvsanEsekh: true,
-        mashiniiDugaar: { $exists: true },
-        "tuukh.tulbur.turul": req.body.turul,
-      };
-      if (!!req.body.mashiniiDugaar)
-        match["mashiniiDugaar"] = req.body.mashiniiDugaar;
-      var uilchluulegchuud = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt,
-        true,
-      ).find(match);
-      var ebarimtuud = [];
-      if (uilchluulegchuud?.length > 0) {
-        for (const data of uilchluulegchuud) {
-          ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(
-            {
-              baiguullagiinId: req.body.baiguullagiinId,
-              barilgiinId: req.body.barilgiinId,
-              ustgasanOgnoo: { $exists: false },
-              zogsooliinId: data?._id,
-            },
-          );
-          if (ebarimtuud?.length === 0) {
-            ebarimtuud = await EbarimtShine(
-              req.body.tukhainBaaziinKholbolt,
-            ).find({
-              baiguullagiinId: req.body.baiguullagiinId,
-              barilgiinId: req.body.barilgiinId,
-              ustgasanOgnoo: { $exists: false },
-              mashiniiDugaar: data?.mashiniiDugaar,
-              createdAt: {
-                $gte: moment(data.tuukh[0]?.tulbur[0]?.ognoo).format(
-                  "YYYY-MM-DD 00:00:00",
-                ),
-                $lte: moment(data.tuukh[0]?.tulbur[0]?.ognoo).format(
-                  "YYYY-MM-DD 23:59:59",
-                ),
-              },
-            });
-            if (ebarimtuud?.length > 0) {
-              for (const saveEBarimt of ebarimtuud) {
-                saveEBarimt.zogsooliinId = data?._id;
-                await saveEBarimt.save().catch((err) => {
-                  next(err);
-                });
-              }
-            }
-          }
-        }
-      }
-      res.send(ebarimtuud);
-    } catch (err) {
-      next(err);
-    }
-  },
-);
-
+router.post("/turluurZogsoolIdOruulakh", tokenShalgakh, busadDataZogsoolController.turluurZogsoolIdOruulakh);
 router.post(
   "/ebarimtAvsanDunOruulakh",
   tokenShalgakh,
