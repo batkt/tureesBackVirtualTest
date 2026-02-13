@@ -4,6 +4,8 @@ const {
   Uilchluulegch,
   ZurchilteiMashin,
 } = require("parking-v2");
+const { msgIlgeeye } = require("../controller/khariltsagch");
+const MsgTuukh = require("../models/msgTuukh");
 
 async function niitZurchilteiMashinOlokh(req) {
     var query = {
@@ -67,7 +69,72 @@ async function niitZurchilteiMashinOlokh(req) {
 }
 
 async function zurchilteiMashinMsgilgeekh(req) {
-
+    var query = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        gadnaZogsooliinId: { $exists: false },
+        zurchulMsgeerSanuulakh: true,
+    };
+    var zogsool = await Parking(req.body.tukhainBaaziinKholbolt).findOne(
+    query,
+    );
+    var msgnuud = [];
+    if (!!zogsool && zogsool?.zurchilMsgilgeekhDugaar?.length > 0) {
+        var match = {
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+            zogsooliinId: zogsool?._id?.toString(),
+            mashiniiDugaar: req.body.mashiniiDugaar,
+            tuluv: { $ne: 1 },
+        };
+        var query = [
+            {
+            $match: match,
+            },
+            {
+            $group: {
+                _id: "$mashiniiDugaar",
+                dun: {
+                $sum: "$niitDun",
+                },
+            },
+            },
+        ];
+        var zurchiluud = await ZurchilteiMashin(
+            req.body.tukhainBaaziinKholbolt,
+        ).aggregate(query);
+        if (zurchiluud?.length > 0) {
+            for (const dugaar of zogsool?.zurchilMsgilgeekhDugaar) {
+            var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
+            msg.baiguullagiinId = req.body.baiguullagiinId;
+            msg.barilgiinId = req.body.barilgiinId;
+            msg.mashiniiDugaar = zurchiluud[0]._id;
+            msg.dugaar = dugaar;
+            msg.turul = "zurchil";
+            msg.msg =
+                formatNumber(zurchiluud[0].dun, 0) +
+                " zurchiltei " +
+                (zurchiluud[0]._id || "") +
+                " dugaartai mashin newterlee";
+            msg.save();
+            msgnuud.push({ to: dugaar, text: msg.msg });
+            }
+        }
+        if (msgnuud?.length > 0) {
+            var msgIlgeekhKey = "aa8e588459fdd9b7ac0b809fc29cfae3";
+            var msgIlgeekhDugaar = "72002032";
+            msgIlgeeye(
+            msgnuud,
+            msgIlgeekhKey,
+            msgIlgeekhDugaar,
+            [],
+            0,
+            req.body.tukhainBaaziinKholbolt,
+            req.body.baiguullagiinId,
+            );
+        }
+    }
+    return msgnuud;
 }
 
 module.exports = { niitZurchilteiMashinOlokh, zurchilteiMashinMsgilgeekh };
