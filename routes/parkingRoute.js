@@ -106,40 +106,7 @@ router.post("/v1/kioskPay", tokenShalgakh, kioskPayController.kioskPay);
 router.post("/v1/kioskEbarimtAvya", tokenShalgakh, kioskEbarimtController.kioskEbarimtAvya);
 router.post("/mashinUpdate", tokenShalgakh, mashinController.mashinUpdate);
 router.post("/turluurZogsoolIdOruulakh", tokenShalgakh, busadDataZogsoolController.turluurZogsoolIdOruulakh);
-router.post(
-  "/ebarimtAvsanDunOruulakh",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      var match = {
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        mashiniiDugaar: { $exists: true },
-        zogsooliinId: { $exists: true },
-      };
-      var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(
-        match,
-      );
-      if (ebarimtuud?.length > 0) {
-        for (const ebarimt of ebarimtuud) {
-          var update = {
-            ebarimtAvsanDun: ebarimt.cashAmount || ebarimt.totalAmount,
-          };
-          Uilchluulegch(req.body.tukhainBaaziinKholbolt)
-            .findByIdAndUpdate(ebarimt.zogsooliinId, update)
-            .then((xariu) => {})
-            .catch((err) => {
-              next(err);
-            });
-        }
-      }
-      res.send("Амжилттай");
-    } catch (err) {
-      next(err);
-    }
-  },
-);
-
+router.post("/ebarimtAvsanDunOruulakh", tokenShalgakh, busadDataZogsoolController.ebarimtAvsanDunOruulakh);
 router.post("/davkharBarimtZasakh", tokenShalgakh, async (req, res, next) => {
   try {
     var match = {
