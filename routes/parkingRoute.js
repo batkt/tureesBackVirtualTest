@@ -66,6 +66,7 @@ const kioskEbarimtController = require("../controller/kioskEbarimtController");
 const mashinController = require("../controller/mashinController");
 const busadDataZogsoolController = require("../controller/busadDataZogsoolController");
 const zogsoolZurchilteiContoller = require("../controller/zogsoolZurchilteiContoller");
+const notTokiParkingController = require("../controller/notTokiParkingController");
 
 crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
@@ -113,39 +114,7 @@ router.post("/niitZurchilteiMashinOlokh", tokenShalgakh, zogsoolZurchilteiContol
 router.post("/zurchilteiMashinMsgilgeekh", tokenShalgakh, zogsoolZurchilteiContoller.zurchilteiMashinMsgilgeekh);
 router.post("/zurchiluudTulsunBolgoy", tokenShalgakh, zogsoolZurchilteiContoller.zurchiluudTulsunBolgoy);
 router.post("/zogsooliinTuluuguiMashiniiTailanAvya", tokenShalgakh, zogsoolZurchilteiContoller.zogsooliinTuluuguiMashiniiTailanAvya);
-router.get("/notTokiParking", async (req, res, next) => {
-  try {
-    const { db } = require("zevbackv2");
-    var kholboltuud = db.kholboltuud;
-    var localEsekh = !!req.body.baiguullagiinId;
-    if (localEsekh) {
-      kholboltuud = kholboltuud.filter(
-        (a) => a.baiguullagiinId == req.body.baiguullagiinId,
-      );
-    }
-    var result = [];
-    if (kholboltuud) {
-      var query = { tokiNer: { $exists: false } };
-      if (!!req.body.baiguullagiinId)
-        query["baiguullagiinId"] = req.body.baiguullagiinId;
-      for (const kholbolt of kholboltuud) {
-        var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-          kholbolt.baiguullagiinId,
-        );
-        var zogsooluud = await getParkingFind(
-          kholbolt,
-          kholbolt.baiguullagiinId,
-          query,
-        );
-        if (zogsooluud?.length > 0)
-          result.push({ ner: baiguullaga.ner, register: baiguullaga.register });
-      }
-    }
-    res.send(result);
-  } catch (err) {
-    next(err);
-  }
-});
+router.get("/notTokiParking", notTokiParkingController.notTokiParking);
 
 router.post(
   "/dotorZogsoolDavhkardsanMashin",
