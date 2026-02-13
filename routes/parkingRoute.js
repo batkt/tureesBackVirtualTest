@@ -63,6 +63,7 @@ const tokiPayController = require("../controller/tokiPayController");
 const passPayController = require("../controller/passPayController");
 const kioskPayController = require("../controller/kioskPayController");
 const kioskEbarimtController = require("../controller/kioskEbarimtController"); 
+const mashinController = require("../controller/mashinController");
 
 crud(router, "parking", Parking, UstsanBarimt);
 crud(router, "zurchilteiMashin", ZurchilteiMashin, UstsanBarimt);
@@ -102,41 +103,7 @@ router.post("/v1/pay", tokiPayController.tokiPay);
 router.post("/pass/pay", tokenShalgakh, passPayController.passPay);
 router.post("/v1/kioskPay", tokenShalgakh, kioskPayController.kioskPay);
 router.post("/v1/kioskEbarimtAvya", tokenShalgakh, kioskEbarimtController.kioskEbarimtAvya);
-router.route("/mashinUpdate").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    const { db } = require("zevbackv2");
-    var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findOne({
-      register: req.body.register,
-    });
-    var tukhainKholbolt;
-    tukhainKholbolt = db.kholboltuud.find(
-      (a) => a.baiguullagiinId == baiguullaga._id,
-    );
-    var orsonTsag = new Date(new Date.getTime() - 15 * 60000);
-    Uilchluulegch(tukhainKholbolt).updateOne(
-      {
-        mashiniiDugaar: req.body.mashiniiDugaar,
-        "tuukh.0.tuluv": { $ne: -2 },
-        "tuukh.0.tsagiinTuukh.garsanTsag": { $exists: false },
-      },
-      {
-        "tuukh.0.tsagiinTuukh.0.orsonTsag": orsonTsag,
-      },
-    );
-    res.send("Amjilttai");
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.route("/mashinUpdate1").post(async (req, res, next) => {
-  try {
-    res.send("Amjilttai");
-  } catch (error) {
-    next(error);
-  }
-});
-
+router.post("/mashinUpdate", tokenShalgakh, mashinController.mashinUpdate);
 router.post(
   "/turluurZogsoolIdOruulakh",
   tokenShalgakh,
