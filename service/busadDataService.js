@@ -79,4 +79,35 @@ async function ebarimtAvsanDunOruulakh(req) {
     }
     return "Амжилттай";
 }
-module.exports = { turluurZogsoolIdOruulakh, ebarimtAvsanDunOruulakh };
+async function davkharBarimtZasakh(req) {
+    var match = {
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        mashiniiDugaar: { $exists: true },
+        "tuukh.tulbur": { $size: req.body.count },
+        "tuukh.tulbur.turul": req.body.turul,
+    };
+    if (!!req.body.mashiniiDugaar)
+        match["mashiniiDugaar"] = req.body.mashiniiDugaar;
+    var uilchluulegchuud = await Uilchluulegch(
+        req.body.tukhainBaaziinKholbolt,
+        true,
+    ).find(match);
+    if (uilchluulegchuud?.length > 0) {
+        for (const data of uilchluulegchuud) {
+        var filteredData = data.tuukh[0]?.tulbur?.filter(
+            (a) => a.turul === req.body.turul,
+        );
+        if (filteredData?.length === req.body.count) {
+            await Uilchluulegch(req.body.tukhainBaaziinKholbolt).updateOne(
+            { _id: data._id },
+            {
+                "tuukh.0.tulbur": [filteredData[0]],
+            },
+            );
+        }
+        }
+    }
+    return "Амжилттай";
+}
+module.exports = { turluurZogsoolIdOruulakh, ebarimtAvsanDunOruulakh, davkharBarimtZasakh };

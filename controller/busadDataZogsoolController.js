@@ -16,3 +16,11 @@ exports.ebarimtAvsanDunOruulakh = async (req, res, next) => {
     next(err);
   }
 };
+exports.davkharBarimtZasakh = async (req, res, next) => {
+  try {
+    const result = await busadDataService.davkharBarimtZasakh(req);
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};

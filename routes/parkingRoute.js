@@ -107,42 +107,7 @@ router.post("/v1/kioskEbarimtAvya", tokenShalgakh, kioskEbarimtController.kioskE
 router.post("/mashinUpdate", tokenShalgakh, mashinController.mashinUpdate);
 router.post("/turluurZogsoolIdOruulakh", tokenShalgakh, busadDataZogsoolController.turluurZogsoolIdOruulakh);
 router.post("/ebarimtAvsanDunOruulakh", tokenShalgakh, busadDataZogsoolController.ebarimtAvsanDunOruulakh);
-router.post("/davkharBarimtZasakh", tokenShalgakh, async (req, res, next) => {
-  try {
-    var match = {
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      mashiniiDugaar: { $exists: true },
-      "tuukh.tulbur": { $size: req.body.count },
-      "tuukh.tulbur.turul": req.body.turul,
-    };
-    if (!!req.body.mashiniiDugaar)
-      match["mashiniiDugaar"] = req.body.mashiniiDugaar;
-    var uilchluulegchuud = await Uilchluulegch(
-      req.body.tukhainBaaziinKholbolt,
-      true,
-    ).find(match);
-    if (uilchluulegchuud?.length > 0) {
-      for (const data of uilchluulegchuud) {
-        var filteredData = data.tuukh[0]?.tulbur?.filter(
-          (a) => a.turul === req.body.turul,
-        );
-        if (filteredData?.length === req.body.count) {
-          await Uilchluulegch(req.body.tukhainBaaziinKholbolt).updateOne(
-            { _id: data._id },
-            {
-              "tuukh.0.tulbur": [filteredData[0]],
-            },
-          );
-        }
-      }
-    }
-    res.send("Амжилттай");
-  } catch (err) {
-    next(err);
-  }
-});
-
+router.post("/davkharBarimtZasakh", tokenShalgakh, busadDataZogsoolController.davkharBarimtZasakh);
 router.post(
   "/niitZurchilteiMashinOlokh",
   tokenShalgakh,
