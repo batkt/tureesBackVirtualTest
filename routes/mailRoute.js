@@ -537,6 +537,7 @@ router.post("/msgTuukhEBarimtZogsoolSarBur", async (req, res, next) => {
         if (kholbolt) {
           var matchQuery = {
             baiguullagiinId: kholbolt.baiguullagiinId,
+            mashiniiDugaar: { $exists: true },
           };
 
           if (req.body.ekhlekhOgnoo && req.body.duusakhOgnoo) {
