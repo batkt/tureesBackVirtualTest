@@ -184,6 +184,8 @@ exports.tokiPay = async (req, res, next) => {
       (x) => x._id.toString() == tukhainObject.barilgiinId,
     )?.tokhirgoo?.nuatTulukhEsekh;
     if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
+    if (!tuxainSalbar?.eBarimtShine)
+      return { success: true, message: "ИБаримт dll холболт хийгдээгүй байна!", };
     const ebarimtResult = await handleEbarimt({
       tuxainSalbar,
       tukhainObject,
