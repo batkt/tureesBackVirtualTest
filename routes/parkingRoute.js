@@ -2,10 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {
   tokenShalgakh,
-  khuudaslalt,
   crud,
   UstsanBarimt,
-  db,
 } = require("zevbackv2");
 const {
   Parking,
@@ -13,44 +11,10 @@ const {
   BlockMashin,
   Uilchluulegch,
   ZurchilteiMashin,
-  ZogsooliinTulbur,
-  uilchluulegchdiinToo,
-  zogsoolTusBurUilchluulegchdiinToo,
-  sdkData,
-  uilchluulegchTseverliy,
-  zogsooliinDunAvya,
-  TokiMashin,
-  uilchluulegchGaraasBurtgey,
 } = require("parking-v2");
-const {
-  zogsooloosEbarimtUusgye,
-  zogsooloosEbarimtShineUusgye,
-  ebarimtDuudya,
-} = require("../routes/ebarimtRoute");
-const ZogsooliinIp = require("../models/zogsooliinIp");
-const Khariltsagch = require("../models/khariltsagch");
-const Sonorduulga = require("../models/sonorduulga");
-const Ebarimt = require("../models/ebarimt");
-const EbarimtShine = require("../models/ebarimtShine");
 const KassCameraKhaalt = require("../models/kassCameraKhaalt");
-const uneguiMashin = require("../models/uneguiMashin");
-
-const {
-  khariltsagchidSonorduulgaIlgeeye,
-} = require("../controller/appNotification");
-const lodash = require("lodash");
-const moment = require("moment");
-const Baiguullaga = require("../models/baiguullaga");
-const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
-const { msgIlgeeye } = require("../controller/khariltsagch");
 const { searchCarToki, } = require("../controller/parkingToki");
 const { searchCarQR } = require("../controller/parkingQR");
-const MsgTuukh = require("../models/msgTuukh");
-const { pubClient } = require("../utils/redisClient");
-const crypto = require("crypto");
-const { QuickQpayObject } = require("quickqpaypackv2");
-const axios = require("axios");
-const { encode, decode } = require("@msgpack/msgpack");
 const uilchluulegchController = require("../controller/uilchluulegchController");
 const zogsoolSDK = require("../controller/zogsoolSDK");
 const zogsooliinTulburController = require("../controller/zogsooliinTulburController");
@@ -117,205 +81,8 @@ router.post("/zurchiluudTulsunBolgoy", tokenShalgakh, zogsoolZurchilteiContoller
 router.post("/zogsooliinTuluuguiMashiniiTailanAvya", tokenShalgakh, zogsoolZurchilteiContoller.zogsooliinTuluuguiMashiniiTailanAvya);
 router.get("/notTokiParking", notTokiParkingController.notTokiParking);
 router.post("/dotorZogsoolDavhkardsanMashin", tokenShalgakh, dotorZogsoolController.dotorZogsoolDavhkardsanMashin);
-router.post("/zochinAjiltaniiIdTseverlekh", notTokiParkingController.zochinAjiltaniiIdTseverlekh)
-router.post("/mashiniiDugaarZasakh", tokenShalgakh, async (req, res, next) => {
-  try {
-    var uilchluulegch = await Uilchluulegch(
-      req.body.tukhainBaaziinKholbolt,
-      true,
-    )
-      .findOne({
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        mashiniiDugaar: req.body.mashiniiDugaar,
-        "tuukh.garsanKhaalga": { $exists: false },
-        "tuukh.0.tsagiinTuukh.0.garsanTsag": { $exists: false },
-        "tuukh.0.tuluv": { $ne: -2 },
-      })
-      .sort({ createdAt: -1 })
-      .limit(1);
-    if (!!uilchluulegch && !!uilchluulegch?._id && !!req.body.mashin) {
-      await Uilchluulegch(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-        uilchluulegch?._id.toString(),
-        {
-          $set: {
-            turul: req.body.mashin?.turul,
-            mashin: req.body.mashin,
-          },
-        },
-      );
-      res.send("Amjilttai");
-    } else res.send("Amjiltgui");
-  } catch (error) {
-    if (next) next(error);
-  }
-});
-
-router.post(
-  "/mashiniiDugaarZaiArilgakh",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      var mashinuud = await Mashin(req.body.tukhainBaaziinKholbolt).find({
-        baiguullagiinId: req.body.baiguullagiinId,
-      });
-      if (mashinuud?.length > 0) {
-        for (const mashin of mashinuud) {
-          await Mashin(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-            mashin?._id.toString(),
-            {
-              $set: {
-                dugaar: mashin.dugaar?.trim().replace(/\s/g, ""),
-              },
-            },
-          );
-        }
-      }
-      // var uilchluulegchuud = await Uilchluulegch(
-      //   req.body.tukhainBaaziinKholbolt
-      // ).find({
-      //   baiguullagiinId: req.body.baiguullagiinId,
-      // });
-      // if (uilchluulegchuud?.length > 0) {
-      //   for (const data of uilchluulegchuud) {
-      //     await Uilchluulegch(
-      //       req.body.tukhainBaaziinKholbolt
-      //     ).findByIdAndUpdate(data?._id.toString(), {
-      //       $set: {
-      //         dugaar: data.mashiniiDugaar?.trim().replace(/\s/g, ""),
-      //       },
-      //     });
-      //   }
-      // }
-      res.send("Амжилттай");
-    } catch (error) {
-      if (next) next(error);
-    }
-  },
-);
-
-router.post(
-  "/zogsoolUilchluulegchFast",
-  tokenShalgakh,
-  async (req, res, next) => {
-    try {
-      const {
-        baiguullagiinId,
-        barilgiinId,
-        matchWithGate,
-        matchWithoutGate,
-        khuudasniiDugaar = 1,
-        khuudasniiKhemjee = 10,
-        order = { "tuukh.0.tsagiinTuukh.garsanTsag": -1 },
-      } = req.body;
-
-      // $or filter-г нэгтгэх
-      const orFilter = [];
-      if (matchWithGate) orFilter.push(matchWithGate);
-      if (matchWithoutGate) orFilter.push(matchWithoutGate);
-
-      // MongoDB query
-      const result = await Uilchluulegch(req.body.tukhainBaaziinKholbolt)
-        .find({
-          baiguullagiinId,
-          barilgiinId,
-          $or: orFilter.length > 0 ? orFilter : [{}],
-        })
-        .sort(order)
-        .skip((khuudasniiDugaar - 1) * khuudasniiKhemjee)
-        .limit(khuudasniiKhemjee);
-
-      // Хүссэн тоогоор count авах
-      const total = await Uilchluulegch(
-        req.body.tukhainBaaziinKholbolt,
-      ).countDocuments({
-        baiguullagiinId,
-        barilgiinId,
-        $or: orFilter.length > 0 ? orFilter : [{}],
-      });
-      res.json({ data: result, total });
-    } catch (err) {
-      if (next) next(err);
-      res.status(500).json({ error: "Алдаа гарлаа" });
-    }
-  },
-);
-
-function stableStringify(obj) {
-  if (obj === null || typeof obj !== "object") return JSON.stringify(obj);
-  if (Array.isArray(obj)) return `[${obj.map(stableStringify).join(",")}]`;
-  const keys = Object.keys(obj).sort();
-  return `{${keys
-    .map((k) => JSON.stringify(k) + ":" + stableStringify(obj[k]))
-    .join(",")}}`;
-}
-
-async function getParkingFind(kholbolt, baiguullagiinId, query) {
-  const queryKey = crypto
-    .createHash("md5")
-    .update(stableStringify(query))
-    .digest("hex");
-  const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
-  const cached = await pubClient.get(cacheKey);
-  if (cached) return JSON.parse(cached);
-  const data = await Parking(kholbolt)
-    .find(query)
-    .lean();
-  await pubClient.setEx(cacheKey, 300, JSON.stringify(data));
-  return data;
-}
-
-async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
-  const cacheKey = `dotorZogsoolFindById:${baiguullagiinId}:${barilgiinId}:${id}`;
-  const cached = await pubClient.get(cacheKey);
-  if (cached) {
-    return JSON.parse(cached);
-  }
-  const dotorZogsool = await Parking(kholbolt).findById(id);
-  await pubClient.setEx(cacheKey, 60, JSON.stringify(dotorZogsool));
-  return dotorZogsool;
-}
-
-async function getAggregateUilchluulegch(
-  kholbolt,
-  baiguullagiinId,
-  barilgiinId,
-  query,
-) {
-  const queryKey = crypto
-    .createHash("md5")
-    .update(stableStringify(query))
-    .digest("hex");
-  const cacheKey = `parkingUilchluulegch:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
-  const cached = await pubClient.get(cacheKey);
-  if (cached) {
-    return JSON.parse(cached);
-  }
-
-  const xariu = await Uilchluulegch(kholbolt, true).aggregate(query);
-  await pubClient.setEx(cacheKey, 60, JSON.stringify(xariu));
-  return xariu;
-}
-
-async function getUilchluulegchfindOne(
-  kholbolt,
-  baiguullagiinId,
-  barilgiinId,
-  query,
-) {
-  const queryKey = crypto
-    .createHash("md5")
-    .update(stableStringify(query))
-    .digest("hex");
-  const cacheKey = `UilchluulegchFindOne:${baiguullagiinId}:${barilgiinId}:${queryKey}`;
-  const cached = await pubClient.get(cacheKey);
-  if (cached) {
-    return JSON.parse(cached);
-  }
-
-  const xariu = await Uilchluulegch(kholbolt, true).findOne(query);
-  await pubClient.setEx(cacheKey, 60, JSON.stringify(xariu));
-  return xariu;
-}
+router.post("/zochinAjiltaniiIdTseverlekh", notTokiParkingController.zochinAjiltaniiIdTseverlekh);
+router.post("/mashiniiDugaarZasakh", tokenShalgakh, mashinController.mashiniiDugaarZasakh);
+router.post("/mashiniiDugaarZaiArilgakh", tokenShalgakh, mashinController.mashiniiDugaarZaiArilgakh);
 
 module.exports = router;
