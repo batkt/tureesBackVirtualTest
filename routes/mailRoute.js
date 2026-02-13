@@ -495,7 +495,6 @@ router.post("/msgTuukhEBarimtZogsool", async (req, res, next) => {
         if (kholbolt) {
           var query = {
             baiguullagiinId: kholbolt.baiguullagiinId,
-            mashiniiDugaar: { $exists: true },
           };
           if (req.body.ekhlekhOgnoo)
             query["createdAt"] = {
@@ -538,7 +537,6 @@ router.post("/msgTuukhEBarimtZogsoolSarBur", async (req, res, next) => {
         if (kholbolt) {
           var matchQuery = {
             baiguullagiinId: kholbolt.baiguullagiinId,
-            mashiniiDugaar: { $exists: true },
           };
 
           if (req.body.ekhlekhOgnoo && req.body.duusakhOgnoo) {
