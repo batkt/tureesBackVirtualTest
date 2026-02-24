@@ -121,7 +121,6 @@ if (process.env.NODE_APP_INSTANCE === "7") {
   cron.schedule(
     "*/5 * * * * ",
     function () {
-      console.log("✅ Banknii khuulga tatakh ajil ehlelee");
       cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
     },
     {
@@ -135,7 +134,6 @@ if (process.env.NODE_APP_INSTANCE === "6") {
   cron.schedule(
     "*/4 * * * * * ",
     function () {
-      console.log("✅ bankniiKhuulgaTatyaOirkhon ajil ehlelee");
       cgw.bankniiKhuulgaTatyaOirkhon();
     },
     {
@@ -259,7 +257,6 @@ if (process.env.NODE_APP_INSTANCE === "2") {
   cron.schedule(
     "*/8 * * * * * ",
     function () {
-      console.log("✅ TulultTaniya ajil ehlelee");
       tulbur.tulultTaniya();
     },
     {
