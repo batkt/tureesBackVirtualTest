@@ -259,6 +259,7 @@ if (process.env.NODE_APP_INSTANCE === "2") {
   cron.schedule(
     "*/8 * * * * * ",
     function () {
+      console.log("✅ TulultTaniya ajil ehlelee");
       tulbur.tulultTaniya();
     },
     {
