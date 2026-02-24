@@ -116,8 +116,9 @@ app.use(uneguiMashinRoute);
 zuragPack(app);
 
 app.use(aldaaBarigch);
-console.log("✅ Server is running on port 8081 NODE_APP_INSTANCE" + process.env.NODE_APP_INSTANCE);
+
 if (process.env.NODE_APP_INSTANCE === "0") {
+  console.log("✅ Banknii khuulga tatakh ajil ehlelee");
   cron.schedule(
     "*/5 * * * * ",
     function () {
