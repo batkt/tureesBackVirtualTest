@@ -117,7 +117,7 @@ zuragPack(app);
 
 app.use(aldaaBarigch);
 
-if (process.env.NODE_APP_INSTANCE === "0") {
+if (process.env.NODE_APP_INSTANCE === "2") {
   console.log("✅ Banknii khuulga tatakh ajil ehlelee");
   cron.schedule(
     "*/5 * * * * ",
@@ -131,16 +131,19 @@ if (process.env.NODE_APP_INSTANCE === "0") {
   );
 }
 
-cron.schedule(
-  "*/4 * * * * * ",
-  function () {
-    cgw.bankniiKhuulgaTatyaOirkhon();
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  },
-);
+if (process.env.NODE_APP_INSTANCE === "3") {
+  console.log("✅ bankniiKhuulgaTatyaOirkhon ajil ehlelee");
+  cron.schedule(
+    "*/4 * * * * * ",
+    function () {
+      cgw.bankniiKhuulgaTatyaOirkhon();
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Ulaanbaatar",
+    },
+  );
+}
 
 cron.schedule(
   "30 9 * * * ",
