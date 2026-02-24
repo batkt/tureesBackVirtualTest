@@ -118,10 +118,10 @@ zuragPack(app);
 app.use(aldaaBarigch);
 
 if (process.env.NODE_APP_INSTANCE === "2") {
-  console.log("✅ Banknii khuulga tatakh ajil ehlelee");
   cron.schedule(
     "*/5 * * * * ",
     function () {
+      console.log("✅ Banknii khuulga tatakh ajil ehlelee");
       cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
     },
     {
@@ -132,10 +132,11 @@ if (process.env.NODE_APP_INSTANCE === "2") {
 }
 
 if (process.env.NODE_APP_INSTANCE === "3") {
-  console.log("✅ bankniiKhuulgaTatyaOirkhon ajil ehlelee");
+  
   cron.schedule(
     "*/4 * * * * * ",
     function () {
+      console.log("✅ bankniiKhuulgaTatyaOirkhon ajil ehlelee");
       cgw.bankniiKhuulgaTatyaOirkhon();
     },
     {
