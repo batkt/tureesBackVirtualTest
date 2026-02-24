@@ -116,17 +116,19 @@ app.use(uneguiMashinRoute);
 zuragPack(app);
 
 app.use(aldaaBarigch);
-
-cron.schedule(
-  "*/5 * * * * ",
-  function () {
-    cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
-  },
-  {
-    scheduled: true,
-    timezone: "Asia/Ulaanbaatar",
-  },
-);
+console.log("✅ Server is running on port 8081 NODE_APP_INSTANCE" + process.env.NODE_APP_INSTANCE);
+if (process.env.NODE_APP_INSTANCE === "0") {
+  cron.schedule(
+    "*/5 * * * * ",
+    function () {
+      cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Ulaanbaatar",
+    },
+  );
+}
 
 cron.schedule(
   "*/4 * * * * * ",
