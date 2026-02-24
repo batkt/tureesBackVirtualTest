@@ -222,7 +222,6 @@ module.exports.tulburUridchiljTulukh = async (body, next) => {
         "tuukh.0.tuluv": tukhainObject?.tuukh[0].tsagiinTuukh[0].garsanTsag
           ? 1
           : 0,
-        "tuukh.0.tulukhDun": 0,
       };
       if (!tukhainObject?.tuukh[0].tsagiinTuukh[0].garsanTsag)
         set["garakhTsag"] = new Date(
