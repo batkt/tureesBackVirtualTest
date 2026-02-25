@@ -3,11 +3,7 @@ const app = express();
 const http = require("http");
 const cors = require("cors");
 const { createAdapter } = require("@socket.io/redis-adapter");
-const {
-  pubClient,
-  subClient,
-  connectRedis,
-} = require("./utils/redisClient");
+const { pubClient, subClient, connectRedis } = require("./utils/redisClient");
 const server = http.Server(app);
 const io = require("socket.io")(server, {
   pingTimeout: 20000,
