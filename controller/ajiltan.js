@@ -43,7 +43,7 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
     try {
       var axiosKhariu = await axios.get(
         "https://api.ipgeolocation.io/ipgeo?apiKey=8ee349f1c7304c379fdb6b855d1e9df4&ip=" +
-          tuukh.ip.toString()
+        tuukh.ip.toString()
       );
       ipTuukh = new IpTuukh(tukhainBaaziinKholbolt)();
       ipTuukh.ognoo = new Date();
@@ -54,7 +54,7 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
       tuukh.bairshilUls = ipTuukh.bairshilUls;
       tuukh.bairshilKhot = ipTuukh.bairshilKhot;
       await ipTuukh.save();
-    } catch (err) {}
+    } catch (err) { }
   }
   await tuukh.save();
 }
@@ -180,13 +180,13 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
     const { db } = require("zevbackv2");
     var backupDB = exec(
       "mongodump --host=" +
-        "localhost" +
-        " --port=" +
-        "27017" +
-        " --db=" +
-        tukhainBaaziinKholbolt.baaziinNer +
-        " --archive=dump.tar" +
-        "  --gzip",
+      "localhost" +
+      " --port=" +
+      "27017" +
+      " --db=" +
+      tukhainBaaziinKholbolt.baaziinNer +
+      " --archive=dump.tar" +
+      "  --gzip",
       (err, stdout, stderr) => {
         if (err) {
           res.send(err);
@@ -734,7 +734,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                   barilgiinNer = baiguullaga.barilguud.find(
                     (x) => x._id == a._id
                   ).ner;
-                } catch (aldaa) {}
+                } catch (aldaa) { }
                 barilgiinNer = await orchuulya(barilgiinNer);
                 text =
                   text +
@@ -796,14 +796,18 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
               {
-                $unwind: "$tuukh",
-              },
-              {
-                $unwind: "$tuukh.tulbur",
+                $addFields: {
+                  firstTulburDun: {
+                    $arrayElemAt: [
+                      { $arrayElemAt: ["$tuukh.tulbur", 0] },
+                      0
+                    ]
+                  }
+                }
               },
               {
                 $match: {
-                  "tuukh.tulbur.ognoo": {
+                  "firstTulburDun.ognoo": {
                     $gte: ekhlekhOgnoo,
                     $lte: duusakhOgnoo,
                   },
@@ -813,7 +817,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 $group: {
                   _id: "niit",
                   niitDun: {
-                    $sum: "$tuukh.tulbur.dun",
+                    $sum: "$firstTulburDun.dun",
                   },
                 },
               },
@@ -825,14 +829,18 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
               {
-                $unwind: "$tuukh",
-              },
-              {
-                $unwind: "$tuukh.tulbur",
+                $addFields: {
+                  firstTulburDun: {
+                    $arrayElemAt: [
+                      { $arrayElemAt: ["$tuukh.tulbur", 0] },
+                      0
+                    ]
+                  }
+                }
               },
               {
                 $match: {
-                  "tuukh.tulbur.ognoo": {
+                  "firstTulburDun.ognoo": {
                     $gte: ekhlekhOgnoo,
                     $lte: duusakhOgnoo,
                   },
@@ -842,7 +850,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 $group: {
                   _id: "niit",
                   niitDun: {
-                    $sum: "$tuukh.tulbur.dun",
+                    $sum: "$firstTulburDun.dun",
                   },
                 },
               },
@@ -941,7 +949,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                   (await formatNumber(zurchiluud[0].niitDun)) +
                   " avlaga uussen baina. ";
               if ((zogsool && zogsool.length > 0 && zogsool[0].niitDun > 0) ||
-                  (zogsoolArchiveName && zogsoolArchiveName.length > 0 && zogsoolArchiveName[0].niitDun > 0)) {
+                (zogsoolArchiveName && zogsoolArchiveName.length > 0 && zogsoolArchiveName[0].niitDun > 0)) {
                 const shineSession = new session(db.erunkhiiKholbolt)();
                 const gishuun = new Ajiltan(kholbolt)();
                 shineSession.sessionToken = await gishuun.zochinTokenUusgye(
@@ -992,7 +1000,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
           continue;
         }
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 );
 
@@ -1036,12 +1044,11 @@ exports.licenseOgnooShalgakh = asyncHandler(
                       moment(odooOgnoo).isSameOrAfter(
                         moment(khariu.duusakhOgnoo)
                       )
-                    )
-                    {
+                    ) {
                       io.emit(`autoLogout${baiguullagiinId}`, khariu);
                     }
                   }
-                } catch (err) {}
+                } catch (err) { }
               }
             );
           }
