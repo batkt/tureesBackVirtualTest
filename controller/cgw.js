@@ -949,7 +949,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     "/" +
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate() +
-                    "&page=0&size=100";
+                    "&page=1&size=100";
                   var response;
                   try {
                     response = await axios.get(url, {
@@ -961,9 +961,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     });
                   } catch (err) {
                     if (err.response) {
-                      console.log("Status:", err.response.status);
-                      console.log("Headers:", err.response.headers);
-                      console.log("Body:", err.response.data);   // 👈 ЭНЭ response body
+                      console.log("Body:", err.response.data);
                     } else {
                       console.log("Error:", err.message);
                     }
