@@ -950,15 +950,24 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate() +
                     "&page=0&size=100";
-                  var response = await axios
-                    .get(url, {
+                  var response;
+                  try {
+                    response = await axios.get(url, {
                       headers: {
                         "Content-Type": "application/json",
                         Authorization: "Bearer " + tokenObject.token,
                       },
                       responseType: "json",
-                    })
-                    .catch((err) => { console.log("Error fetching TDB data: " + err); });
+                    });
+                  } catch (err) {
+                    if (err.response) {
+                      console.log("Status:", err.response.status);
+                      console.log("Headers:", err.response.headers);
+                      console.log("Body:", err.response.data);   // 👈 ЭНЭ response body
+                    } else {
+                      console.log("Error:", err.message);
+                    }
+                  }
                   var khariu = response.data;
                   if(dans.dugaar == "MN740004000444033296")
                     console.log("khariu: " + JSON.stringify(khariu));
