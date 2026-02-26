@@ -957,8 +957,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         Authorization: "Bearer " + tokenObject.token,
                       },
                     })
-                    .catch((err) => {});
+                    .catch((err) => { console.log("Error fetching TDB data: " + err); });
                   var khariu = response.data;
+                  if(dans.dugaar == "MN740004000444033296")
+                    console.log("khariu: " + JSON.stringify(khariu));
                   if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
                     var guilgeenuud = [];
                     khariu.txn.forEach((mur) => {
@@ -1438,6 +1440,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       }
     }
   } catch (err) {
+    console.log("Error in bankniiKhuulgaTatajKhadgalya: " + err);
     if (next) next(err);
   }
 });

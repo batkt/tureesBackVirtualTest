@@ -117,6 +117,7 @@ if (process.env.NODE_APP_INSTANCE === "7") {
   cron.schedule(
     "*/5 * * * * ",
     function () {
+      console.log("Banknii khuulga tatakh ajil ehlelee");
       cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
     },
     {
