@@ -1342,8 +1342,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             const aldangiChuluulukhOgnoo = aldangiEhlehOgnoo
               .clone()
               .add(aldangiChuluulukhKhonog, "days");
-
+            console.log("aldangiChuluulukhOgnoo: " + aldangiChuluulukhOgnoo.format("YYYY-MM-DD"));
             if (moment().isAfter(aldangiChuluulukhOgnoo)) {
+              console.log("moment --->" + moment().isAfter(aldangiChuluulukhOgnoo));
               const bodogdsonKhuu = tooZasyaSync(
                 (uldegdel * aldagiinKhuvi) / 100
               );
