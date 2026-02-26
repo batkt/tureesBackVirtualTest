@@ -956,6 +956,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         "Content-Type": "application/json",
                         Authorization: "Bearer " + tokenObject.token,
                       },
+                      responseType: "json",
                     })
                     .catch((err) => { console.log("Error fetching TDB data: " + err); });
                   var khariu = response.data;
