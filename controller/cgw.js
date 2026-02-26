@@ -967,8 +967,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     }
                   }
                   var khariu = response.data;
-                  if(dans.dugaar == "MN740004000444033296")
-                    console.log("khariu: " + JSON.stringify(khariu));
                   if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
                     var guilgeenuud = [];
                     khariu.txn.forEach((mur) => {
@@ -1741,7 +1739,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     "/" +
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate() +
-                    "&page=0&size=100";
+                    "&page=1&size=100";
                   var response;
                   try {
                     response = await axios.get(url, {
