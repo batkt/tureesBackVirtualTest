@@ -28,16 +28,16 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
       .save()
       .then((result) => {
         // test
-        // db.kholboltNemye(
-        //   baiguullaga._id,
-        //   req.body.baaziinNer,
-        //   true,
-        //   "127.0.0.1:27017",
-        //   "Br1stelback1",
-        //   "admin",
-        // );
+        db.kholboltNemye(
+          baiguullaga._id,
+          req.body.baaziinNer,
+          true,
+          "127.0.0.1:27017",
+          "Br1stelback1",
+          "admin",
+        );
         //production
-        db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
+        // db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
         if (req.body.ajiltan) {
           let ajiltan = new Ajiltan(db.erunkhiiKholbolt)(req.body.ajiltan);
           ajiltan.erkh = "Admin";
@@ -154,6 +154,37 @@ router.post(
     }
   },
 );
+router.post("/barilgaTokhirgooZasya", tokenShalgakh, async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    const { baiguullagiinId, barilgaId, tokhirgoo } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(baiguullagiinId)) {
+      return next(new Error("Буруу байгуулагын ID: " + baiguullagiinId));
+    }
+    if (!mongoose.Types.ObjectId.isValid(barilgaId)) {
+      return next(new Error("Буруу барилгын ID: " + barilgaId));
+    }
+
+    // Build update for the matching building inside barilguud array
+    var update = {};
+    for (var field in tokhirgoo) {
+      update[`barilguud.$[elem].tokhirgoo.${field}`] = tokhirgoo[field];
+    }
+
+    await Baiguullaga(db.erunkhiiKholbolt).findOneAndUpdate(
+      { _id: baiguullagiinId },
+      { $set: update },
+      {
+        arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(barilgaId) }],
+      },
+    );
+
+    res.send("Amjilttai");
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.post("/nevtreltiinTuukhAvya", tokenShalgakh, async (req, res, next) => {
   try {
