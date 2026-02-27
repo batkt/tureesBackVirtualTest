@@ -145,7 +145,10 @@ async function udriinTailan({ body }) {
 
     // Special cases
     const specialMatch = (status) => ({
-      "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
+       ...(status === "Unegui"
+        ? { "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd } }
+        : { "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd } }
+      ),
       ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
       ...(status === "Tulburtei" && { "tuukh.tuluv": -4 }),
       ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
