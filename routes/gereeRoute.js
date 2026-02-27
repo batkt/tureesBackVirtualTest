@@ -3791,65 +3791,7 @@ router
         const cancelledWithTuluvluguut = new Set(
           (tsutslagdsanTuluvluguutList || []).map((r) => r._id),
         );
-        const ekhlekhDate = new Date(req.body.ekhlekhOgnoo);
-        const duusakhDate = new Date(req.body.duusakhOgnoo);
-        const cancelledWithStoredValues = await Geree(
-          req.body.tukhainBaaziinKholbolt,
-          true,
-        )
-          .find(
-            {
-              ...tsutslagdsanMatch,
-              tsutsalsanOgnoo: {
-                $gte: ekhlekhDate,
-                $lte: duusakhDate,
-              },
-            },
-            { gereeniiDugaar: 1 },
-          )
-          .lean();
-        let cancelledWithStoredIds = new Set(
-          (cancelledWithStoredValues || [])
-            .map((r) => r.gereeniiDugaar)
-            .filter(Boolean),
-        );
-        const cancelledViaTuukh = await Geree(
-          req.body.tukhainBaaziinKholbolt,
-          true,
-        )
-          .aggregate([
-            { $match: { ...tsutslagdsanMatch, tsutsalsanOgnoo: { $exists: false } } },
-            { $unwind: "$gereeniiTuukhuud" },
-            {
-              $match: {
-                "gereeniiTuukhuud.turul": "Tsutslakh",
-                "gereeniiTuukhuud.khiisenOgnoo": {
-                  $gte: ekhlekhDate,
-                  $lte: duusakhDate,
-                },
-              },
-            },
-            { $group: { _id: "$gereeniiDugaar" } },
-          ]);
-        (cancelledViaTuukh || []).forEach((r) => {
-          if (r._id) cancelledWithStoredIds.add(r._id);
-        });
-        allCancelledIds = new Set([
-          ...cancelledWithTuluvluguut,
-          ...cancelledWithStoredIds,
-        ]);
-        const tsutslagdsanContracts = [
-          ...(tsutslagdsanAvlagaList || []).map((r) => ({
-            _id: r._id,
-            tsutslagdsanAvlaga: r.tsutslagdsanAvlaga,
-          })),
-          ...(tsutslagdsanTuluvluguutList || [])
-            .filter((r) => !cancelledWithAvlaga.has(r._id))
-            .map((r) => ({
-              _id: r._id,
-              tsutslagdsanAvlaga: 0,
-            })),
-        ];
+        allCancelledIds = cancelledWithTuluvluguut;
         allCancelledIds.forEach((id) => {
           if (id && !turJagsaalt.includes(id)) {
             turJagsaalt.push(id);
