@@ -152,6 +152,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
     var aldaaniiMsg;
     var id = new mongoose.Types.ObjectId();
     guilgee._id = id;
+    guilgee.ognoo = guilgee.ognoo ? new Date(guilgee.ognoo) : new Date();
     guilgee.guilgeeKhiisenOgnoo = new Date();
     if (req.body.nevtersenAjiltniiToken) {
       guilgee.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;

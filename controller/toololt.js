@@ -667,6 +667,43 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
     ];
     var tsutslagdsanAvlaga = await gereeObject.aggregate(query);
+    match = {
+      "avlaga.baritsaa.ognoo": {
+        $gte: ekhlekhOgnoo,
+        $lte: duusakhOgnoo,
+      },
+      baiguullagiinId: req.body.baiguullagiinId,
+    };
+    if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
+    query = [
+      {
+        $unwind: {
+          path: "$avlaga.baritsaa",
+        },
+      },
+      {
+        $addFields: {
+          "avlaga.baritsaa.ognoo": { $toDate: "$avlaga.baritsaa.ognoo" },
+        },
+      },
+      {
+        $match: match,
+      },
+      {
+        $group: {
+          _id: "baritsaa",
+          dun: {
+            $sum: {
+              $ifNull: ["$avlaga.baritsaa.orlogo", 0],
+            },
+          },
+          too: {
+            $sum: 1,
+          },
+        },
+      },
+    ];
+    var baritsaaToololt = await gereeObject.aggregate(query);
     res.json({
       avlaga,
       voucher,
@@ -675,6 +712,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       eneSardTulsun,
       khungulult,
       tsutslagdsanAvlaga,
+      baritsaaToololt,
     });
   } catch (err) {
     next(err);

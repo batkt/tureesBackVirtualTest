@@ -3046,12 +3046,8 @@ async function turluurDunBugluy(
     var idnuud = [];
     var matchQuery = {
       "avlaga.guilgeenuud.ognoo": {
-        $lte: new Date(duusakhOgnoo),
-        $gte: new Date(ekhlekhOgnoo),
-      },
-      "avlaga.guilgeenuud.turul": {
-        $lte: new Date(duusakhOgnoo),
-        $gte: new Date(ekhlekhOgnoo),
+        $lte: moment(duusakhOgnoo).toDate(),
+        $gte: moment(ekhlekhOgnoo).toDate(),
       },
     };
     var groupQuery = {
@@ -3093,6 +3089,11 @@ async function turluurDunBugluy(
         },
       },
       {
+        $addFields: {
+          "avlaga.guilgeenuud.ognoo": { $toDate: "$avlaga.guilgeenuud.ognoo" },
+        },
+      },
+      {
         $match: matchQuery,
       },
       {
@@ -3112,6 +3113,11 @@ async function turluurDunBugluy(
         },
       },
       {
+        $addFields: {
+          "avlaga.baritsaa.ognoo": { $toDate: "$avlaga.baritsaa.ognoo" },
+        },
+      },
+      {
         $match: {
           "avlaga.baritsaa.ognoo": {
             $lte: new Date(duusakhOgnoo),
@@ -3121,7 +3127,7 @@ async function turluurDunBugluy(
       },
       {
         $group: {
-          _id: "$_id",
+          _id: "$gereeniiDugaar",
           baritsaaTulsun: { $sum: "$avlaga.baritsaa.orlogo" },
         },
       },
@@ -3141,7 +3147,7 @@ async function turluurDunBugluy(
           gereenuud.find((a) => a._id == x.gereeniiDugaar)?.tulsun || 0;
 
       x.baritsaaTulsun =
-        baritsaaResults.find((a) => a._id.toString() == x._id.toString())
+        baritsaaResults.find((a) => a._id == x.gereeniiDugaar)
           ?.baritsaaTulsun || 0;
     });
   }
