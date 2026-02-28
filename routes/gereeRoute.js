@@ -2541,7 +2541,7 @@ router
             baritsaaAshiglasanDun: [
   {
     $unwind: {
-      path: "$avlaga.baritsaa",  // ← correct array
+      path: "$avlaga.baritsaa",  
     },
   },
   {
@@ -2550,7 +2550,7 @@ router
         $gte: new Date(req.body.ekhlekhOgnoo),
         $lte: new Date(req.body.duusakhOgnoo),
       },
-      "avlaga.baritsaa.orlogo": {  // ← orlogo > 0 means барьцаа төлөлт
+      "avlaga.baritsaa.orlogo": {   
         $gt: 0,
       },
     },
