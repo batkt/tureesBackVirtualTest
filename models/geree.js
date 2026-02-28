@@ -126,6 +126,10 @@ const gereeSchema = new Schema(
       type: Number,
       default: 0,
     },
+    baritsaaTulsunDun: {
+      type: Number,
+      default: 0,
+    },
     baritsaaBairshuulakhKhugatsaa: Number,
     baritsaaAvakhKhugatsaa: Number,
     baritsaaAvakhEsekh: Boolean,

@@ -186,6 +186,12 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
                 guilgee.orlogo - guilgee.zarlaga,
               ],
             },
+            baritsaaTulsunDun: {
+              $add: [
+                { $ifNull: ["$baritsaaTulsunDun", 0] },
+                guilgee.orlogo || 0,
+              ],
+            },
           },
         },
       ])
@@ -1703,6 +1709,12 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
               $add: [
                 { $ifNull: ["$baritsaaniiUldegdel", 0] },
                 req.body.zarlaga - req.body.orlogo,
+              ],
+            },
+            baritsaaTulsunDun: {
+              $add: [
+                { $ifNull: ["$baritsaaTulsunDun", 0] },
+                -(req.body.orlogo || 0),
               ],
             },
           },
