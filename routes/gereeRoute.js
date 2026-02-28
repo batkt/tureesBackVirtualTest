@@ -2538,49 +2538,39 @@ router
         },
         {
           $facet: {
-            // Барьцаа төлөлт — orlogo sum (existing, renamed)
-baritsaaTulultiinDun: [
-  { $unwind: { path: "$avlaga.baritsaa" } },
+            baritsaaAshiglasanDun: [
+  {
+    $unwind: {
+      path: "$avlaga.baritsaa",  // ← correct array
+    },
+  },
   {
     $match: {
       "avlaga.baritsaa.ognoo": {
         $gte: new Date(req.body.ekhlekhOgnoo),
         $lte: new Date(req.body.duusakhOgnoo),
       },
-      "avlaga.baritsaa.orlogo": { $gt: 0 },
-    },
-  },
-  {
-    $group: {
-      _id: "$gereeniiDugaar",
-      tulsun: { $sum: { $ifNull: ["$avlaga.baritsaa.orlogo", 0] } },
-    },
-  },
-  {
-    $project: { _id: 0, gereeniiDugaar: "$_id", uldegdel: "$tulsun" },
-  },
-],
-
- 
-baritsaaAshiglasanDun: [
-  { $unwind: { path: "$avlaga.baritsaa" } },
-  {
-    $match: {
-      "avlaga.baritsaa.ognoo": {
-        $gte: new Date(req.body.ekhlekhOgnoo),
-        $lte: new Date(req.body.duusakhOgnoo),
+      "avlaga.baritsaa.orlogo": {  // ← orlogo > 0 means барьцаа төлөлт
+        $gt: 0,
       },
-      "avlaga.baritsaa.zarlaga": { $gt: 0 },
     },
   },
   {
     $group: {
       _id: "$gereeniiDugaar",
-      tulsun: { $sum: { $ifNull: ["$avlaga.baritsaa.zarlaga", 0] } },
+      tulsun: {
+        $sum: {
+          $ifNull: ["$avlaga.baritsaa.orlogo", 0],
+        },
+      },
     },
   },
   {
-    $project: { _id: 0, gereeniiDugaar: "$_id", uldegdel: "$tulsun" },
+    $project: {
+      _id: 0,
+      gereeniiDugaar: "$_id",
+      uldegdel: "$tulsun",
+    },
   },
 ],
             umnukhSariinTulsun: [
@@ -3929,14 +3919,6 @@ router
                   x.tuluvluguut = x.tuluvluguut ?? 0;
                   x.niitUldegdel = x.niitUldegdel ?? 0;
                 }
-                x.baritsaaTulultiinDun =
-  gereenuud[0].baritsaaTulultiinDun?.find(
-    (a) => a.gereeniiDugaar == x.gereeniiDugaar,
-  )?.uldegdel || 0;
-x.baritsaaAshiglasanDun =
-  gereenuud[0].baritsaaAshiglasanDun?.find(
-    (a) => a.gereeniiDugaar == x.gereeniiDugaar,
-  )?.uldegdel || 0;
                 if (x.tuluv === -1) {
                   const stored = storedValuesMap[x.gereeniiDugaar];
                   const storedTuluvluguut =
