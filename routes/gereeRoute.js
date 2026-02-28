@@ -3842,9 +3842,9 @@ router
         (storedDocs || []).forEach((d) => {
           if (d.gereeniiDugaar) {
             const tuluvluguut =
-              d.sariinTurees != null && d.sariinTurees > 0
-                ? d.sariinTurees
-                : d.tsutsalsanTuluvluguut ?? 0;
+              d.tsutsalsanTuluvluguut != null && d.tsutsalsanTuluvluguut > 0
+                ? d.tsutsalsanTuluvluguut
+                : d.sariinTurees ?? 0;
             storedValuesMap[d.gereeniiDugaar] = {
               tuluvluguut,
               uldegdel: d.tsutsalsanUldegdel,
@@ -3883,9 +3883,7 @@ router
                   const stored = storedValuesMap[x.gereeniiDugaar];
                   const storedTuluvluguut =
                     stored?.tuluvluguut ??
-                    (x.sariinTurees != null && x.sariinTurees > 0
-                      ? x.sariinTurees
-                      : x.tsutsalsanTuluvluguut) ??
+                    x.tsutsalsanTuluvluguut ??
                     tuluvluguutMapForCancelled[x.gereeniiDugaar];
                   const storedUldegdel =
                     stored?.uldegdel ??
@@ -3991,9 +3989,7 @@ router
                       tuluvluguutMapForCancelled[x.gereeniiDugaar];
                     const storedTuluvluguut =
                       stored?.tuluvluguut ??
-                      (x.sariinTurees != null && x.sariinTurees > 0
-                        ? x.sariinTurees
-                        : x.tsutsalsanTuluvluguut) ??
+                      x.tsutsalsanTuluvluguut ??
                       tuluvluguutMapForCancelled[x.gereeniiDugaar];
                     x.tsutslagdsanAvlaga =
                       storedUldegdel != null ? storedUldegdel : avlagaFromMap;
