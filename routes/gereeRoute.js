@@ -3894,9 +3894,9 @@ router
                     tuluvluguutMapForCancelled[x.gereeniiDugaar];
                   const storedUldegdel =
                     stored?.uldegdel ??
-                    (x.sariinTurees != null && x.sariinTurees > 0
-                      ? x.sariinTurees
-                      : x.tsutsalsanTuluvluguut) ??
+                    (x.tsutsalsanTuluvluguut != null && x.tsutsalsanTuluvluguut > 0
+                      ? x.tsutsalsanTuluvluguut
+                      : x.sariinTurees) ??
                     tuluvluguutMapForCancelled[x.gereeniiDugaar];
                   if (storedTuluvluguut != null) x.tuluvluguut = storedTuluvluguut;
                   if (storedUldegdel != null) {
@@ -3994,15 +3994,15 @@ router
                     const stored = storedValuesMap[x.gereeniiDugaar];
                     const storedUldegdel =
                       stored?.uldegdel ??
-                      (x.sariinTurees != null && x.sariinTurees > 0
-                        ? x.sariinTurees
-                        : x.tsutsalsanTuluvluguut) ??
+                      (x.tsutsalsanTuluvluguut != null && x.tsutsalsanTuluvluguut > 0
+                        ? x.tsutsalsanTuluvluguut
+                        : x.sariinTurees) ??
                       tuluvluguutMapForCancelled[x.gereeniiDugaar];
                     const storedTuluvluguut =
                       stored?.tuluvluguut ??
-                      (x.sariinTurees != null && x.sariinTurees > 0
-                        ? x.sariinTurees
-                        : x.tsutsalsanTuluvluguut) ??
+                      (x.tsutsalsanTuluvluguut != null && x.tsutsalsanTuluvluguut > 0
+                        ? x.tsutsalsanTuluvluguut
+                        : x.sariinTurees) ??
                       tuluvluguutMapForCancelled[x.gereeniiDugaar];
                     x.tsutslagdsanAvlaga =
                       storedUldegdel != null ? storedUldegdel : avlagaFromMap;
