@@ -4915,7 +4915,8 @@ router
       if (gereenuud?.length > 0) {
         for (const geree of gereenuud) {
           var dun =
-            (geree.baritsaaAvakhDun || 0) - (geree.baritsaaniiUldegdel || 0);
+            (geree.baritsaaAvakhDun || 0) - (geree.baritsaaniiUldegdel || 0); 
+            
           var baritsaa = {
             ognoo: geree.gereeniiOgnoo,
             orlogo: dun,
