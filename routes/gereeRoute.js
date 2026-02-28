@@ -3099,7 +3099,35 @@ async function turluurDunBugluy(
         $group: groupQuery,
       },
     ];
-    var gereenuud = await Geree(tukhainBaaziinKholbolt, true).aggregate(query);
+    var baritsaaQuery = [
+      {
+        $match: {
+          _id: { $in: idnuud },
+        },
+      },
+      {
+        $unwind: {
+          path: "$avlaga.baritsaa",
+        },
+      },
+      {
+        $match: {
+          "avlaga.baritsaa.ognoo": {
+            $lte: new Date(duusakhOgnoo),
+            $gte: new Date(ekhlekhOgnoo),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          baritsaaTulsun: { $sum: "$avlaga.baritsaa.orlogo" },
+        },
+      },
+    ];
+    var baritsaaResults = await Geree(tukhainBaaziinKholbolt, true).aggregate(
+      baritsaaQuery,
+    );
     jagsaalt.forEach((x) => {
       if (turul == "voucher")
         x.voucherDun =
@@ -3110,6 +3138,10 @@ async function turluurDunBugluy(
       else
         x.tulsunDun =
           gereenuud.find((a) => a._id == x.gereeniiDugaar)?.tulsun || 0;
+
+      x.baritsaaTulsun =
+        baritsaaResults.find((a) => a._id.toString() == x._id.toString())
+          ?.baritsaaTulsun || 0;
     });
   }
   return jagsaalt;
