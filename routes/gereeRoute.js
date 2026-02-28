@@ -1167,6 +1167,7 @@ router
           gereeniiTuukhuud: 1,
           duusakhOgnoo: 1,
           avlaga: 1,
+          sariinTurees: 1,
         })
         .lean();
       var tuukh = {
@@ -1233,8 +1234,14 @@ router
       const updateSet = {
         tsutsalsanOgnoo: new Date(),
         tuluv: -1,
-        tsutsalsanTuluvluguut,
-        tsutsalsanUldegdel,
+        tsutsalsanTuluvluguut:
+          tsutsalsanTuluvluguut > 0
+            ? tsutsalsanTuluvluguut
+            : geree.sariinTurees || 0,
+        tsutsalsanUldegdel:
+          tsutsalsanUldegdel > 0
+            ? tsutsalsanUldegdel
+            : geree.sariinTurees || 0,
         tsutsalsanTulsunDun,
       };
       if (geree.gereeniiTuukhuud) {
@@ -1331,7 +1338,7 @@ router
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
       if (!!body?.khuudasniiKhemjee)
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-      if (!!body?.search) body.search = String(body.search);
+      if (!!body?.search) delete body.search;
       if (req.body.barilgiinId) {
         if (!body.query) body.query = { barilgiinId: req.body.barilgiinId };
         else body.query["barilgiinId"] = req.body.barilgiinId;
@@ -2466,7 +2473,7 @@ router
         const body = req.body.query;
         if (!!body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
         if (!!body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-        if (!!body?.search) body.search = String(body.search);
+        if (!!body?.search) delete body.search;
   
         //if (!!body?.query) body.query = JSON.parse(body.query);
         body.query["gereeniiDugaar"] = { $in: turJagsaalt };
@@ -2813,7 +2820,7 @@ router
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
       if (!!body?.khuudasniiKhemjee)
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-      if (!!body?.search) body.search = String(body.search);
+      if (!!body?.search) delete body.search;
 
       body.lean = true;
       khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt, true), body)
@@ -3121,7 +3128,7 @@ router
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
       if (!!body?.khuudasniiKhemjee)
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-      if (!!body?.search) body.search = String(body.search);
+      if (!!body?.search) delete body.search;
       if (!body.query) body.query = {};
       body.query["avlaga.guilgeenuud"] = {
         $elemMatch: {
@@ -3168,7 +3175,7 @@ router
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
       if (!!body?.khuudasniiKhemjee)
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-      if (!!body?.search) body.search = String(body.search);
+      if (!!body?.search) delete body.search;
       if (!body.query) body.query = {};
       const showTsutslagdsanAvlaga = body.query?.showTsutslagdsanAvlaga === true;
       delete body.query.showTsutslagdsanAvlaga;
@@ -3498,7 +3505,7 @@ router
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
       if (!!body?.khuudasniiKhemjee)
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-      if (!!body?.search) body.search = String(body.search);
+      if (!!body?.search) delete body.search;
       if (!body.query) body.query = {};
       body.query["avlaga.guilgeenuud"] = {
         $elemMatch: {
@@ -3807,7 +3814,7 @@ router
         body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
       if (!!body?.khuudasniiKhemjee)
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
-      if (!!body?.search) body.search = String(body.search);
+      if (!!body?.search) delete body.search;
       body.query["gereeniiDugaar"] = { $in: turJagsaalt };
       body.query["tuluv"] = req.body.showTsutslagdsanAvlaga === true
         ? { $in: [1, -1] }
@@ -3847,7 +3854,7 @@ router
                 : d.sariinTurees ?? 0;
             storedValuesMap[d.gereeniiDugaar] = {
               tuluvluguut,
-              uldegdel: d.tsutsalsanUldegdel,
+              uldegdel: tuluvluguut,
             };
           }
         });
@@ -3887,7 +3894,9 @@ router
                     tuluvluguutMapForCancelled[x.gereeniiDugaar];
                   const storedUldegdel =
                     stored?.uldegdel ??
-                    x.tsutsalsanUldegdel ??
+                    (x.sariinTurees != null && x.sariinTurees > 0
+                      ? x.sariinTurees
+                      : x.tsutsalsanTuluvluguut) ??
                     tuluvluguutMapForCancelled[x.gereeniiDugaar];
                   if (storedTuluvluguut != null) x.tuluvluguut = storedTuluvluguut;
                   if (storedUldegdel != null) {
@@ -3985,11 +3994,15 @@ router
                     const stored = storedValuesMap[x.gereeniiDugaar];
                     const storedUldegdel =
                       stored?.uldegdel ??
-                      x.tsutsalsanUldegdel ??
+                      (x.sariinTurees != null && x.sariinTurees > 0
+                        ? x.sariinTurees
+                        : x.tsutsalsanTuluvluguut) ??
                       tuluvluguutMapForCancelled[x.gereeniiDugaar];
                     const storedTuluvluguut =
                       stored?.tuluvluguut ??
-                      x.tsutsalsanTuluvluguut ??
+                      (x.sariinTurees != null && x.sariinTurees > 0
+                        ? x.sariinTurees
+                        : x.tsutsalsanTuluvluguut) ??
                       tuluvluguutMapForCancelled[x.gereeniiDugaar];
                     x.tsutslagdsanAvlaga =
                       storedUldegdel != null ? storedUldegdel : avlagaFromMap;
