@@ -162,7 +162,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
         [`avlaga.baritsaa`]: guilgee,
       },
     };
-    if (guilgee.zarlaga > 0) {
+    if (guilgee.zarlaga > 0 && guilgee.turul !== "butsaalt") {
       var tulbur = guilgee;
       tulbur.tulsunDun = guilgee.zarlaga;
       tulbur.turul = "baritsaa";
