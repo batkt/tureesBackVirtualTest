@@ -1468,6 +1468,50 @@ router
                       },
                     },
                   ],
+                  baritsaaAshiglasanDun: [
+  {
+    $unwind: {
+      path: "$avlaga.guilgeenuud",
+    },
+  },
+  {
+    $match: {
+      "avlaga.guilgeenuud.ognoo": {
+        $gte: new Date(req.body.ekhlekhOgnoo),
+        $lte: new Date(req.body.duusakhOgnoo),
+      },
+      $and: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $in: ["baritsaa"],
+          },
+        },
+        {
+          "avlaga.guilgeenuud.tulsunDun": {
+            $gt: 0,
+          },
+        },
+      ],
+    },
+  },
+  {
+    $group: {
+      _id: "$gereeniiDugaar",
+      tulsun: {
+        $sum: {
+          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+        },
+      },
+    },
+  },
+  {
+    $project: {
+      _id: 0,
+      gereeniiDugaar: "$_id",
+      uldegdel: "$tulsun",
+    },
+  },
+],
                   umnukhSariinTulsun: [
                     {
                       $unwind: {
@@ -1513,11 +1557,12 @@ router
                       },
                     },
                     {
-                      $project: {
-                        gereeniiDugaar: "$gereeniiDugaar",
-                        uldegdel: "$tulsun",
-                      },
-                    },
+  $project: {
+    _id: 0,
+    gereeniiDugaar: "$_id",
+    uldegdel: "$tulsun",
+  },
+},
                   ],
                   umnukhSariinUrTulbur: [
                     {
@@ -2122,6 +2167,10 @@ router
                   gereenuud[0].tukhainSariinTureesiinTulukhDun.find(
                     (a) => a._id == x.gereeniiDugaar,
                   )?.tulukh || 0;
+                  x.baritsaaAshiglasanDun =
+  gereenuud[0].baritsaaAshiglasanDun?.find(
+    (a) => a.gereeniiDugaar == x.gereeniiDugaar,
+  )?.uldegdel || 0;
                 x.eneSardTulukhDun =
                   gereenuud[0].eneSardTulukhDun.find(
                     (a) => a._id == x.gereeniiDugaar,
@@ -2632,6 +2681,50 @@ router
                 },
               },
             ],
+            baritsaaAshiglasanDun: [
+  {
+    $unwind: {
+      path: "$avlaga.guilgeenuud",
+    },
+  },
+  {
+    $match: {
+      "avlaga.guilgeenuud.ognoo": {
+        $gte: new Date(req.body.ekhlekhOgnoo),
+        $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
+      },
+      $and: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $in: ["baritsaa"],
+          },
+        },
+        {
+          "avlaga.guilgeenuud.tulsunDun": {
+            $gt: 0,
+          },
+        },
+      ],
+    },
+  },
+  {
+    $group: {
+      _id: "$gereeniiDugaar",
+      tulsun: {
+        $sum: {
+          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+        },
+      },
+    },
+  },
+  {
+    $project: {
+      _id: 0,
+      gereeniiDugaar: "$_id",
+      uldegdel: "$tulsun",
+    },
+  },
+],
             umnukhSariinUrTulbur: [
               {
                 $unwind: {
@@ -3665,12 +3758,15 @@ router
         true,
       ).aggregate(query);
       const hasTuluvluguut =
-        gereenuud?.length > 0 &&
-        gereenuud[0]?.tuluvluguut?.length > 0;
-      if (!hasTuluvluguut && !req.body.showTsutslagdsanAvlaga) {
-        res.send({ jagsaalt: [], niitMur: 0, khuudasniiDugaar: 1, niitTuluvluguut: 0 });
-        return;
-      }
+  gereenuud?.length > 0 &&
+  gereenuud[0]?.tuluvluguut?.length > 0;
+const hasBaritsaaAshiglasanDun =
+  gereenuud?.length > 0 &&
+  gereenuud[0]?.baritsaaAshiglasanDun?.length > 0;
+if (!hasTuluvluguut && !hasBaritsaaAshiglasanDun && !req.body.showTsutslagdsanAvlaga) {
+  res.send({ jagsaalt: [], niitMur: 0, khuudasniiDugaar: 1, niitTuluvluguut: 0 });
+  return;
+}
       var turJagsaalt = [];
       if (gereenuud.length > 0 && gereenuud[0].tuluvluguut?.length > 0) {
         gereenuud[0].tuluvluguut.forEach((x) => {
@@ -3886,6 +3982,10 @@ router
                   x.tuluvluguut = x.tuluvluguut ?? 0;
                   x.niitUldegdel = x.niitUldegdel ?? 0;
                 }
+                x.baritsaaAshiglasanDun =
+    gereenuud[0].baritsaaAshiglasanDun?.find(
+      (a) => a.gereeniiDugaar == x.gereeniiDugaar,
+    )?.uldegdel || 0;
                 if (x.tuluv === -1) {
                   const stored = storedValuesMap[x.gereeniiDugaar];
                   const storedTuluvluguut =
