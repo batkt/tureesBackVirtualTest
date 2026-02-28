@@ -3044,12 +3044,14 @@ async function turluurDunBugluy(
 ) {
   if (jagsaalt && jagsaalt.length > 0) {
     var idnuud = [];
-    const start = moment(ekhlekhOgnoo).startOf("month").toDate();
-    const end = moment(duusakhOgnoo).endOf("month").toDate();
     var matchQuery = {
       "avlaga.guilgeenuud.ognoo": {
-        $lte: end,
-        $gte: start,
+        $lte: new Date(duusakhOgnoo),
+        $gte: new Date(ekhlekhOgnoo),
+      },
+      "avlaga.guilgeenuud.turul": {
+        $lte: new Date(duusakhOgnoo),
+        $gte: new Date(ekhlekhOgnoo),
       },
     };
     var groupQuery = {
@@ -3091,11 +3093,6 @@ async function turluurDunBugluy(
         },
       },
       {
-        $addFields: {
-          "avlaga.guilgeenuud.ognoo": { $toDate: "$avlaga.guilgeenuud.ognoo" },
-        },
-      },
-      {
         $match: matchQuery,
       },
       {
@@ -3103,40 +3100,6 @@ async function turluurDunBugluy(
       },
     ];
     var gereenuud = await Geree(tukhainBaaziinKholbolt, true).aggregate(query);
-    var baritsaaQuery = [
-      {
-        $match: {
-          _id: { $in: idnuud },
-        },
-      },
-      {
-        $unwind: {
-          path: "$avlaga.baritsaa",
-        },
-      },
-      {
-        $addFields: {
-          "avlaga.baritsaa.ognoo": { $toDate: "$avlaga.baritsaa.ognoo" },
-        },
-      },
-      {
-        $match: {
-          "avlaga.baritsaa.ognoo": {
-            $lte: end,
-            $gte: start,
-          },
-        },
-      },
-      {
-        $group: {
-          _id: "$gereeniiDugaar",
-          baritsaaTulsun: { $sum: { $ifNull: ["$avlaga.baritsaa.orlogo", 0] } },
-        },
-      },
-    ];
-    var baritsaaResults = await Geree(tukhainBaaziinKholbolt, true).aggregate(
-      baritsaaQuery,
-    );
     jagsaalt.forEach((x) => {
       if (turul == "voucher")
         x.voucherDun =
@@ -3147,10 +3110,6 @@ async function turluurDunBugluy(
       else
         x.tulsunDun =
           gereenuud.find((a) => a._id == x.gereeniiDugaar)?.tulsun || 0;
-
-      x.baritsaaTulsun =
-        baritsaaResults.find((a) => a._id == x.gereeniiDugaar)
-          ?.baritsaaTulsun || 0;
     });
   }
   return jagsaalt;
