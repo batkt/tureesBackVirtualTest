@@ -3099,6 +3099,7 @@ async function turluurDunBugluy(
         $group: groupQuery,
       },
     ];
+    var gereenuud = await Geree(tukhainBaaziinKholbolt, true).aggregate(query);
     var baritsaaQuery = [
       {
         $match: {
