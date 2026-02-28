@@ -3044,10 +3044,12 @@ async function turluurDunBugluy(
 ) {
   if (jagsaalt && jagsaalt.length > 0) {
     var idnuud = [];
+    const start = moment(ekhlekhOgnoo).startOf("month").toDate();
+    const end = moment(duusakhOgnoo).endOf("month").toDate();
     var matchQuery = {
       "avlaga.guilgeenuud.ognoo": {
-        $lte: moment(duusakhOgnoo).toDate(),
-        $gte: moment(ekhlekhOgnoo).toDate(),
+        $lte: end,
+        $gte: start,
       },
     };
     var groupQuery = {
@@ -3120,15 +3122,15 @@ async function turluurDunBugluy(
       {
         $match: {
           "avlaga.baritsaa.ognoo": {
-            $lte: new Date(duusakhOgnoo),
-            $gte: new Date(ekhlekhOgnoo),
+            $lte: end,
+            $gte: start,
           },
         },
       },
       {
         $group: {
           _id: "$gereeniiDugaar",
-          baritsaaTulsun: { $sum: "$avlaga.baritsaa.orlogo" },
+          baritsaaTulsun: { $sum: { $ifNull: ["$avlaga.baritsaa.orlogo", 0] } },
         },
       },
     ];
