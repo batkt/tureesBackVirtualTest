@@ -2539,48 +2539,40 @@ router
         {
           $facet: {
             baritsaaAshiglasanDun: [
-              {
-                $unwind: {
-                  path: "$avlaga.guilgeenuud",
-                },
-              },
-              {
-                $match: {
-                  "avlaga.guilgeenuud.ognoo": {
-                    $gte: new Date(req.body.ekhlekhOgnoo),
-                    $lt: new Date(req.body.nekhemjlekhAvakhOgnoo),
-                  },
-                  $and: [
-                    {
-                      "avlaga.guilgeenuud.turul": {
-                        $in: ["baritsaa"],
-                      },
-                    },
-                    {
-                      "avlaga.guilgeenuud.tulsunDun": {
-                        $gt: 0,
-                      },
-                    },
-                  ],
-                },
-              },
-              {
-                $group: {
-                  _id: "$gereeniiDugaar",
-                  tulsun: {
-                    $sum: {
-                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                    },
-                  },
-                },
-              },
-              {
-                $project: {
-                  gereeniiDugaar: "$gereeniiDugaar",
-                  uldegdel: "$tulsun",
-                },
-              },
-            ],
+  {
+    $unwind: {
+      path: "$avlaga.baritsaa",  
+    },
+  },
+  {
+    $match: {
+      "avlaga.baritsaa.ognoo": {
+        $gte: new Date(req.body.ekhlekhOgnoo),
+        $lte: new Date(req.body.duusakhOgnoo),
+      },
+      "avlaga.baritsaa.orlogo": {   
+        $gt: 0,
+      },
+    },
+  },
+  {
+    $group: {
+      _id: "$gereeniiDugaar",
+      tulsun: {
+        $sum: {
+          $ifNull: ["$avlaga.baritsaa.orlogo", 0],
+        },
+      },
+    },
+  },
+  {
+    $project: {
+      _id: 0,
+      gereeniiDugaar: "$_id",
+      uldegdel: "$tulsun",
+    },
+  },
+],
             umnukhSariinTulsun: [
               {
                 $unwind: {
