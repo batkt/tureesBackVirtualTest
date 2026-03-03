@@ -61,7 +61,7 @@ const ajiltanSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 ajiltanSchema.index({
@@ -96,10 +96,11 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo, salbaruud = null) {
         this.baiguullagiinId == "6891b5e3961369bef77b72b9" ||
         this.baiguullagiinId == "66c2c871597ea1390c3fd830" ||
         this.baiguullagiinId == "6965cef41c69d2ebeaa27eb5" ||
-        this.baiguullagiinId == "69312349dcfbe62f71db44a8"
+        this.baiguullagiinId == "69312349dcfbe62f71db44a8" ||
+        this.baiguullagiinId == "6938e64eac4d7caec23e69bf"
           ? "7d"
           : "12h",
-    }
+    },
   );
   return token;
 };
@@ -112,7 +113,7 @@ ajiltanSchema.methods.khugatsaaguiTokenUusgeye = function () {
       baiguullagiinId: this.baiguullagiinId,
     },
     process.env.APP_SECRET,
-    {}
+    {},
   );
   return token;
 };
@@ -133,7 +134,7 @@ ajiltanSchema.methods.zochinTokenUusgye = function (
         }
       : {
           expiresIn: "1h",
-        }
+        },
   );
   return token;
 };
