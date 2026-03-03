@@ -14,6 +14,8 @@ const daalgavarSchema = new Schema(
     zartsuulsanKhugatsaa: Number, //Tsagaar
     shiidsenOgnoo: Date,
     duusakhOgnoo: Date,
+    ekhlekhTsag: { type: Date }, // Start minute (0-1439, minutes from midnight)
+    duusakhTsag: { type: Date }, // End minute (0-1439, minutes from midnight)
     tuluv: Number,
     ajiltniiId: String,
     ajiltniiNer: String,
