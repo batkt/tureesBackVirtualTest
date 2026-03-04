@@ -789,6 +789,19 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
             const y = archiveBeforeDate.getFullYear();
             const m = archiveBeforeDate.getMonth() + 1;
             const archiveName = `Uilchluulegch${y}${String(m).padStart(2, "0")}`;
+            const khungulultTypes = [
+              "khariult",
+              "khungulult",
+              "Соёолж Ц/Д",
+              "Хөнгөлөлт/ 24 цаг",
+              "Хөнгөлөлт/ 2 цаг",
+              "Fitness",
+              "ugaalga/ 1 цаг",
+              "ugaalga/ 24 цаг",
+              "Божон/ 24 цаг",
+              "Божон/ 2 цаг",
+              "Божон/ 1 цаг",
+            ];
             var zogsool = await Uilchluulegch(kholbolt, true).aggregate([
               {
                 $match: {
@@ -807,6 +820,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                     $gte: ekhlekhOgnoo,
                     $lte: duusakhOgnoo,
                   },
+                  "tuukh.tulbur.turul": { $nin: khungulultTypes },
                 },
               },
               {
@@ -836,6 +850,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                     $gte: ekhlekhOgnoo,
                     $lte: duusakhOgnoo,
                   },
+                  "tuukh.tulbur.turul": { $nin: khungulultTypes },
                 },
               },
               {
