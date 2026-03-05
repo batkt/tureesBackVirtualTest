@@ -23,17 +23,31 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
   if (body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
   if (body?.search) body.search = String(body.search);
 
+  // ✅ Recursive helper to find date filter anywhere in the query
+  const findDateFilter = (obj) => {
+    if (!obj || typeof obj !== "object") return null;
+
+    const dateKeys = ["createdAt", "tuukh.tulbur.ognoo", "tuukh.tsagiinTuukh.garsanTsag"];
+    for (const key of dateKeys) {
+      if (obj[key]?.$gte || obj[key]?.$lte) return obj[key];
+    }
+
+    for (const key of ["$and", "$or"]) {
+      if (Array.isArray(obj[key])) {
+        for (const condition of obj[key]) {
+          const found = findDateFilter(condition);
+          if (found) return found;
+        }
+      }
+    }
+    return null;
+  };
+
   // Date filtering
   let startDate = null, endDate = null, dateFilter = null;
 
   if (body.query) {
-    dateFilter = body.query.createdAt || body.query["tuukh.tulbur.ognoo"];
-    if (!dateFilter && body.query.$and) {
-      for (const condition of body.query.$and) {
-        if (condition.createdAt) { dateFilter = condition.createdAt; break; }
-        if (condition["tuukh.tulbur.ognoo"]) { dateFilter = condition["tuukh.tulbur.ognoo"]; break; }
-      }
-    }
+    dateFilter = findDateFilter(body.query);
   }
 
   if (dateFilter) {
@@ -63,13 +77,14 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
       const month = current.getMonth() + 1;
       const isCurrentMonth = year === currentYear && month === currentMonth;
 
+      // ✅ Always add archive collection for every month in range
       const archiveName = `Uilchluulegch${year}${String(month).padStart(2, "0")}`;
-
       if (!addedCollections.has(archiveName)) {
         collectionsToQuery.push({ name: archiveName, year, month, isCurrent: isCurrentMonth });
         addedCollections.add(archiveName);
       }
 
+      // ✅ Also add live collection if this month is the current month
       if (isCurrentMonth && !addedCollections.has("Uilchluulegch")) {
         collectionsToQuery.push({ name: null, year, month, isCurrent: true });
         addedCollections.add("Uilchluulegch");
@@ -241,7 +256,7 @@ exports.ustgah = async (ids, conn) => {
     await barimt.save();
   }
   await UilchluulegchModel.deleteMany({ _id: { $in: ids } });
-  
+
   return "Amjilttai";
 };
 exports.tooAvya = async (body) => {

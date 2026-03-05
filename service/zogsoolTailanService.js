@@ -12,9 +12,9 @@ async function ajiltniiUdriinTailan({ body }) {
 
   const ajiltanDateMatch = body.garsanKhaalga
     ? {
-        "tuukh.garsanKhaalga": body.garsanKhaalga,
-        "tuukh.tsagiinTuukh.garsanTsag": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
-      }
+      "tuukh.garsanKhaalga": body.garsanKhaalga,
+      "tuukh.tsagiinTuukh.garsanTsag": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+    }
     : { "tuukh.tulbur.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo } };
 
   const ajiltniiNukhutsul = {};
@@ -98,14 +98,14 @@ async function udriinTailan({ body }) {
   const collectionsToQuery = [{ name: null, startDate: ekhlekhOgnoo, endDate: duusakhOgnoo }];
   const months = isMultiMonth
     ? (() => {
-        const list = [];
-        let current = start.clone().startOf("month");
-        while (current.isSameOrBefore(end, "month")) {
-          list.push(current.clone());
-          current.add(1, "month");
-        }
-        return list;
-      })()
+      const list = [];
+      let current = start.clone().startOf("month");
+      while (current.isSameOrBefore(end, "month")) {
+        list.push(current.clone());
+        current.add(1, "month");
+      }
+      return list;
+    })()
     : [start.clone().startOf("month")];
 
   months.forEach((month) => {
@@ -121,9 +121,9 @@ async function udriinTailan({ body }) {
     const model = Uilchluulegch(body.tukhainBaaziinKholbolt, !collectionName, collectionName || undefined);
     const match = body.garsanKhaalga
       ? {
-          "tuukh.garsanKhaalga": body.garsanKhaalga,
-          "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
-        }
+        "tuukh.garsanKhaalga": body.garsanKhaalga,
+        "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
+      }
       : { "tuukh.tulbur.ognoo": { $gte: dateStart, $lte: dateEnd } };
 
     if (body.burtgesenAjiltaniiId) match["tuukh.burtgesenAjiltaniiId"] = body.burtgesenAjiltaniiId;
@@ -149,7 +149,7 @@ async function udriinTailan({ body }) {
       //   ? { "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd } }
       //   : { "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd } }
       // ),
-      "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd },
+      "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
       ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
       ...(status === "Tulburtei" && { "tuukh.tuluv": -4 }),
       ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
@@ -299,14 +299,14 @@ async function zogsoolUilchluulegchdiinDunAvakh({
         dun: { $sum: "$tulsunDun" },
         garsanKhaalga: garakhKhaalgaIp
           ? {
-              $sum: {
-                $cond: [
-                  { $eq: ["$garsanKhaalga", garakhKhaalgaIp] },
-                  { $ifNull: ["$_id.tulukhDun", 0] },
-                  0,
-                ],
-              },
-            }
+            $sum: {
+              $cond: [
+                { $eq: ["$garsanKhaalga", garakhKhaalgaIp] },
+                { $ifNull: ["$_id.tulukhDun", 0] },
+                0,
+              ],
+            },
+          }
           : { $sum: 0 },
         niitDun: {
           $sum: { $ifNull: ["$_id.tulukhDun", 0] },
