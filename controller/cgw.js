@@ -951,6 +951,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate() +
                     "&page=1&size=100";
+                  console.log("URL: ----> ", url);
                   var response;
                   try {
                     response = await axios.get(url, {
