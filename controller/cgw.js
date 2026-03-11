@@ -992,12 +992,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       x.baiguullagiinId = dans.baiguullagiinId;
                       x.barilgiinId = dans.barilgiinId;
                     });
-                    BankniiGuilgee(kholbolt)
-                      .insertMany(guilgeenuud)
-                      .then((result) => {
-                        if (res) res.send("Amjilttai");
-                      })
-                      .catch((err) => {});
+                    BankniiGuilgee(kholbolt).insertMany(guilgeenuud, { ordered: false }).then(() => res?.send("Amjilttai")).catch(err => console.error("Insert error:", err));
                   }
                 } else {
                   var query = [
