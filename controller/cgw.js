@@ -761,6 +761,52 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.switchTDBCGW2 = asyncHandler(async (req, res, next) => {
+  try 
+  {
+    var kholboltuud;
+    const { db } = require("zevbackv2");
+    if (!!req?.body?.tukhainBaaziinKholbolt) {
+      kholboltuud = [req.body.tukhainBaaziinKholbolt];
+    } else {
+      kholboltuud = db.kholboltuud;
+    }
+    var dansnuud;
+    if (kholboltuud) {
+      for (const kholbolt of kholboltuud) {
+        dansnuud = await Dans(kholbolt)
+          .find({
+            bank: "tdb",
+            corporateAshiglakhEsekh: true,
+            oirkhonTatakhEsekh: { $exists: false },
+          })
+          .sort({_id:1})
+          .lean();
+        if (dansnuud)
+        {
+          const currentIndex = dansnuud.findIndex(a => a.corporateAshiglakhEsekh === true);
+          console.log("Current currentIndex: " + dansnuud[currentIndex].dugaar);
+          let nextIndex = currentIndex + 1;
+          if(nextIndex >= dansnuud.length){
+            nextIndex = 0
+          }
+          console.log("Next index: " + dansnuud[nextIndex].dugaar);
+          await Dans(kholbolt).updateMany({
+            bank: "tdb",
+            corporateAshiglakhEsekh: true,
+            oirkhonTatakhEsekh: { $exists: false },
+          }, { $set: {corporateAshiglakhEsekh: false}});
+          await Dans(kholbolt).updateOne({_id: dansnuud[nextIndex]._id}, {$set: {corporateAshiglakhEsekh: true}});
+        }
+      }
+    }
+    if (res) res.send("Amjilttai");
+  } catch (err) {
+    console.log("Error in switchTDBCGW2: " + err);
+    if (next) next(err);
+  }
+});
+
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
   try {
     var kholboltuud;
