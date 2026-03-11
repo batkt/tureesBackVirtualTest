@@ -22,7 +22,7 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
   const data = await Parking(kholbolt)
     .find(query)
     .lean();
-  await pubClient.setEx(cacheKey, 36000, JSON.stringify(data));
+  await pubClient.setEx(cacheKey, 60, JSON.stringify(data));
   return data;
 }
 async function getDotorZogsoolById(kholbolt, baiguullagiinId, barilgiinId, id) {
