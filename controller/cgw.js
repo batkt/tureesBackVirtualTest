@@ -778,7 +778,6 @@ exports.switchTDBCGW2 = asyncHandler(async (req, res, next) => {
           .find({
             bank: "tdb",
             dugaar: { $regex: "MN" },
-            corporateAshiglakhEsekh: true,
             oirkhonTatakhEsekh: { $exists: false },
           })
           .sort({_id:1})
