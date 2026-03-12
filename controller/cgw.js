@@ -777,22 +777,24 @@ exports.switchTDBCGW2 = asyncHandler(async (req, res, next) => {
         dansnuud = await Dans(kholbolt)
           .find({
             bank: "tdb",
+            dugaar: { $regex: "MN" },
             corporateAshiglakhEsekh: true,
             oirkhonTatakhEsekh: { $exists: false },
           })
           .sort({_id:1})
           .lean();
-        if (dansnuud)
+        if (dansnuud.length > 1)
         {
           const currentIndex = dansnuud.findIndex(a => a.corporateAshiglakhEsekh === true);
-          console.log("Current currentIndex: " + dansnuud[currentIndex].dugaar);
+          console.log("Current currentIndex: " + dansnuud[currentIndex]?.dugaar);
           let nextIndex = currentIndex + 1;
           if(nextIndex >= dansnuud.length){
             nextIndex = 0
           }
-          console.log("Next index: " + dansnuud[nextIndex].dugaar);
+          console.log("Next index: " + dansnuud[nextIndex]?.dugaar);
           await Dans(kholbolt).updateMany({
             bank: "tdb",
+            dugaar: { $regex: "MN" },
             corporateAshiglakhEsekh: true,
             oirkhonTatakhEsekh: { $exists: false },
           }, { $set: {corporateAshiglakhEsekh: false}});
