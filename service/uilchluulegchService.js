@@ -33,30 +33,7 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
     body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
   if (body?.search) body.search = String(body.search);
 
-  // ✅ Convert ISO date strings to Date objects
-  const convertDateStrings = (obj) => {
-    if (!obj || typeof obj !== "object") return obj;
-    for (const key of Object.keys(obj)) {
-      if (Array.isArray(obj[key])) {
-        obj[key] = obj[key].map(convertDateStrings);
-      } else if (obj[key] && typeof obj[key] === "object") {
-        convertDateStrings(obj[key]);
-      } else if (
-        typeof obj[key] === "string" &&
-        /^\d{4}-\d{2}-\d{2}T/.test(obj[key])
-      ) {
-        obj[key] = new Date(obj[key]);
-      }
-    }
-    return obj;
-  };
-  if (body.query) {
-    body.query = convertDateStrings(body.query);
-  } else {
-    body = convertDateStrings(body);
-  }
-  console.log("body.query:", body.query);
-  console.log("body:", JSON.stringify(body));
+  // ✅ Recursive helper to find date filter anywhere in the query
   const findDateFilter = (obj) => {
     if (!obj || typeof obj !== "object") return null;
 
@@ -64,7 +41,6 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
       "createdAt",
       "tuukh.tulbur.ognoo",
       "tuukh.tsagiinTuukh.garsanTsag",
-      "tuukh.0.tsagiinTuukh.0.garsanTsag",
     ];
     for (const key of dateKeys) {
       if (obj[key]?.$gte || obj[key]?.$lte) return obj[key];
@@ -155,8 +131,7 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
       khuudasniiDugaar: 1,
       khuudasniiKhemjee: 999999,
     };
-    console.log("Querying collection:", collection.name || "Uilchluulegch");
-    console.log("Query being sent:", JSON.stringify(queryBody.query, null, 2));
+
     try {
       const result = await khuudaslalt(model, queryBody);
       return result.jagsaalt || [];
@@ -172,7 +147,6 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
   const allResults = (await Promise.all(queryPromises)).flat();
 
   // Sort if needed
-
   if (body.order && Object.keys(body.order).length > 0) {
     const sortField = Object.keys(body.order)[0];
     const sortOrder = body.order[sortField];
