@@ -33,7 +33,24 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
     body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
   if (body?.search) body.search = String(body.search);
 
-  // ✅ Recursive helper to find date filter anywhere in the query
+  // ✅ Convert ISO date strings to Date objects
+  const convertDateStrings = (obj) => {
+    if (!obj || typeof obj !== "object") return obj;
+    for (const key of Object.keys(obj)) {
+      if (Array.isArray(obj[key])) {
+        obj[key] = obj[key].map(convertDateStrings);
+      } else if (obj[key] && typeof obj[key] === "object") {
+        convertDateStrings(obj[key]);
+      } else if (
+        typeof obj[key] === "string" &&
+        /^\d{4}-\d{2}-\d{2}T/.test(obj[key])
+      ) {
+        obj[key] = new Date(obj[key]);
+      }
+    }
+    return obj;
+  };
+  body.query = convertDateStrings(body.query || {});
   const findDateFilter = (obj) => {
     if (!obj || typeof obj !== "object") return null;
 
@@ -148,6 +165,7 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
   const allResults = (await Promise.all(queryPromises)).flat();
 
   // Sort if needed
+
   if (body.order && Object.keys(body.order).length > 0) {
     const sortField = Object.keys(body.order)[0];
     const sortOrder = body.order[sortField];
