@@ -220,24 +220,13 @@ async function udriinTailan({ body }) {
 
     // Special cases
     const specialMatch = (status) => ({
-      ...(status !== "Tulburtei" && {
-        "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
-      }),
+      //  ...(status === "Unegui"
+      //   ? { "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd } }
+      //   : { "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd } }
+      // ),
+      "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
       ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
-      ...(status === "Tulburtei" && {
-        $or: [
-          {
-            "tuukh.tuluv": -4,
-            "tuukh.uneguiGarsan": { $exists: false },
-            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
-          },
-          {
-            "tuukh.tuluv": 0,
-            "tuukh.uneguiGarsan": { $exists: false },
-            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
-          },
-        ],
-      }),
+      ...(status === "Tulburtei" && { "tuukh.tuluv": -4 }),
       ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
       ...(body.burtgesenAjiltaniiId && {
         "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId,
@@ -245,34 +234,29 @@ async function udriinTailan({ body }) {
     });
 
     const specialPipeline = (status) => [
-      {
-        $match: {
-          ...baseMatch,
-          ...(status === "Tulburtei" && { niitDun: { $gt: 0 } }),
-        },
-      },
+      { $match: baseMatch },
       { $unwind: "$tuukh" },
       { $match: specialMatch(status) },
-      // Deduplicate by document _id to avoid double-counting
       {
         $group: {
-          _id: "$_id",
-          niitDun: { $first: "$niitDun" },
-          label: {
-            $first:
-              status === "Zurchiltei"
-                ? "Зөрчилтэй"
-                : status === "Tulburtei"
-                  ? "Төлбөртэй"
-                  : "Үнэгүй",
-          },
+          _id:
+            status === "Zurchiltei"
+              ? "Зөрчилтэй"
+              : status === "Tulburtei"
+                ? "Төлбөртэй"
+                : "Үнэгүй",
+          niitDun: { $sum: "$niitDun" },
+          ids: { $addToSet: "$_id" },
         },
       },
       {
-        $group: {
-          _id: "$label",
-          niitDun: { $sum: "$niitDun" },
-          niitToo: { $sum: 1 },
+        $project: {
+          _id: 1,
+          niitDun: 1,
+          niitToo:
+            status === "Zurchiltei" || status === "Tulburtei"
+              ? { $size: "$ids" }
+              : 1,
         },
       },
     ];
