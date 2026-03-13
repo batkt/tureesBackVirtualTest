@@ -41,6 +41,7 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
       "createdAt",
       "tuukh.tulbur.ognoo",
       "tuukh.tsagiinTuukh.garsanTsag",
+      "tuukh.0.tsagiinTuukh.0.garsanTsag",
     ];
     for (const key of dateKeys) {
       if (obj[key]?.$gte || obj[key]?.$lte) return obj[key];
