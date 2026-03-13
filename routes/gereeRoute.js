@@ -1207,10 +1207,11 @@ router
             turul === "baritsaa" || turul === "aldangi";
           const tulukh = (g.tulukhDun || 0) - (g.khyamdral || 0);
           const uldegdel =
-            (g.tulukhDun || 0) -
-            (g.tulsunDun || 0) -
-            (g.khyamdral || 0);
-          if (isBaritsaaOrAldangi && !(turul === "baritsaa" && (g.tulsunDun || 0) > 0))
+            (g.tulukhDun || 0) - (g.tulsunDun || 0) - (g.khyamdral || 0);
+          if (
+            isBaritsaaOrAldangi &&
+            !(turul === "baritsaa" && (g.tulsunDun || 0) > 0)
+          )
             continue;
           tsutsalsanUldegdel += uldegdel;
           if (
@@ -1239,9 +1240,7 @@ router
             ? tsutsalsanTuluvluguut
             : geree.sariinTurees || 0,
         tsutsalsanUldegdel:
-          tsutsalsanUldegdel > 0
-            ? tsutsalsanUldegdel
-            : geree.sariinTurees || 0,
+          tsutsalsanUldegdel > 0 ? tsutsalsanUldegdel : geree.sariinTurees || 0,
         tsutsalsanTulsunDun,
       };
       if (geree.gereeniiTuukhuud) {
@@ -2539,40 +2538,40 @@ router
         {
           $facet: {
             baritsaaAshiglasanDun: [
-  {
-    $unwind: {
-      path: "$avlaga.baritsaa",  // ← correct array
-    },
-  },
-  {
-    $match: {
-      "avlaga.baritsaa.ognoo": {
-        $gte: new Date(req.body.ekhlekhOgnoo),
-        $lte: new Date(req.body.duusakhOgnoo),
-      },
-      "avlaga.baritsaa.orlogo": {  // ← orlogo > 0 means барьцаа төлөлт
-        $gt: 0,
-      },
-    },
-  },
-  {
-    $group: {
-      _id: "$gereeniiDugaar",
-      tulsun: {
-        $sum: {
-          $ifNull: ["$avlaga.baritsaa.orlogo", 0],
-        },
-      },
-    },
-  },
-  {
-    $project: {
-      _id: 0,
-      gereeniiDugaar: "$_id",
-      uldegdel: "$tulsun",
-    },
-  },
-],
+              {
+                $unwind: {
+                  path: "$avlaga.baritsaa",
+                },
+              },
+              {
+                $match: {
+                  "avlaga.baritsaa.ognoo": {
+                    $gte: new Date(req.body.ekhlekhOgnoo),
+                    $lte: new Date(req.body.duusakhOgnoo),
+                  },
+                  "avlaga.baritsaa.orlogo": {
+                    $gt: 0,
+                  },
+                },
+              },
+              {
+                $group: {
+                  _id: "$gereeniiDugaar",
+                  tulsun: {
+                    $sum: {
+                      $ifNull: ["$avlaga.baritsaa.orlogo", 0],
+                    },
+                  },
+                },
+              },
+              {
+                $project: {
+                  _id: 0,
+                  gereeniiDugaar: "$_id",
+                  uldegdel: "$tulsun",
+                },
+              },
+            ],
             umnukhSariinTulsun: [
               {
                 $unwind: {
@@ -3210,7 +3209,8 @@ router
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) delete body.search;
       if (!body.query) body.query = {};
-      const showTsutslagdsanAvlaga = body.query?.showTsutslagdsanAvlaga === true;
+      const showTsutslagdsanAvlaga =
+        body.query?.showTsutslagdsanAvlaga === true;
       delete body.query.showTsutslagdsanAvlaga;
       body.query["avlaga.guilgeenuud"] = {
         $elemMatch: {
@@ -3243,14 +3243,14 @@ router
             let monthStart = moment(
               req.params.ekhlekhOgnoo,
               ["YYYY-MM-DD HH:mm:ss", "YYYY-MM-DD", moment.ISO_8601],
-              true
+              true,
             )
               .startOf("day")
               .toDate();
             let monthEnd = moment(
               req.params.duusakhOgnoo,
               ["YYYY-MM-DD HH:mm:ss", "YYYY-MM-DD", moment.ISO_8601],
-              true
+              true,
             )
               .endOf("day")
               .toDate();
@@ -3316,10 +3316,7 @@ router
               {
                 $project: {
                   tsutslagdsanAvlaga: {
-                    $subtract: [
-                      "$tulukh",
-                      { $add: ["$tulsun", "$khyamdral"] },
-                    ],
+                    $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }],
                   },
                   register: 1,
                 },
@@ -3355,7 +3352,12 @@ router
               true,
             ).aggregate([
               { $match: tsutslagdsanMatch },
-              { $unwind: { path: "$avlaga.guilgeenuud", preserveNullAndEmptyArrays: false } },
+              {
+                $unwind: {
+                  path: "$avlaga.guilgeenuud",
+                  preserveNullAndEmptyArrays: false,
+                },
+              },
               {
                 $match: {
                   "avlaga.guilgeenuud.ognoo": {
@@ -3381,7 +3383,9 @@ router
                 cancelledWithPaymentsMap[r._id] = r.tulsun || 0;
               }
             });
-            const cancelledWithPaymentsToAdd = Object.keys(cancelledWithPaymentsMap);
+            const cancelledWithPaymentsToAdd = Object.keys(
+              cancelledWithPaymentsMap,
+            );
             const cancelledWithStoredTulsunDun = await Geree(
               req.body.tukhainBaaziinKholbolt,
               true,
@@ -3400,21 +3404,25 @@ router
             const cancelledViaTuukh = await Geree(
               req.body.tukhainBaaziinKholbolt,
               true,
-            )
-              .aggregate([
-                { $match: tsutslagdsanMatch },
-                { $unwind: { path: "$gereeniiTuukhuud", preserveNullAndEmptyArrays: false } },
-                {
-                  $match: {
-                    "gereeniiTuukhuud.turul": "Tsutslakh",
-                    "gereeniiTuukhuud.khiisenOgnoo": {
-                      $gte: monthStart,
-                      $lte: monthEnd,
-                    },
+            ).aggregate([
+              { $match: tsutslagdsanMatch },
+              {
+                $unwind: {
+                  path: "$gereeniiTuukhuud",
+                  preserveNullAndEmptyArrays: false,
+                },
+              },
+              {
+                $match: {
+                  "gereeniiTuukhuud.turul": "Tsutslakh",
+                  "gereeniiTuukhuud.khiisenOgnoo": {
+                    $gte: monthStart,
+                    $lte: monthEnd,
                   },
                 },
-                { $group: { _id: "$gereeniiDugaar" } },
-              ]);
+              },
+              { $group: { _id: "$gereeniiDugaar" } },
+            ]);
             const cancelledIdsFromTuukh = new Set(
               (cancelledViaTuukh || []).map((r) => r._id).filter(Boolean),
             );
@@ -3490,9 +3498,10 @@ router
               ...cancelledWithTulsunDunToAdd,
               ...cancelledWithAvlaga.map((r) => r._id),
             ]);
-            const cancelledWithPaymentsToAddFiltered = cancelledWithPaymentsToAdd.filter(
-              (id) => !alreadyAddedCancelled.has(id),
-            );
+            const cancelledWithPaymentsToAddFiltered =
+              cancelledWithPaymentsToAdd.filter(
+                (id) => !alreadyAddedCancelled.has(id),
+              );
             if (cancelledWithPaymentsToAddFiltered.length > 0) {
               const cancelledPaymentsContracts = await Geree(
                 req.body.tukhainBaaziinKholbolt,
@@ -3698,10 +3707,14 @@ router
         true,
       ).aggregate(query);
       const hasTuluvluguut =
-        gereenuud?.length > 0 &&
-        gereenuud[0]?.tuluvluguut?.length > 0;
+        gereenuud?.length > 0 && gereenuud[0]?.tuluvluguut?.length > 0;
       if (!hasTuluvluguut && !req.body.showTsutslagdsanAvlaga) {
-        res.send({ jagsaalt: [], niitMur: 0, khuudasniiDugaar: 1, niitTuluvluguut: 0 });
+        res.send({
+          jagsaalt: [],
+          niitMur: 0,
+          khuudasniiDugaar: 1,
+          niitTuluvluguut: 0,
+        });
         return;
       }
       var turJagsaalt = [];
@@ -3769,10 +3782,7 @@ router
           {
             $project: {
               tsutslagdsanAvlaga: {
-                $subtract: [
-                  "$tulukh",
-                  { $add: ["$tulsun", "$khyamdral"] },
-                ],
+                $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }],
               },
             },
           },
@@ -3839,7 +3849,12 @@ router
         });
       }
       if (turJagsaalt.length < 1) {
-        res.send({ jagsaalt: [], niitMur: 0, khuudasniiDugaar: 1, niitTuluvluguut: 0 });
+        res.send({
+          jagsaalt: [],
+          niitMur: 0,
+          khuudasniiDugaar: 1,
+          niitTuluvluguut: 0,
+        });
         return;
       }
       const body = req.body.query;
@@ -3849,11 +3864,16 @@ router
         body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
       if (!!body?.search) delete body.search;
       body.query["gereeniiDugaar"] = { $in: turJagsaalt };
-      body.query["tuluv"] = req.body.showTsutslagdsanAvlaga === true
-        ? { $in: [1, -1] }
-        : { $ne: -1 };
+      body.query["tuluv"] =
+        req.body.showTsutslagdsanAvlaga === true
+          ? { $in: [1, -1] }
+          : { $ne: -1 };
       body.lean = true;
-      if (req.body.showTsutslagdsanAvlaga && body.select && typeof body.select === "object") {
+      if (
+        req.body.showTsutslagdsanAvlaga &&
+        body.select &&
+        typeof body.select === "object"
+      ) {
         body.select.tuluv = 1;
       }
 
@@ -3870,7 +3890,8 @@ router
           tuluv: -1,
           baiguullagiinId: req.body.baiguullagiinId,
         };
-        if (!!req.body.barilgiinId) storedMatch.barilgiinId = req.body.barilgiinId;
+        if (!!req.body.barilgiinId)
+          storedMatch.barilgiinId = req.body.barilgiinId;
         const storedDocs = await Geree(req.body.tukhainBaaziinKholbolt, true)
           .find(storedMatch, {
             gereeniiDugaar: 1,
@@ -3884,7 +3905,7 @@ router
             const tuluvluguut =
               d.tsutsalsanTuluvluguut != null && d.tsutsalsanTuluvluguut > 0
                 ? d.tsutsalsanTuluvluguut
-                : d.sariinTurees ?? 0;
+                : (d.sariinTurees ?? 0);
             storedValuesMap[d.gereeniiDugaar] = {
               tuluvluguut,
               uldegdel: tuluvluguut,
@@ -3893,186 +3914,189 @@ router
         });
       }
       khuudaslalt(Geree(req.body.tukhainBaaziinKholbolt, true), body)
-          .then(async (result) => {
-            if (result && result.jagsaalt && result.jagsaalt.length > 0) {
-              if (req.body.showTsutslagdsanAvlaga && allCancelledIds.size > 0) {
-                result.jagsaalt.forEach((x) => {
-                  if (allCancelledIds.has(x.gereeniiDugaar)) x.tuluv = -1;
-                });
-              }
+        .then(async (result) => {
+          if (result && result.jagsaalt && result.jagsaalt.length > 0) {
+            if (req.body.showTsutslagdsanAvlaga && allCancelledIds.size > 0) {
               result.jagsaalt.forEach((x) => {
-                if (
-                  gereenuud.length > 0 &&
-                  gereenuud[0].tuluvluguut?.length > 0
-                ) {
-                  x.tuluvluguut =
-                    gereenuud[0].tuluvluguut.find(
-                      (a) => a._id == x.gereeniiDugaar,
-                    )?.tulukh || 0;
-                  x.niitUldegdel =
-                    gereenuud[0].niitUldegdel.find(
-                      (a) => a._id == x.gereeniiDugaar,
-                    )?.uldegdel || 0;
-                  if (x.tuluvluguut < 0) x.tuluvluguut = 0;
-                  if (x.niitUldegdel < 0) x.niitUldegdel = 0;
-                } else {
-                  x.tuluvluguut = x.tuluvluguut ?? 0;
-                  x.niitUldegdel = x.niitUldegdel ?? 0;
+                if (allCancelledIds.has(x.gereeniiDugaar)) x.tuluv = -1;
+              });
+            }
+            result.jagsaalt.forEach((x) => {
+              if (
+                gereenuud.length > 0 &&
+                gereenuud[0].tuluvluguut?.length > 0
+              ) {
+                x.tuluvluguut =
+                  gereenuud[0].tuluvluguut.find(
+                    (a) => a._id == x.gereeniiDugaar,
+                  )?.tulukh || 0;
+                x.niitUldegdel =
+                  gereenuud[0].niitUldegdel.find(
+                    (a) => a._id == x.gereeniiDugaar,
+                  )?.uldegdel || 0;
+                if (x.tuluvluguut < 0) x.tuluvluguut = 0;
+                if (x.niitUldegdel < 0) x.niitUldegdel = 0;
+              } else {
+                x.tuluvluguut = x.tuluvluguut ?? 0;
+                x.niitUldegdel = x.niitUldegdel ?? 0;
+              }
+              if (x.tuluv === -1) {
+                const stored = storedValuesMap[x.gereeniiDugaar];
+                const storedTuluvluguut =
+                  stored?.tuluvluguut ??
+                  x.tsutsalsanTuluvluguut ??
+                  tuluvluguutMapForCancelled[x.gereeniiDugaar];
+                const storedUldegdel =
+                  stored?.uldegdel ??
+                  (x.tsutsalsanTuluvluguut != null &&
+                  x.tsutsalsanTuluvluguut > 0
+                    ? x.tsutsalsanTuluvluguut
+                    : x.sariinTurees) ??
+                  tuluvluguutMapForCancelled[x.gereeniiDugaar];
+                if (storedTuluvluguut != null)
+                  x.tuluvluguut = storedTuluvluguut;
+                if (storedUldegdel != null) {
+                  x.niitUldegdel = storedUldegdel;
+                  x.uldegdel = storedUldegdel;
                 }
+              }
+            });
+            if (req.body.showTsutslagdsanAvlaga) {
+              const tsutslagdsanMatch = {
+                baiguullagiinId: req.body.baiguullagiinId,
+                tuluv: -1,
+              };
+              if (!!req.body.barilgiinId)
+                tsutslagdsanMatch.barilgiinId = req.body.barilgiinId;
+              const tsutslagdsanQuery = [
+                { $match: tsutslagdsanMatch },
+                { $unwind: { path: "$avlaga.guilgeenuud" } },
+                {
+                  $match: {
+                    $or: [
+                      {
+                        "avlaga.guilgeenuud.turul": {
+                          $nin: ["aldangi", "baritsaa"],
+                        },
+                      },
+                      {
+                        $and: [
+                          {
+                            "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] },
+                          },
+                          {
+                            "avlaga.guilgeenuud.tulsunDun": { $gt: 0 },
+                          },
+                        ],
+                      },
+                    ],
+                    "avlaga.guilgeenuud.ognoo": {
+                      $lte: new Date(req.body.duusakhOgnoo),
+                    },
+                  },
+                },
+                {
+                  $group: {
+                    _id: "$gereeniiDugaar",
+                    register: { $first: "$register" },
+                    tulukh: {
+                      $sum: {
+                        $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+                      },
+                    },
+                    khyamdral: {
+                      $sum: {
+                        $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+                      },
+                    },
+                    tulsun: {
+                      $sum: {
+                        $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                      },
+                    },
+                  },
+                },
+                {
+                  $project: {
+                    tsutslagdsanAvlaga: {
+                      $subtract: [
+                        "$tulukh",
+                        { $add: ["$tulsun", "$khyamdral"] },
+                      ],
+                    },
+                    register: 1,
+                  },
+                },
+              ];
+              const tsutslagdsanByContract = await Geree(
+                req.body.tukhainBaaziinKholbolt,
+                true,
+              ).aggregate(tsutslagdsanQuery);
+              const tsutslagdsanMapByGereeniiDugaar = {};
+              const tsutslagdsanMapByRegister = {};
+              (tsutslagdsanByContract || []).forEach((r) => {
+                const avlaga =
+                  r.tsutslagdsanAvlaga > 0 ? r.tsutslagdsanAvlaga : 0;
+                tsutslagdsanMapByGereeniiDugaar[r._id] = avlaga;
+                const reg = r.register || "";
+                tsutslagdsanMapByRegister[reg] =
+                  (tsutslagdsanMapByRegister[reg] || 0) + avlaga;
+              });
+              result.jagsaalt.forEach((x) => {
+                const avlagaFromMap =
+                  tsutslagdsanMapByGereeniiDugaar[x.gereeniiDugaar] ??
+                  tsutslagdsanMapByRegister[x.register] ??
+                  0;
                 if (x.tuluv === -1) {
                   const stored = storedValuesMap[x.gereeniiDugaar];
-                  const storedTuluvluguut =
-                    stored?.tuluvluguut ??
-                    x.tsutsalsanTuluvluguut ??
-                    tuluvluguutMapForCancelled[x.gereeniiDugaar];
                   const storedUldegdel =
                     stored?.uldegdel ??
-                    (x.tsutsalsanTuluvluguut != null && x.tsutsalsanTuluvluguut > 0
+                    (x.tsutsalsanTuluvluguut != null &&
+                    x.tsutsalsanTuluvluguut > 0
                       ? x.tsutsalsanTuluvluguut
                       : x.sariinTurees) ??
                     tuluvluguutMapForCancelled[x.gereeniiDugaar];
-                  if (storedTuluvluguut != null) x.tuluvluguut = storedTuluvluguut;
-                  if (storedUldegdel != null) {
-                    x.niitUldegdel = storedUldegdel;
-                    x.uldegdel = storedUldegdel;
-                  }
+                  const storedTuluvluguut =
+                    stored?.tuluvluguut ??
+                    (x.tsutsalsanTuluvluguut != null &&
+                    x.tsutsalsanTuluvluguut > 0
+                      ? x.tsutsalsanTuluvluguut
+                      : x.sariinTurees) ??
+                    tuluvluguutMapForCancelled[x.gereeniiDugaar];
+                  x.tsutslagdsanAvlaga =
+                    storedUldegdel != null ? storedUldegdel : avlagaFromMap;
+                  x.uldegdel =
+                    storedUldegdel != null ? storedUldegdel : avlagaFromMap;
+                  x.niitUldegdel = x.uldegdel;
+                  if (storedTuluvluguut != null)
+                    x.tuluvluguut = storedTuluvluguut;
+                } else {
+                  x.tsutslagdsanAvlaga = avlagaFromMap;
                 }
               });
-              if (req.body.showTsutslagdsanAvlaga) {
-                const tsutslagdsanMatch = {
-                  baiguullagiinId: req.body.baiguullagiinId,
-                  tuluv: -1,
-                };
-                if (!!req.body.barilgiinId)
-                  tsutslagdsanMatch.barilgiinId = req.body.barilgiinId;
-                const tsutslagdsanQuery = [
-                  { $match: tsutslagdsanMatch },
-                  { $unwind: { path: "$avlaga.guilgeenuud" } },
-                  {
-                    $match: {
-                      $or: [
-                        {
-                          "avlaga.guilgeenuud.turul": {
-                            $nin: ["aldangi", "baritsaa"],
-                          },
-                        },
-                        {
-                          $and: [
-                            {
-                              "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] },
-                            },
-                            {
-                              "avlaga.guilgeenuud.tulsunDun": { $gt: 0 },
-                            },
-                          ],
-                        },
-                      ],
-                      "avlaga.guilgeenuud.ognoo": {
-                        $lte: new Date(req.body.duusakhOgnoo),
-                      },
-                    },
-                  },
-                  {
-                    $group: {
-                      _id: "$gereeniiDugaar",
-                      register: { $first: "$register" },
-                      tulukh: {
-                        $sum: {
-                          $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
-                        },
-                      },
-                      khyamdral: {
-                        $sum: {
-                          $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
-                        },
-                      },
-                      tulsun: {
-                        $sum: {
-                          $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                        },
-                      },
-                    },
-                  },
-                  {
-                    $project: {
-                      tsutslagdsanAvlaga: {
-                        $subtract: [
-                          "$tulukh",
-                          { $add: ["$tulsun", "$khyamdral"] },
-                        ],
-                      },
-                      register: 1,
-                    },
-                  },
-                ];
-                const tsutslagdsanByContract = await Geree(
-                  req.body.tukhainBaaziinKholbolt,
-                  true,
-                ).aggregate(tsutslagdsanQuery);
-                const tsutslagdsanMapByGereeniiDugaar = {};
-                const tsutslagdsanMapByRegister = {};
-                (tsutslagdsanByContract || []).forEach((r) => {
-                  const avlaga = r.tsutslagdsanAvlaga > 0 ? r.tsutslagdsanAvlaga : 0;
-                  tsutslagdsanMapByGereeniiDugaar[r._id] = avlaga;
-                  const reg = r.register || "";
-                  tsutslagdsanMapByRegister[reg] =
-                    (tsutslagdsanMapByRegister[reg] || 0) + avlaga;
-                });
-                result.jagsaalt.forEach((x) => {
-                  const avlagaFromMap =
-                    tsutslagdsanMapByGereeniiDugaar[x.gereeniiDugaar] ??
-                    tsutslagdsanMapByRegister[x.register] ??
-                    0;
-                  if (x.tuluv === -1) {
-                    const stored = storedValuesMap[x.gereeniiDugaar];
-                    const storedUldegdel =
-                      stored?.uldegdel ??
-                      (x.tsutsalsanTuluvluguut != null && x.tsutsalsanTuluvluguut > 0
-                        ? x.tsutsalsanTuluvluguut
-                        : x.sariinTurees) ??
-                      tuluvluguutMapForCancelled[x.gereeniiDugaar];
-                    const storedTuluvluguut =
-                      stored?.tuluvluguut ??
-                      (x.tsutsalsanTuluvluguut != null && x.tsutsalsanTuluvluguut > 0
-                        ? x.tsutsalsanTuluvluguut
-                        : x.sariinTurees) ??
-                      tuluvluguutMapForCancelled[x.gereeniiDugaar];
-                    x.tsutslagdsanAvlaga =
-                      storedUldegdel != null ? storedUldegdel : avlagaFromMap;
-                    x.uldegdel =
-                      storedUldegdel != null ? storedUldegdel : avlagaFromMap;
-                    x.niitUldegdel = x.uldegdel;
-                    if (storedTuluvluguut != null)
-                      x.tuluvluguut = storedTuluvluguut;
-                  } else {
-                    x.tsutslagdsanAvlaga = avlagaFromMap;
-                  }
-                });
-              }
             }
-            const tuluvluguutList = gereenuud[0]?.tuluvluguut || [];
-            let niitTuluvluguut = 0;
-            for (const id of turJagsaalt) {
-              if (req.body.showTsutslagdsanAvlaga && allCancelledIds.has(id)) {
-                const stored = storedValuesMap[id];
-                const val =
-                  stored?.tuluvluguut ??
-                  tuluvluguutMapForCancelled[id] ??
-                  0;
-                niitTuluvluguut += Math.max(0, val);
-              } else {
-                const fromFacet = tuluvluguutList.find(
-                  (a) => a._id == id,
-                )?.tulukh;
-                niitTuluvluguut += Math.max(0, fromFacet ?? 0);
-              }
+          }
+          const tuluvluguutList = gereenuud[0]?.tuluvluguut || [];
+          let niitTuluvluguut = 0;
+          for (const id of turJagsaalt) {
+            if (req.body.showTsutslagdsanAvlaga && allCancelledIds.has(id)) {
+              const stored = storedValuesMap[id];
+              const val =
+                stored?.tuluvluguut ?? tuluvluguutMapForCancelled[id] ?? 0;
+              niitTuluvluguut += Math.max(0, val);
+            } else {
+              const fromFacet = tuluvluguutList.find(
+                (a) => a._id == id,
+              )?.tulukh;
+              niitTuluvluguut += Math.max(0, fromFacet ?? 0);
             }
-            result.niitTuluvluguut = niitTuluvluguut;
-            res.send(result);
-          })
-          .catch((err) => {
-            next(err);
-          });
+          }
+          result.niitTuluvluguut = niitTuluvluguut;
+          res.send(result);
+        })
+        .catch((err) => {
+          next(err);
+        });
     } catch (error) {
       next(error);
     }
@@ -4714,8 +4738,7 @@ router
             var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
               return (
                 x.khemjikhNegj == ashiglaltiinZardal.turul &&
-                x.tailbar == ashiglaltiinZardal.ner &&
-                x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar
+                x.tailbar == ashiglaltiinZardal.ner
               );
             });
             if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
@@ -4725,8 +4748,6 @@ router
                 ["asc"],
               );
               suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
-            }
-            if (!!suuliinGuilgee?.suuliinZaalt) {
               umnukhZaalt = suuliinGuilgee.suuliinZaalt;
             }
           }
@@ -4915,8 +4936,8 @@ router
       if (gereenuud?.length > 0) {
         for (const geree of gereenuud) {
           var dun =
-            (geree.baritsaaAvakhDun || 0) - (geree.baritsaaniiUldegdel || 0); 
-            
+            (geree.baritsaaAvakhDun || 0) - (geree.baritsaaniiUldegdel || 0);
+
           var baritsaa = {
             ognoo: geree.gereeniiOgnoo,
             orlogo: dun,
