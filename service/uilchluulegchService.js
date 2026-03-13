@@ -155,7 +155,8 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
       khuudasniiDugaar: 1,
       khuudasniiKhemjee: 999999,
     };
-
+    console.log("Querying collection:", collection.name || "Uilchluulegch");
+    console.log("Query being sent:", JSON.stringify(queryBody.query, null, 2));
     try {
       const result = await khuudaslalt(model, queryBody);
       return result.jagsaalt || [];
