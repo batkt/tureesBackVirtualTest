@@ -50,7 +50,13 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
     }
     return obj;
   };
-  body.query = convertDateStrings(body.query || {});
+  if (body.query) {
+    body.query = convertDateStrings(body.query);
+  } else {
+    body = convertDateStrings(body);
+  }
+  console.log("body.query:", body.query);
+  console.log("body:", JSON.stringify(body));
   const findDateFilter = (obj) => {
     if (!obj || typeof obj !== "object") return null;
 
