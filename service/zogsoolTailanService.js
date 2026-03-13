@@ -226,7 +226,10 @@ async function udriinTailan({ body }) {
       // ),
       "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
       ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
-      ...(status === "Tulburtei" && { "tuukh.tuluv": { $in: [-4, 0] } }),
+      ...(status === "Tulburtei" && {
+        "tuukh.tuluv": { $in: [-4, 0] },
+        "tuukh.0.uneguiGarsan": { $exists: false },
+      }),
       ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
       ...(body.burtgesenAjiltaniiId && {
         "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId,
