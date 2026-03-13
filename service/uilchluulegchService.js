@@ -1,4 +1,11 @@
-const { Uilchluulegch, Parking, uilchluulegchGaraasBurtgey, uilchluulegchTseverliy, uilchluulegchdiinToo, zogsoolTusBurUilchluulegchdiinToo } = require("parking-v2");
+const {
+  Uilchluulegch,
+  Parking,
+  uilchluulegchGaraasBurtgey,
+  uilchluulegchTseverliy,
+  uilchluulegchdiinToo,
+  zogsoolTusBurUilchluulegchdiinToo,
+} = require("parking-v2");
 const { khuudaslalt, UstsanBarimt } = require("zevbackv2");
 const { delParkingFind } = require("../middlewares/parkingMiddle");
 
@@ -10,7 +17,8 @@ const extractDate = (dateFilter, preferStart = true) => {
   if (dateFilter.$gte) return new Date(dateFilter.$gte);
   if (dateFilter.$lte) return new Date(dateFilter.$lte);
   if (dateFilter.$eq) return new Date(dateFilter.$eq);
-  if (typeof dateFilter === "string" || dateFilter instanceof Date) return new Date(dateFilter);
+  if (typeof dateFilter === "string" || dateFilter instanceof Date)
+    return new Date(dateFilter);
 
   return null;
 };
@@ -19,15 +27,22 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
   // Query, order, pagination parsing
   if (body?.query) body.query = JSON.parse(body.query || "{}");
   if (body?.order) body.order = JSON.parse(body.order || "{}");
-  if (body?.khuudasniiDugaar) body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
-  if (body?.khuudasniiKhemjee) body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
+  if (body?.khuudasniiDugaar)
+    body.khuudasniiDugaar = Number(body.khuudasniiDugaar);
+  if (body?.khuudasniiKhemjee)
+    body.khuudasniiKhemjee = Number(body.khuudasniiKhemjee);
   if (body?.search) body.search = String(body.search);
 
   // ✅ Recursive helper to find date filter anywhere in the query
   const findDateFilter = (obj) => {
     if (!obj || typeof obj !== "object") return null;
 
-    const dateKeys = ["createdAt", "tuukh.tulbur.ognoo", "tuukh.tsagiinTuukh.garsanTsag"];
+    const dateKeys = [
+      "createdAt",
+      "tuukh.tulbur.ognoo",
+      "tuukh.tsagiinTuukh.garsanTsag",
+      "tuukh.0.tsagiinTuukh.0.garsanTsag",
+    ];
     for (const key of dateKeys) {
       if (obj[key]?.$gte || obj[key]?.$lte) return obj[key];
     }
@@ -44,7 +59,9 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
   };
 
   // Date filtering
-  let startDate = null, endDate = null, dateFilter = null;
+  let startDate = null,
+    endDate = null,
+    dateFilter = null;
 
   if (body.query) {
     dateFilter = findDateFilter(body.query);
@@ -67,7 +84,10 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
 
   if (startDate && !isNaN(startDate.getTime())) {
     const start = new Date(startDate);
-    const end = endDate && !isNaN(endDate.getTime()) ? new Date(endDate) : new Date(startDate);
+    const end =
+      endDate && !isNaN(endDate.getTime())
+        ? new Date(endDate)
+        : new Date(startDate);
 
     const current = new Date(start.getFullYear(), start.getMonth(), 1);
     const endMonthDate = new Date(end.getFullYear(), end.getMonth(), 1);
@@ -80,7 +100,12 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
       // ✅ Always add archive collection for every month in range
       const archiveName = `Uilchluulegch${year}${String(month).padStart(2, "0")}`;
       if (!addedCollections.has(archiveName)) {
-        collectionsToQuery.push({ name: archiveName, year, month, isCurrent: isCurrentMonth });
+        collectionsToQuery.push({
+          name: archiveName,
+          year,
+          month,
+          isCurrent: isCurrentMonth,
+        });
         addedCollections.add(archiveName);
       }
 
@@ -94,20 +119,28 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
     }
   }
 
-  if (collectionsToQuery.length === 0) collectionsToQuery.push({ name: null, isCurrent: true });
+  if (collectionsToQuery.length === 0)
+    collectionsToQuery.push({ name: null, isCurrent: true });
 
   const queryPromises = collectionsToQuery.map(async (collection) => {
     const model = collection.name
       ? Uilchluulegch(baaziinKholbolt, false, collection.name)
       : Uilchluulegch(baaziinKholbolt);
 
-    const queryBody = { ...body, khuudasniiDugaar: 1, khuudasniiKhemjee: 999999 };
+    const queryBody = {
+      ...body,
+      khuudasniiDugaar: 1,
+      khuudasniiKhemjee: 999999,
+    };
 
     try {
       const result = await khuudaslalt(model, queryBody);
       return result.jagsaalt || [];
     } catch (err) {
-      console.error(`Error querying ${collection.name || "Uilchluulegch"}:`, err.message);
+      console.error(
+        `Error querying ${collection.name || "Uilchluulegch"}:`,
+        err.message,
+      );
       return [];
     }
   });
@@ -120,7 +153,8 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
     const sortOrder = body.order[sortField];
 
     allResults.sort((a, b) => {
-      const getNestedValue = (obj, path) => path.split(".").reduce((curr, prop) => curr?.[prop], obj);
+      const getNestedValue = (obj, path) =>
+        path.split(".").reduce((curr, prop) => curr?.[prop], obj);
       const aVal = getNestedValue(a, sortField);
       const bVal = getNestedValue(b, sortField);
       if (aVal < bVal) return sortOrder === 1 ? -1 : 1;
@@ -233,7 +267,7 @@ exports.tulburTulye = async (body) => {
         "tuukh.$.tulbur": tulburArray,
         "tuukh.$.tuluv": uurchlukhTuluv,
       },
-    }
+    },
   );
 
   return "Amjilttai";
@@ -241,7 +275,7 @@ exports.tulburTulye = async (body) => {
 exports.tseverliy = async (body) => {
   const result = await uilchluulegchTseverliy(body);
   return result;
-}
+};
 exports.ustgah = async (ids, conn) => {
   if (!ids || !Array.isArray(ids) || ids.length === 0) {
     throw new Error("ID заавал шаардлагатай");
@@ -262,8 +296,8 @@ exports.ustgah = async (ids, conn) => {
 exports.tooAvya = async (body) => {
   const result = await uilchluulegchdiinToo(body);
   return result;
-}
+};
 exports.tusBuriinTooAvya = async (body) => {
   const result = await zogsoolTusBurUilchluulegchdiinToo(body);
   return result;
-}
+};
