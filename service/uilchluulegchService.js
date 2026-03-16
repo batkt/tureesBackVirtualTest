@@ -42,6 +42,8 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
       "tuukh.tulbur.ognoo",
       "tuukh.tsagiinTuukh.garsanTsag",
       "tuukh.0.tsagiinTuukh.0.garsanTsag",
+      "tuukh.tsagiinTuukh.orsonTsag",
+      "tuukh.0.tsagiinTuukh.0.orsonTsag",
     ];
     for (const key of dateKeys) {
       if (obj[key]?.$gte || obj[key]?.$lte) return obj[key];
@@ -56,6 +58,29 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
       }
     }
     return null;
+  };
+
+  // ✅ Detect if the date filter is on an entry-time field
+  const isEntryTimeFilter = (obj) => {
+    const entryKeys = [
+      "tuukh.tsagiinTuukh.orsonTsag",
+      "tuukh.0.tsagiinTuukh.0.orsonTsag",
+    ];
+    const checkObj = (o) => {
+      if (!o || typeof o !== "object") return false;
+      for (const key of entryKeys) {
+        if (o[key]) return true;
+      }
+      for (const k of ["$and", "$or"]) {
+        if (Array.isArray(o[k])) {
+          for (const condition of o[k]) {
+            if (checkObj(condition)) return true;
+          }
+        }
+      }
+      return false;
+    };
+    return checkObj(obj);
   };
 
   // Date filtering
@@ -82,6 +107,8 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
   const collectionsToQuery = [];
   const addedCollections = new Set();
 
+  const entryTimeQuery = body.query ? isEntryTimeFilter(body.query) : false;
+
   if (startDate && !isNaN(startDate.getTime())) {
     const start = new Date(startDate);
     const end =
@@ -89,15 +116,22 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
         ? new Date(endDate)
         : new Date(startDate);
 
-    const current = new Date(start.getFullYear(), start.getMonth(), 1);
-    const endMonthDate = new Date(end.getFullYear(), end.getMonth(), 1);
+    let rangeStart = new Date(start.getFullYear(), start.getMonth(), 1);
+    let rangeEnd = new Date(end.getFullYear(), end.getMonth(), 1);
 
-    while (current <= endMonthDate) {
+    // ✅ Expand range 1 month back for entry-time filters
+    // (vehicle may have entered previous month and still active this month)
+    if (entryTimeQuery) {
+      rangeStart.setMonth(rangeStart.getMonth() - 1);
+    }
+
+    const current = new Date(rangeStart);
+
+    while (current <= rangeEnd) {
       const year = current.getFullYear();
       const month = current.getMonth() + 1;
       const isCurrentMonth = year === currentYear && month === currentMonth;
 
-      // ✅ Always add archive collection for every month in range
       const archiveName = `Uilchluulegch${year}${String(month).padStart(2, "0")}`;
       if (!addedCollections.has(archiveName)) {
         collectionsToQuery.push({
@@ -109,13 +143,35 @@ exports.getJagsaalt = async (body, baaziinKholbolt) => {
         addedCollections.add(archiveName);
       }
 
-      // ✅ Also add live collection if this month is the current month
       if (isCurrentMonth && !addedCollections.has("Uilchluulegch")) {
         collectionsToQuery.push({ name: null, year, month, isCurrent: true });
         addedCollections.add("Uilchluulegch");
       }
 
       current.setMonth(current.getMonth() + 1);
+    }
+
+    // ✅ For entry-time filters: always pin current month archive + live collection
+    if (entryTimeQuery) {
+      const currentArchive = `Uilchluulegch${currentYear}${String(currentMonth).padStart(2, "0")}`;
+      if (!addedCollections.has(currentArchive)) {
+        collectionsToQuery.push({
+          name: currentArchive,
+          year: currentYear,
+          month: currentMonth,
+          isCurrent: true,
+        });
+        addedCollections.add(currentArchive);
+      }
+      if (!addedCollections.has("Uilchluulegch")) {
+        collectionsToQuery.push({
+          name: null,
+          year: currentYear,
+          month: currentMonth,
+          isCurrent: true,
+        });
+        addedCollections.add("Uilchluulegch");
+      }
     }
   }
 
