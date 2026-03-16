@@ -220,19 +220,18 @@ async function udriinTailan({ body }) {
 
     // Special cases
     const specialMatch = (status) => ({
-      //  ...(status === "Unegui"
-      //   ? { "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd } }
-      //   : { "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd } }
-      // ),
       "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
       ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
-      ...(status === "Tulburtei" && { "tuukh.tuluv": -4 }),
+      ...(status === "Tulburtei" && {
+        "tuukh.tuluv": { $in: [0, -4] },
+        "tuukh.tulukhDun": { $gt: 0 },
+        "tuukh.tulbur": { $eq: [] },
+      }),
       ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
       ...(body.burtgesenAjiltaniiId && {
         "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId,
       }),
     });
-
     const specialPipeline = (status) => [
       { $match: baseMatch },
       { $unwind: "$tuukh" },
@@ -245,7 +244,12 @@ async function udriinTailan({ body }) {
               : status === "Tulburtei"
                 ? "Төлбөртэй"
                 : "Үнэгүй",
-          niitDun: { $sum: "$niitDun" },
+          niitDun: {
+            $sum:
+              status === "Tulburtei"
+                ? "$tuukh.tulukhDun" // ← unpaid amount
+                : "$niitDun",
+          },
           ids: { $addToSet: "$_id" },
         },
       },
