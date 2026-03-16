@@ -237,6 +237,7 @@ async function udriinTailan({ body }) {
       { $match: baseMatch },
       { $unwind: "$tuukh" },
       { $match: specialMatch(status) },
+      { $unwind: "$tuukh.tulbur" },
       {
         $group: {
           _id:
@@ -257,6 +258,13 @@ async function udriinTailan({ body }) {
             status === "Zurchiltei" || status === "Tulburtei"
               ? { $size: "$ids" }
               : 1,
+        },
+      },
+      {
+        $group: {
+          _id: status === "Tulburtei" ? "Төлбөртэй" : "...",
+          niitDun: { $sum: "$tuukh.tulukhDun" },
+          ids: { $addToSet: "$_id" },
         },
       },
     ];
