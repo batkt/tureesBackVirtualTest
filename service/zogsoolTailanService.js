@@ -129,7 +129,6 @@ async function ajiltniiUdriinTailan({ body }) {
 
   return niilberTailan;
 }
-
 async function udriinTailan({ body }) {
   const ekhlekhOgnoo = moment(
     body.ekhlekhOgnoo,
@@ -141,7 +140,7 @@ async function udriinTailan({ body }) {
   ).toDate();
   const start = moment(ekhlekhOgnoo);
   const end = moment(duusakhOgnoo);
-  const currentMonth = moment();
+  const now = moment();
 
   const isMultiMonth =
     start.year() !== end.year() || start.month() !== end.month();
@@ -149,7 +148,10 @@ async function udriinTailan({ body }) {
   const getCollectionName = (year, month) =>
     `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
 
-  // Determine which months are involved
+  // Collection-үүдийг тодорхойлох
+  const collectionsToQuery = [
+    { name: null, startDate: ekhlekhOgnoo, endDate: duusakhOgnoo },
+  ];
   const months = isMultiMonth
     ? (() => {
         const list = [];
@@ -162,52 +164,29 @@ async function udriinTailan({ body }) {
       })()
     : [start.clone().startOf("month")];
 
-  // Build collections to query:
-  // - Current month → null (live collection)
-  // - Past months → named archive collection
-  // Never both for the same month to avoid double-counting
-  const collectionsToQuery = [];
-
   months.forEach((month) => {
-    const isCurrent =
-      month.year() === currentMonth.year() &&
-      month.month() === currentMonth.month();
-
     const collectionStart = moment.max(month.clone().startOf("month"), start);
     const collectionEnd = moment.min(month.clone().endOf("month"), end);
-
-    if (isCurrent) {
-      collectionsToQuery.push({
-        name: null,
-        startDate: collectionStart.toDate(),
-        endDate: collectionEnd.toDate(),
-      });
-    } else {
-      collectionsToQuery.push({
-        name: getCollectionName(month.year(), month.month()),
-        startDate: collectionStart.toDate(),
-        endDate: collectionEnd.toDate(),
-      });
-    }
+    const collectionName = getCollectionName(month.year(), month.month());
+    collectionsToQuery.push({
+      name: collectionName,
+      startDate: collectionStart.toDate(),
+      endDate: collectionEnd.toDate(),
+    });
   });
 
-  // Aggregation function per collection
+  // Aggregation function
   const aggregateFromCollection = async (
     collectionName,
     dateStart,
     dateEnd,
   ) => {
+    // Хэрэв collectionName байхгүй бол default collection авна
     const model = Uilchluulegch(
       body.tukhainBaaziinKholbolt,
       !collectionName,
       collectionName || undefined,
     );
-
-    const baseMatch = {
-      baiguullagiinId: body.baiguullagiinId,
-      barilgiinId: body.barilgiinId ? body.barilgiinId : { $exists: true },
-    };
-
     const match = body.garsanKhaalga
       ? {
           "tuukh.garsanKhaalga": body.garsanKhaalga,
@@ -217,6 +196,11 @@ async function udriinTailan({ body }) {
 
     if (body.burtgesenAjiltaniiId)
       match["tuukh.burtgesenAjiltaniiId"] = body.burtgesenAjiltaniiId;
+
+    const baseMatch = {
+      baiguullagiinId: body.baiguullagiinId,
+      barilgiinId: body.barilgiinId ? body.barilgiinId : { $exists: true },
+    };
 
     const aggregatePipeline = (additionalMatch) => [
       { $match: baseMatch },
@@ -232,20 +216,18 @@ async function udriinTailan({ body }) {
       },
     ];
 
-    const udriinTailanResult = await model.aggregate(aggregatePipeline(match));
+    const udriinTailan = await model.aggregate(aggregatePipeline(match));
 
+    // Special cases
     const specialMatch = (status) => ({
+      //  ...(status === "Unegui"
+      //   ? { "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd } }
+      //   : { "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd } }
+      // ),
       "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
       ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
-      ...(status === "Tulburtei" && {
-        "tuukh.tuluv": { $in: [0, -4] },
-        "tuukh.tulukhDun": { $gt: 0 },
-        "tuukh.tulbur": { $eq: [] },
-      }),
+      ...(status === "Tulburtei" && { "tuukh.tuluv": -4 }),
       ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
-      ...(body.garsanKhaalga && {
-        "tuukh.garsanKhaalga": body.garsanKhaalga,
-      }),
       ...(body.burtgesenAjiltaniiId && {
         "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId,
       }),
@@ -263,9 +245,7 @@ async function udriinTailan({ body }) {
               : status === "Tulburtei"
                 ? "Төлбөртэй"
                 : "Үнэгүй",
-          niitDun: {
-            $sum: status === "Tulburtei" ? "$tuukh.tulukhDun" : "$niitDun",
-          },
+          niitDun: { $sum: "$niitDun" },
           ids: { $addToSet: "$_id" },
         },
       },
@@ -287,17 +267,16 @@ async function udriinTailan({ body }) {
       model.aggregate(specialPipeline("Unegui")),
     ]);
 
-    return { udriinTailan: udriinTailanResult, zurchiltei, tulburtei, unegui };
+    return { udriinTailan, zurchiltei, tulburtei, unegui };
   };
 
-  // Query all collections
+  // Бүх collection-үүдийг aggregate хийх
   const allResults = {
     udriinTailan: [],
     zurchiltei: [],
     tulburtei: [],
     unegui: [],
   };
-
   for (const collection of collectionsToQuery) {
     try {
       const result = await aggregateFromCollection(
@@ -317,7 +296,7 @@ async function udriinTailan({ body }) {
     }
   }
 
-  // Merge results by _id, summing niitDun and niitToo
+  // Merge results
   const mergeResults = (allResults) => {
     const merged = {};
     allResults.udriinTailan.forEach((item) => {
@@ -349,7 +328,6 @@ async function udriinTailan({ body }) {
       mergeArray(allResults.tulburtei, "Төлбөртэй"),
       mergeArray(allResults.unegui, "Үнэгүй"),
     ].forEach((item) => item && result.push(item));
-
     return result;
   };
 
@@ -387,10 +365,8 @@ async function udriinTailan({ body }) {
       collections: collectionsToQuery.map((c) => c.name),
     };
   }
-
   return finalResult;
 }
-
 async function zogsoolUilchluulegchdiinDunAvakh({
   baiguullagiinId,
   barilgiinId,
