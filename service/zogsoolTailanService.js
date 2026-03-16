@@ -209,6 +209,10 @@ async function udriinTailan({ body }) {
       barilgiinId: body.barilgiinId ? body.barilgiinId : { $exists: true },
     };
 
+    // DEBUG: log which collection and date range is being queried
+    console.log("=== COLLECTION:", collectionName || "null(live)", "===");
+    console.log("dateStart:", dateStart, "dateEnd:", dateEnd);
+
     const match = body.garsanKhaalga
       ? {
           "tuukh.garsanKhaalga": body.garsanKhaalga,
@@ -235,8 +239,40 @@ async function udriinTailan({ body }) {
 
     const udriinTailanResult = await model.aggregate(aggregatePipeline(match));
 
+    // DEBUG: raw Tulburtei pipeline before dedup
+    const tulburteiDebugPipeline = [
+      { $match: baseMatch },
+      { $unwind: "$tuukh" },
+      { $unwind: "$tuukh.tsagiinTuukh" },
+      {
+        $match: {
+          "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
+          "tuukh.tuluv": { $in: [0, -4] },
+          "tuukh.tulukhDun": { $gt: 0 },
+          "tuukh.tulbur": { $size: 0 },
+          "tuukh.uneguiGarsan": { $exists: false },
+          ...(body.garsanKhaalga && {
+            "tuukh.garsanKhaalga": body.garsanKhaalga,
+          }),
+        },
+      },
+      // Show raw matched tuukh._id list before dedup
+      {
+        $group: {
+          _id: "$tuukh._id",
+          tulukhDun: { $first: "$tuukh.tulukhDun" },
+          mashiniiDugaar: { $first: "$mashiniiDugaar" },
+          count: { $sum: 1 }, // how many times this tuukh._id appears (should be 1 ideally)
+        },
+      },
+    ];
+
+    const tulburteiDebug = await model.aggregate(tulburteiDebugPipeline);
+    console.log("=== TULBURTEI DEBUG (after dedup by tuukh._id) ===");
+    console.log(JSON.stringify(tulburteiDebug, null, 2));
+    console.log("=== TULBURTEI COUNT:", tulburteiDebug.length, "===");
+
     const specialPipeline = (status) => {
-      // Төлбөртэй: exited, has unpaid balance, no payment, not waived free
       if (status === "Tulburtei") {
         return [
           { $match: baseMatch },
@@ -251,7 +287,7 @@ async function udriinTailan({ body }) {
               "tuukh.tuluv": { $in: [0, -4] },
               "tuukh.tulukhDun": { $gt: 0 },
               "tuukh.tulbur": { $size: 0 },
-              "tuukh.uneguiGarsan": { $exists: false }, // exclude free-exit
+              "tuukh.uneguiGarsan": { $exists: false },
               ...(body.garsanKhaalga && {
                 "tuukh.garsanKhaalga": body.garsanKhaalga,
               }),
@@ -260,7 +296,6 @@ async function udriinTailan({ body }) {
               }),
             },
           },
-          // Deduplicate by tuukh._id to avoid multi-tsagiinTuukh inflation
           {
             $group: {
               _id: "$tuukh._id",
@@ -306,7 +341,7 @@ async function udriinTailan({ body }) {
           $project: {
             _id: 1,
             niitDun: 1,
-            niitToo: status === "Zurchiltei" ? { $size: "$ids" } : 1,
+            niitToo: { $size: "$ids" }, // fixed for both Зөрчилтэй and Үнэгүй
           },
         },
       ];
@@ -317,6 +352,12 @@ async function udriinTailan({ body }) {
       model.aggregate(specialPipeline("Tulburtei")),
       model.aggregate(specialPipeline("Unegui")),
     ]);
+
+    console.log("=== TULBURTEI FINAL:", JSON.stringify(tulburtei));
+    console.log(
+      "=== collectionsToQuery:",
+      JSON.stringify(collectionsToQuery.map((c) => c.name)),
+    );
 
     return { udriinTailan: udriinTailanResult, zurchiltei, tulburtei, unegui };
   };
