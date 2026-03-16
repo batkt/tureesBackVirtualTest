@@ -468,6 +468,10 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     });
   }
   if (!khariltsagchShalguur) await khariltsagch.save();
+  else {
+    if (!req.body.albanTushaal)
+      req.body.albanTushaal = khariltsagchShalguur.albanTushaal;
+  }
 
   // // Хуваарь/авлагын мөрүүдийг (хөнгөлөлтүүдтэй) шууд хадгална.
   // const khuvaariGuilgeenuud =
@@ -4375,7 +4379,7 @@ router.route("/khungulultZasya").get(tokenShalgakh, async (req, res, next) => {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
       });
-      gereeniiDugaaruud = [];
+      var gereeniiDugaaruud = [];
       for (const x of khungulult) {
         x.khamaataiGereenuud.forEach((x) => {
           if (typeof x === "object") {
@@ -4391,10 +4395,10 @@ router.route("/khungulultZasya").get(tokenShalgakh, async (req, res, next) => {
         })
         .select("+avlaga");
       for (const geree of gereenuud) {
-        khyamdraluud = [];
+        var khyamdraluud = [];
         for (const x of khungulult) {
           var khungulultiinDun = x.khamaataiGereenuud?.find(
-            (x) => x.gereeniiId == geree._id,
+            (x) => String(x.gereeniiId) === String(geree._id),
           )?.khymdarsanDun;
           if (khungulultiinDun > 0) {
             for (const ognoo of x.ognoonuud) {
@@ -4405,7 +4409,7 @@ router.route("/khungulultZasya").get(tokenShalgakh, async (req, res, next) => {
                     moment(ognoo).format("YYYY/MM"),
               );
               if (filterGuilgeenuud?.length > 0) {
-                khyamdral = {
+                var khyamdral = {
                   tulukhDun: 0,
                   ognoo: filterGuilgeenuud[0].ognoo,
                   turul: "khungulult",

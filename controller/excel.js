@@ -194,6 +194,7 @@ async function khariltsagchBaigaaEskhiigShalgaya(
           x.utas = tukhainKhariltsagch.utas;
           x.mail = tukhainKhariltsagch.mail;
           x.khayag = tukhainKhariltsagch.khayag;
+          x.albanTushaal = tukhainKhariltsagch.albanTushaal;
         } else if (!!tempJagsaalt && tempJagsaalt.length > 0) {
           tukhainKhariltsagch = tempJagsaalt.find(
             (a) => a.customerTin == x.register,
@@ -206,6 +207,7 @@ async function khariltsagchBaigaaEskhiigShalgaya(
           x.utas = tukhainKhariltsagch.utas;
           x.mail = tukhainKhariltsagch.mail;
           x.khayag = tukhainKhariltsagch.khayag;
+          x.albanTushaal = tukhainKhariltsagch.albanTushaal;
           x.customerTin = tukhainKhariltsagch.customerTin;
         }
       });

@@ -1915,7 +1915,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
       var khungulult = new KhungulultiinTuukh(req.body.tukhainBaaziinKholbolt)(
         req.body
       );
-      gereeniiDugaaruud = [];
+      var gereeniiDugaaruud = [];
       khungulult.khamaataiGereenuud.forEach((x) => {
         if (typeof x === "object") {
           gereeniiDugaaruud.push(x.gereeniiId);
@@ -1927,19 +1927,19 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
       khungulult.guilgeeKhiisenAjiltniiNer =
         req.body.nevtersenAjiltniiToken?.ner;
       khungulult.guilgeeKhiisenAjiltniiId = req.body.nevtersenAjiltniiToken?.id;
-      khariu = await khungulult.save();
+      var khariu = await khungulult.save();
       var gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .find({
           _id: { $in: gereeniiDugaaruud },
         })
         .select("+avlaga");
       for (const geree of gereenuud) {
-        khyamdraluud = [];
+        var khyamdraluud = [];
         var khungulultiinDun = khungulult.khamaataiGereenuud?.find(
-          (x) => x.gereeniiId == geree._id
+          (x) => String(x.gereeniiId) === String(geree._id)
         )?.khymdarsanDun;
         if (khungulult.khonogTootsokhEsekh) {
-          khyamdral = {
+          var khyamdral = {
             tulukhDun: 0,
             ognoo: khungulult.ognoonuud[0],
             khungulultDuusakhOgnoo: khungulult.ognoonuud[1],
@@ -1965,7 +1965,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
                   moment(ognoo).format("YYYY/MM")
             );
             if (filterGuilgeenuud?.length > 0) {
-              khyamdral = {
+              var khyamdral = {
                 tulukhDun: 0,
                 ognoo: filterGuilgeenuud[0].ognoo,
                 turul: "khungulult",
