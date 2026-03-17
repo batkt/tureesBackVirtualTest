@@ -272,18 +272,17 @@ if (process.env.NODE_APP_INSTANCE === "2") {
     },
   );
 }
-
-// cron.schedule(
-//   "10 5 * * * ",
-//   function () {
-//     zogsool.zogsoolTseverlye();
-//   },
-//   {
-//     scheduled: true,
-//     timezone: "Asia/Ulaanbaatar",
-//   },
-// );
 if (process.env.NODE_APP_INSTANCE === "7") {
+  cron.schedule(
+    "10 5 * * * ",
+    function () {
+      zogsool.zogsoolTseverlye();
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Ulaanbaatar",
+    },
+  );
   cron.schedule(
     "20 5 * * * ",
     function () {
