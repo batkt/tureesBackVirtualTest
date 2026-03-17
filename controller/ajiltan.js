@@ -30,7 +30,7 @@ function duusakhOgnooAvya(ugugdul, onFinish, next) {
       else {
         onFinish(body);
       }
-    }
+    },
   );
 }
 
@@ -43,7 +43,7 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
     try {
       var axiosKhariu = await axios.get(
         "https://api.ipgeolocation.io/ipgeo?apiKey=8ee349f1c7304c379fdb6b855d1e9df4&ip=" +
-        tuukh.ip.toString()
+          tuukh.ip.toString(),
       );
       ipTuukh = new IpTuukh(tukhainBaaziinKholbolt)();
       ipTuukh.ognoo = new Date();
@@ -54,7 +54,7 @@ async function nevtreltiinTuukhKhadgalya(tuukh, tukhainBaaziinKholbolt) {
       tuukh.bairshilUls = ipTuukh.bairshilUls;
       tuukh.bairshilKhot = ipTuukh.bairshilKhot;
       await ipTuukh.save();
-    } catch (err) { }
+    } catch (err) {}
   }
   await tuukh.save();
 }
@@ -74,7 +74,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
   if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-    ajiltan.baiguullagiinId
+    ajiltan.baiguullagiinId,
   );
   var butsaakhObject = {
     result: ajiltan,
@@ -114,12 +114,12 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           }
           const jwt = await ajiltan.tokenUusgeye(
             khariu.duusakhOgnoo,
-            butsaakhObject.salbaruud
+            butsaakhObject.salbaruud,
           );
           butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
           if (!!butsaakhObject.result) {
             butsaakhObject.result = JSON.parse(
-              JSON.stringify(butsaakhObject.result)
+              JSON.stringify(butsaakhObject.result),
             );
             butsaakhObject.result.salbaruud = butsaakhObject.salbaruud;
             butsaakhObject.result.duusakhOgnoo = khariu.duusakhOgnoo;
@@ -156,7 +156,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
         next(err);
       }
     },
-    next
+    next,
   );
 });
 
@@ -180,13 +180,13 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
     const { db } = require("zevbackv2");
     var backupDB = exec(
       "mongodump --host=" +
-      "localhost" +
-      " --port=" +
-      "27017" +
-      " --db=" +
-      tukhainBaaziinKholbolt.baaziinNer +
-      " --archive=dump.tar" +
-      "  --gzip",
+        "localhost" +
+        " --port=" +
+        "27017" +
+        " --db=" +
+        tukhainBaaziinKholbolt.baaziinNer +
+        " --archive=dump.tar" +
+        "  --gzip",
       (err, stdout, stderr) => {
         if (err) {
           res.send(err);
@@ -244,7 +244,7 @@ exports.backAvya = asyncHandler(async (req, res, next) => {
             });
           }
         }
-      }
+      },
     );
   } catch (error) {
     next(error);
@@ -333,7 +333,7 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      req.body.baiguullagiinId
+      req.body.baiguullagiinId,
     );
     if (!baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     request.post(
@@ -347,7 +347,7 @@ exports.erkhiinMedeelelAvya = asyncHandler(async (req, res, next) => {
         else {
           res.send(body);
         }
-      }
+      },
     );
   } catch (error) {
     next(error);
@@ -361,7 +361,7 @@ function msgIlgeeye(
   khariu,
   index,
   tukhainBaaziinKholbolt,
-  baiguullagiinId
+  baiguullagiinId,
 ) {
   try {
     url =
@@ -408,7 +408,7 @@ function msgIlgeeye(
             khariu,
             index + 1,
             tukhainBaaziinKholbolt,
-            baiguullagiinId
+            baiguullagiinId,
           );
         } else {
           khariu.push(body[0]);
@@ -630,7 +630,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
       var baiguullaguud;
       if (!!baiguullagiinId) {
         baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt).findById(
-          baiguullagiinId
+          baiguullagiinId,
         );
         baiguullaguud = [baiguullaguud];
       } else {
@@ -645,10 +645,10 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
         });
       }
       var ekhlekhOgnoo = new Date(
-        Date.now() - (tsag == "20:00" || tsag == "22:00" ? 0 : 86400000)
+        Date.now() - (tsag == "20:00" || tsag == "22:00" ? 0 : 86400000),
       );
       var duusakhOgnoo = new Date(
-        Date.now() - (tsag == "20:00" || tsag == "22:00" ? 0 : 86400000)
+        Date.now() - (tsag == "20:00" || tsag == "22:00" ? 0 : 86400000),
       );
       ekhlekhOgnoo.setHours(0, 0, 0, 0);
       duusakhOgnoo.setHours(23, 59, 59, 999);
@@ -656,7 +656,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
         try {
           var kholboltuud = db.kholboltuud;
           var kholbolt = kholboltuud.find(
-            (a) => a.baiguullagiinId == baiguullaga._id.toString()
+            (a) => a.baiguullagiinId == baiguullaga._id.toString(),
           );
           var textuud = [];
           if (
@@ -732,7 +732,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 var barilgiinNer = "";
                 try {
                   barilgiinNer = baiguullaga.barilguud.find(
-                    (x) => x._id == a._id
+                    (x) => x._id == a._id,
                   ).ner;
                 } catch (aldaa) {}
                 barilgiinNer = await orchuulya(barilgiinNer);
@@ -832,7 +832,11 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                 },
               },
             ]);
-            var zogsoolArchiveName = await Uilchluulegch(kholbolt, true, archiveName).aggregate([
+            var zogsoolArchiveName = await Uilchluulegch(
+              kholbolt,
+              true,
+              archiveName,
+            ).aggregate([
               {
                 $match: {
                   baiguullagiinId: baiguullaga._id.toString(),
@@ -930,10 +934,15 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                   (await formatNumber(togloom[0].niitDun)) +
                   ",";
               }
-              if ((zogsool && zogsool.length > 0) || (zogsoolArchiveName && zogsoolArchiveName.length > 0)) {
-                console.log("zogsool", zogsool[0]?.niitDun);
-                console.log("zogsoolArchiveName", zogsoolArchiveName[0]?.niitDun);
-                const totalZogsoolDun = (zogsool && zogsool.length > 0 ? zogsool[0].niitDun : 0) + (zogsoolArchiveName && zogsoolArchiveName.length > 0 ? zogsoolArchiveName[0].niitDun : 0);
+              if (
+                (zogsool && zogsool.length > 0) ||
+                (zogsoolArchiveName && zogsoolArchiveName.length > 0)
+              ) {
+                const totalZogsoolDun =
+                  (zogsool && zogsool.length > 0 ? zogsool[0].niitDun : 0) +
+                  (zogsoolArchiveName && zogsoolArchiveName.length > 0
+                    ? zogsoolArchiveName[0].niitDun
+                    : 0);
                 text =
                   text +
                   "Zogsool-" +
@@ -957,13 +966,17 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
                   " Zurchiltei- " +
                   (await formatNumber(zurchiluud[0].niitDun)) +
                   " avlaga uussen baina. ";
-              if ((zogsool && zogsool.length > 0 && zogsool[0].niitDun > 0) ||
-                  (zogsoolArchiveName && zogsoolArchiveName.length > 0 && zogsoolArchiveName[0].niitDun > 0)) {
+              if (
+                (zogsool && zogsool.length > 0 && zogsool[0].niitDun > 0) ||
+                (zogsoolArchiveName &&
+                  zogsoolArchiveName.length > 0 &&
+                  zogsoolArchiveName[0].niitDun > 0)
+              ) {
                 const shineSession = new session(db.erunkhiiKholbolt)();
                 const gishuun = new Ajiltan(kholbolt)();
                 shineSession.sessionToken = await gishuun.zochinTokenUusgye(
                   baiguullaga._id.toString(),
-                  true
+                  true,
                 );
                 await shineSession
                   .save()
@@ -981,8 +994,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
           if (textuud.length > 0) {
             var ilgeexList = [];
             for (const dugaar of baiguullaga.tokhirgoo.msgAvakhDugaar)
-              for (const text of textuud)
-                ilgeexList.push({ to: dugaar, text });
+              for (const text of textuud) ilgeexList.push({ to: dugaar, text });
             /*[{
             to: "88880140",
             text,
@@ -1002,7 +1014,7 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
               [],
               0,
               kholbolt,
-              baiguullaga._id
+              baiguullaga._id,
             );
           }
         } catch (aldaaa) {
@@ -1010,14 +1022,14 @@ exports.orlogiinMsgIlgeeye = asyncHandler(
         }
       }
     } catch (error) {}
-  }
+  },
 );
 
 exports.baiguullagaIdgaarAvya = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      req.body.baiguullagiinId
+      req.body.baiguullagiinId,
     );
     if (!baiguullaga) throw new Error("Байгууллагын мэдээлэл олдсонгүй!");
     res.send(baiguullaga);
@@ -1038,7 +1050,7 @@ exports.licenseOgnooShalgakh = asyncHandler(
       if (kholboltuud) {
         for (const kholbolt of kholboltuud) {
           var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-            kholbolt.baiguullagiinId
+            kholbolt.baiguullagiinId,
           );
           if (!!baiguullaga && !!baiguullaga.register) {
             duusakhOgnooAvya(
@@ -1051,14 +1063,14 @@ exports.licenseOgnooShalgakh = asyncHandler(
                     if (
                       io &&
                       moment(odooOgnoo).isSameOrAfter(
-                        moment(khariu.duusakhOgnoo)
+                        moment(khariu.duusakhOgnoo),
                       )
                     ) {
                       io.emit(`autoLogout${baiguullagiinId}`, khariu);
                     }
                   }
-                } catch (err) { }
-              }
+                } catch (err) {}
+              },
             );
           }
         }
@@ -1066,5 +1078,5 @@ exports.licenseOgnooShalgakh = asyncHandler(
     } catch (error) {
       if (next) next(error);
     }
-  }
+  },
 );

@@ -208,11 +208,6 @@ async function udriinTailan({ body }) {
       baiguullagiinId: body.baiguullagiinId,
       barilgiinId: body.barilgiinId ? body.barilgiinId : { $exists: true },
     };
-
-    // DEBUG: log which collection and date range is being queried
-    console.log("=== COLLECTION:", collectionName || "null(live)", "===");
-    console.log("dateStart:", dateStart, "dateEnd:", dateEnd);
-
     const match = body.garsanKhaalga
       ? {
           "tuukh.garsanKhaalga": body.garsanKhaalga,
@@ -268,9 +263,6 @@ async function udriinTailan({ body }) {
     ];
 
     const tulburteiDebug = await model.aggregate(tulburteiDebugPipeline);
-    console.log("=== TULBURTEI DEBUG (after dedup by tuukh._id) ===");
-    console.log(JSON.stringify(tulburteiDebug, null, 2));
-    console.log("=== TULBURTEI COUNT:", tulburteiDebug.length, "===");
 
     const specialPipeline = (status) => {
       if (status === "Tulburtei") {
@@ -352,12 +344,6 @@ async function udriinTailan({ body }) {
       model.aggregate(specialPipeline("Tulburtei")),
       model.aggregate(specialPipeline("Unegui")),
     ]);
-
-    console.log("=== TULBURTEI FINAL:", JSON.stringify(tulburtei));
-    console.log(
-      "=== collectionsToQuery:",
-      JSON.stringify(collectionsToQuery.map((c) => c.name)),
-    );
 
     return { udriinTailan: udriinTailanResult, zurchiltei, tulburtei, unegui };
   };

@@ -42,11 +42,11 @@ async function tokenAvya(
   next,
   baiguullagiinId,
   barilgiinId,
-  tukhainBaaziinKholbolt
+  tukhainBaaziinKholbolt,
 ) {
   try {
     var url = new URL(
-      "https://api.khanbank.com/v1/auth/token?grant_type=client_credentials"
+      "https://api.khanbank.com/v1/auth/token?grant_type=client_credentials",
     );
     url.username = username;
     url.password = password;
@@ -60,7 +60,7 @@ async function tokenAvya(
       .updateOne(
         qeury,
         { ognoo: new Date(), token: khariu.access_token },
-        { upsert: true }
+        { upsert: true },
       )
       .then((x) => {})
       .catch((e) => {});
@@ -94,8 +94,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
           },
           json: { name: username, password: encryptedPass.toString() },
         })
-        .catch((err) => {
-        });
+        .catch((err) => {});
       var khariu = JSON.parse(response.body);
       Token(tukhainBaaziinKholbolt)
         .updateOne(
@@ -105,7 +104,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
             token: khariu.token,
             refreshToken: khariu.refreshToken,
           },
-          { upsert: true }
+          { upsert: true },
         )
         .then((x) => {})
         .catch((e) => {});
@@ -133,7 +132,7 @@ async function golomtTokenAvya(dans, tukhainBaaziinKholbolt) {
             token: khariu.token,
             refreshToken: khariu.refreshToken,
           },
-          { upsert: true }
+          { upsert: true },
         )
         .then((x) => {})
         .catch((e) => {});
@@ -172,7 +171,9 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
           throw new Error(response.body.message);
         }
       } catch (err) {
-        throw new Error("Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!");
+        throw new Error(
+          "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!",
+        );
       }
       var khariu = response?.body;
       Token(tukhainBaaziinKholbolt)
@@ -182,7 +183,7 @@ async function tdbTokenAvya(dans, tukhainBaaziinKholbolt, next) {
             ognoo: new Date(),
             token: khariu?.token,
           },
-          { upsert: true }
+          { upsert: true },
         )
         .then((x) => {})
         .catch((e) => {});
@@ -205,7 +206,7 @@ async function bogdTokentAvya(dans, tukhainBaaziinKholbolt) {
       "username=" +
         dans.corporateNevtrekhNer +
         "&password=" +
-        dans.corporateNuutsUg
+        dans.corporateNuutsUg,
     );
     const response = await got
       .post(process.env.BOGD_SERVER + "authentication/login", {
@@ -226,7 +227,7 @@ async function bogdTokentAvya(dans, tukhainBaaziinKholbolt) {
           ognoo: new Date(),
           token: khariu.data.access_token,
         },
-        { upsert: true }
+        { upsert: true },
       )
       .then((x) => {})
       .catch((e) => {});
@@ -267,7 +268,7 @@ async function transTokenAvya(dans, tukhainBaaziinKholbolt) {
             ognoo: new Date(),
             token: khariu.result,
           },
-          { upsert: true }
+          { upsert: true },
         )
         .then((x) => {})
         .catch((e) => {});
@@ -284,7 +285,7 @@ async function golomtServiceDuudya(
   url,
   serviceNer,
   next,
-  tukhainBaaziinKholbolt
+  tukhainBaaziinKholbolt,
 ) {
   try {
     var { sessionKey, ivKey } = dans;
@@ -323,7 +324,7 @@ async function golomtServiceDuudya(
         {
           mode: CryptoJS.mode.CBC,
           iv: ivKey,
-        }
+        },
       );
       var plain = decrypted.toString(CryptoJS.enc.Utf8);
       var khariu = JSON.parse(plain);
@@ -355,7 +356,7 @@ async function dansniiKhuulgaAvya(token, next, body) {
     var url;
     const responseShunuEsekh = await instance.get(
       "https://api.khanbank.com/v1/statements/corporate/state",
-      { context }
+      { context },
     );
     const resultValue = body.corporateShunuUntraakhEsekh
       ? false
@@ -455,7 +456,7 @@ async function tdbDansniiUldegdelAvya(
   khuselt,
   next,
   onFinish,
-  baiguullagiinId
+  baiguullagiinId,
 ) {
   try {
     var CreDtTm = new Date().toISOString().replace(/\..+/, "");
@@ -540,7 +541,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
       if (dans.corporateBarilgaTusBur && !!dans.barilgiinId)
         query["barilgiinId"] = dans.barilgiinId;
       var tokenObject = await Token(req.body.tukhainBaaziinKholbolt).findOne(
-        query
+        query,
       );
       var token;
       if (!tokenObject) {
@@ -550,18 +551,18 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
           next,
           dans.baiguullagiinId,
           dans.corporateBarilgaTusBur ? dans.barilgiinId : null,
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt,
         );
         token = tokenObject?.access_token;
       } else token = tokenObject.token;
       if (!token) {
         throw new Error(
-          "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!"
+          "Corporate Gateway үйлчилгээний нэвтрэх мэдээллээ шалгана уу!",
         );
       }
       var khariu = await dansniiJagsaaltAvya(token, next);
       khariu = khariu?.accounts?.filter(
-        (a) => a.number == req.body.dansniiDugaar
+        (a) => a.number == req.body.dansniiDugaar,
       );
       if (khariu && khariu.length > 0) uldegdel = khariu[0].avalaibleBalance;
       res.send({ uldegdel });
@@ -577,7 +578,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         var tokenObject = await tdbTokenAvya(
           dans,
           req.body.tukhainBaaziinKholbolt,
-          next
+          next,
         );
         if (tokenObject?.token) {
           var url =
@@ -620,12 +621,12 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         ];
         var max = await BankniiGuilgee(
           req.body.tukhainBaaziinKholbolt,
-          true
+          true,
         ).aggregate(query);
         var maxDugaar = 100;
         if (max && max.length !== 0) maxDugaar = max[0].max;
         var khuseltiinDugaar = await Dugaarlalt(
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt,
         ).aggregate([
           {
             $match: {
@@ -659,7 +660,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
             {
               new: true,
               upsert: true,
-            }
+            },
           )
           .catch((err) => next(err));
         var textUseg = "A";
@@ -693,7 +694,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
               res.send({ uldegdel: khariu.Document.EnqRsp[0].ABal[0] });
             } else res.send({ uldegdel: 0 });
           },
-          dans.baiguullagiinId
+          dans.baiguullagiinId,
         );
       }
     } else if (dans && dans.bank == "golomt") {
@@ -704,7 +705,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         "/v1/account/balance/inq",
         "ACCTBALINQ",
         next,
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       );
       if (!!khariu && !!khariu.balanceLL && !!khariu.balanceLL.length > 0)
         khariu = { uldegdel: khariu?.balanceLL[0].amount?.value };
@@ -712,7 +713,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
     } else if (dans && dans.bank == "trans") {
       var tokenObject = await transTokenAvya(
         dans,
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       );
       var url =
         process.env.TRANS_SERVER +
@@ -737,7 +738,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
     } else if (dans && dans.bank == "bogd") {
       var tokenObject = await bogdTokentAvya(
         dans,
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       );
       const response = await got
         .post(process.env.BOGD_SERVER + "api/accounts", {
@@ -752,7 +753,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
         });
       var khariu = JSON.parse(response.body);
       var khariltsakh = khariu?.data?.types[0].accounts?.filter(
-        (e) => e.accountNo === dans.dugaar
+        (e) => e.accountNo === dans.dugaar,
       )[0];
       res.send({ uldegdel: khariltsakh?.balance });
     }
@@ -762,8 +763,7 @@ exports.dansniiUldegdelAvya = asyncHandler(async (req, res, next) => {
 });
 
 exports.switchTDBCGW2 = asyncHandler(async (req, res, next) => {
-  try 
-  {
+  try {
     var kholboltuud;
     const { db } = require("zevbackv2");
     if (!!req?.body?.tukhainBaaziinKholbolt) {
@@ -780,30 +780,34 @@ exports.switchTDBCGW2 = asyncHandler(async (req, res, next) => {
             dugaar: { $regex: "MN" },
             oirkhonTatakhEsekh: { $exists: false },
           })
-          .sort({_id:1})
+          .sort({ _id: 1 })
           .lean();
-        if (dansnuud.length > 1)
-        {
-          const currentIndex = dansnuud.findIndex(a => a.corporateAshiglakhEsekh === true);
-          console.log("Current currentIndex: " + dansnuud[currentIndex]?.dugaar);
+        if (dansnuud.length > 1) {
+          const currentIndex = dansnuud.findIndex(
+            (a) => a.corporateAshiglakhEsekh === true,
+          );
           let nextIndex = currentIndex + 1;
-          if(nextIndex >= dansnuud.length){
-            nextIndex = 0
+          if (nextIndex >= dansnuud.length) {
+            nextIndex = 0;
           }
-          console.log("Next index: " + dansnuud[nextIndex]?.dugaar);
-          await Dans(kholbolt).updateMany({
-            bank: "tdb",
-            dugaar: { $regex: "MN" },
-            corporateAshiglakhEsekh: true,
-            oirkhonTatakhEsekh: { $exists: false },
-          }, { $set: {corporateAshiglakhEsekh: false}});
-          await Dans(kholbolt).updateOne({_id: dansnuud[nextIndex]._id}, {$set: {corporateAshiglakhEsekh: true}});
+          await Dans(kholbolt).updateMany(
+            {
+              bank: "tdb",
+              dugaar: { $regex: "MN" },
+              corporateAshiglakhEsekh: true,
+              oirkhonTatakhEsekh: { $exists: false },
+            },
+            { $set: { corporateAshiglakhEsekh: false } },
+          );
+          await Dans(kholbolt).updateOne(
+            { _id: dansnuud[nextIndex]._id },
+            { $set: { corporateAshiglakhEsekh: true } },
+          );
         }
       }
     }
     if (res) res.send("Amjilttai");
   } catch (err) {
-    console.log("Error in switchTDBCGW2: " + err);
     if (next) next(err);
   }
 });
@@ -829,7 +833,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
       lastDay = new Date(
         new Date().getFullYear(),
         new Date().getMonth() + 1,
-        0
+        0,
       );
     }
     if (kholboltuud) {
@@ -869,7 +873,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     next,
                     dans.baiguullagiinId,
                     dans.corporateBarilgaTusBur ? dans.barilgiinId : null,
-                    kholbolt
+                    kholbolt,
                   );
                   token = tokenObject?.access_token;
                 } else token = tokenObject.token;
@@ -916,7 +920,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
                   khariu.transactions.forEach((mur) =>
-                    guilgeenuud.push(new BankniiGuilgee(kholbolt)(mur))
+                    guilgeenuud.push(new BankniiGuilgee(kholbolt)(mur)),
                   );
                   guilgeenuud.forEach((x) => {
                     x.dansniiDugaar = dans.dugaar;
@@ -935,7 +939,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         item.amount.toString();
                       var guilgee = await BankniiGuilgee(
                         kholbolt,
-                        true
+                        true,
                       ).findOne({
                         indexTalbar: indexTalbar,
                       });
@@ -943,7 +947,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     }
                     if (!!ustgakhJagsaalt) {
                       guilgeenuud = guilgeenuud.filter(
-                        (el) => !ustgakhJagsaalt.includes(el)
+                        (el) => !ustgakhJagsaalt.includes(el),
                       );
                     }
                   }
@@ -952,7 +956,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     .then((result) => {
                       if (res) res.send("Amjilttai");
                     })
-                    .catch((err) => {} );
+                    .catch((err) => {});
                 }
               } else if (dans.bank == "tdb") {
                 if (
@@ -975,10 +979,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     })
                     .sort({ TxDt: -1 })
                     .limit(1);
-                  // if (!!max) {
-                  //   firstDay = new Date(max.TxDt);
-                  // } else firstDay = new Date();
-                  firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+                  if (!!max) {
+                    firstDay = new Date(max.TxDt);
+                  } else firstDay = new Date();
+                  // firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
                   url =
                     url +
                     "?from=" +
@@ -998,7 +1002,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate() +
                     "&page=1&size=100000";
-                  console.log("URL: --->", url);
                   var response;
                   try {
                     response = await axios.get(url, {
@@ -1030,7 +1033,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                           CtActnName: mur?.contacntname,
                           curRate: mur?.currate,
                           CtBankNo: mur?.bankcode,
-                        })
+                        }),
                       );
                     });
                     guilgeenuud.forEach((x) => {
@@ -1039,7 +1042,10 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       x.baiguullagiinId = dans.baiguullagiinId;
                       x.barilgiinId = dans.barilgiinId;
                     });
-                    BankniiGuilgee(kholbolt).insertMany(guilgeenuud, { ordered: false }).then(() => res?.send("Amjilttai")).catch(err => console.error("Insert error:", err));
+                    BankniiGuilgee(kholbolt)
+                      .insertMany(guilgeenuud, { ordered: false })
+                      .then(() => res?.send("Amjilttai"))
+                      .catch((err) => console.error("Insert error:", err));
                   }
                 } else {
                   var query = [
@@ -1067,7 +1073,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     },
                   ];
                   var max = await BankniiGuilgee(kholbolt, true).aggregate(
-                    query
+                    query,
                   );
                   var maxDugaar = 100;
                   if (max && max.length !== 0) maxDugaar = max[0].max;
@@ -1104,7 +1110,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       {
                         new: true,
                         upsert: true,
-                      }
+                      },
                     )
                     .then((resa) => {})
                     .catch((err) => next(err));
@@ -1145,7 +1151,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         lastDay.getDate(),
                       jurnaliinDugaar: await pad(
                         req && req.body && req.body.ognoo ? 0 : maxDugaar,
-                        18
+                        18,
                       ),
                     },
                     next,
@@ -1172,7 +1178,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                               CtAcntOrg: mur?.CtAcntOrg[0],
                               CtBankNo: mur?.CtBankNo[0],
                               Amt: mur?.Amt[0],
-                            })
+                            }),
                           );
                         });
                         guilgeenuud.forEach((x) => {
@@ -1190,7 +1196,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       } else {
                       }
                     },
-                    dans.baiguullagiinId
+                    dans.baiguullagiinId,
                   );
                 }
               } else if (dans.bank == "golomt") {
@@ -1233,7 +1239,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   "/v1/account/operative/statement",
                   "OPERACCTSTA",
                   next,
-                  kholbolt
+                  kholbolt,
                 );
                 if (
                   !!khariu &&
@@ -1257,7 +1263,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         balance: mur?.balance,
                         accName: mur?.accName,
                         accNum: mur?.accNum,
-                      })
+                      }),
                     );
                   });
                   guilgeenuud.forEach((x) => {
@@ -1278,7 +1284,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
               } else if (dans.bank == "trans") {
                 var tokenObject = await transTokenAvya(
                   dans,
-                  req.body.tukhainBaaziinKholbolt
+                  req.body.tukhainBaaziinKholbolt,
                 );
                 var url =
                   process.env.TRANS_SERVER +
@@ -1357,7 +1363,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         txnDesc: mur?.txnDesc,
                         txnDate: mur?.txnDate,
                         postDate: mur?.postDate,
-                      })
+                      }),
                     );
                   });
                   guilgeenuud.forEach((x) => {
@@ -1405,7 +1411,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getMonth() + 1) +
                     "-" +
                     (lastDay.getDate() < 10 ? "0" : "") +
-                    lastDay.getDate()
+                    lastDay.getDate(),
                 );
                 const response = await got
                   .post(process.env.BOGD_SERVER + "api/statement", {
@@ -1446,7 +1452,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         accNum: mur?.to_acc_no,
                         relatedAccount: mur?.to_acc_no,
                         time: mur?.time,
-                      })
+                      }),
                     );
                   });
                 }
@@ -1469,7 +1475,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   }
                   if (!!ustgakhJagsaalt) {
                     guilgeenuud = guilgeenuud.filter(
-                      (el) => !ustgakhJagsaalt.includes(el)
+                      (el) => !ustgakhJagsaalt.includes(el),
                     );
                   }
                 }
@@ -1523,12 +1529,12 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
   ];
   var max = await BankniiGuilgee(
     req.body.tukhainBaaziinKholbolt,
-    true
+    true,
   ).aggregate(query);
   var maxDugaar = 100;
   if (max && max.length !== 0) maxDugaar = max[0].max;
   var khuseltiinDugaar = await Dugaarlalt(
-    req.body.tukhainBaaziinKholbolt
+    req.body.tukhainBaaziinKholbolt,
   ).aggregate([
     {
       $match: {
@@ -1562,7 +1568,7 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
       {
         new: true,
         upsert: true,
-      }
+      },
     )
     .catch((err) => next(err));
   var textUseg = "A";
@@ -1593,7 +1599,7 @@ exports.tdbUldegdelShalgay = asyncHandler(async (req, res, next) => {
         res.send({ msg: khariu.Document.GrpHdr[0].RspDesc[0] });
       else res.send({ msg: "Банктай холбогдох үед алдаа гарлаа!" });
     },
-    dans.baiguullagiinId
+    dans.baiguullagiinId,
   );
 });
 
@@ -1611,7 +1617,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
         lastDay = new Date(
           new Date().getFullYear(),
           new Date().getMonth() + 1,
-          0
+          0,
         );
         dansnuud = await Dans(kholbolt)
           .find({
@@ -1639,7 +1645,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     null,
                     dans.baiguullagiinId,
                     dans.corporateBarilgaTusBur ? dans.barilgiinId : null,
-                    kholbolt
+                    kholbolt,
                   );
                   token = tokenObject.access_token;
                 } else token = tokenObject.token;
@@ -1673,7 +1679,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                 if (khariu && khariu.transactions) {
                   var guilgeenuud = [];
                   khariu.transactions.forEach((mur) =>
-                    guilgeenuud.push(new BankniiGuilgee(kholbolt)(mur))
+                    guilgeenuud.push(new BankniiGuilgee(kholbolt)(mur)),
                   );
                   guilgeenuud.forEach((x) => {
                     x.dansniiDugaar = dans.dugaar;
@@ -1692,7 +1698,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         item.amount.toString();
                       var guilgee = await BankniiGuilgee(
                         kholbolt,
-                        true
+                        true,
                       ).findOne({
                         indexTalbar: indexTalbar,
                       });
@@ -1700,7 +1706,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     }
                     if (!!ustgakhJagsaalt) {
                       guilgeenuud = guilgeenuud.filter(
-                        (el) => !ustgakhJagsaalt.includes(el)
+                        (el) => !ustgakhJagsaalt.includes(el),
                       );
                     }
                   }
@@ -1796,10 +1802,12 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   } catch (err) {
                     if (err.response) {
                       if (err.response.status === 429) {
-                        console.log("Too many requests. Try again later or reduce request frequency.");
+                        console.log(
+                          "Too many requests. Try again later or reduce request frequency.",
+                        );
                       }
                     } else {
-                      console.log("Request error:", err.message); 
+                      console.log("Request error:", err.message);
                     }
                   }
                   var khariu = response?.data;
@@ -1817,7 +1825,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                           CtActnName: mur?.contacntname,
                           curRate: mur?.currate,
                           CtBankNo: mur?.bankcode,
-                        })
+                        }),
                       );
                     });
                     guilgeenuud.forEach((x) => {
@@ -1833,9 +1841,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       })
                       .catch((err) => {});
                   }
-                }
-                else 
-                {
+                } else {
                   var query = [
                     {
                       $match: {
@@ -1860,7 +1866,9 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       },
                     },
                   ];
-                  var max = await BankniiGuilgee(kholbolt, true).aggregate(query);
+                  var max = await BankniiGuilgee(kholbolt, true).aggregate(
+                    query,
+                  );
                   var maxDugaar = 100;
                   if (max && max.length !== 0) maxDugaar = max[0].max;
                   var khuseltiinDugaar = await Dugaarlalt(kholbolt).aggregate([
@@ -1896,7 +1904,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       {
                         new: true,
                         upsert: true,
-                      }
+                      },
                     )
                     .catch((err) => {
                       throw err;
@@ -1961,7 +1969,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                               CtAcntOrg: mur?.CtAcntOrg[0],
                               CtBankNo: mur?.CtBankNo[0],
                               Amt: mur?.Amt[0],
-                            })
+                            }),
                           );
                         });
                         guilgeenuud.forEach((x) => {
@@ -1989,7 +1997,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                             }
                             var guilgee = await BankniiGuilgee(
                               kholbolt,
-                              true
+                              true,
                             ).findOne({
                               NtryRef: item.NtryRef,
                               barilgiinId: dans.barilgiinId,
@@ -1998,19 +2006,17 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                           }
                           if (!!ustgakhJagsaalt) {
                             guilgeenuud = guilgeenuud.filter(
-                              (el) => !ustgakhJagsaalt.includes(el)
+                              (el) => !ustgakhJagsaalt.includes(el),
                             );
                           }
                         }
                         await BankniiGuilgee(kholbolt)
                           .insertMany(guilgeenuud)
                           .then((result) => {})
-                          .catch((err) => {
-                            
-                          });
+                          .catch((err) => {});
                       }
                     },
-                    dans.baiguullagiinId
+                    dans.baiguullagiinId,
                   );
                 }
               } else if (dans.bank == "golomt") {
@@ -2057,7 +2063,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   "/v1/account/operative/statement",
                   "OPERACCTSTA",
                   null,
-                  kholbolt
+                  kholbolt,
                 );
                 if (
                   !!khariu &&
@@ -2081,7 +2087,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         balance: mur?.balance,
                         accName: mur?.accName,
                         accNum: mur?.accNum,
-                      })
+                      }),
                     );
                   });
                   guilgeenuud.forEach((x) => {
@@ -2101,7 +2107,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         item.tranAmount.toString();
                       var guilgee = await BankniiGuilgee(
                         kholbolt,
-                        true
+                        true,
                       ).findOne({
                         indexTalbar: indexTalbar,
                       });
@@ -2109,7 +2115,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     }
                     if (!!ustgakhJagsaalt) {
                       guilgeenuud = guilgeenuud.filter(
-                        (el) => !ustgakhJagsaalt.includes(el)
+                        (el) => !ustgakhJagsaalt.includes(el),
                       );
                     }
                   }
@@ -2131,9 +2137,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {})
-                    .catch((err) => {
-                      
-                    });
+                    .catch((err) => {});
                 }
               } else if (dans.bank == "trans") {
                 var tokenObject = await transTokenAvya(dans, kholbolt);
@@ -2217,7 +2221,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         txnDesc: mur?.txnDesc,
                         txnDate: mur?.txnDate,
                         postDate: mur?.postDate,
-                      })
+                      }),
                     );
                   });
                   guilgeenuud.forEach((x) => {
@@ -2231,7 +2235,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     for (const item of guilgeenuud) {
                       var guilgee = await BankniiGuilgee(
                         kholbolt,
-                        true
+                        true,
                       ).findOne({
                         jrno: item.jrno,
                         barilgiinId: dans.barilgiinId,
@@ -2240,7 +2244,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     }
                     if (!!ustgakhJagsaalt) {
                       guilgeenuud = guilgeenuud.filter(
-                        (el) => !ustgakhJagsaalt.includes(el)
+                        (el) => !ustgakhJagsaalt.includes(el),
                       );
                     }
                     for (const item of guilgeenuud) {
@@ -2263,9 +2267,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud)
                     .then((result) => {})
-                    .catch((err) => {
-                      
-                    });
+                    .catch((err) => {});
                 }
               } else if (dans.bank == "bogd") {
                 var tokenObject = await bogdTokentAvya(dans, kholbolt);
@@ -2297,7 +2299,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     (lastDay.getMonth() + 1) +
                     "-" +
                     (lastDay.getDate() < 10 ? "0" : "") +
-                    lastDay.getDate()
+                    lastDay.getDate(),
                 );
                 const response = await got
                   .post(process.env.BOGD_SERVER + "api/statement", {
@@ -2338,7 +2340,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                         accNum: mur?.to_acc_no,
                         relatedAccount: mur?.to_acc_no,
                         time: mur?.time,
-                      })
+                      }),
                     );
                   });
                 }
@@ -2353,9 +2355,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   .then((result) => {
                     if (res) res.send("Amjilttai");
                   })
-                  .catch((err) => {
-                    
-                  });
+                  .catch((err) => {});
               }
             } catch (aldaaa) {
               continue;
@@ -2364,9 +2364,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
         else if (res) res.status(200).send("Tatah guilgee baihgui!");
       }
     }
-  } catch (err) {
-    
-  }
+  } catch (err) {}
 });
 
 async function pad(num, size) {
@@ -2402,7 +2400,7 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
       for (const baiguullaga of baiguullaguud) {
         var kholboltuud = db.kholboltuud;
         var kholbolt = kholboltuud.find(
-          (a) => a.baiguullagiinId == baiguullaga._id.toString()
+          (a) => a.baiguullagiinId == baiguullaga._id.toString(),
         );
         var parking = await Parking(kholbolt).findOne({
           gadnaZogsooliinId: { $exists: true },
@@ -2428,10 +2426,10 @@ exports.dotorZogsoolDavhkardsanMashin = asyncHandler(async (req, res, next) => {
           for (const data of mashinuud) {
             if (data.tuukh?.length > 0) {
               var tuukh = data.tuukh?.filter(
-                (e) => e.orsonKhaalga === "192.168.2.234"
+                (e) => e.orsonKhaalga === "192.168.2.234",
               );
               var filtered = data.tuukh?.filter(
-                (e) => e.orsonKhaalga === "192.168.2.75"
+                (e) => e.orsonKhaalga === "192.168.2.75",
               );
               if (filtered?.length > 1) {
                 tuukh.push(filtered[0]);
@@ -2514,7 +2512,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(
       if (kholboltuud) {
         for (const kholbolt of kholboltuud) {
           var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-            kholbolt.baiguullagiinId
+            kholbolt.baiguullagiinId,
           );
           if (baiguullaga?.tokhirgoo?.togloomiinTuvDavkhardsanShalgakh) {
             for (const barilga of baiguullaga.barilguud) {
@@ -2559,7 +2557,7 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(
               for (const togloom of togloomuud) {
                 if (togloom.tulbur > togloom._id?.niitDun) {
                   var data = await TogloomiinTuv(kholbolt).findById(
-                    togloom._id?.id
+                    togloom._id?.id,
                   );
                   data.niitTulbur?.shift();
                   data.tulbur?.shift();
@@ -2583,200 +2581,254 @@ exports.togloomiinTuvDavkhardsanShalgakh = asyncHandler(
     } catch (err) {
       if (next) next(err);
     }
-  }
+  },
 );
 
 exports.archiveBankGuilgee = asyncHandler(async () => {
-  try 
-  { 
+  try {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
     if (kholboltuud) {
-        for (const kholbolt of kholboltuud) {
-          if (kholbolt.baiguullagiinId === "612f457d185280db676d0b51") continue;
-          var parkings = await Parking(kholbolt).find({
-            baiguullagiinId: kholbolt.baiguullagiinId,
-            zogsooliinDans: {$exists: true}, 
-          });
-          if (parkings?.length === 0) continue;
-          var zogsooliinDansuud = [];
-          for (const parking of parkings) {
-            if (!!parking.zogsooliinDans && parking.zogsooliinDans !== "0" && !zogsooliinDansuud.includes(parking.zogsooliinDans)) {
-              zogsooliinDansuud.push(parking.zogsooliinDans);
-            }
-          }
-          if (zogsooliinDansuud?.length === 0) continue;
-          const months = await BankniiGuilgee(kholbolt).aggregate([
-              { $match: { dansniiDugaar: { $in: zogsooliinDansuud }, kholbosonTalbainId: [] } },
-              { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
-              { $group: { _id: { year: "$year", month: "$month" } } },
-              { $sort: { "_id.year": 1, "_id.month": 1 }, },
-          ]);
-          
-          for (const { _id } of months) {
-              const y = _id.year;
-              const m = _id.month;
-              if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
-              const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
-              const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
-                dansniiDugaar: { $in: zogsooliinDansuud },
-                kholbosonTalbainId: [],
-                createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
-              if (docs?.length > 0) continue;
-              // --- Archive ---
-              const data = await BankniiGuilgee(kholbolt).aggregate([
-                  { $match: {
-                    dansniiDugaar: { $in: zogsooliinDansuud },
-                    kholbosonTalbainId: [],
-                    createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
-                  } },
-              ]);
-              await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-              // --- Delete ---
-              const res = await BankniiGuilgee(kholbolt).deleteMany({
-                  dansniiDugaar: { $in: zogsooliinDansuud },
-                  kholbosonTalbainId: [],
-                  createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
+      for (const kholbolt of kholboltuud) {
+        if (kholbolt.baiguullagiinId === "612f457d185280db676d0b51") continue;
+        var parkings = await Parking(kholbolt).find({
+          baiguullagiinId: kholbolt.baiguullagiinId,
+          zogsooliinDans: { $exists: true },
+        });
+        if (parkings?.length === 0) continue;
+        var zogsooliinDansuud = [];
+        for (const parking of parkings) {
+          if (
+            !!parking.zogsooliinDans &&
+            parking.zogsooliinDans !== "0" &&
+            !zogsooliinDansuud.includes(parking.zogsooliinDans)
+          ) {
+            zogsooliinDansuud.push(parking.zogsooliinDans);
           }
         }
-    }  
-  } catch (err) {
+        if (zogsooliinDansuud?.length === 0) continue;
+        const months = await BankniiGuilgee(kholbolt).aggregate([
+          {
+            $match: {
+              dansniiDugaar: { $in: zogsooliinDansuud },
+              kholbosonTalbainId: [],
+            },
+          },
+          {
+            $project: {
+              year: { $year: "$createdAt" },
+              month: { $month: "$createdAt" },
+            },
+          },
+          { $group: { _id: { year: "$year", month: "$month" } } },
+          { $sort: { "_id.year": 1, "_id.month": 1 } },
+        ]);
+
+        for (const { _id } of months) {
+          const y = _id.year;
+          const m = _id.month;
+          if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
+          const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+          const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
+            dansniiDugaar: { $in: zogsooliinDansuud },
+            kholbosonTalbainId: [],
+            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) },
+          });
+          if (docs?.length > 0) continue;
+          // --- Archive ---
+          const data = await BankniiGuilgee(kholbolt).aggregate([
+            {
+              $match: {
+                dansniiDugaar: { $in: zogsooliinDansuud },
+                kholbosonTalbainId: [],
+                createdAt: {
+                  $gte: new Date(y, m - 1, 1),
+                  $lt: new Date(y, m, 1),
+                },
+              },
+            },
+          ]);
+          await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+          // --- Delete ---
+          const res = await BankniiGuilgee(kholbolt).deleteMany({
+            dansniiDugaar: { $in: zogsooliinDansuud },
+            kholbosonTalbainId: [],
+            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) },
+          });
+        }
+      }
     }
-  }
-);
+  } catch (err) {}
+});
 
 exports.archiveBankGuilgeeRently = asyncHandler(async () => {
-  try 
-  { 
+  try {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
     if (kholboltuud) {
-        for (const kholbolt of kholboltuud) {
-          if (kholbolt.baiguullagiinId === "612f457d185280db676d0b51") continue;
-          var parkings = await Parking(kholbolt).find({
-            baiguullagiinId: kholbolt.baiguullagiinId,
-            zogsooliinDans: {$exists: true}, 
-          });
-          if (parkings?.length === 0) continue;
-          var zogsooliinDansuud = [];
-          for (const parking of parkings) {
-            if (!!parking.zogsooliinDans && parking.zogsooliinDans !== "0" && !zogsooliinDansuud.includes(parking.zogsooliinDans)) {
-              zogsooliinDansuud.push(parking.zogsooliinDans);
-            }
-          }
-          if (zogsooliinDansuud?.length === 0) continue;
-          const months = await BankniiGuilgee(kholbolt).aggregate([
-              { $match: { dansniiDugaar: { $nin: zogsooliinDansuud } } },
-              { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
-              { $group: { _id: { year: "$year", month: "$month" } } },
-              { $sort: { "_id.year": 1, "_id.month": 1 }, },
-          ]);
-          for (const { _id } of months) {
-              const y = _id.year;
-              const m = _id.month;
-              if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
-              const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
-              const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
-                dansniiDugaar: { $nin: zogsooliinDansuud },
-                createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
-              // if (docs?.length > 0) continue;
-              // --- Archive ---
-              const data = await BankniiGuilgee(kholbolt).aggregate([
-                  { $match: {
-                    dansniiDugaar: { $nin: zogsooliinDansuud },
-                    createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
-                  } },
-              ]);
-              await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-              // --- Delete ---
-              const res = await BankniiGuilgee(kholbolt).deleteMany({
-                  dansniiDugaar: { $nin: zogsooliinDansuud },
-                  createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
+      for (const kholbolt of kholboltuud) {
+        if (kholbolt.baiguullagiinId === "612f457d185280db676d0b51") continue;
+        var parkings = await Parking(kholbolt).find({
+          baiguullagiinId: kholbolt.baiguullagiinId,
+          zogsooliinDans: { $exists: true },
+        });
+        if (parkings?.length === 0) continue;
+        var zogsooliinDansuud = [];
+        for (const parking of parkings) {
+          if (
+            !!parking.zogsooliinDans &&
+            parking.zogsooliinDans !== "0" &&
+            !zogsooliinDansuud.includes(parking.zogsooliinDans)
+          ) {
+            zogsooliinDansuud.push(parking.zogsooliinDans);
           }
         }
-    }  
-  } catch (err) {
+        if (zogsooliinDansuud?.length === 0) continue;
+        const months = await BankniiGuilgee(kholbolt).aggregate([
+          { $match: { dansniiDugaar: { $nin: zogsooliinDansuud } } },
+          {
+            $project: {
+              year: { $year: "$createdAt" },
+              month: { $month: "$createdAt" },
+            },
+          },
+          { $group: { _id: { year: "$year", month: "$month" } } },
+          { $sort: { "_id.year": 1, "_id.month": 1 } },
+        ]);
+        for (const { _id } of months) {
+          const y = _id.year;
+          const m = _id.month;
+          if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
+          const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+          const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
+            dansniiDugaar: { $nin: zogsooliinDansuud },
+            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) },
+          });
+          // if (docs?.length > 0) continue;
+          // --- Archive ---
+          const data = await BankniiGuilgee(kholbolt).aggregate([
+            {
+              $match: {
+                dansniiDugaar: { $nin: zogsooliinDansuud },
+                createdAt: {
+                  $gte: new Date(y, m - 1, 1),
+                  $lt: new Date(y, m, 1),
+                },
+              },
+            },
+          ]);
+          await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+          // --- Delete ---
+          const res = await BankniiGuilgee(kholbolt).deleteMany({
+            dansniiDugaar: { $nin: zogsooliinDansuud },
+            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) },
+          });
+        }
+      }
     }
-  }
-);
+  } catch (err) {}
+});
 
 exports.archiveBankGuilgeeKhonogFirst = asyncHandler(async () => {
-  try 
-  { 
+  try {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
     if (kholboltuud) {
-        for (const kholbolt of kholboltuud) {
-          if (kholbolt.baiguullagiinId !== "6731b43bc23730ac1908da2d") continue;
-          var parkings = await Parking(kholbolt).find({
-            baiguullagiinId: kholbolt.baiguullagiinId,
-            zogsooliinDans: {$exists: true}, 
-          });
-          if (parkings?.length === 0) continue;
-          var zogsooliinDansuud = [];
-          for (const parking of parkings) {
-            if (!!parking.zogsooliinDans && parking.zogsooliinDans !== "0" && !zogsooliinDansuud.includes(parking.zogsooliinDans)) {
-              zogsooliinDansuud.push(parking.zogsooliinDans);
-            }
-          }
-          if (zogsooliinDansuud?.length === 0) continue;
-          const months = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").aggregate([
-              { $match: { dansniiDugaar: { $in: zogsooliinDansuud }, kholbosonTalbainId: [] } },
-              { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
-              { $group: { _id: { year: "$year", month: "$month" } } },
-              { $sort: { "_id.year": 1, "_id.month": 1 }, },
-          ]);
-          
-          for (const { _id } of months) {
-              const y = _id.year;
-              const m = _id.month;
-              if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
-              const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
-              const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
-                dansniiDugaar: { $in: zogsooliinDansuud },
-                kholbosonTalbainId: [],
-                createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
-              if (docs?.length > 0) continue;
-              // --- Archive ---
-              const data = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").aggregate([
-                  { $match: {
-                    dansniiDugaar: { $in: zogsooliinDansuud },
-                    kholbosonTalbainId: [],
-                    createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
-                  } },
-              ]);
-              await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-              // --- Delete ---
-              const res = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").deleteMany({
-                  dansniiDugaar: { $in: zogsooliinDansuud },
-                  kholbosonTalbainId: [],
-                  createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
+      for (const kholbolt of kholboltuud) {
+        if (kholbolt.baiguullagiinId !== "6731b43bc23730ac1908da2d") continue;
+        var parkings = await Parking(kholbolt).find({
+          baiguullagiinId: kholbolt.baiguullagiinId,
+          zogsooliinDans: { $exists: true },
+        });
+        if (parkings?.length === 0) continue;
+        var zogsooliinDansuud = [];
+        for (const parking of parkings) {
+          if (
+            !!parking.zogsooliinDans &&
+            parking.zogsooliinDans !== "0" &&
+            !zogsooliinDansuud.includes(parking.zogsooliinDans)
+          ) {
+            zogsooliinDansuud.push(parking.zogsooliinDans);
           }
         }
-    }  
-  } catch (err) {
+        if (zogsooliinDansuud?.length === 0) continue;
+        const months = await BankniiGuilgee(
+          kholbolt,
+          false,
+          "bankniiGuilgeeFirst",
+        ).aggregate([
+          {
+            $match: {
+              dansniiDugaar: { $in: zogsooliinDansuud },
+              kholbosonTalbainId: [],
+            },
+          },
+          {
+            $project: {
+              year: { $year: "$createdAt" },
+              month: { $month: "$createdAt" },
+            },
+          },
+          { $group: { _id: { year: "$year", month: "$month" } } },
+          { $sort: { "_id.year": 1, "_id.month": 1 } },
+        ]);
+
+        for (const { _id } of months) {
+          const y = _id.year;
+          const m = _id.month;
+          if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
+          const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+          const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
+            dansniiDugaar: { $in: zogsooliinDansuud },
+            kholbosonTalbainId: [],
+            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) },
+          });
+          if (docs?.length > 0) continue;
+          // --- Archive ---
+          const data = await BankniiGuilgee(
+            kholbolt,
+            false,
+            "bankniiGuilgeeFirst",
+          ).aggregate([
+            {
+              $match: {
+                dansniiDugaar: { $in: zogsooliinDansuud },
+                kholbosonTalbainId: [],
+                createdAt: {
+                  $gte: new Date(y, m - 1, 1),
+                  $lt: new Date(y, m, 1),
+                },
+              },
+            },
+          ]);
+          await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+          // --- Delete ---
+          const res = await BankniiGuilgee(
+            kholbolt,
+            false,
+            "bankniiGuilgeeFirst",
+          ).deleteMany({
+            dansniiDugaar: { $in: zogsooliinDansuud },
+            kholbosonTalbainId: [],
+            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) },
+          });
+        }
+      }
     }
-  }
-);
+  } catch (err) {}
+});
 
 exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
-  try 
-  { 
+  try {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     const now = new Date();
@@ -2786,169 +2838,206 @@ exports.archiveBankGuilgeeKhonog = asyncHandler(async () => {
     const m = archiveBeforeDate.getMonth() + 1;
     const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
     if (kholboltuud) {
-        for (const kholbolt of kholboltuud) {
-          const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
-          if(!baiguullaga) continue;
-          if (kholbolt.baiguullagiinId === "612f457d185280db676d0b51") continue;
-          var parkings = await Parking(kholbolt).find({
-            baiguullagiinId: kholbolt.baiguullagiinId,
-            zogsooliinDans: {$exists: true}, 
-          });
-          if (parkings?.length === 0) continue;
-          var zogsooliinDansuud = [];
-          for (const parking of parkings) {
-            if (!!parking.zogsooliinDans && parking.zogsooliinDans !== "0" && !zogsooliinDansuud.includes(parking.zogsooliinDans)) {
-              zogsooliinDansuud.push(parking.zogsooliinDans);
-            }
+      for (const kholbolt of kholboltuud) {
+        const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+          kholbolt.baiguullagiinId,
+        );
+        if (!baiguullaga) continue;
+        if (kholbolt.baiguullagiinId === "612f457d185280db676d0b51") continue;
+        var parkings = await Parking(kholbolt).find({
+          baiguullagiinId: kholbolt.baiguullagiinId,
+          zogsooliinDans: { $exists: true },
+        });
+        if (parkings?.length === 0) continue;
+        var zogsooliinDansuud = [];
+        for (const parking of parkings) {
+          if (
+            !!parking.zogsooliinDans &&
+            parking.zogsooliinDans !== "0" &&
+            !zogsooliinDansuud.includes(parking.zogsooliinDans)
+          ) {
+            zogsooliinDansuud.push(parking.zogsooliinDans);
           }
-          if (zogsooliinDansuud?.length === 0) continue;
-          const archivedIds = await BankniiGuilgee(
-            kholbolt,
-            false,
-            archiveName
-          ).find({ dansniiDugaar: { $in: zogsooliinDansuud }, kholbosonTalbainId: [] }, { _id: 1 }).lean();
-          const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
-          const data = await BankniiGuilgee(kholbolt).find({
+        }
+        if (zogsooliinDansuud?.length === 0) continue;
+        const archivedIds = await BankniiGuilgee(kholbolt, false, archiveName)
+          .find(
+            {
+              dansniiDugaar: { $in: zogsooliinDansuud },
+              kholbosonTalbainId: [],
+            },
+            { _id: 1 },
+          )
+          .lean();
+        const archivedIdSet = new Set(archivedIds.map((d) => String(d._id)));
+        const data = await BankniiGuilgee(kholbolt)
+          .find({
             _id: { $nin: Array.from(archivedIdSet) },
             dansniiDugaar: { $in: zogsooliinDansuud },
             kholbosonTalbainId: [],
-            createdAt: { $lt: archiveBeforeDate }
-          }).lean();
-          if (!data.length) continue;
-          await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-          await BankniiGuilgee(kholbolt).deleteMany({
-            _id: { $in: data.map(d => d._id) },
-            dansniiDugaar: { $in: zogsooliinDansuud },
-            kholbosonTalbainId: [],
-            createdAt: { $lt: archiveBeforeDate }
-          });
-        }
-    }  
-  } catch (err) {
+            createdAt: { $lt: archiveBeforeDate },
+          })
+          .lean();
+        if (!data.length) continue;
+        await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+        await BankniiGuilgee(kholbolt).deleteMany({
+          _id: { $in: data.map((d) => d._id) },
+          dansniiDugaar: { $in: zogsooliinDansuud },
+          kholbosonTalbainId: [],
+          createdAt: { $lt: archiveBeforeDate },
+        });
+      }
     }
-  }
-);
-
+  } catch (err) {}
+});
 
 exports.archiveBankGuilgeeRentlyNoZogsool = asyncHandler(async () => {
-  try 
-  { 
+  try {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
     if (kholboltuud) {
-        for (const kholbolt of kholboltuud) {
-          const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
-          if(!baiguullaga) continue;
-          var parkings = await Parking(kholbolt).find({
-            baiguullagiinId: kholbolt.baiguullagiinId,
-            zogsooliinDans: {$exists: true}, 
+      for (const kholbolt of kholboltuud) {
+        const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+          kholbolt.baiguullagiinId,
+        );
+        if (!baiguullaga) continue;
+        var parkings = await Parking(kholbolt).find({
+          baiguullagiinId: kholbolt.baiguullagiinId,
+          zogsooliinDans: { $exists: true },
+        });
+        if (parkings?.length > 0) continue;
+        const months = await BankniiGuilgee(kholbolt).aggregate([
+          {
+            $project: {
+              year: { $year: "$createdAt" },
+              month: { $month: "$createdAt" },
+            },
+          },
+          { $group: { _id: { year: "$year", month: "$month" } } },
+          { $sort: { "_id.year": 1, "_id.month": 1 } },
+        ]);
+        for (const { _id } of months) {
+          const y = _id.year;
+          const m = _id.month;
+          if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
+          const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+          const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
+            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) },
           });
-          if (parkings?.length > 0) continue;
-          const months = await BankniiGuilgee(kholbolt).aggregate([
-              { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
-              { $group: { _id: { year: "$year", month: "$month" } } },
-              { $sort: { "_id.year": 1, "_id.month": 1 }, },
+          // if (docs?.length > 0) continue;
+          const archivedIds = await BankniiGuilgee(kholbolt, false, archiveName)
+            .find({}, { _id: 1 })
+            .lean();
+          const archivedIdSet = new Set(archivedIds.map((d) => String(d._id)));
+          // --- Archive ---
+          const data = await BankniiGuilgee(kholbolt).aggregate([
+            {
+              $match: {
+                _id: { $nin: Array.from(archivedIdSet) },
+                createdAt: {
+                  $gte: new Date(y, m - 1, 1),
+                  $lt: new Date(y, m, 1),
+                },
+              },
+            },
           ]);
-          for (const { _id } of months) {
-              const y = _id.year;
-              const m = _id.month;
-              if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
-              const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
-              const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
-                createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
-              // if (docs?.length > 0) continue;
-              const archivedIds = await BankniiGuilgee(
-                kholbolt,
-                false,
-                archiveName
-              ).find({}, { _id: 1 }).lean();
-              const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
-              // --- Archive ---
-              const data = await BankniiGuilgee(kholbolt).aggregate([
-                  { $match: {
-                    _id: { $nin: Array.from(archivedIdSet) },
-                    createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
-                  } },
-              ]);
-              await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-              // --- Delete ---
-              const res = await BankniiGuilgee(kholbolt).deleteMany({
-                _id: { $in: data.map(d => d._id) },
-                createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
-          }
+          await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+          // --- Delete ---
+          const res = await BankniiGuilgee(kholbolt).deleteMany({
+            _id: { $in: data.map((d) => d._id) },
+            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) },
+          });
         }
-    }  
-  } catch (err) {
+      }
     }
-  }
-);
+  } catch (err) {}
+});
 
 exports.archiveBankGuilgeeFirst = asyncHandler(async () => {
-  try 
-  { 
+  try {
     const { db } = require("zevbackv2");
     const kholboltuud = db.kholboltuud;
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
     if (kholboltuud) {
-        for (const kholbolt of kholboltuud) {
-          if (kholbolt.baiguullagiinId !== "6115f350b35689cdbf1b9da3") continue;
-          var parkings = await Parking(kholbolt).find({
-            baiguullagiinId: kholbolt.baiguullagiinId,
-            zogsooliinDans: {$exists: true}, 
-          });
-          if (parkings?.length === 0) continue;
-          var zogsooliinDansuud = [];
-          for (const parking of parkings) {
-            if (!!parking.zogsooliinDans && parking.zogsooliinDans !== "0" && !zogsooliinDansuud.includes(parking.zogsooliinDans)) {
-              zogsooliinDansuud.push(parking.zogsooliinDans);
-            }
-          }
-          if (zogsooliinDansuud?.length === 0) continue;
-          const months = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").aggregate([
-              { $project: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } } },
-              { $group: { _id: { year: "$year", month: "$month" } } },
-              { $sort: { "_id.year": 1, "_id.month": 1 }, },
-          ]);
-          
-          for (const { _id } of months) {
-              const y = _id.year;
-              const m = _id.month;
-              if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
-              const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
-              const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
-                createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
-              // if (docs?.length > 0) continue;
-              const archivedIds = await BankniiGuilgee(
-                kholbolt,
-                false,
-                archiveName
-              ).find({}, { _id: 1 }).lean();
-              const archivedIdSet = new Set(archivedIds.map(d => String(d._id)));
-              // --- Archive ---
-              const data = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").aggregate([
-                  { $match: {
-                    _id: { $nin: Array.from(archivedIdSet) },
-                    createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) } 
-                  } },
-              ]);
-              await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
-              // --- Delete ---
-              const res = await BankniiGuilgee(kholbolt, false, "bankniiGuilgeeFirst").deleteMany({
-                  _id: { $in: data.map(d => d._id) },
-                  createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) }
-              });
+      for (const kholbolt of kholboltuud) {
+        if (kholbolt.baiguullagiinId !== "6115f350b35689cdbf1b9da3") continue;
+        var parkings = await Parking(kholbolt).find({
+          baiguullagiinId: kholbolt.baiguullagiinId,
+          zogsooliinDans: { $exists: true },
+        });
+        if (parkings?.length === 0) continue;
+        var zogsooliinDansuud = [];
+        for (const parking of parkings) {
+          if (
+            !!parking.zogsooliinDans &&
+            parking.zogsooliinDans !== "0" &&
+            !zogsooliinDansuud.includes(parking.zogsooliinDans)
+          ) {
+            zogsooliinDansuud.push(parking.zogsooliinDans);
           }
         }
-    }  
-  } catch (err) {
+        if (zogsooliinDansuud?.length === 0) continue;
+        const months = await BankniiGuilgee(
+          kholbolt,
+          false,
+          "bankniiGuilgeeFirst",
+        ).aggregate([
+          {
+            $project: {
+              year: { $year: "$createdAt" },
+              month: { $month: "$createdAt" },
+            },
+          },
+          { $group: { _id: { year: "$year", month: "$month" } } },
+          { $sort: { "_id.year": 1, "_id.month": 1 } },
+        ]);
+
+        for (const { _id } of months) {
+          const y = _id.year;
+          const m = _id.month;
+          if (y === currentYear && m === currentMonth) continue; // одоогийн сар алгасна
+          const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+          const docs = await BankniiGuilgee(kholbolt, false, archiveName).find({
+            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) },
+          });
+          // if (docs?.length > 0) continue;
+          const archivedIds = await BankniiGuilgee(kholbolt, false, archiveName)
+            .find({}, { _id: 1 })
+            .lean();
+          const archivedIdSet = new Set(archivedIds.map((d) => String(d._id)));
+          // --- Archive ---
+          const data = await BankniiGuilgee(
+            kholbolt,
+            false,
+            "bankniiGuilgeeFirst",
+          ).aggregate([
+            {
+              $match: {
+                _id: { $nin: Array.from(archivedIdSet) },
+                createdAt: {
+                  $gte: new Date(y, m - 1, 1),
+                  $lt: new Date(y, m, 1),
+                },
+              },
+            },
+          ]);
+          await BankniiGuilgee(kholbolt, false, archiveName).insertMany(data);
+          // --- Delete ---
+          const res = await BankniiGuilgee(
+            kholbolt,
+            false,
+            "bankniiGuilgeeFirst",
+          ).deleteMany({
+            _id: { $in: data.map((d) => d._id) },
+            createdAt: { $gte: new Date(y, m - 1, 1), $lt: new Date(y, m, 1) },
+          });
+        }
+      }
     }
-  }
-);
+  } catch (err) {}
+});
