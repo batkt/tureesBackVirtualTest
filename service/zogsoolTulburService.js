@@ -1,6 +1,6 @@
 // service/uilchluulegchService.js
 const axios = require("axios");
-const { Uilchluulegch, } = require("parking-v2");
+const { Uilchluulegch } = require("parking-v2");
 const Baiguullaga = require("../models/baiguullaga");
 const { QuickQpayObject } = require("quickqpaypackv2");
 const { zogsoolNiitDungeerEbarimtShivye } = require("../routes/ebarimtRoute");
@@ -18,7 +18,7 @@ exports.tulburOrjIrlee = async (req, body, next) => {
   let shineDun = 0;
 
   const kholbolt = db.kholboltuud.find(
-    (a) => a.baiguullagiinId === baiguullagiinId
+    (a) => a.baiguullagiinId === baiguullagiinId,
   );
 
   // Quick Qpay логик
@@ -29,32 +29,32 @@ exports.tulburOrjIrlee = async (req, body, next) => {
       "qpay.description": { $regex: "QRGadaa", $options: "i" },
       ognoo: { $gte: new Date(Date.now() - 29 * 60000) },
     });
-    if(guilgeenuud?.length > 0) {
-        for (const guilgee of guilgeenuud) {
+    if (guilgeenuud?.length > 0) {
+      for (const guilgee of guilgeenuud) {
         if (!guilgee.zogsoolUilchluulegch?.uId) continue;
 
         const oldsonMashin = await Uilchluulegch(kholbolt, true).findOne({
-            _id: guilgee.zogsoolUilchluulegch.uId,
-            "tuukh.0.tulbur": { $size: 0 },
+          _id: guilgee.zogsoolUilchluulegch.uId,
+          "tuukh.0.tulbur": { $size: 0 },
         });
 
         if (!oldsonMashin) continue;
 
         if (
-            nemeltUtga?.includes(oldsonMashin.mashiniiDugaar) &&
-            guilgee.qpay?.description?.includes(oldsonMashin.mashiniiDugaar)
+          nemeltUtga?.includes(oldsonMashin.mashiniiDugaar) &&
+          guilgee.qpay?.description?.includes(oldsonMashin.mashiniiDugaar)
         ) {
-            try {
+          try {
             await axios.get(encodeURI(guilgee.qpay?.callback_url));
-            } catch (err) {
-            }
+          } catch (err) {}
         }
-        }
-        return; // QRGadaa-д зориулсан хэсэг дууслаа
+      }
+      return; // QRGadaa-д зориулсан хэсэг дууслаа
     }
   }
   if (baiguullagiinId === "663da696aa6bedd9ae0567f0") tulsunDun += 50;
-  shineDun = Math.round((tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100) / 100;
+  shineDun =
+    Math.round((tulsunDun + tulsunDun / 99 + Number.EPSILON) * 100) / 100;
   const shuukhKhugatsaa = new Date(Date.now() - 5 * 60 * 1000);
   const query = {
     $or: [
@@ -84,9 +84,18 @@ exports.tulburOrjIrlee = async (req, body, next) => {
       "хаалт 3": "192.168.2.25",
       "хаалт 4": "192.168.2.26",
     },
-    "67dfebe55b92ee004ba43ad2": { "хаалт 1": "192.168.1.122", "хаалт 2": "192.168.1.121" },
-    "6800b91480a007fe5ab34436": { "хаалт 1": "192.168.1.103", "хаалт 2": "192.168.1.104" },
-    "63c0f31efe522048bf02086d": { "гарах-1": "192.168.2.236", "гарах-2": "192.168.2.237" },
+    "67dfebe55b92ee004ba43ad2": {
+      "хаалт 1": "192.168.1.122",
+      "хаалт 2": "192.168.1.121",
+    },
+    "6800b91480a007fe5ab34436": {
+      "хаалт 1": "192.168.1.103",
+      "хаалт 2": "192.168.1.104",
+    },
+    "63c0f31efe522048bf02086d": {
+      Зогсоол1: "192.168.2.236",
+      Зогсоол2: "192.168.2.237",
+    },
   };
 
   if (doorMap[baiguullagiinId] && nemeltUtga) {
@@ -114,7 +123,9 @@ exports.tulburOrjIrlee = async (req, body, next) => {
           "tuukh.$[t].tulbur": [
             {
               ognoo: new Date(),
-              turul: nemeltUtga?.toLowerCase().includes("qpay") ? "bankQR" : "khariltsakh",
+              turul: nemeltUtga?.toLowerCase().includes("qpay")
+                ? "bankQR"
+                : "khariltsakh",
               dun: tulsunDun,
             },
           ],
@@ -123,7 +134,7 @@ exports.tulburOrjIrlee = async (req, body, next) => {
       },
       {
         arrayFilters: [{ "t.zogsooliinId": zogsooliinId }],
-      }
+      },
     );
 
     // Socket.io мэдэгдэл
@@ -138,11 +149,17 @@ exports.tulburOrjIrlee = async (req, body, next) => {
     }
 
     // eBarimt илгээх
-    const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(kholbolt.baiguullagiinId);
-    const tuxainSalbar = baiguullaga?.barilguud?.find((e) => e._id.toString() === barilgiinId)?.tokhirgoo;
+    const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
+      kholbolt.baiguullagiinId,
+    );
+    const tuxainSalbar = baiguullaga?.barilguud?.find(
+      (e) => e._id.toString() === barilgiinId,
+    )?.tokhirgoo;
 
     if (tuxainSalbar?.eBarimtMessageIlgeekhEsekh && nemeltUtga) {
-      const filterDugaar = nemeltUtga?.split(/,| /)?.filter((a) => isNumeric(a) && a.length === 8);
+      const filterDugaar = nemeltUtga
+        ?.split(/,| /)
+        ?.filter((a) => isNumeric(a) && a.length === 8);
       if (filterDugaar?.length > 0) {
         await zogsoolNiitDungeerEbarimtShivye(
           kholbolt,
@@ -150,7 +167,7 @@ exports.tulburOrjIrlee = async (req, body, next) => {
           barilgiinId,
           next,
           [oldsonData],
-          filterDugaar[0]
+          filterDugaar[0],
         );
       }
     }
