@@ -9,6 +9,7 @@ const Khariltsagch = require("../models/khariltsagch");
 const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const AshiglaltiinExcel = require("../models/ashiglaltiinExcel");
+const AvlagaTulsunTuukh = require("../models/avlagaTulsunTuukh");
 const moment = require("moment");
 const {
   gereeZasakhShalguur,
@@ -99,6 +100,7 @@ const testgeree = require("../models/testgeree");
 crud(router, "zassanBarimt", ZassanBarimt);
 crud(router, "aldangiinZassanTuukh", AldangiinZassanTuukh);
 crud(router, "aldangiinTuukh", AldangiinTuukh);
+crud(router, "avlagaTulsunTuukh", AvlagaTulsunTuukh);
 
 router.route("/gereeniiToololtAvya").post(tokenShalgakh, gereeniiToololtAvya);
 router
@@ -1239,12 +1241,8 @@ router
       const updateSet = {
         tsutsalsanOgnoo: new Date(),
         tuluv: -1,
-        tsutsalsanTuluvluguut:
-          tsutsalsanTuluvluguut > 0
-            ? tsutsalsanTuluvluguut
-            : geree.sariinTurees || 0,
-        tsutsalsanUldegdel:
-          tsutsalsanUldegdel > 0 ? tsutsalsanUldegdel : geree.sariinTurees || 0,
+        tsutsalsanTuluvluguut: tsutsalsanTuluvluguut || 0,
+        tsutsalsanUldegdel: tsutsalsanUldegdel || 0,
         tsutsalsanTulsunDun,
       };
       if (geree.gereeniiTuukhuud) {
