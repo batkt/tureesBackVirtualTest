@@ -14,6 +14,7 @@ const KhungulultiinTuukh = require("../models/khungulultiinTuukh");
 const TogloomiinTuv = require("../models/togloomiinTuv");
 const AldangiinTuukh = require("../models/aldangiinTuukh");
 const { tulultiinMsgIlgeeye } = require("../controller/khariltsagch");
+const AvlagaTulsunTuukh = require("../models/avlagaTulsunTuukh");
 
 exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
   var guilgeenuud = req.body.guilgeenuud;
@@ -38,6 +39,20 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         inc["aldangiinUldegdel"] = -tulbur.tulsunAldangi;
         inc["niitTulsunAldangi"] = +tulbur.tulsunAldangi;
       }
+
+      if (Array.isArray(tulbur.avlaguud)) {
+        const AvlagaTulsunTuukhModel = AvlagaTulsunTuukh(req.body.tukhainBaaziinKholbolt);
+        const newTuukh = new AvlagaTulsunTuukhModel({
+          ...tulbur,
+          burtgesenAjiltaniiId: tulbur.guilgeeKhiisenAjiltniiId,
+          burtgesenAjiltaniiNer: tulbur.guilgeeKhiisenAjiltniiNer,
+          tulsunOgnoo: tulbur.guilgeeKhiisenOgnoo,
+          bankniiGuilgeeniiDun: tulbur.bankniiGuilgeeniiDun || tulbur.tulsunDun,
+          avlaguud: tulbur.avlaguud,
+        });
+        await newTuukh.save();
+      }
+
       var tempGeree = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findById(tulbur.gereeniiId)
         .select("avlaga");
