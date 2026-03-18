@@ -88,10 +88,7 @@ async function ajiltniiUdriinTailan({ body }) {
   }
 
   const garaltMatch = {
-    "tuukh.tsagiinTuukh.garsanTsag": {
-      $gte: ekhlekhOgnoo,
-      $lte: duusakhOgnoo,
-    },
+    "tuukh.tsagiinTuukh.garsanTsag": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
   };
   if (body.garsanKhaalga)
     garaltMatch["tuukh.garsanKhaalga"] = body.garsanKhaalga;
@@ -132,7 +129,6 @@ async function ajiltniiUdriinTailan({ body }) {
 
   return niilberTailan;
 }
-
 async function udriinTailan({ body }) {
   const ekhlekhOgnoo = moment(
     body.ekhlekhOgnoo,
@@ -144,7 +140,7 @@ async function udriinTailan({ body }) {
   ).toDate();
   const start = moment(ekhlekhOgnoo);
   const end = moment(duusakhOgnoo);
-  const currentMonth = moment();
+  const now = moment();
 
   const isMultiMonth =
     start.year() !== end.year() || start.month() !== end.month();
@@ -152,7 +148,10 @@ async function udriinTailan({ body }) {
   const getCollectionName = (year, month) =>
     `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
 
-  // Determine which months are involved
+  // Collection-үүдийг тодорхойлох
+  const collectionsToQuery = [
+    { name: null, startDate: ekhlekhOgnoo, endDate: duusakhOgnoo },
+  ];
   const months = isMultiMonth
     ? (() => {
         const list = [];
@@ -165,49 +164,29 @@ async function udriinTailan({ body }) {
       })()
     : [start.clone().startOf("month")];
 
-  // Current month → null (live collection)
-  // Past months → named archive collection
-  // Never both for the same month to avoid double-counting
-  const collectionsToQuery = [];
   months.forEach((month) => {
-    const isCurrent =
-      month.year() === currentMonth.year() &&
-      month.month() === currentMonth.month();
-
     const collectionStart = moment.max(month.clone().startOf("month"), start);
     const collectionEnd = moment.min(month.clone().endOf("month"), end);
-
-    if (isCurrent) {
-      collectionsToQuery.push({
-        name: null,
-        startDate: collectionStart.toDate(),
-        endDate: collectionEnd.toDate(),
-      });
-    } else {
-      collectionsToQuery.push({
-        name: getCollectionName(month.year(), month.month()),
-        startDate: collectionStart.toDate(),
-        endDate: collectionEnd.toDate(),
-      });
-    }
+    const collectionName = getCollectionName(month.year(), month.month());
+    collectionsToQuery.push({
+      name: collectionName,
+      startDate: collectionStart.toDate(),
+      endDate: collectionEnd.toDate(),
+    });
   });
 
-  // Aggregation function per collection
+  // Aggregation function
   const aggregateFromCollection = async (
     collectionName,
     dateStart,
     dateEnd,
   ) => {
+    // Хэрэв collectionName байхгүй бол default collection авна
     const model = Uilchluulegch(
       body.tukhainBaaziinKholbolt,
       !collectionName,
       collectionName || undefined,
     );
-
-    const baseMatch = {
-      baiguullagiinId: body.baiguullagiinId,
-      barilgiinId: body.barilgiinId ? body.barilgiinId : { $exists: true },
-    };
     const match = body.garsanKhaalga
       ? {
           "tuukh.garsanKhaalga": body.garsanKhaalga,
@@ -217,6 +196,11 @@ async function udriinTailan({ body }) {
 
     if (body.burtgesenAjiltaniiId)
       match["tuukh.burtgesenAjiltaniiId"] = body.burtgesenAjiltaniiId;
+
+    const baseMatch = {
+      baiguullagiinId: body.baiguullagiinId,
+      barilgiinId: body.barilgiinId ? body.barilgiinId : { $exists: true },
+    };
 
     const aggregatePipeline = (additionalMatch) => [
       { $match: baseMatch },
@@ -232,112 +216,65 @@ async function udriinTailan({ body }) {
       },
     ];
 
-    const udriinTailanResult = await model.aggregate(aggregatePipeline(match));
+    const udriinTailan = await model.aggregate(aggregatePipeline(match));
 
-    // DEBUG: raw Tulburtei pipeline before dedup
-    const tulburteiDebugPipeline = [
+    // Special cases
+    const specialMatch = (status) => ({
+      //  ...(status === "Unegui"
+      //   ? { "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd } }
+      //   : { "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd } }
+      // ),
+      "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
+      ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
+      ...(status === "Tulburtei" && {
+        $or: [
+          {
+            "tuukh.tuluv": -4,
+            "tuukh.tulbur": { $size: 0 },
+            "tuukh.uneguiGarsan": { $exists: false },
+            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
+          },
+          {
+            "tuukh.tuluv": 0,
+            "tuukh.tulbur": { $size: 0 },
+            "tuukh.uneguiGarsan": { $exists: false },
+            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
+          },
+        ],
+      }),
+      ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
+      ...(body.burtgesenAjiltaniiId && {
+        "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId,
+      }),
+    });
+
+    const specialPipeline = (status) => [
       { $match: baseMatch },
       { $unwind: "$tuukh" },
-      { $unwind: "$tuukh.tsagiinTuukh" },
-      {
-        $match: {
-          "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
-          "tuukh.tuluv": { $in: [0, -4] },
-          "tuukh.tulukhDun": { $gt: 0 },
-          "tuukh.tulbur": { $size: 0 },
-          "tuukh.uneguiGarsan": { $exists: false },
-          ...(body.garsanKhaalga && {
-            "tuukh.garsanKhaalga": body.garsanKhaalga,
-          }),
-        },
-      },
-      // Show raw matched tuukh._id list before dedup
+      { $match: specialMatch(status) },
       {
         $group: {
-          _id: "$tuukh._id",
-          tulukhDun: { $first: "$tuukh.tulukhDun" },
-          mashiniiDugaar: { $first: "$mashiniiDugaar" },
-          count: { $sum: 1 }, // how many times this tuukh._id appears (should be 1 ideally)
+          _id:
+            status === "Zurchiltei"
+              ? "Зөрчилтэй"
+              : status === "Tulburtei"
+                ? "Төлбөртэй"
+                : "Үнэгүй",
+          niitDun: { $sum: "$niitDun" },
+          ids: { $addToSet: "$_id" },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          niitDun: 1,
+          niitToo:
+            status === "Zurchiltei" || status === "Tulburtei"
+              ? { $size: "$ids" }
+              : 1,
         },
       },
     ];
-
-    const tulburteiDebug = await model.aggregate(tulburteiDebugPipeline);
-
-    const specialPipeline = (status) => {
-      if (status === "Tulburtei") {
-        return [
-          { $match: baseMatch },
-          { $unwind: "$tuukh" },
-          { $unwind: "$tuukh.tsagiinTuukh" },
-          {
-            $match: {
-              "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: dateStart,
-                $lte: dateEnd,
-              },
-              "tuukh.tuluv": { $in: [0, -4] },
-              "tuukh.tulukhDun": { $gt: 0 },
-              "tuukh.tulbur": { $size: 0 },
-              "tuukh.uneguiGarsan": { $exists: false },
-              ...(body.garsanKhaalga && {
-                "tuukh.garsanKhaalga": body.garsanKhaalga,
-              }),
-              ...(body.burtgesenAjiltaniiId && {
-                "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId,
-              }),
-            },
-          },
-          {
-            $group: {
-              _id: "$tuukh._id",
-              tulukhDun: { $first: "$tuukh.tulukhDun" },
-            },
-          },
-          {
-            $group: {
-              _id: "Төлбөртэй",
-              niitDun: { $sum: "$tulukhDun" },
-              niitToo: { $sum: 1 },
-            },
-          },
-        ];
-      }
-
-      const matchCondition = {
-        "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
-        ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
-        ...(status === "Unegui" && {
-          "tuukh.uneguiGarsan": { $exists: true },
-        }),
-        ...(body.garsanKhaalga && {
-          "tuukh.garsanKhaalga": body.garsanKhaalga,
-        }),
-        ...(body.burtgesenAjiltaniiId && {
-          "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId,
-        }),
-      };
-
-      return [
-        { $match: baseMatch },
-        { $unwind: "$tuukh" },
-        { $match: matchCondition },
-        {
-          $group: {
-            _id: status === "Zurchiltei" ? "Зөрчилтэй" : "Үнэгүй",
-            niitDun: { $sum: "$niitDun" },
-            ids: { $addToSet: "$_id" },
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            niitDun: 1,
-            niitToo: { $size: "$ids" }, // fixed for both Зөрчилтэй and Үнэгүй
-          },
-        },
-      ];
-    };
 
     const [zurchiltei, tulburtei, unegui] = await Promise.all([
       model.aggregate(specialPipeline("Zurchiltei")),
@@ -345,17 +282,16 @@ async function udriinTailan({ body }) {
       model.aggregate(specialPipeline("Unegui")),
     ]);
 
-    return { udriinTailan: udriinTailanResult, zurchiltei, tulburtei, unegui };
+    return { udriinTailan, zurchiltei, tulburtei, unegui };
   };
 
-  // Query all collections
+  // Бүх collection-үүдийг aggregate хийх
   const allResults = {
     udriinTailan: [],
     zurchiltei: [],
     tulburtei: [],
     unegui: [],
   };
-
   for (const collection of collectionsToQuery) {
     try {
       const result = await aggregateFromCollection(
@@ -375,7 +311,7 @@ async function udriinTailan({ body }) {
     }
   }
 
-  // Merge results by _id, summing niitDun and niitToo
+  // Merge results
   const mergeResults = (allResults) => {
     const merged = {};
     allResults.udriinTailan.forEach((item) => {
@@ -407,7 +343,6 @@ async function udriinTailan({ body }) {
       mergeArray(allResults.tulburtei, "Төлбөртэй"),
       mergeArray(allResults.unegui, "Үнэгүй"),
     ].forEach((item) => item && result.push(item));
-
     return result;
   };
 
@@ -445,10 +380,8 @@ async function udriinTailan({ body }) {
       collections: collectionsToQuery.map((c) => c.name),
     };
   }
-
   return finalResult;
 }
-
 async function zogsoolUilchluulegchdiinDunAvakh({
   baiguullagiinId,
   barilgiinId,
