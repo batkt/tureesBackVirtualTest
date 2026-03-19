@@ -182,38 +182,43 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
     } else {
       let sentCount = 0;
       let totalCount = req.body.mailuud.length;
+      const io = req.app.get("socketio");
       
-      for (const mail of req.body.mailuud) {
-        await MailIlgeeye.duriinMailIlgeeye(
-          baiguullaga.tokhirgoo.mailNevtrekhNer,
-          baiguullaga.tokhirgoo.mailPassword,
-          baiguullaga.tokhirgoo.mailHost,
-          baiguullaga.tokhirgoo.mailPort,
-          mail.mail,
-          req.body.subject,
-          mail.content,
-          mail.gereeniiDugaar
-        );
+      const BATCH_SIZE = 10;
+      for (let i = 0; i < totalCount; i += BATCH_SIZE) {
+        const batch = req.body.mailuud.slice(i, i + BATCH_SIZE);
+        
+        await Promise.all(batch.map(async (mail) => {
+          await MailIlgeeye.duriinMailIlgeeye(
+            baiguullaga.tokhirgoo.mailNevtrekhNer,
+            baiguullaga.tokhirgoo.mailPassword,
+            baiguullaga.tokhirgoo.mailHost,
+            baiguullaga.tokhirgoo.mailPort,
+            mail.mail,
+            req.body.subject,
+            mail.content,
+            mail.gereeniiDugaar
+          );
 
-        sentCount++;
-        const io = req.app.get("socketio");
-        if (io) {
-          io.emit(`mailProgress-${req.body.baiguullagiinId}`, {
-            sent: sentCount,
-            total: totalCount
-          });
-        }
-    
-        const sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
-        sonorduulga.khuleenAvagchiinId = mail.khariltsagchiinId;
-        sonorduulga.barilgiinId = mail.barilgiinId;
-        sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
-        sonorduulga.khariltsagchiinNer = mail.khariltsagchiinNer;
-        sonorduulga.title = req.body.subject;
-        sonorduulga.message = mail.content;
-        sonorduulga.turul = req.body.turul || "Mail";
-        sonorduulga.kharsanEsekh = false;
-        await sonorduulga.save();
+          sentCount++;
+          if (io) {
+            io.emit(`mailProgress-${req.body.baiguullagiinId}`, {
+              sent: sentCount,
+              total: totalCount
+            });
+          }
+      
+          const sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
+          sonorduulga.khuleenAvagchiinId = mail.khariltsagchiinId;
+          sonorduulga.barilgiinId = mail.barilgiinId;
+          sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+          sonorduulga.khariltsagchiinNer = mail.khariltsagchiinNer;
+          sonorduulga.title = req.body.subject;
+          sonorduulga.message = mail.content;
+          sonorduulga.turul = req.body.turul || "Mail";
+          sonorduulga.kharsanEsekh = false;
+          await sonorduulga.save();
+        }));
       }
       res.send("Amjilttai");
     }
