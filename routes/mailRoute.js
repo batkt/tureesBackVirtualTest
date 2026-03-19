@@ -183,6 +183,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       let sentCount = 0;
       let totalCount = req.body.mailuud.length;
       const io = req.app.get("socketio");
+      let failedMails = [];
       
       const BATCH_SIZE = 10;
       for (let i = 0; i < totalCount; i += BATCH_SIZE) {
@@ -191,7 +192,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         await Promise.all(batch.map(async (mail) => {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (mail.mail && emailRegex.test(mail.mail.trim())) {
-            await MailIlgeeye.duriinMailIlgeeye(
+            let sendRes = await MailIlgeeye.duriinMailIlgeeye(
               baiguullaga.tokhirgoo.mailNevtrekhNer,
               baiguullaga.tokhirgoo.mailPassword,
               baiguullaga.tokhirgoo.mailHost,
@@ -201,6 +202,11 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
               mail.content,
               mail.gereeniiDugaar
             );
+            if (sendRes instanceof Error) {
+               failedMails.push({ ner: mail.khariltsagchiinNer, mail: mail.mail, aldaa: "Алдаатай: " + (sendRes.responseCode || sendRes.message) });
+            }
+          } else {
+             failedMails.push({ ner: mail.khariltsagchiinNer, mail: mail.mail, aldaa: "Буруу и-мэйл хаяг" });
           }
 
           sentCount++;
@@ -223,7 +229,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
           await sonorduulga.save();
         }));
       }
-      res.send("Amjilttai");
+      res.send({ result: "Amjilttai", failedMails });
     }
   } catch (err) {
     next(err);
