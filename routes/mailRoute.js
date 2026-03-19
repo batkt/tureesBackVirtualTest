@@ -180,6 +180,9 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       }
       res.send(body);
     } else {
+      let sentCount = 0;
+      let totalCount = req.body.mailuud.length;
+      
       for (const mail of req.body.mailuud) {
         await MailIlgeeye.duriinMailIlgeeye(
           baiguullaga.tokhirgoo.mailNevtrekhNer,
@@ -192,6 +195,14 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
           mail.gereeniiDugaar
         );
 
+        sentCount++;
+        const io = req.app.get("socketio");
+        if (io) {
+          io.emit(`mailProgress-${req.body.baiguullagiinId}`, {
+            sent: sentCount,
+            total: totalCount
+          });
+        }
     
         const sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
         sonorduulga.khuleenAvagchiinId = mail.khariltsagchiinId;
