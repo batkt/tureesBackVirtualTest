@@ -39,6 +39,8 @@ async function mailIlgeeye(mailKhayag, ilgeekhMail, zurag) {
   });
 }
 
+const transporterCache = {};
+
 async function duriinMailIlgeeye(
   user,
   pass,
@@ -60,16 +62,24 @@ async function duriinMailIlgeeye(
       minVersion: "TLSv1"
     };
 
-  let transporter = nodemailer.createTransport({
-    host: host ? host : "smtp.zevtabs.mn",
-    port: port ? port : 587,
-    secureConnection: false,
-    tls,
-    auth: {
-      user: user,
-      pass: pass,
-    },
-  });
+  const cacheKey = `${user}:${host}:${port}`;
+  if (!transporterCache[cacheKey]) {
+    transporterCache[cacheKey] = nodemailer.createTransport({
+      pool: true,
+      maxConnections: 5,
+      maxMessages: 100,
+      host: host ? host : "smtp.zevtabs.mn",
+      port: port ? port : 587,
+      secureConnection: false,
+      tls,
+      auth: {
+        user: user,
+        pass: pass,
+      },
+    });
+  }
+
+  let transporter = transporterCache[cacheKey];
 
   var mail = {
     from: user,
