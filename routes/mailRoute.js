@@ -189,16 +189,19 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         const batch = req.body.mailuud.slice(i, i + BATCH_SIZE);
         
         await Promise.all(batch.map(async (mail) => {
-          await MailIlgeeye.duriinMailIlgeeye(
-            baiguullaga.tokhirgoo.mailNevtrekhNer,
-            baiguullaga.tokhirgoo.mailPassword,
-            baiguullaga.tokhirgoo.mailHost,
-            baiguullaga.tokhirgoo.mailPort,
-            mail.mail,
-            req.body.subject,
-            mail.content,
-            mail.gereeniiDugaar
-          );
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (mail.mail && emailRegex.test(mail.mail.trim())) {
+            await MailIlgeeye.duriinMailIlgeeye(
+              baiguullaga.tokhirgoo.mailNevtrekhNer,
+              baiguullaga.tokhirgoo.mailPassword,
+              baiguullaga.tokhirgoo.mailHost,
+              baiguullaga.tokhirgoo.mailPort,
+              mail.mail.trim(),
+              req.body.subject,
+              mail.content,
+              mail.gereeniiDugaar
+            );
+          }
 
           sentCount++;
           if (io) {
