@@ -725,6 +725,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                         ognoo: ognoo,
                         guilgeeKhiisenOgnoo: new Date(),
                         bankniiGuilgeeId: x._id,
+                        avlaguud: getFifoAvlaguud(geree, iluuDun),
                       });
                       geree.aldangiinUldegdel = 0;
                     }
@@ -763,6 +764,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                       ognoo: ognoo,
                       guilgeeKhiisenOgnoo: new Date(),
                       bankniiGuilgeeId: x._id,
+                      avlaguud: getFifoAvlaguud(geree, qpayAmount),
                     });
                     updateQuery = {
                       $push: {
@@ -772,6 +774,25 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                       },
                     };
                   }
+
+                  const AvlagaTulsunTuukhModel = AvlagaTulsunTuukh(kholbolt);
+                  for (const t of tulbur) {
+                    const newTuukh = new AvlagaTulsunTuukhModel({
+                      ...t,
+                      baiguullagiinId: geree.baiguullagiinId,
+                      barilgiinId: geree.barilgiinId,
+                      gereeniiId: geree._id,
+                      gereeniiDugaar: geree.gereeniiDugaar,
+                      talbainId: geree.talbainIdnuud && geree.talbainIdnuud[0],
+                      talbainDugaar: geree.talbainDugaar,
+                      register: geree.register,
+                      bankniiGuilgeeniiDun: qpayAmount,
+                      tulsunOgnoo: new Date(),
+                      guilgeeniiId: x._id,
+                    });
+                    await newTuukh.save();
+                  }
+
                   await Geree(kholbolt).findByIdAndUpdate(
                     { _id: oldsonGereenuud[0]._id },
                     updatePush,
@@ -1482,6 +1503,54 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
   } catch (err) {}
 };
 
+function getFifoAvlaguud(geree, amount) {
+  const history = geree.avlaga?.guilgeenuud || [];
+  const poolOfMoney = history.reduce(
+    (acc, x) => acc + (x.tulsunDun || 0) + (x.khyamdral || 0),
+    0,
+  );
+  const allInvoices = history
+    .filter(
+      (x) =>
+        (x.tulukhDun || 0) > 0 && !["aldangi", "baritsaa"].includes(x.turul),
+    )
+    .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
+
+  let remainingPool = poolOfMoney;
+  const unpaidLines = [];
+
+  allInvoices.forEach((inv) => {
+    if (remainingPool >= inv.tulukhDun) {
+      remainingPool -= inv.tulukhDun;
+    } else {
+      const unpaidAmount = inv.tulukhDun - remainingPool;
+      remainingPool = 0;
+      unpaidLines.push({
+        ...inv,
+        debt: unpaidAmount,
+      });
+    }
+  });
+
+  let remainingToPay = amount;
+  const allocations = [];
+
+  unpaidLines.forEach((line) => {
+    let allocate = Math.min(remainingToPay, line.debt);
+    if (allocate > 0) {
+      allocations.push({
+        tulukhDun: line.debt,
+        tulsunDun: allocate,
+        ognoo: line.ognoo,
+        turul: line.turul || "khuvaari",
+      });
+      remainingToPay -= allocate;
+    }
+  });
+
+  return allocations;
+}
+
 async function tooZasya(too) {
   var zassanToo = (await Math.round((too + Number.EPSILON) * 100)) / 100;
   return +zassanToo.toFixed(2);
@@ -1582,6 +1651,14 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
       await ustsanBarimt.save();
     }
     if (req.body.guilgeeniiId) {
+      await AvlagaTulsunTuukh(req.body.tukhainBaaziinKholbolt)
+        .deleteOne({
+          guilgeeniiId: req.body.guilgeeniiId,
+          gereeniiId: req.body.gereeniiId,
+        })
+        .catch((err) => {
+          next(err);
+        });
       var dun = await tooZasya(
         (tuxainGuilgee.tulsunDun ? tuxainGuilgee.tulsunDun : 0) +
           (tuxainGuilgee.tulsunAldangi ? tuxainGuilgee.tulsunAldangi : 0),
