@@ -41,7 +41,9 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
       }
 
       if (Array.isArray(tulbur.avlaguud)) {
-        const AvlagaTulsunTuukhModel = AvlagaTulsunTuukh(req.body.tukhainBaaziinKholbolt);
+        const AvlagaTulsunTuukhModel = AvlagaTulsunTuukh(
+          req.body.tukhainBaaziinKholbolt,
+        );
         const newTuukh = new AvlagaTulsunTuukhModel({
           ...tulbur,
           burtgesenAjiltaniiId: tulbur.guilgeeKhiisenAjiltniiId,
@@ -1253,6 +1255,260 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         if (aldangiBodojEkhlekhOgnoo) {
           startDate = moment(aldangiBodojEkhlekhOgnoo).startOf("month");
         } else {
+          // default — өнөөдрийн сар
+          startDate = moment().startOf("month");
+        }
+
+        const endDate = moment().startOf("month");
+        const diff = endDate.diff(startDate, "month");
+
+        let aldangiBodojEkhlekhToo = diff * -1;
+
+        for (let offset = aldangiBodojEkhlekhToo; offset <= 0; offset++) {
+          const targetMonth = moment().add(offset, "month");
+          const start = targetMonth.clone().startOf("month").toDate();
+          const end = targetMonth.clone().endOf("month").toDate();
+
+          let match = {
+            "avlaga.guilgeenuud.ognoo": { $gte: start, $lte: end },
+            $or: [
+              { "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] } },
+              {
+                $and: [
+                  { "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] } },
+                  { "avlaga.guilgeenuud.tulsunDun": { $gt: 0 } },
+                ],
+              },
+            ],
+          };
+          if (barilga?.tokhirgoo?.aldangiGereeTusBur)
+            match["aldangiinKhuvi"] = { $gt: 0 };
+          const bagaUldegdel = barilga?.tokhirgoo?.aldangiinBagaUldegdel || 0;
+          const gereenuud = await Geree(kholbolt, true).aggregate([
+            {
+              $match: {
+                baiguullagiinId: baiguullaga._id.toString(),
+                barilgiinId: barilga._id.toString(),
+                tuluv: { $nin: [-1] },
+                aldangiTsartsaakhEsekh: { $exists: false },
+              },
+            },
+            { $unwind: "$avlaga.guilgeenuud" },
+            { $match: match },
+            {
+              $group: {
+                _id: {
+                  id: "$_id",
+                  gereeniiDugaar: "$gereeniiDugaar",
+                  tulukhUdur: "$tulukhUdur",
+                  aldangiinKhuvi: "$aldangiinKhuvi",
+                  aldangiChuluulukhKhonog: "$aldangiChuluulukhKhonog",
+                  aldangiBodojEkhlekhOgnoo: "$aldangiBodojEkhlekhOgnoo",
+                },
+                tulukh: {
+                  $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
+                },
+                khyamdral: {
+                  $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+                },
+                tulsun: {
+                  $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+                },
+              },
+            },
+            {
+              $project: {
+                uldegdel: {
+                  $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }],
+                },
+              },
+            },
+            { $match: { uldegdel: { $gt: bagaUldegdel } } },
+          ]);
+
+          if (!gereenuud?.length) {
+            continue;
+          }
+
+          for (const geree of gereenuud) {
+            if (barilga?.tokhirgoo?.aldangiGereeTusBur) {
+              aldagiinKhuvi = geree._id.aldangiinKhuvi || 0;
+              aldangiChuluulukhKhonog = geree._id.aldangiChuluulukhKhonog || 0;
+              aldangiBodojEkhlekhOgnoo =
+                geree._id.aldangiBodojEkhlekhOgnoo || null;
+              if (aldagiinKhuvi == 0 || aldangiBodojEkhlekhOgnoo > new Date())
+                continue;
+            }
+            match = {
+              "avlaga.guilgeenuud.ognoo": { $lt: start },
+              $or: [
+                {
+                  "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] },
+                },
+                {
+                  $and: [
+                    { "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] } },
+                    { "avlaga.guilgeenuud.tulsunDun": { $gt: 0 } },
+                  ],
+                },
+              ],
+            };
+            const songosonGereenuud = await Geree(kholbolt, true).aggregate([
+              {
+                $match: {
+                  _id: geree._id.id,
+                  baiguullagiinId: baiguullaga._id.toString(),
+                  barilgiinId: barilga._id.toString(),
+                  tuluv: { $nin: [-1] },
+                },
+              },
+              { $unwind: "$avlaga.guilgeenuud" },
+              { $match: match },
+              {
+                $group: {
+                  _id: {
+                    id: "$_id",
+                    gereeniiDugaar: "$gereeniiDugaar",
+                    tulukhUdur: "$tulukhUdur",
+                  },
+                  tulukh: {
+                    $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
+                  },
+                  khyamdral: {
+                    $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+                  },
+                  tulsun: {
+                    $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+                  },
+                },
+              },
+              {
+                $project: {
+                  uldegdel: {
+                    $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }],
+                  },
+                },
+              },
+              { $match: { uldegdel: { $lt: 0 } } },
+            ]);
+            var umnukhUldegdel = 0;
+            if (songosonGereenuud?.length > 0)
+              umnukhUldegdel = songosonGereenuud[0].uldegdel;
+            var uldegdel = geree.uldegdel + umnukhUldegdel;
+            if (uldegdel < 0) {
+              continue;
+            }
+            const tulukhUdur = geree._id.tulukhUdur?.[0] || 1;
+
+            const aldangiEhlehOgnoo = moment({
+              year: targetMonth.year(),
+              month: targetMonth.month(),
+              day: tulukhUdur,
+            });
+
+            const aldangiChuluulukhOgnoo = aldangiEhlehOgnoo
+              .clone()
+              .add(aldangiChuluulukhKhonog, "days");
+            if (moment().isAfter(aldangiChuluulukhOgnoo)) {
+              const bodogdsonKhuu = tooZasyaSync(
+                (uldegdel * aldagiinKhuvi) / 100,
+              );
+              const data = await Geree(kholbolt, true).findById(geree._id.id);
+              bulkOps.push({
+                updateOne: {
+                  filter: { _id: geree._id.id },
+                  update: [
+                    {
+                      $set: {
+                        aldangiinUldegdel: {
+                          $add: [
+                            { $ifNull: ["$aldangiinUldegdel", 0] },
+                            bodogdsonKhuu,
+                          ],
+                        },
+                      },
+                    },
+                  ],
+                },
+              });
+
+              aldangiinTuukh.push(
+                new AldangiinTuukh(kholbolt)({
+                  baiguullagiinId: baiguullaga._id.toString(),
+                  barilgiinId: barilga._id.toString(),
+                  turul: "qpay",
+                  gereeniiId: geree._id.id,
+                  gereeniiDugaar: geree._id.gereeniiDugaar,
+                  ognoo: aldangiEhlehOgnoo,
+                  uldegdel: uldegdel,
+                  aldangiChuluulukhOgnoo: aldangiChuluulukhOgnoo,
+                  aldangiBodsonOgnoo: new Date(), //  moment().subtract(1, "days"),
+                  aldangiinKhuvi: aldagiinKhuvi,
+                  aldangiChuluulukhKhonog: aldangiChuluulukhKhonog,
+                  aldangi: bodogdsonKhuu,
+                  umnukhAldangi: data.aldangiinUldegdel || 0,
+                  niitAldangi: (data.aldangiinUldegdel || 0) + bodogdsonKhuu,
+                  tulukhUdur: tulukhUdur,
+                  aldangiSar: aldangiEhlehOgnoo.format("YYYY-MM"),
+                }),
+              );
+            } else {
+            }
+          }
+        }
+      }
+
+      if (bulkOps.length > 0) await Geree(kholbolt).bulkWrite(bulkOps);
+      if (aldangiinTuukh.length > 0)
+        await AldangiinTuukh(kholbolt).insertMany(aldangiinTuukh);
+    }
+  } catch (err) {}
+};
+
+module.exports.aldangiBodyoNew = async function aldangiBodyoNew(
+  baiguullagiinId = null,
+) {
+  try {
+    const { db } = require("zevbackv2");
+    const kholboltuud = db.kholboltuud;
+    if (!kholboltuud) return;
+
+    let query = { "barilguud.tokhirgoo.aldangiinKhuvi": { $gt: 0 } };
+    if (!!baiguullagiinId) {
+      var ObjectId = require("mongodb").ObjectId;
+      query["_id"] = new ObjectId(baiguullagiinId);
+    }
+    const baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt)
+      .find(query)
+      .lean();
+    if (!baiguullaguud?.length) return;
+
+    for (const baiguullaga of baiguullaguud) {
+      const kholbolt = kholboltuud.find(
+        (a) => a.baiguullagiinId == baiguullaga._id.toString(),
+      );
+      const bulkOps = [];
+      const aldangiinTuukh = [];
+
+      for (const barilga of baiguullaga.barilguud) {
+        if (
+          !barilga.tokhirgoo ||
+          !barilga.tokhirgoo.aldangiinKhuvi ||
+          barilga.tokhirgoo.aldangiinKhuvi === 0 ||
+          !barilga.tokhirgoo.aldangiBodojEkhlekhOgnoo ||
+          barilga.tokhirgoo.aldangiBodojEkhlekhOgnoo > new Date()
+        )
+          continue;
+        let aldagiinKhuvi = barilga.tokhirgoo.aldangiinKhuvi || 0;
+        let aldangiChuluulukhKhonog =
+          barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
+        let aldangiBodojEkhlekhOgnoo = barilga?.tokhirgoo?.aldangiOgnoo
+          ? barilga?.tokhirgoo?.aldangiOgnoo
+          : null;
+        let startDate;
+        if (aldangiBodojEkhlekhOgnoo) {
+          startDate = moment(aldangiBodojEkhlekhOgnoo).startOf("month");
+        } else {
           startDate = moment().startOf("month");
         }
 
@@ -1340,7 +1596,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 continue;
             }
 
-            
             const tulburKhuvaarilatuud = await AvlagaTulsunTuukh(kholbolt)
               .find({ gereeniiId: geree._id.id.toString() })
               .lean();
@@ -1429,7 +1684,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 umnukhUldegdel = songosonGereenuud[0].uldegdel;
               uldegdel = geree.uldegdel + umnukhUldegdel;
             }
-         
+
             if (uldegdel < 0) {
               continue;
             }
