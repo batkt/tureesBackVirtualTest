@@ -2260,7 +2260,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   var query = [
     {
       $match: {
-        gereeniiDugaar: req.body.gereeniiDugaar,
+        _id: new mongoose.Types.ObjectId(req.body.gereeniiId),
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
         tuluv: valTuluv,
