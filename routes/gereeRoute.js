@@ -1358,7 +1358,7 @@ router
             result.jagsaalt.forEach((a) => idnuud.push(a._id));
 
             const umnukhSariinUrTulburGroup = {
-              _id: "$_id",
+              _id: "$gereeniiDugaar",
               tulukh: {
                 $sum: {
                   $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -1379,7 +1379,7 @@ router
             }
 
             const umnukhSariinUrTulburProject = {
-              _id: "$_id",
+              gereeniiDugaar: "$gereeniiDugaar",
               uldegdel: isFoodCity
                 ? {
                     $subtract: [
@@ -1396,7 +1396,7 @@ router
 
             const umnukhSariinTulsunDunGroup = isFoodCity
               ? {
-                  _id: "$_id",
+                  _id: "$gereeniiDugaar",
                   tulsun: {
                     $sum: {
                       $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
@@ -1505,7 +1505,7 @@ router
                     },
                     {
                       $group: {
-                        _id: "$_id",
+                        _id: "$gereeniiDugaar",
                         tulsun: {
                           $sum: {
                             $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
@@ -1515,7 +1515,7 @@ router
                     },
                     {
                       $project: {
-                        _id: "$_id",
+                        gereeniiDugaar: "$gereeniiDugaar",
                         uldegdel: "$tulsun",
                       },
                     },
@@ -1599,7 +1599,7 @@ router
                           },
                           {
                             $group: {
-                              _id: "$_id",
+                              _id: "$gereeniiDugaar",
                               tulsun: {
                                 $sum: {
                                   $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
@@ -1609,7 +1609,7 @@ router
                           },
                           {
                             $project: {
-                              _id: "$_id",
+                              gereeniiDugaar: "$gereeniiDugaar",
                               uldegdel: "$tulsun",
                             },
                           },
@@ -1650,7 +1650,7 @@ router
                     },
                     {
                       $group: {
-                        _id: "$_id",
+                        _id: "$gereeniiDugaar",
                         tulukh: {
                           $sum: {
                             $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -1665,7 +1665,7 @@ router
                     },
                     {
                       $project: {
-                        _id: "$_id",
+                        gereeniiDugaar: "$gereeniiDugaar",
                         uldegdel: {
                           $subtract: ["$tulukh", "$khyamdral"],
                         },
@@ -1706,7 +1706,7 @@ router
                     },
                     {
                       $group: {
-                        _id: "$_id",
+                        _id: "$gereeniiDugaar",
                         tulukh: {
                           $sum: {
                             $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -1721,7 +1721,7 @@ router
                     },
                     {
                       $project: {
-                        _id: "$_id",
+                        gereeniiDugaar: "$gereeniiDugaar",
                         uldegdel: {
                           $subtract: ["$tulukh", "$khyamdral"],
                         },
@@ -1764,7 +1764,7 @@ router
                     },
                     {
                       $group: {
-                        _id: "$_id",
+                        _id: "$gereeniiDugaar",
                         tulukh: {
                           $sum: {
                             $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -1784,7 +1784,7 @@ router
                     },
                     {
                       $project: {
-                        _id: "$_id",
+                        gereeniiDugaar: "$gereeniiDugaar",
                         uldegdel: {
                           $subtract: [
                             "$tulukh",
@@ -1833,7 +1833,7 @@ router
                     },
                     {
                       $group: {
-                        _id: "$_id",
+                        _id: "$gereeniiDugaar",
                         tulukh: {
                           $sum: {
                             $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -1853,7 +1853,7 @@ router
                     },
                     {
                       $project: {
-                        _id: "$_id",
+                        gereeniiDugaar: "$gereeniiDugaar",
                         uldegdel: {
                           $subtract: [
                             "$tulukh",
@@ -1880,13 +1880,13 @@ router
                     },
                     {
                       $project: {
-                        _id: "$_id",
+                        gereeniiDugaar: "$gereeniiDugaar",
                         avlaga: "$avlaga.guilgeenuud",
                       },
                     },
                     {
                       $group: {
-                        _id: "$_id",
+                        _id: "$gereeniiDugaar",
                         guilgeenuud: {
                           $push: "$avlaga",
                         },
@@ -1913,7 +1913,7 @@ router
                     },
                     {
                       $group: {
-                        _id: "$_id",
+                        _id: "$gereeniiDugaar",
                         tulukh: {
                           $sum: {
                             $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
@@ -1923,7 +1923,7 @@ router
                     },
                     {
                       $project: {
-                        _id: "$_id",
+                        gereeniiDugaar: "$gereeniiDugaar",
                         tulukh: "$tulukh",
                       },
                     },
@@ -1979,14 +1979,14 @@ router
                     },
                     {
                       $project: {
-                        _id: "$_id",
+                        gereeniiDugaar: "$gereeniiDugaar",
                         avlaga: "$avlaga.guilgeenuud",
                       },
                     },
                     {
                       $group: {
                         _id: {
-                          gereeniiId: "$_id",
+                          gereeniiDugaar: "$gereeniiDugaar",
                           tooluuriinDugaar: {
                             $ifNull: ["$avlaga.tooluuriinDugaar", ""],
                           },
@@ -2159,29 +2159,29 @@ router
             if (result && result.jagsaalt && result.jagsaalt.length > 0) {
               result.jagsaalt = result.jagsaalt.filter((a) =>
                 gereenuud[0].niitUldegdel.find(
-                  (b) => String(b._id) === String(a._id),
+                  (b) => b._id == a.gereeniiDugaar,
                 ),
               );
               result.jagsaalt.forEach((x) => {
                 x.tukhainSariinTureesiinTulukhDun =
                   gereenuud[0].tukhainSariinTureesiinTulukhDun.find(
-                    (a) => String(a._id) === String(x._id),
+                    (a) => a._id == x.gereeniiDugaar,
                   )?.tulukh || 0;
                 x.eneSardTulukhDun =
                   gereenuud[0].eneSardTulukhDun.find(
-                    (a) => String(a._id) === String(x._id),
+                    (a) => a._id == x.gereeniiDugaar,
                   )?.uldegdel || 0;
                 x.umnukhSariinTulsun =
                   gereenuud[0].umnukhSariinTulsun?.find(
-                    (a) => String(a._id) === String(x._id),
+                    (a) => a._id == x.gereeniiDugaar,
                   )?.uldegdel || 0;
                 x.umnukhSariinTureesUrTulbur =
                   gereenuud[0].umnukhSariinTureesUrTulbur?.find(
-                    (a) => String(a._id) === String(x._id),
+                    (a) => a._id == x.gereeniiDugaar,
                   )?.uldegdel || 0;
                 x.umnukhSariinAshiglaltUrTulbur =
                   gereenuud[0].umnukhSariinAshiglaltUrTulbur?.find(
-                    (a) => String(a._id) === String(x._id),
+                    (a) => a._id == x.gereeniiDugaar,
                   )?.uldegdel || 0;
                 x.umnukhSariinTureesUrTulbur =
                   x.umnukhSariinTureesUrTulbur - x.umnukhSariinTulsun;
@@ -2191,7 +2191,7 @@ router
                     x.umnukhSariinTureesUrTulbur;
                 x.umnukhSariinUrTulbur =
                   gereenuud[0].umnukhSariinUrTulbur.find(
-                    (a) => String(a._id) === String(x._id),
+                    (a) => a._id == x.gereeniiDugaar,
                   )?.uldegdel || 0;
                 if (!isFoodCity) {
                   x.umnukhSariinUrTulbur =
@@ -2199,7 +2199,7 @@ router
                 }
                 x.niitUldegdel =
                   gereenuud[0].niitUldegdel.find(
-                    (a) => String(a._id) === String(x._id),
+                    (a) => a._id == x.gereeniiDugaar,
                   )?.uldegdel || 0;
                 x.uldegdel = x.niitUldegdel;
                 x.niitAvlagaUldegdel =
@@ -2209,7 +2209,7 @@ router
                   x.niitDun = x.niitUldegdel || 0;
                   x.umnukhSariinTulsunDun =
                     gereenuud[0].umnukhSariinTulsunDun?.find(
-                      (a) => String(a._id) === String(x._id),
+                      (a) => a._id == x.gereeniiDugaar,
                     )?.uldegdel || 0;
                   x.garaasBodsonNiitDun = x.niitUldegdel || 0;
                   x.tulsunDun =
@@ -2219,10 +2219,10 @@ router
                 }
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
-                    (a) => String(a._id) === String(x._id),
+                    (a) => a._id == x.gereeniiDugaar,
                   )?.guilgeenuud || [];
                 x.zardluud = gereenuud[0].zardluud.filter(
-                  (a) => String(a._id.gereeniiId) === String(x._id),
+                  (a) => a._id.gereeniiDugaar == x.gereeniiDugaar,
                 );
                 if (!!x.zardluud && x.zardluud.length > 0) {
                   x.zardluud.forEach((zardal) => {
