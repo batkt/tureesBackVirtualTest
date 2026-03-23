@@ -1528,9 +1528,27 @@ router
                     },
                     {
                       $match: {
-                        "avlaga.guilgeenuud.turul": {
-                          $nin: ["baritsaa"],
-                        },
+                        $or: [
+                          {
+                            "avlaga.guilgeenuud.turul": {
+                              $nin: ["baritsaa", "aldangi"],
+                            },
+                          },
+                          {
+                            $and: [
+                              {
+                                "avlaga.guilgeenuud.turul": {
+                                  $in: ["baritsaa"],
+                                },
+                              },
+                              {
+                                "avlaga.guilgeenuud.tulsunDun": {
+                                  $gt: 0,
+                                },
+                              },
+                            ],
+                          },
+                        ],
                         "avlaga.guilgeenuud.ognoo": {
                           $lt: new Date(req.body.ekhlekhOgnoo),
                         },
@@ -1786,9 +1804,27 @@ router
                     },
                     {
                       $match: {
-                        "avlaga.guilgeenuud.turul": {
-                          $nin: ["baritsaa"],
-                        },
+                        $or: [
+                          {
+                            "avlaga.guilgeenuud.turul": {
+                              $nin: ["baritsaa", "aldangi"],
+                            },
+                          },
+                          {
+                            $and: [
+                              {
+                                "avlaga.guilgeenuud.turul": {
+                                  $in: ["baritsaa"],
+                                },
+                              },
+                              {
+                                "avlaga.guilgeenuud.tulsunDun": {
+                                  $gt: 0,
+                                },
+                              },
+                            ],
+                          },
+                        ],
                         "avlaga.guilgeenuud.ognoo": {
                           $lte: new Date(req.body.duusakhOgnoo),
                           $gte: new Date(req.body.ekhlekhOgnoo),
@@ -1808,13 +1844,21 @@ router
                             $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
                           },
                         },
+                        tulsun: {
+                          $sum: {
+                            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+                          },
+                        },
                       },
                     },
                     {
                       $project: {
                         gereeniiDugaar: "$gereeniiDugaar",
                         uldegdel: {
-                          $subtract: ["$tulukh", "$khyamdral"],
+                          $subtract: [
+                            "$tulukh",
+                            { $sum: ["$tulsun", "$khyamdral"] },
+                          ],
                         },
                       },
                     },
@@ -2157,12 +2201,12 @@ router
                   gereenuud[0].niitUldegdel.find(
                     (a) => a._id == x.gereeniiDugaar,
                   )?.uldegdel || 0;
+                x.uldegdel = x.niitUldegdel;
                 x.niitAvlagaUldegdel =
                   x.niitUldegdel + (x.aldangiinUldegdel || 0);
 
                 if (isFoodCity) {
-                  x.niitDun =
-                    (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0);
+                  x.niitDun = x.niitUldegdel || 0;
                   x.umnukhSariinTulsunDun =
                     gereenuud[0].umnukhSariinTulsunDun?.find(
                       (a) => a._id == x.gereeniiDugaar,
@@ -2171,7 +2215,7 @@ router
                   x.tulsunDun =
                     (x.umnukhSariinUrTulbur || 0) +
                     (x.eneSardTulukhDun || 0) -
-                    (x.garaasBodsonNiitDun || 0);
+                    (x.niitDun || 0);
                 }
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
