@@ -359,24 +359,24 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
       inc["aldangiinUldegdel"] = -guilgee.tulsunAldangi;
       inc["niitTulsunAldangi"] = +guilgee.tulsunAldangi;
     }
-    if (guilgee.gereeniiId) {
-      talbainIdnuud;
-      console.log("tooluuriinDugaar", guilgee.tooluuriinDugaar);
-      var tempGeree = Geree(req.body.tukhainBaaziinKholbolt).findById(
-        guilgee.gereeniiId,
-      );
-      console.log("talbainIdnuud ---->", tempGeree?.gereeniiDugaar);
-      if (tempGeree?.talbainIdnuud?.length > 0) {
-        for (const talbainId of tempGeree.talbainIdnuud) {
-          var talbaiData = Talbai(req.body.tukhainBaaziinKholbolt).findById(
-            talbainId,
-          );
-          if (talbaiData?.tooluuriinDugaar)
-            guilgee.tooluuriinDugaar = talbaiData.tooluuriinDugaar;
-        }
-      }
-      console.log("after tooluuriinDugaar", guilgee.tooluuriinDugaar);
-    }
+    // if (guilgee.gereeniiId) {
+    //   talbainIdnuud;
+    //   console.log("tooluuriinDugaar", guilgee.tooluuriinDugaar);
+    //   var tempGeree = Geree(req.body.tukhainBaaziinKholbolt).findById(
+    //     guilgee.gereeniiId,
+    //   );
+    //   console.log("talbainIdnuud ---->", tempGeree?.gereeniiDugaar);
+    //   if (tempGeree?.talbainIdnuud?.length > 0) {
+    //     for (const talbainId of tempGeree.talbainIdnuud) {
+    //       var talbaiData = Talbai(req.body.tukhainBaaziinKholbolt).findById(
+    //         talbainId,
+    //       );
+    //       if (talbaiData?.tooluuriinDugaar)
+    //         guilgee.tooluuriinDugaar = talbaiData.tooluuriinDugaar;
+    //     }
+    //   }
+    //   console.log("after tooluuriinDugaar", guilgee.tooluuriinDugaar);
+    // }
     Geree(req.body.tukhainBaaziinKholbolt)
       .findByIdAndUpdate(
         { _id: guilgee.gereeniiId },
