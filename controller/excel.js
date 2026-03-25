@@ -1322,8 +1322,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             tolgoinObject30.gereeniiOgnoo = cellAsString[0];
           else if (worksheet30[cellAsString].v.includes("Хугацаа(Сараар)"))
             tolgoinObject30.khugatsaa = cellAsString[0];
-            else if (worksheet30[cellAsString].v.includes("Авлага үүсэх өдөр"))
-              tolgoinObject30.tulukhUdur = cellAsString[0];
+          else if (worksheet30[cellAsString].v.includes("Авлага үүсэх өдөр"))
+            tolgoinObject30.tulukhUdur = cellAsString[0];
           else if (worksheet30[cellAsString].v.includes("Талбайн код"))
             tolgoinObject30.talbainDugaar = cellAsString[0];
           else if (worksheet30[cellAsString].v.includes("Барьцаа авах хугацаа"))
@@ -1550,7 +1550,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
             usegTooruuKhurvuulekh(tolgoinObject30.baritsaaBairshuulakhKhugatsaa)
           ];
         object.uldegdel = mur[usegTooruuKhurvuulekh(tolgoinObject30.avlaga)];
-        object.zoriulalt = mur[usegTooruuKhurvuulekh(tolgoinObject30.zoriulalt)];
+        object.zoriulalt =
+          mur[usegTooruuKhurvuulekh(tolgoinObject30.zoriulalt)];
         object.dans = mur[usegTooruuKhurvuulekh(tolgoinObject30.dans)];
         object.ekhniiSariinKhonog =
           mur[usegTooruuKhurvuulekh(tolgoinObject30.ekhniiSariinKhonog)];
@@ -3839,6 +3840,20 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
             updateObject["undsenDun"] = tukhainZardal?.ekhniiUldegdel;
             updateObject["khyamdral"] = 0;
           } else updateObject["tulsunDun"] = 0;
+          if (geree._id && geree?.talbainIdnuud?.length > 0) {
+            console.log("tooluuriinDugaar", updateObject.tooluuriinDugaar);
+            for (const talbainId of geree.talbainIdnuud) {
+              var talbaiData = await Talbai(
+                req.body.tukhainBaaziinKholbolt,
+              ).findById(talbainId);
+              if (talbaiData?.tooluuriinDugaar)
+                updateObject.tooluuriinDugaar = talbaiData.tooluuriinDugaar;
+            }
+            console.log(
+              "after tooluuriinDugaar",
+              updateObject.tooluuriinDugaar,
+            );
+          }
           tukhainZardal.gereeniiId = geree._id;
           let upsertDoc = {
             updateOne: {
