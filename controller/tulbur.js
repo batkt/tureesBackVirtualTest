@@ -360,10 +360,12 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
       inc["niitTulsunAldangi"] = +guilgee.tulsunAldangi;
     }
     if (guilgee.gereeniiId) {
+      talbainIdnuud;
       console.log("tooluuriinDugaar", guilgee.tooluuriinDugaar);
       var tempGeree = Geree(req.body.tukhainBaaziinKholbolt).findById(
         guilgee.gereeniiId,
       );
+      console.log("talbainIdnuud ---->", tempGeree?.talbainIdnuud);
       if (tempGeree?.talbainIdnuud?.length > 0) {
         for (const talbainId of tempGeree.talbainIdnuud) {
           var talbaiData = Talbai(req.body.tukhainBaaziinKholbolt).findById(
