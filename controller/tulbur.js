@@ -366,9 +366,9 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
       );
       if (tempGeree?.talbainIdnuud?.length > 0) {
         for (const talbainId of tempGeree.talbainIdnuud) {
-          var talbaiData = await Talbai(
-            req.body.tukhainBaaziinKholbolt,
-          ).findById(talbainId);
+          var talbaiData = Talbai(req.body.tukhainBaaziinKholbolt).findById(
+            talbainId,
+          );
           if (talbaiData?.tooluuriinDugaar)
             guilgee.tooluuriinDugaar = talbaiData.tooluuriinDugaar;
         }
