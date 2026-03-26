@@ -22,7 +22,7 @@ const tailanRoute = require("./routes/tailanRoute");
 const zuragRoute = require("./routes/zuragRoute");
 const gereeRoute = require("./routes/gereeRoute");
 const gereeniiZagvarRoute = require("./routes/gereeniiZagvarRoute");
-const talbaiRoute = require("./routes/talbaiRoute");
+const talbaiRoute = require("./routes/talbaiRoute");  
 const khariltsagchRoute = require("./routes/khariltsagchRoute");
 const bankniiGuilgeeRoute = require("./routes/bankniiGuilgeeRoute");
 const nekhemjlekhiinZagvarRoute = require("./routes/nekhemjlekhiinZagvarRoute");
@@ -69,13 +69,13 @@ app.use(
   }),
 );
 // test;
-// db.kholboltUusgey(
-//   app,
-//   "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin",
-// );
+db.kholboltUusgey(
+  app,
+  "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin",
+);
 
 //production
-db.kholboltUusgey(app);
+// db.kholboltUusgey(app);
 
 app.use(
   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }),

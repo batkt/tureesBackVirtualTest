@@ -201,6 +201,33 @@ router.route("/uldegdelBodyo").post(tokenShalgakh, uldegdelBodyo);
 router
   .route("/gereeniiGuilgeeKhadgalya")
   .post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
+
+ 
+router.route("/zaaltTeglekh").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    const { guilgeeniiId, gereeniiId } = req.body;
+    if (!guilgeeniiId || !gereeniiId) {
+      return res.status(400).send("guilgeeniiId болон gereeniiId шаардлагатай");
+    }
+    const result = await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
+      {
+        _id: gereeniiId,
+        "avlaga.guilgeenuud._id": guilgeeniiId,
+      },
+      {
+        $set: {
+          "avlaga.guilgeenuud.$.suuliinZaalt": 0,
+        },
+      }
+    );
+    if (result.modifiedCount === 0) {
+      return res.status(404).send("Гүйлгээ олдсонгүй");
+    }
+    res.send("Amjilttai");
+  } catch (err) {
+    next(err);
+  }
+});
 router.route("/khuvaariUusgey").post(tokenShalgakh, khuvaariUusgey);
 router.route("/aldangiBodyo").post(tokenShalgakh, async (req, res, next) => {
   await aldangiBodyo(req.body.baiguullagiinId);
