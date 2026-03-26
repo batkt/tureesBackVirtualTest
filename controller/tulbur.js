@@ -360,7 +360,6 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
       inc["niitTulsunAldangi"] = +guilgee.tulsunAldangi;
     }
     // if (guilgee.gereeniiId) {
-    //   talbainIdnuud;
     //   console.log("tooluuriinDugaar", guilgee.tooluuriinDugaar);
     //   var tempGeree = Geree(req.body.tukhainBaaziinKholbolt).findById(
     //     guilgee.gereeniiId,
