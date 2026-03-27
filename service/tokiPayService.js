@@ -1,11 +1,20 @@
 const { db } = require("zevbackv2");
-const {
-  Uilchluulegch,
-  zogsooliinDunAvya,
-} = require("parking-v2");
+const { Uilchluulegch, zogsooliinDunAvya } = require("parking-v2");
 const { getParkingFind } = require("../middlewares/parkingMiddle");
 const Baiguullaga = require("../models/baiguullaga");
 const { handleEbarimt } = require("./tokiEbarimtService");
+
+async function tootsoolohTulbur(zogsool, mashin, kholbolt) {
+  if (
+    zogsool?.togtmolTulburEsekh &&
+    zogsool?.togtmolTulburiinDun > 0 &&
+    mashin?.turul === "Дурын"
+  ) {
+    return zogsool.togtmolTulburiinDun;
+  }
+
+  return zogsooliinDunAvya(zogsool, mashin, kholbolt);
+}
 
 exports.tokiPay = async (req, res, next) => {
   try {
@@ -75,33 +84,31 @@ exports.tokiPay = async (req, res, next) => {
       };
     }
     if (!tukhainObject.freezeOgnoo) {
-      tukhainObject.freezeOgnoo = tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag || new Date();
+      tukhainObject.freezeOgnoo =
+        tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag || new Date();
       await Uilchluulegch(tukhainKholbolt).updateOne(
         { _id: tukhainObject._id },
         { freezeOgnoo: tukhainObject.freezeOgnoo },
       );
     }
-    bodsonDun = await zogsooliinDunAvya(
+    bodsonDun = await tootsoolohTulbur(
       tukhainZogsool,
       tukhainObject,
       tukhainKholbolt,
     );
 
-    if (!tukhainObject.tuukh[0].tulbur)
-      tukhainObject.tuukh[0].tulbur = [];
+    if (!tukhainObject.tuukh[0].tulbur) tukhainObject.tuukh[0].tulbur = [];
 
     const tulburDun = tukhainObject.tuukh[0].tulbur.reduce(
       (a, b) => a + (b.dun || 0),
       0,
     );
-    if (tulburDun > 0 && bodsonDun < (req.body.paid_amount + tulburDun)) {
+    if (tulburDun > 0 && bodsonDun < req.body.paid_amount + tulburDun) {
       return { success: false, message: "Төлөлт хийгдсэн байна!" };
     }
     if (bodsonDun === req.body.paid_amount + tulburDun) {
       tukhainObject.tuukh[0].tulbur.push(...tulbur);
-    }
-    else
-      return { success: false, message: "Төлөх дүн буруу байна!" };
+    } else return { success: false, message: "Төлөх дүн буруу байна!" };
     let set = {
       "tuukh.$[t].tulbur": tukhainObject.tuukh[0].tulbur,
       tokiId: "toki",
@@ -112,8 +119,7 @@ exports.tokiPay = async (req, res, next) => {
           Date.now() + (tukhainZogsool?.garakhTsag || 30) * 60000,
         );
       }
-      if (!!tukhainObject.tuukh[0].garsanKhaalga)
-        set["tuukh.$[t].tuluv"] = 1;
+      if (!!tukhainObject.tuukh[0].garsanKhaalga) set["tuukh.$[t].tuluv"] = 1;
     }
     await Uilchluulegch(tukhainKholbolt).findByIdAndUpdate(
       tukhainObject._id,
@@ -122,7 +128,11 @@ exports.tokiPay = async (req, res, next) => {
         arrayFilters: [{ "t.zogsooliinId": tukhainZogsool._id }],
       },
     );
-    if (!!tukhainObject.tuukh[0].tsagiinTuukh?.[0].garsanTsag && tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag > new Date(Date.now() - 600000))
+    if (
+      !!tukhainObject.tuukh[0].tsagiinTuukh?.[0].garsanTsag &&
+      tukhainObject.tuukh[0].tsagiinTuukh[0].garsanTsag >
+        new Date(Date.now() - 600000)
+    )
       req.body.manually_open = true;
     if (!!req.body.manually_open) {
       if (
@@ -132,10 +142,7 @@ exports.tokiPay = async (req, res, next) => {
         var nemeltZogsool = await Parking(tukhainKholbolt).findOne({
           _id: { $ne: tukhainZogsool._id },
         });
-        var garsanObject = await Uilchluulegch(
-          tukhainKholbolt,
-          true,
-        ).findOne({
+        var garsanObject = await Uilchluulegch(tukhainKholbolt, true).findOne({
           mashiniiDugaar: req.body.plate_number,
           "tuukh.zogsooliinId": nemeltZogsool._id.toString(),
           "tuukh.0.tsagiinTuukh.0.garsanKhaalga": {
@@ -149,28 +156,22 @@ exports.tokiPay = async (req, res, next) => {
           },
         });
         const io = req.app.get("socketio");
-        io.emit(
-          "zogsoolGarahTulsun",
-          {
-            baiguullagiinId: tukhainObject.baiguullagiinId,
-            khaalgaTurul: "garsan",
-            turul: "toki",
-            mashiniiDugaar: tukhainObject.mashiniiDugaar,
-            cameraIP: garsanObject.tuukh[0].garsanKhaalga,
-          },
-        );
+        io.emit("zogsoolGarahTulsun", {
+          baiguullagiinId: tukhainObject.baiguullagiinId,
+          khaalgaTurul: "garsan",
+          turul: "toki",
+          mashiniiDugaar: tukhainObject.mashiniiDugaar,
+          cameraIP: garsanObject.tuukh[0].garsanKhaalga,
+        });
       } else {
         const io = req.app.get("socketio");
-        io.emit(
-          "zogsoolGarahTulsun",
-          {
-            baiguullagiinId: tukhainObject.baiguullagiinId,
-            khaalgaTurul: "garsan",
-            turul: "toki",
-            mashiniiDugaar: tukhainObject.mashiniiDugaar,
-            cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
-          },
-        );
+        io.emit("zogsoolGarahTulsun", {
+          baiguullagiinId: tukhainObject.baiguullagiinId,
+          khaalgaTurul: "garsan",
+          turul: "toki",
+          mashiniiDugaar: tukhainObject.mashiniiDugaar,
+          cameraIP: tukhainObject.tuukh[0].garsanKhaalga,
+        });
       }
     }
     tukhainObject.niitDun = req.body.paid_amount;
@@ -185,7 +186,10 @@ exports.tokiPay = async (req, res, next) => {
     )?.tokhirgoo?.nuatTulukhEsekh;
     if (nuatTulukhEsekh != false) nuatTulukhEsekh = true;
     if (!tuxainSalbar?.eBarimtShine)
-      return { success: true, message: "ИБаримт dll холболт хийгдээгүй байна!", };
+      return {
+        success: true,
+        message: "ИБаримт dll холболт хийгдээгүй байна!",
+      };
     const ebarimtResult = await handleEbarimt({
       tuxainSalbar,
       tukhainObject,
