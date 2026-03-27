@@ -48,6 +48,18 @@ async function pad(num, size) {
   return num;
 }
 
+function translateMailErrorMsg(msg) {
+  if (!msg || typeof msg !== "string") return msg;
+  if (
+    msg.includes("535-5.7.8 Username and Password not accepted") ||
+    msg.includes("535 5.7.3 Authentication unsuccessful") ||
+    msg.includes("535 5.7.139 Authentication unsuccessful")
+  ) {
+    return "И-мэйл хаяг эсвэл нууц үг буруу байна. И-мэйл тохиргоогоо шалгана уу.";
+  }
+  return msg;
+}
+
 router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
@@ -72,6 +84,15 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         ilgeekhBody
       );
       const body = resIgeeye.data;
+      if (Array.isArray(body)) {
+        body.forEach((item) => {
+          if (item.message) {
+            item.message = translateMailErrorMsg(item.message);
+          }
+        });
+      } else if (body && body.message) {
+        body.message = translateMailErrorMsg(body.message);
+      }
       if (body?.length > 0) {
         await MaililgeesenKhariu(req.body.tukhainBaaziinKholbolt).insertMany(
           body
@@ -166,6 +187,15 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         ilgeekhBody
       );
       const body = resIgeeye.data;
+      if (Array.isArray(body)) {
+        body.forEach((item) => {
+          if (item.message) {
+            item.message = translateMailErrorMsg(item.message);
+          }
+        });
+      } else if (body && body.message) {
+        body.message = translateMailErrorMsg(body.message);
+      }
       if (body?.length > 0) {
         await MaililgeesenKhariu(req.body.tukhainBaaziinKholbolt).insertMany(
           body
@@ -203,7 +233,13 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
               mail.gereeniiDugaar
             );
             if (sendRes instanceof Error) {
-               failedMails.push({ ner: mail.khariltsagchiinNer, mail: mail.mail, aldaa: "Алдаатай: " + (sendRes.responseCode || sendRes.message) });
+              let errorMsg = sendRes.message || "";
+              errorMsg = translateMailErrorMsg(errorMsg);
+              failedMails.push({
+                ner: mail.khariltsagchiinNer,
+                mail: mail.mail,
+                aldaa: "Алдаатай: " + errorMsg,
+              });
             }
           } else {
              failedMails.push({ ner: mail.khariltsagchiinNer, mail: mail.mail, aldaa: "Буруу и-мэйл хаяг" });
