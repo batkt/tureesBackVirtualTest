@@ -238,7 +238,7 @@ async function udriinTailan({ body }) {
             "tuukh.tuluv": 0,
             "tuukh.tulbur": { $size: 0 },
             "tuukh.uneguiGarsan": { $exists: false },
-            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
+            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lt: dateEnd },
           },
         ],
       }),
