@@ -174,7 +174,16 @@ async function udriinTailan({ body }) {
       endDate: collectionEnd.toDate(),
     });
   });
-
+  const isCurrentMonthIncluded = end.isSame(now, "month");
+  if (isCurrentMonthIncluded) {
+    const currentMonthStart = moment.max(now.clone().startOf("month"), start);
+    const currentMonthEnd = moment.min(now.clone().endOf("month"), end);
+    collectionsToQuery.push({
+      name: null, // null → hits live Uilchluulegch collection
+      startDate: currentMonthStart.toDate(),
+      endDate: currentMonthEnd.toDate(),
+    });
+  }
   // Aggregation function
   const aggregateFromCollection = async (
     collectionName,
@@ -230,7 +239,6 @@ async function udriinTailan({ body }) {
         $or: [
           {
             "tuukh.tuluv": -4,
-            "tuukh.tulbur": { $size: 0 },
             "tuukh.uneguiGarsan": { $exists: false },
             "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
           },
@@ -260,8 +268,8 @@ async function udriinTailan({ body }) {
               : status === "Tulburtei"
                 ? "Төлбөртэй"
                 : "Үнэгүй",
-          niitDun: { $sum: "$niitDun" },
-          ids: { $addToSet: "$tuukh.tulbur._id" },
+          niitDun: { $sum: "$tuukh.tulukhDun" }, // ← was: "$niitDun"
+          ids: { $addToSet: "$tuukh._id" },
         },
       },
       {
