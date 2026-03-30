@@ -268,13 +268,8 @@ async function udriinTailan({ body }) {
               : status === "Tulburtei"
                 ? "Төлбөртэй"
                 : "Үнэгүй",
-<<<<<<< HEAD
-          niitDun: { $sum: "$niitDun" },
-          ids: { $addToSet: "$tuukh.tulbur._id" },
-=======
           niitDun: { $sum: "$tuukh.tulukhDun" }, // ← was: "$niitDun"
           ids: { $addToSet: "$tuukh._id" },
->>>>>>> e530e1f9 (tolbor delgerengui)
         },
       },
       {
