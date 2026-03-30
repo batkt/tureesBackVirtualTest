@@ -46,9 +46,13 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
         if (!!kholbolt) {
           for (const barilga of result.barilguud) {
             await NekhemjlekhiinZagvar(kholbolt).create({
-              ner: "Standard",
-              tailbar: "Стандарт нэхэмжлэхийн загвар",
+              ner: "Үндсэн загвар",
+              tailbar: "Үндсэн загвар",
+              nekhemjlekh: "khatuuZagvar",
+              turul: "Mail",
               khatuuZagvarEsekh: true,
+              khuudasniiKhemjee: "A4",
+              chiglel: "portrait",
               baiguullagiinId: result._id,
               barilgiinId: barilga._id,
             });
@@ -105,9 +109,13 @@ router.post("/salbarBurtgey", async (req, res, next) => {
           );
           if (newBarilga) {
             await NekhemjlekhiinZagvar(kholbolt).create({
-              ner: "Standard",
-              tailbar: "Стандарт нэхэмжлэхийн загвар",
+              ner: "Үндсэн загвар",
+              tailbar: "Үндсэн загвар",
+              nekhemjlekh: "khatuuZagvar",
+              turul: "Mail",
               khatuuZagvarEsekh: true,
+              khuudasniiKhemjee: "A4",
+              chiglel: "portrait",
               baiguullagiinId: result._id,
               barilgiinId: newBarilga._id,
             });
