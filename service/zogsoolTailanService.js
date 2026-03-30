@@ -250,14 +250,7 @@ async function udriinTailan({ body }) {
 
     const specialPipeline = (status) => [
       { $match: baseMatch },
-      { $unwind: "$tuukh" },
       { $match: specialMatch(status) },
-      {
-        $group: {
-          _id: "$_id",
-          niitDun: { $first: "$niitDun" }, // давхардахгүй авна
-        },
-      },
       {
         $group: {
           _id:
@@ -267,14 +260,17 @@ async function udriinTailan({ body }) {
                 ? "Төлбөртэй"
                 : "Үнэгүй",
           niitDun: { $sum: "$niitDun" },
-          niitToo: { $sum: 1 },
+          ids: { $addToSet: "$_id" },
         },
       },
       {
         $project: {
           _id: 1,
           niitDun: 1,
-          niitToo: 1,
+          niitToo:
+            status === "Zurchiltei" || status === "Tulburtei"
+              ? { $size: "$ids" }
+              : 1,
         },
       },
     ];
