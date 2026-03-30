@@ -254,6 +254,12 @@ async function udriinTailan({ body }) {
       { $match: specialMatch(status) },
       {
         $group: {
+          _id: "$_id",
+          niitDun: { $first: "$niitDun" }, // давхардахгүй авна
+        },
+      },
+      {
+        $group: {
           _id:
             status === "Zurchiltei"
               ? "Зөрчилтэй"
