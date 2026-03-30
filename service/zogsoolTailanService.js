@@ -236,19 +236,10 @@ async function udriinTailan({ body }) {
       "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
       ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
       ...(status === "Tulburtei" && {
-        $or: [
-          {
-            "tuukh.tuluv": -4,
-            "tuukh.uneguiGarsan": { $exists: false },
-            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
-          },
-          {
-            "tuukh.tuluv": 0,
-            "tuukh.tulbur": { $size: 0 },
-            "tuukh.uneguiGarsan": { $exists: false },
-            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lt: dateEnd },
-          },
-        ],
+        "tuukh.tulukhDun": { $gt: 0 },
+        "tuukh.tuluv": { $in: [0, -4] },
+        "tuukh.uneguiGarsan": { $exists: false },
+        "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lt: dateEnd },
       }),
       ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
       ...(body.burtgesenAjiltaniiId && {
@@ -268,7 +259,7 @@ async function udriinTailan({ body }) {
               : status === "Tulburtei"
                 ? "Төлбөртэй"
                 : "Үнэгүй",
-          niitDun: { $sum: "$tuukh.tulukhDun" }, // ← was: "$niitDun"
+          niitDun: { $sum: "$tuukh.tulukhDun" },
           ids: { $addToSet: "$tuukh._id" },
         },
       },
