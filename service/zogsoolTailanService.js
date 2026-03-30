@@ -261,14 +261,17 @@ async function udriinTailan({ body }) {
                 ? "Төлбөртэй"
                 : "Үнэгүй",
           niitDun: { $sum: "$niitDun" },
-          niitToo: 1,
+          ids: { $addToSet: "$_id" },
         },
       },
       {
         $project: {
           _id: 1,
           niitDun: 1,
-          niitToo: 1,
+          niitToo:
+            status === "Zurchiltei" || status === "Tulburtei"
+              ? { $size: "$ids" }
+              : 1,
         },
       },
     ];
