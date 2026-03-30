@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const Baiguullaga = require("../models/baiguullaga");
 const Ajiltan = require("../models/ajiltan");
+const NekhemjlekhiinZagvar = require("../models/nekhemjlekhiinZagvar");
 //const { crudWithFile, crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
@@ -26,7 +27,7 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
     ];
     baiguullaga
       .save()
-      .then((result) => {
+      .then(async (result) => {
         // test
         db.kholboltNemye(
           baiguullaga._id,
@@ -38,6 +39,21 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
         );
         //production
         // db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
+        var kholbolt = db.kholboltuud.find(
+          (a) => a.baiguullagiinId == result._id.toString(),
+        );
+
+        if (!!kholbolt) {
+          for (const barilga of result.barilguud) {
+            await NekhemjlekhiinZagvar(kholbolt).create({
+              ner: "Standard",
+              tailbar: "Стандарт нэхэмжлэхийн загвар",
+              khatuuZagvarEsekh: true,
+              baiguullagiinId: result._id,
+              barilgiinId: barilga._id,
+            });
+          }
+        }
         if (req.body.ajiltan) {
           let ajiltan = new Ajiltan(db.erunkhiiKholbolt)(req.body.ajiltan);
           ajiltan.erkh = "Admin";
@@ -65,7 +81,7 @@ router.post("/salbarBurtgey", async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     Baiguullaga(db.erunkhiiKholbolt)
-      .updateOne(
+      .findOneAndUpdate(
         { register: req.body.tolgoiCompany },
         {
           $push: {
@@ -76,8 +92,27 @@ router.post("/salbarBurtgey", async (req, res, next) => {
             },
           },
         },
+        { new: true },
       )
-      .then((result) => {
+      .then(async (result) => {
+        var kholbolt = db.kholboltuud.find(
+          (a) => a.baiguullagiinId == result._id.toString(),
+        );
+
+        if (!!kholbolt) {
+          const newBarilga = result.barilguud.find(
+            (b) => b.licenseRegister === req.body.register,
+          );
+          if (newBarilga) {
+            await NekhemjlekhiinZagvar(kholbolt).create({
+              ner: "Standard",
+              tailbar: "Стандарт нэхэмжлэхийн загвар",
+              khatuuZagvarEsekh: true,
+              baiguullagiinId: result._id,
+              barilgiinId: newBarilga._id,
+            });
+          }
+        }
         res.send("Amjilttai");
       })
       .catch((err) => {
