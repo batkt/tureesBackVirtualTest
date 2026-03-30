@@ -149,9 +149,7 @@ async function udriinTailan({ body }) {
     `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
 
   // Collection-үүдийг тодорхойлох
-  const collectionsToQuery = [
-    { name: null, startDate: ekhlekhOgnoo, endDate: duusakhOgnoo },
-  ];
+  const collectionsToQuery = [];
   const months = isMultiMonth
     ? (() => {
         const list = [];
