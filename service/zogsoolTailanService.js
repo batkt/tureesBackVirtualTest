@@ -261,7 +261,7 @@ async function udriinTailan({ body }) {
                 ? "Төлбөртэй"
                 : "Үнэгүй",
           niitDun: { $sum: "$niitDun" },
-          ids: { $addToSet: "$_id" },
+          ids: { $addToSet: "$tuukh.tulbur._id" },
         },
       },
       {
