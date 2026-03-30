@@ -149,7 +149,9 @@ async function udriinTailan({ body }) {
     `Uilchluulegch${year}${String(month + 1).padStart(2, "0")}`;
 
   // Collection-үүдийг тодорхойлох
-  const collectionsToQuery = [];
+  const collectionsToQuery = [
+    { name: null, startDate: ekhlekhOgnoo, endDate: duusakhOgnoo },
+  ];
   const months = isMultiMonth
     ? (() => {
         const list = [];
@@ -244,7 +246,7 @@ async function udriinTailan({ body }) {
             "tuukh.tuluv": 0,
             "tuukh.tulbur": { $size: 0 },
             "tuukh.uneguiGarsan": { $exists: false },
-            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
+            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lt: dateEnd },
           },
         ],
       }),
@@ -266,15 +268,23 @@ async function udriinTailan({ body }) {
               : status === "Tulburtei"
                 ? "Төлбөртэй"
                 : "Үнэгүй",
+<<<<<<< HEAD
+          niitDun: { $sum: "$niitDun" },
+          ids: { $addToSet: "$tuukh.tulbur._id" },
+=======
           niitDun: { $sum: "$tuukh.tulukhDun" }, // ← was: "$niitDun"
           ids: { $addToSet: "$tuukh._id" },
+>>>>>>> e530e1f9 (tolbor delgerengui)
         },
       },
       {
         $project: {
           _id: 1,
           niitDun: 1,
-          niitToo: { $size: "$ids" },
+          niitToo:
+            status === "Zurchiltei" || status === "Tulburtei"
+              ? { $size: "$ids" }
+              : 1,
         },
       },
     ];
@@ -297,11 +307,15 @@ async function udriinTailan({ body }) {
   };
   for (const collection of collectionsToQuery) {
     try {
+      console.log(`name Querying collection: ${collection.name}`);
+      console.log(`startDate Querying collection: ${collection.startDate}`);
+      console.log(`endDate Querying collection: ${collection.endDate}`);
       const result = await aggregateFromCollection(
         collection.name,
         collection.startDate,
         collection.endDate,
       );
+      console.log("Result from collection :", JSON.stringify(result.tulburtei));
       allResults.udriinTailan.push(...result.udriinTailan);
       allResults.zurchiltei.push(...result.zurchiltei);
       allResults.tulburtei.push(...result.tulburtei);
