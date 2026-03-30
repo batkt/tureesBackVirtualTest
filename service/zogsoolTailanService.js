@@ -238,7 +238,7 @@ async function udriinTailan({ body }) {
             "tuukh.tuluv": 0,
             "tuukh.tulbur": { $size: 0 },
             "tuukh.uneguiGarsan": { $exists: false },
-            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
+            "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lt: dateEnd },
           },
         ],
       }),
@@ -261,7 +261,7 @@ async function udriinTailan({ body }) {
                 ? "Төлбөртэй"
                 : "Үнэгүй",
           niitDun: { $sum: "$niitDun" },
-          ids: { $addToSet: "$_id" },
+          ids: { $addToSet: "$tuukh.tulbur._id" },
         },
       },
       {
@@ -294,11 +294,15 @@ async function udriinTailan({ body }) {
   };
   for (const collection of collectionsToQuery) {
     try {
+      console.log(`name Querying collection: ${collection.name}`);
+      console.log(`startDate Querying collection: ${collection.startDate}`);
+      console.log(`endDate Querying collection: ${collection.endDate}`);
       const result = await aggregateFromCollection(
         collection.name,
         collection.startDate,
         collection.endDate,
       );
+      console.log("Result from collection :", JSON.stringify(result.tulburtei));
       allResults.udriinTailan.push(...result.udriinTailan);
       allResults.zurchiltei.push(...result.zurchiltei);
       allResults.tulburtei.push(...result.tulburtei);
