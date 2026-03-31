@@ -3335,7 +3335,7 @@ exports.testiinBankniiGuilgee = asyncHandler(async (req, res, next) => {
     }
     var khariu = await BankniiGuilgee(
       req.body.tukhainBaaziinKholbolt,
-    ).insertMany(guilgeenuud);
+    ).insertMany(guilgeenuud, { ordered: false });
     res.send(khariu);
   } catch (err) {
     next(err);
@@ -3382,7 +3382,7 @@ exports.testiinBankniiGuilgeeOruulya = asyncHandler(async (req, res, next) => {
     }
     var khariu = await BankniiGuilgee(
       req.body.tukhainBaaziinKholbolt,
-    ).insertMany(guilgeenuud);
+    ).insertMany(guilgeenuud, { ordered: false });
     res.send(khariu);
   } catch (err) {
     next(err);

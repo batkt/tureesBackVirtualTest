@@ -952,7 +952,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     }
                   }
                   BankniiGuilgee(kholbolt)
-                    .insertMany(guilgeenuud)
+                    .insertMany(guilgeenuud, { ordered: false })
                     .then((result) => {
                       if (res) res.send("Amjilttai");
                     })
@@ -1195,7 +1195,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                           x.barilgiinId = dans.barilgiinId;
                         });
                         BankniiGuilgee(kholbolt)
-                          .insertMany(guilgeenuud)
+                          .insertMany(guilgeenuud, { ordered: false })
                           .then((result) => {
                             if (res) res.send("Amjilttai");
                           })
@@ -1280,7 +1280,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     x.barilgiinId = dans.barilgiinId;
                   });
                   BankniiGuilgee(kholbolt)
-                    .insertMany(guilgeenuud)
+                    .insertMany(guilgeenuud, { ordered: false })
                     .then((result) => {
                       if (res) res.send("Amjilttai");
                     })
@@ -1380,7 +1380,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     x.barilgiinId = dans.barilgiinId;
                   });
                   BankniiGuilgee(kholbolt)
-                    .insertMany(guilgeenuud)
+                    .insertMany(guilgeenuud, { ordered: false })
                     .then((result) => {
                       if (res) res.send("Amjilttai");
                     })
@@ -1487,7 +1487,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   }
                 }
                 BankniiGuilgee(kholbolt)
-                  .insertMany(guilgeenuud)
+                  .insertMany(guilgeenuud, { ordered: false })
                   .then((result) => {
                     if (res) res.send("Amjilttai");
                   })
@@ -1750,7 +1750,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     }
                   }
                   BankniiGuilgee(kholbolt)
-                    .insertMany(guilgeenuud)
+                    .insertMany(guilgeenuud, { ordered: false })
                     .then((result) => {})
                     .catch((err) => {});
                 }
@@ -1842,7 +1842,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                       x.barilgiinId = dans.barilgiinId;
                     });
                     BankniiGuilgee(kholbolt)
-                      .insertMany(guilgeenuud)
+                      .insertMany(guilgeenuud, { ordered: false })
                       .then((result) => {
                         if (res) res.send("Amjilttai");
                       })
@@ -2018,7 +2018,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                           }
                         }
                         await BankniiGuilgee(kholbolt)
-                          .insertMany(guilgeenuud)
+                          .insertMany(guilgeenuud, { ordered: false })
                           .then((result) => {})
                           .catch((err) => {});
                       }
@@ -2142,7 +2142,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     }
                   }
                   BankniiGuilgee(kholbolt)
-                    .insertMany(guilgeenuud)
+                    .insertMany(guilgeenuud, { ordered: false })
                     .then((result) => {})
                     .catch((err) => {});
                 }
@@ -2272,7 +2272,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                     }
                   }
                   BankniiGuilgee(kholbolt)
-                    .insertMany(guilgeenuud)
+                    .insertMany(guilgeenuud, { ordered: false })
                     .then((result) => {})
                     .catch((err) => {});
                 }
@@ -2358,7 +2358,7 @@ exports.bankniiKhuulgaTatyaOirkhon = asyncHandler(async () => {
                   x.barilgiinId = dans.barilgiinId;
                 });
                 BankniiGuilgee(kholbolt)
-                  .insertMany(guilgeenuud)
+                  .insertMany(guilgeenuud, { ordered: false })
                   .then((result) => {
                     if (res) res.send("Amjilttai");
                   })
