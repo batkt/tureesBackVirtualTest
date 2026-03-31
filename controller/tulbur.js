@@ -1279,6 +1279,45 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         const endDate = moment().startOf("month");
         const diff = endDate.diff(startDate, "month");
 
+        let match = {
+          "avlaga.guilgeenuud.ognoo": { $gte: startDate, $lte: endDate },
+          $or: [
+            { "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] } },
+            {
+              $and: [
+                { "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] } },
+                { "avlaga.guilgeenuud.tulsunDun": { $gt: 0 } },
+              ],
+            },
+          ],
+        };
+        if (barilga?.tokhirgoo?.aldangiGereeTusBur)
+          match["aldangiinKhuvi"] = { $gt: 0 };
+        const tulsunGereenuud = await Geree(kholbolt, true).aggregate([
+          {
+            $match: {
+              baiguullagiinId: baiguullaga._id.toString(),
+              barilgiinId: barilga._id.toString(),
+              tuluv: { $nin: [-1] },
+              aldangiTsartsaakhEsekh: { $exists: false },
+              gereeniiDugaar: "ТГ/F3/D34",
+            },
+          },
+          { $unwind: "$avlaga.guilgeenuud" },
+          { $match: match },
+          {
+            $group: {
+              _id: {
+                id: "$_id",
+                gereeniiDugaar: "$gereeniiDugaar",
+              },
+              tulsun: {
+                $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+              },
+            },
+          },
+        ]);
+
         let aldangiBodojEkhlekhToo = diff * -1;
 
         for (let offset = aldangiBodojEkhlekhToo; offset <= 0; offset++) {
@@ -1288,15 +1327,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
 
           let match = {
             "avlaga.guilgeenuud.ognoo": { $gte: start, $lte: end },
-            $or: [
-              { "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] } },
-              {
-                $and: [
-                  { "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] } },
-                  { "avlaga.guilgeenuud.tulsunDun": { $gt: 0 } },
-                ],
-              },
-            ],
+            "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] },
           };
           if (barilga?.tokhirgoo?.aldangiGereeTusBur)
             match["aldangiinKhuvi"] = { $gt: 0 };
@@ -1308,6 +1339,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 barilgiinId: barilga._id.toString(),
                 tuluv: { $nin: [-1] },
                 aldangiTsartsaakhEsekh: { $exists: false },
+                gereeniiDugaar: "ТГ/F3/D34",
               },
             },
             { $unwind: "$avlaga.guilgeenuud" },
@@ -1328,19 +1360,15 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 khyamdral: {
                   $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
                 },
-                tulsun: {
-                  $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
-                },
               },
             },
             {
               $project: {
                 uldegdel: {
-                  $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }],
+                  $subtract: ["$tulukh", "$khyamdral"],
                 },
               },
             },
-            { $match: { uldegdel: { $gt: bagaUldegdel } } },
           ]);
 
           if (!gereenuud?.length) {
@@ -1377,6 +1405,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   baiguullagiinId: baiguullaga._id.toString(),
                   barilgiinId: barilga._id.toString(),
                   tuluv: { $nin: [-1] },
+                  gereeniiDugaar: "ТГ/F3/D34",
                 },
               },
               { $unwind: "$avlaga.guilgeenuud" },
@@ -1411,8 +1440,28 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             var umnukhUldegdel = 0;
             if (songosonGereenuud?.length > 0)
               umnukhUldegdel = songosonGereenuud[0].uldegdel;
-            var uldegdel = geree.uldegdel + umnukhUldegdel;
-            if (uldegdel < 0) {
+            console.log(
+              "geree",
+              geree._id.id,
+              "umnukhUldegdel",
+              umnukhUldegdel,
+            );
+
+            var tulsunDun =
+              tulsunGereenuud?.find((a) => a._id.id == geree._id.id)?.tulsun ||
+              0;
+            console.log(
+              "uldegdel",
+              geree.uldegdel,
+              "umnukhUldegdel",
+              umnukhUldegdel,
+              "tulsunDun",
+              tulsunDun,
+            );
+            var uldegdel = geree.uldegdel + umnukhUldegdel - tulsunDun;
+            console.log("uldegdel", uldegdel);
+
+            if (uldegdel < 0 || uldegdel < bagaUldegdel) {
               continue;
             }
             const tulukhUdur = geree._id.tulukhUdur?.[0] || 1;
