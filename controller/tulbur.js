@@ -1448,8 +1448,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             console.log("umnukhUldegdel ----------->>>", umnukhUldegdel);
 
             var tulsunDun =
-              tulsunGereenuud?.find((a) => a._id.id == geree._id.id)?.tulsun ||
-              0;
+              tulsunGereenuud?.find(
+                (a) => a._id.id.toString() === geree._id.id.toString(),
+              )?.tulsun || 0;
             console.log("tulsunDun ----------->>>", tulsunDun);
             console.log("uldegdel ----------->>>", geree.uldegdel);
             var uldegdel = geree.uldegdel + umnukhUldegdel - tulsunDun;
