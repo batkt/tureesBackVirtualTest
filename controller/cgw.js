@@ -1030,7 +1030,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   var khariu = response.data;
                   console.log("token ----------->" + tokenObject.token);
                   console.log("url   ----------->" + url);
-                  console.log("khariu   ----------->" + JSON.stringify(khariu));
+                  console.log(
+                    "khariu   ----------->" + JSON.stringify(khariu?.txn),
+                  );
                   if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
                     var guilgeenuud = [];
                     khariu.txn.forEach((mur) => {
