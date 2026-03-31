@@ -1278,9 +1278,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
 
         const endDate = moment().startOf("month");
         const diff = endDate.diff(startDate, "month");
-
+        const end = endDate.clone().endOf("month").toDate();
         let match = {
-          "avlaga.guilgeenuud.ognoo": { $gte: startDate, $lte: endDate },
+          "avlaga.guilgeenuud.ognoo": { $gte: startDate, $lte: end },
           $or: [
             { "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] } },
             {
