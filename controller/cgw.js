@@ -967,6 +967,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
+                  console.log(
+                    "TDB-гийн хуулга татаж байна: дансны дугаар " + dans.dugaar,
+                  );
                   var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
                   var url =
                     process.env.TDB_SERVER +
@@ -979,14 +982,14 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     })
                     .sort({ TxDt: -1 })
                     .limit(1);
-                  if (!!max) {
-                    firstDay = new Date(max.TxDt);
-                  } else firstDay = new Date();
-                  // firstDay = new Date(
-                  //   new Date().getFullYear(),
-                  //   new Date().getMonth(),
-                  //   20,
-                  // );
+                  // if (!!max) {
+                  //   firstDay = new Date(max.TxDt);
+                  // } else firstDay = new Date();
+                  firstDay = new Date(
+                    new Date().getFullYear(),
+                    new Date().getMonth(),
+                    20,
+                  );
                   url =
                     url +
                     "?from=" +
@@ -1006,7 +1009,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     (lastDay.getDate() < 10 ? "0" : "") +
                     lastDay.getDate() +
                     "&page=1&size=100000";
-                  var response;
+                  var response = null;
                   try {
                     response = await axios.get(url, {
                       headers: {
@@ -1022,7 +1025,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       console.log("Error:", err.message);
                     }
                   }
-                  var khariu = response.data;
+                  var khariu = response?.data;
                   if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
                     var guilgeenuud = [];
                     khariu.txn.forEach((mur) => {
