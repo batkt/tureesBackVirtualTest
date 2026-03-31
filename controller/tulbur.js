@@ -1456,7 +1456,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             var uldegdel = geree.uldegdel + umnukhUldegdel - tulsunDun;
             for (const tg of tulsunGereenuud) {
               if (tg._id.id.toString() === geree._id.id.toString()) {
-                tg.tulsun = tg.tulsun - (geree.uldegdel + umnukhUldegdel);
+                var tempTulsunDun =
+                  tg.tulsun - (geree.uldegdel + umnukhUldegdel);
+                tg.tulsun = tempTulsunDun < 0 ? 0 : tempTulsunDun;
               }
             }
             console.log("uldegdel last", uldegdel);
