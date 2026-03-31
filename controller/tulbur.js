@@ -1278,7 +1278,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
 
         const endDate = moment().startOf("month");
         const diff = endDate.diff(startDate, "month");
-        const end = endDate.clone().endOf("month").toDate();
+        const end = moment().endOf("month");
+        console.log("gte --->" + startDate);
+        console.log("lte --->" + end);
         let match = {
           "avlaga.guilgeenuud.ognoo": { $gte: startDate, $lte: end },
           $or: [
@@ -1317,7 +1319,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             },
           },
         ]);
-
+        console.log("tulsunGereenuud --->" + JSON.stringify(tulsunGereenuud));
         let aldangiBodojEkhlekhToo = diff * -1;
 
         for (let offset = aldangiBodojEkhlekhToo; offset <= 0; offset++) {
