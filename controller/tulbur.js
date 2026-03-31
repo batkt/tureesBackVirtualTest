@@ -1279,8 +1279,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         const endDate = moment().startOf("month");
         const diff = endDate.diff(startDate, "month");
         const end = moment().endOf("month");
-        console.log("gte --->" + startDate);
-        console.log("lte --->" + end);
+        console.log("gte --->" + startDate.toDate());
+        console.log("lte --->" + end.toDate());
         let match = {
           "avlaga.guilgeenuud.ognoo": {
             $gte: startDate.toDate(),
