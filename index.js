@@ -115,7 +115,7 @@ app.use(aldaaBarigch);
 
 if (process.env.NODE_APP_INSTANCE === "7") {
   cron.schedule(
-    "*/15 * * * * ",
+    "*/3 * * * * ",
     function () {
       cgw.switchTDBCGW2(null, null, null);
     },
