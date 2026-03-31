@@ -1448,6 +1448,15 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             console.log("tulsunDun ----------->>>", tulsunDun);
             console.log("uldegdel ----------->>>", geree.uldegdel);
             var uldegdel = geree.uldegdel + umnukhUldegdel - tulsunDun;
+            tulsunGereenuud = tulsunGereenuud.map((a) => {
+              if (a._id.id === geree._id.id) {
+                return {
+                  ...a,
+                  tulsun: a.tulsun - (geree.uldegdel + umnukhUldegdel),
+                };
+              }
+              return a;
+            });
             console.log("uldegdel last", uldegdel);
 
             if (uldegdel < 0 || uldegdel < bagaUldegdel) {
