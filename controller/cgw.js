@@ -967,11 +967,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
-                  console.log(
-                    "TDB-гийн хуулга татаж байна: дансны дугаар " + dans.dugaar,
-                  );
-                  console.log("нэвтрэх нэр : " + dans.corporateNevtrekhNer);
-                  console.log("нууц үг : " + dans.corporateNuutsUg);
                   var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
                   var url =
                     process.env.TDB_SERVER +
@@ -1028,11 +1023,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     }
                   }
                   var khariu = response.data;
-                  console.log("token ----------->" + tokenObject.token);
-                  console.log("url   ----------->" + url);
-                  console.log(
-                    "khariu   ----------->" + JSON.stringify(khariu?.txn),
-                  );
                   if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
                     var guilgeenuud = [];
                     khariu.txn.forEach((mur) => {

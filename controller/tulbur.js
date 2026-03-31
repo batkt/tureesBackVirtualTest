@@ -360,11 +360,9 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
       inc["niitTulsunAldangi"] = +guilgee.tulsunAldangi;
     }
     // if (guilgee.gereeniiId) {
-    //   console.log("tooluuriinDugaar", guilgee.tooluuriinDugaar);
     //   var tempGeree = Geree(req.body.tukhainBaaziinKholbolt).findById(
     //     guilgee.gereeniiId,
     //   );
-    //   console.log("talbainIdnuud ---->", tempGeree?.gereeniiDugaar);
     //   if (tempGeree?.talbainIdnuud?.length > 0) {
     //     for (const talbainId of tempGeree.talbainIdnuud) {
     //       var talbaiData = Talbai(req.body.tukhainBaaziinKholbolt).findById(
@@ -374,7 +372,6 @@ exports.gereeniiGuilgeeKhadgalya = asyncHandler(async (req, res, next) => {
     //         guilgee.tooluuriinDugaar = talbaiData.tooluuriinDugaar;
     //     }
     //   }
-    //   console.log("after tooluuriinDugaar", guilgee.tooluuriinDugaar);
     // }
     Geree(req.body.tukhainBaaziinKholbolt)
       .findByIdAndUpdate(
@@ -1279,8 +1276,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         const endDate = moment().startOf("month");
         const diff = endDate.diff(startDate, "month");
         const end = moment().endOf("month");
-        console.log("gte --->" + startDate.toDate());
-        console.log("lte --->" + end.toDate());
         let match = {
           "avlaga.guilgeenuud.ognoo": {
             $gte: startDate.toDate(),
@@ -1321,7 +1316,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             },
           },
         ]);
-        console.log("tulsunGereenuud --->" + JSON.stringify(tulsunGereenuud));
         let aldangiBodojEkhlekhToo = diff * -1;
 
         for (let offset = aldangiBodojEkhlekhToo; offset <= 0; offset++) {
@@ -1442,14 +1436,11 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             var umnukhUldegdel = 0;
             if (songosonGereenuud?.length > 0)
               umnukhUldegdel = songosonGereenuud[0].uldegdel;
-            console.log("umnukhUldegdel ----------->>>", umnukhUldegdel);
 
             var tulsunDun =
               tulsunGereenuud?.find(
                 (a) => a._id.id.toString() === geree._id.id.toString(),
               )?.tulsun || 0;
-            console.log("tulsunDun ----------->>>", tulsunDun);
-            console.log("uldegdel ----------->>>", geree.uldegdel);
             var uldegdel = geree.uldegdel + umnukhUldegdel - tulsunDun;
             for (const tg of tulsunGereenuud) {
               if (tg._id.id.toString() === geree._id.id.toString()) {
@@ -1458,11 +1449,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 tg.tulsun = tempTulsunDun < 0 ? 0 : tempTulsunDun;
               }
             }
-            console.log("uldegdel last", uldegdel);
-            console.log(
-              "tulsunGereenuud last --->" + JSON.stringify(tulsunGereenuud),
-            );
-
             if (uldegdel < 0 || uldegdel < bagaUldegdel) {
               continue;
             }

@@ -3841,7 +3841,6 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
             updateObject["khyamdral"] = 0;
           } else updateObject["tulsunDun"] = 0;
           if (geree._id && geree?.talbainIdnuud?.length > 0) {
-            console.log("tooluuriinDugaar", updateObject.tooluuriinDugaar);
             for (const talbainId of geree.talbainIdnuud) {
               var talbaiData = await Talbai(
                 req.body.tukhainBaaziinKholbolt,
@@ -3849,10 +3848,6 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
               if (talbaiData?.tooluuriinDugaar)
                 updateObject.tooluuriinDugaar = talbaiData.tooluuriinDugaar;
             }
-            console.log(
-              "after tooluuriinDugaar",
-              updateObject.tooluuriinDugaar,
-            );
           }
           tukhainZardal.gereeniiId = geree._id;
           let upsertDoc = {
