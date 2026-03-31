@@ -1440,26 +1440,15 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             var umnukhUldegdel = 0;
             if (songosonGereenuud?.length > 0)
               umnukhUldegdel = songosonGereenuud[0].uldegdel;
-            console.log(
-              "geree",
-              geree._id.id,
-              "umnukhUldegdel",
-              umnukhUldegdel,
-            );
+            console.log("umnukhUldegdel ----------->>>", umnukhUldegdel);
 
             var tulsunDun =
               tulsunGereenuud?.find((a) => a._id.id == geree._id.id)?.tulsun ||
               0;
-            console.log(
-              "uldegdel",
-              geree.uldegdel,
-              "umnukhUldegdel",
-              umnukhUldegdel,
-              "tulsunDun",
-              tulsunDun,
-            );
+            console.log("tulsunDun ----------->>>", tulsunDun);
+            console.log("uldegdel ----------->>>", geree.uldegdel);
             var uldegdel = geree.uldegdel + umnukhUldegdel - tulsunDun;
-            console.log("uldegdel", uldegdel);
+            console.log("uldegdel last", uldegdel);
 
             if (uldegdel < 0 || uldegdel < bagaUldegdel) {
               continue;
