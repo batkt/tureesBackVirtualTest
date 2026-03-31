@@ -1278,7 +1278,50 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
 
         const endDate = moment().startOf("month");
         const diff = endDate.diff(startDate, "month");
-
+        const end = moment().endOf("month");
+        console.log("gte --->" + startDate.toDate());
+        console.log("lte --->" + end.toDate());
+        let match = {
+          "avlaga.guilgeenuud.ognoo": {
+            $gte: startDate.toDate(),
+            $lte: end.toDate(),
+          },
+          $or: [
+            { "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] } },
+            {
+              $and: [
+                { "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] } },
+                { "avlaga.guilgeenuud.tulsunDun": { $gt: 0 } },
+              ],
+            },
+          ],
+        };
+        if (barilga?.tokhirgoo?.aldangiGereeTusBur)
+          match["aldangiinKhuvi"] = { $gt: 0 };
+        const tulsunGereenuud = await Geree(kholbolt, true).aggregate([
+          {
+            $match: {
+              baiguullagiinId: baiguullaga._id.toString(),
+              barilgiinId: barilga._id.toString(),
+              tuluv: { $nin: [-1] },
+              aldangiTsartsaakhEsekh: { $exists: false },
+            },
+          },
+          { $unwind: "$avlaga.guilgeenuud" },
+          { $match: match },
+          {
+            $group: {
+              _id: {
+                id: "$_id",
+                gereeniiDugaar: "$gereeniiDugaar",
+              },
+              tulsun: {
+                $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+              },
+            },
+          },
+        ]);
+        console.log("tulsunGereenuud --->" + JSON.stringify(tulsunGereenuud));
         let aldangiBodojEkhlekhToo = diff * -1;
 
         for (let offset = aldangiBodojEkhlekhToo; offset <= 0; offset++) {
@@ -1288,15 +1331,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
 
           let match = {
             "avlaga.guilgeenuud.ognoo": { $gte: start, $lte: end },
-            $or: [
-              { "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] } },
-              {
-                $and: [
-                  { "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] } },
-                  { "avlaga.guilgeenuud.tulsunDun": { $gt: 0 } },
-                ],
-              },
-            ],
+            "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] },
           };
           if (barilga?.tokhirgoo?.aldangiGereeTusBur)
             match["aldangiinKhuvi"] = { $gt: 0 };
@@ -1328,19 +1363,15 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 khyamdral: {
                   $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
                 },
-                tulsun: {
-                  $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
-                },
               },
             },
             {
               $project: {
                 uldegdel: {
-                  $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }],
+                  $subtract: ["$tulukh", "$khyamdral"],
                 },
               },
             },
-            { $match: { uldegdel: { $gt: bagaUldegdel } } },
           ]);
 
           if (!gereenuud?.length) {
@@ -1411,8 +1442,28 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             var umnukhUldegdel = 0;
             if (songosonGereenuud?.length > 0)
               umnukhUldegdel = songosonGereenuud[0].uldegdel;
-            var uldegdel = geree.uldegdel + umnukhUldegdel;
-            if (uldegdel < 0) {
+            console.log("umnukhUldegdel ----------->>>", umnukhUldegdel);
+
+            var tulsunDun =
+              tulsunGereenuud?.find(
+                (a) => a._id.id.toString() === geree._id.id.toString(),
+              )?.tulsun || 0;
+            console.log("tulsunDun ----------->>>", tulsunDun);
+            console.log("uldegdel ----------->>>", geree.uldegdel);
+            var uldegdel = geree.uldegdel + umnukhUldegdel - tulsunDun;
+            for (const tg of tulsunGereenuud) {
+              if (tg._id.id.toString() === geree._id.id.toString()) {
+                var tempTulsunDun =
+                  tg.tulsun - (geree.uldegdel + umnukhUldegdel);
+                tg.tulsun = tempTulsunDun < 0 ? 0 : tempTulsunDun;
+              }
+            }
+            console.log("uldegdel last", uldegdel);
+            console.log(
+              "tulsunGereenuud last --->" + JSON.stringify(tulsunGereenuud),
+            );
+
+            if (uldegdel < 0 || uldegdel < bagaUldegdel) {
               continue;
             }
             const tulukhUdur = geree._id.tulukhUdur?.[0] || 1;
