@@ -174,16 +174,6 @@ async function udriinTailan({ body }) {
       endDate: collectionEnd.toDate(),
     });
   });
-  const isCurrentMonthIncluded = end.isSame(now, "month");
-  if (isCurrentMonthIncluded) {
-    const currentMonthStart = moment.max(now.clone().startOf("month"), start);
-    const currentMonthEnd = moment.min(now.clone().endOf("month"), end);
-    collectionsToQuery.push({
-      name: null, // null → hits live Uilchluulegch collection
-      startDate: currentMonthStart.toDate(),
-      endDate: currentMonthEnd.toDate(),
-    });
-  }
   // Aggregation function
   const aggregateFromCollection = async (
     collectionName,
@@ -293,15 +283,11 @@ async function udriinTailan({ body }) {
   };
   for (const collection of collectionsToQuery) {
     try {
-      console.log(`name Querying collection: ${collection.name}`);
-      console.log(`startDate Querying collection: ${collection.startDate}`);
-      console.log(`endDate Querying collection: ${collection.endDate}`);
       const result = await aggregateFromCollection(
         collection.name,
         collection.startDate,
         collection.endDate,
       );
-      console.log("Result from collection :", JSON.stringify(result.tulburtei));
       allResults.udriinTailan.push(...result.udriinTailan);
       allResults.zurchiltei.push(...result.zurchiltei);
       allResults.tulburtei.push(...result.tulburtei);
