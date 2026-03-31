@@ -1282,7 +1282,10 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         console.log("gte --->" + startDate);
         console.log("lte --->" + end);
         let match = {
-          "avlaga.guilgeenuud.ognoo": { $gte: startDate, $lte: end },
+          "avlaga.guilgeenuud.ognoo": {
+            $gte: startDate.toDate(),
+            $lte: end.toDate(),
+          },
           $or: [
             { "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] } },
             {
