@@ -1454,16 +1454,15 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             console.log("tulsunDun ----------->>>", tulsunDun);
             console.log("uldegdel ----------->>>", geree.uldegdel);
             var uldegdel = geree.uldegdel + umnukhUldegdel - tulsunDun;
-            tulsunGereenuud = tulsunGereenuud.map((a) => {
-              if (a._id.id === geree._id.id) {
-                return {
-                  ...a,
-                  tulsun: a.tulsun - (geree.uldegdel + umnukhUldegdel),
-                };
+            for (const tg of tulsunGereenuud) {
+              if (tg._id.id.toString() === geree._id.id.toString()) {
+                tg.tulsun = tg.tulsun - (geree.uldegdel + umnukhUldegdel);
               }
-              return a;
-            });
+            }
             console.log("uldegdel last", uldegdel);
+            console.log(
+              "tulsunGereenuud last --->" + JSON.stringify(tulsunGereenuud),
+            );
 
             if (uldegdel < 0 || uldegdel < bagaUldegdel) {
               continue;
