@@ -41,6 +41,10 @@ exports.orlogoGaraas = async (req, res, next) => {
 exports.tulburTulye = async (req, res, next) => {
   try {
     const response = await uilchluulegchService.tulburTulye(req.body);
+    const io = req.app.get("socketio");
+    if (io && req.body.tulbur && req.body.tulbur.length > 0) {
+      io.emit("zogsool" + req.body.tulbur[0].baiguullagiinId, req.body);
+    }
     res.status(200).send(response);
   } catch (err) {
     next(err);
