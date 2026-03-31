@@ -313,7 +313,7 @@ exports.tulburTulye = async (body) => {
   await Uilchluulegch(body.tukhainBaaziinKholbolt).updateOne(
     {
       _id: body.id,
-      "tuukh.zogsooliinId": guilgeenuud[0].zogsooliinId,
+      tuukh: { $elemMatch: { zogsooliinId: guilgeenuud[0].zogsooliinId } },
     },
     {
       $set: {
