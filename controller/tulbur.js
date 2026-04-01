@@ -1482,6 +1482,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   tg.tulsun = tempTulsunDun < 0 ? 0 : tempTulsunDun;
                 }
               }
+              console.log("tulsunDun: ", tulsunDun);
+              console.log("uldegdel: ", uldegdel);
               if (uldegdel < 0 || uldegdel < bagaUldegdel) {
                 continue;
               }
@@ -1492,7 +1494,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 month: targetMonth.month(),
                 day: tulukhUdur,
               });
-
+              console.log("aldangiEhlehOgnoo: ", aldangiEhlehOgnoo);
               const aldangiChuluulukhOgnoo = aldangiEhlehOgnoo
                 .clone()
                 .add(aldangiChuluulukhKhonog, "days");
