@@ -1269,7 +1269,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               barilgiinId: barilga._id.toString(),
               tuluv: { $nin: [-1] },
               aldangiTsartsaakhEsekh: { $exists: false },
-              gereeniiDugaar: "ТГ/F3/D34",
             },
           },
           {
