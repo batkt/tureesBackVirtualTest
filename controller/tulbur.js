@@ -1509,6 +1509,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 const bodogdsonKhuu = tooZasyaSync(
                   (uldegdel * aldangiinKhuvi) / 100,
                 );
+                console.log("bodogdsonKhuu: ", bodogdsonKhuu);
                 const data = await Geree(kholbolt, true).findById(geree._id.id);
                 bulkOps.push({
                   updateOne: {
