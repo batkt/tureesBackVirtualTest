@@ -1256,9 +1256,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
       const aldangiinTuukh = [];
 
       for (const barilga of baiguullaga.barilguud) {
-        let aldangiinKhuvi = barilga.tokhirgoo.aldangiinKhuvi || 0;
+        let aldangiinKhuvi = barilga.tokhirgoo?.aldangiinKhuvi || 0;
         let aldangiChuluulukhKhonog =
-          barilga.tokhirgoo.aldangiChuluulukhKhonog || 0;
+          barilga.tokhirgoo?.aldangiChuluulukhKhonog || 0;
         let aldangiBodojEkhlekhOgnoo = barilga?.tokhirgoo?.aldangiOgnoo
           ? barilga?.tokhirgoo?.aldangiOgnoo
           : null;
@@ -1539,7 +1539,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                     ognoo: aldangiEhlehOgnoo,
                     uldegdel: uldegdel,
                     aldangiChuluulukhOgnoo: aldangiChuluulukhOgnoo,
-                    aldangiBodsonOgnoo: new Date(), //  moment().subtract(1, "days"),
+                    aldangiBodsonOgnoo: new Date(),
                     aldangiinKhuvi: aldangiinKhuvi,
                     aldangiChuluulukhKhonog: aldangiChuluulukhKhonog,
                     aldangi: bodogdsonKhuu,
