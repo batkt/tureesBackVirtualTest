@@ -1560,7 +1560,9 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
       if (aldangiinTuukh.length > 0)
         await AldangiinTuukh(kholbolt).insertMany(aldangiinTuukh);
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log("aldangiBodyo --->" + err);
+  }
 };
 
 function getFifoAvlaguud(geree, amount) {
