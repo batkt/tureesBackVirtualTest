@@ -1501,6 +1501,10 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               const aldangiChuluulukhOgnoo = aldangiEhlehOgnoo
                 .clone()
                 .add(aldangiChuluulukhKhonog, "days");
+              console.log(
+                "Is after: ",
+                moment().isAfter(aldangiChuluulukhOgnoo),
+              );
               if (moment().isAfter(aldangiChuluulukhOgnoo)) {
                 const bodogdsonKhuu = tooZasyaSync(
                   (uldegdel * aldangiinKhuvi) / 100,
