@@ -1287,6 +1287,7 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         ]);
 
         for (const gereeData of niitGereenuud) {
+          console.log("gereeniiDugaar: ", gereeData._id.gereeniiDugaar);
           if (barilga?.tokhirgoo?.aldangiGereeTusBur) {
             aldangiinKhuvi = gereeData._id.aldangiinKhuvi || 0;
             aldangiChuluulukhKhonog =
@@ -1402,6 +1403,11 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             if (!gereenuud?.length) {
               continue;
             }
+            console.log(
+              "aldangiGereeTusBur: ",
+              barilga?.tokhirgoo?.aldangiGereeTusBur,
+            );
+            console.log("gereenuud: ", JSON.stringify(gereenuud));
             for (const geree of gereenuud) {
               match = {
                 "avlaga.guilgeenuud.ognoo": { $lt: start },
