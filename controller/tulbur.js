@@ -1354,7 +1354,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             const targetMonth = moment().add(offset, "month");
             const start = targetMonth.clone().startOf("month").toDate();
             const end = targetMonth.clone().endOf("month").toDate();
-
+            console.log("start: ", start);
+            console.log("end: ", end);
             let match = {
               "avlaga.guilgeenuud.ognoo": { $gte: start, $lte: end },
               "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] },
@@ -1469,6 +1470,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               var umnukhUldegdel = 0;
               if (songosonGereenuud?.length > 0)
                 umnukhUldegdel = songosonGereenuud[0].uldegdel;
+              console.log("umnukhUldegdel: ", umnukhUldegdel);
+              console.log("geree.uldegdel: ", geree.uldegdel);
 
               var tulsunDun =
                 tulsunGereenuud?.find(
