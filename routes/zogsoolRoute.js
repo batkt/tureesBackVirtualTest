@@ -159,19 +159,26 @@ router.get(
   "/mashiniiDugaaruud/:mashiniiId",
   tokenShalgakh,
   (req, res, next) => {
-    const mashinData = Mashin(req.body.tukhainBaaziinKholbolt).findById(
-      req.params.mashiniiId,
-    );
-    var result = [];
-    if (mashinData?.mashinuud?.length > 0) {
-      for (const dugaar of mashinData.mashinuud) {
-        result.push({ mashiniiDugaar: dugaar, khugatsaa: 0 });
-      }
-    }
-    console.log("mashinuud ------>" + JSON.stringify(mashinData?.mashinuud));
-    console.log("mashinuud ------>" + JSON.stringify(mashinData?.dugaar));
-    console.log("mashiniiId ------>" + req.params.mashiniiId);
-    res.send(result);
+    Mashin(req.body.tukhainBaaziinKholbolt, true)
+      .findById(req.params.mashiniiId)
+      .select("mashinuud")
+      .then((mashinData) => {
+        var result = [];
+        if (mashinData?.mashinuud?.length > 0) {
+          for (const dugaar of mashinData.mashinuud) {
+            result.push({ mashiniiDugaar: dugaar, khugatsaa: 0 });
+          }
+        }
+        console.log(
+          "mashinuud ------>" + JSON.stringify(mashinData?.mashinuud),
+        );
+        console.log("mashinuud ------>" + JSON.stringify(mashinData?.dugaar));
+        console.log("mashiniiId ------>" + req.params.mashiniiId);
+        res.send(result);
+      })
+      .catch((err) => {
+        next(err);
+      });
   },
 );
 
