@@ -69,7 +69,7 @@ router.get("/zogsooloosTatya", async (req, res, next) => {
         const response = await instanceJson.post(url, { body: objectString });
       }
       res.send("Amjilttai");
-    }
+    },
   );
 });
 
@@ -156,5 +156,17 @@ router.post("/zogsooliinTooAvya", tokenShalgakh, async (req, res, next) => {
       next(err);
     });
 });
+
+router.get(
+  "/mashiniiDugaaruud/:mashiniiId",
+  tokenShalgakh,
+  (req, res, next) => {
+    console.log("mashiniiId ------>" + req.params.mashiniiId);
+    res.send([
+      { mashiniiDugaar: "AAA1111", khugatsaa: 120 },
+      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
+    ]);
+  },
+);
 
 module.exports = router;
