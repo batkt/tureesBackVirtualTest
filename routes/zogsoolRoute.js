@@ -169,6 +169,7 @@ router.get(
       }
     }
     console.log("mashinuud ------>" + JSON.stringify(mashinData?.mashinuud));
+    console.log("mashinuud ------>" + JSON.stringify(mashinData?.dugaar));
     console.log("mashiniiId ------>" + req.params.mashiniiId);
     res.send(result);
   },
