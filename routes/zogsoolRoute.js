@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
-const { Uilchluulegch } = require("parking-v2");
+const { Mashin } = require("parking-v2");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { Pool } = require("pg");
 const Zogsool = require("../models/zogsool");
-const Mashin = require("../models/mashin");
 const got = require("got");
 const { URL } = require("url");
 const instanceJson = got.extend({
@@ -25,7 +24,6 @@ const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
 
 crud(router, "zogsool", Zogsool, UstsanBarimt);
-// crud(router, "mashin", Mashin, UstsanBarimt);
 const {
   mashiniiExcelAvya,
   mashiniiExcelTatya,
@@ -161,51 +159,17 @@ router.get(
   "/mashiniiDugaaruud/:mashiniiId",
   tokenShalgakh,
   (req, res, next) => {
+    const mashinData = Mashin(req.body.tukhainBaaziinKholbolt).findById(
+      req.params.mashiniiId,
+    );
+    var result = [];
+    if (mashinData?.mashinuud?.length > 0) {
+      for (const dugaar of mashinData.mashinuud) {
+        result.push({ mashiniiDugaar: dugaar, khugatsaa: 0 });
+      }
+    }
     console.log("mashiniiId ------>" + req.params.mashiniiId);
-    res.send([
-      { mashiniiDugaar: "AAA1111", khugatsaa: 120 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-      { mashiniiDugaar: "BBB2222", khugatsaa: 180 },
-    ]);
+    res.send(result);
   },
 );
 
