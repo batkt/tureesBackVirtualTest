@@ -168,6 +168,7 @@ router.get(
         result.push({ mashiniiDugaar: dugaar, khugatsaa: 0 });
       }
     }
+    console.log("mashinuud ------>" + JSON.stringify(mashinData?.mashinuud));
     console.log("mashiniiId ------>" + req.params.mashiniiId);
     res.send(result);
   },
