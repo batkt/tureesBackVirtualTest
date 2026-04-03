@@ -158,65 +158,62 @@ router.post("/zogsooliinTooAvya", tokenShalgakh, async (req, res, next) => {
 router.get(
   "/mashiniiDugaaruud/:mashiniiId",
   tokenShalgakh,
-  (req, res, next) => {
-    const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
-    console.log("startOgnoo --->" + startOgnoo);
-    console.log("endOgnoo --->" + endOgnoo);
-    Mashin(req.body.tukhainBaaziinKholbolt, true)
-      .findById(req.params.mashiniiId)
-      .select("mashinuud")
-      .then((mashinData) => {
-        console.log("dugaar --->" + req.body.baiguullagiinId);
-        var result = [];
-        if (mashinData?.mashinuud?.length > 0) {
-          for (const dugaar of mashinData.mashinuud) {
-            var match = {
-              baiguullagiinId: req.body.baiguullagiinId,
-              turul: "Байгууллага",
-              mashiniiDugaar: dugaar,
-              "tuukh.0.tsagiinTuukh.0.garsanTsag": {
-                $gte: startOgnoo,
-                $lte: endOgnoo,
+  async (req, res, next) => {
+    // ✅ async added
+    try {
+      const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
+      console.log("startOgnoo --->" + startOgnoo);
+      console.log("endOgnoo --->" + endOgnoo);
+
+      const mashinData = await Mashin(req.body.tukhainBaaziinKholbolt, true)
+        .findById(req.params.mashiniiId)
+        .select("mashinuud");
+
+      console.log("dugaar --->" + req.body.baiguullagiinId);
+
+      var result = [];
+
+      if (mashinData?.mashinuud?.length > 0) {
+        for (const dugaar of mashinData.mashinuud) {
+          var match = {
+            // ✅ kept for clarity
+            baiguullagiinId: req.body.baiguullagiinId,
+            turul: "Байгууллага",
+            mashiniiDugaar: dugaar,
+            "tuukh.tsagiinTuukh.garsanTsag": {
+              // ✅ correct nested path after $unwind
+              $gte: new Date(startOgnoo),
+              $lte: new Date(endOgnoo),
+            },
+          };
+
+          var khugatsaa = await Uilchluulegch(
+            req.body.tukhainBaaziinKholbolt,
+            true,
+          ).aggregate([
+            { $unwind: "$tuukh" },
+            { $unwind: "$tuukh.tsagiinTuukh" },
+            { $match: match }, // ✅ use dynamic match variable
+            {
+              $group: {
+                _id: "$mashiniiDugaar",
+                khugatsaa: { $sum: "$tuukh.niitKhugatsaa" }, // ✅ fix field path after $unwind
               },
-            };
-            var khugatsaa = Uilchluulegch(
-              req.body.tukhainBaaziinKholbolt,
-              true,
-            ).aggregate([
-              { $unwind: "$tuukh" },
-              { $unwind: "$tuukh.tsagiinTuukh" },
-              {
-                $match: {
-                  baiguullagiinId: "695c57511a8a4aebc1d65b02",
-                  turul: "Байгууллага",
-                  mashiniiDugaar: "8712ЫЫЫ",
-                  "tuukh.tsagiinTuukh.garsanTsag": {
-                    $gte: new Date("2026-03-01T00:00:00"),
-                    $lte: new Date("2026-03-31T23:59:59"),
-                  },
-                },
-              },
-              {
-                $group: {
-                  _id: "$mashiniiDugaar",
-                  khugatsaa: { $sum: "$niitKhugatsaa" },
-                },
-              },
-            ]);
-            console.log("khugatsaa --->" + JSON.stringify(khugatsaa));
-            result.push({
-              mashiniiDugaar: dugaar,
-              khugatsaa:
-                khugatsaa?.length > 0 ? khugatsaa[0].khugatsaa || 0 : 0,
-            });
-          }
+            },
+          ]);
+
+          console.log("khugatsaa --->" + JSON.stringify(khugatsaa));
+          result.push({
+            mashiniiDugaar: dugaar,
+            khugatsaa: khugatsaa?.length > 0 ? khugatsaa[0].khugatsaa || 0 : 0,
+          });
         }
-        res.send(result);
-      })
-      .catch((err) => {
-        next(err);
-      });
+      }
+
+      res.send(result);
+    } catch (err) {
+      next(err);
+    }
   },
 );
-
 module.exports = router;
