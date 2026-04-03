@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { tokenShalgakh, crud, UstsanBarimt } = require("zevbackv2");
-const { Mashin } = require("parking-v2");
+const { Mashin, Uilchluulegch } = require("parking-v2");
 //const UstsanBarimt = require("../models/ustsanBarimt");
 const { Pool } = require("pg");
 const Zogsool = require("../models/zogsool");
@@ -159,21 +159,53 @@ router.get(
   "/mashiniiDugaaruud/:mashiniiId",
   tokenShalgakh,
   (req, res, next) => {
+    const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
+    console.log("startOgnoo --->" + startOgnoo);
+    console.log("endOgnoo --->" + endOgnoo);
     Mashin(req.body.tukhainBaaziinKholbolt, true)
       .findById(req.params.mashiniiId)
       .select("mashinuud")
       .then((mashinData) => {
+        console.log("dugaar --->" + req.body.baiguullagiinId);
         var result = [];
         if (mashinData?.mashinuud?.length > 0) {
           for (const dugaar of mashinData.mashinuud) {
-            result.push({ mashiniiDugaar: dugaar, khugatsaa: 0 });
+            var match = {
+              baiguullagiinId: req.body.baiguullagiinId,
+              turul: "Байгууллага",
+              mashiniiDugaar: dugaar,
+              "tuukh.0.tsagiinTuukh.0.garsanTsag": {
+                $gte: startOgnoo,
+                $lte: endOgnoo,
+              },
+            };
+            var khugatsaa = Uilchluulegch(
+              req.body.tukhainBaaziinKholbolt,
+              true,
+            ).aggregate([
+              {
+                $unwind: "$tuukh",
+              },
+              {
+                $match: match,
+              },
+              {
+                $group: {
+                  _id: "$mashiniiDugaar",
+                  khugatsaa: {
+                    $sum: "$niitKhugatsaa",
+                  },
+                },
+              },
+            ]);
+            console.log("khugatsaa --->" + JSON.stringify(khugatsaa));
+            result.push({
+              mashiniiDugaar: dugaar,
+              khugatsaa:
+                khugatsaa?.length > 0 ? khugatsaa[0].khugatsaa || 0 : 0,
+            });
           }
         }
-        console.log(
-          "mashinuud ------>" + JSON.stringify(mashinData?.mashinuud),
-        );
-        console.log("mashinuud ------>" + JSON.stringify(mashinData?.dugaar));
-        console.log("mashiniiId ------>" + req.params.mashiniiId);
         res.send(result);
       })
       .catch((err) => {
