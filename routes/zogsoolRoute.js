@@ -183,18 +183,23 @@ router.get(
               req.body.tukhainBaaziinKholbolt,
               true,
             ).aggregate([
+              { $unwind: "$tuukh" },
+              { $unwind: "$tuukh.tsagiinTuukh" },
               {
-                $unwind: "$tuukh",
-              },
-              {
-                $match: match,
+                $match: {
+                  baiguullagiinId: "695c57511a8a4aebc1d65b02",
+                  turul: "Байгууллага",
+                  mashiniiDugaar: "8712ЫЫЫ",
+                  "tuukh.tsagiinTuukh.garsanTsag": {
+                    $gte: new Date("2026-03-01T00:00:00"),
+                    $lte: new Date("2026-03-31T23:59:59"),
+                  },
+                },
               },
               {
                 $group: {
                   _id: "$mashiniiDugaar",
-                  khugatsaa: {
-                    $sum: "$niitKhugatsaa",
-                  },
+                  khugatsaa: { $sum: "$niitKhugatsaa" },
                 },
               },
             ]);
