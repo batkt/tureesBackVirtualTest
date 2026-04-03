@@ -23,6 +23,7 @@ const multer = require("multer");
 const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
 const moment = require("moment");
+const mongoose = require("mongoose");
 
 crud(router, "zogsool", Zogsool, UstsanBarimt);
 const {
@@ -209,7 +210,7 @@ router.get(
             baiguullagiinId: req.body.baiguullagiinId,
             turul: "Байгууллага",
             mashiniiDugaar: dugaar,
-            //"mashin._id": req.params.mashiniiId,
+            "mashin._id": new mongoose.Types.ObjectId(req.params.mashiniiId),
           };
 
           let totalKhugatsaa = 0;
