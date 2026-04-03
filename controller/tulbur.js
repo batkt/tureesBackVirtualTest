@@ -507,8 +507,8 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                 ) {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
-                  if (zardal.turul == "1м3/талбай")
-                    zardal.dun = tooZasyaSync(zardal.tariff * body.metrKube);
+                  if (zardal.turul == "1м3/талбай" || zardal.turul == "1м3")
+                    zardal.dun = tooZasyaSync(zardal.tariff * (body.metrKube || 0));
                   if (
                     zardal.turul == "Тогтмол" ||
                     (zardal.ner?.includes("Цахилгаан") &&
