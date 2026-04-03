@@ -176,28 +176,30 @@ router.get(
       if (mashinData?.mashinuud?.length > 0) {
         for (const dugaar of mashinData.mashinuud) {
           var match = {
-            // ✅ kept for clarity
             baiguullagiinId: req.body.baiguullagiinId,
             turul: "Байгууллага",
             mashiniiDugaar: dugaar,
-            "tuukh.tsagiinTuukh.garsanTsag": {
-              // ✅ correct nested path after $unwind
-              $gte: new Date(startOgnoo),
-              $lte: new Date(endOgnoo),
-            },
           };
 
           var khugatsaa = await Uilchluulegch(
             req.body.tukhainBaaziinKholbolt,
             true,
           ).aggregate([
+            { $match: match },
             { $unwind: "$tuukh" },
             { $unwind: "$tuukh.tsagiinTuukh" },
-            { $match: match }, // ✅ use dynamic match variable
+            {
+              $match: {
+                "tuukh.tsagiinTuukh.garsanTsag": {
+                  $gte: startOgnoo,
+                  $lte: endOgnoo,
+                },
+              },
+            },
             {
               $group: {
                 _id: "$mashiniiDugaar",
-                khugatsaa: { $sum: "$tuukh.niitKhugatsaa" }, // ✅ fix field path after $unwind
+                khugatsaa: { $sum: "$tuukh.niitKhugatsaa" },
               },
             },
           ]);
