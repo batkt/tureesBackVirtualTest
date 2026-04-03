@@ -159,55 +159,96 @@ router.get(
   "/mashiniiDugaaruud/:mashiniiId",
   tokenShalgakh,
   async (req, res, next) => {
-    // ✅ async added
     try {
-      const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
-      console.log("startOgnoo --->" + startOgnoo);
-      console.log("endOgnoo --->" + endOgnoo);
+      const { endOgnoo: endRaw, startOgnoo: startRaw } = req.query.shineOgnoo
+        ? JSON.parse(req.query.shineOgnoo)
+        : {
+            startOgnoo: moment().startOf("month").toISOString(),
+            endOgnoo: moment().endOf("month").toISOString(),
+          };
+      const startOgnoo = new Date(startRaw);
+      const endOgnoo = new Date(endRaw);
+      const getCollectionNames = (start, end) => {
+        const names = [];
+        const now = new Date();
+        const current = new Date(start.getFullYear(), start.getMonth(), 1);
+        const last = new Date(end.getFullYear(), end.getMonth(), 1);
+
+        while (current <= last) {
+          const y = current.getFullYear();
+          const m = current.getMonth() + 1;
+          const isCurrentMonth =
+            y === now.getFullYear() && m === now.getMonth() + 1;
+
+          names.push(
+            isCurrentMonth
+              ? "Uilchluulegch"
+              : `Uilchluulegch${y}${String(m).padStart(2, "0")}`,
+          );
+
+          current.setMonth(current.getMonth() + 1); // ➡️ дараагийн сар
+        }
+
+        return names;
+      };
+
+      const collectionNames = getCollectionNames(startOgnoo, endOgnoo);
+      console.log("collectionNames --->", collectionNames);
+      // ["Uilchluulegch202602", "Uilchluulegch202603", "Uilchluulegch202604", "Uilchluulegch"]
 
       const mashinData = await Mashin(req.body.tukhainBaaziinKholbolt, true)
         .findById(req.params.mashiniiId)
         .select("mashinuud");
 
-      console.log("dugaar --->" + req.body.baiguullagiinId);
-
-      var result = [];
+      const result = [];
 
       if (mashinData?.mashinuud?.length > 0) {
         for (const dugaar of mashinData.mashinuud) {
-          var match = {
+          const match = {
             baiguullagiinId: req.body.baiguullagiinId,
             turul: "Байгууллага",
             mashiniiDugaar: dugaar,
+            "mashin._id": req.params.mashiniiId,
           };
 
-          var khugatsaa = await Uilchluulegch(
-            req.body.tukhainBaaziinKholbolt,
-            true,
-          ).aggregate([
-            { $match: match },
-            { $unwind: "$tuukh" },
-            { $unwind: "$tuukh.tsagiinTuukh" },
-            {
-              $match: {
-                "tuukh.tsagiinTuukh.garsanTsag": {
-                  $gte: startOgnoo,
-                  $lte: endOgnoo,
+          let totalKhugatsaa = 0;
+          for (const collName of collectionNames) {
+            const khugatsaa = await Uilchluulegch(
+              req.body.tukhainBaaziinKholbolt,
+              true,
+              collName,
+            ).aggregate([
+              { $match: match },
+              { $unwind: "$tuukh" },
+              { $unwind: "$tuukh.tsagiinTuukh" },
+              {
+                $match: {
+                  "tuukh.tsagiinTuukh.garsanTsag": {
+                    $gte: startOgnoo,
+                    $lte: endOgnoo,
+                  },
                 },
               },
-            },
-            {
-              $group: {
-                _id: "$mashiniiDugaar",
-                khugatsaa: { $sum: "$tuukh.niitKhugatsaa" },
+              {
+                $group: {
+                  _id: "$mashiniiDugaar",
+                  khugatsaa: { $sum: "$tuukh.niitKhugatsaa" },
+                },
               },
-            },
-          ]);
+            ]);
 
-          console.log("khugatsaa --->" + JSON.stringify(khugatsaa));
+            console.log(
+              `[${collName}] khugatsaa --->`,
+              JSON.stringify(khugatsaa),
+            );
+            if (khugatsaa?.length > 0) {
+              totalKhugatsaa += khugatsaa[0].khugatsaa || 0;
+            }
+          }
+
           result.push({
             mashiniiDugaar: dugaar,
-            khugatsaa: khugatsaa?.length > 0 ? khugatsaa[0].khugatsaa || 0 : 0,
+            khugatsaa: totalKhugatsaa,
           });
         }
       }
