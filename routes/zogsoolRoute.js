@@ -209,7 +209,7 @@ router.get(
             baiguullagiinId: req.body.baiguullagiinId,
             turul: "Байгууллага",
             mashiniiDugaar: dugaar,
-            "mashin._id": req.params.mashiniiId,
+            //"mashin._id": req.params.mashiniiId,
           };
 
           let totalKhugatsaa = 0;
