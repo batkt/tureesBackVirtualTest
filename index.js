@@ -152,6 +152,16 @@ if (process.env.NODE_APP_INSTANCE === "6") {
 
 if (process.env.NODE_APP_INSTANCE === "5") {
   cron.schedule(
+    "*/6 * * * * * ",
+    function () {
+      cgw.dotorZogsoolDavhkardsanMashin(null, null, null);
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Ulaanbaatar",
+    },
+  );
+  cron.schedule(
     "30 9 * * * ",
     function () {
       ajiltanController.orlogiinMsgIlgeeye("09:30");
