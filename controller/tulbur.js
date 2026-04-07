@@ -2175,7 +2175,9 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
             guilgeeKhiisenAjiltniiId: req.body.nevtersenAjiltniiToken?.id,
           };
           khyamdraluud.push(khyamdral);
-        } else
+        } else {
+          var sariinKhyamdral =
+            khungulultiinDun / (khungulult.ognoonuud?.length || 1);
           for (const ognoo of khungulult.ognoonuud) {
             var filterGuilgeenuud = geree.avlaga?.guilgeenuud.filter(
               (a) =>
@@ -2188,7 +2190,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
                 tulukhDun: 0,
                 ognoo: filterGuilgeenuud[0].ognoo,
                 turul: "khungulult",
-                khyamdral: khungulultiinDun,
+                khyamdral: sariinKhyamdral,
                 nemeltTailbar: khungulult.shaltgaan,
                 tailbar: req.body.tailbar,
                 khyamdraliinId: khariu._id,
@@ -2199,6 +2201,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
               khyamdraluud.push(khyamdral);
             }
           }
+        }
         await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
           { _id: geree._id },
           { $push: { "avlaga.guilgeenuud": { $each: khyamdraluud } } },
