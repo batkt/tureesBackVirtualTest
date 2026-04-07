@@ -823,10 +823,10 @@ async function ebarimtShivye(req, res, next) {
 
       if (!guilgee) {
         const now = new Date();
-        const archiveBeforeDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        const archiveBeforeDate = new Date(now.getTime());
         archiveBeforeDate.setHours(0, 0, 0, 0);
         const y = archiveBeforeDate.getFullYear();
-        const m = archiveBeforeDate.getMonth() + 1;
+        const m = archiveBeforeDate.getMonth() - 1;
         const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
         console.log("archiveName ---------->>>" + archiveName);
         guilgee = await BankniiGuilgee(
