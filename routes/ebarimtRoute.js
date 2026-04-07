@@ -822,7 +822,29 @@ async function ebarimtShivye(req, res, next) {
       );
 
       if (!guilgee) {
-        throw new aldaa("Ибаримт хэвлэж байна, түр хүлээнэ үү!");
+        const now = new Date();
+        const archiveBeforeDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        archiveBeforeDate.setHours(0, 0, 0, 0);
+        const y = archiveBeforeDate.getFullYear();
+        const m = archiveBeforeDate.getMonth() + 1;
+        const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+        console.log("archiveName ---------->>>" + archiveName);
+        guilgee = await BankniiGuilgee(
+          req.body.tukhainBaaziinKholbolt,
+          true,
+          archiveName,
+        ).findOneAndUpdate(
+          {
+            _id: req.body.id,
+            $or: [
+              { ebarimtProcessing: { $exists: false } },
+              { ebarimtProcessing: false },
+            ],
+          },
+          { ebarimtProcessing: true },
+          { new: true },
+        );
+        if (!guilgee) throw new aldaa("Ибаримт хэвлэж байна, түр хүлээнэ үү!");
       }
 
       if (guilgee.ebarimtAvsanEsekh) {
@@ -955,8 +977,7 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
       (e) => e._id.toString() == req.body?.barilgiinId,
     )?.tokhirgoo;
     if (!!tuxainSalbar.eBarimtShine) ebarimtShine = true;
-    if (!!ebarimtShine)
-    {
+    if (!!ebarimtShine) {
       var odooOgnoo = new Date();
       odooOgnoo.setHours(0, 0, 0, 0);
       const archiveBeforeDate = new Date(req.body.createdAt);
@@ -964,11 +985,15 @@ router.post("/ebarimtButsaaya", tokenShalgakh, async (req, res, next) => {
       const y = archiveBeforeDate.getFullYear();
       const m = archiveBeforeDate.getMonth() + 1;
       const archiveName = `ebarimtShine${y}${String(m).padStart(2, "0")}`;
-      butsaakhBarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt, (odooOgnoo > archiveBeforeDate ? archiveName : "ebarimtShine")).findById(req.body._id);
-      if(!butsaakhBarimt)
-        butsaakhBarimt = await EbarimtShine(req.body.tukhainBaaziinKholbolt).findById(req.body._id);
-    }
-    else {
+      butsaakhBarimt = await EbarimtShine(
+        req.body.tukhainBaaziinKholbolt,
+        odooOgnoo > archiveBeforeDate ? archiveName : "ebarimtShine",
+      ).findById(req.body._id);
+      if (!butsaakhBarimt)
+        butsaakhBarimt = await EbarimtShine(
+          req.body.tukhainBaaziinKholbolt,
+        ).findById(req.body._id);
+    } else {
       butsaakhBarimt = new Ebarimt(req.body.tukhainBaaziinKholbolt)(req.body);
       butsaakhBarimt.returnBillId = butsaakhBarimt.billId;
     }
