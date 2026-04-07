@@ -826,7 +826,7 @@ async function ebarimtShivye(req, res, next) {
         const archiveBeforeDate = new Date(now.getTime());
         archiveBeforeDate.setHours(0, 0, 0, 0);
         const y = archiveBeforeDate.getFullYear();
-        const m = archiveBeforeDate.getMonth() - 1;
+        const m = archiveBeforeDate.getMonth();
         const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
         console.log("archiveName ---------->>>" + archiveName);
         guilgee = await BankniiGuilgee(
