@@ -820,15 +820,14 @@ async function ebarimtShivye(req, res, next) {
         { ebarimtProcessing: true },
         { new: true },
       );
-
+      const now = new Date();
+      const archiveBeforeDate = new Date(now.getTime());
+      archiveBeforeDate.setHours(0, 0, 0, 0);
+      const y = archiveBeforeDate.getFullYear();
+      const m = archiveBeforeDate.getMonth();
+      const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
+      console.log("archiveName ---------->>>" + archiveName);
       if (!guilgee) {
-        const now = new Date();
-        const archiveBeforeDate = new Date(now.getTime());
-        archiveBeforeDate.setHours(0, 0, 0, 0);
-        const y = archiveBeforeDate.getFullYear();
-        const m = archiveBeforeDate.getMonth();
-        const archiveName = `bankniiGuilgee${y}${String(m).padStart(2, "0")}`;
-        console.log("archiveName ---------->>>" + archiveName);
         guilgee = await BankniiGuilgee(
           req.body.tukhainBaaziinKholbolt,
           true,
@@ -901,6 +900,16 @@ async function ebarimtShivye(req, res, next) {
             .catch((err) => {
               next(err);
             });
+          BankniiGuilgee(req.body.tukhainBaaziinKholbolt, false, archiveName)
+            .findByIdAndUpdate(
+              { _id: req.body.id },
+              { ebarimtAvsanEsekh: true, ebarimtProcessing: false },
+            )
+            .then((xariu) => {})
+            .catch((err) => {
+              next(err);
+            });
+
           res.send(d);
         } catch (err) {
           BankniiGuilgee(req.body.tukhainBaaziinKholbolt)
