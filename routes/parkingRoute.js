@@ -198,6 +198,6 @@ router.post(
   tokenShalgakh,
   mashinController.mashiniiDugaarZaiArilgakh,
 );
-router.post("/niitCameruud", tokenShalgakh, parkingController.niitCameruud);
+router.post("/niitCameruud", parkingController.niitCameruud);
 
 module.exports = router;
