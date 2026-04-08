@@ -1,23 +1,25 @@
+const { Parking, Mashin, BlockMashin } = require("parking-v2");
 const {
-    Parking,
-    Mashin,
-    BlockMashin,
-} = require("parking-v2");
-const { getParkingFind, getDotorZogsoolById, getAggregateUilchluulegch } = require("../middlewares/parkingMiddle");
+  getParkingFind,
+  getDotorZogsoolById,
+  getAggregateUilchluulegch,
+} = require("../middlewares/parkingMiddle");
 const { db } = require("zevbackv2");
 
 async function getCameraIPsByBarilgiinId(req, barilgiinId) {
-    if (!barilgiinId) throw new Error("BarilgiinId baihgui bn");
-    const result = await Parking(req.body.tukhainBaaziinKholbolt).find({ barilgiinId });
-    const yavuulakhIp = [];
-    result.forEach((zogsool) => {
-        zogsool.khaalga.forEach((khaalga) => {
-        khaalga.camera.forEach((cameraIp) => {
-            yavuulakhIp.push(cameraIp.cameraIP);
-        });
-        });
+  if (!barilgiinId) throw new Error("BarilgiinId baihgui bn");
+  const result = await Parking(req.body.tukhainBaaziinKholbolt).find({
+    barilgiinId,
+  });
+  const yavuulakhIp = [];
+  result.forEach((zogsool) => {
+    zogsool.khaalga.forEach((khaalga) => {
+      khaalga.camera.forEach((cameraIp) => {
+        yavuulakhIp.push(cameraIp.cameraIP);
+      });
     });
-    return yavuulakhIp;
+  });
+  return yavuulakhIp;
 }
 async function mashiniiTooAvakh({
   baiguullagiinId,
@@ -39,9 +41,9 @@ async function mashiniiTooAvakh({
     },
   ];
 
-  const mashinResult = await Mashin(
-    tukhainBaaziinKholbolt,
-  ).aggregate(mashinQuery);
+  const mashinResult = await Mashin(tukhainBaaziinKholbolt).aggregate(
+    mashinQuery,
+  );
 
   const blockQuery = [
     {
@@ -58,9 +60,9 @@ async function mashiniiTooAvakh({
     },
   ];
 
-  const blockResult = await BlockMashin(
-    tukhainBaaziinKholbolt,
-  ).aggregate(blockQuery);
+  const blockResult = await BlockMashin(tukhainBaaziinKholbolt).aggregate(
+    blockQuery,
+  );
 
   return [...mashinResult, ...blockResult];
 }
@@ -151,14 +153,9 @@ async function getParkingStatus(body) {
         if (dotorZogsool && zogsool.dotorZogsooliinId) {
           inside.total = dotorZogsool.too;
           inside.parked =
-            xariu.find(
-              (x) => x._id == dotorZogsool._id.toString(),
-            )?.too || 0;
+            xariu.find((x) => x._id == dotorZogsool._id.toString())?.too || 0;
 
-          parked =
-            xariu.find(
-              (x) => x._id == zogsool._id.toString(),
-            )?.too || 0;
+          parked = xariu.find((x) => x._id == zogsool._id.toString())?.too || 0;
         } else {
           parked = xariu[0].too;
         }
@@ -187,4 +184,50 @@ async function getParkingStatus(body) {
 
   return jagsaalt;
 }
-module.exports = { getCameraIPsByBarilgiinId, mashiniiTooAvakh, getParkingStatus };
+
+async function niitCameruud(body) {
+  const jagsaalt = [];
+  let kholboltuud = db.kholboltuud;
+  if (body.baiguullagiinId) {
+    kholboltuud = kholboltuud.filter(
+      (a) => a.baiguullagiinId == body.baiguullagiinId,
+    );
+  }
+
+  if (!kholboltuud || kholboltuud.length === 0) return [];
+
+  const baseQuery = {};
+  if (body.baiguullagiinId) {
+    baseQuery.baiguullagiinId = body.baiguullagiinId;
+  }
+
+  for (const kholbolt of kholboltuud) {
+    const zogsooluud = await getParkingFind(
+      kholbolt,
+      kholbolt.baiguullagiinId,
+      baseQuery,
+    );
+
+    for (const zogsool of zogsooluud) {
+      const yavuulakhIp =
+        zogsool.khaalga?.flatMap(
+          (khaalga) => khaalga.camera?.map((cam) => cam.cameraIP) || [],
+        ) || [];
+
+      jagsaalt.push({
+        id: zogsool._id.toString(),
+        name: zogsool.ner,
+        baiguullagiinId: zogsool.baiguullagiinId,
+        barilgiinId: zogsool.barilgiinId,
+        yavuulakhIp: yavuulakhIp,
+      });
+    }
+  }
+  return jagsaalt;
+}
+module.exports = {
+  getCameraIPsByBarilgiinId,
+  mashiniiTooAvakh,
+  getParkingStatus,
+  niitCameruud,
+};
