@@ -4770,7 +4770,11 @@ router
       if (talbainDugaaruud.length > 0) {
         gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
           .find({
-            talbainIdnuud: { $in: talbainDugaaruud },
+            $or: [
+              { talbainIdnuud: { $in: talbainDugaaruud } },
+              { talbainDugaar: { $in: talbainDugaaruud } },
+              { gereeniiDugaar: { $in: talbainDugaaruud } },
+            ],
             barilgiinId: req.body.barilgiinId,
             tuluv: 1,
           })
@@ -4778,8 +4782,11 @@ router
         if (!!gereenuud) {
           oldooguiGeree = [];
           talbainDugaaruud.forEach((a) => {
-            var oldsonGeree = gereenuud.find((b) =>
-              b.talbainIdnuud.includes(a),
+            var oldsonGeree = gereenuud.find(
+              (b) =>
+                b.talbainIdnuud.includes(a) ||
+                b.talbainDugaar === a ||
+                b.gereeniiDugaar === a,
             );
             if (!oldsonGeree)
               oldooguiGeree.push(
@@ -4798,8 +4805,11 @@ router
       var updateObject;
       if (niitGereenuud.length > 0) {
         for (const tukhainZardal of jagsaalt) {
-          var geree = niitGereenuud.find((x) =>
-            x.talbainIdnuud.includes(tukhainZardal.talbainId),
+          var geree = niitGereenuud.find(
+            (x) =>
+              x.talbainIdnuud.includes(tukhainZardal.talbainId) ||
+              x.talbainDugaar === tukhainZardal.talbainId ||
+              x.gereeniiDugaar === tukhainZardal.talbainId,
           );
           updateObject = {};
           if (
