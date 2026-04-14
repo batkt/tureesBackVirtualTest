@@ -4638,7 +4638,9 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       var talbainuud = await Talbai(req.body.tukhainBaaziinKholbolt).find({
+        barilgiinId: req.body.barilgiinId,
         tooluuriinDugaar: { $exists: true },
+        idevkhiteiEsekh: true,
       });
       const crypto = require("crypto");
       if (talbainuud != null && talbainuud.length > 0) {
@@ -4732,6 +4734,7 @@ router
             butsaakhJagsaalt.push({
               talbainId: x._id,
               talbainDugaar: x.kod,
+              barilgiinId: x.barilgiinId,
               tooluuriinDugaar: x.tooluuriinDugaar,
               suuliinZaalt: tukhainMur.tariffs,
               guidliinKoep,
@@ -4770,11 +4773,7 @@ router
       if (talbainDugaaruud.length > 0) {
         gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
           .find({
-            $or: [
-              { talbainIdnuud: { $in: talbainDugaaruud } },
-              { talbainDugaar: { $in: talbainDugaaruud } },
-              { gereeniiDugaar: { $in: talbainDugaaruud } },
-            ],
+            talbainIdnuud: { $in: talbainDugaaruud },
             barilgiinId: req.body.barilgiinId,
             tuluv: 1,
           })
@@ -4782,11 +4781,8 @@ router
         if (!!gereenuud) {
           oldooguiGeree = [];
           talbainDugaaruud.forEach((a) => {
-            var oldsonGeree = gereenuud.find(
-              (b) =>
-                b.talbainIdnuud.includes(a) ||
-                b.talbainDugaar === a ||
-                b.gereeniiDugaar === a,
+            var oldsonGeree = gereenuud.find((b) =>
+              b.talbainIdnuud.includes(a),
             );
             if (!oldsonGeree)
               oldooguiGeree.push(
@@ -4805,11 +4801,8 @@ router
       var updateObject;
       if (niitGereenuud.length > 0) {
         for (const tukhainZardal of jagsaalt) {
-          var geree = niitGereenuud.find(
-            (x) =>
-              x.talbainIdnuud.includes(tukhainZardal.talbainId) ||
-              x.talbainDugaar === tukhainZardal.talbainId ||
-              x.gereeniiDugaar === tukhainZardal.talbainId,
+          var geree = niitGereenuud.find((x) =>
+            x.talbainIdnuud.includes(tukhainZardal.talbainId),
           );
           updateObject = {};
           if (
@@ -4900,6 +4893,7 @@ router
             sekhDemjikhTulburDun: sekhDemjikhTulburDun || 0,
             ognoo: tukhainZardal.ognoo,
             gereeniiId: geree._id,
+            barilgiinId: req.body.barilgiinId,
             tailbar: ashiglaltiinZardal.ner,
             nuatBodokhEsekh: req.body.nuatBodokhEsekh,
             tooluuriinDugaar: tukhainZardal.tooluuriinDugaar,
@@ -4920,6 +4914,7 @@ router
               req.body.nevtersenAjiltniiToken.id;
           }
           tukhainZardal.gereeniiId = geree._id;
+          tukhainZardal.barilgiinId = req.body.barilgiinId;
           tukhainZardal.zoruu = ashiglaltiinZardal.zoruuDun;
           tukhainZardal.niitDun = tempDun;
           if (updateObject.tulukhDun > 0) {
