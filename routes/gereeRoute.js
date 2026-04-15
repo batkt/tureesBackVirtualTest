@@ -202,7 +202,6 @@ router
   .route("/gereeniiGuilgeeKhadgalya")
   .post(tokenShalgakh, gereeniiGuilgeeKhadgalya);
 
- 
 router.route("/zaaltTeglekh").post(tokenShalgakh, async (req, res, next) => {
   try {
     const { guilgeeniiId, gereeniiId } = req.body;
@@ -218,7 +217,7 @@ router.route("/zaaltTeglekh").post(tokenShalgakh, async (req, res, next) => {
         $set: {
           "avlaga.guilgeenuud.$.suuliinZaalt": 0,
         },
-      }
+      },
     );
     if (result.modifiedCount === 0) {
       return res.status(404).send("Гүйлгээ олдсонгүй");
@@ -2228,12 +2227,12 @@ router
                   gereenuud[0].niitUldegdel.find(
                     (a) => a._id == x.gereeniiDugaar,
                   )?.uldegdel || 0;
-                x.uldegdel = x.niitUldegdel;
                 x.niitAvlagaUldegdel =
                   x.niitUldegdel + (x.aldangiinUldegdel || 0);
 
                 if (isFoodCity) {
-                  x.niitDun = x.niitUldegdel || 0;
+                  x.niitDun =
+                    (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0);
                   x.umnukhSariinTulsunDun =
                     gereenuud[0].umnukhSariinTulsunDun?.find(
                       (a) => a._id == x.gereeniiDugaar,
@@ -2242,7 +2241,7 @@ router
                   x.tulsunDun =
                     (x.umnukhSariinUrTulbur || 0) +
                     (x.eneSardTulukhDun || 0) -
-                    (x.niitDun || 0);
+                    (x.garaasBodsonNiitDun || 0);
                 }
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
