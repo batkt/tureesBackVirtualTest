@@ -1599,10 +1599,8 @@ router
                           {
                             $match: {
                               "avlaga.guilgeenuud.ognoo": {
-                                $gte: new Date(req.body.ekhlekhOgnoo),
-                                $lte: new Date(req.body.duusakhOgnoo),
+                                $lt: new Date(req.body.ekhlekhOgnoo),
                               },
-                              "avlaga.guilgeenuud.tulsunDun": { $gt: 0 },
                               $or: [
                                 {
                                   "avlaga.guilgeenuud.turul": {
