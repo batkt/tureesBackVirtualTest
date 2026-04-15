@@ -764,7 +764,7 @@ router
           talbainKhemjee: lodash.sumBy(talbainuud, "talbainKhemjee"),
           talbainKhemjeeMetrKube: lodash.sumBy(
             talbainuud,
-            "talbainKhemjeeMetrKube"
+            "talbainKhemjeeMetrKube",
           ),
           talbainNiitUne: lodash.sumBy(talbainuud, "talbainNiitUne"),
         };
@@ -786,7 +786,7 @@ router
       if (!!geree.zardluud && !!ashiglaltiinZardluud) {
         for (const zardal of geree.zardluud) {
           var tukhainZardal = ashiglaltiinZardluud.find(
-            (x) => x.ner == zardal.ner
+            (x) => x.ner == zardal.ner,
           );
           if (!!tukhainZardal) {
             zardal.turul = tukhainZardal.turul;
@@ -2258,10 +2258,11 @@ router
                       (a) => a._id == x.gereeniiDugaar,
                     )?.uldegdel || 0;
                   x.garaasBodsonNiitDun = x.niitUldegdel || 0;
+
                   x.tulsunDun =
-                    (x.umnukhSariinUrTulbur || 0) +
-                    (x.eneSardTulukhDun || 0) -
-                    (x.garaasBodsonNiitDun || 0);
+                    (x.umnukhSariinTulsun || 0) -
+                    (x.umnukhSariinTulsunDun || 0);
+                  if (x.tulsunDun < 0) x.tulsunDun = 0;
                 }
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
@@ -4834,7 +4835,8 @@ router
               return (
                 x.khemjikhNegj == ashiglaltiinZardal.turul &&
                 x.tailbar == ashiglaltiinZardal.ner &&
-                (!tukhainZardal.tooluuriinDugaar || x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar)
+                (!tukhainZardal.tooluuriinDugaar ||
+                  x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar)
               );
             });
             if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
@@ -4890,7 +4892,6 @@ router
                   : 0)
               : tsakhilgaanDun;
 
-          
           updateObject = {
             turul: "avlaga",
             tulsunDun: 0,
@@ -4971,7 +4972,7 @@ router
         res.status(200).send("Amjilttai");
       }
     } catch (err) {
-       console.log(err)
+      console.log(err);
       next(err);
     }
   });
