@@ -1913,6 +1913,59 @@ router
                       },
                     },
                   ],
+                  tukhainSariinTulsunAldangi: [
+                    {
+                      $unwind: {
+                        path: "$avlaga.guilgeenuud",
+                      },
+                    },
+                    {
+                      $match: {
+                        "avlaga.guilgeenuud.ognoo": {
+                          $lte: new Date(req.body.duusakhOgnoo),
+                          $gte: new Date(req.body.ekhlekhOgnoo),
+                        },
+                        "avlaga.guilgeenuud.tulsunAldangi": {
+                          $gt: 0,
+                        },
+                      },
+                    },
+                    {
+                      $project: {
+                        gereeniiDugaar: "$gereeniiDugaar",
+                        ognoo: "$avlaga.guilgeenuud.ognoo",
+                        ajiltan:
+                          "$avlaga.guilgeenuud.guilgeeKhiisenAjiltniiNer",
+                        tulsunAldangi: "$avlaga.guilgeenuud.tulsunAldangi",
+                        dans: "$avlaga.guilgeenuud.dansniiDugaar",
+                        tulsunDans: "$avlaga.guilgeenuud.tulsunDans",
+                        tailbar: "$avlaga.guilgeenuud.tailbar",
+                        burtgesenOgnoo:
+                          "$avlaga.guilgeenuud.guilgeeKhiisenOgnoo",
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: "$gereeniiDugaar",
+                        dun: {
+                          $sum: {
+                            $ifNull: ["$tulsunAldangi", 0],
+                          },
+                        },
+                        guilgeenuud: {
+                          $push: {
+                            ognoo: "$ognoo",
+                            ajiltan: "$ajiltan",
+                            tulsunAldangi: "$tulsunAldangi",
+                            dans: "$dans",
+                            tulsunDans: "$tulsunDans",
+                            tailbar: "$tailbar",
+                            burtgesenOgnoo: "$burtgesenOgnoo",
+                          },
+                        },
+                      },
+                    },
+                  ],
                   tukhainSariinTureesiinTulukhDun: [
                     {
                       $unwind: {
@@ -2240,6 +2293,14 @@ router
                 }
                 x.nemeltNekhemjlekh =
                   gereenuud[0].nekhemjlekhDeerGarakh.find(
+                    (a) => a._id == x.gereeniiDugaar,
+                  )?.guilgeenuud || [];
+                x.tulsunAldangi =
+                  gereenuud[0].tukhainSariinTulsunAldangi?.find(
+                    (a) => a._id == x.gereeniiDugaar,
+                  )?.dun || 0;
+                x.tulsunAldangiJagsaalt =
+                  gereenuud[0].tukhainSariinTulsunAldangi?.find(
                     (a) => a._id == x.gereeniiDugaar,
                   )?.guilgeenuud || [];
                 x.zardluud = gereenuud[0].zardluud.filter(
