@@ -2279,7 +2279,9 @@ router
 
                 if (isFoodCity) {
                   x.niitDun =
-                    (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0);
+                    (x.umnukhSariinUrTulbur || 0) +
+                    (x.eneSardTulukhDun || 0) +
+                    (x.aldangiinUldegdel || 0);
                   x.umnukhSariinTulsunDun =
                     gereenuud[0].umnukhSariinTulsunDun?.find(
                       (a) => a._id == x.gereeniiDugaar,
