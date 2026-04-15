@@ -4888,6 +4888,27 @@ router
                   ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
                   : 0)
               : tsakhilgaanDun;
+
+          console.log("=== HUN AIMAR LOG ===");
+          console.log("talbainId:", tukhainZardal.talbainId);
+          console.log("tooluuriinDugaar:", tukhainZardal.tooluuriinDugaar);
+          console.log("tukhainZardal.suuliinZaalt:", tukhainZardal.suuliinZaalt);
+          console.log("umnukhZaalt:", umnukhZaalt);
+          console.log("zoruuDun:", zoruuDun);
+          console.log("ashiglaltiinZardal.tariff:", ashiglaltiinZardal.tariff);
+          console.log("ashiglaltiinZardal.tsakhilgaanUrjver:", ashiglaltiinZardal.tsakhilgaanUrjver);
+          console.log("tukhainZardal.guidliinKoep:", tukhainZardal.guidliinKoep);
+          console.log("chadalDun:", chadalDun);
+          console.log("tsekhDun:", tsekhDun);
+          console.log("sekhDemjikhTulburDun:", sekhDemjikhTulburDun);
+          console.log("tsakhilgaanDun:", tsakhilgaanDun);
+          console.log("tempDun:", tempDun);
+          console.log("suuriKhuraamj:", ashiglaltiinZardal.suuriKhuraamj);
+          console.log("nuatBodokhEsekh:", req.body.nuatBodokhEsekh);
+          console.log("tulukhDun:", !!req.body.nuatBodokhEsekh
+            ? ((ashiglaltiinZardal.suuriKhuraamj || 0) + tempDun) * 1.1
+            : (ashiglaltiinZardal.suuriKhuraamj || 0) + tempDun);
+          console.log("===========================");
           updateObject = {
             turul: "avlaga",
             tulsunDun: 0,
