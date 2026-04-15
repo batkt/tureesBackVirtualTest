@@ -1850,27 +1850,9 @@ router
                     },
                     {
                       $match: {
-                        $or: [
-                          {
-                            "avlaga.guilgeenuud.turul": {
-                              $nin: ["baritsaa", "aldangi"],
-                            },
-                          },
-                          {
-                            $and: [
-                              {
-                                "avlaga.guilgeenuud.turul": {
-                                  $in: ["baritsaa"],
-                                },
-                              },
-                              {
-                                "avlaga.guilgeenuud.tulsunDun": {
-                                  $gt: 0,
-                                },
-                              },
-                            ],
-                          },
-                        ],
+                        "avlaga.guilgeenuud.turul": {
+                          $nin: ["baritsaa"],
+                        },
                         "avlaga.guilgeenuud.ognoo": {
                           $lte: new Date(req.body.duusakhOgnoo),
                           $gte: new Date(req.body.ekhlekhOgnoo),
@@ -1890,21 +1872,13 @@ router
                             $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
                           },
                         },
-                        tulsun: {
-                          $sum: {
-                            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                          },
-                        },
                       },
                     },
                     {
                       $project: {
                         gereeniiDugaar: "$gereeniiDugaar",
                         uldegdel: {
-                          $subtract: [
-                            "$tulukh",
-                            { $sum: ["$tulsun", "$khyamdral"] },
-                          ],
+                          $subtract: ["$tulukh", "$khyamdral"],
                         },
                       },
                     },
