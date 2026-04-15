@@ -756,8 +756,28 @@ router
         kod: geree.talbainDugaar,
       });
 
+      if (!talbai && geree.talbainIdnuud && geree.talbainIdnuud.length > 0) {
+        const talbainuud = await Talbai(req.body.tukhainBaaziinKholbolt).find({
+          _id: { $in: geree.talbainIdnuud },
+        });
+        talbai = {
+          talbainKhemjee: lodash.sumBy(talbainuud, "talbainKhemjee"),
+          talbainKhemjeeMetrKube: lodash.sumBy(
+            talbainuud,
+            "talbainKhemjeeMetrKube"
+          ),
+          talbainNiitUne: lodash.sumBy(talbainuud, "talbainNiitUne"),
+        };
+      }
+
+      if (!talbai)
+        talbai = {
+          talbainKhemjee: 0,
+          talbainKhemjeeMetrKube: 0,
+          talbainNiitUne: 0,
+        };
+
       if (geree.turGereeEsekh) {
-        if (!talbai) talbai = {};
         talbai.talbainKhemjee = geree.talbainKhemjee;
         talbai.talbainKhemjeeMetrKube = geree.talbainKhemjeeMetrKube;
         talbai.talbainNiitUne = geree.sariinTurees;
@@ -766,7 +786,7 @@ router
       if (!!geree.zardluud && !!ashiglaltiinZardluud) {
         for (const zardal of geree.zardluud) {
           var tukhainZardal = ashiglaltiinZardluud.find(
-            (x) => x.ner == zardal.ner,
+            (x) => x.ner == zardal.ner
           );
           if (!!tukhainZardal) {
             zardal.turul = tukhainZardal.turul;
