@@ -4833,7 +4833,8 @@ router
             var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
               return (
                 x.khemjikhNegj == ashiglaltiinZardal.turul &&
-                x.tailbar == ashiglaltiinZardal.ner
+                x.tailbar == ashiglaltiinZardal.ner &&
+                (!tukhainZardal.tooluuriinDugaar || x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar)
               );
             });
             if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
@@ -4954,7 +4955,7 @@ router
         }
       }
       if (aldaaniiMsg) throw new Error(aldaaniiMsg);
-      if (bulkOps && bulkOps.length > 0)
+      if (bulkOps && bulkOps.length > 0) {
         await Geree(req.body.tukhainBaaziinKholbolt)
           .bulkWrite(bulkOps)
           .then((bulkWriteOpResult) => {
@@ -4966,6 +4967,9 @@ router
           .catch((err) => {
             next(err);
           });
+      } else {
+        res.status(200).send("Amjilttai");
+      }
     } catch (err) {
        console.log(err)
       next(err);
