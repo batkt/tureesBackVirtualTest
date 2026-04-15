@@ -1419,14 +1419,7 @@ router
             if (isFoodCity) {
               umnukhSariinUrTulburGroup.tulsun = {
                 $sum: {
-                  $add: [
-                    {
-                      $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                    },
-                    {
-                      $ifNull: ["$avlaga.guilgeenuud.tulsunAldangi", 0],
-                    },
-                  ],
+                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
                 },
               };
             }
@@ -1561,17 +1554,7 @@ router
                         _id: "$gereeniiDugaar",
                         tulsun: {
                           $sum: {
-                            $add: [
-                              {
-                                $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                              },
-                              {
-                                $ifNull: [
-                                  "$avlaga.guilgeenuud.tulsunAldangi",
-                                  0,
-                                ],
-                              },
-                            ],
+                            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
                           },
                         },
                       },
@@ -1665,20 +1648,7 @@ router
                               _id: "$gereeniiDugaar",
                               tulsun: {
                                 $sum: {
-                                  $add: [
-                                    {
-                                      $ifNull: [
-                                        "$avlaga.guilgeenuud.tulsunDun",
-                                        0,
-                                      ],
-                                    },
-                                    {
-                                      $ifNull: [
-                                        "$avlaga.guilgeenuud.tulsunAldangi",
-                                        0,
-                                      ],
-                                    },
-                                  ],
+                                  $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
                                 },
                               },
                             },
@@ -1853,17 +1823,7 @@ router
                         },
                         tulsun: {
                           $sum: {
-                            $add: [
-                              {
-                                $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                              },
-                              {
-                                $ifNull: [
-                                  "$avlaga.guilgeenuud.tulsunAldangi",
-                                  0,
-                                ],
-                              },
-                            ],
+                            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
                           },
                         },
                       },
@@ -1932,17 +1892,7 @@ router
                         },
                         tulsun: {
                           $sum: {
-                            $add: [
-                              {
-                                $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-                              },
-                              {
-                                $ifNull: [
-                                  "$avlaga.guilgeenuud.tulsunAldangi",
-                                  0,
-                                ],
-                              },
-                            ],
+                            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
                           },
                         },
                       },
@@ -2354,8 +2304,8 @@ router
                   x.niitUldegdel + (x.aldangiinUldegdel || 0);
 
                 if (isFoodCity) {
-                  x.ekhniiUldegdel = x.umnukhSariinUrTulbur || 0;
-                  x.niitDun = x.niitAvlagaUldegdel || 0;
+                  x.niitDun =
+                    (x.umnukhSariinUrTulbur || 0) + (x.eneSardTulukhDun || 0);
                   x.umnukhSariinTulsunDun =
                     gereenuud[0].umnukhSariinTulsunDun?.find(
                       (a) => a._id == x.gereeniiDugaar,
