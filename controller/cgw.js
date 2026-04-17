@@ -1011,7 +1011,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     "&page=1&size=100000";
                   var response = null;
                   try {
-                    console.log("TDB-гийн хуулга татах URL: " + url);
                     response = await axios.get(url, {
                       headers: {
                         "Content-Type": "application/json",
@@ -1020,7 +1019,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       responseType: "json",
                     });
                     var khariu = response?.data;
-                    console.log("TDB-гийн txn " + JSON.stringify(khariu?.txn));
                     if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
                       var guilgeenuud = [];
                       khariu.txn.forEach((mur) => {
