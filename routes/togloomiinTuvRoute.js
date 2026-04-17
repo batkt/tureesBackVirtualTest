@@ -1175,7 +1175,7 @@ router.post("/tsonjinBarCodeIlgeekh", tokenShalgakh, async (req, res, next) => {
       baiguullagiinId: req.body.baiguullagiinId,
       barCodes: req.body.barCodes,
     });
-    res.send(result);
+    res.send(req.body.barCodes);
   } catch (err) {
     if (next) next(err);
   }
