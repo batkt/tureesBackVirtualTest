@@ -195,7 +195,6 @@ router.get(
       };
 
       const collectionNames = getCollectionNames(startOgnoo, endOgnoo);
-      console.log("collectionNames --->", collectionNames);
       // ["Uilchluulegch202602", "Uilchluulegch202603", "Uilchluulegch202604", "Uilchluulegch"]
 
       const mashinData = await Mashin(req.body.tukhainBaaziinKholbolt, true)
@@ -239,10 +238,6 @@ router.get(
               },
             ]);
 
-            console.log(
-              `[${collName}] khugatsaa --->`,
-              JSON.stringify(khugatsaa),
-            );
             if (khugatsaa?.length > 0) {
               totalKhugatsaa += khugatsaa[0].khugatsaa || 0;
             }
