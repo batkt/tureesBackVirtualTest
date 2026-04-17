@@ -16,19 +16,19 @@ router.post(
   async (req, res, next) => {
     try {
       const suuldUilchluulsenTuukh = await TogloomiinTuv(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).findOne({
         utas: { $in: [req.body.dugaar] },
       });
       var too = await TogloomiinTuv(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).countDocuments({ utas: { $in: [req.body.dugaar] } });
       var butsaakhUtga = { ...suuldUilchluulsenTuukh?._doc, togolsonToo: too };
       res.send(butsaakhUtga);
     } catch (err) {
       next(err);
     }
-  }
+  },
 );
 
 router
@@ -38,7 +38,7 @@ router
       var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
       var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
       var khariu = await TogloomiinTuv(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).aggregate([
         {
           $match: {
@@ -536,7 +536,7 @@ router
       var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
       var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
       var khariu = await TogloomiinTuv(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).aggregate([
         {
           $match: {
@@ -582,7 +582,7 @@ router
       var unuudur = new Date().getDay();
       var maxTsag = 0;
       var khariu = await TogloomiinTariff(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).findOne({
         udur: unuudur,
         baiguullagiinId: req.body.baiguullagiinId,
@@ -627,12 +627,12 @@ router
       if (Array.isArray(guilgeenuud)) {
         guilgeenuud.forEach((mur) =>
           guilgeeniiTuukh.push(
-            new TogloomiinTulbur(req.body.tukhainBaaziinKholbolt)(mur)
-          )
+            new TogloomiinTulbur(req.body.tukhainBaaziinKholbolt)(mur),
+          ),
         );
       }
       var togloomiinTuvTulbur = await TogloomiinTuv(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).findById(req.body.id);
       var update = {
         tulburTulsunEsekh: false,
@@ -681,7 +681,7 @@ router
             : 0;
         await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
           req.body.id,
-          update
+          update,
         );
         if (update.tulburTulsunEsekh === true) {
           res.send("Amjilttai");
@@ -696,7 +696,7 @@ router.route("/khuukhedGargaya").post(tokenShalgakh, async (req, res, next) => {
   try {
     await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
       req.body.id,
-      { tuluv: 3, garsanTsag: new Date() }
+      { tuluv: 3, garsanTsag: new Date() },
     );
     res.send("Amjilttai");
   } catch (err) {
@@ -710,7 +710,7 @@ router
     try {
       await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
         req.body.id,
-        { tuluv: -1, tsutsalsanShaltgaan: req.body.shaltgaan, niitDun: 0 }
+        { tuluv: -1, tsutsalsanShaltgaan: req.body.shaltgaan, niitDun: 0 },
       );
       res.send("Amjilttai");
     } catch (err) {
@@ -725,7 +725,7 @@ router.route("/togloomSungaya").post(tokenShalgakh, async (req, res, next) => {
     });
     if (!umnukh || !umnukh.tulburTulsunEsekh || !umnukh.ebarimtAvsanEsekh)
       throw new Error(
-        "Зөвхөн төлбөр төлж ИБаримт авсаны дараагаар сунгах боломжтой!"
+        "Зөвхөн төлбөр төлж ИБаримт авсаны дараагаар сунгах боломжтой!",
       );
     if (umnukh.sungalt && umnukh.sungalt.length > 0) {
       umnukh.sungalt.push({
@@ -753,7 +753,7 @@ router.route("/togloomSungaya").post(tokenShalgakh, async (req, res, next) => {
       (umnukh.sungasanMinut ? umnukh.sungasanMinut : 0) + req.body.khugatsaa;
     await TogloomiinTuv(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
       umnukh._id,
-      umnukh
+      umnukh,
     );
     res.send("Amjilttai");
   } catch (err) {
@@ -766,7 +766,7 @@ async function dunBoduulya(
   minut,
   asragchiinToo,
   baiguullagiinId,
-  khuukhdiinToo
+  khuukhdiinToo,
 ) {
   var dun = 0;
   var unuudur = new Date().getDay();
@@ -804,18 +804,20 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       var togloomiinTuv = new TogloomiinTuv(req.body.tukhainBaaziinKholbolt)(
-        req.body
+        req.body,
       );
       var minut = Number(togloomiinTuv.khugatsaa);
       var asragchiinToo = Number(
-        togloomiinTuv.asragchiinTurul ? togloomiinTuv.asragchiinTurul.length : 0
+        togloomiinTuv.asragchiinTurul
+          ? togloomiinTuv.asragchiinTurul.length
+          : 0,
       );
       togloomiinTuv.niitDun = await dunBoduulya(
         req.body.tukhainBaaziinKholbolt,
         minut,
         asragchiinToo,
         req.body.baiguullagiinId,
-        togloomiinTuv.khuukhdiinToo
+        togloomiinTuv.khuukhdiinToo,
       );
       togloomiinTuv
         .save()
@@ -849,7 +851,7 @@ router
       if (!!req.body.burtgesenAjiltaniiId)
         match["burtgesenAjiltaniiId"] = req.body.burtgesenAjiltaniiId;
       var khariu = await TogloomiinTuv(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).aggregate([
         {
           $match: match,
@@ -882,8 +884,10 @@ router
   .route("/togloomKioskNegtgelMedeelelAvya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
-      if (!req.body.ekhlekhOgnoo) throw new Error("Эхлэх огноо заавал байх ёстой!");
-      if (!req.body.duusakhOgnoo) throw new Error("Дуусах огноо заавал байх ёстой!");
+      if (!req.body.ekhlekhOgnoo)
+        throw new Error("Эхлэх огноо заавал байх ёстой!");
+      if (!req.body.duusakhOgnoo)
+        throw new Error("Дуусах огноо заавал байх ёстой!");
       if (!req.body.baiguullagiinId)
         throw new Error("Байгууллагын ID заавал байх ёстой!");
 
@@ -924,7 +928,7 @@ router
       ];
 
       const tailan = await TogloomiinTuv(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).aggregate(pipeline);
 
       const data = {};
@@ -956,7 +960,7 @@ router
   .post(tokenShalgakh, async (req, res, next) => {
     try {
       const khariu = await TogloomiinTuv(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).aggregate([
         {
           $match: {
@@ -1044,13 +1048,13 @@ router
         },
       ];
       const togloomuud = await TogloomiinTuv(
-        req.body.tukhainBaaziinKholbolt
+        req.body.tukhainBaaziinKholbolt,
       ).aggregate(query);
       var khariu = [];
       for (const togloom of togloomuud) {
         if (togloom.tulbur > togloom._id?.niitDun) {
           var data = await TogloomiinTuv(
-            req.body.tukhainBaaziinKholbolt
+            req.body.tukhainBaaziinKholbolt,
           ).findById(togloom._id?.id);
           data.niitTulbur?.shift();
           data.tulbur?.shift();
@@ -1093,7 +1097,7 @@ router.post(
       };
       if (req.body.togloomiinId) match["togloomiinId"] = req.body.togloomiinId;
       var ebarimtuud = await EbarimtShine(req.body.tukhainBaaziinKholbolt).find(
-        match
+        match,
       );
       if (ebarimtuud?.length > 0) {
         for (const ebarimt of ebarimtuud) {
@@ -1105,7 +1109,7 @@ router.post(
                 ebarimtAvsanEsekh: true,
                 ebarimtAvsanDun: { $exists: false },
               },
-              update
+              update,
             )
             .then((xariu) => {})
             .catch((err) => {
@@ -1117,7 +1121,7 @@ router.post(
     } catch (err) {
       if (next) next(err);
     }
-  }
+  },
 );
 
 router.post(
@@ -1140,14 +1144,14 @@ router.post(
             togloomNer: { $exists: false },
           };
           var ebarimtuud = await EbarimtShine(
-            req.body.tukhainBaaziinKholbolt
+            req.body.tukhainBaaziinKholbolt,
           ).find(match);
           if (ebarimtuud?.length > 0) {
             for (const ebarimt of ebarimtuud) {
               await EbarimtShine(req.body.tukhainBaaziinKholbolt)
                 .findByIdAndUpdate(
                   { _id: ebarimt._id },
-                  { togloomNer: tuv.ner, togloomUtas: tuv.utas }
+                  { togloomNer: tuv.ner, togloomUtas: tuv.utas },
                 )
                 .catch((err) => {
                   next(err);
@@ -1161,7 +1165,20 @@ router.post(
     } catch (err) {
       if (next) next(err);
     }
-  }
+  },
 );
+
+router.post("/tsonjinBarCodeIlgeekh", tokenShalgakh, async (req, res, next) => {
+  try {
+    const io = req.app.get("socketio");
+    io.emit("tsonjinBarCodeIlgeekh", {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barCodes: req.body.barCodes,
+    });
+    res.send(result);
+  } catch (err) {
+    if (next) next(err);
+  }
+});
 
 module.exports = router;
