@@ -508,7 +508,9 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                   if (zardal.turul == "1м2")
                     zardal.dun = tooZasyaSync(zardal.tariff * body.mk);
                   if (zardal.turul == "1м3/талбай" || zardal.turul == "1м3")
-                    zardal.dun = tooZasyaSync(zardal.tariff * (body.metrKube || 0));
+                    zardal.dun = tooZasyaSync(
+                      zardal.tariff * (body.metrKube || 0),
+                    );
                   if (
                     zardal.turul == "Тогтмол" ||
                     (zardal.ner?.includes("Цахилгаан") &&
@@ -1286,7 +1288,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
         ]);
 
         for (const gereeData of niitGereenuud) {
-          console.log("gereeniiDugaar: ", gereeData._id.gereeniiDugaar);
           if (barilga?.tokhirgoo?.aldangiGereeTusBur) {
             aldangiinKhuvi = gereeData._id.aldangiinKhuvi || 0;
             aldangiChuluulukhKhonog =
@@ -1353,8 +1354,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             const targetMonth = moment().add(offset, "month");
             const start = targetMonth.clone().startOf("month").toDate();
             const end = targetMonth.clone().endOf("month").toDate();
-            console.log("start: ", start);
-            console.log("end: ", end);
             let match = {
               "avlaga.guilgeenuud.ognoo": { $gte: start, $lte: end },
               "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] },
@@ -1403,11 +1402,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
             if (!gereenuud?.length) {
               continue;
             }
-            console.log(
-              "aldangiGereeTusBur: ",
-              barilga?.tokhirgoo?.aldangiGereeTusBur,
-            );
-            console.log("gereenuud: ", JSON.stringify(gereenuud));
             for (const geree of gereenuud) {
               match = {
                 "avlaga.guilgeenuud.ognoo": { $lt: start },
@@ -1469,8 +1463,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
               var umnukhUldegdel = 0;
               if (songosonGereenuud?.length > 0)
                 umnukhUldegdel = songosonGereenuud[0].uldegdel;
-              console.log("umnukhUldegdel: ", umnukhUldegdel);
-              console.log("geree.uldegdel: ", geree.uldegdel);
 
               var tulsunDun =
                 tulsunGereenuud?.find(
@@ -1484,8 +1476,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   tg.tulsun = tempTulsunDun < 0 ? 0 : tempTulsunDun;
                 }
               }
-              console.log("tulsunDun: ", tulsunDun);
-              console.log("uldegdel: ", uldegdel);
               if (uldegdel < 0 || uldegdel < bagaUldegdel) {
                 continue;
               }
@@ -1496,19 +1486,13 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                 month: targetMonth.month(),
                 day: tulukhUdur,
               });
-              console.log("aldangiEhlehOgnoo: ", aldangiEhlehOgnoo);
               const aldangiChuluulukhOgnoo = aldangiEhlehOgnoo
                 .clone()
                 .add(aldangiChuluulukhKhonog, "days");
-              console.log(
-                "Is after: ",
-                moment().isAfter(aldangiChuluulukhOgnoo),
-              );
               if (moment().isAfter(aldangiChuluulukhOgnoo)) {
                 const bodogdsonKhuu = tooZasyaSync(
                   (uldegdel * aldangiinKhuvi) / 100,
                 );
-                console.log("bodogdsonKhuu: ", bodogdsonKhuu);
                 const data = await Geree(kholbolt, true).findById(geree._id.id);
                 bulkOps.push({
                   updateOne: {
