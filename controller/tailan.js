@@ -2227,6 +2227,10 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
       },
     };
     if (req.body.$or) match["$or"] = req.body.$or;
+    if (req.body.segmentuud) match.segmentuud = req.body.segmentuud;
+    if (req.body.turul) match.turul = req.body.turul;
+    if (req.body.segment) match.segment = req.body.segment;
+    if (req.body.yalgal) match.yalgal = req.body.yalgal;
     var matchGroup = {};
     if (!!req.body.khariltsagchiinId)
       matchGroup["_id.register"] = { $in: req.body.khariltsagchiinId };

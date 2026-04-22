@@ -507,6 +507,10 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
       tuluv: { $ne: -1 },
     };
     if (req.body.query) match["$or"] = req.body.query["$or"];
+    if (req.body.segmentuud) match.segmentuud = req.body.segmentuud;
+    if (req.body.turul) match.turul = req.body.turul;
+    if (req.body.segment) match.segment = req.body.segment;
+    if (req.body.yalgal) match.yalgal = req.body.yalgal;
     if (req.body.registeruud) match["register"] = { $in: req.body.registeruud };
     var duusakhOgnoo = moment(req.body.duusakhOgnoo)
       .endOf("month")
