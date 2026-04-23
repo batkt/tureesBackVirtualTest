@@ -510,6 +510,20 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
     if (req.body.$and) match["$and"] = req.body.$and;
     
     if (req.body.songogdsonTurul) {
+      const talbaiMatch = await Talbai(req.body.tukhainBaaziinKholbolt).find({
+        baiguullagiinId: req.body.baiguullagiinId,
+        barilgiinId: req.body.barilgiinId,
+        $or: [
+          { turul: req.body.songogdsonTurul },
+          { segment: req.body.songogdsonTurul },
+          { yalgal: req.body.songogdsonTurul },
+          { "segmentuud.ner": req.body.songogdsonTurul },
+          { "segmentuud.utga": req.body.songogdsonTurul }
+        ]
+      }, { kod: 1, _id: 1 });
+      const talbaiKods = talbaiMatch.map((t) => t.kod);
+      const talbaiIds = talbaiMatch.map((t) => t._id.toString());
+
       match["$and"] = match["$and"] || [];
       match["$and"].push({
         $or: [
@@ -517,7 +531,9 @@ router.route("/nasjiltinTailan").post(tokenShalgakh, async (req, res, next) => {
           { segment: req.body.songogdsonTurul },
           { yalgal: req.body.songogdsonTurul },
           { "segmentuud.ner": req.body.songogdsonTurul },
-          { "segmentuud.utga": req.body.songogdsonTurul }
+          { "segmentuud.utga": req.body.songogdsonTurul },
+          { talbainDugaar: { $in: talbaiKods } },
+          { talbainIdnuud: { $in: talbaiIds } }
         ]
       });
     }
