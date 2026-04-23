@@ -2227,10 +2227,20 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
       },
     };
     if (req.body.$or) match["$or"] = req.body.$or;
-    if (req.body.segmentuud) match.segmentuud = req.body.segmentuud;
-    if (req.body.turul) match.turul = req.body.turul;
-    if (req.body.segment) match.segment = req.body.segment;
-    if (req.body.yalgal) match.yalgal = req.body.yalgal;
+    if (req.body.$and) match["$and"] = req.body.$and;
+    
+    if (req.body.songogdsonTurul) {
+      match["$and"] = match["$and"] || [];
+      match["$and"].push({
+        $or: [
+          { turul: req.body.songogdsonTurul },
+          { segment: req.body.songogdsonTurul },
+          { yalgal: req.body.songogdsonTurul },
+          { "segmentuud.ner": req.body.songogdsonTurul },
+          { "segmentuud.utga": req.body.songogdsonTurul }
+        ]
+      });
+    }
     var matchGroup = {};
     if (!!req.body.khariltsagchiinId)
       matchGroup["_id.register"] = { $in: req.body.khariltsagchiinId };
