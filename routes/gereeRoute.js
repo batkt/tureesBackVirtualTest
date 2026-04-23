@@ -2131,7 +2131,7 @@ router
                                                               "torguuli",
                                                             ],
                                                           },
-                                                          "торгууль",
+                                                          "Торгууль",
                                                           {
                                                             $ifNull: [
                                                               "$avlaga.zardliinNer",
