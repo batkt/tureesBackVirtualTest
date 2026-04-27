@@ -81,16 +81,16 @@ crud(
             });
 
             if (Object.keys(syncFields).length > 0) {
-              const kholboltuud = db.kholboltuud;
-              if (kholboltuud && kholboltuud.length > 0) {
-                for (const kholbolt of kholboltuud) {
-                  try {
-                    await Geree(kholbolt).updateMany(gereeQuery, {
-                      $set: syncFields,
-                    });
-                  } catch (err) {
-                    console.error("geree sync aldaa:", err.message);
-                  }
+              const kholbolt = db.kholboltuud?.find(
+                (k) => k.baiguullagiinId == khariltsagchOld.baiguullagiinId,
+              );
+              if (kholbolt) {
+                try {
+                  await Geree(kholbolt).updateMany(gereeQuery, {
+                    $set: syncFields,
+                  });
+                } catch (err) {
+                  console.error("geree sync aldaa:", err.message);
                 }
               }
             }
