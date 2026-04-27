@@ -44,11 +44,64 @@ crud(
   async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
-      if (!req.body.register && !req.body.customerTin)
-        throw new Error(
-          "Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!",
+      if (req.params.id) {
+        
+        var khariltsagchOld = await Khariltsagch(db.erunkhiiKholbolt).findById(
+          req.params.id,
         );
-      else {
+        if (khariltsagchOld) {
+          const orConditions = [];
+          if (khariltsagchOld.register)
+            orConditions.push({ register: khariltsagchOld.register });
+          if (khariltsagchOld.customerTin)
+            orConditions.push({ customerTin: khariltsagchOld.customerTin });
+
+          if (orConditions.length > 0) {
+            const gereeQuery = {
+              $or: orConditions,
+              baiguullagiinId: khariltsagchOld.baiguullagiinId,
+            };
+            const syncFields = {};
+            [
+              "ner",
+              "ovog",
+              "register",
+              "customerTin",
+              "utas",
+              "mail",
+              "khayag",
+              "turul",
+              "albanTushaal",
+              "zakhirliinOvog",
+              "zakhirliinNer",
+              "segmentuud",
+            ].forEach((field) => {
+              if (req.body[field] !== undefined)
+                syncFields[field] = req.body[field];
+            });
+
+            if (Object.keys(syncFields).length > 0) {
+              const kholboltuud = db.kholboltuud;
+              if (kholboltuud && kholboltuud.length > 0) {
+                for (const kholbolt of kholboltuud) {
+                  try {
+                    await Geree(kholbolt).updateMany(gereeQuery, {
+                      $set: syncFields,
+                    });
+                  } catch (err) {
+                    console.error("geree sync aldaa:", err.message);
+                  }
+                }
+              }
+            }
+          }
+        }
+      } else {
+      
+        if (!req.body.register && !req.body.customerTin)
+          throw new Error(
+            "Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!",
+          );
         if (!!req.body.register) {
           var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
             register: req.body.register,
