@@ -156,6 +156,7 @@ const baiguullagaSchema = new Schema(
       togloomiinTuvDavkhardsanShalgakh: Boolean,
       dotorGadnaTsagEsekh: Boolean,
       dolooKhonogTutamArchiveEsekh: Boolean, // долоо хоног тутам архив эсэх
+      tokenKhugatsaa: String, // token-ийн хүчинтэй хугацаа хоногоор
     },
     erkhuud: [
       {

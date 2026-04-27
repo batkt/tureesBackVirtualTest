@@ -68,7 +68,11 @@ ajiltanSchema.index({
   $nevtrekhNer: "text",
   mail: 1,
 });
-ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo, salbaruud = null) {
+ajiltanSchema.methods.tokenUusgeye = function (
+  duusakhOgnoo,
+  salbaruud = null,
+  tokenKhugatsaa = "12h",
+) {
   const token = jwt.sign(
     {
       id: this._id,
@@ -79,28 +83,7 @@ ajiltanSchema.methods.tokenUusgeye = function (duusakhOgnoo, salbaruud = null) {
     },
     process.env.APP_SECRET,
     {
-      expiresIn:
-        this.baiguullagiinId == "656f165ef28cde7f62bc3604" ||
-        this.baiguullagiinId == "6698c657c26994f4e0f8de62" ||
-        this.baiguullagiinId == "6731b43bc23730ac1908da2d" ||
-        this.baiguullagiinId == "6115f350b35689cdbf1b9da3" ||
-        this.baiguullagiinId == "670f3437b41a478195dd3d4b" ||
-        this.baiguullagiinId == "66d90703344b0b96a65ef1a4" ||
-        this.baiguullagiinId == "67dfebe55b92ee004ba43ad2" ||
-        this.baiguullagiinId == "67b5a998b72a35321ebdbd87" ||
-        this.baiguullagiinId == "6800b91480a007fe5ab34436" ||
-        this.baiguullagiinId == "682ee56b9be2cfa362f99888" ||
-        this.baiguullagiinId == "674044a9640d59bcf2ee6c5b" ||
-        this.baiguullagiinId == "68abc22410228a7454bdf5e9" ||
-        this.baiguullagiinId == "612f457d185280db676d0b51" ||
-        this.baiguullagiinId == "6891b5e3961369bef77b72b9" ||
-        this.baiguullagiinId == "66c2c871597ea1390c3fd830" ||
-        this.baiguullagiinId == "6965cef41c69d2ebeaa27eb5" ||
-        this.baiguullagiinId == "69312349dcfbe62f71db44a8" ||
-        this.baiguullagiinId == "6938e64eac4d7caec23e69bf" ||
-        this.baiguullagiinId == "662ee74ba29549374bc40245"
-          ? "7d"
-          : "12h",
+      expiresIn: tokenKhugatsaa,
     },
   );
   return token;

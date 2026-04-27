@@ -115,6 +115,7 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
           const jwt = await ajiltan.tokenUusgeye(
             khariu.duusakhOgnoo,
             butsaakhObject.salbaruud,
+            baiguullaga?.tokhirgoo?.tokenKhugatsaa || "12h",
           );
           butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
           if (!!butsaakhObject.result) {
