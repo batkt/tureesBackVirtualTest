@@ -36,74 +36,7 @@ const {
   khariltsagchTatya,
 } = require("../controller/excel");
 
-// Sync khariltsagch changes to geree — runs BEFORE crud's PUT handler
-router.put("/khariltsagch/:id", tokenShalgakh, async (req, res, next) => {
-  try {
-    const { db } = require("zevbackv2");
-    console.log("[SYNC] PUT khariltsagch id:", req.params.id);
-
-    const khariltsagchOld = await Khariltsagch(db.erunkhiiKholbolt).findById(req.params.id);
-    console.log("[SYNC] khariltsagchOld found:", !!khariltsagchOld, khariltsagchOld?.register, khariltsagchOld?.baiguullagiinId);
-
-    if (khariltsagchOld) {
-      const orConditions = [];
-      if (khariltsagchOld.register)
-        orConditions.push({ register: khariltsagchOld.register });
-      if (khariltsagchOld.customerTin)
-        orConditions.push({ customerTin: khariltsagchOld.customerTin });
-
-      console.log("[SYNC] orConditions:", JSON.stringify(orConditions));
-
-      if (orConditions.length > 0) {
-        const gereeQuery = {
-          $or: orConditions,
-          baiguullagiinId: khariltsagchOld.baiguullagiinId,
-        };
-        const syncFields = {};
-        [
-          "ner",
-          "ovog",
-          "register",
-          "customerTin",
-          "utas",
-          "mail",
-          "khayag",
-          "turul",
-          "albanTushaal",
-          "zakhirliinOvog",
-          "zakhirliinNer",
-          "segmentuud",
-          "khariltsagchiinNershil",
-        ].forEach((field) => {
-          if (req.body[field] !== undefined)
-            syncFields[field] = req.body[field];
-        });
-
-        console.log("[SYNC] syncFields:", JSON.stringify(syncFields));
-        console.log("[SYNC] tukhainBaaziinKholbolt:", !!req.body.tukhainBaaziinKholbolt);
-
-        if (Object.keys(syncFields).length > 0) {
-          try {
-            const result = await Geree(req.body.tukhainBaaziinKholbolt).updateMany(
-              gereeQuery,
-              { $set: syncFields },
-            );
-            console.log("[SYNC] updateMany result:", JSON.stringify(result));
-          } catch (err) {
-            console.error("[SYNC] geree sync aldaa:", err.message);
-          }
-        }
-      }
-    }
-    next();
-  } catch (err) {
-    console.error("[SYNC] unexpected error:", err.message);
-    next(err);
-  }
-});
-
 crud(
-
   router,
   "khariltsagch",
   Khariltsagch,
@@ -111,99 +44,31 @@ crud(
   async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
-      if (req.params.id) {
-        console.log("[SYNC] PUT khariltsagch id:", req.params.id);
-
-        var khariltsagchOld = await Khariltsagch(db.erunkhiiKholbolt).findById(
-          req.params.id,
+      if (!req.body.register && !req.body.customerTin)
+        throw new Error(
+          "Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!",
         );
-        console.log("[SYNC] khariltsagchOld found:", !!khariltsagchOld, khariltsagchOld?.register, khariltsagchOld?.baiguullagiinId);
-
-        if (khariltsagchOld) {
-          const orConditions = [];
-          if (khariltsagchOld.register)
-            orConditions.push({ register: khariltsagchOld.register });
-          if (khariltsagchOld.customerTin)
-            orConditions.push({ customerTin: khariltsagchOld.customerTin });
-
-          console.log("[SYNC] orConditions:", JSON.stringify(orConditions));
-
-          if (orConditions.length > 0) {
-            const gereeQuery = {
-              $or: orConditions,
-              baiguullagiinId: khariltsagchOld.baiguullagiinId,
-            };
-            const syncFields = {};
-            [
-              "ner",
-              "ovog",
-              "register",
-              "customerTin",
-              "utas",
-              "mail",
-              "khayag",
-              "turul",
-              "albanTushaal",
-              "zakhirliinOvog",
-              "zakhirliinNer",
-              "segmentuud",
-              "khariltsagchiinNershil",
-            ].forEach((field) => {
-              if (req.body[field] !== undefined)
-                syncFields[field] = req.body[field];
-            });
-
-            console.log("[SYNC] syncFields:", JSON.stringify(syncFields));
-            console.log("[SYNC] tukhainBaaziinKholbolt:", !!req.body.tukhainBaaziinKholbolt);
-            console.log("[SYNC] gereeQuery:", JSON.stringify(gereeQuery));
-
-            if (Object.keys(syncFields).length > 0) {
-              try {
-                const result = await Geree(req.body.tukhainBaaziinKholbolt).updateMany(
-                  gereeQuery,
-                  { $set: syncFields },
-                );
-                console.log("[SYNC] updateMany result:", JSON.stringify(result));
-              } catch (err) {
-                console.error("[SYNC] geree sync aldaa:", err.message);
-              }
-            } else {
-              console.log("[SYNC] No syncFields to update");
-            }
-          } else {
-            console.log("[SYNC] No orConditions - register and customerTin both empty");
-          }
-        } else {
-          console.log("[SYNC] khariltsagchOld not found for id:", req.params.id);
-        }
-      } else {
-      
-        if (!req.body.register && !req.body.customerTin)
+      if (!!req.body.register) {
+        var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+          register: req.body.register,
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+        });
+        if (khariltsagch)
           throw new Error(
-            "Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!",
+            "Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!",
           );
-        if (!!req.body.register) {
-          var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
-            register: req.body.register,
-            baiguullagiinId: req.body.baiguullagiinId,
-            barilgiinId: req.body.barilgiinId,
-          });
-          if (khariltsagch)
-            throw new Error(
-              "Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!",
-            );
-        }
-        if (!!req.body.customerTin) {
-          var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
-            customerTin: req.body.customerTin,
-            baiguullagiinId: req.body.baiguullagiinId,
-            barilgiinId: req.body.barilgiinId,
-          });
-          if (khariltsagch)
-            throw new Error(
-              "Тухайн бүртгэлийн дугаараар харилцагч бүртгэлтэй байна!",
-            );
-        }
+      }
+      if (!!req.body.customerTin) {
+        var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+          customerTin: req.body.customerTin,
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+        });
+        if (khariltsagch)
+          throw new Error(
+            "Тухайн бүртгэлийн дугаараар харилцагч бүртгэлтэй байна!",
+          );
       }
       next();
     } catch (error) {
