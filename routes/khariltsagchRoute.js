@@ -45,16 +45,21 @@ crud(
     try {
       const { db } = require("zevbackv2");
       if (req.params.id) {
-        
+        console.log("[SYNC] PUT khariltsagch id:", req.params.id);
+
         var khariltsagchOld = await Khariltsagch(db.erunkhiiKholbolt).findById(
           req.params.id,
         );
+        console.log("[SYNC] khariltsagchOld found:", !!khariltsagchOld, khariltsagchOld?.register, khariltsagchOld?.baiguullagiinId);
+
         if (khariltsagchOld) {
           const orConditions = [];
           if (khariltsagchOld.register)
             orConditions.push({ register: khariltsagchOld.register });
           if (khariltsagchOld.customerTin)
             orConditions.push({ customerTin: khariltsagchOld.customerTin });
+
+          console.log("[SYNC] orConditions:", JSON.stringify(orConditions));
 
           if (orConditions.length > 0) {
             const gereeQuery = {
@@ -81,19 +86,28 @@ crud(
                 syncFields[field] = req.body[field];
             });
 
-          
+            console.log("[SYNC] syncFields:", JSON.stringify(syncFields));
+            console.log("[SYNC] tukhainBaaziinKholbolt:", !!req.body.tukhainBaaziinKholbolt);
+            console.log("[SYNC] gereeQuery:", JSON.stringify(gereeQuery));
 
             if (Object.keys(syncFields).length > 0) {
               try {
-                await Geree(req.body.tukhainBaaziinKholbolt).updateMany(
+                const result = await Geree(req.body.tukhainBaaziinKholbolt).updateMany(
                   gereeQuery,
                   { $set: syncFields },
                 );
+                console.log("[SYNC] updateMany result:", JSON.stringify(result));
               } catch (err) {
-                console.error("geree sync aldaa:", err.message);
+                console.error("[SYNC] geree sync aldaa:", err.message);
               }
+            } else {
+              console.log("[SYNC] No syncFields to update");
             }
+          } else {
+            console.log("[SYNC] No orConditions - register and customerTin both empty");
           }
+        } else {
+          console.log("[SYNC] khariltsagchOld not found for id:", req.params.id);
         }
       } else {
       
