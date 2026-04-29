@@ -44,31 +44,59 @@ crud(
   async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
-      if (!req.body.register && !req.body.customerTin)
-        throw new Error(
-          "Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!",
-        );
-      if (!!req.body.register) {
-        var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
-          register: req.body.register,
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-        });
-        if (khariltsagch)
-          throw new Error(
-            "Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!",
-          );
+      if (req.method === "PUT" && req.params.id) {
+        const khariltsagchOld = await Khariltsagch(db.erunkhiiKholbolt).findById(req.params.id);
+        console.log("[SYNC] khariltsagchOld:", !!khariltsagchOld, khariltsagchOld?.register, khariltsagchOld?.baiguullagiinId);
+        if (khariltsagchOld) {
+          const orConditions = [];
+          if (khariltsagchOld.register) orConditions.push({ register: khariltsagchOld.register });
+          if (khariltsagchOld.customerTin) orConditions.push({ customerTin: khariltsagchOld.customerTin });
+
+          if (orConditions.length > 0) {
+            const syncFields = {};
+            [
+              "ner", "ovog", "register", "customerTin", "utas", "mail",
+              "khayag", "turul", "albanTushaal", "zakhirliinOvog",
+              "zakhirliinNer", "segmentuud", "khariltsagchiinNershil"
+            ].forEach((field) => {
+              if (req.body[field] !== undefined) syncFields[field] = req.body[field];
+            });
+
+            if (Object.keys(syncFields).length > 0) {
+              try {
+                const result = await Geree(req.body.tukhainBaaziinKholbolt).updateMany(
+                  { $or: orConditions, baiguullagiinId: khariltsagchOld.baiguullagiinId },
+                  { $set: syncFields }
+                );
+                console.log("[SYNC RESULT]", result);
+              } catch (e) {
+                console.error("[SYNC ERROR]", e);
+              }
+            }
+          }
+        }
       }
-      if (!!req.body.customerTin) {
-        var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
-          customerTin: req.body.customerTin,
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-        });
-        if (khariltsagch)
-          throw new Error(
-            "Тухайн бүртгэлийн дугаараар харилцагч бүртгэлтэй байна!",
-          );
+      if (req.method === "POST") {
+        if (!req.body.register && !req.body.customerTin)
+          throw new Error("Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!");
+
+        if (req.body.register) {
+          const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+            register: req.body.register,
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+          });
+          if (khariltsagch) throw new Error("Тухайн регистрийн дугаараар харилцагч бүртгэлтэй байна!");
+        }
+
+        if (req.body.customerTin) {
+          const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+            customerTin: req.body.customerTin,
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+          });
+          if (khariltsagch) throw new Error("Тухайн бүртгэлийн дугаараар харилцагч бүртгэлтэй байна!");
+        }
       }
       next();
     } catch (error) {
