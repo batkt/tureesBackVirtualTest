@@ -109,6 +109,9 @@ exports.sanalKhuleenAvlaa = asyncHandler((req, res, next) => {
     SanalGomdol(req.body.tukhainBaaziinKholbolt)
       .updateMany({ _id: req.body.id }, { $set: { tuluv: 1 } })
       .then((res) => res);
+    SonorduulgaObject(req.body.tukhainBaaziinKholbolt)
+      .updateMany({ _id: req.body.id }, { $set: { tuluv: 1 } })
+      .then((res) => res);
     res.sendStatus(200);
   } catch (err) {
     next(err);
