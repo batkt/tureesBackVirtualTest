@@ -25,7 +25,11 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
     var medegdel = new SanalGomdol(req.body.tukhainBaaziinKholbolt)(req.body);
     medegdel.ognoo = new Date();
     medegdel.save(req.body).then(async (khariu) => {
-      if (medegdel.turul != "shaardlaga") {
+      if (
+        medegdel.turul != "shaardlaga" &&
+        medegdel.turul != "sanalKhuselt" &&
+        medegdel.turul != "gomdol"
+      ) {
         Sonorduulga.ilgeeye(
           (io = req.app.get("socketio")),
           medegdel,
@@ -40,32 +44,30 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
           _id: req.body.khariltsagchiinId,
         });
         if (kharilltsagch) firebaseToken = kharilltsagch.firebaseToken;
-        // if(!!firebaseToken)
-        //   sonorduulgaIlgeeye(
-        //     firebaseToken,
-        //     { title: khariu.title, body: khariu.body },
-        //     (r) => {
+        
         var sonorduulga = new SonorduulgaObject(
           req.body.tukhainBaaziinKholbolt,
         )();
         sonorduulga.khariltsagchiinId = req.body.khariltsagchiinId;
+        sonorduulga.khariltsagchiinNer = req.body.khariltsagchiinNer;
+        sonorduulga.khariltsagchiinUtas = req.body.khariltsagchiinUtas;
         sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
         sonorduulga.barilgiinId = req.body.barilgiinId;
         if (req.body.khariltsagchiinId)
           sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
         sonorduulga.title = khariu.title;
-        sonorduulga.message = khariu.body;
+        sonorduulga.message = khariu.message || req.body.message || req.body.body;
+        sonorduulga.turul = "duudlaga";
+        sonorduulga.duudlagiinTurul = medegdel.turul;
         sonorduulga.kharsanEsekh = false;
+        sonorduulga.ognoo = new Date();
         sonorduulga.save();
         var io = req.app.get("socketio");
-        if (io)
+        if (io) {
           io.emit("khariltsagch" + req.body.khariltsagchiinId, sonorduulga);
+          io.emit("appWebDuudlaga" + req.body.baiguullagiinId, sonorduulga);
+        }
         res.send("Amjilttai");
-        //     },
-        //     next
-        //   );
-        // else
-        //   res.send("!fire token not found");
       }
     });
   } catch (err) {
@@ -133,27 +135,7 @@ exports.appWebDuudlagaKhadgalya = asyncHandler((req, res, next) => {
     sonorduulga.tuluv = 0;
     sonorduulga.save();
 
-    // ALWAYS create caller record if we have req.user
-    if (req.user && req.user._id) {
-      var khereglegchiiSonorduulga = new SonorduulgaObject(
-        req.body.tukhainBaaziinKholbolt,
-      )();
-      khereglegchiiSonorduulga.khariltsagchiinId = req.user._id;
-      khereglegchiiSonorduulga.khariltsagchiinNer = req.user.ner;
-      khereglegchiiSonorduulga.khariltsagchiinUtas = req.user.utas;
-      khereglegchiiSonorduulga.khariltsagchiinRegister = req.user.register;
-      khereglegchiiSonorduulga.baiguullagiinId = req.body.baiguullagiinId;
-      khereglegchiiSonorduulga.barilgiinId = req.body.barilgiinId;
-      khereglegchiiSonorduulga.title = req.body.title;
-      khereglegchiiSonorduulga.message = req.body.message;
-      khereglegchiiSonorduulga.turul = "duudlaga";
-      khereglegchiiSonorduulga.duudlagiinTurul = req.body.duudlagiinTurul;
-      khereglegchiiSonorduulga.kharsanEsekh = false;
-      khereglegchiiSonorduulga.tuluv = 0;
-      khereglegchiiSonorduulga.khereglegchiiKhuur = true;
-      khereglegchiiSonorduulga.save();
-    }
-
+  
     var io = req.app.get("socketio");
     if (io) {
       io.emit("appWebDuudlaga" + req.body.baiguullagiinId, sonorduulga);

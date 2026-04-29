@@ -67,21 +67,43 @@ router
           "gomdol",
         ].includes(turul)
       ) {
-        sonorduulga.turul = turul;
+        if (turul === "shaardlaga" || turul === "sanalKhuselt") {
+          sonorduulga.turul = "duudlaga";
+          sonorduulga.duudlagiinTurul = turul;
+        } else {
+          sonorduulga.turul = turul;
+        }
       } else {
         sonorduulga.turul = "medegdel";
       }
 
-      sonorduulga.title = medeelel.title;
-      sonorduulga.message = medeelel.body;
+      sonorduulga.title = medeelel.title || req.body.title;
+      sonorduulga.message =
+        medeelel.body || medeelel.message || req.body.message || req.body.body;
       sonorduulga.kharsanEsekh = false;
+      sonorduulga.ognoo = new Date();
 
       const savedNotif = await sonorduulga.save();
+
+      if (turul === "shaardlaga" || turul === "sanalKhuselt") {
+        var sanalGomdol = new SanalGomdol(req.body.tukhainBaaziinKholbolt)();
+        sanalGomdol.khariltsagchiinId = req.body.khariltsagchiinId;
+        sanalGomdol.khariltsagchiinNer = req.body.khariltsagchiinNer;
+        sanalGomdol.baiguullagiinId = req.body.baiguullagiinId;
+        sanalGomdol.barilgiinId = req.body.barilgiinId;
+        sanalGomdol.turul = turul;
+        sanalGomdol.title = sonorduulga.title;
+        sanalGomdol.message = sonorduulga.message;
+        sanalGomdol.ognoo = new Date();
+        sanalGomdol.tuluv = 0;
+        await sanalGomdol.save();
+      }
 
       var io = req.app.get("socketio");
       if (io) {
         const eventName = "khariltsagch" + req.body.khariltsagchiinId;
         io.emit(eventName, savedNotif);
+        io.emit("appWebDuudlaga" + req.body.baiguullagiinId, savedNotif);
       }
 
       if (firebaseToken) {
