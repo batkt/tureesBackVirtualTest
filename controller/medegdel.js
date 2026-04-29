@@ -28,7 +28,8 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
       if (
         medegdel.turul != "shaardlaga" &&
         medegdel.turul != "sanalKhuselt" &&
-        medegdel.turul != "gomdol"
+        medegdel.turul != "gomdol" &&
+        medegdel.turul != "sanal"
       ) {
         Sonorduulga.ilgeeye(
           (io = req.app.get("socketio")),

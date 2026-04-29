@@ -67,7 +67,12 @@ router
           "gomdol",
         ].includes(turul)
       ) {
-        if (turul === "shaardlaga" || turul === "sanalKhuselt") {
+        if (
+          turul === "shaardlaga" ||
+          turul === "sanalKhuselt" ||
+          turul === "sanal" ||
+          turul === "gomdol"
+        ) {
           sonorduulga.turul = "duudlaga";
           sonorduulga.duudlagiinTurul = turul;
         } else {
@@ -85,7 +90,12 @@ router
 
       const savedNotif = await sonorduulga.save();
 
-      if (turul === "shaardlaga" || turul === "sanalKhuselt") {
+      if (
+        turul === "shaardlaga" ||
+        turul === "sanalKhuselt" ||
+        turul === "sanal" ||
+        turul === "gomdol"
+      ) {
         var sanalGomdol = new SanalGomdol(req.body.tukhainBaaziinKholbolt)();
         sanalGomdol.khariltsagchiinId = req.body.khariltsagchiinId;
         sanalGomdol.khariltsagchiinNer = req.body.khariltsagchiinNer;
