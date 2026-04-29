@@ -75,23 +75,22 @@ crud(
               "zakhirliinOvog",
               "zakhirliinNer",
               "segmentuud",
+              "khariltsagchiinNershil",
             ].forEach((field) => {
               if (req.body[field] !== undefined)
                 syncFields[field] = req.body[field];
             });
 
+          
+
             if (Object.keys(syncFields).length > 0) {
-              const kholbolt = db.kholboltuud?.find(
-                (k) => k.baiguullagiinId == khariltsagchOld.baiguullagiinId,
-              );
-              if (kholbolt) {
-                try {
-                  await Geree(kholbolt).updateMany(gereeQuery, {
-                    $set: syncFields,
-                  });
-                } catch (err) {
-                  console.error("geree sync aldaa:", err.message);
-                }
+              try {
+                await Geree(req.body.tukhainBaaziinKholbolt).updateMany(
+                  gereeQuery,
+                  { $set: syncFields },
+                );
+              } catch (err) {
+                console.error("geree sync aldaa:", err.message);
               }
             }
           }
