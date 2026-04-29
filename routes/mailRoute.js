@@ -53,9 +53,14 @@ function translateMailErrorMsg(msg) {
   if (
     msg.includes("535-5.7.8 Username and Password not accepted") ||
     msg.includes("535 5.7.3 Authentication unsuccessful") ||
-    msg.includes("535 5.7.139 Authentication unsuccessful")
+    msg.includes("535 5.7.139 Authentication unsuccessful") ||
+    msg.includes("534-5.7.9 Application-specific password required") ||
+    msg.includes("534 5.7.9")
   ) {
-    return "И-мэйл хаяг эсвэл нууц үг буруу байна. И-мэйл тохиргоогоо шалгана уу.";
+    return "И-мэйл хаяг эсвэл нууц үг буруу байна (эсвэл Application-specific password шаардлагатай). И-мэйл тохиргоогоо шалгана уу.";
+  }
+  if (msg.includes("553-5.1.3") || msg.includes("553 5.1.3")) {
+    return "Хүлээн авагчийн и-мэйл хаяг буруу эсвэл хүчингүй байна.";
   }
   return msg;
 }
