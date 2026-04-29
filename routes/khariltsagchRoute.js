@@ -37,12 +37,10 @@ const {
 } = require("../controller/excel");
 
 router.put("/khariltsagch/:id", tokenShalgakh, async (req, res, next) => {
-  console.log("[MANUAL SYNC] PUT hit for id:", req.params.id);
   try {
     const { db } = require("zevbackv2");
     const khariltsagchOld = await Khariltsagch(db.erunkhiiKholbolt).findById(req.params.id);
     if (khariltsagchOld) {
-      console.log("[MANUAL SYNC] khariltsagchOld found:", khariltsagchOld.register);
       const orConditions = [];
       if (khariltsagchOld.register) orConditions.push({ register: khariltsagchOld.register });
       if (khariltsagchOld.customerTin) orConditions.push({ customerTin: khariltsagchOld.customerTin });
@@ -58,18 +56,16 @@ router.put("/khariltsagch/:id", tokenShalgakh, async (req, res, next) => {
         });
 
         if (Object.keys(syncFields).length > 0) {
-          const result = await Geree(req.body.tukhainBaaziinKholbolt).updateMany(
+          await Geree(req.body.tukhainBaaziinKholbolt).updateMany(
             { $or: orConditions, baiguullagiinId: khariltsagchOld.baiguullagiinId },
             { $set: syncFields }
           );
-          console.log("[MANUAL SYNC] updateMany result:", result);
         }
       }
     }
     next();
   } catch (error) {
-    console.error("[MANUAL SYNC] Error:", error);
-    next(); // Continue even if sync fails
+    next();
   }
 });
 
