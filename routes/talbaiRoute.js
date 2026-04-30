@@ -212,7 +212,11 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
     });
     if (talbaiShalgakh?.length > 0)
       throw new Error("Талбайн дугаар давхардаж байна!");
-    var talbai = new Talbai(req.body.tukhainBaaziinKholbolt)(req.body);
+    const updateData = { ...req.body };
+    delete updateData.tukhainBaaziinKholbolt;
+    delete updateData.erunkhiiKholbolt;
+    delete updateData.nevtersenAjiltniiToken;
+    var talbai = new Talbai(req.body.tukhainBaaziinKholbolt)(updateData);
     var khuuchinTalbai = await Talbai(req.body.tukhainBaaziinKholbolt).findById(
       req.body._id
     );

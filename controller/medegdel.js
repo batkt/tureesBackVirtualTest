@@ -22,9 +22,13 @@ exports.uruunuudOlyo = asyncHandler((ajiltan, callback) => {
 
 exports.sanalKhadgalya = asyncHandler((req, res, next) => {
   try {
-    var medegdel = new SanalGomdol(req.body.tukhainBaaziinKholbolt)(req.body);
+    const updateData = { ...req.body };
+    delete updateData.tukhainBaaziinKholbolt;
+    delete updateData.erunkhiiKholbolt;
+    delete updateData.nevtersenAjiltniiToken;
+    var medegdel = new SanalGomdol(req.body.tukhainBaaziinKholbolt)(updateData);
     medegdel.ognoo = new Date();
-    medegdel.save(req.body).then(async (khariu) => {
+    medegdel.save().then(async (khariu) => {
       if (
         medegdel.turul != "shaardlaga" &&
         medegdel.turul != "sanalKhuselt" &&

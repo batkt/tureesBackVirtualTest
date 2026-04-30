@@ -395,7 +395,11 @@ crud(
   async (req, res, next) => {
     try {
       const { db } = require("zevbackv2");
-      const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(req.body);
+      const updateData = { ...req.body };
+      delete updateData.tukhainBaaziinKholbolt;
+      delete updateData.erunkhiiKholbolt;
+      delete updateData.nevtersenAjiltniiToken;
+      const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(updateData);
       khariltsagch.id = khariltsagch.register;
       var unuudur = new Date();
       unuudur = new Date(
@@ -445,7 +449,11 @@ crud(
 
 router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   const { db } = require("zevbackv2");
-  const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(req.body);
+  const updateData = { ...req.body };
+  delete updateData.tukhainBaaziinKholbolt;
+  delete updateData.erunkhiiKholbolt;
+  delete updateData.nevtersenAjiltniiToken;
+  const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(updateData);
   khariltsagch.id = khariltsagch.register
     ? khariltsagch.register
     : khariltsagch.customerTin;
@@ -511,7 +519,7 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   //   req.body.avlaga.guilgeenuud = khuvaariGuilgeenuud;
   // }
 
-  var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
+  var geree = new Geree(req.body.tukhainBaaziinKholbolt)(updateData);
   var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
   try {
     if (geree.avlaga.guilgeenuud && geree.avlaga.guilgeenuud.length > 0)
@@ -585,7 +593,11 @@ router
   .route("/gereeZasya")
   .post(tokenShalgakh, gereeZasakhShalguur, async (req, res, next) => {
     try {
-      var geree = new Geree(req.body.tukhainBaaziinKholbolt)(req.body);
+      const updateData = { ...req.body };
+      delete updateData.tukhainBaaziinKholbolt;
+      delete updateData.erunkhiiKholbolt;
+      delete updateData.nevtersenAjiltniiToken;
+      var geree = new Geree(req.body.tukhainBaaziinKholbolt)(updateData);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findById(geree._id)
         .select("+avlaga");

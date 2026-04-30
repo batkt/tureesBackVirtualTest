@@ -86,9 +86,14 @@ router.put("/khariltsagch/:id", tokenShalgakh, async (req, res, next) => {
         }
       }
 
+      const updateData = { ...req.body };
+      delete updateData.tukhainBaaziinKholbolt;
+      delete updateData.erunkhiiKholbolt;
+      delete updateData.nevtersenAjiltniiToken;
+
       const khariltsagchNew = await Khariltsagch(
         db.erunkhiiKholbolt,
-      ).findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
+      ).findByIdAndUpdate(req.params.id, { $set: updateData }, { new: true });
 
       if (khariltsagchNew) {
         ZassanBarimtShalgakh.zassanBarimtShalgakh(
