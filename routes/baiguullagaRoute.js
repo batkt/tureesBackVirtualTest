@@ -29,16 +29,16 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
       .save()
       .then(async (result) => {
         // test
-        db.kholboltNemye(
-          baiguullaga._id,
-          req.body.baaziinNer,
-          true,
-          "127.0.0.1:27017",
-          "Br1stelback1",
-          "admin",
-        );
+        // db.kholboltNemye(
+        //   baiguullaga._id,
+        //   req.body.baaziinNer,
+        //   true,
+        //   "127.0.0.1:27017",
+        //   "Br1stelback1",
+        //   "admin",
+        // );
         //production
-        // db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
+        db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
         var kholbolt = db.kholboltuud.find(
           (a) => a.baiguullagiinId == result._id.toString(),
         );
