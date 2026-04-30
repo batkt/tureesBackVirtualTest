@@ -6,7 +6,14 @@ const Geree = require("../models/geree");
 //const { crud } = require("../components/crud");
 //const { tokenShalgakh } = require("../middlewares/tokenShalgakh");
 //const UstsanBarimt = require("../models/ustsanBarimt");
-const { tokenShalgakh, crud, UstsanBarimt, khuudaslalt } = require("zevbackv2");
+const ZassanBarimtShalgakh = require("../components/zassanBarimtShalgakh");
+const {
+  tokenShalgakh,
+  crud,
+  UstsanBarimt,
+  khuudaslalt,
+  db,
+} = require("zevbackv2");
 const storage = multer.memoryStorage();
 const uploadFile = multer({ storage: storage });
 const {
@@ -38,34 +45,71 @@ const {
 
 router.put("/khariltsagch/:id", tokenShalgakh, async (req, res, next) => {
   try {
-    const { db } = require("zevbackv2");
-    const khariltsagchOld = await Khariltsagch(db.erunkhiiKholbolt).findById(req.params.id);
+    const khariltsagchOld = await Khariltsagch(db.erunkhiiKholbolt).findById(
+      req.params.id,
+    );
     if (khariltsagchOld) {
       const orConditions = [];
-      if (khariltsagchOld.register) orConditions.push({ register: khariltsagchOld.register });
-      if (khariltsagchOld.customerTin) orConditions.push({ customerTin: khariltsagchOld.customerTin });
+      if (khariltsagchOld.register)
+        orConditions.push({ register: khariltsagchOld.register });
+      if (khariltsagchOld.customerTin)
+        orConditions.push({ customerTin: khariltsagchOld.customerTin });
 
       if (orConditions.length > 0) {
         const syncFields = {};
         [
-          "ner", "ovog", "register", "customerTin", "utas", "mail",
-          "khayag", "turul", "albanTushaal", "zakhirliinOvog",
-          "zakhirliinNer", "segmentuud", "khariltsagchiinNershil"
+          "ner",
+          "ovog",
+          "register",
+          "customerTin",
+          "utas",
+          "mail",
+          "khayag",
+          "turul",
+          "albanTushaal",
+          "zakhirliinOvog",
+          "zakhirliinNer",
+          "segmentuud",
+          "khariltsagchiinNershil",
         ].forEach((field) => {
           if (req.body[field] !== undefined) syncFields[field] = req.body[field];
         });
 
         if (Object.keys(syncFields).length > 0) {
           await Geree(req.body.tukhainBaaziinKholbolt).updateMany(
-            { $or: orConditions, baiguullagiinId: khariltsagchOld.baiguullagiinId },
-            { $set: syncFields }
+            {
+              $or: orConditions,
+              baiguullagiinId: khariltsagchOld.baiguullagiinId,
+            },
+            { $set: syncFields },
           );
         }
       }
+
+      const khariltsagchNew = await Khariltsagch(
+        db.erunkhiiKholbolt,
+      ).findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
+
+      if (khariltsagchNew) {
+        ZassanBarimtShalgakh.zassanBarimtShalgakh(
+          khariltsagchOld,
+          khariltsagchNew,
+          khariltsagchNew.register ||
+            khariltsagchNew.customerTin ||
+            khariltsagchNew._id,
+          "Khariltsagch",
+          "Харилцагч",
+          req.body,
+        );
+        res.send(khariltsagchNew);
+      } else {
+        res.status(404).send("Харилцагч олдсонгүй");
+      }
+    } else {
+      res.status(404).send("Харилцагч олдсонгүй");
     }
-    next();
   } catch (error) {
-    next();
+    next(error);
   }
 });
 

@@ -98,6 +98,45 @@ function orchuulyaText(text){
     case "niitiinTalbaiEsekh":
       butsaakhText = "Нийт талбай эсэх";
       break;
+    case "ner":
+      butsaakhText = "Нэр";
+      break;
+    case "ovog":
+      butsaakhText = "Овог";
+      break;
+    case "register":
+      butsaakhText = "Регистрийн дугаар";
+      break;
+    case "customerTin":
+      butsaakhText = "Бүртгэлийн дугаар";
+      break;
+    case "utas":
+      butsaakhText = "Утас";
+      break;
+    case "mail":
+      butsaakhText = "И-мэйл";
+      break;
+    case "khayag":
+      butsaakhText = "Хаяг";
+      break;
+    case "turul":
+      butsaakhText = "Төрөл";
+      break;
+    case "albanTushaal":
+      butsaakhText = "Албан тушаал";
+      break;
+    case "zakhirliinOvog":
+      butsaakhText = "Захирлын овог";
+      break;
+    case "zakhirliinNer":
+      butsaakhText = "Захирлын нэр";
+      break;
+    case "segmentuud":
+      butsaakhText = "Сегментүүд";
+      break;
+    case "khariltsagchiinNershil":
+      butsaakhText = "Харилцагчийн нэршил";
+      break;
     case "idevkhiteiEsekh":
       butsaakhText = "Идэвхтэй эсэх";
       break; 
