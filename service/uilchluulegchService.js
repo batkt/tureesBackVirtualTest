@@ -275,7 +275,7 @@ exports.orlogoGaraasBurtgeh = async (utguud) => {
   const result = await uilchluulegchGaraasBurtgey({ body: utguud });
   return result;
 };
-exports.tulburTulye = async (body) => {
+exports.tulburTulye = async (req, body) => {
   if (!Array.isArray(body.tulbur) || body.tulbur.length === 0) {
     throw new Error("Төлбөрийн мэдээлэл хоосон байна");
   }
