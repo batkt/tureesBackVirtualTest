@@ -2346,6 +2346,9 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
           if (b.tailbar === "Management" || b.zardliinTurul === "management")
             b.tailbar = "Менежментийн төлбөр";
           if (!!b.zardliinNer) b.tailbar = b.zardliinNer;
+          if (b.tailbar?.includes("Менежментийн төлбөр") || b.tailbar?.includes("Менежментийн зардал") || b.tailbar?.includes("Менежмент")) {
+            b.tailbar = "Менежментийн төлбөр";
+          }
           if (!b.zardliinTurul && !b.zardliinNer && b.turul != "khungulult") {
             var filteredZardal = zardluud?.filter((a) => a.ner === b.tailbar);
             if (filteredZardal?.length === 0) b.tailbar = "Бусад авлага";
