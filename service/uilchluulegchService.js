@@ -325,6 +325,27 @@ exports.tulburTulye = async (body) => {
       },
     },
   );
+  if (uurchlukhTuluv === 1) {
+    var tukhainObject = await Uilchluulegch(
+      body.tukhainBaaziinKholbolt,
+      true,
+    ).findOne({
+      _id: body.id,
+    });
+    console.log(
+      "Tukhain object for socket emit:" +
+        tukhainObject.mashiniiDugaar +
+        " --- " +
+        tukhainObject.baiguullagiinId,
+    );
+    const io = req.app.get("socketio");
+    io.emit("zogsoolGarahTulsun", {
+      baiguullagiinId: tukhainObject.baiguullagiinId,
+      khaalgaTurul: "garsan",
+      mashiniiDugaar: tukhainObject.mashiniiDugaar,
+      cameraIP: tukhainObject.tuukh[0]?.garsanKhaalga,
+    });
+  }
 
   return "Amjilttai";
 };
