@@ -73,13 +73,17 @@ khariltsagchSchema.pre("save", async function () {
   this.nuutsUg = await bcrypt.hash(this.nuutsUg, salt);
 });
 
-khariltsagchSchema.pre("updateOne", async function () {
+khariltsagchSchema.pre(["updateOne", "findOneAndUpdate"], async function () {
   const salt = await bcrypt.genSalt(12);
-  if (this._update.nuutsUg && this._update.nuutsUg !== "123")
+  if (this._update.nuutsUg)
     this._update.nuutsUg = await bcrypt.hash(this._update.nuutsUg, salt);
-  else delete this._update.nuutsUg;
+  if (this._update.$set && this._update.$set.nuutsUg)
+    this._update.$set.nuutsUg = await bcrypt.hash(this._update.$set.nuutsUg, salt);
+
   if (this._update.utas && this._update.utas.length == 0)
     delete this._update.utas;
+  if (this._update.$set && this._update.$set.utas && this._update.$set.utas.length == 0)
+    delete this._update.$set.utas;
 });
 
 khariltsagchSchema.methods.passwordShalgaya = async function (pass) {

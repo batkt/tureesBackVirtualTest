@@ -2353,6 +2353,12 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
           if (b.tailbar?.includes("Менежментийн төлбөр") || b.tailbar?.includes("Менежментийн зардал") || b.tailbar?.includes("Менежмент")) {
             b.tailbar = "Менежментийн төлбөр";
           }
+          if (b.tailbar?.includes("Халуун ус")) b.tailbar = "Халуун ус";
+          else if (b.tailbar?.includes("Хүйтэн ус")) b.tailbar = "Хүйтэн ус";
+          else if (b.tailbar?.includes("Ус")) b.tailbar = "Ус";
+
+          if (b.tailbar?.includes("Цахилгаан")) b.tailbar = "Цахилгаан";
+          if (b.tailbar?.includes("Дулаан")) b.tailbar = "Дулаан";
 
           var tempkhungulult = tempJagsaaltAvlaga?.filter(
             (e) =>
