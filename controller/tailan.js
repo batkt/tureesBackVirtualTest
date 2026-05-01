@@ -2350,15 +2350,25 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
             var filteredZardal = zardluud?.filter((a) => a.ner === b.tailbar);
             if (filteredZardal?.length === 0) b.tailbar = "Бусад авлага";
           }
-          if (b.tailbar?.includes("Менежментийн төлбөр") || b.tailbar?.includes("Менежментийн зардал") || b.tailbar?.includes("Менежмент")) {
+          if (
+            b.tailbar?.includes("Менежментийн төлбөр") ||
+            b.tailbar?.includes("Менежментийн зардал") ||
+            b.tailbar?.includes("Менежмент") ||
+            b.tailbar?.includes("Хөрөнгийн менежмент") ||
+            b.tailbar?.includes("Ашиглалт менежментийн төлбөр")
+          ) {
             b.tailbar = "Менежментийн төлбөр";
           }
           if (b.tailbar?.includes("Халуун ус")) b.tailbar = "Халуун ус";
           else if (b.tailbar?.includes("Хүйтэн ус")) b.tailbar = "Хүйтэн ус";
           else if (b.tailbar?.includes("Ус")) b.tailbar = "Ус";
 
-          if (b.tailbar?.includes("Цахилгаан")) b.tailbar = "Цахилгаан";
-          if (b.tailbar?.includes("Дулаан")) b.tailbar = "Дулаан";
+          if (b.tailbar?.includes("Цахилгаан") || b.tailbar?.toLowerCase().includes("tsahilgaan")) b.tailbar = "Цахилгаан";
+          if (b.tailbar?.includes("Дулаан") || b.tailbar?.toLowerCase().includes("dulaan")) b.tailbar = "Дулаан";
+          if (b.tailbar?.includes("Хог") || b.tailbar?.toLowerCase().includes("hog")) b.tailbar = "Хог";
+          if (b.tailbar?.toLowerCase().includes("нийтийн эзэмшлийн цэвэрлэгээ")) b.tailbar = "Нийтийн эзэмшлийн цэвэрлэгээ";
+          if (b.tailbar?.toLowerCase().includes("лифт ашиглалт")) b.tailbar = "Лифт ашиглалт";
+          if (b.tailbar?.includes("Агуулах")) b.tailbar = "Агуулах";
 
           var tempkhungulult = tempJagsaaltAvlaga?.filter(
             (e) =>
