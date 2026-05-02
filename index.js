@@ -48,6 +48,7 @@ const eventRoute = require("./routes/eventRoute");
 const tasalbarRoute = require("./routes/tasalbarRoute");
 const zochinUrikhRoute = require("./routes/zochinUrikhRoute");
 const uneguiMashinRoute = require("./routes/uneguiMashinRoute");
+const gereeService = require("./service/gereeService");
 
 const { db } = require("zevbackv2");
 
@@ -69,13 +70,13 @@ app.use(
   }),
 );
 // test;
-// db.kholboltUusgey(
-//   app,
-//   "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin",
-// );
+db.kholboltUusgey(
+  app,
+  "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin",
+);
 
 //production
-db.kholboltUusgey(app);
+// db.kholboltUusgey(app);
 
 app.use(
   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }),
@@ -369,6 +370,14 @@ if (process.env.NODE_APP_INSTANCE === "7") {
       timezone: "Asia/Ulaanbaatar",
     },
   );
+
+  cron.schedule("5 1 1 5 *", async () => {
+    try {
+      await gereeService.gereeAshiglakhguiSaruud({}, {});
+    } catch (err) {
+      console.error(err);
+    }
+  });
 }
 // cron.schedule(
 //   "10 13 * * * ",
