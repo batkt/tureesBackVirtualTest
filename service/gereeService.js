@@ -33,7 +33,7 @@ async function gereeAshiglakhguiSaruud(req, zardalAvlaga) {
       }
       res.send("Amjilttai");
     } catch (error) {
-      if (next) next(error);
+      console.log(error);
     }
   }
 }
