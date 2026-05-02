@@ -1,3 +1,5 @@
+const Geree = require("../models/geree");
+
 async function gereeAshiglakhguiSaruud(req, zardalAvlaga) {
   {
     try {
