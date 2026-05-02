@@ -654,7 +654,7 @@ router
             req.body.tukhainBaaziinKholbolt,
           );
           for (const zardal of geree.zardluud) {
-            await gereeService.gereeAshiglakhguiSaruud(req, zardal);
+            gereeService.gereeAshiglakhguiSaruud(req, zardal);
           }
           ZassanBarimtShalgakh.zassanBarimtShalgakh(
             gereeOld,
