@@ -18,7 +18,7 @@ async function getParkingFind(kholbolt, baiguullagiinId, query) {
     .digest("hex");
   const cacheKey = `parkingFind:${baiguullagiinId}:${queryKey}`;
   const cached = await pubClient.get(cacheKey);
-  // if (cached) return JSON.parse(cached);
+  if (cached) return JSON.parse(cached);
   const data = await Parking(kholbolt).find(query).lean();
   await pubClient.setEx(cacheKey, 36000, JSON.stringify(data));
   return data;
