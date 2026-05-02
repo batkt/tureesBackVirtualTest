@@ -491,14 +491,15 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               });
             if (zardluud && zardluud.length > 0) {
               zardluud.forEach((zardal) => {
+                const start = moment(zardal.ognoonuud[0]);
+                const end = moment(zardal.ognoonuud[1]);
+                const current = moment(turOgnoo);
                 if (
-                  zardal.ognoonuud?.length > 0 &&
-                  moment(turOgnoo).format("MM") >
-                    moment(zardal.ognoonuud[0]).format("MM") &&
-                  moment(turOgnoo).format("MM") <
-                    moment(zardal.ognoonuud[1]).format("MM")
-                )
+                  zardal.ognoonuud?.length > 1 &&
+                  current.isBetween(start, end, null, "[]")
+                ) {
                   return;
+                }
                 if (
                   zardal &&
                   (!zardal.ner?.includes("Цахилгаан") ||
