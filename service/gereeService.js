@@ -30,6 +30,24 @@ async function gereeAshiglakhguiSaruud(req, zardalAvlaga) {
                 },
               },
             );
+            await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+              { _id: geree._id },
+              {
+                $pull: {
+                  zardluud: {
+                    _id: zardalAvlaga._id.toString(),
+                  },
+                },
+              },
+            );
+            await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
+              { _id: geree._id },
+              {
+                $push: {
+                  ["zardluud"]: zardalAvlaga,
+                },
+              },
+            );
           }
         }
       }
