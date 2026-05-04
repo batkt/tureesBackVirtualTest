@@ -304,7 +304,7 @@ router
       var suuliinZaalt = null;
       var suuliinOgnoo = null;
 
-      // 1. Бүх гэрээнүүдийн guilgeenuud дотроос хайх
+     
       const gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .find({ talbainDugaar })
         .select("avlaga")
