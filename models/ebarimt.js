@@ -27,6 +27,8 @@ const ebarimtSchema = new Schema(
     reportMonth: String,
     date: String,
     dateOgnoo: Date,
+    qrData: String,
+    lottery: String,
     talbainDugaar: String,
     gereeniiDugaar: String,
     utas: String,

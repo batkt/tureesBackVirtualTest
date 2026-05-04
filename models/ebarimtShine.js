@@ -35,6 +35,8 @@ const ebarimtSchema = new Schema(
     reportMonth: String, //Баримт харьяалагдах тайлант сар
     date: String,
     dateOgnoo: Date,
+    qrData: String,
+    lottery: String,
     receipts: [
       {
         totalAmount: Number, //Дэд төлбөрийн баримтын гүйлгээний нийт дүн Бүх төрлийн татвар шингэсэн дүн
