@@ -490,7 +490,14 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                 undsenDun: dun,
               });
             if (zardluud && zardluud.length > 0) {
-              zardluud.forEach((zardal) => {
+              zardluud.forEach((zardalData) => {
+                var zardal = await AshiglaltiinZardluud(
+                        req.body.tukhainBaaziinKholbolt,
+                      ).findById(zardalData._id);
+                console.log(
+                  "zardal.ognoonuud --->",
+                  JSON.stringify(zardal.ognoonuud),
+                );
                 console.log("0", zardal.ognoonuud[0]);
                 console.log("1", zardal.ognoonuud[1]);
                 const start = moment(zardal.ognoonuud[0]);

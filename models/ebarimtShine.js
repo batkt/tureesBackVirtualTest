@@ -35,6 +35,7 @@ const ebarimtSchema = new Schema(
     reportMonth: String, //Баримт харьяалагдах тайлант сар
     date: String,
     dateOgnoo: Date,
+    lottery: String, //Суглааны дугаар
     receipts: [
       {
         totalAmount: Number, //Дэд төлбөрийн баримтын гүйлгээний нийт дүн Бүх төрлийн татвар шингэсэн дүн
@@ -71,7 +72,7 @@ const ebarimtSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 ebarimtSchema.pre("save", async function () {
   this.dateOgnoo = new Date(this.date);
