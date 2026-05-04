@@ -3134,6 +3134,8 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           tolgoinObject.umnukhZaalt = cellAsString[0];
         else if (sheet[cellAsString].v.includes("Одоогийн заалт"))
           tolgoinObject.suuliinZaalt = cellAsString[0];
+        else if (sheet[cellAsString].v.includes("Тоолуурын дугаар"))
+          tolgoinObject.tooluuriinDugaar = cellAsString[0];
 
         if (baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh) {
           if (sheet[cellAsString].v.includes("Гүйдлийн коэффициент"))
@@ -3158,6 +3160,8 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         mur[usegTooruuKhurvuulekh(tolgoinObject.umnukhZaalt)];
       object.suuliinZaalt =
         mur[usegTooruuKhurvuulekh(tolgoinObject.suuliinZaalt)];
+      object.tooluuriinDugaar =
+        mur[usegTooruuKhurvuulekh(tolgoinObject.tooluuriinDugaar)];
       if (baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh)
         object.guidliinKoep =
           mur[usegTooruuKhurvuulekh(tolgoinObject.guidliinKoep)];
@@ -3276,6 +3280,25 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           }
           if (!!suuliinGuilgee?.suuliinZaalt) {
             umnukhZaalt = suuliinGuilgee.suuliinZaalt;
+          } else {
+            
+            var match = {
+              talbainDugaar: geree.talbainDugaar,
+              barilgiinId: req.body.barilgiinId,
+              zardliinId: ashiglaltiinZardal._id,
+            };
+            if (!!tukhainZardal.tooluuriinDugaar) {
+              match.tooluuriinDugaar = tukhainZardal.tooluuriinDugaar;
+            }
+            var lastExcel = await AshiglaltiinExcel(
+              req.body.tukhainBaaziinKholbolt,
+              true,
+            )
+              .findOne(match)
+              .sort({ ognoo: -1 });
+            if (lastExcel) {
+              umnukhZaalt = lastExcel.suuliinZaalt;
+            }
           }
         }
         var tukhainZardal;
@@ -3484,6 +3507,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           ashiglaltiinZardal.turul === "кг"
         ) {
           updateObject["suuliinZaalt"] = tukhainZardal.suuliinZaalt;
+          updateObject["tooluuriinDugaar"] = tukhainZardal.tooluuriinDugaar;
           updateObject["umnukhZaalt"] = umnukhZaalt;
         }
         updateObject["guilgeeKhiisenOgnoo"] = new Date();
@@ -3554,6 +3578,11 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
     {
       header: "Одоогийн заалт",
       key: "Одоогийн заалт",
+      width: 30,
+    },
+    {
+      header: "Тоолуурын дугаар",
+      key: "Тоолуурын дугаар",
       width: 30,
     },
   ];

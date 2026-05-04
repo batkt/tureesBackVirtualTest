@@ -218,6 +218,14 @@ router.route("/zaaltTeglekh").post(tokenShalgakh, async (req, res, next) => {
       {
         $set: {
           "avlaga.guilgeenuud.$.suuliinZaalt": 0,
+          "avlaga.guilgeenuud.$.tulukhDun": 0,
+          "avlaga.guilgeenuud.$.undsenDun": 0,
+          "avlaga.guilgeenuud.$.tseverUsDun": 0,
+          "avlaga.guilgeenuud.$.bokhirUsDun": 0,
+          "avlaga.guilgeenuud.$.usKhalaasanDun": 0,
+          "avlaga.guilgeenuud.$.tsekhDun": 0,
+          "avlaga.guilgeenuud.$.chadalDun": 0,
+          "avlaga.guilgeenuud.$.sekhDemjikhTulburDun": 0,
         },
       },
     );
