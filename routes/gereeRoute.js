@@ -295,6 +295,60 @@ router
       });
   });
 router
+  .route("/suuliinZaaltAvya")
+  .get(tokenShalgakh, async (req, res, next) => {
+    try {
+      const { talbainDugaar, tailbar, khemjikhNegj } = req.query;
+      if (!talbainDugaar) return res.send(null);
+
+      var suuliinZaalt = null;
+      var suuliinOgnoo = null;
+
+      // 1. Бүх гэрээнүүдийн guilgeenuud дотроос хайх
+      const gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
+        .find({ talbainDugaar })
+        .select("avlaga")
+        .lean();
+
+      for (const geree of gereenuud) {
+        const guilgeenuud = geree?.avlaga?.guilgeenuud || [];
+        const filtered = guilgeenuud.filter((x) => {
+          if (x?.suuliinZaalt == null) return false;
+          if (tailbar && x?.tailbar !== tailbar) return false;
+          if (khemjikhNegj && x?.khemjikhNegj !== khemjikhNegj) return false;
+          return true;
+        });
+        for (const g of filtered) {
+          const ognoo = g.ognoo ? new Date(g.ognoo) : null;
+          if (!suuliinOgnoo || (ognoo && ognoo > suuliinOgnoo)) {
+            suuliinZaalt = g.suuliinZaalt;
+            suuliinOgnoo = ognoo;
+          }
+        }
+      }
+
+     
+      if (!suuliinZaalt) {
+        const match = { talbainDugaar };
+        if (tailbar) match.zardliinNer = tailbar;
+        const lastExcel = await AshiglaltiinExcel(
+          req.body.tukhainBaaziinKholbolt,
+          true,
+        )
+          .findOne(match)
+          .sort({ ognoo: -1 })
+          .lean();
+        if (lastExcel?.suuliinZaalt) {
+          suuliinZaalt = lastExcel.suuliinZaalt;
+        }
+      }
+
+      res.send({ suuliinZaalt });
+    } catch (err) {
+      next(err);
+    }
+  });
+router
   .route("/gereeniiAldangiTulultAvya/:gereeniiId")
   .get(tokenShalgakh, (req, res, next) => {
     Geree(req.body.tukhainBaaziinKholbolt, true)
