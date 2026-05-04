@@ -490,10 +490,10 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                 undsenDun: dun,
               });
             if (zardluud && zardluud.length > 0) {
-              zardluud.forEach((zardal) => {
-                // const zardal = AshiglaltiinZardluud(
-                //   req.body.tukhainBaaziinKholbolt,
-                // ).findOne({ _id: zardalData._id });
+              zardluud.forEach((zardalAvlaga) => {
+                const zardal = AshiglaltiinZardluud(
+                  req.body.tukhainBaaziinKholbolt,
+                ).findOne({ _id: zardalAvlaga._id.toString() });
                 if (zardal.ognoonuud?.length > 1) {
                   console.log(
                     "zardal.ognoonuud --->",
