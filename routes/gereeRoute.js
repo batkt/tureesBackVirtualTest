@@ -299,15 +299,22 @@ router
   .route("/suuliinZaaltAvya")
   .get(tokenShalgakh, async (req, res, next) => {
     try {
-      const { talbainDugaar, tailbar, khemjikhNegj } = req.query;
+      const { talbainDugaar, tailbar, khemjikhNegj, gereeniiId } = req.query;
       if (!talbainDugaar) return res.send(null);
 
       var suuliinZaalt = null;
       var suuliinOgnoo = null;
 
-     
+
+      let contractQuery = { talbainDugaar };
+      if (gereeniiId) {
+        const { ObjectId } = require("mongodb");
+        contractQuery._id = { $ne: new ObjectId(gereeniiId) };
+        contractQuery.tuluv = -1; 
+      }
+
       const gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
-        .find({ talbainDugaar })
+        .find(contractQuery)
         .select("avlaga")
         .lean();
 
@@ -328,8 +335,10 @@ router
         }
       }
 
-     
-      if (!suuliinZaalt) {
+      // Only fall back to AshiglaltiinExcel when NOT called from an active
+      // contract context (no gereeniiId). This prevents stale Excel values from
+      // appearing after a guilgee is deleted from an active contract.
+      if (!suuliinZaalt && !gereeniiId) {
         const match = { talbainDugaar };
         if (tailbar) match.zardliinNer = tailbar;
         const lastExcel = await AshiglaltiinExcel(
