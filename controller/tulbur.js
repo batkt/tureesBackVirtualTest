@@ -491,10 +491,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                 undsenDun: dun,
               });
             if (zardluud && zardluud.length > 0) {
-              zardluud.forEach((zardalAvlaga) => {
-                const zardal = AshiglaltiinZardluud(
-                  req.body.tukhainBaaziinKholbolt,
-                ).findOne({ _id: new ObjectId(zardalAvlaga._id) });
+              zardluud.forEach((zardal) => {
                 if (zardal.ognoonuud?.length > 0) {
                   console.log(
                     "zardal.ognoonuud --->",
