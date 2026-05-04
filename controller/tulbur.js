@@ -493,7 +493,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               zardluud.forEach((zardalData) => {
                 const zardal = AshiglaltiinZardluud(
                   req.body.tukhainBaaziinKholbolt,
-                ).findById(zardalData._id);
+                ).findOne({ _id: zardalData._id });
                 if (zardal.ognoonuud?.length > 1) {
                   console.log(
                     "zardal.ognoonuud --->",
