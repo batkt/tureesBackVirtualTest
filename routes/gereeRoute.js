@@ -1258,8 +1258,9 @@ router
               $gte: new Date(moment(req.body.tsutslakhOgnoo).startOf("month")),
             },
             tulukhDun: { $gt: 0 },
+            suuliinZaalt: { $exists: false },
           }
-        : { ognoo: { $gt: new Date() } };
+        : { ognoo: { $gt: new Date() }, suuliinZaalt: { $exists: false } };
       let tsutsalsanTuluvluguut = 0;
       let tsutsalsanUldegdel = 0;
       let tsutsalsanTulsunDun = 0;
