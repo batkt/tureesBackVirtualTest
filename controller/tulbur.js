@@ -494,24 +494,22 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                 const zardal = AshiglaltiinZardluud(
                   req.body.tukhainBaaziinKholbolt,
                 ).findById(zardalData._id);
-                console.log(
-                  "zardal.ognoonuud --->",
-                  JSON.stringify(zardal.ognoonuud),
-                );
-                console.log("0", zardal.ognoonuud[0]);
-                console.log("1", zardal.ognoonuud[1]);
-                const start = moment(zardal.ognoonuud[0]);
-                const end = moment(zardal.ognoonuud[1]);
-                const current = moment(turOgnoo);
-                console.log("start", start.format("YYYY-MM-DD"));
-                console.log("end", end.format("YYYY-MM-DD"));
-                console.log("current", current.format("YYYY-MM-DD"));
-
-                if (
-                  zardal.ognoonuud?.length > 1 &&
-                  current.isBetween(start, end, null, "[]")
-                ) {
-                  return;
+                if (zardal.ognoonuud?.length > 1) {
+                  console.log(
+                    "zardal.ognoonuud --->",
+                    JSON.stringify(zardal.ognoonuud),
+                  );
+                  console.log("0", zardal.ognoonuud[0]);
+                  console.log("1", zardal.ognoonuud[1]);
+                  const start = moment(zardal.ognoonuud[0]);
+                  const end = moment(zardal.ognoonuud[1]);
+                  const current = moment(turOgnoo);
+                  console.log("start", start.format("YYYY-MM-DD"));
+                  console.log("end", end.format("YYYY-MM-DD"));
+                  console.log("current", current.format("YYYY-MM-DD"));
+                  if (current.isBetween(start, end, null, "[]")) {
+                    return;
+                  }
                 }
                 if (
                   zardal &&
