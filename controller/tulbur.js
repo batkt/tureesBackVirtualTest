@@ -454,6 +454,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
     var tukhainSar = new Date(moment(ognoo).set("date", 1));
     var suuliinUdur;
     var duussanEsekh = false;
+    var ObjectId = require("mongodb").ObjectId;
     if (tulukhUdruud && tulukhUdruud.length > 1)
       tulukhUdruud.sort(function (a, b) {
         return a - b;
@@ -490,11 +491,11 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                 undsenDun: dun,
               });
             if (zardluud && zardluud.length > 0) {
-              zardluud.forEach((zardal) => {
-                // const zardal = AshiglaltiinZardluud(
-                //   req.body.tukhainBaaziinKholbolt,
-                // ).findOne({ _id: zardalAvlaga._id.toString() });
-                if (zardal.ognoonuud?.length > 1) {
+              zardluud.forEach((zardalAvlaga) => {
+                const zardal = AshiglaltiinZardluud(
+                  req.body.tukhainBaaziinKholbolt,
+                ).findOne({ _id: new ObjectId(zardalAvlaga._id) });
+                if (zardal.ognoonuud?.length > 0) {
                   console.log(
                     "zardal.ognoonuud --->",
                     JSON.stringify(zardal.ognoonuud),
