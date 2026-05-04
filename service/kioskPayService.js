@@ -316,10 +316,6 @@ async function kioskPay(req) {
             });
           }
         } else {
-          console.log(
-            "Tuukh-gui tukhain object-d tulbur oruulj baina" +
-              tukhainObject.mashiniiDugaar,
-          );
           const io = req.app.get("socketio");
           io.emit("zogsoolRefresh", {
             baiguullagiinId: tukhainObject.baiguullagiinId,

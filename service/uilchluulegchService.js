@@ -332,12 +332,6 @@ exports.tulburTulye = async (req, body) => {
     ).findOne({
       _id: body.id,
     });
-    console.log(
-      "Tukhain object for socket emit:" +
-        tukhainObject.mashiniiDugaar +
-        " --- " +
-        tukhainObject.baiguullagiinId,
-    );
     const io = req.app.get("socketio");
     io.emit("zogsoolGarahTulsun", {
       baiguullagiinId: tukhainObject.baiguullagiinId,

@@ -12,9 +12,6 @@ async function gereeAshiglakhguiSaruud(req, zardalAvlaga) {
         });
         if (gereenuud.length > 0) {
           for (const geree of gereenuud) {
-            console.log(" ---------------> " + zardalAvlaga.ner);
-            console.log(" ------- 0 --------> " + zardalAvlaga.ognoonuud[0]);
-            console.log(" ------- 1 --------> " + zardalAvlaga.ognoonuud[1]);
             await Geree(req.body.tukhainBaaziinKholbolt).findOneAndUpdate(
               { _id: geree._id },
               {
