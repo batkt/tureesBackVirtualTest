@@ -490,7 +490,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                 undsenDun: dun,
               });
             if (zardluud && zardluud.length > 0) {
-              zardluud.forEach((zardalData) => {
+              for (const zardalData of zardluud) {
                 var zardal = await AshiglaltiinZardluud(
                         req.body.tukhainBaaziinKholbolt,
                       ).findById(zardalData._id);
@@ -575,7 +575,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                       tulukhDun: zardalDun,
                     });
                 }
-              });
+              }
             }
             if (khungulultuud?.length > 0) {
               khungulultuud.forEach((data) => {
