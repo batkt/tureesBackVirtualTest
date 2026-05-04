@@ -435,25 +435,25 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
           turluur.forEach((x) => {
             if (x._id == "bank") {
               jagsaalt.push({
-                ner: "Харилцах",
+                ner: "bank",
                 dun: x.tulsun,
                 ungu: "rgba(255, 99, 132, 0.5)",
               });
             } else if (x._id == "barter") {
               jagsaalt.push({
-                ner: "Бартер",
+                ner: "barter",
                 dun: x.tulsun,
                 ungu: "rgba(53, 162, 235, 0.5)",
               });
             } else if (x._id == "qpay") {
               jagsaalt.push({
-                ner: "Qpay",
+                ner: "qpay",
                 dun: x.tulsun,
                 ungu: "rgba(0, 255, 0, 0.5)",
               });
             } else if (x._id == "voucher") {
               jagsaalt.push({
-                ner: "Ваучер",
+                ner: "voucher",
                 dun: x.tulsun,
                 ungu: "rgba(255, 0, 255, 0.5)",
               });
@@ -465,7 +465,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
           jagsaalt,
           datasets: [
             {
-              label: "Төлөвлөгөө",
+              label: "plan",
               data: tuluvluguunuud,
               backgroundColor: "rgba(255, 99, 132, 0.5)",
               borderColor: "rgba(255, 99, 132, 0.5)",
@@ -473,7 +473,7 @@ exports.borluulaltiinTailanAvya = asyncHandler(async (req, res, next) => {
               lineWidth: 10,
             },
             {
-              label: "Гүйцэтгэл",
+              label: "actual",
               data: guitsetgeluud,
               fill: false,
               borderColor: "rgba(53, 162, 235, 0.5)",

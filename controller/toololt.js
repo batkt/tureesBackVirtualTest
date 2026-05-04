@@ -749,7 +749,7 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
             },
             {
               $group: {
-                _id: "''",
+                _id: "",
                 niit: {
                   $sum: 1,
                 },
@@ -793,6 +793,26 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
                 },
                 "kholbosonGereeniiId.0": {
                   $exists: false,
+                },
+              },
+            },
+            {
+              $group: {
+                _id: "",
+                niit: {
+                  $sum: 1,
+                },
+              },
+            },
+          ],
+          ebarimt: [
+            {
+              $match: {
+                "kholbosonGereeniiId.0": {
+                  $exists: true,
+                },
+                ebarimtAvsanEsekh: {
+                  $ne: true,
                 },
               },
             },
@@ -836,7 +856,7 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
             },
             {
               $group: {
-                _id: "''",
+                _id: "",
                 niit: {
                   $sum: 1,
                 },
@@ -892,6 +912,26 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
               },
             },
           ],
+          ebarimt: [
+            {
+              $match: {
+                "kholbosonGereeniiId.0": {
+                  $exists: true,
+                },
+                ebarimtAvsanEsekh: {
+                  $ne: true,
+                },
+              },
+            },
+            {
+              $group: {
+                _id: "",
+                niit: {
+                  $sum: 1,
+                },
+              },
+            },
+          ],
         },
       },
     ];
@@ -910,6 +950,8 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
           butsaakh.magadlaltai = result[0].magadlaltai[0].niit;
         if (result[0].todorkhoigui[0])
           butsaakh.todorkhoigui = result[0].todorkhoigui[0].niit;
+        if (result[0].ebarimt[0])
+          butsaakh.ebarimt = result[0].ebarimt[0].niit;
         butsaakh.niit =
           butsaakh.kholboson + butsaakh.magadlaltai + butsaakh.todorkhoigui;
         res.send(butsaakh);
