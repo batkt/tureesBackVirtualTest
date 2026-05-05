@@ -29,7 +29,7 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
     
     if (khariltsagchuud.length > 1) {
       const baiguullagiinIdnuud = [
-        ...new Set(khariltsagchuud.map((k) => k.baiguullagiinId).filter(Boolean)),
+        ...new Set(khariltsagchuud.map((k) => k.baiguullagiinId?.toString()).filter(Boolean)),
       ];
 
       if (baiguullagiinIdnuud.length > 1) {
@@ -112,7 +112,7 @@ exports.khariltsagchUtasShalgakh = asyncHandler(async (req, res, next) => {
 
     if (khariltsagchuud.length > 1) {
       const baiguullagiinIdnuud = [
-        ...new Set(khariltsagchuud.map((k) => k.baiguullagiinId).filter(Boolean)),
+        ...new Set(khariltsagchuud.map((k) => k.baiguullagiinId?.toString()).filter(Boolean)),
       ];
 
       if (baiguullagiinIdnuud.length > 1) {
