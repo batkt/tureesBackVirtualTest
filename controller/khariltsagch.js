@@ -94,6 +94,53 @@ exports.khariltsagchBaiguullagaarNevtrey = asyncHandler(async (req, res, next) =
   }
 });
 
+
+exports.khariltsagchUtasShalgakh = asyncHandler(async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    const { utas } = req.body;
+
+    if (!utas) throw new aldaa("Утасны дугаар оруулна уу!");
+
+    const khariltsagchuud = await Khariltsagch(db.erunkhiiKholbolt)
+      .find({ utas, idevkhiteiEsekh: true })
+      .catch((err) => { next(err); });
+
+    if (!khariltsagchuud || khariltsagchuud.length === 0) {
+      return res.status(200).json({ exists: false });
+    }
+
+    if (khariltsagchuud.length > 1) {
+      const baiguullagiinIdnuud = [
+        ...new Set(khariltsagchuud.map((k) => k.baiguullagiinId).filter(Boolean)),
+      ];
+
+      if (baiguullagiinIdnuud.length > 1) {
+        const baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt)
+          .find({ _id: { $in: baiguullagiinIdnuud } })
+          .select("_id ner dotoodNer zurgiinNer barilguud")
+          .lean();
+
+        return res.status(200).json({
+          exists: true,
+          multipleOrgs: true,
+          baiguullaguud: baiguullaguud.map((b) => ({
+            _id: b._id,
+            ner: b.ner,
+            dotoodNer: b.dotoodNer,
+            zurgiinNer: b.zurgiinNer,
+            barilguud: (b.barilguud || []).map((br) => ({ _id: br._id, ner: br.ner })),
+          })),
+        });
+      }
+    }
+
+    return res.status(200).json({ exists: true, multipleOrgs: false });
+  } catch (err) {
+    next(err);
+  }
+});
+
 exports.khariltsagchNuutsUgSolikh = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
