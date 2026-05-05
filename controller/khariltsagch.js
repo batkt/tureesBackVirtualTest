@@ -13,24 +13,76 @@ const { Mashin } = require("parking-v2");
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
-    const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt)
-      .findOne({ utas: req.body.utas, idevkhiteiEsekh: true })
+
+    
+    const khariltsagchuud = await Khariltsagch(db.erunkhiiKholbolt)
+      .find({ utas: req.body.utas, idevkhiteiEsekh: true })
       .select("+nuutsUg")
-      .catch((err) => {
-        next(err);
-      });
+      .catch((err) => { next(err); });
+
+    if (!khariltsagchuud || khariltsagchuud.length === 0)
+      throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+
+    var ok = await khariltsagchuud[0].passwordShalgaya(req.body.nuutsUg);
+    if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+
+    
+    if (khariltsagchuud.length > 1) {
+      const baiguullagiinIdnuud = [
+        ...new Set(khariltsagchuud.map((k) => k.baiguullagiinId).filter(Boolean)),
+      ];
+
+      if (baiguullagiinIdnuud.length > 1) {
+        const baiguullaguud = await Baiguullaga(db.erunkhiiKholbolt)
+          .find({ _id: { $in: baiguullagiinIdnuud } })
+          .select("_id ner dotoodNer zurgiinNer barilguud")
+          .lean();
+
+        return res.status(200).json({
+          multipleOrgs: true,
+          baiguullaguud: baiguullaguud.map((b) => ({
+            _id: b._id,
+            ner: b.ner,
+            dotoodNer: b.dotoodNer,
+            zurgiinNer: b.zurgiinNer,
+            barilguud: (b.barilguud || []).map((br) => ({ _id: br._id, ner: br.ner })),
+          })),
+        });
+      }
+    }
+
+    
+    const khariltsagch = khariltsagchuud[0];
+    var butsaakhObject = {
+      result: khariltsagch,
+      success: true,
+    };
+    const token = await khariltsagch.tokenUusgeye();
+    butsaakhObject.token = token;
+    res.status(200).json(butsaakhObject);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+exports.khariltsagchBaiguullagaarNevtrey = asyncHandler(async (req, res, next) => {
+  try {
+    const { db } = require("zevbackv2");
+    const { utas, nuutsUg, baiguullagiinId } = req.body;
+    if (!baiguullagiinId) throw new aldaa("Байгууллага сонгогдоогүй байна!");
+
+    const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt)
+      .findOne({ utas, baiguullagiinId, idevkhiteiEsekh: true })
+      .select("+nuutsUg")
+      .catch((err) => { next(err); });
+
     if (!khariltsagch)
       throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-    var ok = await khariltsagch.passwordShalgaya(req.body.nuutsUg);
+    var ok = await khariltsagch.passwordShalgaya(nuutsUg);
     if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-    var kholbolt = db.kholboltuud.find(
-      (a) => a.baiguullagiinId == khariltsagch.baiguullagiinId
-    );
-    var oldsonMashin = await Mashin(kholbolt).find({
-      ezemshigchiinUtas: req.body.utas,
-    });
+
     var butsaakhObject = {
-      mashinuud: oldsonMashin,
       result: khariltsagch,
       success: true,
     };

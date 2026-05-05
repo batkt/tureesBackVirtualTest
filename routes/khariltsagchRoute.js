@@ -26,6 +26,7 @@ const { qpayGargaya, qpayTulye } = require("../controller/qpay");
 
 const {
   khariltsagchNevtrey,
+  khariltsagchBaiguullagaarNevtrey,
   khariltsagchNuutsUgSolikh,
   sergeekhKodAvya,
   nuutsUgSergeeye,
@@ -156,6 +157,7 @@ crud(
 );
 
 router.route("/khariltsagchNevtrey").post(khariltsagchNevtrey);
+router.route("/khariltsagchBaiguullagaarNevtrey").post(khariltsagchBaiguullagaarNevtrey);
 router.route("/khariltsagchNuutsUgSolikh").post(khariltsagchNuutsUgSolikh);
 router.route("/sergeekhKodAvya").post(sergeekhKodAvya);
 router.route("/nuutsUgSergeeye").post(nuutsUgSergeeye);
