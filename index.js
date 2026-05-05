@@ -371,13 +371,13 @@ if (process.env.NODE_APP_INSTANCE === "7") {
     },
   );
 
-  cron.schedule("5 1 1 5 *", async () => {
-    try {
-      await gereeService.gereeAshiglakhguiSaruud({}, {});
-    } catch (err) {
-      console.error(err);
-    }
-  });
+  // cron.schedule("5 1 1 5 *", async () => {
+  //   try {
+  //     await gereeService.gereeAshiglakhguiSaruud({}, {});
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // });
 }
 // cron.schedule(
 //   "10 13 * * * ",
