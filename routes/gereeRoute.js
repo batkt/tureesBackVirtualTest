@@ -596,10 +596,13 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   var geree = new Geree(req.body.tukhainBaaziinKholbolt)(updateData);
   var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
   try {
+    if (!geree.avlaga || !geree.avlaga.guilgeenuud) {
+      throw new Error("Гүйлгээний хуваарь үүсгээгүй байна.");
+    }
     if (geree.avlaga.guilgeenuud && geree.avlaga.guilgeenuud.length > 0)
       daraagiinTulukhOgnoo = geree.avlaga.guilgeenuud[0].ognoo;
   } catch (err) {
-    if (!!next) next(err);
+    if (!!next) return next(err);
   }
   geree.daraagiinTulukhOgnoo = daraagiinTulukhOgnoo;
   geree.tuluv = 1;
