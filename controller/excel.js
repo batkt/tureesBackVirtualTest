@@ -3010,7 +3010,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     var aldaaniiMsg = "";
     data.forEach((mur) => {
       muriinDugaar++;
@@ -3022,7 +3022,9 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.customerTin =
         mur[usegTooruuKhurvuulekh(tolgoinObject.customerTin)];
       object.utas = [mur[usegTooruuKhurvuulekh(tolgoinObject.utas)]];
-      object.mail = mur[usegTooruuKhurvuulekh(tolgoinObject.mail)];
+      object.mail = (
+        mur[usegTooruuKhurvuulekh(tolgoinObject.mail)] || ""
+      ).toString().trim();
       object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];
       object.turul = "Иргэн";
       object.baiguullagiinId = req.body.baiguullagiinId;
@@ -3141,7 +3143,9 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       object.zakhirliinNer =
         mur[usegTooruuKhurvuulekh(tolgoinObject.zakhirliinNer)];
       object.utas = [mur[usegTooruuKhurvuulekh(tolgoinObject.utas)]];
-      object.mail = mur[usegTooruuKhurvuulekh(tolgoinObject.mail)];
+      object.mail = (
+        mur[usegTooruuKhurvuulekh(tolgoinObject.mail)] || ""
+      ).toString().trim();
       object.khayag = mur[usegTooruuKhurvuulekh(tolgoinObject.khayag)];
       object.turul = "ААН";
       object.baiguullagiinId = req.body.baiguullagiinId;
@@ -3729,15 +3733,19 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
     baiguullagiinId,
   );
 
-  var ashiglaltiinZardal = await AshiglaltiinZardluud(
-    tukhainBaaziinKholbolt || db.erunkhiiKholbolt,
-  ).findById(ashiglaltiinId);
+  var ashiglaltiinZardal = null;
+  if (ashiglaltiinId) {
+    ashiglaltiinZardal = await AshiglaltiinZardluud(
+      tukhainBaaziinKholbolt || db.erunkhiiKholbolt,
+    ).findById(ashiglaltiinId);
+  }
 
-  // Цахилгаан сонгосон үед эсвэл байгууллагын тохиргоо асаалттай үед коэффициент харуулна
+  
   if (
-    ashiglaltiinZardal?.ner?.toLowerCase().includes("цахилгаан") ||
-    baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh ||
-    baiguullaga?.tokhirgoo?.guidliinKoepEsekh
+    ashiglaltiinId &&
+    (ashiglaltiinZardal?.ner?.toLowerCase().includes("цахилгаан") ||
+      baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh ||
+      baiguullaga?.tokhirgoo?.guidliinKoepEsekh)
   ) {
     var temp = [
       {
