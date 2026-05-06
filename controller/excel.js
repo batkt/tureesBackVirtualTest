@@ -3011,6 +3011,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       range: 1,
     });
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const phoneRegex = /^[0-9]+$/;
     var aldaaniiMsg = "";
     data.forEach((mur) => {
       muriinDugaar++;
@@ -3082,6 +3083,20 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             "Иргэн sheet-ны " +
             muriinDugaar +
             " дугаар мөрөнд 'Мэйл' хаяг буруу байна! <br/>";
+        }
+        if (object.utas && object.utas[0] && !phoneRegex.test(object.utas[0].toString().replace(/\s/g, ""))) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            "Иргэн sheet-ны " +
+            muriinDugaar +
+            " дугаар мөрөнд 'Утас' буруу байна! (Зөвхөн тоо оруулна уу) <br/>";
+        }
+        if (object.register && !/^[a-zA-Zа-яА-ЯөӨүҮ]{2}\d{8}$/i.test(object.register.toString().replace(/\s/g, ""))) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            "Иргэн sheet-ны " +
+            muriinDugaar +
+            " дугаар мөрөнд 'Регистр' формат буруу байна! <br/>";
         }
         if (
           (!object.mail || emailRegex.test(object.mail)) &&
@@ -3198,6 +3213,20 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             "ААН sheet-ны " +
             muriinDugaar +
             " дугаар мөрөнд 'Мэйл' хаяг буруу байна! <br/>";
+        }
+        if (object.utas && object.utas[0] && !phoneRegex.test(object.utas[0].toString().replace(/\s/g, ""))) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            "ААН sheet-ны " +
+            muriinDugaar +
+            " дугаар мөрөнд 'Утас' буруу байна! (Зөвхөн тоо оруулна уу) <br/>";
+        }
+        if (object.register && !/^\d{7}$/.test(object.register.toString().replace(/\s/g, ""))) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            "ААН sheet-ны " +
+            muriinDugaar +
+            " дугаар мөрөнд 'Улсын бүртгэлийн дугаар' формат буруу байна! <br/>";
         }
         if (
           (!object.mail || emailRegex.test(object.mail)) &&
