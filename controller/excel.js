@@ -733,7 +733,8 @@ exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
   ];
 
   const mandatory = ["Загварын нэр", "Заалт"];
-  worksheet.getRow(1).eachCell((cell) => {
+  const headerRow = worksheet.getRow(1);
+  headerRow.eachCell({ includeEmpty: true }, (cell) => {
     const isMandatory = mandatory.includes(cell.value);
     cell.fill = {
       type: "pattern",
@@ -748,6 +749,7 @@ exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
       right: { style: "thin" },
     };
   });
+  headerRow.commit();
 
   res.setHeader(
     "Content-Type",
@@ -856,7 +858,8 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
     "Талбайн нэгж үнэ",
     "Талбайн нийт үнэ",
   ];
-  worksheet.getRow(1).eachCell((cell) => {
+  const headerRow = worksheet.getRow(1);
+  headerRow.eachCell({ includeEmpty: true }, (cell) => {
     const isMandatory = mandatoryFields.includes(cell.value);
     cell.fill = {
       type: "pattern",
@@ -871,6 +874,7 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
       right: { style: "thin" },
     };
   });
+  headerRow.commit();
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -1034,7 +1038,8 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
     { ws: worksheet, mandatory: mandatoryIrgen },
     { ws: worksheet1, mandatory: mandatoryAAN },
   ].forEach(({ ws, mandatory }) => {
-    ws.getRow(1).eachCell((cell) => {
+    const headerRow = ws.getRow(1);
+    headerRow.eachCell({ includeEmpty: true }, (cell) => {
       const isMandatory = mandatory.includes(cell.value);
       cell.fill = {
         type: "pattern",
@@ -1049,6 +1054,7 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
         right: { style: "thin" },
       };
     });
+    headerRow.commit();
   });
   res.setHeader(
     "Content-Type",
@@ -1256,7 +1262,8 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
   ];
 
   [worksheet, worksheet30].forEach((ws) => {
-    ws.getRow(1).eachCell((cell) => {
+    const headerRow = ws.getRow(1);
+    headerRow.eachCell({ includeEmpty: true }, (cell) => {
       const isMandatory = mandatoryGeree.includes(cell.value);
       cell.fill = {
         type: "pattern",
@@ -1271,6 +1278,7 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
         right: { style: "thin" },
       };
     });
+    headerRow.commit();
   });
   res.setHeader(
     "Content-Type",
@@ -3715,7 +3723,15 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     req.body.baiguullagiinId,
   );
-  if (baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh) {
+
+  var ashiglaltiinZardal = await AshiglaltiinZardluud(
+    req.body.tukhainBaaziinKholbolt || db.erunkhiiKholbolt,
+  ).findById(req.body.ashiglaltiinId);
+
+  if (
+    baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh &&
+    ashiglaltiinZardal?.ner?.includes("Цахилгаан")
+  ) {
     var temp = [
       {
         header: "Гүйдлийн коэффициент",
@@ -3727,8 +3743,14 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
   }
   worksheet.columns = addCol;
 
-  const mandatoryTooluur = ["Гэрээний дугаар", "Талбайн дугаар", "Одоогийн заалт"];
-  worksheet.getRow(1).eachCell((cell) => {
+  const mandatoryTooluur = [
+    "Гэрээний дугаар",
+    "Талбайн дугаар",
+    "Одоогийн заалт",
+  ];
+
+  const headerRow = worksheet.getRow(1);
+  headerRow.eachCell({ includeEmpty: true }, (cell) => {
     const isMandatory = mandatoryTooluur.includes(cell.value);
     cell.fill = {
       type: "pattern",
@@ -3743,6 +3765,7 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
       right: { style: "thin" },
     };
   });
+  headerRow.commit();
 
   res.setHeader(
     "Content-Type",
@@ -3783,7 +3806,8 @@ exports.ekhniiUldegdelZagvarOruulya = asyncHandler(async (req, res, next) => {
   worksheet.columns = addCol;
 
   const mandatoryEkhnii = ["Гэрээний дугаар", "Талбайн дугаар", "Үлдэгдэл"];
-  worksheet.getRow(1).eachCell((cell) => {
+  const headerRow = worksheet.getRow(1);
+  headerRow.eachCell({ includeEmpty: true }, (cell) => {
     const isMandatory = mandatoryEkhnii.includes(cell.value);
     cell.fill = {
       type: "pattern",
@@ -3798,6 +3822,7 @@ exports.ekhniiUldegdelZagvarOruulya = asyncHandler(async (req, res, next) => {
       right: { style: "thin" },
     };
   });
+  headerRow.commit();
 
   res.setHeader(
     "Content-Type",
