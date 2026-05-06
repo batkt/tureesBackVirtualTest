@@ -3010,8 +3010,8 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const phoneRegex = /^[0-9]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(com|mn)$/i;
+    const phoneRegex = /^[0-9]{8}$/;
     var aldaaniiMsg = "";
     data.forEach((mur) => {
       muriinDugaar++;
@@ -3082,14 +3082,14 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             aldaaniiMsg +
             "Иргэн sheet-ны " +
             muriinDugaar +
-            " дугаар мөрөнд 'Мэйл' хаяг буруу байна! <br/>";
+            " дугаар мөрөнд 'Мэйл' хаяг буруу байна! (.com эсвэл .mn-ээр төгсөх ёстой) <br/>";
         }
         if (object.utas && object.utas[0] && !phoneRegex.test(object.utas[0].toString().replace(/\s/g, ""))) {
           aldaaniiMsg =
             aldaaniiMsg +
             "Иргэн sheet-ны " +
             muriinDugaar +
-            " дугаар мөрөнд 'Утас' буруу байна! (Зөвхөн тоо оруулна уу) <br/>";
+            " дугаар мөрөнд 'Утас' буруу байна! (8 оронтой тоо оруулна уу) <br/>";
         }
         if (object.register && !/^[a-zA-Zа-яА-ЯөӨүҮ]{2}\d{8}$/i.test(object.register.toString().replace(/\s/g, ""))) {
           aldaaniiMsg =
@@ -3212,14 +3212,14 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             aldaaniiMsg +
             "ААН sheet-ны " +
             muriinDugaar +
-            " дугаар мөрөнд 'Мэйл' хаяг буруу байна! <br/>";
+            " дугаар мөрөнд 'Мэйл' хаяг буруу байна! (.com эсвэл .mn-ээр төгсөх ёстой) <br/>";
         }
         if (object.utas && object.utas[0] && !phoneRegex.test(object.utas[0].toString().replace(/\s/g, ""))) {
           aldaaniiMsg =
             aldaaniiMsg +
             "ААН sheet-ны " +
             muriinDugaar +
-            " дугаар мөрөнд 'Утас' буруу байна! (Зөвхөн тоо оруулна уу) <br/>";
+            " дугаар мөрөнд 'Утас' буруу байна! (8 оронтой тоо оруулна уу) <br/>";
         }
         if (object.register && !/^\d{7}$/.test(object.register.toString().replace(/\s/g, ""))) {
           aldaaniiMsg =
