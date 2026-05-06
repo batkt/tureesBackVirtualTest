@@ -32,6 +32,8 @@ const {
   blockMashiniiExcelAvya,
   blockMashiniiExcelTatya,
 } = require("../controller/excel");
+const { testCloudMongodb } = require("../controller/zogsool");
+router.post("/testCloudMongodb", testCloudMongodb);
 
 router.route("/mashiniiExcelAvya").get(mashiniiExcelAvya);
 router

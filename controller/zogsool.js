@@ -404,33 +404,47 @@ module.exports.ebarimtDutuugShivye = async (body, next) => {
   }
 };
 
-module.exports.testCloudMongodb = async function testCloudMongodb() {
+exports.testCloudMongodb = asyncHandler(async (req, res, next) => {
   try {
-    var mashiniiDugaar = Math.floor(1000 + Math.random() * 9000) + "УУУ";
-    // const form = new FormData();
-    // form.append('mashiniiDugaar', mashiniiDugaar);
-    // form.append('CAMERA_IP', "192.168.1.108");
-    // form.append('barilgiinId', "622ca3938e64e5b4f0c36bed");
-    const response = await got
-      .post("http://103.143.40.230:8081/zogsoolSdkService", {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MyIsIm5lciI6IkNBZG1pbiIsImJhaWd1dWxsYWdpaW5JZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MSIsImlhdCI6MTc0ODQ4ODQxNX0.FZFqETa5TMm2qVV1eZYDnGTZyOINWp-M9q_7eZf254U",
-        },
-        body: JSON.stringify({
-          mashiniiDugaar: mashiniiDugaar,
-          CAMERA_IP: "192.168.1.108",
-          barilgiinId: "622ca3938e64e5b4f0c36bed",
-        }),
-      })
-      .catch((err) => {
-        throw err;
-      });
+    const too = Number(req.body.too) || 1; // Postman-аас ирэх тоо
+
+    let results = [];
+
+    for (let i = 0; i < too; i++) {
+      const mashiniiDugaar = Math.floor(1000 + Math.random() * 9000) + "УУУ";
+
+      try {
+        const response = await got.post(
+          "http://103.143.40.230:8081/zogsoolSdkService",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            },
+            body: JSON.stringify({
+              mashiniiDugaar,
+              CAMERA_IP: "192.168.1.100",
+              barilgiinId: "622ca3938e64e5b4f0c36bed",
+            }),
+          },
+        );
+
+        results.push({ success: true, mashiniiDugaar });
+      } catch (err) {
+        results.push({ success: false, error: err.message });
+      }
+    }
+
+    res.json({
+      total: too,
+      success: results.filter((r) => r.success).length,
+      failed: results.filter((r) => !r.success).length,
+      results,
+    });
   } catch (err) {
-    throw err;
+    res.status(500).json({ error: err.message });
   }
-};
+});
 
 module.exports.archiveUilchluulegch = async function archiveUilchluulegch() {
   try {
