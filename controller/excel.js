@@ -3719,18 +3719,25 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
     },
   ];
 
+  const baiguullagiinId = req.body.baiguullagiinId || req.query.baiguullagiinId;
+  const ashiglaltiinId = req.body.ashiglaltiinId || req.query.ashiglaltiinId;
+  const tukhainBaaziinKholbolt =
+    req.body.tukhainBaaziinKholbolt || req.query.tukhainBaaziinKholbolt;
+
   const { db } = require("zevbackv2");
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-    req.body.baiguullagiinId,
+    baiguullagiinId,
   );
 
   var ashiglaltiinZardal = await AshiglaltiinZardluud(
-    req.body.tukhainBaaziinKholbolt || db.erunkhiiKholbolt,
-  ).findById(req.body.ashiglaltiinId);
+    tukhainBaaziinKholbolt || db.erunkhiiKholbolt,
+  ).findById(ashiglaltiinId);
 
+  // Цахилгаан сонгосон үед эсвэл байгууллагын тохиргоо асаалттай үед коэффициент харуулна
   if (
-    baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh &&
-    ashiglaltiinZardal?.ner?.includes("Цахилгаан")
+    ashiglaltiinZardal?.ner?.toLowerCase().includes("цахилгаан") ||
+    baiguullaga?.tokhirgoo?.guidelBuchiltKhonogEsekh ||
+    baiguullaga?.tokhirgoo?.guidliinKoepEsekh
   ) {
     var temp = [
       {
