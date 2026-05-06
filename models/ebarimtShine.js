@@ -39,6 +39,7 @@ const ebarimtSchema = new Schema(
     lottery: String,
     receipts: [
       {
+        id: String,
         totalAmount: Number, //Дэд төлбөрийн баримтын гүйлгээний нийт дүн Бүх төрлийн татвар шингэсэн дүн
         totalVAT: Number, //Дэд төлбөрийн баримтын НӨАТ-н нийт дүн
         totalCityTax: Number, //Дэд төлбөрийн баримтын НХАТ-н нийт дүн
