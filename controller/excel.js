@@ -721,8 +721,8 @@ exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
     {
-      header: "",
-      key: "",
+      header: "Заалт",
+      key: "Заалт",
       width: 30,
     },
     {
@@ -731,6 +731,24 @@ exports.gereeniiZagvarAvya = asyncHandler(async (req, res, next) => {
       width: 20,
     },
   ];
+
+  const mandatory = ["Загварын нэр", "Заалт"];
+  worksheet.getRow(1).eachCell((cell) => {
+    const isMandatory = mandatory.includes(cell.value);
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: isMandatory ? "FF92D050" : "FFFFFF00" },
+    };
+    cell.font = { bold: true };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" },
+    };
+  });
+
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -829,6 +847,29 @@ exports.talbainZagvarAvya = asyncHandler(async (req, res, next) => {
     showErrorMessage: true,
     errorStyle: "error",
     error: "Тохирох утгыг сонгоно уу!",
+  });
+
+  const mandatoryFields = [
+    "Давхар",
+    "Талбайн №",
+    "Талбайн хэмжээ",
+    "Талбайн нэгж үнэ",
+    "Талбайн нийт үнэ",
+  ];
+  worksheet.getRow(1).eachCell((cell) => {
+    const isMandatory = mandatoryFields.includes(cell.value);
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: isMandatory ? "FF92D050" : "FFFFFF00" },
+    };
+    cell.font = { bold: true };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" },
+    };
   });
   res.setHeader(
     "Content-Type",
@@ -985,6 +1026,30 @@ exports.khariltsagchZagvarAvya = asyncHandler(async (req, res, next) => {
       baganiiToo = baganiiToo + 1;
     });
   }
+
+  const mandatoryIrgen = ["Код", "Нэр", "Регистр", "Утас"];
+  const mandatoryAAN = ["Код", "Нэр", "Улсын бүртгэлийн дугаар", "Утас"];
+
+  [
+    { ws: worksheet, mandatory: mandatoryIrgen },
+    { ws: worksheet1, mandatory: mandatoryAAN },
+  ].forEach(({ ws, mandatory }) => {
+    ws.getRow(1).eachCell((cell) => {
+      const isMandatory = mandatory.includes(cell.value);
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: isMandatory ? "FF92D050" : "FFFFFF00" },
+      };
+      cell.font = { bold: true };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+  });
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -1179,6 +1244,34 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
       baganiiToo = baganiiToo + (x.turul === "Дурын" ? 2 : 1);
     });
   }
+
+  const mandatoryGeree = [
+    "Гэрээний дугаар",
+    "Регистр/Бүртгэлийн дугаар",
+    "Эхлэх огноо",
+    "Хугацаа(Сараар)",
+    "Авлага үүсэх өдөр",
+    "Зориулалт",
+    "Талбайн код",
+  ];
+
+  [worksheet, worksheet30].forEach((ws) => {
+    ws.getRow(1).eachCell((cell) => {
+      const isMandatory = mandatoryGeree.includes(cell.value);
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: isMandatory ? "FF92D050" : "FFFFFF00" },
+      };
+      cell.font = { bold: true };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+  });
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -2909,6 +3002,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
       header: 1,
       range: 1,
     });
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     var aldaaniiMsg = "";
     data.forEach((mur) => {
       muriinDugaar++;
@@ -2971,7 +3065,22 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
           aldaaniiMsg = aldaaniiMsg.slice(0, -2);
           aldaaniiMsg = aldaaniiMsg + " ";
           aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
-        } else jagsaalt.push(object);
+        }
+        if (object.mail && !emailRegex.test(object.mail)) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            "Иргэн sheet-ны " +
+            muriinDugaar +
+            " дугаар мөрөнд 'Мэйл' хаяг буруу байна! <br/>";
+        }
+        if (
+          (!object.mail || emailRegex.test(object.mail)) &&
+          object.id &&
+          object.ner &&
+          (object.register || object.customerTin) &&
+          object.utas
+        )
+          jagsaalt.push(object);
       }
     });
 
@@ -3070,7 +3179,22 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
           aldaaniiMsg = aldaaniiMsg.slice(0, -2);
           aldaaniiMsg = aldaaniiMsg + " ";
           aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
-        } else jagsaalt.push(object);
+        }
+        if (object.mail && !emailRegex.test(object.mail)) {
+          aldaaniiMsg =
+            aldaaniiMsg +
+            "ААН sheet-ны " +
+            muriinDugaar +
+            " дугаар мөрөнд 'Мэйл' хаяг буруу байна! <br/>";
+        }
+        if (
+          (!object.mail || emailRegex.test(object.mail)) &&
+          object.id &&
+          object.ner &&
+          object.register &&
+          object.utas
+        )
+          jagsaalt.push(object);
       }
     });
     aldaaniiMsg = await khariltsagchBaikhguigShalgaya(
@@ -3603,6 +3727,23 @@ exports.tooluurZaaltZagvarAvya = asyncHandler(async (req, res, next) => {
   }
   worksheet.columns = addCol;
 
+  const mandatoryTooluur = ["Гэрээний дугаар", "Талбайн дугаар", "Одоогийн заалт"];
+  worksheet.getRow(1).eachCell((cell) => {
+    const isMandatory = mandatoryTooluur.includes(cell.value);
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: isMandatory ? "FF92D050" : "FFFFFF00" },
+    };
+    cell.font = { bold: true };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" },
+    };
+  });
+
   res.setHeader(
     "Content-Type",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -3640,6 +3781,23 @@ exports.ekhniiUldegdelZagvarOruulya = asyncHandler(async (req, res, next) => {
     },
   ];
   worksheet.columns = addCol;
+
+  const mandatoryEkhnii = ["Гэрээний дугаар", "Талбайн дугаар", "Үлдэгдэл"];
+  worksheet.getRow(1).eachCell((cell) => {
+    const isMandatory = mandatoryEkhnii.includes(cell.value);
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: isMandatory ? "FF92D050" : "FFFFFF00" },
+    };
+    cell.font = { bold: true };
+    cell.border = {
+      top: { style: "thin" },
+      left: { style: "thin" },
+      bottom: { style: "thin" },
+      right: { style: "thin" },
+    };
+  });
 
   res.setHeader(
     "Content-Type",
