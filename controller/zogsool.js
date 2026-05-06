@@ -419,7 +419,8 @@ exports.testCloudMongodb = asyncHandler(async (req, res, next) => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MyIsIm5lciI6IkNBZG1pbiIsImJhaWd1dWxsYWdpaW5JZCI6IjYxMmY0NTdkMTg1MjgwZGI2NzZkMGI1MSIsImlhdCI6MTc3ODAzNjk3OH0.jUdpsYe3-Mf8BiStXgaO5DPImsbKN3N8fedpE1h_BnA",
             },
             body: JSON.stringify({
               mashiniiDugaar,
