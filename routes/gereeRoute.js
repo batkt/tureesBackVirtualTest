@@ -304,7 +304,8 @@ router
 
       var suuliinZaalt = null;
       var suuliinOgnoo = null;
-
+      var suuliinGuilgeeniiId = null;
+      var suuliinGereeniiId = null;
 
       let contractQuery = { talbainDugaar };
       if (gereeniiId) {
@@ -331,13 +332,13 @@ router
           if (!suuliinOgnoo || (ognoo && ognoo > suuliinOgnoo)) {
             suuliinZaalt = g.suuliinZaalt;
             suuliinOgnoo = ognoo;
+            suuliinGuilgeeniiId = g._id;
+            suuliinGereeniiId = geree._id;
           }
         }
       }
 
-      // Only fall back to AshiglaltiinExcel when NOT called from an active
-      // contract context (no gereeniiId). This prevents stale Excel values from
-      // appearing after a guilgee is deleted from an active contract.
+      
       if (!suuliinZaalt && !gereeniiId) {
         const match = { talbainDugaar };
         if (tailbar) match.zardliinNer = tailbar;
@@ -353,7 +354,7 @@ router
         }
       }
 
-      res.send({ suuliinZaalt });
+      res.send({ suuliinZaalt, guilgeeniiId: suuliinGuilgeeniiId, gereeniiId: suuliinGereeniiId });
     } catch (err) {
       next(err);
     }
