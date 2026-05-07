@@ -482,34 +482,48 @@ crud(
         unuudur.getMonth(),
         unuudur.getDate(),
       );
-      var maxDugaar = 1;
-      await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
-        .find({
+      var dugaarlalt = null;
+      if (req.body.gereeniiDugaar && req.body.gereeniiDugaar.match(/^ГД\d{6}$/)) {
+        var maxDugaar = 1;
+        await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+          .find({
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+            turul: "geree",
+            ognoo: unuudur,
+          })
+          .sort({
+            dugaar: -1,
+          })
+          .limit(1)
+          .then((result) => {
+            if (result != 0) maxDugaar = result[0].dugaar + 1;
+          });
+        dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)({
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
+          dugaar: maxDugaar,
           turul: "geree",
           ognoo: unuudur,
-        })
-        .sort({
-          dugaar: -1,
-        })
-        .limit(1)
-        .then((result) => {
-          if (result != 0) maxDugaar = result[0].dugaar + 1;
+          isNew: true,
         });
-      var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)({
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        dugaar: maxDugaar,
-        turul: "geree",
-        ognoo: unuudur,
-        isNew: true,
-      });
-      req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar.toString().padStart(2, "0");
+        req.body.gereeniiDugaar = req.body.gereeniiDugaar + String(maxDugaar).padStart(2, "0");
+      }
+
+      if (req.body.gereeniiDugaar) {
+        const existingGeree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
+          gereeniiDugaar: req.body.gereeniiDugaar,
+          tuluv: { $ne: -1 },
+        });
+        if (existingGeree) {
+          throw new Error("Бүртгэлтэй гэрээний дугаар байна");
+        }
+      }
+
       khariltsagch
         .save()
         .then((result) => {
-          dugaarlalt.save();
+          if (dugaarlalt) dugaarlalt.save();
           next();
         })
         .catch((err) => {
@@ -532,7 +546,7 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   khariltsagch.id = khariltsagch.register
     ? khariltsagch.register
     : khariltsagch.customerTin;
-  if (req.body.gereeniiDugaar === `ГД${moment(new Date()).format("YYMMDD")}`) {
+  if (req.body.gereeniiDugaar && req.body.gereeniiDugaar.match(/^ГД\d{6}$/)) {
     var unuudur = new Date();
     unuudur = new Date(
       unuudur.getFullYear(),
@@ -562,14 +576,13 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
       ognoo: unuudur,
       isNew: true,
     });
-    req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar.toString().padStart(2, "0");
-    updateData.gereeniiDugaar = req.body.gereeniiDugaar;
+    req.body.gereeniiDugaar = req.body.gereeniiDugaar + String(maxDugaar).padStart(2, "0");
     dugaarlalt.save();
   }
 
-  if (updateData.gereeniiDugaar) {
+  if (req.body.gereeniiDugaar) {
     const existingGeree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
-      gereeniiDugaar: updateData.gereeniiDugaar,
+      gereeniiDugaar: req.body.gereeniiDugaar,
       tuluv: { $ne: -1 },
     });
     if (existingGeree) {
