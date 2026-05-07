@@ -1762,7 +1762,11 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
         },
         {
           $group: {
-            _id: { turul: "$avlaga.guilgeenuud.turul", register: "$register" },
+            _id: {
+              turul: "$avlaga.guilgeenuud.turul",
+              register: "$register",
+              tailbar: "$avlaga.guilgeenuud.tailbar",
+            },
             dun: {
               $sum: "$avlaga.guilgeenuud.khyamdral",
             },
@@ -2009,7 +2013,22 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
               (a) => a._id?.register === register?._id,
             );
             if (filterKhungulult?.length > 0) {
-              for (const row of filterKhungulult) mur[row._id.turul] = row.dun;
+              for (const row of filterKhungulult) {
+                if (
+                  row._id.tailbar?.includes("Менежментийн төлбөр") ||
+                  row._id.tailbar?.includes("Менежментийн зардал") ||
+                  row._id.tailbar?.includes("Менежмент") ||
+                  row._id.tailbar?.includes("Хөрөнгийн менежмент") ||
+                  row._id.tailbar?.includes("Ашиглалт менежментийн төлбөр")
+                )
+                  mur[row._id.turul + "Menegment"] = row.dun;
+                else if (
+                  row._id.tailbar?.includes("Дулаан") ||
+                  row._id.tailbar?.includes("Дулааны төлбөр")
+                )
+                  mur[row._id.turul + "Dulaan"] = row.dun;
+                else mur[row._id.turul] = row.dun;
+              }
             }
             var filterTulukhDun = tulukhDunguud.filter(
               (a) => a._id?.register === register?._id,
@@ -2229,19 +2248,22 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
     };
     if (req.body.$or) match["$or"] = req.body.$or;
     if (req.body.$and) match["$and"] = req.body.$and;
-    
+
     if (req.body.songogdsonTurul) {
-      const talbaiMatch = await Talbai(req.body.tukhainBaaziinKholbolt).find({
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        $or: [
-          { turul: req.body.songogdsonTurul },
-          { segment: req.body.songogdsonTurul },
-          { yalgal: req.body.songogdsonTurul },
-          { "segmentuud.ner": req.body.songogdsonTurul },
-          { "segmentuud.utga": req.body.songogdsonTurul }
-        ]
-      }, { kod: 1, _id: 1 });
+      const talbaiMatch = await Talbai(req.body.tukhainBaaziinKholbolt).find(
+        {
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          $or: [
+            { turul: req.body.songogdsonTurul },
+            { segment: req.body.songogdsonTurul },
+            { yalgal: req.body.songogdsonTurul },
+            { "segmentuud.ner": req.body.songogdsonTurul },
+            { "segmentuud.utga": req.body.songogdsonTurul },
+          ],
+        },
+        { kod: 1, _id: 1 },
+      );
       const talbaiKods = talbaiMatch.map((t) => t.kod);
       const talbaiIds = talbaiMatch.map((t) => t._id.toString());
 
@@ -2254,8 +2276,8 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
           { "segmentuud.ner": req.body.songogdsonTurul },
           { "segmentuud.utga": req.body.songogdsonTurul },
           { talbainDugaar: { $in: talbaiKods } },
-          { talbainIdnuud: { $in: talbaiIds } }
-        ]
+          { talbainIdnuud: { $in: talbaiIds } },
+        ],
       });
     }
     var matchGroup = {};
@@ -2363,11 +2385,25 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
           else if (b.tailbar?.includes("Хүйтэн ус")) b.tailbar = "Хүйтэн ус";
           else if (b.tailbar?.includes("Ус")) b.tailbar = "Ус";
 
-          if (b.tailbar?.includes("Цахилгаан") || b.tailbar?.toLowerCase().includes("tsahilgaan")) b.tailbar = "Цахилгаан";
-          if (b.tailbar?.includes("Дулаан") || b.tailbar?.toLowerCase().includes("dulaan")) b.tailbar = "Дулаан";
-          if (b.tailbar?.includes("Хог") || b.tailbar?.toLowerCase().includes("hog")) b.tailbar = "Хог";
-          if (b.tailbar?.toLowerCase().includes("нийтийн эзэмшлийн цэвэрлэгээ")) b.tailbar = "Нийтийн эзэмшлийн цэвэрлэгээ";
-          if (b.tailbar?.toLowerCase().includes("лифт ашиглалт")) b.tailbar = "Лифт ашиглалт";
+          if (
+            b.tailbar?.includes("Цахилгаан") ||
+            b.tailbar?.toLowerCase().includes("tsahilgaan")
+          )
+            b.tailbar = "Цахилгаан";
+          if (
+            b.tailbar?.includes("Дулаан") ||
+            b.tailbar?.toLowerCase().includes("dulaan")
+          )
+            b.tailbar = "Дулаан";
+          if (
+            b.tailbar?.includes("Хог") ||
+            b.tailbar?.toLowerCase().includes("hog")
+          )
+            b.tailbar = "Хог";
+          if (b.tailbar?.toLowerCase().includes("нийтийн эзэмшлийн цэвэрлэгээ"))
+            b.tailbar = "Нийтийн эзэмшлийн цэвэрлэгээ";
+          if (b.tailbar?.toLowerCase().includes("лифт ашиглалт"))
+            b.tailbar = "Лифт ашиглалт";
           if (b.tailbar?.includes("Агуулах")) b.tailbar = "Агуулах";
 
           var tempkhungulult = tempJagsaaltAvlaga?.filter(
