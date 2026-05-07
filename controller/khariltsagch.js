@@ -15,12 +15,15 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
     const { db } = require("zevbackv2");
     console.log("KhariltsagchNevtrey userAgent req.body:", req.body.userAgent);
     if (!req.body.userAgent) {
-      var butsaakhObject = {
-        message:
-          "Түр хугацаанд хаасан байгаа. Та бүхэн appweb https://appweb.zevtabs.mn/login нэвтэрнэ үү!",
-        success: false,
-      };
-      res.status(200).json(butsaakhObject);
+      throw new aldaa(
+        "Түр хугацаанд хаасан байгаа. Та бүхэн appweb https://appweb.zevtabs.mn/login нэвтэрнэ үү!",
+      );
+      // var butsaakhObject = {
+      //   message:
+      //     "Түр хугацаанд хаасан байгаа. Та бүхэн appweb https://appweb.zevtabs.mn/login нэвтэрнэ үү!",
+      //   success: false,
+      // };
+      // res.status(200).json(butsaakhObject);
     }
     const khariltsagchuud = await Khariltsagch(db.erunkhiiKholbolt)
       .find({ utas: req.body.utas, idevkhiteiEsekh: true })
