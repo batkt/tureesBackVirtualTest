@@ -13,12 +13,16 @@ const { Mashin } = require("parking-v2");
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
-
-    
+    if (!req.body.userAgent)
+      throw new aldaa(
+        "Түр хугацаанд хаасан байгаа. Та бүхэн appweb https://appweb.zevtabs.mn/login нэвтэрнэ үү!",
+      );
     const khariltsagchuud = await Khariltsagch(db.erunkhiiKholbolt)
       .find({ utas: req.body.utas, idevkhiteiEsekh: true })
       .select("+nuutsUg")
-      .catch((err) => { next(err); });
+      .catch((err) => {
+        next(err);
+      });
 
     if (!khariltsagchuud || khariltsagchuud.length === 0)
       throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
@@ -26,10 +30,13 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
     var ok = await khariltsagchuud[0].passwordShalgaya(req.body.nuutsUg);
     if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
 
-    
     if (khariltsagchuud.length > 1) {
       const baiguullagiinIdnuud = [
-        ...new Set(khariltsagchuud.map((k) => k.baiguullagiinId?.toString()).filter(Boolean)),
+        ...new Set(
+          khariltsagchuud
+            .map((k) => k.baiguullagiinId?.toString())
+            .filter(Boolean),
+        ),
       ];
 
       if (baiguullagiinIdnuud.length > 1) {
@@ -45,13 +52,15 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
             ner: b.ner,
             dotoodNer: b.dotoodNer,
             zurgiinNer: b.zurgiinNer,
-            barilguud: (b.barilguud || []).map((br) => ({ _id: br._id, ner: br.ner })),
+            barilguud: (b.barilguud || []).map((br) => ({
+              _id: br._id,
+              ner: br.ner,
+            })),
           })),
         });
       }
     }
 
-    
     const khariltsagch = khariltsagchuud[0];
     var butsaakhObject = {
       result: khariltsagch,
@@ -65,35 +74,37 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   }
 });
 
+exports.khariltsagchBaiguullagaarNevtrey = asyncHandler(
+  async (req, res, next) => {
+    try {
+      const { db } = require("zevbackv2");
+      const { utas, nuutsUg, baiguullagiinId } = req.body;
+      if (!baiguullagiinId) throw new aldaa("Байгууллага сонгогдоогүй байна!");
 
-exports.khariltsagchBaiguullagaarNevtrey = asyncHandler(async (req, res, next) => {
-  try {
-    const { db } = require("zevbackv2");
-    const { utas, nuutsUg, baiguullagiinId } = req.body;
-    if (!baiguullagiinId) throw new aldaa("Байгууллага сонгогдоогүй байна!");
+      const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt)
+        .findOne({ utas, baiguullagiinId, idevkhiteiEsekh: true })
+        .select("+nuutsUg")
+        .catch((err) => {
+          next(err);
+        });
 
-    const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt)
-      .findOne({ utas, baiguullagiinId, idevkhiteiEsekh: true })
-      .select("+nuutsUg")
-      .catch((err) => { next(err); });
+      if (!khariltsagch)
+        throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+      var ok = await khariltsagch.passwordShalgaya(nuutsUg);
+      if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
 
-    if (!khariltsagch)
-      throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-    var ok = await khariltsagch.passwordShalgaya(nuutsUg);
-    if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
-
-    var butsaakhObject = {
-      result: khariltsagch,
-      success: true,
-    };
-    const token = await khariltsagch.tokenUusgeye();
-    butsaakhObject.token = token;
-    res.status(200).json(butsaakhObject);
-  } catch (err) {
-    next(err);
-  }
-});
-
+      var butsaakhObject = {
+        result: khariltsagch,
+        success: true,
+      };
+      const token = await khariltsagch.tokenUusgeye();
+      butsaakhObject.token = token;
+      res.status(200).json(butsaakhObject);
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
 exports.khariltsagchUtasShalgakh = asyncHandler(async (req, res, next) => {
   try {
@@ -104,7 +115,9 @@ exports.khariltsagchUtasShalgakh = asyncHandler(async (req, res, next) => {
 
     const khariltsagchuud = await Khariltsagch(db.erunkhiiKholbolt)
       .find({ utas, idevkhiteiEsekh: true })
-      .catch((err) => { next(err); });
+      .catch((err) => {
+        next(err);
+      });
 
     if (!khariltsagchuud || khariltsagchuud.length === 0) {
       return res.status(200).json({ exists: false });
@@ -112,7 +125,11 @@ exports.khariltsagchUtasShalgakh = asyncHandler(async (req, res, next) => {
 
     if (khariltsagchuud.length > 1) {
       const baiguullagiinIdnuud = [
-        ...new Set(khariltsagchuud.map((k) => k.baiguullagiinId?.toString()).filter(Boolean)),
+        ...new Set(
+          khariltsagchuud
+            .map((k) => k.baiguullagiinId?.toString())
+            .filter(Boolean),
+        ),
       ];
 
       if (baiguullagiinIdnuud.length > 1) {
@@ -129,7 +146,10 @@ exports.khariltsagchUtasShalgakh = asyncHandler(async (req, res, next) => {
             ner: b.ner,
             dotoodNer: b.dotoodNer,
             zurgiinNer: b.zurgiinNer,
-            barilguud: (b.barilguud || []).map((br) => ({ _id: br._id, ner: br.ner })),
+            barilguud: (b.barilguud || []).map((br) => ({
+              _id: br._id,
+              ner: br.ner,
+            })),
           })),
         });
       }
@@ -224,12 +244,12 @@ async function tulultiinMsgIlgeeye(
   gereeniiDugaar,
   utas,
   dun,
-  aldangi
+  aldangi,
 ) {
   try {
     const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      baiguullagiinId
+      baiguullagiinId,
     );
     var msgIlgeekhKey = baiguullaga.tokhirgoo.msgIlgeekhKey;
     var msgIlgeekhDugaar = baiguullaga.tokhirgoo.msgIlgeekhDugaar;
@@ -254,7 +274,7 @@ async function tulultiinMsgIlgeeye(
         0,
         null,
         null,
-        null
+        null,
       );
     }
   } catch (err) {
@@ -275,7 +295,7 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
     if (!khariltsagch) throw new Error("Бүртгэлтэй харилцагч олдсонгүй!");
     khariltsagch.sergeekhKod = await kodUusgey();
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      khariltsagch.baiguullagiinId
+      khariltsagch.baiguullagiinId,
     );
     var msgIlgeekhKey;
     var msgIlgeekhDugaar;
@@ -289,7 +309,7 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
       throw new aldaa("Мсж илгээх тохиргоо хийгдээгүй байна!");
     await Khariltsagch(db.erunkhiiKholbolt).updateOne(
       { _id: khariltsagch._id },
-      { $set: { sergeekhKod: khariltsagch.sergeekhKod } }
+      { $set: { sergeekhKod: khariltsagch.sergeekhKod } },
     );
     await msgIlgeeye(
       [
@@ -304,7 +324,7 @@ exports.sergeekhKodAvya = asyncHandler(async (req, res, next) => {
       0,
       next,
       req,
-      res
+      res,
     );
     res.send(khariltsagch._id);
   } catch (err) {
@@ -316,7 +336,7 @@ exports.nuutsUgSergeeye = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     var khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findById(
-      req.body.id
+      req.body.id,
     );
     if (!khariltsagch) throw new Error("Харилцагч олдсонгүй!");
     if (khariltsagch.sergeekhKod != req.body.sergeekhKod)
@@ -427,7 +447,7 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
                 if (talbai.niitiinTalbaiEsekh) {
                   let tukhainTalbainGereenuud = await Geree(
                     kholbolt,
-                    true
+                    true,
                   ).find({
                     barilgiinId: geree.barilgiinId,
                     tuluv: { $ne: -1 },
@@ -437,7 +457,7 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
                     tukhainTalbainGereenuud,
                     function (object) {
                       return object.talbainKhemjee;
-                    }
+                    },
                   );
                   var sulKhemjee = talbai.talbainKhemjee - niitIdevkhiteiTalbai;
                   if (sulKhemjee < 0) sulKhemjee = 0;
@@ -513,5 +533,5 @@ exports.talbainKhariltsagchiinTuluvUurchilyu = asyncHandler(
     } catch (err) {
       if (next) next(err);
     }
-  }
+  },
 );
