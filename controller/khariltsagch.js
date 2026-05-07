@@ -13,10 +13,15 @@ const { Mashin } = require("parking-v2");
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
-    if (!req.body.userAgent)
-      throw new aldaa(
-        "Түр хугацаанд хаасан байгаа. Та бүхэн appweb https://appweb.zevtabs.mn/login нэвтэрнэ үү!",
-      );
+    console.log("KhariltsagchNevtrey userAgent req.body:", req.body.userAgent);
+    if (!req.body.userAgent) {
+      var butsaakhObject = {
+        message:
+          "Түр хугацаанд хаасан байгаа. Та бүхэн appweb https://appweb.zevtabs.mn/login нэвтэрнэ үү!",
+        success: false,
+      };
+      res.status(200).json(butsaakhObject);
+    }
     const khariltsagchuud = await Khariltsagch(db.erunkhiiKholbolt)
       .find({ utas: req.body.utas, idevkhiteiEsekh: true })
       .select("+nuutsUg")
