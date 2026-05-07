@@ -18,12 +18,6 @@ exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
       throw new aldaa(
         "Түр хугацаанд хаасан байгаа. Та бүхэн appweb https://appweb.zevtabs.mn/login нэвтэрнэ үү!",
       );
-      // var butsaakhObject = {
-      //   message:
-      //     "Түр хугацаанд хаасан байгаа. Та бүхэн appweb https://appweb.zevtabs.mn/login нэвтэрнэ үү!",
-      //   success: false,
-      // };
-      // res.status(200).json(butsaakhObject);
     }
     const khariltsagchuud = await Khariltsagch(db.erunkhiiKholbolt)
       .find({ utas: req.body.utas, idevkhiteiEsekh: true })
