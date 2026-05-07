@@ -507,7 +507,7 @@ crud(
           ognoo: unuudur,
           isNew: true,
         });
-        req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
+        req.body.gereeniiDugaar = req.body.gereeniiDugaar + String(maxDugaar).padStart(2, "0");
       }
 
       if (req.body.gereeniiDugaar) {
@@ -576,7 +576,7 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
       ognoo: unuudur,
       isNew: true,
     });
-    req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
+    req.body.gereeniiDugaar = req.body.gereeniiDugaar + String(maxDugaar).padStart(2, "0");
     dugaarlalt.save();
   }
 
