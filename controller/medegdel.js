@@ -62,7 +62,7 @@ exports.sanalKhadgalya = asyncHandler((req, res, next) => {
           sonorduulga.khuleenAvagchiinId = req.body.khariltsagchiinId;
         sonorduulga.title = khariu.title;
         sonorduulga.message = khariu.message || req.body.message || req.body.body;
-        sonorduulga.turul = "duudlaga";
+        sonorduulga.turul = medegdel.turul === "shaardlaga" ? "shaardlaga" : "duudlaga";
         sonorduulga.duudlagiinTurul = medegdel.turul;
         sonorduulga.kharsanEsekh = false;
         sonorduulga.ognoo = new Date();

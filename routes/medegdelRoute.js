@@ -68,7 +68,6 @@ router
         ].includes(turul)
       ) {
         if (
-          turul === "shaardlaga" ||
           turul === "sanalKhuselt" ||
           turul === "sanal" ||
           turul === "gomdol"
