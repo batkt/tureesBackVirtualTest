@@ -506,6 +506,17 @@ crud(
         isNew: true,
       });
       req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
+
+      if (req.body.gereeniiDugaar) {
+        const existingGeree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
+          gereeniiDugaar: req.body.gereeniiDugaar,
+          tuluv: { $ne: -1 },
+        });
+        if (existingGeree) {
+          throw new Error("Бүртгэлтэй гэрээний дугаар байна");
+        }
+      }
+
       khariltsagch
         .save()
         .then((result) => {
@@ -564,6 +575,16 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     });
     req.body.gereeniiDugaar = req.body.gereeniiDugaar + maxDugaar;
     dugaarlalt.save();
+  }
+
+  if (req.body.gereeniiDugaar) {
+    const existingGeree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
+      gereeniiDugaar: req.body.gereeniiDugaar,
+      tuluv: { $ne: -1 },
+    });
+    if (existingGeree) {
+      throw new Error("Бүртгэлтэй гэрээний дугаар байна");
+    }
   }
 
   var khariltsagchShalguur;
