@@ -15,6 +15,10 @@ async function ilgeeye(io, medegdel, tukhainBaaziinKholbolt) {
     .save()
     .then((result) => {
       io.emit("baiguullaga" + medegdel.baiguullagiinId, medegdel);
+      if (sonorduulga.khuleenAvagchiinId) {
+        io.emit("khariltsagch" + sonorduulga.khuleenAvagchiinId, result);
+      }
+      io.emit("appWebDuudlaga" + medegdel.baiguullagiinId, result);
     })
     .catch((err) => {
       
