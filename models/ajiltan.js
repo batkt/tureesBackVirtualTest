@@ -30,6 +30,8 @@ const ajiltanSchema = new Schema(
     ajildOrsonOgnoo: Date,
     baiguullagiinId: String,
     baiguullagiinNer: String,
+    activeBaiguullagaId: String,
+    activeBuildingId: String,
     erkh: String,
     firebaseToken: String,
     albanTushaal: String,
