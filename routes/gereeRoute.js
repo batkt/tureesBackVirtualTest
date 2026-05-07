@@ -675,6 +675,18 @@ router
       delete updateData.tukhainBaaziinKholbolt;
       delete updateData.erunkhiiKholbolt;
       delete updateData.nevtersenAjiltniiToken;
+
+      if (updateData.gereeniiDugaar) {
+        const existingGeree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
+          gereeniiDugaar: updateData.gereeniiDugaar,
+          _id: { $ne: updateData._id },
+          tuluv: { $ne: -1 },
+        });
+        if (existingGeree) {
+          throw new Error("Бүртгэлтэй гэрээний дугаар байна");
+        }
+      }
+
       var geree = new Geree(req.body.tukhainBaaziinKholbolt)(updateData);
       var gereeOld = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findById(geree._id)
