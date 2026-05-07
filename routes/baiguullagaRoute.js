@@ -38,7 +38,7 @@ router.post("/baiguullagaBurtgekh", async (req, res, next) => {
           "admin",
         );
         //production
-        // db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);
+        // db.kholboltNemye(baiguullaga._id, req.body.baaziinNer);/
         var kholbolt = db.kholboltuud.find(
           (a) => a.baiguullagiinId == result._id.toString(),
         );
