@@ -427,7 +427,6 @@ async function ebarimtDuudya(ugugdul, onFinish, next, shine = false) {
         if (err) {
           if (!!next) next(err);
         } else {
-          console.log("body ---------->>" + JSON.stringify(body));
           onFinish(body, ugugdul);
         }
       });
