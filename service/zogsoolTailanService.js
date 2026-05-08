@@ -223,13 +223,12 @@ async function udriinTailan({ body }) {
       //   ? { "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd } }
       //   : { "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd } }
       // ),
-      "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd },
+      "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd },
       ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
       ...(status === "Tulburtei" && {
         "tuukh.tulukhDun": { $gt: 0 },
         "tuukh.tuluv": { $in: [0, -4] },
         "tuukh.uneguiGarsan": { $exists: false },
-        "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lt: dateEnd },
       }),
       ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
       ...(body.burtgesenAjiltaniiId && {
