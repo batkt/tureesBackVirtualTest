@@ -156,7 +156,7 @@ router.post("/baiguullagaAvya", (req, res, next) => {
 router.post("/moduliinMedeelelAvya", tokenShalgakh, async (req, res, next) => {
   try {
     var axiosKhariu = await axios.post(
-      "http://103.143.40.123:8282/moduliinMedeelelAvya",
+      "http://103.236.194.68:8282/moduliinMedeelelAvya",
       {
         register: req.body.register,
       },

@@ -3,7 +3,7 @@ const Baiguullaga = require("../models/baiguullaga");
 async function aldaagIlgeeye(aldaa, req) {
   const { db } = require("zevbackv2");
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-    req.body.baiguullagiinId
+    req.body.baiguullagiinId,
   );
 
   const data = new TextEncoder().encode(
@@ -16,10 +16,10 @@ async function aldaagIlgeeye(aldaa, req) {
       baiguullagiinId: req.body.baiguullagiinId,
       burtgesenAjiltaniiId: req.body.nevtersenAjiltniiToken.id,
       burtgesenAjiltaniiNer: req.body.nevtersenAjiltniiToken.ner,
-    })
+    }),
   );
   const options = {
-    hostname: "103.143.40.123",
+    hostname: "103.236.194.68",
     port: 8282,
     path: "/aldaa",
     method: "POST",
@@ -46,7 +46,7 @@ const aldaaBarigch = (err, req, res, next) => {
       err.message = "Нэвтрэх нэр давхардаж байна!";
     else if (
       !!err.message &&
-      !!err.message.includes("connect ECONNREFUSED 103.143.40.123:8282")
+      !!err.message.includes("connect ECONNREFUSED 103.236.194.68:8282")
     ) {
       err.message = " Лицензийн хэсэгтэй холбогдоход алдаа гарлаа!";
     }

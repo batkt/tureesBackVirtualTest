@@ -33,7 +33,7 @@ router.post("/duriinMailIlgeeye", tokenShalgakh, (req, res, next) => {
       await MailIlgeeye.mailIlgeeye(
         mail,
         result ? result.mail : null,
-        result ? result.zurag : null
+        result ? result.zurag : null,
       );
       res.send("Amjilttai");
     })
@@ -85,8 +85,8 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         subject: req.body.subject,
       };
       const resIgeeye = await axios.post(
-        "http://103.143.40.123:8282/tureesMailIlgeeye",
-        ilgeekhBody
+        "http://103.236.194.68:8282/tureesMailIlgeeye",
+        ilgeekhBody,
       );
       const body = resIgeeye.data;
       if (Array.isArray(body)) {
@@ -100,12 +100,12 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       }
       if (body?.length > 0) {
         await MaililgeesenKhariu(req.body.tukhainBaaziinKholbolt).insertMany(
-          body
+          body,
         );
       }
       for (const tempData of req.body.gereenuud) {
         const tuukh = new NekhemjlekhiinTuukh(
-          req.body.tukhainBaaziinKholbolt
+          req.body.tukhainBaaziinKholbolt,
         )();
         tuukh.baiguullagiinNer = tempData.baiguullagiinNer;
         tuukh.baiguullagiinId = tempData.baiguullagiinId;
@@ -149,7 +149,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         tuukh.content = req.body.mailuud?.filter(
           (a) =>
             a.mail === tempData.mail &&
-            a.gereeniiDugaar === tempData.gereeniiDugaar
+            a.gereeniiDugaar === tempData.gereeniiDugaar,
         )[0]?.content;
         tuukh.nekhemjlekhiinDans = tempData.nekhemjlekhiinDans;
         tuukh.nekhemjlekhiinDansniiNer = tempData.nekhemjlekhiinDansniiNer;
@@ -177,7 +177,7 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         };
         await Geree(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
           tempData._id,
-          update
+          update,
         );
       }
       res.send(body);
@@ -188,8 +188,8 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
         subject: req.body.subject,
       };
       const resIgeeye = await axios.post(
-        "http://103.143.40.123:8282/tureesMailIlgeeye",
-        ilgeekhBody
+        "http://103.236.194.68:8282/tureesMailIlgeeye",
+        ilgeekhBody,
       );
       const body = resIgeeye.data;
       if (Array.isArray(body)) {
@@ -203,12 +203,12 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       }
       if (body?.length > 0) {
         await MaililgeesenKhariu(req.body.tukhainBaaziinKholbolt).insertMany(
-          body
+          body,
         );
       }
       if (!!req.body.todorkhoilolt) {
         const tod = new TodorkhoiloltiinTuukh(req.body.tukhainBaaziinKholbolt)(
-          req.body.todorkhoilolt
+          req.body.todorkhoilolt,
         );
         tod.mailuud = req.body.mailuud;
         await tod.save();
@@ -219,56 +219,64 @@ router.post("/mailOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
       let totalCount = req.body.mailuud.length;
       const io = req.app.get("socketio");
       let failedMails = [];
-      
+
       const BATCH_SIZE = 10;
       for (let i = 0; i < totalCount; i += BATCH_SIZE) {
         const batch = req.body.mailuud.slice(i, i + BATCH_SIZE);
-        
-        await Promise.all(batch.map(async (mail) => {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (mail.mail && emailRegex.test(mail.mail.trim())) {
-            let sendRes = await MailIlgeeye.duriinMailIlgeeye(
-              baiguullaga.tokhirgoo.mailNevtrekhNer,
-              baiguullaga.tokhirgoo.mailPassword,
-              baiguullaga.tokhirgoo.mailHost,
-              baiguullaga.tokhirgoo.mailPort,
-              mail.mail.trim(),
-              req.body.subject,
-              mail.content,
-              mail.gereeniiDugaar
-            );
-            if (sendRes instanceof Error) {
-              let errorMsg = sendRes.message || "";
-              errorMsg = translateMailErrorMsg(errorMsg);
+
+        await Promise.all(
+          batch.map(async (mail) => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (mail.mail && emailRegex.test(mail.mail.trim())) {
+              let sendRes = await MailIlgeeye.duriinMailIlgeeye(
+                baiguullaga.tokhirgoo.mailNevtrekhNer,
+                baiguullaga.tokhirgoo.mailPassword,
+                baiguullaga.tokhirgoo.mailHost,
+                baiguullaga.tokhirgoo.mailPort,
+                mail.mail.trim(),
+                req.body.subject,
+                mail.content,
+                mail.gereeniiDugaar,
+              );
+              if (sendRes instanceof Error) {
+                let errorMsg = sendRes.message || "";
+                errorMsg = translateMailErrorMsg(errorMsg);
+                failedMails.push({
+                  ner: mail.khariltsagchiinNer,
+                  mail: mail.mail,
+                  aldaa: "Алдаатай: " + errorMsg,
+                });
+              }
+            } else {
               failedMails.push({
                 ner: mail.khariltsagchiinNer,
                 mail: mail.mail,
-                aldaa: "Алдаатай: " + errorMsg,
+                aldaa: "Буруу и-мэйл хаяг",
               });
             }
-          } else {
-             failedMails.push({ ner: mail.khariltsagchiinNer, mail: mail.mail, aldaa: "Буруу и-мэйл хаяг" });
-          }
 
-          sentCount++;
-          if (io) {
-            io.emit(`mailProgress-${req.body.baiguullagiinId}`, {
-              sent: sentCount,
-              total: totalCount
-            });
-          }
-      
-          const sonorduulga = new Sonorduulga(req.body.tukhainBaaziinKholbolt)();
-          sonorduulga.khuleenAvagchiinId = mail.khariltsagchiinId;
-          sonorduulga.barilgiinId = mail.barilgiinId;
-          sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
-          sonorduulga.khariltsagchiinNer = mail.khariltsagchiinNer;
-          sonorduulga.title = req.body.subject;
-          sonorduulga.message = mail.content;
-          sonorduulga.turul = req.body.turul || "Mail";
-          sonorduulga.kharsanEsekh = false;
-          await sonorduulga.save();
-        }));
+            sentCount++;
+            if (io) {
+              io.emit(`mailProgress-${req.body.baiguullagiinId}`, {
+                sent: sentCount,
+                total: totalCount,
+              });
+            }
+
+            const sonorduulga = new Sonorduulga(
+              req.body.tukhainBaaziinKholbolt,
+            )();
+            sonorduulga.khuleenAvagchiinId = mail.khariltsagchiinId;
+            sonorduulga.barilgiinId = mail.barilgiinId;
+            sonorduulga.baiguullagiinId = req.body.baiguullagiinId;
+            sonorduulga.khariltsagchiinNer = mail.khariltsagchiinNer;
+            sonorduulga.title = req.body.subject;
+            sonorduulga.message = mail.content;
+            sonorduulga.turul = req.body.turul || "Mail";
+            sonorduulga.kharsanEsekh = false;
+            await sonorduulga.save();
+          }),
+        );
       }
       res.send({ result: "Amjilttai", failedMails });
     }
@@ -304,7 +312,7 @@ router.post("/maxDugaarAvya", tokenShalgakh, async (req, res, next) => {
             },
           },
         },
-      ]
+      ],
     );
     if (maxDugaar && maxDugaar.length > 0) dugaar = maxDugaar[0].max + 1;
     nekhemjlekhiinDugaar = nekhemjlekhiinDugaar + (await pad(dugaar, 3));
@@ -374,7 +382,7 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
         // ШИНЭ: Sonorduulga хадгалах
         if (body && body[0]?.Result === "SUCCESS") {
           const sonorduulga = new Sonorduulga(
-            req.body.tukhainBaaziinKholbolt
+            req.body.tukhainBaaziinKholbolt,
           )();
           sonorduulga.khuleenAvagchiinId = jagsaalt[index].khariltsagchiinId;
           sonorduulga.barilgiinId =
@@ -410,7 +418,7 @@ async function msgIlgeeyeUnitel(
   index,
   next,
   req,
-  res
+  res,
 ) {
   try {
     for (const data of jagsaalt) {
@@ -423,7 +431,7 @@ async function msgIlgeeyeUnitel(
       const resp = await axios.post(
         "https://pbxuc.unitel.mn/hodupbx_api/v1.4/sendSms",
         form,
-        { headers: form.getHeaders() }
+        { headers: form.getHeaders() },
       );
       if (!!req && !!req.body && resp?.data?.status === "SUCCESS") {
         var msg = new MsgTuukh(req.body.tukhainBaaziinKholbolt)();
@@ -462,7 +470,7 @@ router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      req.body.baiguullagiinId
+      req.body.baiguullagiinId,
     );
     var msgIlgeekhKey;
     var msgIlgeekhDugaar;
@@ -484,7 +492,7 @@ router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
         0,
         next,
         req,
-        res
+        res,
       );
     else
       msgIlgeeye(
@@ -495,7 +503,7 @@ router.post("/msgIlgeeye", tokenShalgakh, async (req, res, next) => {
         0,
         next,
         req,
-        res
+        res,
       );
   } catch (err) {
     next(err);
@@ -506,7 +514,7 @@ router.post("/msgOlnoorIlgeeye", tokenShalgakh, async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
     var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-      req.body.baiguullagiinId
+      req.body.baiguullagiinId,
     );
     var msgIlgeekhKey;
     var msgIlgeekhDugaar;
@@ -556,7 +564,7 @@ router.post("/msgTuukhEBarimtZogsool", async (req, res, next) => {
     if (kholboltuud && baiguullaguud?.length) {
       for (const baiguullaga of baiguullaguud) {
         var kholbolt = kholboltuud.find(
-          (a) => a.baiguullagiinId == baiguullaga._id.toString()
+          (a) => a.baiguullagiinId == baiguullaga._id.toString(),
         );
         if (kholbolt) {
           var query = {
@@ -598,7 +606,7 @@ router.post("/msgTuukhEBarimtZogsoolSarBur", async (req, res, next) => {
     if (kholboltuud && baiguullaguud?.length) {
       for (const baiguullaga of baiguullaguud) {
         var kholbolt = kholboltuud.find(
-          (a) => a.baiguullagiinId == baiguullaga._id.toString()
+          (a) => a.baiguullagiinId == baiguullaga._id.toString(),
         );
 
         if (kholbolt) {

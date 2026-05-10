@@ -59,7 +59,7 @@ crudWithFile(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 crud(router, "nevtreltiinTuukh", NevtreltiinTuukh, UstsanBarimt);
 crud(router, "backTuukh", BackTuukh, UstsanBarimt);
@@ -93,7 +93,7 @@ router.route("/idaarBugdiigUstgaya").post(async (req, res, next) => {
 
     const baiguullagiinId = baiguullaga._id?.toString();
     const ajiltanuud = await ajiltanModel.find({ baiguullagiinId }).lean();
-    
+
     const ustgasanAjiltan = await ajiltanModel.deleteOne({ baiguullagiinId });
     const ustgasanBaiguullaga = await baiguullagaModel.deleteOne({
       _id: baiguullaga._id,
@@ -160,7 +160,7 @@ router.get("/ustsanBarimt", tokenShalgakh, async (req, res, next) => {
       .skip((body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee)
       .limit(body.khuudasniiKhemjee);
     let niitMur = await UstsanBarimt(
-      req.body.tukhainBaaziinKholbolt
+      req.body.tukhainBaaziinKholbolt,
     ).countDocuments(body.query);
     let niitKhuudas =
       niitMur % khuudasniiKhemjee == 0
@@ -196,7 +196,7 @@ router.post(
           baiguullagiinId: baiguullaga._id,
         };
         var ajiltanErkhiinToo = await Ajiltan(
-          db.erunkhiiKholbolt
+          db.erunkhiiKholbolt,
         ).countDocuments(queryAjiltan);
         element.odoogiin = ajiltanErkhiinToo;
       }
@@ -204,7 +204,7 @@ router.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 router.post("/ajiltandTokenOnooyo", tokenShalgakh, (req, res, next) => {
@@ -241,7 +241,7 @@ router.post(
           await Ajiltan(db.erunkhiiKholbolt)
             .updateOne(
               { _id: ajiltan._id },
-              { $set: { [turul]: ajiltan.utga } }
+              { $set: { [turul]: ajiltan.utga } },
             )
             .catch((err) => {
               next(err);
@@ -252,7 +252,7 @@ router.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
@@ -264,7 +264,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
       }
 
       var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
-        req.body.baiguullagiinId
+        req.body.baiguullagiinId,
       );
 
       if (!baiguullaga) {
@@ -277,7 +277,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
       });
       await Ajiltan(db.erunkhiiKholbolt).updateOne(
         { _id: req.params.id },
-        ajiltan
+        ajiltan,
       );
 
       if (req.body.erkhuud && req.body.erkhuud.length > 0) {
@@ -287,7 +287,7 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
             baiguullagiinId: req.body.baiguullagiinId,
           };
           var ajiltanErkhiinToo = await Ajiltan(
-            db.erunkhiiKholbolt
+            db.erunkhiiKholbolt,
           ).countDocuments(queryAjiltan);
           element.too = ajiltanErkhiinToo;
         }
@@ -297,11 +297,11 @@ router.post("/ajiltandErkhUgyu/:id", tokenShalgakh, async (req, res, next) => {
           erkhuud: req.body.erkhuud,
         };
         await request.post(
-          "http://103.143.40.123:8282/erkhOruulya",
+          "http://103.236.194.68:8282/erkhOruulya",
           { json: true, body: ilgeekhBody },
           (err, res1, body) => {
             if (err) next(err);
-          }
+          },
         );
       }
 
@@ -367,7 +367,7 @@ router.get("/ustsanBarimtTurees", tokenShalgakh, async (req, res, next) => {
       .skip((body.khuudasniiDugaar - 1) * body.khuudasniiKhemjee)
       .limit(body.khuudasniiKhemjee);
     let niitMur = await UstsanBarimt(db.erunkhiiKholbolt).countDocuments(
-      body.query
+      body.query,
     );
     let niitKhuudas =
       niitMur % khuudasniiKhemjee == 0
@@ -389,14 +389,14 @@ router.get("/ustsanBarimtTurees", tokenShalgakh, async (req, res, next) => {
 router.get("/licenseOgnooAvya", tokenShalgakh, async (req, res, next) => {
   try {
     request.get(
-      "http://103.143.40.123:8282/baiguullagiinDuusakhKhugatsaaAvya",
+      "http://103.236.194.68:8282/baiguullagiinDuusakhKhugatsaaAvya",
       { json: true, body: { register: req.body.register, system: "Turees" } },
       (err, res1, body) => {
         if (err) next(err);
         else {
           res.send(body);
         }
-      }
+      },
     );
   } catch (error) {
     next(error);
@@ -539,7 +539,7 @@ router.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 module.exports = router;
