@@ -1081,3 +1081,194 @@ router.route("/sankhuuShinjilgee").post(tokenShalgakh, async (req, res, next) =>
 });
 
 module.exports = router;
+
+ 
+router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    const ekhlekhOgnoo = req.body.ekhlekhOgnoo
+      ? new Date(req.body.ekhlekhOgnoo)
+      : new Date(moment().startOf("month").format("YYYY-MM-DD 00:00:00"));
+    const duusakhOgnoo = req.body.duusakhOgnoo
+      ? new Date(req.body.duusakhOgnoo)
+      : new Date(moment().endOf("month").format("YYYY-MM-DD 23:59:59"));
+
+    var match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+    };
+    if (req.body.khariltsagchiinId)
+      match["register"] = { $in: req.body.khariltsagchiinId };
+    if (req.body.$or) match["$or"] = req.body.$or;
+
+    const guilgeeFilter = {
+      $or: [
+        { "avlaga.guilgeenuud.turul": { $nin: ["baritsaa", "aldangi"] } },
+        {
+          $and: [
+            { "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] } },
+            { "avlaga.guilgeenuud.tulsunDun": { $gt: 0 } },
+          ],
+        },
+      ],
+    };
+
+   
+    const ekhniiQuery = [
+      { $match: match },
+      { $unwind: { path: "$avlaga.guilgeenuud" } },
+      {
+        $match: {
+          "avlaga.guilgeenuud.ognoo": { $lt: ekhlekhOgnoo },
+          ...guilgeeFilter,
+        },
+      },
+      {
+        $group: {
+          _id: "$gereeniiDugaar",
+          ner: { $first: "$ner" },
+          register: { $first: "$register" },
+          talbainDugaar: { $first: "$talbainDugaar" },
+          barilgiiinNer: { $first: "$barilgiiinNer" },
+          talbainKhemjee: { $first: "$talbainKhemjee" },
+          tulukh: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
+          tulsun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
+          khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
+        },
+      },
+      {
+        $project: {
+          ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, talbainKhemjee: 1,
+          ekhniiUldegdel: { $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }] },
+        },
+      },
+    ];
+
+
+    const periodQuery = [
+      { $match: match },
+      { $unwind: { path: "$avlaga.guilgeenuud" } },
+      {
+        $match: {
+          "avlaga.guilgeenuud.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+          ...guilgeeFilter,
+        },
+      },
+      {
+        $group: {
+          _id: "$gereeniiDugaar",
+          niitDt: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
+          niitKt: {
+            $sum: {
+              $add: [
+                { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+                { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+              ],
+            },
+          },
+        },
+      },
+    ];
+
+    const [ekhniiData, periodData] = await Promise.all([
+      Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(ekhniiQuery),
+      Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(periodQuery),
+    ]);
+
+
+    const periodMap = {};
+    periodData.forEach((p) => { periodMap[p._id] = p; });
+
+    const result = ekhniiData.map((e) => {
+      const p = periodMap[e._id] || {};
+      const ekh = e.ekhniiUldegdel || 0;
+      const dt = p.niitDt || 0;
+      const kt = p.niitKt || 0;
+      return {
+        gereeniiDugaar: e._id,
+        ner: e.ner,
+        register: e.register,
+        talbainDugaar: e.talbainDugaar,
+        barilgiiinNer: e.barilgiiinNer,
+        talbainKhemjee: e.talbainKhemjee,
+        ekhniiUldegdel: ekh,
+        niitDt: dt,
+        niitKt: kt,
+        ecsniiUldegdel: ekh + dt - kt,
+      };
+    });
+
+   
+    periodData.forEach((p) => {
+      if (!ekhniiData.find((e) => e._id === p._id)) {
+        result.push({
+          gereeniiDugaar: p._id,
+          ekhniiUldegdel: 0,
+          niitDt: p.niitDt || 0,
+          niitKt: p.niitKt || 0,
+          ecsniiUldegdel: (p.niitDt || 0) - (p.niitKt || 0),
+        });
+      }
+    });
+
+    const khuudasniiDugaar = req.body.khuudasniiDugaar || 1;
+    const khuudasniiKhemjee = req.body.khuudasniiKhemjee || 200;
+    const niitMur = result.length;
+    const jagsaalt = result.slice(
+      (khuudasniiDugaar - 1) * khuudasniiKhemjee,
+      khuudasniiDugaar * khuudasniiKhemjee
+    );
+
+    res.json({ khuudasniiDugaar, khuudasniiKhemjee, niitMur, jagsaalt });
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    const ekhlekhOgnoo = req.body.ekhlekhOgnoo
+      ? new Date(req.body.ekhlekhOgnoo)
+      : new Date(moment().startOf("month").format("YYYY-MM-DD 00:00:00"));
+    const duusakhOgnoo = req.body.duusakhOgnoo
+      ? new Date(req.body.duusakhOgnoo)
+      : new Date(moment().endOf("month").format("YYYY-MM-DD 23:59:59"));
+
+    const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
+      .findOne({ gereeniiDugaar: req.body.gereeniiDugaar })
+      .select("+avlaga");
+
+    if (!geree) return res.json({ guilgeenuud: [], ekhniiUldegdel: 0 });
+
+    const guilgeenuud = (geree.avlaga?.guilgeenuud || []).filter(
+      (g) =>
+        g.turul !== "aldangi" &&
+        (g.turul !== "baritsaa" || (g.tulsunDun || 0) > 0)
+    );
+
+    const guilgeenuudBeforeStart = guilgeenuud.filter(
+      (g) => new Date(g.ognoo) < ekhlekhOgnoo
+    );
+    const ekhniiUldegdel = guilgeenuudBeforeStart.reduce(
+      (s, g) => s + (g.tulukhDun || 0) - (g.tulsunDun || 0) - (g.khyamdral || 0),
+      0
+    );
+
+    const periodGuilgeenuud = guilgeenuud
+      .filter(
+        (g) =>
+          new Date(g.ognoo) >= ekhlekhOgnoo &&
+          new Date(g.ognoo) <= duusakhOgnoo
+      )
+      .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
+
+    res.json({
+      ekhniiUldegdel,
+      talbainKhemjee: geree.talbainKhemjee,
+      guilgeenuud: periodGuilgeenuud,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
