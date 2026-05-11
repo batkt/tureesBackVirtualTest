@@ -2397,6 +2397,7 @@ router
                 ),
               );
               result.jagsaalt.forEach((x) => {
+                x.m2 = x.talbainKhemjee;
                 x.tukhainSariinTureesiinTulukhDun =
                   gereenuud[0].tukhainSariinTureesiinTulukhDun.find(
                     (a) => a._id == x.gereeniiDugaar,
