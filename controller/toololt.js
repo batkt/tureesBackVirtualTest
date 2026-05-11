@@ -535,7 +535,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         {
           $and: [
             {
-              "avlaga.guilgeenuud.turul": {
+              "avlaga.baritsaa.ognoo": {
                 $in: ["baritsaa"],
               },
             },
@@ -548,7 +548,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         },
       ],
       ...tuluvFilter,
-      ...searchFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
