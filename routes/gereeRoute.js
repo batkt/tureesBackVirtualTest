@@ -442,6 +442,37 @@ router
   });
 
 router
+  .route("/gereeniiDugaarlaltAvya")
+  .get(tokenShalgakh, async (req, res, next) => {
+    try {
+      var maxDugaar = 1;
+      var unuudur = new Date();
+      unuudur = new Date(
+        unuudur.getFullYear(),
+        unuudur.getMonth(),
+        unuudur.getDate(),
+      );
+      await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+        .find({
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          turul: "geree",
+          ognoo: unuudur,
+        })
+        .sort({
+          dugaar: -1,
+        })
+        .limit(1)
+        .then((result) => {
+          if (result != 0) maxDugaar = result[0].dugaar + 1;
+        });
+      res.send(maxDugaar.toString());
+    } catch (err) {
+      next(err);
+    }
+  });
+
+router
   .route("/nekhemjlekhiinDugaarlaltKhadgalya")
   .post(tokenShalgakh, async (req, res, next) => {
     try {
@@ -483,7 +514,8 @@ crud(
         unuudur.getDate(),
       );
       var dugaarlalt = null;
-      if (req.body.gereeniiDugaar && req.body.gereeniiDugaar.match(/^ГД\d{6}$/)) {
+      if (req.body.gereeniiDugaar && req.body.gereeniiDugaar.match(/^ГД\d{6}(\d+)?$/)) {
+        let basePrefix = req.body.gereeniiDugaar.substring(0, 8);
         var maxDugaar = 1;
         await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
           .find({
@@ -507,7 +539,7 @@ crud(
           ognoo: unuudur,
           isNew: true,
         });
-        req.body.gereeniiDugaar = req.body.gereeniiDugaar + String(maxDugaar).padStart(2, "0");
+        req.body.gereeniiDugaar = basePrefix + String(maxDugaar).padStart(2, "0");
       }
 
       if (req.body.gereeniiDugaar) {
@@ -537,76 +569,78 @@ crud(
 );
 
 router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
-  const { db } = require("zevbackv2");
-  const updateData = { ...req.body };
-  delete updateData.tukhainBaaziinKholbolt;
-  delete updateData.erunkhiiKholbolt;
-  delete updateData.nevtersenAjiltniiToken;
-  const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(updateData);
-  khariltsagch.id = khariltsagch.register
-    ? khariltsagch.register
-    : khariltsagch.customerTin;
-  if (req.body.gereeniiDugaar && req.body.gereeniiDugaar.match(/^ГД\d{6}$/)) {
-    var unuudur = new Date();
-    unuudur = new Date(
-      unuudur.getFullYear(),
-      unuudur.getMonth(),
-      unuudur.getDate(),
-    );
-    var maxDugaar = 1;
-    await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
-      .find({
+  try {
+    const { db } = require("zevbackv2");
+    const updateData = { ...req.body };
+    delete updateData.tukhainBaaziinKholbolt;
+    delete updateData.erunkhiiKholbolt;
+    delete updateData.nevtersenAjiltniiToken;
+    const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(updateData);
+    khariltsagch.id = khariltsagch.register
+      ? khariltsagch.register
+      : khariltsagch.customerTin;
+    if (req.body.gereeniiDugaar && req.body.gereeniiDugaar.match(/^ГД\d{6}(\d+)?$/)) {
+      let basePrefix = req.body.gereeniiDugaar.substring(0, 8);
+      var unuudur = new Date();
+      unuudur = new Date(
+        unuudur.getFullYear(),
+        unuudur.getMonth(),
+        unuudur.getDate(),
+      );
+      var maxDugaar = 1;
+      await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+        .find({
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+          turul: "geree",
+          ognoo: unuudur,
+        })
+        .sort({
+          dugaar: -1,
+        })
+        .limit(1)
+        .then((result) => {
+          if (result != 0) maxDugaar = result[0].dugaar + 1;
+        });
+      var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)({
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
+        dugaar: maxDugaar,
         turul: "geree",
         ognoo: unuudur,
-      })
-      .sort({
-        dugaar: -1,
-      })
-      .limit(1)
-      .then((result) => {
-        if (result != 0) maxDugaar = result[0].dugaar + 1;
+        isNew: true,
       });
-    var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)({
-      baiguullagiinId: req.body.baiguullagiinId,
-      barilgiinId: req.body.barilgiinId,
-      dugaar: maxDugaar,
-      turul: "geree",
-      ognoo: unuudur,
-      isNew: true,
-    });
-    req.body.gereeniiDugaar = req.body.gereeniiDugaar + String(maxDugaar).padStart(2, "0");
-    dugaarlalt.save();
-  }
-
-  if (req.body.gereeniiDugaar) {
-    const existingGeree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
-      gereeniiDugaar: req.body.gereeniiDugaar,
-      tuluv: { $ne: -1 },
-    });
-    if (existingGeree) {
-      throw new Error("Бүртгэлтэй гэрээний дугаар байна");
+      req.body.gereeniiDugaar = basePrefix + String(maxDugaar).padStart(2, "0");
+      dugaarlalt.save();
     }
-  }
 
-  var khariltsagchShalguur;
-  if (!!khariltsagch.register) {
-    khariltsagchShalguur = await Khariltsagch(db.erunkhiiKholbolt).findOne({
-      register: khariltsagch.register,
-      barilgiinId: req.body.barilgiinId,
-    });
-  } else if (!!khariltsagch.customerTin) {
-    khariltsagchShalguur = await Khariltsagch(db.erunkhiiKholbolt).findOne({
-      customerTin: khariltsagch.customerTin,
-      barilgiinId: req.body.barilgiinId,
-    });
-  }
-  if (!khariltsagchShalguur) await khariltsagch.save();
-  else {
-    if (!req.body.albanTushaal)
-      req.body.albanTushaal = khariltsagchShalguur.albanTushaal;
-  }
+    if (req.body.gereeniiDugaar) {
+      const existingGeree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
+        gereeniiDugaar: req.body.gereeniiDugaar,
+        tuluv: { $ne: -1 },
+      });
+      if (existingGeree) {
+        throw new Error("Бүртгэлтэй гэрээний дугаар байна");
+      }
+    }
+
+    var khariltsagchShalguur;
+    if (!!khariltsagch.register) {
+      khariltsagchShalguur = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+        register: khariltsagch.register,
+        barilgiinId: req.body.barilgiinId,
+      });
+    } else if (!!khariltsagch.customerTin) {
+      khariltsagchShalguur = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+        customerTin: khariltsagch.customerTin,
+        barilgiinId: req.body.barilgiinId,
+      });
+    }
+    if (!khariltsagchShalguur) await khariltsagch.save();
+    else {
+      if (!req.body.albanTushaal)
+        req.body.albanTushaal = khariltsagchShalguur.albanTushaal;
+    }
 
   // // Хуваарь/авлагын мөрүүдийг (хөнгөлөлтүүдтэй) шууд хадгална.
   // const khuvaariGuilgeenuud =
@@ -618,26 +652,26 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
   //   req.body.avlaga.guilgeenuud = khuvaariGuilgeenuud;
   // }
 
-  var geree = new Geree(req.body.tukhainBaaziinKholbolt)(updateData);
-  var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
-  try {
+    var geree = new Geree(req.body.tukhainBaaziinKholbolt)(updateData);
+    var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
     if (!geree.avlaga || !geree.avlaga.guilgeenuud) {
       throw new Error("Гүйлгээний хуваарь үүсгээгүй байна.");
     }
     if (geree.avlaga.guilgeenuud && geree.avlaga.guilgeenuud.length > 0)
       daraagiinTulukhOgnoo = geree.avlaga.guilgeenuud[0].ognoo;
+
+    geree.daraagiinTulukhOgnoo = daraagiinTulukhOgnoo;
+    geree.tuluv = 1;
+    await geree.save().then((result) => {
+      talbaiKhariltsagchiinTuluvUurchluy(
+        [result._id],
+        req.body.tukhainBaaziinKholbolt,
+      );
+    });
+    res.send("Amjilttai");
   } catch (err) {
-    if (!!next) return next(err);
+    next(err);
   }
-  geree.daraagiinTulukhOgnoo = daraagiinTulukhOgnoo;
-  geree.tuluv = 1;
-  await geree.save().then((result) => {
-    talbaiKhariltsagchiinTuluvUurchluy(
-      [result._id],
-      req.body.tukhainBaaziinKholbolt,
-    );
-  });
-  res.send("Amjilttai");
 });
 
 router
