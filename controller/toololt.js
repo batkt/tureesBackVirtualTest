@@ -248,35 +248,14 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       {
         $project: {
           dun: {
-            $cond: [
+            $subtract: [
+              "$tulukh",
               {
-                $gt: [
-                  {
-                    $subtract: [
-                      "$tulukh",
-                      {
-                        $add: [
-                          { $ifNull: ["$tulsun", 0] },
-                          { $ifNull: ["$khyamdral", 0] },
-                        ],
-                      },
-                    ],
-                  },
-                  0,
+                $add: [
+                  { $ifNull: ["$tulsun", 0] },
+                  { $ifNull: ["$khyamdral", 0] },
                 ],
               },
-              {
-                $subtract: [
-                  "$tulukh",
-                  {
-                    $add: [
-                      { $ifNull: ["$tulsun", 0] },
-                      { $ifNull: ["$khyamdral", 0] },
-                    ],
-                  },
-                ],
-              },
-              0,
             ],
           },
         },
@@ -694,29 +673,11 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       {
         $project: {
           dun: {
-            $cond: [
+            $subtract: [
+              "$tulukh",
               {
-                $gt: [
-                  {
-                    $subtract: [
-                      "$tulukh",
-                      {
-                        $sum: ["$tulsun", "$khyamdral"],
-                      },
-                    ],
-                  },
-                  0,
-                ],
+                $sum: ["$tulsun", "$khyamdral"],
               },
-              {
-                $subtract: [
-                  "$tulukh",
-                  {
-                    $sum: ["$tulsun", "$khyamdral"],
-                  },
-                ],
-              },
-              0,
             ],
           },
         },
