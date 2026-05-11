@@ -1193,7 +1193,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         ekhniiUldegdel: ekh,
         niitDt: dt,
         niitKt: kt,
-        ecsniiUldegdel: ekh + dt - kt,
+        etssiinUldegdel: ekh + dt - kt,
       };
     });
 
@@ -1205,7 +1205,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           ekhniiUldegdel: 0,
           niitDt: p.niitDt || 0,
           niitKt: p.niitKt || 0,
-          ecsniiUldegdel: (p.niitDt || 0) - (p.niitKt || 0),
+          etssiinUldegdel: (p.niitDt || 0) - (p.niitKt || 0),
         });
       }
     });
