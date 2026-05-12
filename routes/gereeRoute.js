@@ -4920,33 +4920,54 @@ router
         var niitGereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
           .find({
             talbainDugaar: { $in: talbainDugaaruud },
-            tuluv: 1,
           })
           .select("+avlaga");
-        talbainuud.forEach((x) => {
+        for (const x of talbainuud) {
           var tukhainMur = khariu.data.find(
             (a) => a.meter_id == x.tooluuriinDugaar,
           );
           if (!!tukhainMur) {
             var umnukhZaalt = 0;
             var guidliinKoep = 1;
-            var geree = niitGereenuud.find((a) => a.talbainDugaar == x.kod);
-            if (!!geree) {
-              var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
+            var relevantGereenuud = niitGereenuud.filter(
+              (a) => a.talbainDugaar == x.kod,
+            );
+            if (relevantGereenuud.length > 0) {
+              var allGuilgeenuud = [];
+              relevantGereenuud.forEach((g) => {
+                if (g.avlaga && g.avlaga.guilgeenuud) {
+                  allGuilgeenuud.push(...g.avlaga.guilgeenuud);
+                }
+              });
+              var suuliinGuilgee = allGuilgeenuud.filter((x) => {
                 return x.tailbar?.includes("Цахилгаан");
               });
               if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
                 suuliinGuilgee = lodash.orderBy(
                   suuliinGuilgee,
                   ["ognoo"],
-                  ["asc"],
+                  ["desc"],
                 );
-                suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
+                umnukhZaalt = suuliinGuilgee[0].suuliinZaalt;
+                guidliinKoep = suuliinGuilgee[0].guidliinKoep || 1;
+              } else {
+                var lastExcel = await AshiglaltiinExcel(
+                  req.body.tukhainBaaziinKholbolt,
+                  true,
+                )
+                  .findOne({
+                    talbainDugaar: x.kod,
+                    barilgiinId: x.barilgiinId,
+                    zardliinNer: { $regex: "Цахилгаан", $options: "i" },
+                  })
+                  .sort({ ognoo: -1 })
+                  .lean();
+                if (lastExcel) {
+                  umnukhZaalt = lastExcel.suuliinZaalt;
+                  if (lastExcel.guidliinKoep)
+                    guidliinKoep = lastExcel.guidliinKoep;
+                }
               }
-              if (!!suuliinGuilgee?.suuliinZaalt)
-                umnukhZaalt = suuliinGuilgee.suuliinZaalt;
-              if (!!suuliinGuilgee?.guidliinKoep)
-                guidliinKoep = suuliinGuilgee.guidliinKoep;
             }
             butsaakhJagsaalt.push({
               talbainId: x._id,
@@ -4958,7 +4979,7 @@ router
               umnukhZaalt,
             });
           }
-        });
+        }
         res.send(butsaakhJagsaalt);
       } else {
         throw new Error("Талбайн мэдээлэл олдсонгүй!");
@@ -4992,14 +5013,13 @@ router
           .find({
             talbainIdnuud: { $in: talbainDugaaruud },
             barilgiinId: req.body.barilgiinId,
-            tuluv: 1,
           })
           .select("+avlaga");
         if (!!gereenuud) {
           oldooguiGeree = [];
           talbainDugaaruud.forEach((a) => {
-            var oldsonGeree = gereenuud.find((b) =>
-              b.talbainIdnuud.includes(a),
+            var oldsonGeree = gereenuud.find(
+              (b) => b.talbainIdnuud.includes(a) && b.tuluv === 1,
             );
             if (!oldsonGeree)
               oldooguiGeree.push(
@@ -5018,8 +5038,9 @@ router
       var updateObject;
       if (niitGereenuud.length > 0) {
         for (const tukhainZardal of jagsaalt) {
-          var geree = niitGereenuud.find((x) =>
-            x.talbainIdnuud.includes(tukhainZardal.talbainId),
+          var geree = niitGereenuud.find(
+            (x) =>
+              x.talbainIdnuud.includes(tukhainZardal.talbainId) && x.tuluv === 1,
           );
           updateObject = {};
           if (
@@ -5028,7 +5049,17 @@ router
             ashiglaltiinZardal.turul === "кг"
           ) {
             var umnukhZaalt = 0;
-            var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
+            var relevantGereenuud = niitGereenuud.filter((x) =>
+              x.talbainIdnuud.includes(tukhainZardal.talbainId),
+            );
+            var allGuilgeenuud = [];
+            relevantGereenuud.forEach((g) => {
+              if (g.avlaga && g.avlaga.guilgeenuud) {
+                allGuilgeenuud.push(...g.avlaga.guilgeenuud);
+              }
+            });
+
+            var suuliinGuilgee = allGuilgeenuud.filter((x) => {
               return (
                 x.khemjikhNegj == ashiglaltiinZardal.turul &&
                 x.tailbar == ashiglaltiinZardal.ner &&
@@ -5040,10 +5071,24 @@ router
               suuliinGuilgee = lodash.orderBy(
                 suuliinGuilgee,
                 ["ognoo"],
-                ["asc"],
+                ["desc"],
               );
-              suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
-              umnukhZaalt = suuliinGuilgee.suuliinZaalt;
+              umnukhZaalt = suuliinGuilgee[0].suuliinZaalt;
+            } else {
+              var lastExcel = await AshiglaltiinExcel(
+                req.body.tukhainBaaziinKholbolt,
+                true,
+              )
+                .findOne({
+                  talbainDugaar: tukhainZardal.talbainDugaar,
+                  barilgiinId: req.body.barilgiinId,
+                  zardliinId: ashiglaltiinZardal._id,
+                })
+                .sort({ ognoo: -1 })
+                .lean();
+              if (lastExcel) {
+                umnukhZaalt = lastExcel.suuliinZaalt;
+              }
             }
           }
           var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;

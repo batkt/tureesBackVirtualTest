@@ -3455,7 +3455,6 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         .find({
           register: { $in: registeruud },
           barilgiinId: req.body.barilgiinId,
-          tuluv: 1,
         })
         .select("+avlaga");
       if (!!gereenuud) {
@@ -3476,7 +3475,6 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         .find({
           talbainDugaar: { $in: talbainDugaaruud },
           barilgiinId: req.body.barilgiinId,
-          tuluv: 1,
         })
         .select("+avlaga");
       if (!!gereenuud) {
@@ -3498,7 +3496,6 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
         .find({
           gereeniiDugaar: { $in: gereeniiDugaaruud },
           barilgiinId: req.body.barilgiinId,
-          tuluv: 1,
         })
         .select("+avlaga");
       if (!!gereenuud) {
@@ -3518,7 +3515,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
     var bulkOps = [];
     var updateObject;
     if (niitGereenuud.length > 0) {
-      for (const geree of niitGereenuud) {
+      for (const geree of niitGereenuud.filter((a) => a.tuluv === 1)) {
         updateObject = {};
         if (
           ashiglaltiinZardal.turul == "кВт" ||
@@ -3526,18 +3523,25 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
           ashiglaltiinZardal.turul === "кг"
         ) {
           var umnukhZaalt = 0;
-          var suuliinGuilgee = geree.avlaga.guilgeenuud.filter((x) => {
+          var relevantGereenuud = niitGereenuud.filter(
+            (a) => a.talbainDugaar === geree.talbainDugaar,
+          );
+          var allGuilgeenuud = [];
+          relevantGereenuud.forEach((g) => {
+            if (g.avlaga && g.avlaga.guilgeenuud) {
+              allGuilgeenuud.push(...g.avlaga.guilgeenuud);
+            }
+          });
+
+          var suuliinGuilgee = allGuilgeenuud.filter((x) => {
             return (
               x.khemjikhNegj == ashiglaltiinZardal.turul &&
               x.tailbar == ashiglaltiinZardal.ner
             );
           });
           if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
-            suuliinGuilgee = lodash.orderBy(suuliinGuilgee, ["ognoo"], ["asc"]);
-            suuliinGuilgee = suuliinGuilgee[suuliinGuilgee.length - 1];
-          }
-          if (!!suuliinGuilgee?.suuliinZaalt) {
-            umnukhZaalt = suuliinGuilgee.suuliinZaalt;
+            suuliinGuilgee = lodash.orderBy(suuliinGuilgee, ["ognoo"], ["desc"]);
+            umnukhZaalt = suuliinGuilgee[0].suuliinZaalt;
           } else {
             
             var match = {
