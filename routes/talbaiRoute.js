@@ -1224,6 +1224,56 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
   }
 });
 
+router.route("/avlagaTovchooGereeAvya").post(tokenShalgakh, async (req, res, next) => {
+  try {
+    const ekhlekhOgnoo = req.body.ekhlekhOgnoo
+      ? new Date(req.body.ekhlekhOgnoo)
+      : new Date(moment().startOf("month").format("YYYY-MM-DD 00:00:00"));
+    const duusakhOgnoo = req.body.duusakhOgnoo
+      ? new Date(req.body.duusakhOgnoo)
+      : new Date(moment().endOf("month").format("YYYY-MM-DD 23:59:59"));
+
+    const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
+      .findOne({ gereeniiDugaar: req.body.gereeniiDugaar })
+      .select("+avlaga");
+
+    if (!geree) return res.json({ aldangiGuilgeenuud: [], baritsaaGuilgeenuud: [] });
+
+    const allGuilgeenuud = geree.avlaga?.guilgeenuud || [];
+
+    
+    const aldangiGuilgeenuud = allGuilgeenuud
+      .filter(
+        (g) =>
+          g.turul === "aldangi" &&
+          new Date(g.ognoo) >= ekhlekhOgnoo &&
+          new Date(g.ognoo) <= duusakhOgnoo
+      )
+      .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
+
+     
+    const baritsaaGuilgeenuud = allGuilgeenuud
+      .filter(
+        (g) =>
+          g.turul === "baritsaa" &&
+          new Date(g.ognoo) >= ekhlekhOgnoo &&
+          new Date(g.ognoo) <= duusakhOgnoo
+      )
+      .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
+
+    res.json({
+      aldangiGuilgeenuud,
+      baritsaaGuilgeenuud,
+      aldangiinUldegdel: geree.aldangiinUldegdel || 0,
+      niitTulsunAldangi: geree.niitTulsunAldangi || 0,
+      baritsaaAvakhDun: geree.baritsaaAvakhDun || 0,
+      baritsaaniiUldegdel: geree.baritsaaniiUldegdel || 0,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, next) => {
   try {
