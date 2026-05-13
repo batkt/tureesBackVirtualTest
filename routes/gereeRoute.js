@@ -509,6 +509,7 @@ crud(
       delete updateData.nevtersenAjiltniiToken;
       const khariltsagch = new Khariltsagch(db.erunkhiiKholbolt)(updateData);
       khariltsagch.id = khariltsagch.register;
+      khariltsagch.idevkhiteiEsekh = true;
       var unuudur = new Date();
       unuudur = new Date(
         unuudur.getFullYear(),
@@ -638,10 +639,16 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
         barilgiinId: req.body.barilgiinId,
       });
     }
+    khariltsagch.idevkhiteiEsekh = true;
     if (!khariltsagchShalguur) await khariltsagch.save();
     else {
       if (!req.body.albanTushaal)
         req.body.albanTushaal = khariltsagchShalguur.albanTushaal;
+        
+      await Khariltsagch(db.erunkhiiKholbolt).updateOne(
+        { _id: khariltsagchShalguur._id },
+        { $set: { idevkhiteiEsekh: true } }
+      );
     }
 
   // // Хуваарь/авлагын мөрүүдийг (хөнгөлөлтүүдтэй) шууд хадгална.
@@ -4932,7 +4939,7 @@ router
             var umnukhZaalt = 0;
             var guidliinKoep = 1;
             var relevantGereenuud = niitGereenuud.filter(
-              (a) => a.talbainDugaar == x.kod,
+              (a) => a.talbainDugaar == x.kod && a.tuluv === 1,
             );
             if (relevantGereenuud.length > 0) {
               var allGuilgeenuud = [];
@@ -5152,7 +5159,7 @@ router
                   : 0)
               : tsakhilgaanDun;
 
-          console.log(`[Zaalt zaaltOlnoorOruulya] Talbai: ${tukhainZardal.talbainDugaar}, SuuliinZaalt: ${tukhainZardal.suuliinZaalt}, UmnukhZaalt: ${umnukhZaalt}, ZoruuDun: ${zoruuDun}, TempDun: ${tempDun}, BaiguullagaId: ${req.body.baiguullagiinId}`);
+          console.log(`[zaaltOlnoorOruulya] Talbai: ${tukhainZardal.talbainDugaar}, SuuliinZaalt: ${tukhainZardal.suuliinZaalt}, UmnukhZaalt: ${umnukhZaalt}, ZoruuDun: ${zoruuDun}, TempDun: ${tempDun}, BaiguullagaId: ${req.body.baiguullagiinId}`);
 
           updateObject = {
             turul: "avlaga",
