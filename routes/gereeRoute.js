@@ -5095,7 +5095,7 @@ router
                 umnukhZaalt = suuliinGuilgee[0].suuliinZaalt;
               } else {
                 throw new Error(
-                  `[${tukhainZardal.talbainDugaar}] талбайн өмнөх заалт (umnukhZaalt) олдсонгүй. Тоолуурын дугаар: ${tukhainZardal.tooluuriinDugaar || "хоосон"}. Frontend-аас umnukhZaalt дамжуулна уу.`
+                  `[${tukhainZardal.talbainDugaar}] талбайн өмнөх заалт олдсонгүй. (Тоолуурын №: ${tukhainZardal.tooluuriinDugaar || "Байхгүй"}). Та өмнөх гүйлгээний түүхээ шалгана уу.`
                 );
               }
             }
