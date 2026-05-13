@@ -5066,18 +5066,20 @@ router
             ashiglaltiinZardal.turul == "1м3" ||
             ashiglaltiinZardal.turul === "кг"
           ) {
-            var umnukhZaalt = 0;
-            var relevantGereenuud = niitGereenuud.filter((x) =>
-              x.talbainIdnuud.includes(tukhainZardal.talbainId),
-            );
-            var allGuilgeenuud = [];
-            relevantGereenuud.forEach((g) => {
-              if (g.avlaga && g.avlaga.guilgeenuud) {
-                allGuilgeenuud.push(...g.avlaga.guilgeenuud);
-              }
-            });
+            var umnukhZaalt = tukhainZardal.umnukhZaalt !== undefined ? tukhainZardal.umnukhZaalt : 0;
+            
+            if (tukhainZardal.umnukhZaalt === undefined) {
+              var relevantGereenuud = niitGereenuud.filter((x) =>
+                x.talbainIdnuud.includes(tukhainZardal.talbainId),
+              );
+              var allGuilgeenuud = [];
+              relevantGereenuud.forEach((g) => {
+                if (g.avlaga && g.avlaga.guilgeenuud) {
+                  allGuilgeenuud.push(...g.avlaga.guilgeenuud);
+                }
+              });
 
-            var shineOgnoo = new Date(tukhainZardal.ognoo);
+              var shineOgnoo = new Date(tukhainZardal.ognoo);
 
             var suuliinGuilgee = allGuilgeenuud.filter((x) => {
               return (
@@ -5110,19 +5112,7 @@ router
               if (lastExcel) {
                 umnukhZaalt = lastExcel.suuliinZaalt;
               }
-            }
-
-            var adilOgnooMur = allGuilgeenuud.find((x) =>
-              x.khemjikhNegj == ashiglaltiinZardal.turul &&
-              x.tailbar == ashiglaltiinZardal.ner &&
-              (!tukhainZardal.tooluuriinDugaar || x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar) &&
-              new Date(x.ognoo).toDateString() === shineOgnoo.toDateString()
-            );
-            if (adilOgnooMur?._id) {
-              await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
-                { _id: geree._id },
-                { $pull: { "avlaga.guilgeenuud": { _id: adilOgnooMur._id } } },
-              );
+              }
             }
           }
           var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
