@@ -1100,6 +1100,8 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
     };
     if (req.body.khariltsagchiinId)
       match["register"] = { $in: req.body.khariltsagchiinId };
+    if (req.body.gereeniiDugaaruud)
+      match["gereeniiDugaar"] = { $in: req.body.gereeniiDugaaruud };
     if (req.body.$or) match["$or"] = req.body.$or;
 
     const guilgeeFilter = {
