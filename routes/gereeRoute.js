@@ -5059,12 +5059,15 @@ router
               }
             });
 
+            var shineOgnoo = new Date(tukhainZardal.ognoo);
+
             var suuliinGuilgee = allGuilgeenuud.filter((x) => {
               return (
                 x.khemjikhNegj == ashiglaltiinZardal.turul &&
                 x.tailbar == ashiglaltiinZardal.ner &&
                 (!tukhainZardal.tooluuriinDugaar ||
-                  x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar)
+                  x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar) &&
+                new Date(x.ognoo).toDateString() !== shineOgnoo.toDateString()
               );
             });
             if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
@@ -5089,6 +5092,19 @@ router
               if (lastExcel) {
                 umnukhZaalt = lastExcel.suuliinZaalt;
               }
+            }
+
+            var adilOgnooMur = allGuilgeenuud.find((x) =>
+              x.khemjikhNegj == ashiglaltiinZardal.turul &&
+              x.tailbar == ashiglaltiinZardal.ner &&
+              (!tukhainZardal.tooluuriinDugaar || x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar) &&
+              new Date(x.ognoo).toDateString() === shineOgnoo.toDateString()
+            );
+            if (adilOgnooMur?._id) {
+              await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
+                { _id: geree._id },
+                { $pull: { "avlaga.guilgeenuud": { _id: adilOgnooMur._id } } },
+              );
             }
           }
           var zoruuDun = tukhainZardal.suuliinZaalt - umnukhZaalt;
