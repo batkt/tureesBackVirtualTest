@@ -67,7 +67,9 @@ router.get("/zogsooloosTatya", async (req, res, next) => {
       await pool.end();
       if (res1.rows && res1.rows.length > 0) {
         const objectString = JSON.stringify({ jagsaalt: res1.rows });
-        var url = new URL("http://103.143.40.230:8081/zogsoolOlnoorKhadgalya/");
+        var url = new URL(
+          "https://turees.zevtabs.mn/api/zogsoolOlnoorKhadgalya/",
+        );
         const response = await instanceJson.post(url, { body: objectString });
       }
       res.send("Amjilttai");

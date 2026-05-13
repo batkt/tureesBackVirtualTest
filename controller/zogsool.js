@@ -415,7 +415,7 @@ exports.testCloudMongodb = asyncHandler(async (req, res, next) => {
 
       try {
         const response = await got.post(
-          "http://103.143.40.230:8081/zogsoolSdkService",
+          "https://turees.zevtabs.mn/api/zogsoolSdkService",
           {
             headers: {
               "Content-Type": "application/json",
