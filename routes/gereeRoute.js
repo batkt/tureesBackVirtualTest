@@ -306,6 +306,7 @@ router
       var suuliinOgnoo = null;
       var suuliinGuilgeeniiId = null;
       var suuliinGereeniiId = null;
+      var tooluuriinDugaar = null;
 
       let contractQuery = { talbainDugaar };
       if (gereeniiId) {
@@ -334,6 +335,7 @@ router
             suuliinOgnoo = ognoo;
             suuliinGuilgeeniiId = g._id;
             suuliinGereeniiId = geree._id;
+            if (g.tooluuriinDugaar) tooluuriinDugaar = g.tooluuriinDugaar;
           }
         }
       }
@@ -351,12 +353,13 @@ router
           .lean();
         if (lastExcel?.suuliinZaalt) {
           suuliinZaalt = lastExcel.suuliinZaalt;
+          if (lastExcel.tooluuriinDugaar) tooluuriinDugaar = lastExcel.tooluuriinDugaar;
         }
       }
 
-      console.log(`[suuliinZaaltAvya] Talbai: ${talbainDugaar}, Tailbar: ${tailbar}, GereeniiId: ${gereeniiId}, SuuliinZaalt: ${suuliinZaalt}`);
+      console.log(`[suuliinZaaltAvya] Talbai: ${talbainDugaar}, Tailbar: ${tailbar}, GereeniiId: ${gereeniiId}, SuuliinZaalt: ${suuliinZaalt}, TooluuriinDugaar: ${tooluuriinDugaar}`);
 
-      res.send({ suuliinZaalt, guilgeeniiId: suuliinGuilgeeniiId, gereeniiId: suuliinGereeniiId });
+      res.send({ suuliinZaalt, guilgeeniiId: suuliinGuilgeeniiId, gereeniiId: suuliinGereeniiId, tooluuriinDugaar });
     } catch (err) {
       next(err);
     }
@@ -5163,6 +5166,7 @@ router
 
           updateObject = {
             turul: "avlaga",
+            ekhSurvalj: req.body.ekhSurvalj || "excelZaalt",
             tulsunDun: 0,
             tulukhDun: !!req.body.nuatBodokhEsekh
               ? ((ashiglaltiinZardal.suuriKhuraamj || 0) + tempDun) * 1.1
