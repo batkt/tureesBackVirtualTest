@@ -184,11 +184,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
 
     var match = {
       "avlaga.guilgeenuud.ognoo": {
-        $lte: new Date(
-          moment(req.body.duusakhOgnoo)
-            .endOf("month")
-            .format("YYYY-MM-DD 23:59:59")
-        ),
+        $lte: duusakhOgnoo,
       },
       $or: [
         {
@@ -423,8 +419,8 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     var khugatsaaKhetersen = await gereeObject.aggregate(query);
     match = {
       "avlaga.guilgeenuud.ognoo": {
-        $lte: new Date(req.body.duusakhOgnoo),
-        $gte: new Date(req.body.ekhlekhOgnoo),
+        $lte: duusakhOgnoo,
+        $gte: ekhlekhOgnoo,
       },
       baiguullagiinId: req.body.baiguullagiinId,
       ...searchFilter,
@@ -490,7 +486,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       eneSardTulukh.push({
         dun: eneSardTulukhJagsaalt?.reduce(
           (a, b) => a + (b.dun < 0 ? 0 : b.dun),
-          0
+          0,
         ),
       });
     else eneSardTulukh.push({ dun: 0 });
@@ -983,8 +979,7 @@ exports.bankniiGuilgeeToololtAvya = asyncHandler(async (req, res, next) => {
           butsaakh.magadlaltai = result[0].magadlaltai[0].niit;
         if (result[0].todorkhoigui[0])
           butsaakh.todorkhoigui = result[0].todorkhoigui[0].niit;
-        if (result[0].ebarimt[0])
-          butsaakh.ebarimt = result[0].ebarimt[0].niit;
+        if (result[0].ebarimt[0]) butsaakh.ebarimt = result[0].ebarimt[0].niit;
         butsaakh.niit =
           butsaakh.kholboson + butsaakh.magadlaltai + butsaakh.todorkhoigui;
         res.send(butsaakh);

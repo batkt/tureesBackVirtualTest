@@ -2040,11 +2040,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   };
   if (!!req.body.ognoo) {
     match["avlaga.guilgeenuud.ognoo"] = {
-      $lte: new Date(
-        moment(req.body.ognoo && req.body.ognoo[1])
-          .endOf("month")
-          .format("YYYY-MM-DD 23:59:59"),
-      ),
+      $lte: req.body.ognoo[1],
     };
   } else match["avlaga.guilgeenuud.ognoo"] = { $lte: new Date() };
   var valTuluv = req.body.tsutsalsanTurul ? { $in: [-1] } : { $nin: [-1] };
