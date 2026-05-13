@@ -4942,8 +4942,11 @@ router
             var umnukhZaalt = 0;
             var guidliinKoep = 1;
             var relevantGereenuud = niitGereenuud.filter(
-              (a) => a.talbainDugaar == x.kod && a.tuluv === 1,
+              (a) => a.talbainDugaar == x.kod,
             );
+            var activeGereenuud = relevantGereenuud.filter((a) => a.tuluv === 1);
+            if (activeGereenuud.length === 0) continue;
+
             if (relevantGereenuud.length > 0) {
               var allGuilgeenuud = [];
               relevantGereenuud.forEach((g) => {
@@ -4951,8 +4954,11 @@ router
                   allGuilgeenuud.push(...g.avlaga.guilgeenuud);
                 }
               });
-              var suuliinGuilgee = allGuilgeenuud.filter((x) => {
-                return x.tailbar?.includes("Цахилгаан");
+              var suuliinGuilgee = allGuilgeenuud.filter((g_item) => {
+                return (
+                  g_item.tailbar?.includes("Цахилгаан") &&
+                  (!x.tooluuriinDugaar || g_item.tooluuriinDugaar == x.tooluuriinDugaar)
+                );
               });
               if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
                 suuliinGuilgee = lodash.orderBy(
