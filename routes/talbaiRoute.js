@@ -12,6 +12,7 @@ const moment = require("moment");
 const uploadFile = multer({ storage: storage });
 const ZassanBarimtShalgakh = require("../components/zassanBarimtShalgakh");
 const Baiguullaga = require("../models/baiguullaga");
+const AldangiinTuukh = require("../models/aldangiinTuukh");
 
 crud(router, "talbai", Talbai, UstsanBarimt, async (req, res, next) => {
   try {
@@ -1156,12 +1157,30 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       {
         $group: {
           _id: "$gereeniiDugaar",
+          ner: { $first: "$ner" },
+          register: { $first: "$register" },
+          talbainDugaar: { $first: "$talbainDugaar" },
+          barilgiiinNer: { $first: "$barilgiiinNer" },
+          talbainKhemjee: { $first: "$talbainKhemjee" },
           niitDt: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
-          niitKt: {
+          niitTulsun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
+          // Түрээсийн хөнгөлөлт: khuvaari төрлийн мөр дээрх khyamdral
+          niitKhyamdralTurees: {
             $sum: {
-              $add: [
-                { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+              $cond: [
+                { $eq: ["$avlaga.guilgeenuud.turul", "khuvaari"] },
                 { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+                0,
+              ],
+            },
+          },
+          // Ашиглалтын хөнгөлөлт: khuvaari биш төрлийн мөр дээрх khyamdral
+          niitKhyamdralAshiglalt: {
+            $sum: {
+              $cond: [
+                { $ne: ["$avlaga.guilgeenuud.turul", "khuvaari"] },
+                { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+                0,
               ],
             },
           },
@@ -1182,16 +1201,22 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       const p = periodMap[e._id] || {};
       const ekh = e.ekhniiUldegdel || 0;
       const dt = p.niitDt || 0;
-      const kt = p.niitKt || 0;
+      const tulsun = p.niitTulsun || 0;
+      const khyamdralTurees = p.niitKhyamdralTurees || 0;
+      const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
+      const kt = tulsun + khyamdralTurees + khyamdralAshiglalt;
       return {
         gereeniiDugaar: e._id,
-        ner: e.ner,
-        register: e.register,
-        talbainDugaar: e.talbainDugaar,
-        barilgiiinNer: e.barilgiiinNer,
-        talbainKhemjee: e.talbainKhemjee,
+        ner: e.ner || p.ner,
+        register: e.register || p.register,
+        talbainDugaar: e.talbainDugaar || p.talbainDugaar,
+        barilgiiinNer: e.barilgiiinNer || p.barilgiiinNer,
+        talbainKhemjee: e.talbainKhemjee || p.talbainKhemjee,
         ekhniiUldegdel: ekh,
         niitDt: dt,
+        niitTulsun: tulsun,
+        niitKhyamdralTurees: khyamdralTurees,
+        niitKhyamdralAshiglalt: khyamdralAshiglalt,
         niitKt: kt,
         etssiinUldegdel: ekh + dt - kt,
       };
@@ -1200,12 +1225,24 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
    
     periodData.forEach((p) => {
       if (!ekhniiData.find((e) => e._id === p._id)) {
+        const tulsun = p.niitTulsun || 0;
+        const khyamdralTurees = p.niitKhyamdralTurees || 0;
+        const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
+        const kt = tulsun + khyamdralTurees + khyamdralAshiglalt;
         result.push({
           gereeniiDugaar: p._id,
+          ner: p.ner,
+          register: p.register,
+          talbainDugaar: p.talbainDugaar,
+          barilgiiinNer: p.barilgiiinNer,
+          talbainKhemjee: p.talbainKhemjee,
           ekhniiUldegdel: 0,
           niitDt: p.niitDt || 0,
-          niitKt: p.niitKt || 0,
-          etssiinUldegdel: (p.niitDt || 0) - (p.niitKt || 0),
+          niitTulsun: tulsun,
+          niitKhyamdralTurees: khyamdralTurees,
+          niitKhyamdralAshiglalt: khyamdralAshiglalt,
+          niitKt: kt,
+          etssiinUldegdel: (p.niitDt || 0) - kt,
         });
       }
     });
@@ -1235,27 +1272,23 @@ router.route("/avlagaTovchooGereeAvya").post(tokenShalgakh, async (req, res, nex
 
     const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
       .findOne({ gereeniiDugaar: req.body.gereeniiDugaar })
-      .select("+avlaga");
+      .select("+avlaga baritsaaAvakhDun baritsaaniiUldegdel aldangiinUldegdel niitTulsunAldangi");
 
     if (!geree) return res.json({ aldangiGuilgeenuud: [], baritsaaGuilgeenuud: [] });
 
-    const allGuilgeenuud = geree.avlaga?.guilgeenuud || [];
 
-    
-    const aldangiGuilgeenuud = allGuilgeenuud
+    const aldangiGuilgeenuud = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt)
+      .find({
+        gereeniiId: geree._id.toString(),
+        aldangiBodsonOgnoo: { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+      })
+      .sort({ aldangiBodsonOgnoo: 1 })
+      .lean();
+
+   
+    const baritsaaGuilgeenuud = (geree.avlaga?.baritsaa || [])
       .filter(
         (g) =>
-          g.turul === "aldangi" &&
-          new Date(g.ognoo) >= ekhlekhOgnoo &&
-          new Date(g.ognoo) <= duusakhOgnoo
-      )
-      .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
-
-     
-    const baritsaaGuilgeenuud = allGuilgeenuud
-      .filter(
-        (g) =>
-          g.turul === "baritsaa" &&
           new Date(g.ognoo) >= ekhlekhOgnoo &&
           new Date(g.ognoo) <= duusakhOgnoo
       )
