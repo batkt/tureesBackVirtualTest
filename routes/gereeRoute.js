@@ -617,7 +617,7 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
         isNew: true,
       });
       req.body.gereeniiDugaar = basePrefix + String(maxDugaar).padStart(2, "0");
-      dugaarlalt.save();
+      await dugaarlalt.save();
     }
 
     if (req.body.gereeniiDugaar) {
@@ -5066,9 +5066,9 @@ router
             ashiglaltiinZardal.turul == "1м3" ||
             ashiglaltiinZardal.turul === "кг"
           ) {
-            var umnukhZaalt = tukhainZardal.umnukhZaalt !== undefined ? tukhainZardal.umnukhZaalt : 0;
-            
-            if (tukhainZardal.umnukhZaalt === undefined) {
+            var umnukhZaalt = tukhainZardal.umnukhZaalt;
+
+            if (umnukhZaalt === undefined || umnukhZaalt === null) {
               var relevantGereenuud = niitGereenuud.filter((x) =>
                 x.talbainIdnuud.includes(tukhainZardal.talbainId),
               );
@@ -5080,38 +5080,23 @@ router
               });
 
               var shineOgnoo = new Date(tukhainZardal.ognoo);
+              var suuliinGuilgee = allGuilgeenuud.filter((x) => {
+                return (
+                  x.khemjikhNegj == ashiglaltiinZardal.turul &&
+                  x.tailbar == ashiglaltiinZardal.ner &&
+                  (!tukhainZardal.tooluuriinDugaar ||
+                    x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar) &&
+                  new Date(x.ognoo).toDateString() !== shineOgnoo.toDateString()
+                );
+              });
 
-            var suuliinGuilgee = allGuilgeenuud.filter((x) => {
-              return (
-                x.khemjikhNegj == ashiglaltiinZardal.turul &&
-                x.tailbar == ashiglaltiinZardal.ner &&
-                (!tukhainZardal.tooluuriinDugaar ||
-                  x.tooluuriinDugaar == tukhainZardal.tooluuriinDugaar) &&
-                new Date(x.ognoo).toDateString() !== shineOgnoo.toDateString()
-              );
-            });
-            if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
-              suuliinGuilgee = lodash.orderBy(
-                suuliinGuilgee,
-                ["ognoo"],
-                ["desc"],
-              );
-              umnukhZaalt = suuliinGuilgee[0].suuliinZaalt;
-            } else {
-              var lastExcel = await AshiglaltiinExcel(
-                req.body.tukhainBaaziinKholbolt,
-                true,
-              )
-                .findOne({
-                  talbainDugaar: tukhainZardal.talbainDugaar,
-                  barilgiinId: req.body.barilgiinId,
-                  zardliinId: ashiglaltiinZardal._id,
-                })
-                .sort({ ognoo: -1 })
-                .lean();
-              if (lastExcel) {
-                umnukhZaalt = lastExcel.suuliinZaalt;
-              }
+              if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
+                suuliinGuilgee = lodash.orderBy(suuliinGuilgee, ["ognoo"], ["desc"]);
+                umnukhZaalt = suuliinGuilgee[0].suuliinZaalt;
+              } else {
+                throw new Error(
+                  `[${tukhainZardal.talbainDugaar}] талбайн өмнөх заалт олдсонгүй. (Тоолуурын №: ${tukhainZardal.tooluuriinDugaar || "Байхгүй"}). Та өмнөх гүйлгээний түүхээ шалгана уу.`
+                );
               }
             }
           }
