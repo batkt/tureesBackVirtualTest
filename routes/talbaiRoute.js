@@ -1096,6 +1096,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
     var match = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
+      tuluv: { $ne: -1 },
     };
     if (req.body.khariltsagchiinId)
       match["register"] = { $in: req.body.khariltsagchiinId };
@@ -1271,7 +1272,7 @@ router.route("/avlagaTovchooGereeAvya").post(tokenShalgakh, async (req, res, nex
       : new Date(moment().endOf("month").format("YYYY-MM-DD 23:59:59"));
 
     const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
-      .findOne({ gereeniiDugaar: req.body.gereeniiDugaar })
+      .findOne({ gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } })
       .select("+avlaga baritsaaAvakhDun baritsaaniiUldegdel aldangiinUldegdel niitTulsunAldangi");
 
     if (!geree) return res.json({ aldangiGuilgeenuud: [], baritsaaGuilgeenuud: [] });
@@ -1318,7 +1319,7 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
       : new Date(moment().endOf("month").format("YYYY-MM-DD 23:59:59"));
 
     const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
-      .findOne({ gereeniiDugaar: req.body.gereeniiDugaar })
+      .findOne({ gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } })
       .select("+avlaga");
 
     if (!geree) return res.json({ guilgeenuud: [], ekhniiUldegdel: 0 });

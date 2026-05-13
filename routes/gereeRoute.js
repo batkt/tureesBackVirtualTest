@@ -617,7 +617,7 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
         isNew: true,
       });
       req.body.gereeniiDugaar = basePrefix + String(maxDugaar).padStart(2, "0");
-      dugaarlalt.save();
+      await dugaarlalt.save();
     }
 
     if (req.body.gereeniiDugaar) {
