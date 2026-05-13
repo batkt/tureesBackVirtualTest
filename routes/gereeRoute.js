@@ -339,7 +339,7 @@ router
       }
 
       
-      if (!suuliinZaalt && !gereeniiId) {
+      if (!suuliinZaalt) {
         const match = { talbainDugaar };
         if (tailbar) match.zardliinNer = tailbar;
         const lastExcel = await AshiglaltiinExcel(
@@ -353,6 +353,8 @@ router
           suuliinZaalt = lastExcel.suuliinZaalt;
         }
       }
+
+      console.log(`[suuliinZaaltAvya] Talbai: ${talbainDugaar}, Tailbar: ${tailbar}, GereeniiId: ${gereeniiId}, SuuliinZaalt: ${suuliinZaalt}`);
 
       res.send({ suuliinZaalt, guilgeeniiId: suuliinGuilgeeniiId, gereeniiId: suuliinGereeniiId });
     } catch (err) {
@@ -5149,6 +5151,8 @@ router
                   ? ashiglaltiinZardal.usKhalaasniiDun * zoruuDun
                   : 0)
               : tsakhilgaanDun;
+
+          console.log(`[Zaalt zaaltOlnoorOruulya] Talbai: ${tukhainZardal.talbainDugaar}, SuuliinZaalt: ${tukhainZardal.suuliinZaalt}, UmnukhZaalt: ${umnukhZaalt}, ZoruuDun: ${zoruuDun}, TempDun: ${tempDun}, BaiguullagaId: ${req.body.baiguullagiinId}`);
 
           updateObject = {
             turul: "avlaga",
