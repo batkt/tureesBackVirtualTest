@@ -422,23 +422,30 @@ router
   .get(tokenShalgakh, async (req, res, next) => {
     try {
       var maxDugaar = 1;
+      const baiguullagiinId = req.query.baiguullagiinId || req.body.baiguullagiinId;
+      const barilgiinId = req.query.barilgiinId || req.body.barilgiinId;
+
+      if (!baiguullagiinId || !barilgiinId) {
+        return res.status(400).send("baiguullagiinId болон barilgiinId шаардлагатай");
+      }
+
       var ognoo = {
         $gte: new Date(new Date().getFullYear(), 0, 1),
         $lte: new Date(new Date().getFullYear(), 11, 31),
       };
       await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
-        .find({
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
+        .findOne({
+          baiguullagiinId: baiguullagiinId,
+          barilgiinId: barilgiinId,
           turul: "nekhemjlekh",
           ognoo: ognoo,
         })
         .sort({
           dugaar: -1,
         })
-        .limit(1)
+        .lean()
         .then((result) => {
-          if (result != 0) maxDugaar = result[0].dugaar + 1;
+          if (result) maxDugaar = result.dugaar + 1;
         });
       res.send(maxDugaar.toString());
     } catch (err) {
@@ -451,26 +458,55 @@ router
   .get(tokenShalgakh, async (req, res, next) => {
     try {
       var maxDugaar = 1;
+      const baiguullagiinId = req.query.baiguullagiinId || req.body.baiguullagiinId;
+      const barilgiinId = req.query.barilgiinId || req.body.barilgiinId;
+
+      if (!baiguullagiinId || !barilgiinId) {
+        return res.status(400).send("baiguullagiinId болон barilgiinId шаардлагатай");
+      }
+
       var unuudur = new Date();
       unuudur = new Date(
         unuudur.getFullYear(),
         unuudur.getMonth(),
         unuudur.getDate(),
       );
-      await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
-        .find({
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
+
+     
+      const lastDugaar = await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+        .findOne({
+          baiguullagiinId: baiguullagiinId,
+          barilgiinId: barilgiinId,
           turul: "geree",
           ognoo: unuudur,
         })
         .sort({
           dugaar: -1,
         })
-        .limit(1)
-        .then((result) => {
-          if (result != 0) maxDugaar = result[0].dugaar + 1;
-        });
+        .lean();
+
+      if (lastDugaar) maxDugaar = lastDugaar.dugaar + 1;
+
+     
+      const prefix = `ГД${moment(unuudur).format("YYMMDD")}`;
+      const existingGereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
+        .find({
+          gereeniiDugaar: new RegExp(`^${prefix}`),
+          tuluv: { $ne: -1 },
+          baiguullagiinId: baiguullagiinId,
+          barilgiinId: barilgiinId,
+        })
+        .select("gereeniiDugaar")
+        .lean();
+
+      existingGereenuud.forEach((g) => {
+        const suffixStr = g.gereeniiDugaar.replace(prefix, "");
+        const suffix = parseInt(suffixStr);
+        if (!isNaN(suffix) && suffix >= maxDugaar) {
+          maxDugaar = suffix + 1;
+        }
+      });
+
       res.send(maxDugaar.toString());
     } catch (err) {
       next(err);
@@ -594,8 +630,8 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
         unuudur.getDate(),
       );
       var maxDugaar = 1;
-      await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
-        .find({
+      const lastDugaar = await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
+        .findOne({
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
           turul: "geree",
@@ -604,10 +640,29 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
         .sort({
           dugaar: -1,
         })
-        .limit(1)
-        .then((result) => {
-          if (result != 0) maxDugaar = result[0].dugaar + 1;
-        });
+        .lean();
+
+      if (lastDugaar) maxDugaar = lastDugaar.dugaar + 1;
+
+      
+      const existingGereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
+        .find({
+          gereeniiDugaar: new RegExp(`^${basePrefix}`),
+          tuluv: { $ne: -1 },
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+        })
+        .select("gereeniiDugaar")
+        .lean();
+
+      existingGereenuud.forEach((g) => {
+        const suffixStr = g.gereeniiDugaar.replace(basePrefix, "");
+        const suffix = parseInt(suffixStr);
+        if (!isNaN(suffix) && suffix >= maxDugaar) {
+          maxDugaar = suffix + 1;
+        }
+      });
+
       var dugaarlalt = new Dugaarlalt(req.body.tukhainBaaziinKholbolt)({
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
