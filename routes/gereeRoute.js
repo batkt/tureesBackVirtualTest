@@ -489,7 +489,7 @@ router
 
      
       const prefix = `ГД${moment(unuudur).format("YYMMDD")}`;
-      const existingGereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
+      const existingGereenuud = await Geree(req.body.tukhainBaaziinKholbolt, false)
         .find({
           gereeniiDugaar: new RegExp(`^${prefix}`),
           tuluv: { $ne: -1 },
