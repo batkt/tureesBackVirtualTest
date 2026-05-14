@@ -454,7 +454,7 @@ router
   });
 
 router
-  .route("/gereeniiDugaarlaltAvya")
+  .route("/geree/gereeniiDugaarlaltAvya")
   .get(tokenShalgakh, async (req, res, next) => {
     try {
       var maxDugaar = 1;
