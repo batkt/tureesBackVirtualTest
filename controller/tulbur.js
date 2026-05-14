@@ -2096,9 +2096,22 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   ];
   Geree(req.body.tukhainBaaziinKholbolt, true)
     .aggregate(query)
-    .then((result) => {
+    .then(async (result) => {
+      const tureesiinUldegdel = parseFloat((result[0]?.uldegdel || 0).toFixed(2));
+      
+      const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
+        .findOne({
+          gereeniiDugaar: req.body.gereeniiDugaar,
+          baiguullagiinId: req.body.baiguullagiinId,
+          barilgiinId: req.body.barilgiinId,
+        })
+        .select("aldangiinUldegdel")
+        .lean();
+      const aldangiinUldegdel = geree?.aldangiinUldegdel || 0;
       res.send({
-        uldegdel: (result[0]?.uldegdel || 0).toFixed(2),
+        tureesiinUldegdel,
+        aldangiinUldegdel,
+        uldegdel: parseFloat((tureesiinUldegdel + aldangiinUldegdel).toFixed(2)),
       });
     })
     .catch((err) => {
