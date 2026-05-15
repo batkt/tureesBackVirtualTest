@@ -188,7 +188,7 @@ router.post(
         }
         await Baiguullaga(db.erunkhiiKholbolt).findOneAndUpdate(
           { _id: req.body.baiguullagiinId },
-          update,
+          { $set: update },
         );
         res.send("Amjilttai");
       } else next(new aldaa("Засах боломжгүй байна"));
