@@ -2015,7 +2015,8 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
 });
 
 exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
-  var match = {
+
+  const matchBase = {
     $or: [
       {
         "avlaga.guilgeenuud.turul": {
@@ -2038,11 +2039,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
       },
     ],
   };
-  if (!!req.body.ognoo) {
-    match["avlaga.guilgeenuud.ognoo"] = {
-      $lte: req.body.ognoo[1],
-    };
-  } else match["avlaga.guilgeenuud.ognoo"] = { $lte: new Date() };
+
   var valTuluv = req.body.tsutsalsanTurul ? { $in: [-1] } : { $nin: [-1] };
   var query = [
     {
@@ -2059,7 +2056,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
       },
     },
     {
-      $match: match,
+      $match: matchBase,
     },
     {
       $group: {
@@ -2083,7 +2080,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     },
     {
       $project: {
-        uldegdel: {
+        tureesiinUldegdel: {
           $subtract: [
             "$tulukh",
             {
@@ -2091,26 +2088,66 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
             },
           ],
         },
+        tulukh: 1,
+        khyamdral: 1,
+        tulsun: 1,
       },
     },
   ];
   Geree(req.body.tukhainBaaziinKholbolt, true)
     .aggregate(query)
     .then(async (result) => {
-      const tureesiinUldegdel = parseFloat((result[0]?.uldegdel || 0).toFixed(2));
-      
+      const tureesiinUldegdel = parseFloat((result[0]?.tureesiinUldegdel || 0).toFixed(2));
+      const tulukh = parseFloat((result[0]?.tulukh || 0).toFixed(2));
+      const khyamdral = parseFloat((result[0]?.khyamdral || 0).toFixed(2));
+      const tulsun = parseFloat((result[0]?.tulsun || 0).toFixed(2));
+
       const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findOne({
           gereeniiDugaar: req.body.gereeniiDugaar,
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
         })
-        .select("aldangiinUldegdel")
+        .select("aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun")
         .lean();
-      const aldangiinUldegdel = geree?.aldangiinUldegdel || 0;
+
+      const aldangiinUldegdel = parseFloat((geree?.aldangiinUldegdel || 0).toFixed(2));
+      const baritsaaniiUldegdel = parseFloat((geree?.baritsaaniiUldegdel || 0).toFixed(2));
+
+     let niitTulsunAldangiMatch = { "avlaga.guilgeenuud.turul": "aldangi" };
+      if (req.body.ognoo && req.body.ognoo[0] && req.body.ognoo[1]) {
+        niitTulsunAldangiMatch["avlaga.guilgeenuud.ognoo"] = {
+          $gte: new Date(req.body.ognoo[0]),
+          $lte: new Date(req.body.ognoo[1]),
+        };
+      }
+      const aldangiAggResult = await Geree(req.body.tukhainBaaziinKholbolt, true).aggregate([
+        {
+          $match: {
+            gereeniiDugaar: req.body.gereeniiDugaar,
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+          },
+        },
+        { $unwind: "$avlaga.guilgeenuud" },
+        { $match: niitTulsunAldangiMatch },
+        {
+          $group: {
+            _id: null,
+            niitTulsunAldangi: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunAldangi", 0] } },
+          },
+        },
+      ]);
+      const niitTulsunAldangi = parseFloat((aldangiAggResult[0]?.niitTulsunAldangi || 0).toFixed(2));
+
       res.send({
         tureesiinUldegdel,
         aldangiinUldegdel,
+        niitTulsunAldangi,
+        baritsaaniiUldegdel,
+        tulukh,
+        khyamdral,
+        tulsun,
         uldegdel: parseFloat((tureesiinUldegdel + aldangiinUldegdel).toFixed(2)),
       });
     })
