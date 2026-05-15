@@ -2019,7 +2019,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     $or: [
       {
         "avlaga.guilgeenuud.turul": {
-          $nin: ["aldangi", "baritsaa"],
+          $nin: ["baritsaa"],
         },
       },
       {
@@ -2072,6 +2072,21 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         tulukh: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
         khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
         tulsun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
+        entries: {
+          $push: {
+            $cond: [
+              { $eq: ["$avlaga.guilgeenuud.turul", "aldangi"] },
+              {
+                ognoo: "$avlaga.guilgeenuud.ognoo",
+                tailbar: "$avlaga.guilgeenuud.tailbar",
+                tulukhDun: "$avlaga.guilgeenuud.tulukhDun",
+                tulsunDun: "$avlaga.guilgeenuud.tulsunDun",
+                khyamdral: "$avlaga.guilgeenuud.khyamdral",
+              },
+              "$$REMOVE",
+            ],
+          },
+        },
       },
     },
     {
@@ -2080,6 +2095,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         uldegdel: {
           $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }],
         },
+        entries: 1,
       },
     },
   ];
@@ -2092,13 +2108,15 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
       let zardliinUldegdel = 0;
       let busadUldegdel = 0;
 
+      let aldangiEntries = [];
       results.forEach((r) => {
         const d = parseFloat((r.uldegdel || 0).toFixed(2));
         if (r.turul === "khuvaari") tureesiinUldegdel += d;
         else if (r.turul === "zardal") ashiglaltiinUldegdel += d;
         else if (r.turul === "avlaga") zardliinUldegdel += d;
-        else if (r.turul !== "aldangi" && r.turul !== "baritsaa")
-          busadUldegdel += d;
+        else if (r.turul === "aldangi") {
+          aldangiEntries = r.entries || [];
+        } else if (r.turul !== "baritsaa") busadUldegdel += d;
       });
 
       const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
@@ -2125,6 +2143,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
           busad: parseFloat(busadUldegdel.toFixed(2)),
         },
         aldangiinUldegdel: parseFloat(aldangiinUldegdel.toFixed(2)),
+        aldangiEntries: aldangiEntries,
         baritsaaniiUldegdel: parseFloat(baritsaaniiUldegdel.toFixed(2)),
         uldegdel: parseFloat((totalTurees + aldangiinUldegdel).toFixed(2)),
       });
