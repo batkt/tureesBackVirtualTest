@@ -48,6 +48,7 @@ const eventRoute = require("./routes/eventRoute");
 const tasalbarRoute = require("./routes/tasalbarRoute");
 const zochinUrikhRoute = require("./routes/zochinUrikhRoute");
 const uneguiMashinRoute = require("./routes/uneguiMashinRoute");
+const chatRoute = require("./routes/chatRoute");
 const gereeService = require("./service/gereeService");
 
 const { db } = require("zevbackv2");
@@ -110,6 +111,7 @@ app.use(eventRoute);
 app.use(tasalbarRoute);
 app.use(zochinUrikhRoute);
 app.use(uneguiMashinRoute);
+app.use(chatRoute);
 zuragPack(app);
 
 app.use(aldaaBarigch);
@@ -411,6 +413,32 @@ if (process.env.NODE_APP_INSTANCE === "7") {
 })();
 
 io.on("connection", (socket) => {
+  socket.on("join", async (payload, ack) => {
+    try {
+      if (!payload || !payload.conversationId) {
+        if (ack) ack({ message: "INVALID" });
+        return;
+      }
+      socket.join(`conv:${payload.conversationId}`);
+      if (ack) ack(null);
+    } catch (e) {
+      if (ack) ack({ message: "JOIN_FAILED" });
+    }
+  });
+
+  socket.on("leave", async (payload, ack) => {
+    try {
+      if (!payload || !payload.conversationId) {
+        if (ack) ack({ message: "INVALID" });
+        return;
+      }
+      socket.leave(`conv:${payload.conversationId}`);
+      if (ack) ack(null);
+    } catch (e) {
+      if (ack) ack({ message: "LEAVE_FAILED" });
+    }
+  });
+
   socket.on("disconnect", () => {});
   socket.on("error", () => socket.disconnect(true));
 });
