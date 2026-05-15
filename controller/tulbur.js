@@ -2044,14 +2044,19 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     };
   } else match["avlaga.guilgeenuud.ognoo"] = { $lte: new Date() };
   var valTuluv = req.body.tsutsalsanTurul ? { $in: [-1] } : { $nin: [-1] };
+  const contractMatch = {
+    baiguullagiinId: req.body.baiguullagiinId,
+    barilgiinId: req.body.barilgiinId,
+    tuluv: valTuluv,
+  };
+  if (req.body.gereeniiId) {
+    contractMatch._id = new mongoose.Types.ObjectId(req.body.gereeniiId);
+  } else {
+    contractMatch.gereeniiDugaar = req.body.gereeniiDugaar;
+  }
   var query = [
     {
-      $match: {
-        gereeniiDugaar: req.body.gereeniiDugaar,
-        baiguullagiinId: req.body.baiguullagiinId,
-        barilgiinId: req.body.barilgiinId,
-        tuluv: valTuluv,
-      },
+      $match: contractMatch,
     },
     {
       $unwind: {
@@ -2098,6 +2103,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
 
       const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findOne({
+          _id: req.body.gereeniiId || undefined,
           gereeniiDugaar: req.body.gereeniiDugaar,
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
