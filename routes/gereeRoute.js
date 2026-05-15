@@ -5226,7 +5226,7 @@ router
             ognoo: tukhainZardal.ognoo,
             gereeniiId: geree._id,
             barilgiinId: req.body.barilgiinId,
-            tailbar: ashiglaltiinZardal.ner,
+            tailbar: ashiglaltiinZardal.ner + (req.body.nevtersenAjiltniiToken ? " Excel (" + req.body.nevtersenAjiltniiToken.ner + ")" : " Excel"),
             nuatBodokhEsekh: req.body.nuatBodokhEsekh,
             tooluuriinDugaar: tukhainZardal.tooluuriinDugaar,
           };

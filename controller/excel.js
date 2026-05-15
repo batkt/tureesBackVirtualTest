@@ -3760,7 +3760,7 @@ exports.tooluurZaaltOruulya = asyncHandler(async (req, res, next) => {
             : 0,
           ognoo: tukhainZardal.ognoo,
           gereeniiId: geree._id,
-          tailbar: ashiglaltiinZardal.ner,
+          tailbar: ashiglaltiinZardal.ner + (req.body.nevtersenAjiltniiToken ? " Excel (" + req.body.nevtersenAjiltniiToken.ner + ")" : " Excel"),
           nuatBodokhEsekh: req.body.nuatBodokhEsekh,
           togtmolUtga:
             ashiglaltiinZardal.turul === "кг"
@@ -4184,9 +4184,9 @@ exports.ekhniiUldegdelOruulya = asyncHandler(async (req, res, next) => {
             tulukhDun: tukhainZardal?.ekhniiUldegdel,
             ognoo: tukhainZardal.ognoo,
             gereeniiId: geree._id,
-            tailbar: tukhainZardal?.tureesEkhniiUldegdelEsekh
+            tailbar: (tukhainZardal?.tureesEkhniiUldegdelEsekh
               ? "Түрээс"
-              : tukhainZardal?.zardliinNer,
+              : tukhainZardal?.zardliinNer) + (req.body.nevtersenAjiltniiToken ? " Excel (" + req.body.nevtersenAjiltniiToken.ner + ")" : " Excel"),
             nekhemjlekhDeerKharagdakh: false,
             ekhniiUldegdelEsekh: true,
             zardliinTurul: tukhainZardal?.tureesEkhniiUldegdelEsekh

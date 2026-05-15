@@ -2056,7 +2056,13 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
       },
     },
     {
-      $match: matchBase,
+      $match: {
+        ...matchBase,
+        "avlaga.guilgeenuud.ognoo":
+          req.body.ognoo && req.body.ognoo[1]
+            ? { $lte: moment(req.body.ognoo[1]).endOf("month").toDate() }
+            : { $exists: true },
+      },
     },
     {
       $group: {
