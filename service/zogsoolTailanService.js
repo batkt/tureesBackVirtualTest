@@ -218,23 +218,48 @@ async function udriinTailan({ body }) {
     const udriinTailan = await model.aggregate(aggregatePipeline(match));
 
     // Special cases
-    const specialMatch = (status) => ({
-      //  ...(status === "Unegui"
-      //   ? { "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd } }
-      //   : { "tuukh.tsagiinTuukh.garsanTsag": { $gte: dateStart, $lte: dateEnd } }
-      // ),
-      "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd },
-      ...(status === "Zurchiltei" && { "tuukh.tuluv": -2 }),
-      ...(status === "Tulburtei" && {
-        "tuukh.tulukhDun": { $gt: 0 },
-        "tuukh.tuluv": { $in: [0, -4] },
-        "tuukh.uneguiGarsan": { $exists: false },
-      }),
-      ...(status === "Unegui" && { "tuukh.uneguiGarsan": { $exists: true } }),
-      ...(body.burtgesenAjiltaniiId && {
-        "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId,
-      }),
-    });
+    const specialMatch = (status) => {
+      const base = body.burtgesenAjiltaniiId
+        ? { "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId }
+        : {};
+      if (status === "Zurchiltei") {
+        return {
+          ...base,
+          "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd },
+          "tuukh.tuluv": -2,
+        };
+      }
+      if (status === "Tulburtei") {
+        // Match frontend tuluv=5 logic: -4 uses tulbur.ognoo, 0 uses garsanTsag
+        return {
+          ...base,
+          $or: [
+            {
+              "tuukh.tuluv": -4,
+              "tuukh.tulbur.ognoo": { $gte: dateStart, $lte: dateEnd },
+              "tuukh.uneguiGarsan": { $exists: false },
+            },
+            {
+              "tuukh.tuluv": 0,
+              "tuukh.tsagiinTuukh.garsanTsag": {
+                $gte: dateStart,
+                $lte: dateEnd,
+              },
+              "tuukh.uneguiGarsan": { $exists: false },
+            },
+          ],
+          "tuukh.tulukhDun": { $gt: 0 },
+        };
+      }
+      if (status === "Unegui") {
+        return {
+          ...base,
+          "tuukh.tsagiinTuukh.orsonTsag": { $gte: dateStart, $lte: dateEnd },
+          "tuukh.uneguiGarsan": { $exists: true },
+        };
+      }
+      return base;
+    };
 
     const specialPipeline = (status) => [
       { $match: baseMatch },
