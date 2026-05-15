@@ -3149,14 +3149,14 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
         object.ovog ||
         object.utas ||
         object.mail ||
-        object.khayag ||
-        object.mail
+        object.khayag
       ) {
         if (
           !object.id ||
           !object.ner ||
           (!object.register && !object.customerTin) ||
-          !object.utas
+          !object.utas ||
+          !object.mail
         ) {
           aldaaniiMsg =
             aldaaniiMsg + "Иргэн sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
@@ -3166,6 +3166,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             aldaaniiMsg = aldaaniiMsg + "'Регистр', 'Бүртгэлийн дугаар',";
           if (!object.utas || !object.utas[0])
             aldaaniiMsg = aldaaniiMsg + "'Утас', ";
+          if (!object.mail) aldaaniiMsg = aldaaniiMsg + "'Мэйл', ";
           aldaaniiMsg = aldaaniiMsg.slice(0, -2);
           aldaaniiMsg = aldaaniiMsg + " ";
           aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
@@ -3192,7 +3193,8 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             " дугаар мөрөнд 'Регистр' формат буруу байна! <br/>";
         }
         if (
-          (!object.mail || emailRegex.test(object.mail)) &&
+          object.mail &&
+          emailRegex.test(object.mail) &&
           object.id &&
           object.ner &&
           (object.register || object.customerTin) &&
@@ -3287,7 +3289,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
         object.khayag ||
         object.mail
       ) {
-        if (!object.id || !object.ner || !object.register || !object.utas) {
+        if (!object.id || !object.ner || !object.register || !object.utas || !object.mail) {
           aldaaniiMsg =
             aldaaniiMsg + "ААН sheet-ны " + muriinDugaar + " дугаар мөрөнд ";
           if (!object.id) aldaaniiMsg = aldaaniiMsg + "'Код', ";
@@ -3296,6 +3298,7 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             aldaaniiMsg = aldaaniiMsg + "'Улсын бүртгэлийн дугаар', ";
           if (!object.utas || !object.utas[0])
             aldaaniiMsg = aldaaniiMsg + "'Утас', ";
+          if (!object.mail) aldaaniiMsg = aldaaniiMsg + "'Мэйл', ";
           aldaaniiMsg = aldaaniiMsg.slice(0, -2);
           aldaaniiMsg = aldaaniiMsg + " ";
           aldaaniiMsg = aldaaniiMsg + "талбар хоосон байна! <br/>";
@@ -3322,7 +3325,8 @@ exports.khariltsagchTatya = asyncHandler(async (req, res, next) => {
             " дугаар мөрөнд 'Улсын бүртгэлийн дугаар' формат буруу байна! <br/>";
         }
         if (
-          (!object.mail || emailRegex.test(object.mail)) &&
+          object.mail &&
+          emailRegex.test(object.mail) &&
           object.id &&
           object.ner &&
           object.register &&
