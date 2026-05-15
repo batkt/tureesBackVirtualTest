@@ -2040,7 +2040,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   };
   if (!!req.body.ognoo) {
     match["avlaga.guilgeenuud.ognoo"] = {
-      $lte: req.body.ognoo[1],
+      $lte: new Date(req.body.ognoo[1]),
     };
   } else match["avlaga.guilgeenuud.ognoo"] = { $lte: new Date() };
   var valTuluv = req.body.tsutsalsanTurul ? { $in: [-1] } : { $nin: [-1] };
@@ -2063,55 +2063,64 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     },
     {
       $group: {
-        _id: "aaa",
-        tulukh: {
-          $sum: {
-            $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
-          },
-        },
-        khyamdral: {
-          $sum: {
-            $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
-          },
-        },
-        tulsun: {
-          $sum: {
-            $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
-          },
-        },
+        _id: "$avlaga.guilgeenuud.turul",
+        tulukh: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
+        khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
+        tulsun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
       },
     },
     {
       $project: {
+        turul: "$_id",
         uldegdel: {
-          $subtract: [
-            "$tulukh",
-            {
-              $sum: ["$tulsun", "$khyamdral"],
-            },
-          ],
+          $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }],
         },
       },
     },
   ];
+
   Geree(req.body.tukhainBaaziinKholbolt, true)
     .aggregate(query)
-    .then(async (result) => {
-      const tureesiinUldegdel = parseFloat((result[0]?.uldegdel || 0).toFixed(2));
-      
+    .then(async (results) => {
+      let tureesiinUldegdel = 0;
+      let ashiglaltiinUldegdel = 0;
+      let zardliinUldegdel = 0;
+      let busadUldegdel = 0;
+
+      results.forEach((r) => {
+        const d = parseFloat((r.uldegdel || 0).toFixed(2));
+        if (r.turul === "khuvaari") tureesiinUldegdel += d;
+        else if (r.turul === "zardal") ashiglaltiinUldegdel += d;
+        else if (r.turul === "avlaga") zardliinUldegdel += d;
+        else if (r.turul !== "aldangi" && r.turul !== "baritsaa")
+          busadUldegdel += d;
+      });
+
       const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findOne({
           gereeniiDugaar: req.body.gereeniiDugaar,
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
         })
-        .select("aldangiinUldegdel")
+        .select("aldangiinUldegdel baritsaaniiUldegdel")
         .lean();
+
       const aldangiinUldegdel = geree?.aldangiinUldegdel || 0;
+      const baritsaaniiUldegdel = geree?.baritsaaniiUldegdel || 0;
+      
+      const totalTurees = tureesiinUldegdel + ashiglaltiinUldegdel + zardliinUldegdel + busadUldegdel;
+
       res.send({
-        tureesiinUldegdel,
-        aldangiinUldegdel,
-        uldegdel: parseFloat((tureesiinUldegdel + aldangiinUldegdel).toFixed(2)),
+        tureesiinUldegdel: parseFloat(totalTurees.toFixed(2)),
+        detal: {
+          khuvaari: parseFloat(tureesiinUldegdel.toFixed(2)),
+          ashiglalt: parseFloat(ashiglaltiinUldegdel.toFixed(2)),
+          zardal: parseFloat(zardliinUldegdel.toFixed(2)),
+          busad: parseFloat(busadUldegdel.toFixed(2)),
+        },
+        aldangiinUldegdel: parseFloat(aldangiinUldegdel.toFixed(2)),
+        baritsaaniiUldegdel: parseFloat(baritsaaniiUldegdel.toFixed(2)),
+        uldegdel: parseFloat((totalTurees + aldangiinUldegdel).toFixed(2)),
       });
     })
     .catch((err) => {
