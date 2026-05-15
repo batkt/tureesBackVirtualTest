@@ -248,6 +248,28 @@ async function udriinTailan({ body }) {
       return base;
     };
 
+    const tulburteiPipeline = () => [
+      { $match: baseMatch },
+      {
+        $match: {
+          createdAt: { $gte: dateStart, $lte: dateEnd },
+          niitDun: { $gt: 0 },
+          "tuukh.0.uneguiGarsan": { $exists: false },
+          "tuukh.0.tuluv": -4,
+          ...(body.burtgesenAjiltaniiId && {
+            "tuukh.burtgesenAjiltaniiId": body.burtgesenAjiltaniiId,
+          }),
+        },
+      },
+      {
+        $group: {
+          _id: "Төлбөртэй",
+          niitDun: { $sum: "$niitDun" },
+          niitToo: { $sum: 1 },
+        },
+      },
+    ];
+
     const specialPipeline = (status) => [
       { $match: baseMatch },
       { $unwind: "$tuukh" },
@@ -257,9 +279,7 @@ async function udriinTailan({ body }) {
           _id:
             status === "Zurchiltei"
               ? "Зөрчилтэй"
-              : status === "Tulburtei"
-                ? "Төлбөртэй"
-                : "Үнэгүй",
+              : "Үнэгүй",
           niitDun: { $sum: "$tuukh.tulukhDun" },
           ids: { $addToSet: "$tuukh._id" },
         },
@@ -268,17 +288,14 @@ async function udriinTailan({ body }) {
         $project: {
           _id: 1,
           niitDun: 1,
-          niitToo:
-            status === "Zurchiltei" || status === "Tulburtei"
-              ? { $size: "$ids" }
-              : 1,
+          niitToo: { $size: "$ids" },
         },
       },
     ];
 
     const [zurchiltei, tulburtei, unegui] = await Promise.all([
       model.aggregate(specialPipeline("Zurchiltei")),
-      model.aggregate(specialPipeline("Tulburtei")),
+      model.aggregate(tulburteiPipeline()),
       model.aggregate(specialPipeline("Unegui")),
     ]);
 
