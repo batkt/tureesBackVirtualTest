@@ -230,25 +230,20 @@ async function udriinTailan({ body }) {
         };
       }
       if (status === "Tulburtei") {
-        // Match frontend tuluv=5 logic: -4 uses tulbur.ognoo, 0 uses garsanTsag
+        // Match frontend tuluv=5 query: createdAt date range, niitDun>0,
+        // tuluv=-4 OR (tuluv=0 with garsanTsag existing)
         return {
           ...base,
+          createdAt: { $gte: dateStart, $lte: dateEnd },
+          niitDun: { $gt: 0 },
+          "tuukh.uneguiGarsan": { $exists: false },
           $or: [
-            {
-              "tuukh.tuluv": -4,
-              "tuukh.tulbur.ognoo": { $gte: dateStart, $lte: dateEnd },
-              "tuukh.uneguiGarsan": { $exists: false },
-            },
+            { "tuukh.tuluv": -4 },
             {
               "tuukh.tuluv": 0,
-              "tuukh.tsagiinTuukh.garsanTsag": {
-                $gte: dateStart,
-                $lte: dateEnd,
-              },
-              "tuukh.uneguiGarsan": { $exists: false },
+              "tuukh.tsagiinTuukh.garsanTsag": { $exists: true },
             },
           ],
-          "tuukh.tulukhDun": { $gt: 0 },
         };
       }
       if (status === "Unegui") {
