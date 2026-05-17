@@ -982,14 +982,18 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     })
                     .sort({ TxDt: -1 })
                     .limit(1);
-                  if (!!max) {
-                    firstDay = new Date(max.TxDt);
-                  } else firstDay = new Date();
-                  // firstDay = new Date(
-                  //   new Date().getFullYear(),
-                  //   new Date().getMonth(),
-                  //   1,
-                  // );
+                  // if (!!max) {
+                  //   firstDay = new Date(max.TxDt);
+                  // } else firstDay = new Date();
+                  firstDay = new Date(
+                    new Date().getFullYear(),
+                    new Date().getMonth(),
+                    1,
+                  );
+                  console.log(
+                    "TDB-гийн хуулга татах эхлэх огноо: " +
+                      JSON.stringify(firstDay),
+                  );
                   url =
                     url +
                     "?from=" +
