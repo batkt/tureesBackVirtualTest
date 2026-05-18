@@ -1131,7 +1131,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
                   as: "b",
                   in: {
                     ognoo: "$$b.ognoo",
-                    tulukhDun: { $ifNull: ["$$b.tulukhDun", 0] },
+                    tulukhDun: 0,
                     tulsunDun: { $add: [{ $ifNull: ["$$b.tulsunDun", 0] }, { $ifNull: ["$$b.orlogo", 0] }] },
                     khyamdral: 0,
                     turul: "baritsaa",
@@ -1188,7 +1188,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
                   as: "b",
                   in: {
                     ognoo: "$$b.ognoo",
-                    tulukhDun: { $ifNull: ["$$b.tulukhDun", 0] },
+                    tulukhDun: 0,
                     tulsunDun: { $add: [{ $ifNull: ["$$b.tulsunDun", 0] }, { $ifNull: ["$$b.orlogo", 0] }] },
                     khyamdral: 0,
                     turul: "baritsaa",
