@@ -1295,6 +1295,16 @@ exports.gereeniiExcelAvya = asyncHandler(async (req, res, next) => {
 
 exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
   try {
+    const getCellStringValue = (sheet, colLetter, rowIndex, rawValue) => {
+      if (!sheet || !colLetter) return String(rawValue ?? "").trim();
+      const cellRef = colLetter + rowIndex;
+      const cellObj = sheet[cellRef];
+      if (cellObj) {
+        if (cellObj.w !== undefined) return String(cellObj.w).trim();
+        if (cellObj.v !== undefined) return String(cellObj.v).trim();
+      }
+      return String(rawValue ?? "").trim();
+    };
     const workbook = xlsx.read(req.file.buffer);
     var zagvariinId;
     if (req.body.zagvariinId) zagvariinId = req.body.zagvariinId;
@@ -1488,7 +1498,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     var aldaaniiMsg = "";
     var muriinDugaar = 1;
     try {
-      data.forEach((mur) => {
+      data.forEach((mur, idx) => {
         if (!mur || mur.length === 0 || mur.every((cell) => !cell)) return;
         muriinDugaar++;
         let object = new Geree(req.body.tukhainBaaziinKholbolt)();
@@ -1507,8 +1517,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.tulukhUdur = [
           mur[usegTooruuKhurvuulekh(tolgoinObject.tulukhUdur)],
         ];
-        object.talbainDugaar =
-          mur[usegTooruuKhurvuulekh(tolgoinObject.talbainDugaar)];
+        const talbainDugaarRaw = mur[usegTooruuKhurvuulekh(tolgoinObject.talbainDugaar)];
+        object.talbainDugaar = getCellStringValue(worksheet, tolgoinObject.talbainDugaar, idx + 2, talbainDugaarRaw);
         object.baritsaaAwakhKhugatsaa =
           mur[usegTooruuKhurvuulekh(tolgoinObject.baritsaaAwakhKhugatsaa)];
         if (!object.baritsaaAwakhKhugatsaa) object.baritsaaAwakhKhugatsaa = 0;
@@ -1620,7 +1630,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
     }
     muriinDugaar = 1;
     try {
-      data30.forEach((mur) => {
+      data30.forEach((mur, idx) => {
         // Skip completely empty rows
         if (!mur || mur.length === 0 || mur.every((cell) => !cell)) return;
         muriinDugaar++;
@@ -1641,8 +1651,8 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
         object.tulukhUdur = [
           mur[usegTooruuKhurvuulekh(tolgoinObject30.tulukhUdur)],
         ];
-        object.talbainDugaar =
-          mur[usegTooruuKhurvuulekh(tolgoinObject30.talbainDugaar)];
+        const talbainDugaarRaw = mur[usegTooruuKhurvuulekh(tolgoinObject30.talbainDugaar)];
+        object.talbainDugaar = getCellStringValue(worksheet30, tolgoinObject30.talbainDugaar, idx + 2, talbainDugaarRaw);
         object.baritsaaAwakhKhugatsaa =
           mur[usegTooruuKhurvuulekh(tolgoinObject30.baritsaaAwakhKhugatsaa)];
         if (!object.baritsaaAwakhKhugatsaa) object.baritsaaAwakhKhugatsaa = 0;
