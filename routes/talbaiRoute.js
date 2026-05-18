@@ -1292,16 +1292,27 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       }
     });
 
-    const canceledWithBalance = await Geree(req.body.tukhainBaaziinKholbolt, true).find({
+    const canceledMatch = {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
       tuluv: -1,
-      uldegdel: { $gt: 0 },
-    }).select("gereeniiDugaar ner register talbainDugaar barilgiiinNer talbainKhemjee uldegdel").lean();
+    };
+    if (req.body.khariltsagchiinId && req.body.khariltsagchiinId.length > 0) {
+      canceledMatch["register"] = { $in: req.body.khariltsagchiinId };
+    }
+    if (req.body.gereeniiDugaaruud && req.body.gereeniiDugaaruud.length > 0) {
+      canceledMatch["gereeniiDugaar"] = { $in: req.body.gereeniiDugaaruud };
+    }
+
+    const canceledWithBalance = await Geree(req.body.tukhainBaaziinKholbolt, true)
+      .find(canceledMatch)
+      .select("gereeniiDugaar ner register talbainDugaar barilgiiinNer talbainKhemjee uldegdel")
+      .lean();
 
     const existingGereeniiDugaaruud = new Set(result.map((r) => r.gereeniiDugaar));
     canceledWithBalance.forEach((c) => {
-      if (!existingGereeniiDugaaruud.has(c.gereeniiDugaar)) {
+      const uld = Number(c.uldegdel) || 0;
+      if (uld > 0 && !existingGereeniiDugaaruud.has(c.gereeniiDugaar)) {
         result.push({
           gereeniiDugaar: c.gereeniiDugaar,
           ner: c.ner,
@@ -1309,13 +1320,13 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           talbainDugaar: c.talbainDugaar,
           barilgiiinNer: c.barilgiiinNer,
           talbainKhemjee: c.talbainKhemjee,
-          ekhniiUldegdel: c.uldegdel || 0,
+          ekhniiUldegdel: uld,
           niitDt: 0,
           niitTulsun: 0,
           niitKhyamdralTurees: 0,
           niitKhyamdralAshiglalt: 0,
           niitKt: 0,
-          etssiinUldegdel: c.uldegdel || 0,
+          etssiinUldegdel: uld,
           tuluv: -1, 
         });
       }

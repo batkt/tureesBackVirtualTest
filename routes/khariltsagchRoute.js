@@ -51,6 +51,18 @@ router.put("/khariltsagch/:id", tokenShalgakh, async (req, res, next) => {
       req.params.id,
     );
     if (khariltsagchOld) {
+      if (req.body.utas) {
+        const cleanUtas = (Array.isArray(req.body.utas) ? req.body.utas : [req.body.utas]).filter(Boolean);
+        if (cleanUtas.length > 0) {
+          const khariltsagchDuplicate = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+            _id: { $ne: req.params.id },
+            utas: { $in: cleanUtas },
+            baiguullagiinId: khariltsagchOld.baiguullagiinId,
+            barilgiinId: khariltsagchOld.barilgiinId,
+          });
+          if (khariltsagchDuplicate) throw new Error("Тухайн утасны дугаараар харилцагч бүртгэлтэй байна!");
+        }
+      }
       const orConditions = [];
       if (khariltsagchOld.register)
         orConditions.push({ register: khariltsagchOld.register });
@@ -131,6 +143,18 @@ crud(
       if (req.method === "POST") {
         if (!req.body.register && !req.body.customerTin)
           throw new Error("Бүртгэлийн дугаар эсвэл Регистрийн дугаар бөглөнө үү!");
+
+        if (req.body.utas) {
+          const cleanUtas = (Array.isArray(req.body.utas) ? req.body.utas : [req.body.utas]).filter(Boolean);
+          if (cleanUtas.length > 0) {
+            const khariltsagchDuplicate = await Khariltsagch(db.erunkhiiKholbolt).findOne({
+              utas: { $in: cleanUtas },
+              baiguullagiinId: req.body.baiguullagiinId,
+              barilgiinId: req.body.barilgiinId,
+            });
+            if (khariltsagchDuplicate) throw new Error("Тухайн утасны дугаараар харилцагч бүртгэлтэй байна!");
+          }
+        }
 
         if (req.body.register) {
           const khariltsagch = await Khariltsagch(db.erunkhiiKholbolt).findOne({
