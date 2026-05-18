@@ -366,8 +366,6 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
       jagsaalt[index].text.toString();
     url = encodeURI(url);
     request(url, { json: true }, async (err1, res1, body) => {
-      console.log("res1 --msg--------->" + JSON.stringify(res1));
-      console.log("body --msg--------->" + JSON.stringify(body));
       if (err1) {
         next(err1);
       } else {
@@ -382,7 +380,7 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
         await msg.save();
 
         // ШИНЭ: Sonorduulga хадгалах
-        if (body && body[0]?.Result === "SUCCESS") {
+        if (res1?.statusCode === 200) {
           const sonorduulga = new Sonorduulga(
             req.body.tukhainBaaziinKholbolt,
           )();
@@ -399,10 +397,10 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
         }
 
         if (jagsaalt.length > index + 1) {
-          khariu.push(body[0]);
+          khariu.push(res1);
           msgIlgeeye(jagsaalt, key, dugaar, khariu, index + 1, next, req, res);
         } else {
-          khariu.push(body[0]);
+          khariu.push(res1);
           res.send(khariu);
         }
       }

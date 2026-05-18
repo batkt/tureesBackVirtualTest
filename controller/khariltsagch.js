@@ -229,10 +229,10 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
           msg.save();
         }
         if (jagsaalt.length > index + 1) {
-          khariu.push(body[0]);
+          khariu.push(res1);
           msgIlgeeye(jagsaalt, key, dugaar, khariu, index + 1, next, req, res);
         } else {
-          khariu.push(body[0]);
+          khariu.push(res1);
         }
       }
     });

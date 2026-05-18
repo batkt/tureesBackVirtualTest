@@ -389,8 +389,6 @@ function msgIlgeeye(
       jagsaalt[index].text.toString();
     url = encodeURI(url);
     request(url, { json: true }, (err1, res1, body) => {
-      console.log("res1 --msg--------->" + JSON.stringify(res1));
-      console.log("body --msg--------->" + JSON.stringify(body));
       if (err1) {
         next(err1);
       } else {
@@ -403,7 +401,7 @@ function msgIlgeeye(
         msg.msgIlgeekhDugaar = dugaar;
         msg.save();
         if (jagsaalt.length > index + 1) {
-          khariu.push(body[0]);
+          khariu.push(res1);
           msgIlgeeye(
             jagsaalt,
             key,
@@ -414,7 +412,7 @@ function msgIlgeeye(
             baiguullagiinId,
           );
         } else {
-          khariu.push(body[0]);
+          khariu.push(res1);
         }
       }
     });
