@@ -44,7 +44,7 @@ const {
   tulultUstgaya,
   baritsaaniiGuilgeeUstgaya,
   tulultTaniya,
-  tulultTaniyaGar,
+  tulultTaniyaCGW,
   gereeniiGuilgeeKhadgalya,
   khuvaariUusgey,
   uldegdelBodyo,
@@ -78,8 +78,8 @@ const {
   aldangiUstgayaa,
 } = require("../controller/tulbur");
 router.route("/tulultTaniya").get(tulultTaniya);
-router.route("/tulultTaniyaGar").post(tokenShalgakh, async (req, res, next) => {
-  await tulultTaniyaGar(req.body.baiguullagiinId);
+router.route("/tulultTaniyaCGW").post(tokenShalgakh, async (req, res, next) => {
+  await tulultTaniyaCGW(req.body.baiguullagiinId);
   res.send("Amjilttai");
 });
 const lodash = require("lodash");
@@ -295,75 +295,80 @@ router
         next(err);
       });
   });
-router
-  .route("/suuliinZaaltAvya")
-  .get(tokenShalgakh, async (req, res, next) => {
-    try {
-      const { talbainDugaar, tailbar, khemjikhNegj, gereeniiId } = req.query;
-      if (!talbainDugaar) return res.send(null);
+router.route("/suuliinZaaltAvya").get(tokenShalgakh, async (req, res, next) => {
+  try {
+    const { talbainDugaar, tailbar, khemjikhNegj, gereeniiId } = req.query;
+    if (!talbainDugaar) return res.send(null);
 
-      var suuliinZaalt = null;
-      var suuliinOgnoo = null;
-      var suuliinGuilgeeniiId = null;
-      var suuliinGereeniiId = null;
-      var tooluuriinDugaar = null;
+    var suuliinZaalt = null;
+    var suuliinOgnoo = null;
+    var suuliinGuilgeeniiId = null;
+    var suuliinGereeniiId = null;
+    var tooluuriinDugaar = null;
 
-      let contractQuery = { talbainDugaar };
-      if (gereeniiId) {
-        const { ObjectId } = require("mongodb");
-        contractQuery._id = { $ne: new ObjectId(gereeniiId) };
-        contractQuery.tuluv = -1; 
-      }
-
-      const gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
-        .find(contractQuery)
-        .select("avlaga")
-        .lean();
-
-      for (const geree of gereenuud) {
-        const guilgeenuud = geree?.avlaga?.guilgeenuud || [];
-        const filtered = guilgeenuud.filter((x) => {
-          if (x?.suuliinZaalt == null) return false;
-          if (tailbar && x?.tailbar !== tailbar) return false;
-          if (khemjikhNegj && x?.khemjikhNegj !== khemjikhNegj) return false;
-          return true;
-        });
-        for (const g of filtered) {
-          const ognoo = g.ognoo ? new Date(g.ognoo) : null;
-          if (!suuliinOgnoo || (ognoo && ognoo > suuliinOgnoo)) {
-            suuliinZaalt = g.suuliinZaalt;
-            suuliinOgnoo = ognoo;
-            suuliinGuilgeeniiId = g._id;
-            suuliinGereeniiId = geree._id;
-            if (g.tooluuriinDugaar) tooluuriinDugaar = g.tooluuriinDugaar;
-          }
-        }
-      }
-
-      
-      if (!suuliinZaalt) {
-        const match = { talbainDugaar };
-        if (tailbar) match.zardliinNer = tailbar;
-        const lastExcel = await AshiglaltiinExcel(
-          req.body.tukhainBaaziinKholbolt,
-          true,
-        )
-          .findOne(match)
-          .sort({ ognoo: -1 })
-          .lean();
-        if (lastExcel?.suuliinZaalt) {
-          suuliinZaalt = lastExcel.suuliinZaalt;
-          if (lastExcel.tooluuriinDugaar) tooluuriinDugaar = lastExcel.tooluuriinDugaar;
-        }
-      }
-
-      console.log(`[suuliinZaaltAvya] Talbai: ${talbainDugaar}, Tailbar: ${tailbar}, GereeniiId: ${gereeniiId}, SuuliinZaalt: ${suuliinZaalt}, TooluuriinDugaar: ${tooluuriinDugaar}`);
-
-      res.send({ suuliinZaalt, guilgeeniiId: suuliinGuilgeeniiId, gereeniiId: suuliinGereeniiId, tooluuriinDugaar });
-    } catch (err) {
-      next(err);
+    let contractQuery = { talbainDugaar };
+    if (gereeniiId) {
+      const { ObjectId } = require("mongodb");
+      contractQuery._id = { $ne: new ObjectId(gereeniiId) };
+      contractQuery.tuluv = -1;
     }
-  });
+
+    const gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
+      .find(contractQuery)
+      .select("avlaga")
+      .lean();
+
+    for (const geree of gereenuud) {
+      const guilgeenuud = geree?.avlaga?.guilgeenuud || [];
+      const filtered = guilgeenuud.filter((x) => {
+        if (x?.suuliinZaalt == null) return false;
+        if (tailbar && x?.tailbar !== tailbar) return false;
+        if (khemjikhNegj && x?.khemjikhNegj !== khemjikhNegj) return false;
+        return true;
+      });
+      for (const g of filtered) {
+        const ognoo = g.ognoo ? new Date(g.ognoo) : null;
+        if (!suuliinOgnoo || (ognoo && ognoo > suuliinOgnoo)) {
+          suuliinZaalt = g.suuliinZaalt;
+          suuliinOgnoo = ognoo;
+          suuliinGuilgeeniiId = g._id;
+          suuliinGereeniiId = geree._id;
+          if (g.tooluuriinDugaar) tooluuriinDugaar = g.tooluuriinDugaar;
+        }
+      }
+    }
+
+    if (!suuliinZaalt) {
+      const match = { talbainDugaar };
+      if (tailbar) match.zardliinNer = tailbar;
+      const lastExcel = await AshiglaltiinExcel(
+        req.body.tukhainBaaziinKholbolt,
+        true,
+      )
+        .findOne(match)
+        .sort({ ognoo: -1 })
+        .lean();
+      if (lastExcel?.suuliinZaalt) {
+        suuliinZaalt = lastExcel.suuliinZaalt;
+        if (lastExcel.tooluuriinDugaar)
+          tooluuriinDugaar = lastExcel.tooluuriinDugaar;
+      }
+    }
+
+    console.log(
+      `[suuliinZaaltAvya] Talbai: ${talbainDugaar}, Tailbar: ${tailbar}, GereeniiId: ${gereeniiId}, SuuliinZaalt: ${suuliinZaalt}, TooluuriinDugaar: ${tooluuriinDugaar}`,
+    );
+
+    res.send({
+      suuliinZaalt,
+      guilgeeniiId: suuliinGuilgeeniiId,
+      gereeniiId: suuliinGereeniiId,
+      tooluuriinDugaar,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 router
   .route("/gereeniiAldangiTulultAvya/:gereeniiId")
   .get(tokenShalgakh, (req, res, next) => {
@@ -422,11 +427,14 @@ router
   .get(tokenShalgakh, async (req, res, next) => {
     try {
       var maxDugaar = 1;
-      const baiguullagiinId = req.query.baiguullagiinId || req.body.baiguullagiinId;
+      const baiguullagiinId =
+        req.query.baiguullagiinId || req.body.baiguullagiinId;
       const barilgiinId = req.query.barilgiinId || req.body.barilgiinId;
 
       if (!baiguullagiinId || !barilgiinId) {
-        return res.status(400).send("baiguullagiinId болон barilgiinId шаардлагатай");
+        return res
+          .status(400)
+          .send("baiguullagiinId болон barilgiinId шаардлагатай");
       }
 
       var ognoo = {
@@ -458,11 +466,14 @@ router
   .get(tokenShalgakh, async (req, res, next) => {
     try {
       var maxDugaar = 1;
-      const baiguullagiinId = req.query.baiguullagiinId || req.body.baiguullagiinId;
+      const baiguullagiinId =
+        req.query.baiguullagiinId || req.body.baiguullagiinId;
       const barilgiinId = req.query.barilgiinId || req.body.barilgiinId;
 
       if (!baiguullagiinId || !barilgiinId) {
-        return res.status(400).send("baiguullagiinId болон barilgiinId шаардлагатай");
+        return res
+          .status(400)
+          .send("baiguullagiinId болон barilgiinId шаардлагатай");
       }
 
       var unuudur = new Date();
@@ -472,7 +483,6 @@ router
         unuudur.getDate(),
       );
 
-     
       const lastDugaar = await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
         .findOne({
           baiguullagiinId: baiguullagiinId,
@@ -487,9 +497,11 @@ router
 
       if (lastDugaar) maxDugaar = lastDugaar.dugaar + 1;
 
-     
       const prefix = `ГД${moment(unuudur).format("YYMMDD")}`;
-      const existingGereenuud = await Geree(req.body.tukhainBaaziinKholbolt, false)
+      const existingGereenuud = await Geree(
+        req.body.tukhainBaaziinKholbolt,
+        false,
+      )
         .find({
           gereeniiDugaar: new RegExp(`^${prefix}`),
           tuluv: { $ne: -1 },
@@ -556,7 +568,10 @@ crud(
         unuudur.getDate(),
       );
       var dugaarlalt = null;
-      if (req.body.gereeniiDugaar && req.body.gereeniiDugaar.match(/^ГД\d{6}(\d+)?$/)) {
+      if (
+        req.body.gereeniiDugaar &&
+        req.body.gereeniiDugaar.match(/^ГД\d{6}(\d+)?$/)
+      ) {
         let basePrefix = req.body.gereeniiDugaar.substring(0, 8);
         var maxDugaar = 1;
         await Dugaarlalt(req.body.tukhainBaaziinKholbolt)
@@ -581,11 +596,15 @@ crud(
           ognoo: unuudur,
           isNew: true,
         });
-        req.body.gereeniiDugaar = basePrefix + String(maxDugaar).padStart(2, "0");
+        req.body.gereeniiDugaar =
+          basePrefix + String(maxDugaar).padStart(2, "0");
       }
 
       if (req.body.gereeniiDugaar) {
-        const existingGeree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
+        const existingGeree = await Geree(
+          req.body.tukhainBaaziinKholbolt,
+          true,
+        ).findOne({
           gereeniiDugaar: req.body.gereeniiDugaar,
           tuluv: { $ne: -1 },
         });
@@ -621,7 +640,10 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     khariltsagch.id = khariltsagch.register
       ? khariltsagch.register
       : khariltsagch.customerTin;
-    if (req.body.gereeniiDugaar && req.body.gereeniiDugaar.match(/^ГД\d{6}(\d+)?$/)) {
+    if (
+      req.body.gereeniiDugaar &&
+      req.body.gereeniiDugaar.match(/^ГД\d{6}(\d+)?$/)
+    ) {
       let basePrefix = req.body.gereeniiDugaar.substring(0, 8);
       var unuudur = new Date();
       unuudur = new Date(
@@ -644,8 +666,10 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
 
       if (lastDugaar) maxDugaar = lastDugaar.dugaar + 1;
 
-      
-      const existingGereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
+      const existingGereenuud = await Geree(
+        req.body.tukhainBaaziinKholbolt,
+        true,
+      )
         .find({
           gereeniiDugaar: new RegExp(`^${basePrefix}`),
           tuluv: { $ne: -1 },
@@ -676,7 +700,10 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     }
 
     if (req.body.gereeniiDugaar) {
-      const existingGeree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
+      const existingGeree = await Geree(
+        req.body.tukhainBaaziinKholbolt,
+        true,
+      ).findOne({
         gereeniiDugaar: req.body.gereeniiDugaar,
         tuluv: { $ne: -1 },
       });
@@ -702,22 +729,22 @@ router.route("/gereeKhadgalya").post(tokenShalgakh, async (req, res, next) => {
     else {
       if (!req.body.albanTushaal)
         req.body.albanTushaal = khariltsagchShalguur.albanTushaal;
-        
+
       await Khariltsagch(db.erunkhiiKholbolt).updateOne(
         { _id: khariltsagchShalguur._id },
-        { $set: { idevkhiteiEsekh: true } }
+        { $set: { idevkhiteiEsekh: true } },
       );
     }
 
-  // // Хуваарь/авлагын мөрүүдийг (хөнгөлөлтүүдтэй) шууд хадгална.
-  // const khuvaariGuilgeenuud =
-  //   lodash.get(req, "body.avlaga.guilgeenuud") ||
-  //   req.body.guilgeenuud ||
-  //   req.body.khuvaari;
-  // if (Array.isArray(khuvaariGuilgeenuud)) {
-  //   req.body.avlaga = req.body.avlaga || {};
-  //   req.body.avlaga.guilgeenuud = khuvaariGuilgeenuud;
-  // }
+    // // Хуваарь/авлагын мөрүүдийг (хөнгөлөлтүүдтэй) шууд хадгална.
+    // const khuvaariGuilgeenuud =
+    //   lodash.get(req, "body.avlaga.guilgeenuud") ||
+    //   req.body.guilgeenuud ||
+    //   req.body.khuvaari;
+    // if (Array.isArray(khuvaariGuilgeenuud)) {
+    //   req.body.avlaga = req.body.avlaga || {};
+    //   req.body.avlaga.guilgeenuud = khuvaariGuilgeenuud;
+    // }
 
     var geree = new Geree(req.body.tukhainBaaziinKholbolt)(updateData);
     var daraagiinTulukhOgnoo = geree.duusakhOgnoo;
@@ -802,7 +829,10 @@ router
       delete updateData.nevtersenAjiltniiToken;
 
       if (updateData.gereeniiDugaar) {
-        const existingGeree = await Geree(req.body.tukhainBaaziinKholbolt, true).findOne({
+        const existingGeree = await Geree(
+          req.body.tukhainBaaziinKholbolt,
+          true,
+        ).findOne({
           gereeniiDugaar: updateData.gereeniiDugaar,
           _id: { $ne: updateData._id },
           tuluv: { $ne: -1 },
@@ -4999,7 +5029,9 @@ router
             var relevantGereenuud = niitGereenuud.filter(
               (a) => a.talbainDugaar == x.kod,
             );
-            var activeGereenuud = relevantGereenuud.filter((a) => a.tuluv === 1);
+            var activeGereenuud = relevantGereenuud.filter(
+              (a) => a.tuluv === 1,
+            );
             if (activeGereenuud.length === 0) continue;
 
             if (relevantGereenuud.length > 0) {
@@ -5012,7 +5044,8 @@ router
               var suuliinGuilgee = allGuilgeenuud.filter((g_item) => {
                 return (
                   g_item.tailbar?.includes("Цахилгаан") &&
-                  (!x.tooluuriinDugaar || g_item.tooluuriinDugaar == x.tooluuriinDugaar)
+                  (!x.tooluuriinDugaar ||
+                    g_item.tooluuriinDugaar == x.tooluuriinDugaar)
                 );
               });
               if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
@@ -5113,7 +5146,8 @@ router
         for (const tukhainZardal of jagsaalt) {
           var geree = niitGereenuud.find(
             (x) =>
-              x.talbainIdnuud.includes(tukhainZardal.talbainId) && x.tuluv === 1,
+              x.talbainIdnuud.includes(tukhainZardal.talbainId) &&
+              x.tuluv === 1,
           );
           updateObject = {};
           if (
@@ -5146,11 +5180,15 @@ router
               });
 
               if (!!suuliinGuilgee && suuliinGuilgee.length > 0) {
-                suuliinGuilgee = lodash.orderBy(suuliinGuilgee, ["ognoo"], ["desc"]);
+                suuliinGuilgee = lodash.orderBy(
+                  suuliinGuilgee,
+                  ["ognoo"],
+                  ["desc"],
+                );
                 umnukhZaalt = suuliinGuilgee[0].suuliinZaalt;
               } else {
                 throw new Error(
-                  `[${tukhainZardal.talbainDugaar}] талбайн өмнөх заалт олдсонгүй. (Тоолуурын №: ${tukhainZardal.tooluuriinDugaar || "Байхгүй"}). Та өмнөх гүйлгээний түүхээ шалгана уу.`
+                  `[${tukhainZardal.talbainDugaar}] талбайн өмнөх заалт олдсонгүй. (Тоолуурын №: ${tukhainZardal.tooluuriinDugaar || "Байхгүй"}). Та өмнөх гүйлгээний түүхээ шалгана уу.`,
                 );
               }
             }
@@ -5198,7 +5236,9 @@ router
                   : 0)
               : tsakhilgaanDun;
 
-          console.log(`[zaaltOlnoorOruulya] Talbai: ${tukhainZardal.talbainDugaar}, SuuliinZaalt: ${tukhainZardal.suuliinZaalt}, UmnukhZaalt: ${umnukhZaalt}, ZoruuDun: ${zoruuDun}, TempDun: ${tempDun}, BaiguullagaId: ${req.body.baiguullagiinId}`);
+          console.log(
+            `[zaaltOlnoorOruulya] Talbai: ${tukhainZardal.talbainDugaar}, SuuliinZaalt: ${tukhainZardal.suuliinZaalt}, UmnukhZaalt: ${umnukhZaalt}, ZoruuDun: ${zoruuDun}, TempDun: ${tempDun}, BaiguullagaId: ${req.body.baiguullagiinId}`,
+          );
 
           updateObject = {
             turul: "avlaga",
@@ -5226,7 +5266,11 @@ router
             ognoo: tukhainZardal.ognoo,
             gereeniiId: geree._id,
             barilgiinId: req.body.barilgiinId,
-            tailbar: ashiglaltiinZardal.ner + (req.body.nevtersenAjiltniiToken ? " Excel (" + req.body.nevtersenAjiltniiToken.ner + ")" : " Excel"),
+            tailbar:
+              ashiglaltiinZardal.ner +
+              (req.body.nevtersenAjiltniiToken
+                ? " Excel (" + req.body.nevtersenAjiltniiToken.ner + ")"
+                : " Excel"),
             nuatBodokhEsekh: req.body.nuatBodokhEsekh,
             tooluuriinDugaar: tukhainZardal.tooluuriinDugaar,
           };
