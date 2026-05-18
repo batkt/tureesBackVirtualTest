@@ -1147,7 +1147,15 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       {
         $match: {
           "guilgeenuud.ognoo": { $lt: ekhlekhOgnoo },
-          "guilgeenuud.turul": { $ne: "aldangi" }
+          $or: [
+            { "guilgeenuud.turul": { $nin: ["baritsaa", "aldangi"] } },
+            {
+              $and: [
+                { "guilgeenuud.turul": { $in: ["baritsaa"] } },
+                { "guilgeenuud.tulsunDun": { $gt: 0 } },
+              ],
+            },
+          ],
         }
       },
       {
@@ -1204,7 +1212,15 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       {
         $match: {
           "guilgeenuud.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
-          "guilgeenuud.turul": { $ne: "aldangi" }
+          $or: [
+            { "guilgeenuud.turul": { $nin: ["baritsaa", "aldangi"] } },
+            {
+              $and: [
+                { "guilgeenuud.turul": { $in: ["baritsaa"] } },
+                { "guilgeenuud.tulsunDun": { $gt: 0 } },
+              ],
+            },
+          ],
         }
       },
       {
