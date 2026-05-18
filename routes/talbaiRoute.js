@@ -1120,6 +1120,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       { $match: match },
       {
         $project: {
+          gereeniiDugaar: 1,
           ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, talbainKhemjee: 1, tuluv: 1,
           guilgeenuud: {
             $concatArrays: [
@@ -1176,6 +1177,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       { $match: match },
       {
         $project: {
+          gereeniiDugaar: 1,
           ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, talbainKhemjee: 1, tuluv: 1,
           guilgeenuud: {
             $concatArrays: [
