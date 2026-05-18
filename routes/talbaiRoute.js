@@ -1098,9 +1098,9 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       barilgiinId: req.body.barilgiinId,
       tuluv: { $ne: -1 },
     };
-    if (req.body.khariltsagchiinId)
+    if (req.body.khariltsagchiinId && req.body.khariltsagchiinId.length > 0)
       match["register"] = { $in: req.body.khariltsagchiinId };
-    if (req.body.gereeniiDugaaruud)
+    if (req.body.gereeniiDugaaruud && req.body.gereeniiDugaaruud.length > 0)
       match["gereeniiDugaar"] = { $in: req.body.gereeniiDugaaruud };
     if (req.body.$or) match["$or"] = req.body.$or;
 
