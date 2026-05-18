@@ -2022,7 +2022,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
         })
-        .select("aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun")
+        .select("aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun")
         .lean();
 
       const aldangiinUldegdel = parseFloat(
@@ -2030,6 +2030,9 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
       );
       const baritsaaniiUldegdel = parseFloat(
         (geree?.baritsaaniiUldegdel || 0).toFixed(2),
+      );
+      const baritsaaAvakhDun = parseFloat(
+        (geree?.baritsaaAvakhDun || 0).toFixed(2),
       );
 
       let niitTulsunAldangiMatch = { "avlaga.guilgeenuud.turul": "aldangi" };
@@ -2065,17 +2068,32 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         (aldangiAggResult[0]?.niitTulsunAldangi || 0).toFixed(2),
       );
 
+      const baritsaaBalance = Math.max(0, baritsaaAvakhDun - baritsaaniiUldegdel);
+
+      const { db } = require("zevbackv2");
+      const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt)
+        .findById(req.body.baiguullagiinId)
+        .lean();
+
+      const aldangiTuukhKharakhEsekh =
+        baiguullaga?.tokhirgoo?.aldangiTuukhKharakhEsekh ||
+        req.body.baiguullagiinId === "6735c77a7fc60cd66deb2909" ||
+        req.body.baiguullagiinId === "6916c957511a8a4aebc1d65b";
+
+      const finalUldegdel = aldangiTuukhKharakhEsekh
+        ? (tureesiinUldegdel + aldangiinUldegdel)
+        : (tureesiinUldegdel + baritsaaBalance + aldangiinUldegdel);
+
       res.send({
         tureesiinUldegdel,
         aldangiinUldegdel,
         niitTulsunAldangi,
         baritsaaniiUldegdel,
+        baritsaaAvakhDun,
         tulukh,
         khyamdral,
         tulsun,
-        uldegdel: parseFloat(
-          (tureesiinUldegdel + aldangiinUldegdel).toFixed(2),
-        ),
+        uldegdel: parseFloat(finalUldegdel.toFixed(2)),
       });
     })
     .catch((err) => {

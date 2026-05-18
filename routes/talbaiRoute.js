@@ -1142,6 +1142,9 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           barilgiiinNer: { $first: "$barilgiiinNer" },
           talbainKhemjee: { $first: "$talbainKhemjee" },
           tuluv: { $first: "$tuluv" },
+          aldangiinUldegdel: { $first: "$aldangiinUldegdel" },
+          baritsaaAvakhDun: { $first: "$baritsaaAvakhDun" },
+          baritsaaniiUldegdel: { $first: "$baritsaaniiUldegdel" },
           tulukh: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
           tulsun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
           khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
@@ -1150,6 +1153,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       {
         $project: {
           ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, talbainKhemjee: 1, tuluv: 1,
+          aldangiinUldegdel: 1, baritsaaAvakhDun: 1, baritsaaniiUldegdel: 1,
           ekhniiUldegdel: { $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }] },
         },
       },
@@ -1162,6 +1166,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         $project: {
           gereeniiDugaar: 1,
           ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, talbainKhemjee: 1, tuluv: 1,
+          aldangiinUldegdel: 1, baritsaaAvakhDun: 1, baritsaaniiUldegdel: 1,
           guilgeenuud: {
             $concatArrays: [
               { $ifNull: ["$avlaga.guilgeenuud", []] },
@@ -1207,6 +1212,9 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           barilgiiinNer: { $first: "$barilgiiinNer" },
           talbainKhemjee: { $first: "$talbainKhemjee" },
           tuluv: { $first: "$tuluv" },
+          aldangiinUldegdel: { $first: "$aldangiinUldegdel" },
+          baritsaaAvakhDun: { $first: "$baritsaaAvakhDun" },
+          baritsaaniiUldegdel: { $first: "$baritsaaniiUldegdel" },
           niitDt: { $sum: { $ifNull: ["$guilgeenuud.tulukhDun", 0] } },
           niitTulsun: { $sum: { $ifNull: ["$guilgeenuud.tulsunDun", 0] } },
           niitKhyamdralTurees: {
@@ -1263,6 +1271,9 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         niitKt: kt,
         etssiinUldegdel: ekh + dt - kt,
         tuluv: e.tuluv !== undefined ? e.tuluv : p.tuluv,
+        aldangiinUldegdel: e.aldangiinUldegdel || p.aldangiinUldegdel || 0,
+        baritsaaAvakhDun: e.baritsaaAvakhDun || p.baritsaaAvakhDun || 0,
+        baritsaaniiUldegdel: e.baritsaaniiUldegdel || p.baritsaaniiUldegdel || 0,
       };
     });
 
@@ -1288,6 +1299,9 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           niitKt: kt,
           etssiinUldegdel: (p.niitDt || 0) - kt,
           tuluv: p.tuluv,
+          aldangiinUldegdel: p.aldangiinUldegdel || 0,
+          baritsaaAvakhDun: p.baritsaaAvakhDun || 0,
+          baritsaaniiUldegdel: p.baritsaaniiUldegdel || 0,
         });
       }
     });
@@ -1306,7 +1320,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
 
     const canceledWithBalance = await Geree(req.body.tukhainBaaziinKholbolt, true)
       .find(canceledMatch)
-      .select("gereeniiDugaar ner register talbainDugaar barilgiiinNer talbainKhemjee uldegdel")
+      .select("gereeniiDugaar ner register talbainDugaar barilgiiinNer talbainKhemjee uldegdel aldangiinUldegdel baritsaaAvakhDun baritsaaniiUldegdel")
       .lean();
 
     const existingGereeniiDugaaruud = new Set(result.map((r) => r.gereeniiDugaar));
@@ -1328,6 +1342,9 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           niitKt: 0,
           etssiinUldegdel: uld,
           tuluv: -1, 
+          aldangiinUldegdel: c.aldangiinUldegdel || 0,
+          baritsaaAvakhDun: c.baritsaaAvakhDun || 0,
+          baritsaaniiUldegdel: c.baritsaaniiUldegdel || 0,
         });
       }
     });
