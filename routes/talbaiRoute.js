@@ -1224,7 +1224,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       };
     });
 
-   
+    // Contracts that ONLY have transactions in the period (no history before period start)
     periodData.forEach((p) => {
       if (!ekhniiData.find((e) => e._id === p._id)) {
         const tulsun = p.niitTulsun || 0;
@@ -1245,6 +1245,35 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           niitKhyamdralAshiglalt: khyamdralAshiglalt,
           niitKt: kt,
           etssiinUldegdel: (p.niitDt || 0) - kt,
+        });
+      }
+    });
+
+    const canceledWithBalance = await Geree(req.body.tukhainBaaziinKholbolt, true).find({
+      baiguullagiinId: req.body.baiguullagiinId,
+      barilgiinId: req.body.barilgiinId,
+      tuluv: -1,
+      etssiinUldegdel: { $gt: 0 },
+    }).select("gereeniiDugaar ner register talbainDugaar barilgiiinNer talbainKhemjee etssiinUldegdel").lean();
+
+    const existingGereeniiDugaaruud = new Set(result.map((r) => r.gereeniiDugaar));
+    canceledWithBalance.forEach((c) => {
+      if (!existingGereeniiDugaaruud.has(c.gereeniiDugaar)) {
+        result.push({
+          gereeniiDugaar: c.gereeniiDugaar,
+          ner: c.ner,
+          register: c.register,
+          talbainDugaar: c.talbainDugaar,
+          barilgiiinNer: c.barilgiiinNer,
+          talbainKhemjee: c.talbainKhemjee,
+          ekhniiUldegdel: c.etssiinUldegdel || 0,
+          niitDt: 0,
+          niitTulsun: 0,
+          niitKhyamdralTurees: 0,
+          niitKhyamdralAshiglalt: 0,
+          niitKt: 0,
+          etssiinUldegdel: c.etssiinUldegdel || 0,
+          tuluv: -1, 
         });
       }
     });
@@ -1273,7 +1302,7 @@ router.route("/avlagaTovchooGereeAvya").post(tokenShalgakh, async (req, res, nex
       : new Date(moment().endOf("month").format("YYYY-MM-DD 23:59:59"));
 
     const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
-      .findOne({ gereeniiDugaar: req.body.gereeniiDugaar, tuluv: { $ne: -1 } })
+      .findOne({ gereeniiDugaar: req.body.gereeniiDugaar })
       .select("+avlaga baritsaaAvakhDun baritsaaniiUldegdel aldangiinUldegdel niitTulsunAldangi");
 
     if (!geree) return res.json({ aldangiGuilgeenuud: [], baritsaaGuilgeenuud: [] });
