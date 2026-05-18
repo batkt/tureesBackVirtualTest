@@ -1347,8 +1347,14 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
       )
       .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
 
+    const etssiinUldegdel = periodGuilgeenuud.reduce(
+      (s, g) => s + (g.tulukhDun || 0) - (g.tulsunDun || 0) - (g.khyamdral || 0),
+      ekhniiUldegdel
+    );
+
     res.json({
       ekhniiUldegdel,
+      etssiinUldegdel,
       talbainKhemjee: geree.talbainKhemjee,
       guilgeenuud: periodGuilgeenuud,
     });
