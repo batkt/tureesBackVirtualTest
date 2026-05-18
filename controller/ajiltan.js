@@ -389,8 +389,8 @@ function msgIlgeeye(
       jagsaalt[index].text.toString();
     url = encodeURI(url);
     request(url, { json: true }, (err1, res1, body) => {
-      console.log("res1 ----------->" + res1);
-      console.log("body ----------->" + body);
+      console.log("res1 --msg--------->" + JSON.stringify(res1));
+      console.log("body --msg--------->" + JSON.stringify(body));
       if (err1) {
         next(err1);
       } else {

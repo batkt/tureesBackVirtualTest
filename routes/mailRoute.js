@@ -366,8 +366,8 @@ function msgIlgeeye(jagsaalt, key, dugaar, khariu, index, next, req, res) {
       jagsaalt[index].text.toString();
     url = encodeURI(url);
     request(url, { json: true }, async (err1, res1, body) => {
-      console.log("res1 --msg--------->" + res1);
-      console.log("body --msg--------->" + body);
+      console.log("res1 --msg--------->" + JSON.stringify(res1));
+      console.log("body --msg--------->" + JSON.stringify(body));
       if (err1) {
         next(err1);
       } else {
