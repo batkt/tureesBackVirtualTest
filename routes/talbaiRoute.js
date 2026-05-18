@@ -1118,41 +1118,16 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
    
     const ekhniiQuery = [
       { $match: match },
-      {
-        $project: {
-          gereeniiDugaar: 1,
-          ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, talbainKhemjee: 1, tuluv: 1,
-          guilgeenuud: {
-            $concatArrays: [
-              { $ifNull: ["$avlaga.guilgeenuud", []] },
-              {
-                $map: {
-                  input: { $ifNull: ["$avlaga.baritsaa", []] },
-                  as: "b",
-                  in: {
-                    ognoo: "$$b.ognoo",
-                    tulukhDun: 0,
-                    tulsunDun: { $add: [{ $ifNull: ["$$b.tulsunDun", 0] }, { $ifNull: ["$$b.orlogo", 0] }] },
-                    khyamdral: 0,
-                    turul: "baritsaa",
-                    tailbar: "Барьцаа"
-                  }
-                }
-              }
-            ]
-          }
-        }
-      },
-      { $unwind: { path: "$guilgeenuud" } },
+      { $unwind: { path: "$avlaga.guilgeenuud" } },
       {
         $match: {
-          "guilgeenuud.ognoo": { $lt: ekhlekhOgnoo },
+          "avlaga.guilgeenuud.ognoo": { $lt: ekhlekhOgnoo },
           $or: [
-            { "guilgeenuud.turul": { $nin: ["baritsaa", "aldangi"] } },
+            { "avlaga.guilgeenuud.turul": { $nin: ["baritsaa", "aldangi"] } },
             {
               $and: [
-                { "guilgeenuud.turul": { $in: ["baritsaa"] } },
-                { "guilgeenuud.tulsunDun": { $gt: 0 } },
+                { "avlaga.guilgeenuud.turul": { $in: ["baritsaa"] } },
+                { "avlaga.guilgeenuud.tulsunDun": { $gt: 0 } },
               ],
             },
           ],
@@ -1167,9 +1142,9 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           barilgiiinNer: { $first: "$barilgiiinNer" },
           talbainKhemjee: { $first: "$talbainKhemjee" },
           tuluv: { $first: "$tuluv" },
-          tulukh: { $sum: { $ifNull: ["$guilgeenuud.tulukhDun", 0] } },
-          tulsun: { $sum: { $ifNull: ["$guilgeenuud.tulsunDun", 0] } },
-          khyamdral: { $sum: { $ifNull: ["$guilgeenuud.khyamdral", 0] } },
+          tulukh: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
+          tulsun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
+          khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
         },
       },
       {
