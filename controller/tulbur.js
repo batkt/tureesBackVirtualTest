@@ -990,7 +990,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
             var tailbar = [];
             var bankniiGuilgeeniiIds = [];
             if (guilgeenuudNOTQPAY?.length > 0) {
-              guilgeenuudNOTQPAY.forEach(async (x) => {
+              for (const x of guilgeenuudNOTQPAY) {
                 if (bankniiGuilgeeniiIds?.includes(x._id)) return;
                 if (x.description) tailbar = x.description.split(/,| /);
                 else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
@@ -1134,7 +1134,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
 
                   await daraagiinTulukhOgnooZasya(geree._id, kholbolt);
                 }
-              });
+              }
             }
           }
         }
