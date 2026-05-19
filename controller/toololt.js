@@ -184,6 +184,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
 
     var matchAvlaga = {
       baiguullagiinId: req.body.baiguullagiinId,
+      uldegdel: { $gte: 0 },
       ...tuluvFilter,
       ...searchFilter,
     };
