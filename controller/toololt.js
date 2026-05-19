@@ -184,7 +184,6 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
 
     var matchAvlaga = {
       baiguullagiinId: req.body.baiguullagiinId,
-      uldegdel: { $gte: 0 },
       ...tuluvFilter,
       ...searchFilter,
     };
@@ -201,11 +200,16 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             $sum: {
               $add: [
                 {
-                  $cond: {
-                    if: { $eq: ["$tuluv", -1] },
-                    then: { $ifNull: ["$tsutsalsanUldegdel", 0] },
-                    else: { $ifNull: ["$uldegdel", 0] },
-                  },
+                  $max: [
+                    0,
+                    {
+                      $cond: {
+                        if: { $eq: ["$tuluv", -1] },
+                        then: { $ifNull: ["$tsutsalsanUldegdel", 0] },
+                        else: { $ifNull: ["$uldegdel", 0] },
+                      },
+                    },
+                  ],
                 },
                 { $ifNull: ["$aldangiinUldegdel", 0] },
               ],
