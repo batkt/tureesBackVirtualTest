@@ -282,6 +282,16 @@ if (process.env.NODE_APP_INSTANCE === "2") {
       timezone: "Asia/Ulaanbaatar",
     },
   );
+  cron.schedule(
+    "*/7 * * * * * ",
+    function () {
+      tulbur.tulultTaniyaCGW();
+    },
+    {
+      scheduled: true,
+      timezone: "Asia/Ulaanbaatar",
+    },
+  );
 }
 if (process.env.NODE_APP_INSTANCE === "7") {
   cron.schedule(

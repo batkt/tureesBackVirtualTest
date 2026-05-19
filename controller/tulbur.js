@@ -1021,7 +1021,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                   x.kholbosonTalbainId = jagsaalt;
                   x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
                   x.isNew = false;
-                  x.burtgesenAjiltaniiNer = "систем автомат qpay";
+                  x.burtgesenAjiltaniiNer = "систем автомат cwg";
                   x.save();
                   bankniiGuilgeeniiIds.push(x._id);
                   var ognoo =
@@ -1966,7 +1966,11 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         ...matchBase,
         "avlaga.guilgeenuud.ognoo":
           req.body.ognoo && req.body.ognoo[1]
-            ? { $lte: req.body.uldegdelUdruurKharakhEsekh ? moment(req.body.ognoo[1]).endOf("day").toDate() : moment(req.body.ognoo[1]).endOf("month").toDate() }
+            ? {
+                $lte: req.body.uldegdelUdruurKharakhEsekh
+                  ? moment(req.body.ognoo[1]).endOf("day").toDate()
+                  : moment(req.body.ognoo[1]).endOf("month").toDate(),
+              }
             : { $exists: true },
       },
     },
@@ -1991,29 +1995,50 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         ekhniiTulukh: {
           $sum: {
             $cond: [
-              { $lt: ["$avlaga.guilgeenuud.ognoo", req.body.ognoo && req.body.ognoo[0] ? new Date(req.body.ognoo[0]) : new Date()] },
+              {
+                $lt: [
+                  "$avlaga.guilgeenuud.ognoo",
+                  req.body.ognoo && req.body.ognoo[0]
+                    ? new Date(req.body.ognoo[0])
+                    : new Date(),
+                ],
+              },
               { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
-              0
-            ]
-          }
+              0,
+            ],
+          },
         },
         ekhniiKhyamdral: {
           $sum: {
             $cond: [
-              { $lt: ["$avlaga.guilgeenuud.ognoo", req.body.ognoo && req.body.ognoo[0] ? new Date(req.body.ognoo[0]) : new Date()] },
+              {
+                $lt: [
+                  "$avlaga.guilgeenuud.ognoo",
+                  req.body.ognoo && req.body.ognoo[0]
+                    ? new Date(req.body.ognoo[0])
+                    : new Date(),
+                ],
+              },
               { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
-              0
-            ]
-          }
+              0,
+            ],
+          },
         },
         ekhniiTulsun: {
           $sum: {
             $cond: [
-              { $lt: ["$avlaga.guilgeenuud.ognoo", req.body.ognoo && req.body.ognoo[0] ? new Date(req.body.ognoo[0]) : new Date()] },
+              {
+                $lt: [
+                  "$avlaga.guilgeenuud.ognoo",
+                  req.body.ognoo && req.body.ognoo[0]
+                    ? new Date(req.body.ognoo[0])
+                    : new Date(),
+                ],
+              },
               { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
-              0
-            ]
-          }
+              0,
+            ],
+          },
         },
       },
     },
@@ -2060,7 +2085,9 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
           baiguullagiinId: req.body.baiguullagiinId,
           barilgiinId: req.body.barilgiinId,
         })
-        .select("aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun")
+        .select(
+          "aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun",
+        )
         .lean();
 
       const aldangiinUldegdel = parseFloat(
@@ -2106,7 +2133,10 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         (aldangiAggResult[0]?.niitTulsunAldangi || 0).toFixed(2),
       );
 
-      const baritsaaBalance = Math.max(0, baritsaaAvakhDun - baritsaaniiUldegdel);
+      const baritsaaBalance = Math.max(
+        0,
+        baritsaaAvakhDun - baritsaaniiUldegdel,
+      );
 
       const { db } = require("zevbackv2");
       const baiguullaga = await Baiguullaga(db.erunkhiiKholbolt)
@@ -2119,8 +2149,8 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         req.body.baiguullagiinId === "6916c957511a8a4aebc1d65b";
 
       const finalUldegdel = aldangiTuukhKharakhEsekh
-        ? (tureesiinUldegdel + aldangiinUldegdel)
-        : (tureesiinUldegdel + baritsaaBalance + aldangiinUldegdel);
+        ? tureesiinUldegdel + aldangiinUldegdel
+        : tureesiinUldegdel + baritsaaBalance + aldangiinUldegdel;
 
       res.send({
         tureesiinUldegdel,
