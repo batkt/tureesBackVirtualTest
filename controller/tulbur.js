@@ -1054,6 +1054,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                       var iluuDun = qpayAmount - tulsunDun;
                       tulbur.push({
                         turul: "cgw",
+                        tailbar: "систем автомат cgw",
                         tulsunDun: iluuDun,
                         ognoo: ognoo,
                         guilgeeKhiisenOgnoo: new Date(),
@@ -1093,6 +1094,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                     tulbur.push({
                       turul: "cgw",
                       tulsunDun: qpayAmount,
+                      tailbar: "систем автомат cgw",
                       ognoo: ognoo,
                       guilgeeKhiisenOgnoo: new Date(),
                       bankniiGuilgeeId: x._id,
