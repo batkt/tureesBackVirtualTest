@@ -192,6 +192,10 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     };
     if (!!barilgiinId) matchAvlaga["barilgiinId"] = barilgiinId;
 
+    let duusakhOgnooDate = req.body.uldegdelUdruurKharakhEsekh
+      ? moment(duusakhOgnoo).endOf("day").toDate()
+      : moment(duusakhOgnoo).endOf("month").toDate();
+
     let queryAvlaga = [
       {
         $match: matchAvlaga,
@@ -203,11 +207,53 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             $sum: {
               $add: [
                 {
-                  $cond: {
-                    if: { $eq: ["$tuluv", -1] },
-                    then: { $ifNull: ["$tsutsalsanUldegdel", 0] },
-                    else: { $ifNull: ["$uldegdel", 0] },
-                  },
+                  $cond: [
+                    { $eq: ["$tuluv", -1] },
+                    { $ifNull: ["$tsutsalsanUldegdel", 0] },
+                    {
+                      $reduce: {
+                        input: { $ifNull: ["$avlaga.guilgeenuud", []] },
+                        initialValue: 0,
+                        in: {
+                          $add: [
+                            "$$value",
+                            {
+                              $cond: [
+                                {
+                                  $and: [
+                                    { $lte: ["$$this.ognoo", duusakhOgnooDate] },
+                                    {
+                                      $or: [
+                                        { $nin: ["$$this.turul", ["aldangi", "baritsaa"]] },
+                                        {
+                                          $and: [
+                                            { $in: ["$$this.turul", ["baritsaa"]] },
+                                            { $gt: ["$$this.tulsunDun", 0] }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  $subtract: [
+                                    { $ifNull: ["$$this.tulukhDun", 0] },
+                                    {
+                                      $add: [
+                                        { $ifNull: ["$$this.tulsunDun", 0] },
+                                        { $ifNull: ["$$this.khyamdral", 0] }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                0
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
                 },
                 { $ifNull: ["$aldangiinUldegdel", 0] },
               ],
