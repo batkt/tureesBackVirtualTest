@@ -1363,6 +1363,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       const p = periodMap[e._id] || {};
       const ekh = e.ekhniiUldegdel || 0;
       const targetGereeId = e.gereeId || p.gereeId;
+      const penaltyDebit = targetGereeId ? (aldangiMap[targetGereeId.toString()] || 0) : 0;
       const createdBaritsaa = e.baritsaaAvakhDun || p.baritsaaAvakhDun || 0;
       const dt = (p.niitDt || 0) + penaltyDebit + createdBaritsaa;
       const tulsun = p.niitTulsun || 0;
