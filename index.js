@@ -282,6 +282,8 @@ if (process.env.NODE_APP_INSTANCE === "2") {
       timezone: "Asia/Ulaanbaatar",
     },
   );
+}
+if (process.env.NODE_APP_INSTANCE === "1") {
   cron.schedule(
     "*/7 * * * * * ",
     function () {

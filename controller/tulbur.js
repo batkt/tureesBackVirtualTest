@@ -938,6 +938,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
   baiguullagiinId = null,
 ) {
   try {
+    console.log("tulultTaniyaCGW ajillaj baina...");
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     var localEsekh = !!baiguullagiinId;
@@ -954,6 +955,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
           oirkhonTatakhEsekh: { $exists: false },
         });
         for (const dans of dansnuud) {
+          console.log("dans ----->", JSON.stringify(dans));
           if (!!dans.bank) {
             var match = {
               createdAt: {
