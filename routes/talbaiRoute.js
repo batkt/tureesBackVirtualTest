@@ -1118,6 +1118,25 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
    
     const ekhniiQuery = [
       { $match: match },
+      {
+        $addFields: {
+          baritsaaniiUldegdelAtStart: {
+            $sum: {
+              $map: {
+                input: {
+                  $filter: {
+                    input: { $ifNull: ["$avlaga.baritsaa", []] },
+                    as: "b",
+                    cond: { $lt: ["$$b.ognoo", ekhlekhOgnoo] }
+                  }
+                },
+                as: "b",
+                in: { $add: [{ $ifNull: ["$$b.tulsunDun", 0] }, { $ifNull: ["$$b.orlogo", 0] }] }
+              }
+            }
+          }
+        }
+      },
       { $unwind: { path: "$avlaga.guilgeenuud" } },
       {
         $match: {
@@ -1145,6 +1164,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           aldangiinUldegdel: { $first: "$aldangiinUldegdel" },
           baritsaaAvakhDun: { $first: "$baritsaaAvakhDun" },
           baritsaaniiUldegdel: { $first: "$baritsaaniiUldegdel" },
+          baritsaaniiUldegdelAtStart: { $first: "$baritsaaniiUldegdelAtStart" },
           tulukh: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
           tulsun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
           khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
@@ -1153,7 +1173,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       {
         $project: {
           ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, talbainKhemjee: 1, tuluv: 1,
-          aldangiinUldegdel: 1, baritsaaAvakhDun: 1, baritsaaniiUldegdel: 1,
+          aldangiinUldegdel: 1, baritsaaAvakhDun: 1, baritsaaniiUldegdel: 1, baritsaaniiUldegdelAtStart: 1,
           ekhniiUldegdel: { $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }] },
         },
       },
@@ -1166,26 +1186,38 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         $project: {
           gereeniiDugaar: 1,
           ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, talbainKhemjee: 1, tuluv: 1,
-          aldangiinUldegdel: 1, baritsaaAvakhDun: 1, baritsaaniiUldegdel: 1,
-          guilgeenuud: {
-            $concatArrays: [
-              { $ifNull: ["$avlaga.guilgeenuud", []] },
-              {
-                $map: {
-                  input: { $ifNull: ["$avlaga.baritsaa", []] },
-                  as: "b",
-                  in: {
-                    ognoo: "$$b.ognoo",
-                    tulukhDun: 0,
-                    tulsunDun: { $add: [{ $ifNull: ["$$b.tulsunDun", 0] }, { $ifNull: ["$$b.orlogo", 0] }] },
-                    khyamdral: 0,
-                    turul: "baritsaa",
-                    tailbar: "Барьцаа"
+          aldangiinUldegdel: 1, baritsaaAvakhDun: 1,
+          baritsaaniiUldegdelAtStart: {
+            $sum: {
+              $map: {
+                input: {
+                  $filter: {
+                    input: { $ifNull: ["$avlaga.baritsaa", []] },
+                    as: "b",
+                    cond: { $lt: ["$$b.ognoo", ekhlekhOgnoo] }
                   }
-                }
+                },
+                as: "b",
+                in: { $add: [{ $ifNull: ["$$b.tulsunDun", 0] }, { $ifNull: ["$$b.orlogo", 0] }] }
               }
-            ]
-          }
+            }
+          },
+          baritsaaniiUldegdel: {
+            $sum: {
+              $map: {
+                input: {
+                  $filter: {
+                    input: { $ifNull: ["$avlaga.baritsaa", []] },
+                    as: "b",
+                    cond: { $lte: ["$$b.ognoo", duusakhOgnoo] }
+                  }
+                },
+                as: "b",
+                in: { $add: [{ $ifNull: ["$$b.tulsunDun", 0] }, { $ifNull: ["$$b.orlogo", 0] }] }
+              }
+            }
+          },
+          guilgeenuud: { $ifNull: ["$avlaga.guilgeenuud", []] }
         }
       },
       { $unwind: { path: "$guilgeenuud" } },
@@ -1215,6 +1247,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           aldangiinUldegdel: { $first: "$aldangiinUldegdel" },
           baritsaaAvakhDun: { $first: "$baritsaaAvakhDun" },
           baritsaaniiUldegdel: { $first: "$baritsaaniiUldegdel" },
+          baritsaaniiUldegdelAtStart: { $first: "$baritsaaniiUldegdelAtStart" },
           niitDt: { $sum: { $ifNull: ["$guilgeenuud.tulukhDun", 0] } },
           niitTulsun: { $sum: { $ifNull: ["$guilgeenuud.tulsunDun", 0] } },
           niitKhyamdralTurees: {
@@ -1256,6 +1289,15 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       const khyamdralTurees = p.niitKhyamdralTurees || 0;
       const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
       const kt = tulsun + khyamdralTurees + khyamdralAshiglalt;
+      
+      const baritsaaniiUldegdelAtStart = e.baritsaaniiUldegdelAtStart !== undefined 
+        ? e.baritsaaniiUldegdelAtStart 
+        : (p.baritsaaniiUldegdelAtStart || 0);
+
+      const baritsaaniiUldegdel = p.baritsaaniiUldegdel !== undefined 
+        ? p.baritsaaniiUldegdel 
+        : (e.baritsaaniiUldegdel || 0);
+
       return {
         gereeniiDugaar: e._id,
         ner: e.ner || p.ner,
@@ -1273,7 +1315,8 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         tuluv: e.tuluv !== undefined ? e.tuluv : p.tuluv,
         aldangiinUldegdel: e.aldangiinUldegdel || p.aldangiinUldegdel || 0,
         baritsaaAvakhDun: e.baritsaaAvakhDun || p.baritsaaAvakhDun || 0,
-        baritsaaniiUldegdel: e.baritsaaniiUldegdel || p.baritsaaniiUldegdel || 0,
+        baritsaaniiUldegdelAtStart,
+        baritsaaniiUldegdel,
       };
     });
 
@@ -1301,6 +1344,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           tuluv: p.tuluv,
           aldangiinUldegdel: p.aldangiinUldegdel || 0,
           baritsaaAvakhDun: p.baritsaaAvakhDun || 0,
+          baritsaaniiUldegdelAtStart: p.baritsaaniiUldegdelAtStart || 0,
           baritsaaniiUldegdel: p.baritsaaniiUldegdel || 0,
         });
       }
