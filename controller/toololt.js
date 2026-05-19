@@ -182,82 +182,85 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       searchFilter.davkhar = davkhar;
     }
 
-    var matchAvlaga = {
+    var match = {
       "avlaga.guilgeenuud.ognoo": {
         $lte: duusakhOgnoo,
       },
+      $or: [
+        {
+          "avlaga.guilgeenuud.turul": {
+            $nin: ["aldangi", "baritsaa"],
+          },
+        },
+        {
+          $and: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $in: ["baritsaa"],
+              },
+            },
+            {
+              "avlaga.guilgeenuud.tulsunDun": {
+                $gt: 0,
+              },
+            },
+          ],
+        },
+      ],
       baiguullagiinId: req.body.baiguullagiinId,
       ...tuluvFilter,
       ...searchFilter,
     };
-    if (!!barilgiinId) matchAvlaga["barilgiinId"] = barilgiinId;
-
-    let duusakhOgnooDate = req.body.uldegdelUdruurKharakhEsekh
-      ? moment(duusakhOgnoo).endOf("day").toDate()
-      : moment(duusakhOgnoo).endOf("month").toDate();
-
-    let queryAvlaga = [
+    if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
+    let query = [
       {
-        $match: matchAvlaga,
+        $unwind: {
+          path: "$avlaga.guilgeenuud",
+        },
+      },
+      {
+        $match: match,
+      },
+      {
+        $group: {
+          _id: "$gereeniiDugaar",
+          tulukh: {
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0],
+            },
+          },
+          khyamdral: {
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0],
+            },
+          },
+          tulsun: {
+            $sum: {
+              $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          dun: {
+            $subtract: [
+              "$tulukh",
+              {
+                $add: [
+                  { $ifNull: ["$tulsun", 0] },
+                  { $ifNull: ["$khyamdral", 0] },
+                ],
+              },
+            ],
+          },
+        },
       },
       {
         $group: {
           _id: "avlaga",
           dun: {
-            $sum: {
-              $add: [
-                {
-                  $cond: [
-                    { $eq: ["$tuluv", -1] },
-                    { $ifNull: ["$tsutsalsanUldegdel", 0] },
-                    {
-                      $reduce: {
-                        input: { $ifNull: ["$avlaga.guilgeenuud", []] },
-                        initialValue: 0,
-                        in: {
-                          $add: [
-                            "$$value",
-                            {
-                              $cond: [
-                                {
-                                  $and: [
-                                    { $lte: ["$$this.ognoo", duusakhOgnooDate] },
-                                    {
-                                      $or: [
-                                        { $not: [ { $in: ["$$this.turul", ["aldangi", "baritsaa"]] } ] },
-                                        {
-                                          $and: [
-                                            { $in: ["$$this.turul", ["baritsaa"]] },
-                                            { $gt: ["$$this.tulsunDun", 0] }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  ]
-                                },
-                                {
-                                  $subtract: [
-                                    { $ifNull: ["$$this.tulukhDun", 0] },
-                                    {
-                                      $add: [
-                                        { $ifNull: ["$$this.tulsunDun", 0] },
-                                        { $ifNull: ["$$this.khyamdral", 0] }
-                                      ]
-                                    }
-                                  ]
-                                },
-                                0
-                              ]
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  ]
-                },
-                { $ifNull: ["$aldangiinUldegdel", 0] },
-              ],
-            },
+            $sum: "$dun",
           },
           too: {
             $sum: 1,
@@ -265,10 +268,35 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         },
       },
     ];
-    var avlaga = await gereeObject.aggregate(queryAvlaga);
-    console.log("---- AVLAGA AGGREGATION RESULT ----");
-    console.log(JSON.stringify(avlaga, null, 2));
-    console.log("------------------------------------");
+    var avlaga = await gereeObject.aggregate(query);
+    match = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      ...tuluvFilter,
+      ...searchFilter,
+    };
+    if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
+    query = [
+      {
+        $match: match,
+      },
+      {
+        $group: {
+          _id: "avlaga",
+          dun: {
+            $sum: { $ifNull: ["$aldangiinUldegdel", 0] },
+          },
+          too: {
+            $sum: 1,
+          },
+        },
+      },
+    ];
+    var avlagaAldangi = await gereeObject.aggregate(query);
+    if (avlagaAldangi?.length > 0) {
+      if (avlaga?.length > 0) {
+        for (const val of avlaga) val.dun += avlagaAldangi?.[0]?.dun;
+      } else avlaga = avlagaAldangi;
+    }
 
     match = {
       "avlaga.guilgeenuud.ognoo": {
