@@ -183,6 +183,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     }
 
     var matchAvlaga = {
+      "avlaga.guilgeenuud.ognoo": {
+        $lte: duusakhOgnoo,
+      },
       baiguullagiinId: req.body.baiguullagiinId,
       ...tuluvFilter,
       ...searchFilter,
@@ -200,16 +203,11 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
             $sum: {
               $add: [
                 {
-                  $max: [
-                    0,
-                    {
-                      $cond: {
-                        if: { $eq: ["$tuluv", -1] },
-                        then: { $ifNull: ["$tsutsalsanUldegdel", 0] },
-                        else: { $ifNull: ["$uldegdel", 0] },
-                      },
-                    },
-                  ],
+                  $cond: {
+                    if: { $eq: ["$tuluv", -1] },
+                    then: { $ifNull: ["$tsutsalsanUldegdel", 0] },
+                    else: { $ifNull: ["$uldegdel", 0] },
+                  },
                 },
                 { $ifNull: ["$aldangiinUldegdel", 0] },
               ],
@@ -222,6 +220,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
     ];
     var avlaga = await gereeObject.aggregate(queryAvlaga);
+    console.log("---- AVLAGA AGGREGATION RESULT ----");
+    console.log(JSON.stringify(avlaga, null, 2));
+    console.log("------------------------------------");
 
     match = {
       "avlaga.guilgeenuud.ognoo": {
