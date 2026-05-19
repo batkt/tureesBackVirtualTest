@@ -1217,7 +1217,23 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
               }
             }
           },
-          guilgeenuud: { $ifNull: ["$avlaga.guilgeenuud", []] }
+          guilgeenuud: {
+            $concatArrays: [
+              { $ifNull: ["$avlaga.guilgeenuud", []] },
+              {
+                $map: {
+                  input: { $ifNull: ["$avlaga.baritsaa", []] },
+                  as: "b",
+                  in: {
+                    $mergeObjects: [
+                      "$$b",
+                      { turul: "baritsaa" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
         }
       },
       { $unwind: { path: "$guilgeenuud" } },
@@ -1298,6 +1314,15 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
               ],
             },
           },
+          niitBaritsaa: {
+            $sum: {
+              $cond: [
+                { $eq: ["$guilgeenuud.turul", "baritsaa"] },
+                { $add: [{ $ifNull: ["$guilgeenuud.tulsunDun", 0] }, { $ifNull: ["$guilgeenuud.orlogo", 0] }] },
+                0
+              ]
+            }
+          },
         },
       },
     ];
@@ -1328,6 +1353,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         ? p.baritsaaniiUldegdel 
         : (e.baritsaaniiUldegdel || 0);
 
+      const baritsaaPayments = p.niitBaritsaa || 0;
       return {
         gereeniiDugaar: e._id,
         ner: e.ner || p.ner,
@@ -1341,7 +1367,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         niitKhyamdralTurees: khyamdralTurees,
         niitKhyamdralAshiglalt: khyamdralAshiglalt,
         niitKt: kt,
-        etssiinUldegdel: ekh + dt - kt,
+        etssiinUldegdel: ekh + dt - (kt - baritsaaPayments),
         tuluv: e.tuluv !== undefined ? e.tuluv : p.tuluv,
         aldangiinUldegdel: e.aldangiinUldegdel || p.aldangiinUldegdel || 0,
         baritsaaAvakhDun: e.baritsaaAvakhDun || p.baritsaaAvakhDun || 0,
@@ -1357,6 +1383,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         const khyamdralTurees = p.niitKhyamdralTurees || 0;
         const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
         const kt = tulsun + khyamdralTurees + khyamdralAshiglalt;
+        const baritsaaPayments = p.niitBaritsaa || 0;
         result.push({
           gereeniiDugaar: p._id,
           ner: p.ner,
@@ -1370,7 +1397,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           niitKhyamdralTurees: khyamdralTurees,
           niitKhyamdralAshiglalt: khyamdralAshiglalt,
           niitKt: kt,
-          etssiinUldegdel: (p.niitDt || 0) - kt,
+          etssiinUldegdel: (p.niitDt || 0) - (kt - baritsaaPayments),
           tuluv: p.tuluv,
           aldangiinUldegdel: p.aldangiinUldegdel || 0,
           baritsaaAvakhDun: p.baritsaaAvakhDun || 0,
