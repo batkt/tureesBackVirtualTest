@@ -283,7 +283,14 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $group: {
           _id: "avlaga",
           dun: {
-            $sum: { $ifNull: ["$aldangiinUldegdel", 0] },
+            $sum: {
+              $convert: {
+                input: { $ifNull: ["$aldangiinUldegdel", 0] },
+                to: "double",
+                onError: 0,
+                onNull: 0
+              }
+            },
           },
           too: {
             $sum: 1,
@@ -292,9 +299,10 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
     ];
     var avlagaAldangi = await gereeObject.aggregate(query);
+    var aldangiDunTotal = avlagaAldangi?.[0]?.dun || 0;
     if (avlagaAldangi?.length > 0) {
       if (avlaga?.length > 0) {
-        for (const val of avlaga) val.dun += avlagaAldangi?.[0]?.dun;
+        for (const val of avlaga) val.dun += aldangiDunTotal;
       } else avlaga = avlagaAldangi;
     }
 
@@ -742,6 +750,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       khungulult,
       tsutslagdsanAvlaga,
       baritsaaToololt,
+      avlagaAldangi: aldangiDunTotal,
     });
   } catch (err) {
     next(err);
