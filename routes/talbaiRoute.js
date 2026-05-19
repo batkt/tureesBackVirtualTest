@@ -1155,6 +1155,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       {
         $group: {
           _id: "$gereeniiDugaar",
+          gereeId: { $first: "$_id" },
           ner: { $first: "$ner" },
           register: { $first: "$register" },
           talbainDugaar: { $first: "$talbainDugaar" },
@@ -1172,6 +1173,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       },
       {
         $project: {
+          gereeId: 1,
           ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, talbainKhemjee: 1, tuluv: 1,
           aldangiinUldegdel: 1, baritsaaAvakhDun: 1, baritsaaniiUldegdel: 1, baritsaaniiUldegdelAtStart: 1,
           ekhniiUldegdel: { $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }] },
@@ -1270,6 +1272,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       {
         $group: {
           _id: "$gereeniiDugaar",
+          gereeId: { $first: "$_id" },
           ner: { $first: "$ner" },
           register: { $first: "$register" },
           talbainDugaar: { $first: "$talbainDugaar" },
@@ -1358,7 +1361,8 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
     const result = ekhniiData.map((e) => {
       const p = periodMap[e._id] || {};
       const ekh = e.ekhniiUldegdel || 0;
-      const penaltyDebit = aldangiMap[e._id.toString()] || 0;
+      const targetGereeId = e.gereeId || p.gereeId;
+      const penaltyDebit = targetGereeId ? (aldangiMap[targetGereeId.toString()] || 0) : 0;
       const dt = (p.niitDt || 0) + penaltyDebit;
       const tulsun = p.niitTulsun || 0;
       const khyamdralTurees = p.niitKhyamdralTurees || 0;
@@ -1404,7 +1408,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
         const kt = tulsun + khyamdralTurees + khyamdralAshiglalt;
         const baritsaaPayments = p.niitBaritsaa || 0;
-        const penaltyDebit = aldangiMap[p._id.toString()] || 0;
+        const penaltyDebit = p.gereeId ? (aldangiMap[p.gereeId.toString()] || 0) : 0;
         const dt = (p.niitDt || 0) + penaltyDebit;
         result.push({
           gereeniiDugaar: p._id,
