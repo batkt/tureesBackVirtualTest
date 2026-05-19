@@ -1010,6 +1010,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                 for (const t of tailbar) {
                   for (const field of searchFields) {
                     console.log(`Searching for ${t} in field ${field}`);
+                    if (field === "register") t = t?.toUpperCase();
                     geree = await Geree(kholbolt, true).findOne({
                       [field]: t,
                       tuluv: 1,
