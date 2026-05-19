@@ -1410,6 +1410,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
         const kt = tulsun + khyamdralTurees + khyamdralAshiglalt;
         const baritsaaPayments = p.niitBaritsaa || 0;
+        const penaltyDebit = p.gereeId ? (aldangiMap[p.gereeId.toString()] || 0) : 0;
         const createdBaritsaa = p.baritsaaAvakhDun || 0;
         const dt = (p.niitDt || 0) + penaltyDebit + createdBaritsaa;
         result.push({
