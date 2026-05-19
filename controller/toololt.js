@@ -224,7 +224,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
                                     { $lte: ["$$this.ognoo", duusakhOgnooDate] },
                                     {
                                       $or: [
-                                        { $nin: ["$$this.turul", ["aldangi", "baritsaa"]] },
+                                        { $not: [ { $in: ["$$this.turul", ["aldangi", "baritsaa"]] } ] },
                                         {
                                           $and: [
                                             { $in: ["$$this.turul", ["baritsaa"]] },
