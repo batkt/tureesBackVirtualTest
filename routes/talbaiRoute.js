@@ -1363,8 +1363,8 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       const p = periodMap[e._id] || {};
       const ekh = e.ekhniiUldegdel || 0;
       const targetGereeId = e.gereeId || p.gereeId;
-      const penaltyDebit = targetGereeId ? (aldangiMap[targetGereeId.toString()] || 0) : 0;
-      const dt = (p.niitDt || 0) + penaltyDebit;
+      const createdBaritsaa = e.baritsaaAvakhDun || p.baritsaaAvakhDun || 0;
+      const dt = (p.niitDt || 0) + penaltyDebit + createdBaritsaa;
       const tulsun = p.niitTulsun || 0;
       const khyamdralTurees = p.niitKhyamdralTurees || 0;
       const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
@@ -1392,7 +1392,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         niitKhyamdralTurees: khyamdralTurees,
         niitKhyamdralAshiglalt: khyamdralAshiglalt,
         niitKt: kt,
-        etssiinUldegdel: ekh + dt - (kt - baritsaaPayments),
+        etssiinUldegdel: ekh + dt - kt,
         tuluv: e.tuluv !== undefined ? e.tuluv : p.tuluv,
         aldangiinUldegdel: e.aldangiinUldegdel || p.aldangiinUldegdel || 0,
         baritsaaAvakhDun: e.baritsaaAvakhDun || p.baritsaaAvakhDun || 0,
@@ -1409,8 +1409,8 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
         const kt = tulsun + khyamdralTurees + khyamdralAshiglalt;
         const baritsaaPayments = p.niitBaritsaa || 0;
-        const penaltyDebit = p.gereeId ? (aldangiMap[p.gereeId.toString()] || 0) : 0;
-        const dt = (p.niitDt || 0) + penaltyDebit;
+        const createdBaritsaa = p.baritsaaAvakhDun || 0;
+        const dt = (p.niitDt || 0) + penaltyDebit + createdBaritsaa;
         result.push({
           gereeniiDugaar: p._id,
           ner: p.ner,
@@ -1424,7 +1424,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           niitKhyamdralTurees: khyamdralTurees,
           niitKhyamdralAshiglalt: khyamdralAshiglalt,
           niitKt: kt,
-          etssiinUldegdel: dt - (kt - baritsaaPayments),
+          etssiinUldegdel: dt - kt,
           tuluv: p.tuluv,
           aldangiinUldegdel: p.aldangiinUldegdel || 0,
           baritsaaAvakhDun: p.baritsaaAvakhDun || 0,
@@ -1455,6 +1455,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
     canceledWithBalance.forEach((c) => {
       const uld = Number(c.uldegdel) || 0;
       if (uld > 0 && !existingGereeniiDugaaruud.has(c.gereeniiDugaar)) {
+        const createdBaritsaa = c.baritsaaAvakhDun || 0;
         result.push({
           gereeniiDugaar: c.gereeniiDugaar,
           ner: c.ner,
@@ -1463,12 +1464,12 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           barilgiiinNer: c.barilgiiinNer,
           talbainKhemjee: c.talbainKhemjee,
           ekhniiUldegdel: uld,
-          niitDt: 0,
+          niitDt: createdBaritsaa,
           niitTulsun: 0,
           niitKhyamdralTurees: 0,
           niitKhyamdralAshiglalt: 0,
           niitKt: 0,
-          etssiinUldegdel: uld,
+          etssiinUldegdel: uld + createdBaritsaa,
           tuluv: -1, 
           aldangiinUldegdel: c.aldangiinUldegdel || 0,
           baritsaaAvakhDun: c.baritsaaAvakhDun || 0,
