@@ -996,6 +996,10 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                 else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
                 else if (x.tranDesc) tailbar = x.tranDesc.split(/,| /);
                 console.log("tailbar ----->", JSON.stringify(tailbar));
+                console.log(
+                  "barilgiinId ----->",
+                  JSON.stringify(x.barilgiinId),
+                );
                 var geree = null;
                 const searchFields = [
                   "gereeniiDugaar",
@@ -1013,6 +1017,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                     if (geree) break;
                   }
                 }
+                console.log("geree ----->", JSON.stringify(geree));
                 if (!!geree && !!geree.talbainDugaar) {
                   var jagsaalt = [];
                   var dugaar = geree.talbainDugaar;
