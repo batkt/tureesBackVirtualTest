@@ -1327,11 +1327,30 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       },
     ];
 
-    const [ekhniiData, periodData] = await Promise.all([
+    const [ekhniiData, periodData, periodAldangi] = await Promise.all([
       Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(ekhniiQuery),
       Geree(req.body.tukhainBaaziinKholbolt, true).aggregate(periodQuery),
+      AldangiinTuukh(req.body.tukhainBaaziinKholbolt).aggregate([
+        {
+          $match: {
+            aldangiBodsonOgnoo: { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo }
+          }
+        },
+        {
+          $group: {
+            _id: "$gereeniiId",
+            totalAldangi: { $sum: "$aldangi" }
+          }
+        }
+      ])
     ]);
 
+    const aldangiMap = {};
+    (periodAldangi || []).forEach((a) => {
+      if (a._id) {
+        aldangiMap[a._id.toString()] = a.totalAldangi || 0;
+      }
+    });
 
     const periodMap = {};
     periodData.forEach((p) => { periodMap[p._id] = p; });
@@ -1339,7 +1358,8 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
     const result = ekhniiData.map((e) => {
       const p = periodMap[e._id] || {};
       const ekh = e.ekhniiUldegdel || 0;
-      const dt = p.niitDt || 0;
+      const penaltyDebit = aldangiMap[e._id.toString()] || 0;
+      const dt = (p.niitDt || 0) + penaltyDebit;
       const tulsun = p.niitTulsun || 0;
       const khyamdralTurees = p.niitKhyamdralTurees || 0;
       const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
@@ -1384,6 +1404,8 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
         const kt = tulsun + khyamdralTurees + khyamdralAshiglalt;
         const baritsaaPayments = p.niitBaritsaa || 0;
+        const penaltyDebit = aldangiMap[p._id.toString()] || 0;
+        const dt = (p.niitDt || 0) + penaltyDebit;
         result.push({
           gereeniiDugaar: p._id,
           ner: p.ner,
@@ -1392,12 +1414,12 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           barilgiiinNer: p.barilgiiinNer,
           talbainKhemjee: p.talbainKhemjee,
           ekhniiUldegdel: 0,
-          niitDt: p.niitDt || 0,
+          niitDt: dt,
           niitTulsun: tulsun,
           niitKhyamdralTurees: khyamdralTurees,
           niitKhyamdralAshiglalt: khyamdralAshiglalt,
           niitKt: kt,
-          etssiinUldegdel: (p.niitDt || 0) - (kt - baritsaaPayments),
+          etssiinUldegdel: dt - (kt - baritsaaPayments),
           tuluv: p.tuluv,
           aldangiinUldegdel: p.aldangiinUldegdel || 0,
           baritsaaAvakhDun: p.baritsaaAvakhDun || 0,
