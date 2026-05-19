@@ -1966,7 +1966,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         ...matchBase,
         "avlaga.guilgeenuud.ognoo":
           req.body.ognoo && req.body.ognoo[1]
-            ? { $lte: moment(req.body.ognoo[1]).endOf("month").toDate() }
+            ? { $lte: req.body.uldegdelUdruurKharakhEsekh ? moment(req.body.ognoo[1]).endOf("day").toDate() : moment(req.body.ognoo[1]).endOf("month").toDate() }
             : { $exists: true },
       },
     },
