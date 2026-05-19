@@ -1286,16 +1286,11 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           niitDt: { $sum: { $ifNull: ["$guilgeenuud.tulukhDun", 0] } },
           niitTulsun: {
             $sum: {
-              $cond: [
-                { $eq: ["$guilgeenuud.turul", "baritsaa"] },
-                { $add: [{ $ifNull: ["$guilgeenuud.tulsunDun", 0] }, { $ifNull: ["$guilgeenuud.orlogo", 0] }] },
-                {
-                  $cond: [
-                    { $eq: ["$guilgeenuud.turul", "aldangi"] },
-                    { $add: [{ $ifNull: ["$guilgeenuud.tulsunDun", 0] }, { $ifNull: ["$guilgeenuud.tulsunAldangi", 0] }] },
-                    { $ifNull: ["$guilgeenuud.tulsunDun", 0] }
-                  ]
-                }
+              $add: [
+                { $ifNull: ["$guilgeenuud.tulsunDun", 0] },
+                { $ifNull: ["$guilgeenuud.tulsunAldangi", 0] },
+                { $ifNull: ["$guilgeenuud.tulsunBaritsaa", 0] },
+                { $ifNull: ["$guilgeenuud.orlogo", 0] }
               ]
             }
           },
@@ -1319,10 +1314,16 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           },
           niitBaritsaa: {
             $sum: {
-              $cond: [
-                { $eq: ["$guilgeenuud.turul", "baritsaa"] },
-                { $add: [{ $ifNull: ["$guilgeenuud.tulsunDun", 0] }, { $ifNull: ["$guilgeenuud.orlogo", 0] }] },
-                0
+              $add: [
+                { $ifNull: ["$guilgeenuud.tulsunBaritsaa", 0] },
+                { $ifNull: ["$guilgeenuud.orlogo", 0] },
+                {
+                  $cond: [
+                    { $eq: ["$guilgeenuud.turul", "baritsaa"] },
+                    { $ifNull: ["$guilgeenuud.tulsunDun", 0] },
+                    0
+                  ]
+                }
               ]
             }
           },
