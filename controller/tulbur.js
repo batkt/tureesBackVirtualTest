@@ -1988,6 +1988,33 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
             $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0],
           },
         },
+        ekhniiTulukh: {
+          $sum: {
+            $cond: [
+              { $lt: ["$avlaga.guilgeenuud.ognoo", req.body.ognoo && req.body.ognoo[0] ? new Date(req.body.ognoo[0]) : new Date()] },
+              { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
+              0
+            ]
+          }
+        },
+        ekhniiKhyamdral: {
+          $sum: {
+            $cond: [
+              { $lt: ["$avlaga.guilgeenuud.ognoo", req.body.ognoo && req.body.ognoo[0] ? new Date(req.body.ognoo[0]) : new Date()] },
+              { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+              0
+            ]
+          }
+        },
+        ekhniiTulsun: {
+          $sum: {
+            $cond: [
+              { $lt: ["$avlaga.guilgeenuud.ognoo", req.body.ognoo && req.body.ognoo[0] ? new Date(req.body.ognoo[0]) : new Date()] },
+              { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+              0
+            ]
+          }
+        },
       },
     },
     {
@@ -1997,6 +2024,14 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
             "$tulukh",
             {
               $sum: ["$tulsun", "$khyamdral"],
+            },
+          ],
+        },
+        ekhniiUldegdel: {
+          $subtract: [
+            "$ekhniiTulukh",
+            {
+              $sum: ["$ekhniiTulsun", "$ekhniiKhyamdral"],
             },
           ],
         },
@@ -2015,6 +2050,9 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
       const tulukh = parseFloat((result[0]?.tulukh || 0).toFixed(2));
       const khyamdral = parseFloat((result[0]?.khyamdral || 0).toFixed(2));
       const tulsun = parseFloat((result[0]?.tulsun || 0).toFixed(2));
+      const ekhniiUldegdel = parseFloat(
+        (result[0]?.ekhniiUldegdel || 0).toFixed(2),
+      );
 
       const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findOne({
@@ -2093,6 +2131,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         tulukh,
         khyamdral,
         tulsun,
+        ekhniiUldegdel,
         uldegdel: parseFloat(finalUldegdel.toFixed(2)),
       });
     })
