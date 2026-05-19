@@ -1229,7 +1229,23 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
             {
               $and: [
                 { "guilgeenuud.turul": { $in: ["baritsaa"] } },
-                { "guilgeenuud.tulsunDun": { $gt: 0 } },
+                {
+                  $or: [
+                    { "guilgeenuud.tulsunDun": { $gt: 0 } },
+                    { "guilgeenuud.orlogo": { $gt: 0 } },
+                  ]
+                }
+              ],
+            },
+            {
+              $and: [
+                { "guilgeenuud.turul": { $in: ["aldangi"] } },
+                {
+                  $or: [
+                    { "guilgeenuud.tulsunDun": { $gt: 0 } },
+                    { "guilgeenuud.tulsunAldangi": { $gt: 0 } },
+                  ]
+                }
               ],
             },
           ],
@@ -1249,7 +1265,21 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
           baritsaaniiUldegdel: { $first: "$baritsaaniiUldegdel" },
           baritsaaniiUldegdelAtStart: { $first: "$baritsaaniiUldegdelAtStart" },
           niitDt: { $sum: { $ifNull: ["$guilgeenuud.tulukhDun", 0] } },
-          niitTulsun: { $sum: { $ifNull: ["$guilgeenuud.tulsunDun", 0] } },
+          niitTulsun: {
+            $sum: {
+              $cond: [
+                { $eq: ["$guilgeenuud.turul", "baritsaa"] },
+                { $add: [{ $ifNull: ["$guilgeenuud.tulsunDun", 0] }, { $ifNull: ["$guilgeenuud.orlogo", 0] }] },
+                {
+                  $cond: [
+                    { $eq: ["$guilgeenuud.turul", "aldangi"] },
+                    { $add: [{ $ifNull: ["$guilgeenuud.tulsunDun", 0] }, { $ifNull: ["$guilgeenuud.tulsunAldangi", 0] }] },
+                    { $ifNull: ["$guilgeenuud.tulsunDun", 0] }
+                  ]
+                }
+              ]
+            }
+          },
           niitKhyamdralTurees: {
             $sum: {
               $cond: [
@@ -1471,8 +1501,8 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
 
     const guilgeenuud = (geree.avlaga?.guilgeenuud || []).filter(
       (g) =>
-        (g.turul !== "aldangi" || (g.tulsunDun || 0) > 0) &&
-        (g.turul !== "baritsaa" || (g.tulsunDun || 0) > 0)
+        (g.turul !== "aldangi" || (g.tulsunDun || 0) > 0 || (g.tulsunAldangi || 0) > 0) &&
+        (g.turul !== "baritsaa" || (g.tulsunDun || 0) > 0 || (g.tulsunBaritsaa || 0) > 0 || (g.orlogo || 0) > 0)
     );
 
     const guilgeenuudBeforeStart = guilgeenuud.filter(
