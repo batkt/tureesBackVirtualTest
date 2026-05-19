@@ -1471,7 +1471,7 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
 
     const guilgeenuud = (geree.avlaga?.guilgeenuud || []).filter(
       (g) =>
-        g.turul !== "aldangi" &&
+        (g.turul !== "aldangi" || (g.tulsunDun || 0) > 0) &&
         (g.turul !== "baritsaa" || (g.tulsunDun || 0) > 0)
     );
 
