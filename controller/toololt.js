@@ -333,6 +333,9 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       baiguullagiinId: req.body.baiguullagiinId,
       ...tuluvFilter,
       ...searchFilter,
+      uldegdel: {
+        $gte: 0,
+      },
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
