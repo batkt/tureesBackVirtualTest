@@ -1030,7 +1030,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                   x.kholbosonTalbainId = jagsaalt;
                   x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
                   x.isNew = false;
-                  x.burtgesenAjiltaniiNer = "систем автомат cwg";
+                  x.burtgesenAjiltaniiNer = "систем автомат cgw";
                   x.save();
                   bankniiGuilgeeniiIds.push(x._id);
                   var ognoo =
@@ -1053,7 +1053,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                       tulsunDun = geree.aldangiinUldegdel;
                       var iluuDun = qpayAmount - tulsunDun;
                       tulbur.push({
-                        turul: "cwg",
+                        turul: "cgw",
                         tulsunDun: iluuDun,
                         ognoo: ognoo,
                         guilgeeKhiisenOgnoo: new Date(),
@@ -1062,9 +1062,9 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                       geree.aldangiinUldegdel = 0;
                     }
                     tulbur.push({
-                      tailbar: "систем алданги cwg ээр төлсөн",
+                      tailbar: "систем алданги cgw ээр төлсөн",
                       turul: "aldangi",
-                      aldangiinTurul: "cwg",
+                      aldangiinTurul: "cgw",
                       tulukhAldangi: geree.aldangiinUldegdel,
                       tulsunAldangi: tulsunDun,
                       ognoo: ognoo,
@@ -1091,7 +1091,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                     };
                   } else {
                     tulbur.push({
-                      turul: "cwg",
+                      turul: "cgw",
                       tulsunDun: qpayAmount,
                       ognoo: ognoo,
                       guilgeeKhiisenOgnoo: new Date(),
@@ -1118,7 +1118,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                   );
 
                   var tulsunDun = tulbur
-                    .filter((a) => a.turul == "cwg")
+                    .filter((a) => a.turul == "cgw")
                     .reduce((a, b) => a + b.tulsunDun, 0);
 
                   var tulsunAldangi = tulbur
