@@ -1019,9 +1019,9 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                       tuluv: 1,
                       barilgiinId: x.barilgiinId,
                     });
-                    if (geree) break;
+                    if (geree) continue;
                   }
-                  if (geree) break;
+                  if (geree) continue;
                 }
                 console.log("geree ----->", JSON.stringify(geree));
                 if (!!geree && !!geree.talbainDugaar) {
