@@ -1402,7 +1402,6 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       };
     });
 
-    // Contracts that ONLY have transactions in the period (no history before period start)
     periodData.forEach((p) => {
       if (!ekhniiData.find((e) => e._id === p._id)) {
         const tulsun = p.niitTulsun || 0;
@@ -1505,9 +1504,9 @@ router.route("/avlagaTovchooGereeAvya").post(tokenShalgakh, async (req, res, nex
 
     const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
       .findOne({ gereeniiDugaar: req.body.gereeniiDugaar })
-      .select("+avlaga baritsaaAvakhDun baritsaaniiUldegdel aldangiinUldegdel niitTulsunAldangi");
+      .select("+avlaga baritsaaAvakhDun baritsaaniiUldegdel aldangiinUldegdel niitTulsunAldangi gereeniiOgnoo ekhlekhOgnoo");
 
-    if (!geree) return res.json({ aldangiGuilgeenuud: [], baritsaaGuilgeenuud: [] });
+    if (!geree) return res.json({ aldangiGuilgeenuud: [], baritsaaGuilgeenuud: [], baritsaaTulultArr: [] });
 
 
     const aldangiGuilgeenuud = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt)
@@ -1527,13 +1526,19 @@ router.route("/avlagaTovchooGereeAvya").post(tokenShalgakh, async (req, res, nex
       )
       .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
 
+    // All baritsaa payments without date filter so the detail modal always shows them
+    const baritsaaTulultArr = [...(geree.avlaga?.baritsaa || [])]
+      .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
+
     res.json({
       aldangiGuilgeenuud,
       baritsaaGuilgeenuud,
+      baritsaaTulultArr,
       aldangiinUldegdel: geree.aldangiinUldegdel || 0,
       niitTulsunAldangi: geree.niitTulsunAldangi || 0,
       baritsaaAvakhDun: geree.baritsaaAvakhDun || 0,
       baritsaaniiUldegdel: geree.baritsaaniiUldegdel || 0,
+      gereeniiOgnoo: geree.gereeniiOgnoo || geree.ekhlekhOgnoo || null,
     });
   } catch (err) {
     next(err);
