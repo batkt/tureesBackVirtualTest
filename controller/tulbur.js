@@ -967,6 +967,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
               barilgiinId: dans.barilgiinId,
               bank: dans.bank,
               kholbosonTalbainId: { $size: 0 },
+              tulultTaniyaCGWShalgasanEsekh: { $ne: true },
             };
             const qpayRegexNot = {
               $nin: [/qpay/i, /QPAY/i],
@@ -1036,6 +1037,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                   x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
                   x.isNew = false;
                   x.burtgesenAjiltaniiNer = "систем автомат cgw";
+                  x.save();
                   bankniiGuilgeeniiIds.push(x._id);
                   var ognoo =
                     dans.bank == "tdb"
@@ -1140,8 +1142,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                   );
 
                   await daraagiinTulukhOgnooZasya(geree._id, kholbolt);
-                }
-                x.save();
+                } else x.save();
               }
             }
           }
