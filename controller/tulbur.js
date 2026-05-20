@@ -959,7 +959,6 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
           if (!!dans.bank) {
             var match = {
               createdAt: {
-                $gt: new Date(new Date().getTime() - 72 * 60 * 60000),
                 $lt: new Date(),
               },
               dansniiDugaar: dans.dugaar,
