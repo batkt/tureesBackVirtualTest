@@ -255,7 +255,8 @@ router
   .get(tokenShalgakh, (req, res, next) => {
     Geree(req.body.tukhainBaaziinKholbolt, true)
       .findById(req.params.gereeniiId)
-      .select("avlaga")
+      .select("avlaga ekhniiUldegdel")
+      .lean()
       .then((result) => {
         if (lodash.isArray(lodash.get(result, "avlaga.guilgeenuud"))) {
           var a = lodash
@@ -279,14 +280,15 @@ router
             }
           }
           a = lodash.orderBy(a, ["ognoo"], ["asc"]);
-          var uldegdel = 0;
+          var contractBeginning = parseFloat(result?.avlaga?.ekhniiUldegdel || result?.ekhniiUldegdel || 0);
+          var uldegdel = contractBeginning;
           a.forEach((x) => {
             uldegdel =
               uldegdel +
               (x.tulukhDun ? x.tulukhDun : 0) -
               (x.tulsunDun ? x.tulsunDun : 0) -
               (x.khyamdral ? x.khyamdral : 0);
-            a.uldegdel = uldegdel;
+            x.uldegdel = uldegdel;
           });
           res.send(a);
         }
