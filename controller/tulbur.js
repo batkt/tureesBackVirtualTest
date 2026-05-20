@@ -2083,16 +2083,6 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   Geree(req.body.tukhainBaaziinKholbolt, true)
     .aggregate(query)
     .then(async (result) => {
-      const tureesiinUldegdel = parseFloat(
-        (result[0]?.tureesiinUldegdel || 0).toFixed(2),
-      );
-      const tulukh = parseFloat((result[0]?.tulukh || 0).toFixed(2));
-      const khyamdral = parseFloat((result[0]?.khyamdral || 0).toFixed(2));
-      const tulsun = parseFloat((result[0]?.tulsun || 0).toFixed(2));
-      const ekhniiUldegdel = parseFloat(
-        (result[0]?.ekhniiUldegdel || 0).toFixed(2),
-      );
-
       const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
         .findOne({
           gereeniiDugaar: req.body.gereeniiDugaar,
@@ -2100,12 +2090,35 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
           barilgiinId: req.body.barilgiinId,
         })
         .select(
-          "aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun",
+          "aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun avlaga.ekhniiUldegdel ekhniiUldegdel uldegdel",
         )
         .lean();
 
+      const contractBeginning = parseFloat(geree?.avlaga?.ekhniiUldegdel || geree?.ekhniiUldegdel || 0);
+
+      const tureesiinUldegdel = parseFloat(
+        ((result[0]?.tureesiinUldegdel || 0) + contractBeginning).toFixed(2),
+      );
+      const tulukh = parseFloat((result[0]?.tulukh || 0).toFixed(2));
+      const khyamdral = parseFloat((result[0]?.khyamdral || 0).toFixed(2));
+      const tulsun = parseFloat((result[0]?.tulsun || 0).toFixed(2));
+      const ekhniiUldegdel = parseFloat(
+        ((result[0]?.ekhniiUldegdel || 0) + contractBeginning).toFixed(2),
+      );
+
+      let latestNiitAldangi = undefined;
+      if (geree?._id) {
+        const latestAldangiDoc = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt)
+          .findOne({ gereeniiId: geree._id.toString() })
+          .sort({ aldangiBodsonOgnoo: -1, createdAt: -1 })
+          .lean();
+        if (latestAldangiDoc) {
+          latestNiitAldangi = latestAldangiDoc.niitAldangi;
+        }
+      }
+
       const aldangiinUldegdel = parseFloat(
-        (geree?.aldangiinUldegdel || 0).toFixed(2),
+        (latestNiitAldangi !== undefined ? latestNiitAldangi : (geree?.aldangiinUldegdel || 0)).toFixed(2),
       );
       const baritsaaniiUldegdel = parseFloat(
         (geree?.baritsaaniiUldegdel || 0).toFixed(2),
