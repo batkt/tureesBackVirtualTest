@@ -1024,6 +1024,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                   if (geree) break;
                 }
                 console.log("geree ----->", JSON.stringify(geree));
+                x.tulultTaniyaCGWShalgasanEsekh = true;
                 if (!!geree && !!geree.talbainDugaar) {
                   var jagsaalt = [];
                   var dugaar = geree.talbainDugaar;
@@ -1035,7 +1036,6 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                   x.kholbosonDun = x.amount || x.Amt || x.tranAmount;
                   x.isNew = false;
                   x.burtgesenAjiltaniiNer = "систем автомат cgw";
-                  x.save();
                   bankniiGuilgeeniiIds.push(x._id);
                   var ognoo =
                     dans.bank == "tdb"
@@ -1141,6 +1141,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
 
                   await daraagiinTulukhOgnooZasya(geree._id, kholbolt);
                 }
+                x.save();
               }
             }
           }

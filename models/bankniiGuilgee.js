@@ -91,10 +91,11 @@ const bankniiGuilgeeSchema = new Schema(
     },
     burtgesenAjiltaniiId: String,
     burtgesenAjiltaniiNer: String,
+    tulultTaniyaCGWShalgasanEsekh: Boolean,
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 bankniiGuilgeeSchema.pre("insertMany", function (next, docs) {
@@ -103,35 +104,34 @@ bankniiGuilgeeSchema.pre("insertMany", function (next, docs) {
       doc.bank === "khanbank"
         ? doc.record
         : doc.bank === "golomt"
-        ? doc.tranId
-        : doc.bank === "bogd"
-        ? doc.recNum
-        : doc.bank === "tran"
-        ? doc.jrno
-        : doc.bank === "tdb" && !!doc.NtryRef
-        ? doc.NtryRef
-        : doc.refno;
+          ? doc.tranId
+          : doc.bank === "bogd"
+            ? doc.recNum
+            : doc.bank === "tran"
+              ? doc.jrno
+              : doc.bank === "tdb" && !!doc.NtryRef
+                ? doc.NtryRef
+                : doc.refno;
     var mungunDun =
       doc.bank === "khanbank"
         ? doc.amount
         : doc.bank === "golomt"
-        ? doc.tranAmount
-        : doc.bank === "bogd"
-        ? doc.amount
-        : doc.bank === "tran"
-        ? doc.income > 0
-          ? doc.income
-          : doc.outcome
-        : doc.bank === "tdb"
-        ? doc.Amt
-        : 0;
+          ? doc.tranAmount
+          : doc.bank === "bogd"
+            ? doc.amount
+            : doc.bank === "tran"
+              ? doc.income > 0
+                ? doc.income
+                : doc.outcome
+              : doc.bank === "tdb"
+                ? doc.Amt
+                : 0;
     doc.indexTalbar =
       doc.barilgiinId +
       doc.bank +
       doc.dansniiDugaar +
       dugaar +
       (mungunDun ? mungunDun.toString() : "0");
-
   }
   next();
 });
