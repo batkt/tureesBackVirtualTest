@@ -988,6 +988,10 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
             var khaikhNukhtsul;
             var tailbar = [];
             var bankniiGuilgeeniiIds = [];
+            console.log(
+              "guilgeenuudNOTQPAY -----> length: ",
+              JSON.stringify(guilgeenuudNOTQPAY?.length),
+            );
             if (guilgeenuudNOTQPAY?.length > 0) {
               for (const x of guilgeenuudNOTQPAY) {
                 if (bankniiGuilgeeniiIds?.includes(x._id)) return;
