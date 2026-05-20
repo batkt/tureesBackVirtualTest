@@ -1526,7 +1526,6 @@ router.route("/avlagaTovchooGereeAvya").post(tokenShalgakh, async (req, res, nex
       )
       .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
 
-    // All baritsaa payments without date filter so the detail modal always shows them
     const baritsaaTulultArr = [...(geree.avlaga?.baritsaa || [])]
       .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
 
