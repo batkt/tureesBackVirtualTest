@@ -1507,8 +1507,12 @@ router.route("/avlagaTovchooGereeAvya").post(tokenShalgakh, async (req, res, nex
       ? new Date(req.body.duusakhOgnoo)
       : new Date(moment().endOf("month").format("YYYY-MM-DD 23:59:59"));
 
+    const gereeMatch = { gereeniiDugaar: req.body.gereeniiDugaar };
+    if (req.body.baiguullagiinId) gereeMatch.baiguullagiinId = req.body.baiguullagiinId;
+    if (req.body.barilgiinId) gereeMatch.barilgiinId = req.body.barilgiinId;
+
     const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
-      .findOne({ gereeniiDugaar: req.body.gereeniiDugaar })
+      .findOne(gereeMatch)
       .select("+avlaga baritsaaAvakhDun baritsaaniiUldegdel aldangiinUldegdel niitTulsunAldangi gereeniiOgnoo ekhlekhOgnoo");
 
     if (!geree) return res.json({ aldangiGuilgeenuud: [], baritsaaGuilgeenuud: [], baritsaaTulultArr: [] });
@@ -1559,8 +1563,12 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
       ? new Date(req.body.duusakhOgnoo)
       : new Date(moment().endOf("month").format("YYYY-MM-DD 23:59:59"));
 
+    const gereeMatch2 = { gereeniiDugaar: req.body.gereeniiDugaar };
+    if (req.body.baiguullagiinId) gereeMatch2.baiguullagiinId = req.body.baiguullagiinId;
+    if (req.body.barilgiinId) gereeMatch2.barilgiinId = req.body.barilgiinId;
+
     const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
-      .findOne({ gereeniiDugaar: req.body.gereeniiDugaar })
+      .findOne(gereeMatch2)
       .select("+avlaga");
 
     if (!geree) return res.json({ guilgeenuud: [], ekhniiUldegdel: 0 });
