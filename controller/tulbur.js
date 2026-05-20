@@ -959,7 +959,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
           if (!!dans.bank) {
             var match = {
               createdAt: {
-                $gt: new Date(new Date().getTime() - 12 * 60 * 60000),
+                $gt: new Date(new Date().getTime() - 5 * 60000),
                 $lt: new Date(),
               },
               dansniiDugaar: dans.dugaar,
@@ -2095,7 +2095,9 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         )
         .lean();
 
-      const contractBeginning = parseFloat(geree?.avlaga?.ekhniiUldegdel || geree?.ekhniiUldegdel || 0);
+      const contractBeginning = parseFloat(
+        geree?.avlaga?.ekhniiUldegdel || geree?.ekhniiUldegdel || 0,
+      );
 
       const tureesiinUldegdel = parseFloat(
         ((result[0]?.tureesiinUldegdel || 0) + contractBeginning).toFixed(2),
@@ -2109,7 +2111,9 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
 
       let latestNiitAldangi = undefined;
       if (geree?._id) {
-        const latestAldangiDoc = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt)
+        const latestAldangiDoc = await AldangiinTuukh(
+          req.body.tukhainBaaziinKholbolt,
+        )
           .findOne({ gereeniiId: geree._id.toString() })
           .sort({ aldangiBodsonOgnoo: -1, createdAt: -1 })
           .lean();
@@ -2119,7 +2123,10 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
       }
 
       const aldangiinUldegdel = parseFloat(
-        (latestNiitAldangi !== undefined ? latestNiitAldangi : (geree?.aldangiinUldegdel || 0)).toFixed(2),
+        (latestNiitAldangi !== undefined
+          ? latestNiitAldangi
+          : geree?.aldangiinUldegdel || 0
+        ).toFixed(2),
       );
       const baritsaaniiUldegdel = parseFloat(
         (geree?.baritsaaniiUldegdel || 0).toFixed(2),
