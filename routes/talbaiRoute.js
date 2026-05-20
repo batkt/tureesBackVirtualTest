@@ -1539,6 +1539,7 @@ router.route("/avlagaTovchooGereeAvya").post(tokenShalgakh, async (req, res, nex
       .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
 
     res.json({
+      _id: geree._id.toString(),
       aldangiGuilgeenuud,
       baritsaaGuilgeenuud,
       baritsaaTulultArr,
