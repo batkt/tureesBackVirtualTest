@@ -13,7 +13,6 @@ const { Mashin } = require("parking-v2");
 exports.khariltsagchNevtrey = asyncHandler(async (req, res, next) => {
   try {
     const { db } = require("zevbackv2");
-    console.log("KhariltsagchNevtrey userAgent req.body:", req.body.userAgent);
     if (!req.body.userAgent) {
       throw new aldaa(
         "Түр хугацаанд хаасан байгаа. Та бүхэн appweb https://appweb.zevtabs.mn/login нэвтэрнэ үү!",

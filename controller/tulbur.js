@@ -512,10 +512,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                     zardal.dun = tooZasyaSync(
                       zardal.tariff * (body.metrKube || 0),
                     );
-                  if (
-                    zardal.turul == "Тогтмол" ||
-                    zardal.turul == "Дурын"
-                  )
+                  if (zardal.turul == "Тогтмол" || zardal.turul == "Дурын")
                     zardal.dun = zardal.tariff;
                   var zardalDun = !body.garaasKhonogOruulakhEsekh
                     ? zardal.dun
@@ -937,7 +934,6 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
   baiguullagiinId = null,
 ) {
   try {
-    console.log("tulultTaniyaCGW ajillaj baina...");
     const { db } = require("zevbackv2");
     var kholboltuud = db.kholboltuud;
     var localEsekh = !!baiguullagiinId;
@@ -954,7 +950,6 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
           oirkhonTatakhEsekh: { $exists: false },
         });
         for (const dans of dansnuud) {
-          console.log("dans ----->", JSON.stringify(dans));
           if (!!dans.bank) {
             var match = {
               createdAt: {
@@ -989,21 +984,12 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
             var khaikhNukhtsul;
             var tailbar = [];
             var bankniiGuilgeeniiIds = [];
-            console.log(
-              "guilgeenuudNOTQPAY -----> length: ",
-              JSON.stringify(guilgeenuudNOTQPAY?.length),
-            );
             if (guilgeenuudNOTQPAY?.length > 0) {
               for (const x of guilgeenuudNOTQPAY) {
                 if (bankniiGuilgeeniiIds?.includes(x._id)) return;
                 if (x.description) tailbar = x.description.split(/,| /);
                 else if (x.TxAddInf) tailbar = x.TxAddInf.split(/,| /);
                 else if (x.tranDesc) tailbar = x.tranDesc.split(/,| /);
-                console.log("tailbar ----->", JSON.stringify(tailbar));
-                console.log(
-                  "barilgiinId ----->",
-                  JSON.stringify(x.barilgiinId),
-                );
                 var geree = null;
                 const searchFields = [
                   "gereeniiDugaar",
@@ -1013,7 +999,6 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                 ];
                 for (const t of tailbar) {
                   for (const field of searchFields) {
-                    console.log(`Searching for ${t} in field ${field}`);
                     geree = await Geree(kholbolt, true).findOne({
                       [field]: t,
                       tuluv: 1,
@@ -1023,7 +1008,6 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                   }
                   if (geree) break;
                 }
-                console.log("geree ----->", JSON.stringify(geree));
                 x.tulultTaniyaCGWShalgasanEsekh = true;
                 if (!!geree && !!geree.talbainDugaar) {
                   var jagsaalt = [];
@@ -2382,7 +2366,8 @@ exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
                   zardal.dun = tooZasyaSync(
                     zardal.tariff * geree.talbainKhemjeeMetrKube,
                   );
-                if (zardal.turul == "Тогтмол" || zardal.turul == "Дурын") zardal.dun = zardal.tariff;
+                if (zardal.turul == "Тогтмол" || zardal.turul == "Дурын")
+                  zardal.dun = zardal.tariff;
                 butsaakhJagsaalt.push({
                   turul: "avlaga",
                   tailbar: zardal.ner,
@@ -3623,7 +3608,10 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
                           zardal.tariff * talbai.talbainKhemjee,
                         ),
                       });
-                  } else if (zardal.turul == "Тогтмол" || zardal.turul == "Дурын") {
+                  } else if (
+                    zardal.turul == "Тогтмол" ||
+                    zardal.turul == "Дурын"
+                  ) {
                     baigaa = khuvaariud.find((a) => {
                       return (
                         a.turul == "avlaga" &&

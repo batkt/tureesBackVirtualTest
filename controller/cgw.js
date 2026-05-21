@@ -967,9 +967,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
-                  console.log(
-                    "TDB-гийн хуулга татаж байна: дансны дугаар " + dans.dugaar,
-                  );
                   var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
                   var url =
                     process.env.TDB_SERVER +
@@ -989,10 +986,6 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   //   new Date().getFullYear(),
                   //   new Date().getMonth(),
                   //   1,
-                  // );
-                  // console.log(
-                  //   "TDB-гийн хуулга татах эхлэх огноо: " +
-                  //     JSON.stringify(firstDay),
                   // );
                   url =
                     url +
