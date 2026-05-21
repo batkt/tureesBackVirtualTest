@@ -1048,6 +1048,8 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                         ognoo: ognoo,
                         guilgeeKhiisenOgnoo: new Date(),
                         bankniiGuilgeeId: x._id,
+                        guilgeeniiId: x._id,
+                        gereeniiId: geree._id,
                       });
                       geree.aldangiinUldegdel = 0;
                     }
@@ -1060,6 +1062,8 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                       ognoo: ognoo,
                       guilgeeKhiisenOgnoo: new Date(),
                       bankniiGuilgeeId: x._id,
+                      guilgeeniiId: x._id,
+                      gereeniiId: geree._id,
                     });
                     var niitTulsunAldangi = tulbur
                       ?.filter((a) => a.turul == "aldangi")
@@ -1087,6 +1091,8 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
                       ognoo: ognoo,
                       guilgeeKhiisenOgnoo: new Date(),
                       bankniiGuilgeeId: x._id,
+                      guilgeeniiId: x._id,
+                      gereeniiId: geree._id,
                     });
                     updateQuery = {
                       $push: {
