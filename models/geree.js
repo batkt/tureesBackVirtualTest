@@ -209,61 +209,7 @@ const gereeSchema = new Schema(
     timestamps: true,
   }
 );
-router.route("/uldegdelZasya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    const gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
-      .aggregate([
-        { $match: { baiguullagiinId: req.body.baiguullagiinId } },
-        { $unwind: "$avlaga.guilgeenuud" },
-        {
-          $match: {
-            $or: [
-              { "avlaga.guilgeenuud.turul": { $nin: ["baritsaa", "aldangi"] } },
-              {
-                "avlaga.guilgeenuud.turul": "baritsaa",
-                "avlaga.guilgeenuud.tulsunDun": { $gt: 0 }
-              }
-            ],
-            "avlaga.guilgeenuud.ognoo": { $lt: new Date() }
-          }
-        },
-        {
-          $group: {
-            _id: "$_id",
-            ekhniiUldegdel: { $first: { $ifNull: ["$avlaga.ekhniiUldegdel", 0] } },
-            tulukh: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
-            tulsun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
-            khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
-          }
-        },
-        {
-          $project: {
-            uldegdel: {
-              $subtract: [
-                { $add: ["$tulukh", { $ifNull: ["$ekhniiUldegdel", 0] }] },
-                { $add: ["$tulsun", "$khyamdral"] }
-              ]
-            }
-          }
-        }
-      ]);
 
-    const bulkOps = gereenuud.map(g => ({
-      updateOne: {
-        filter: { _id: g._id },
-        update: { $set: { uldegdel: g.uldegdel ?? 0 } }
-      }
-    }));
-
-    if (bulkOps.length > 0) {
-      await Geree(req.body.tukhainBaaziinKholbolt).bulkWrite(bulkOps);
-    }
-
-    res.send({ zasagdsanToo: bulkOps.length });
-  } catch (err) {
-    next(err);
-  }
-});
 
 module.exports = function a(conn, read = false) {
   if (!conn || !conn.kholbolt)
