@@ -2450,12 +2450,13 @@ exports.tukhainOgnoogoorAvlagaBodojOruulya = asyncHandler(
           });
           if (!baigaa) {
             var result = await Geree(req.body.tukhainBaaziinKholbolt).updateOne(
-  { _id: element._id },
-  {
-    $push: { "avlaga.guilgeenuud": object },
-    $inc: { uldegdel: +(object.tulukhDun || 0) }
-  }
-);
+              { _id: element._id },
+              {
+                $push: {
+                  ["avlaga.guilgeenuud"]: object,
+                },
+              },
+            );
             khariu.push(result);
           }
         }

@@ -250,61 +250,6 @@ router
     await aldangiTegBolgoy(req.body.baiguullagiinId);
     res.send("Amjilttai");
   });
-router.route("/uldegdelZasya").post(tokenShalgakh, async (req, res, next) => {
-  try {
-    const gereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
-      .aggregate([
-        { $match: { baiguullagiinId: req.body.baiguullagiinId } },
-        { $unwind: "$avlaga.guilgeenuud" },
-        {
-          $match: {
-            $or: [
-              { "avlaga.guilgeenuud.turul": { $nin: ["baritsaa", "aldangi"] } },
-              {
-                "avlaga.guilgeenuud.turul": "baritsaa",
-                "avlaga.guilgeenuud.tulsunDun": { $gt: 0 }
-              }
-            ],
-            "avlaga.guilgeenuud.ognoo": { $lt: new Date() }
-          }
-        },
-        {
-          $group: {
-            _id: "$_id",
-            ekhniiUldegdel: { $first: { $ifNull: ["$avlaga.ekhniiUldegdel", 0] } },
-            tulukh: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
-            tulsun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
-            khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
-          }
-        },
-        {
-          $project: {
-            uldegdel: {
-              $subtract: [
-                { $add: ["$tulukh", { $ifNull: ["$ekhniiUldegdel", 0] }] },
-                { $add: ["$tulsun", "$khyamdral"] }
-              ]
-            }
-          }
-        }
-      ]);
-
-    const bulkOps = gereenuud.map(g => ({
-      updateOne: {
-        filter: { _id: g._id },
-        update: { $set: { uldegdel: g.uldegdel ?? 0 } }
-      }
-    }));
-
-    if (bulkOps.length > 0) {
-      await Geree(req.body.tukhainBaaziinKholbolt).bulkWrite(bulkOps);
-    }
-
-    res.send({ zasagdsanToo: bulkOps.length });
-  } catch (err) {
-    next(err);
-  }
-});
 router
   .route("/gereeniiTulultAvya/:gereeniiId")
   .get(tokenShalgakh, (req, res, next) => {
@@ -436,16 +381,16 @@ router
       .then((result) => {
         if (lodash.isArray(lodash.get(result, "avlaga.guilgeenuud"))) {
           var a = lodash
-            .get(result, "avlaga.guilgeenuud")
-            .filter(
-              (a) =>
-                !(a.ekhniiUldegdelEsekh && a.turul === "khuvaari") &&
-                ((a.ognoo < new Date(req.query.duusakhOgnoo) &&
-                  a.turul != "baritsaa" &&
-                  (parseFloat(a.tulsunDun) != 0 || parseFloat(a.tulukhDun) != 0 || parseFloat(a.khyamdral) != 0) &&
-                  a.turul != "aldangi") ||
-                  (a.turul === "baritsaa" && parseFloat(a.tulsunDun) > 0)),
-            );
+  .get(result, "avlaga.guilgeenuud")
+  .filter(
+    (a) =>
+      !(a.ekhniiUldegdelEsekh && a.turul === "khuvaari") &&
+      ((a.ognoo < new Date(req.query.duusakhOgnoo) &&
+        a.turul != "baritsaa" &&
+        (parseFloat(a.tulsunDun) != 0 || parseFloat(a.tulukhDun) != 0 || parseFloat(a.khyamdral) != 0) &&
+        a.turul != "aldangi") ||
+        (a.turul === "baritsaa" && parseFloat(a.tulsunDun) > 0)),
+  );
           if (!!req.query.shineOgnoo) {
             const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
             if (endOgnoo && startOgnoo) {
