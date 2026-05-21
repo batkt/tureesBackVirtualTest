@@ -1823,7 +1823,7 @@ exports.gereeniiExcelTatya = asyncHandler(async (req, res, next) => {
                     zardal.dun = tooZasyaSync(
                       zardal.tariff * (x.talbainKhemjeeMetrKube || 0),
                     );
-                  if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
+                  if (zardal.turul == "Тогтмол" || zardal.turul == "Дурын") zardal.dun = zardal.tariff;
                   if (!!zardal.dun) {
                     var zardalDun = x.garaasKhonogOruulakhEsekh
                       ? ekhniiSariinDunZasyaSync(

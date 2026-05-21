@@ -346,7 +346,7 @@ router.route("/talbaiZasya").post(tokenShalgakh, async (req, res, next) => {
                             zardal.tariff * talbai.talbainKhemjee
                           ),
                         });
-                    } else if (zardal.turul == "Тогтмол") {
+                    } else if (zardal.turul == "Тогтмол" || zardal.turul == "Дурын") {
                       baigaa = khuvaariud.find((a) => {
                         return (
                           a.turul == "avlaga" &&

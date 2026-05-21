@@ -514,8 +514,7 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                     );
                   if (
                     zardal.turul == "Тогтмол" ||
-                    (zardal.ner?.includes("Цахилгаан") &&
-                      zardal.turul == "Дурын")
+                    zardal.turul == "Дурын"
                   )
                     zardal.dun = zardal.tariff;
                   var zardalDun = !body.garaasKhonogOruulakhEsekh
@@ -2374,7 +2373,7 @@ exports.tukhainOgnoogoorZardalBodojOruulya = asyncHandler(
                   zardal.dun = tooZasyaSync(
                     zardal.tariff * geree.talbainKhemjeeMetrKube,
                   );
-                if (zardal.turul == "Тогтмол") zardal.dun = zardal.tariff;
+                if (zardal.turul == "Тогтмол" || zardal.turul == "Дурын") zardal.dun = zardal.tariff;
                 butsaakhJagsaalt.push({
                   turul: "avlaga",
                   tailbar: zardal.ner,
@@ -3615,7 +3614,7 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
                           zardal.tariff * talbai.talbainKhemjee,
                         ),
                       });
-                  } else if (zardal.turul == "Тогтмол") {
+                  } else if (zardal.turul == "Тогтмол" || zardal.turul == "Дурын") {
                     baigaa = khuvaariud.find((a) => {
                       return (
                         a.turul == "avlaga" &&
