@@ -461,7 +461,7 @@ async function msgIlgeeyeUnitel(
         khariu.push(resp?.data);
       }
     }
-    res.send(khariu?.length > 0 ? [khariu[0]] : []);
+    res.send(khariu?.length > 0 ? khariu : []);
   } catch (err) {
     next(err);
   }
