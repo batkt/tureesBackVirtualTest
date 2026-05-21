@@ -263,11 +263,12 @@ router
             .get(result, "avlaga.guilgeenuud")
             .filter(
               (a) =>
-                (a.ognoo < new Date(req.query.duusakhOgnoo) &&
+                !a.ekhniiUldegdelEsekh &&
+                ((a.ognoo < new Date(req.query.duusakhOgnoo) &&
                   a.turul != "baritsaa" &&
                   (a.tulsunDun != 0 || a.tulukhDun != 0 || a.khyamdral != 0) &&
                   a.turul != "aldangi") ||
-                (a.turul === "baritsaa" && a.tulsunDun > 0),
+                (a.turul === "baritsaa" && a.tulsunDun > 0)),
             );
           if (!!req.query.shineOgnoo) {
             const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);

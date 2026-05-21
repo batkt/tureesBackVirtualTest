@@ -1940,6 +1940,7 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
 
 exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   const matchBase = {
+    "avlaga.guilgeenuud.ekhniiUldegdelEsekh": { $ne: true },
     $or: [
       {
         "avlaga.guilgeenuud.turul": {
@@ -2012,14 +2013,14 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         ekhniiTulukh: {
           $sum: {
             $cond: [
-              {
-                $lt: [
-                  "$avlaga.guilgeenuud.ognoo",
-                  req.body.ognoo && req.body.ognoo[0]
-                    ? new Date(req.body.ognoo[0])
-                    : new Date(),
-                ],
-              },
+              req.body.ognoo && req.body.ognoo[0]
+                ? {
+                    $lt: [
+                      "$avlaga.guilgeenuud.ognoo",
+                      new Date(req.body.ognoo[0]),
+                    ],
+                  }
+                : false,
               { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
               0,
             ],
@@ -2028,14 +2029,14 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         ekhniiKhyamdral: {
           $sum: {
             $cond: [
-              {
-                $lt: [
-                  "$avlaga.guilgeenuud.ognoo",
-                  req.body.ognoo && req.body.ognoo[0]
-                    ? new Date(req.body.ognoo[0])
-                    : new Date(),
-                ],
-              },
+              req.body.ognoo && req.body.ognoo[0]
+                ? {
+                    $lt: [
+                      "$avlaga.guilgeenuud.ognoo",
+                      new Date(req.body.ognoo[0]),
+                    ],
+                  }
+                : false,
               { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
               0,
             ],
@@ -2044,14 +2045,14 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         ekhniiTulsun: {
           $sum: {
             $cond: [
-              {
-                $lt: [
-                  "$avlaga.guilgeenuud.ognoo",
-                  req.body.ognoo && req.body.ognoo[0]
-                    ? new Date(req.body.ognoo[0])
-                    : new Date(),
-                ],
-              },
+              req.body.ognoo && req.body.ognoo[0]
+                ? {
+                    $lt: [
+                      "$avlaga.guilgeenuud.ognoo",
+                      new Date(req.body.ognoo[0]),
+                    ],
+                  }
+                : false,
               { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
               0,
             ],
