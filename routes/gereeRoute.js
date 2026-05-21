@@ -266,9 +266,9 @@ router
                 !(a.ekhniiUldegdelEsekh && a.turul === "khuvaari") &&
                 ((a.ognoo < new Date(req.query.duusakhOgnoo) &&
                   a.turul != "baritsaa" &&
-                  (a.tulsunDun != 0 || a.tulukhDun != 0 || a.khyamdral != 0) &&
+                  (parseFloat(a.tulsunDun) != 0 || parseFloat(a.tulukhDun) != 0 || parseFloat(a.khyamdral) != 0) &&
                   a.turul != "aldangi") ||
-                  (a.turul === "baritsaa" && a.tulsunDun > 0)),
+                  (a.turul === "baritsaa" && parseFloat(a.tulsunDun) > 0)),
             );
           if (!!req.query.shineOgnoo) {
             const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
@@ -387,9 +387,9 @@ router
       !(a.ekhniiUldegdelEsekh && a.turul === "khuvaari") &&
       ((a.ognoo < new Date(req.query.duusakhOgnoo) &&
         a.turul != "baritsaa" &&
-        (a.tulsunDun != 0 || a.tulukhDun != 0 || a.khyamdral != 0) &&
+        (parseFloat(a.tulsunDun) != 0 || parseFloat(a.tulukhDun) != 0 || parseFloat(a.khyamdral) != 0) &&
         a.turul != "aldangi") ||
-        (a.turul === "baritsaa" && a.tulsunDun > 0)),
+        (a.turul === "baritsaa" && parseFloat(a.tulsunDun) > 0)),
   );
           if (!!req.query.shineOgnoo) {
             const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);

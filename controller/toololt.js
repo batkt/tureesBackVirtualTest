@@ -184,13 +184,25 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
 
     var match = {
       "avlaga.guilgeenuud.ognoo": {
+        $gte: ekhlekhOgnoo,
         $lte: duusakhOgnoo,
       },
       $or: [
         {
-          "avlaga.guilgeenuud.turul": {
-            $nin: ["aldangi", "baritsaa"],
-          },
+          $and: [
+            {
+              "avlaga.guilgeenuud.turul": {
+                $nin: ["aldangi", "baritsaa", "khuvaari"],
+              },
+            },
+            {
+              $or: [
+                { "avlaga.guilgeenuud.tulukhDun": { $ne: 0 } },
+                { "avlaga.guilgeenuud.tulsunDun": { $ne: 0 } },
+                { "avlaga.guilgeenuud.khyamdral": { $ne: 0 } },
+              ],
+            },
+          ],
         },
         {
           $and: [
