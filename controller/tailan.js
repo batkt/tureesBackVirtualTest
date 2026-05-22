@@ -2502,3 +2502,42 @@ exports.negtgelTailanAvya = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+exports.orlogiinTuruulaarAvya = asyncHandler(async (req, res, next) => {
+  try {
+    var gereeObject = Geree(req.body.tukhainBaaziinKholbolt);
+    var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+    var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+    var match = {
+      "avlaga.guilgeenuud.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+      baiguullagiinId: req.body.baiguullagiinId,
+      tuluv: { $ne: -1 },
+    };
+    if (req.body.barilgiinId) match["barilgiinId"] = req.body.barilgiinId;
+
+    let query = [
+      { $unwind: { path: "$avlaga.guilgeenuud" } },
+      { $match: match },
+      {
+        $group: {
+          _id: "$avlaga.guilgeenuud.turul",
+          tulukhDun: {
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
+          },
+          tulsunDun: {
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+          },
+          khyamdral: {
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+          },
+        },
+      },
+      { $sort: { tulukhDun: -1 } },
+    ];
+
+    var khariu = await gereeObject.aggregate(query);
+    res.send(khariu);
+  } catch (err) {
+    next(err);
+  }
+});
