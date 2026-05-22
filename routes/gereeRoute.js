@@ -5849,6 +5849,16 @@ router
           $set: { aldangiinUldegdel: req.body.aldangiDun },
         },
       );
+      const latestTuukh = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt)
+        .findOne({ gereeniiId: req.body.gereeniiId })
+        .sort({ aldangiBodsonOgnoo: -1 });
+      if (latestTuukh) {
+        await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+          { _id: latestTuukh._id },
+          { $set: { niitAldangi: req.body.aldangiDun } },
+        );
+      }
+
       var aldangi = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
