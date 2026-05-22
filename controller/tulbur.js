@@ -2126,24 +2126,8 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         ((result[0]?.ekhniiUldegdel || 0) + contractBeginning).toFixed(2),
       );
 
-      let latestNiitAldangi = undefined;
-      if (geree?._id) {
-        const latestAldangiDoc = await AldangiinTuukh(
-          req.body.tukhainBaaziinKholbolt,
-        )
-          .findOne({ gereeniiId: geree._id.toString() })
-          .sort({ aldangiBodsonOgnoo: -1, createdAt: -1 })
-          .lean();
-        if (latestAldangiDoc) {
-          latestNiitAldangi = latestAldangiDoc.niitAldangi;
-        }
-      }
-
       const aldangiinUldegdel = parseFloat(
-        (latestNiitAldangi !== undefined
-          ? latestNiitAldangi
-          : geree?.aldangiinUldegdel || 0
-        ).toFixed(2),
+        (geree?.aldangiinUldegdel || 0).toFixed(2),
       );
       const baritsaaniiUldegdel = parseFloat(
         (geree?.baritsaaniiUldegdel || 0).toFixed(2),
