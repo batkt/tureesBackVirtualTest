@@ -36,9 +36,25 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         uldegdel: -(tulbur?.tulsunDun || 0),
       };
       if (tulbur.tulsunAldangi && tulbur.tulsunAldangi > 0) {
-        inc["aldangiinUldegdel"] = -tulbur.tulsunAldangi;
-        inc["niitTulsunAldangi"] = +tulbur.tulsunAldangi;
-      }
+  inc["aldangiinUldegdel"] = -tulbur.tulsunAldangi;
+  inc["niitTulsunAldangi"] = +tulbur.tulsunAldangi;
+
+  
+  const latestTuukh = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt)
+    .findOne({ gereeniiId: tulbur.gereeniiId.toString() })
+    .sort({ aldangiBodsonOgnoo: -1 });
+
+  if (latestTuukh) {
+    const newNiitAldangi = Math.max(
+      0,
+      (latestTuukh.niitAldangi || 0) - tulbur.tulsunAldangi,
+    );
+    await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+      { _id: latestTuukh._id },
+      { $set: { niitAldangi: newNiitAldangi } },
+    );
+  }
+}
 
       if (Array.isArray(tulbur.avlaguud)) {
         const AvlagaTulsunTuukhModel = AvlagaTulsunTuukh(
