@@ -1945,33 +1945,23 @@ exports.baritsaaniiGuilgeeUstgaya = asyncHandler(async (req, res, next) => {
 
 exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   const matchBase = {
-    $and: [
+    $or: [
       {
-        $or: [
-          { "avlaga.guilgeenuud.ekhniiUldegdelEsekh": { $ne: true } },
-          { "avlaga.guilgeenuud.turul": { $ne: "khuvaari" } },
-        ],
+        "avlaga.guilgeenuud.turul": {
+          $nin: ["aldangi", "baritsaa"],
+        },
       },
       {
-        $or: [
+        $and: [
           {
             "avlaga.guilgeenuud.turul": {
-              $nin: ["aldangi", "baritsaa"],
+              $in: ["baritsaa"],
             },
           },
           {
-            $and: [
-              {
-                "avlaga.guilgeenuud.turul": {
-                  $in: ["baritsaa"],
-                },
-              },
-              {
-                "avlaga.guilgeenuud.tulsunDun": {
-                  $gt: 0,
-                },
-              },
-            ],
+            "avlaga.guilgeenuud.tulsunDun": {
+              $gt: 0,
+            },
           },
         ],
       },
