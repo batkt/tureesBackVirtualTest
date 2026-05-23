@@ -13,6 +13,7 @@ const {
   negtgelMedeelelAvya,
   negtgelTailanAvya,
   orlogiinTuruulaarAvya,
+  orlogiinTurulDelgerengui,
 } = require("../controller/tailan");
 const TailangiinZagvar = require("../models/tailangiinZagvar");
 
@@ -47,4 +48,7 @@ router.route("/negtgelTailanAvya").post(tokenShalgakh, negtgelTailanAvya);
 router
   .route("/orlogiinTuruulaarAvya")
   .post(tokenShalgakh, orlogiinTuruulaarAvya);
+router
+  .route("/orlogiinTurulDelgerengui")
+  .post(tokenShalgakh, orlogiinTurulDelgerengui);
 module.exports = router;

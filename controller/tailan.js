@@ -2541,3 +2541,62 @@ exports.orlogiinTuruulaarAvya = asyncHandler(async (req, res, next) => {
     next(err);
   }
 });
+
+exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
+  try {
+    const gereeObject = Geree(req.body.tukhainBaaziinKholbolt);
+    const ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
+    const duusakhOgnoo = new Date(req.body.duusakhOgnoo);
+    const turul = req.body.turul;
+
+    const match = {
+      "avlaga.guilgeenuud.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+      "avlaga.guilgeenuud.turul": turul,
+      baiguullagiinId: req.body.baiguullagiinId,
+      tuluv: { $ne: -1 },
+    };
+    if (req.body.barilgiinId) match["barilgiinId"] = req.body.barilgiinId;
+
+    const isBank = turul === "bank";
+
+    const groupStage = isBank
+      ? {
+          _id: { gereeniiDugaar: "$gereeniiDugaar", dansniiDugaar: "$avlaga.guilgeenuud.dansniiDugaar" },
+          ner: { $first: "$ner" },
+          gereeniiDugaar: { $first: "$gereeniiDugaar" },
+          talbainDugaar: { $first: "$talbainDugaar" },
+          dansniiDugaar: { $first: "$avlaga.guilgeenuud.dansniiDugaar" },
+          tulsunDun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
+          tulukhDun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
+        }
+      : {
+          _id: "$gereeniiDugaar",
+          ner: { $first: "$ner" },
+          gereeniiDugaar: { $first: "$gereeniiDugaar" },
+          talbainDugaar: { $first: "$talbainDugaar" },
+          tulukhDun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
+          tulsunDun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
+          khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
+        };
+
+    const rows = await gereeObject.aggregate([
+      { $unwind: { path: "$avlaga.guilgeenuud" } },
+      { $match: match },
+      { $group: groupStage },
+      { $sort: { tulsunDun: -1, tulukhDun: -1 } },
+    ]);
+
+    if (isBank) {
+      for (const row of rows) {
+        if (row.dansniiDugaar) {
+          const dansInfo = await Dans(req.body.tukhainBaaziinKholbolt).findOne({ dugaar: row.dansniiDugaar });
+          row.bankNer = dansInfo?.bank || row.dansniiDugaar;
+        }
+      }
+    }
+
+    res.send(rows);
+  } catch (err) {
+    next(err);
+  }
+});
