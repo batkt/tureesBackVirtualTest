@@ -1575,9 +1575,7 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
 
     if (!geree) return res.json({ guilgeenuud: [], ekhniiUldegdel: 0 });
 
-    const contractBeginning = parseFloat(
-      geree?.avlaga?.ekhniiUldegdel || geree?.ekhniiUldegdel || 0
-    );
+    const contractBeginning = parseFloat(geree?.ekhniiUldegdel || 0);
 
     const guilgeenuud = (geree.avlaga?.guilgeenuud || []).filter(
       (g) =>

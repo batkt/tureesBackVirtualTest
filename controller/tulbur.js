@@ -2098,13 +2098,11 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
           barilgiinId: req.body.barilgiinId,
         })
         .select(
-          "aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun avlaga.ekhniiUldegdel ekhniiUldegdel uldegdel",
+          "aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun ekhniiUldegdel uldegdel",
         )
         .lean();
 
-      const contractBeginning = parseFloat(
-        geree?.avlaga?.ekhniiUldegdel || geree?.ekhniiUldegdel || 0,
-      );
+      const contractBeginning = parseFloat(geree?.ekhniiUldegdel || 0);
 
       const tureesiinUldegdel = parseFloat(
         ((result[0]?.tureesiinUldegdel || 0) + contractBeginning).toFixed(2),
