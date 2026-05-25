@@ -1444,6 +1444,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       baiguullagiinId: req.body.baiguullagiinId,
       barilgiinId: req.body.barilgiinId,
       tuluv: -1,
+      tsutsalsanOgnoo: { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
     };
     if (req.body.khariltsagchiinId && req.body.khariltsagchiinId.length > 0) {
       canceledMatch["register"] = { $in: req.body.khariltsagchiinId };

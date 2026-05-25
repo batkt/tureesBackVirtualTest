@@ -835,13 +835,15 @@ router
       delete updateData.erunkhiiKholbolt;
       delete updateData.nevtersenAjiltniiToken;
 
-      if (updateData.gereeniiDugaar) {
+      if (updateData.gereeniiDugaar && updateData._id) {
         const existingGeree = await Geree(
           req.body.tukhainBaaziinKholbolt,
           true,
         ).findOne({
           gereeniiDugaar: updateData.gereeniiDugaar,
           _id: { $ne: updateData._id },
+          baiguullagiinId: updateData.baiguullagiinId,
+          barilgiinId: updateData.barilgiinId,
           tuluv: { $ne: -1 },
         });
         if (existingGeree) {
