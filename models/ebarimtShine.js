@@ -27,6 +27,7 @@ const ebarimtSchema = new Schema(
     merchantTin: String, //11 эсвэл 14 оронтой бүхэл тоо Багц баримт олгогчийн ТТД
     branchNo: String, // дотоод салбарын дугаар 3 оронтой
     posNo: String,
+    register: String,
     customerTin: String, //Худалдан авагчийн ТТД
     customerName: String, //Худалдан авагчийн нэр
     customerNo: String, //Худалдан авагч иргэний ebarimt-н бүртгэлийн дугаар
