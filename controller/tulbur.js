@@ -2169,10 +2169,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         .findById(req.body.baiguullagiinId)
         .lean();
 
-      const aldangiTuukhKharakhEsekh =
-        baiguullaga?.tokhirgoo?.aldangiTuukhKharakhEsekh ||
-        req.body.baiguullagiinId === "6735c77a7fc60cd66deb2909" ||
-        req.body.baiguullagiinId === "6916c957511a8a4aebc1d65b";
+      const aldangiTuukhKharakhEsekh = !!baiguullaga?.tokhirgoo?.aldangiTuukhKharakhEsekh;
 
       const finalUldegdel = aldangiTuukhKharakhEsekh
         ? tureesiinUldegdel + aldangiinUldegdel

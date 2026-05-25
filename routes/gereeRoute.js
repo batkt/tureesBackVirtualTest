@@ -277,8 +277,9 @@ router
             if (endOgnoo && startOgnoo) {
               a = a.filter(
                 (data) =>
-                  data.ognoo < new Date(endOgnoo) &&
-                  data.ognoo >= new Date(startOgnoo),
+                  data.ekhniiUldegdelEsekh ||
+                  (data.ognoo < new Date(endOgnoo) &&
+                    data.ognoo >= new Date(startOgnoo)),
               );
             }
           }
