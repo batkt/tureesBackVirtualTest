@@ -812,6 +812,44 @@ exports.switchTDBCGW2 = asyncHandler(async (req, res, next) => {
   }
 });
 
+function getIndexTalbar(guilgee) {
+  const dugaar =
+    guilgee.bank === "khanbank"
+      ? guilgee.record
+      : guilgee.bank === "golomt"
+        ? guilgee.tranId
+        : guilgee.bank === "bogd"
+          ? guilgee.recNum
+          : guilgee.bank === "tran"
+            ? guilgee.jrno
+            : guilgee.bank === "tdb" && !!guilgee.NtryRef
+              ? guilgee.NtryRef
+              : guilgee.refno;
+
+  const mungunDun =
+    guilgee.bank === "khanbank"
+      ? guilgee.amount
+      : guilgee.bank === "golomt"
+        ? guilgee.tranAmount
+        : guilgee.bank === "bogd"
+          ? guilgee.amount
+          : guilgee.bank === "tran"
+            ? guilgee.income > 0
+              ? guilgee.income
+              : guilgee.outcome
+            : guilgee.bank === "tdb"
+              ? guilgee.Amt
+              : 0;
+
+  return (
+    guilgee.barilgiinId +
+    guilgee.bank +
+    guilgee.dansniiDugaar +
+    dugaar +
+    (mungunDun ? mungunDun.toString() : "0")
+  );
+}
+
 exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
   try {
     var kholboltuud;
@@ -1043,6 +1081,24 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                         x.baiguullagiinId = dans.baiguullagiinId;
                         x.barilgiinId = dans.barilgiinId;
                       });
+                      if (guilgeenuud) {
+                        var ustgakhJagsaalt = [];
+                        for (const item of guilgeenuud) {
+                          var indexTalbar = getIndexTalbar(item);
+                          var guilgee = await BankniiGuilgee(
+                            kholbolt,
+                            true,
+                          ).findOne({
+                            indexTalbar: indexTalbar,
+                          });
+                          if (guilgee) ustgakhJagsaalt.push(item);
+                        }
+                        if (!!ustgakhJagsaalt) {
+                          guilgeenuud = guilgeenuud.filter(
+                            (el) => !ustgakhJagsaalt.includes(el),
+                          );
+                        }
+                      }
                       BankniiGuilgee(kholbolt)
                         .insertMany(guilgeenuud, { ordered: false })
                         .then(() => res?.send("Amjilttai"))
@@ -1129,6 +1185,24 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                     x.baiguullagiinId = dans.baiguullagiinId;
                     x.barilgiinId = dans.barilgiinId;
                   });
+                  if (guilgeenuud) {
+                    var ustgakhJagsaalt = [];
+                    for (const item of guilgeenuud) {
+                      var indexTalbar = getIndexTalbar(item);
+                      var guilgee = await BankniiGuilgee(
+                        kholbolt,
+                        true,
+                      ).findOne({
+                        indexTalbar: indexTalbar,
+                      });
+                      if (guilgee) ustgakhJagsaalt.push(item);
+                    }
+                    if (!!ustgakhJagsaalt) {
+                      guilgeenuud = guilgeenuud.filter(
+                        (el) => !ustgakhJagsaalt.includes(el),
+                      );
+                    }
+                  }
                   BankniiGuilgee(kholbolt)
                     .insertMany(guilgeenuud, { ordered: false })
                     .then((result) => {
