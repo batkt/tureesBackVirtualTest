@@ -967,6 +967,9 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                   !!dans.dugaar &&
                   (dans.dugaar.includes("mn") || dans.dugaar.includes("MN"))
                 ) {
+                  console.log(
+                    "TDB API-гаар татаж байна: " + JSON.stringify(dans.dugaar),
+                  );
                   var tokenObject = await tdbTokenAvya(dans, kholbolt, next);
                   var url =
                     process.env.TDB_SERVER +
@@ -1016,6 +1019,7 @@ exports.bankniiKhuulgaTatajKhadgalya = asyncHandler(async (req, res, next) => {
                       responseType: "json",
                     });
                     var khariu = response?.data;
+                    console.log("TDB-гийн txn " + JSON.stringify(khariu?.txn));
                     if (!!khariu && !!khariu.txn && khariu.txn.length > 0) {
                       var guilgeenuud = [];
                       khariu.txn.forEach((mur) => {
