@@ -112,6 +112,7 @@ async function guilgeeneesEbarimtShineUusgye(
   districtCode,
   tukhainBaaziinKholbolt,
   nuatTulukhEsekh = true,
+  customerName = "",
 ) {
   var dun = guilgee.amount ? guilgee.amount : guilgee.Amt || guilgee.tranAmount;
   var ognoo =
@@ -148,6 +149,8 @@ async function guilgeeneesEbarimtShineUusgye(
   ebarimt.gereeniiDugaar = geree.gereeniiDugaar;
   ebarimt.talbainDugaar = geree.talbainDugaar;
   ebarimt.utas = geree.utas;
+  ebarimt.register = geree.register;
+  ebarimt.customerName = customerName;
 
   ebarimt.totalAmount = dun.toFixed(2);
   ebarimt.totalVAT = !!nuatTulukhEsekh ? nuatBodyo(dun) : 0;
@@ -887,6 +890,8 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.gereeniiDugaar = khariuObject.gereeniiDugaar;
           ebarimt.talbainDugaar = khariuObject.talbainDugaar;
           ebarimt.utas = khariuObject.utas;
+          ebarimt.register = khariuObject.register;
+          ebarimt.customerName = khariuObject.customerName;
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -931,6 +936,7 @@ async function ebarimtShivye(req, res, next) {
           tuxainSalbar.districtCode, //,"0023"
           req.body.tukhainBaaziinKholbolt,
           nuatTulukhEsekh,
+          req.body.customerName,
         );
       else if (!!next) next(new Error("ИБаримт dll холболт хийгдээгүй байна!"));
     }

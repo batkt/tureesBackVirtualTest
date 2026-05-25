@@ -28,6 +28,7 @@ const ebarimtSchema = new Schema(
     branchNo: String, // дотоод салбарын дугаар 3 оронтой
     posNo: String,
     customerTin: String, //Худалдан авагчийн ТТД
+    customerName: String, //Худалдан авагчийн нэр
     customerNo: String, //Худалдан авагч иргэний ebarimt-н бүртгэлийн дугаар
     type: String, //B2C_RECEIPT ,B2B_RECEIPT, B2C_INVOICE,B2B_INVOICE
     inactiveId: String, //Засварлах баримтын ДДТД
