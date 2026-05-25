@@ -1396,7 +1396,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         niitKhyamdralTurees: khyamdralTurees,
         niitKhyamdralAshiglalt: khyamdralAshiglalt,
         niitKt: kt,
-        etssiinUldegdel: ekh + (p.niitDt || 0) - kt,
+        etssiinUldegdel: ekh + dt - kt,
         tuluv: e.tuluv !== undefined ? e.tuluv : p.tuluv,
         aldangiinUldegdel: e.aldangiinUldegdel || p.aldangiinUldegdel || 0,
         baritsaaAvakhDun,
@@ -1571,9 +1571,13 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
 
     const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
       .findOne(gereeMatch2)
-      .select("+avlaga");
+      .select("+avlaga ekhniiUldegdel");
 
     if (!geree) return res.json({ guilgeenuud: [], ekhniiUldegdel: 0 });
+
+    const contractBeginning = parseFloat(
+      geree?.avlaga?.ekhniiUldegdel || geree?.ekhniiUldegdel || 0
+    );
 
     const guilgeenuud = (geree.avlaga?.guilgeenuud || []).filter(
       (g) =>
@@ -1586,7 +1590,7 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
     );
     const ekhniiUldegdel = guilgeenuudBeforeStart.reduce(
       (s, g) => s + (g.tulukhDun || 0) - (g.tulsunDun || 0) - (g.khyamdral || 0),
-      0
+      contractBeginning
     );
 
     const periodGuilgeenuud = guilgeenuud
