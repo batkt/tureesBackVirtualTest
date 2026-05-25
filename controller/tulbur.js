@@ -26,7 +26,7 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
       tulbur.guilgeeKhiisenOgnoo = new Date();
       var dun = await tooZasya(
         (tulbur.tulsunDun ? tulbur.tulsunDun : 0) +
-          (tulbur.tulsunAldangi ? tulbur.tulsunAldangi : 0),
+        (tulbur.tulsunAldangi ? tulbur.tulsunAldangi : 0),
       );
       if (req.body.nevtersenAjiltniiToken) {
         tulbur.guilgeeKhiisenAjiltniiNer = req.body.nevtersenAjiltniiToken.ner;
@@ -36,25 +36,25 @@ exports.tulultOlnoorKhadgalya = asyncHandler(async (req, res, next) => {
         uldegdel: -(tulbur?.tulsunDun || 0),
       };
       if (tulbur.tulsunAldangi && tulbur.tulsunAldangi > 0) {
-  inc["aldangiinUldegdel"] = -tulbur.tulsunAldangi;
-  inc["niitTulsunAldangi"] = +tulbur.tulsunAldangi;
+        inc["aldangiinUldegdel"] = -tulbur.tulsunAldangi;
+        inc["niitTulsunAldangi"] = +tulbur.tulsunAldangi;
 
-  
-  const latestTuukh = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt)
-    .findOne({ gereeniiId: tulbur.gereeniiId.toString() })
-    .sort({ aldangiBodsonOgnoo: -1 });
 
-  if (latestTuukh) {
-    const newNiitAldangi = Math.max(
-      0,
-      (latestTuukh.niitAldangi || 0) - tulbur.tulsunAldangi,
-    );
-    await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-      { _id: latestTuukh._id },
-      { $set: { niitAldangi: newNiitAldangi } },
-    );
-  }
-}
+        const latestTuukh = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt)
+          .findOne({ gereeniiId: tulbur.gereeniiId.toString() })
+          .sort({ aldangiBodsonOgnoo: -1 });
+
+        if (latestTuukh) {
+          const newNiitAldangi = Math.max(
+            0,
+            (latestTuukh.niitAldangi || 0) - tulbur.tulsunAldangi,
+          );
+          await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
+            { _id: latestTuukh._id },
+            { $set: { niitAldangi: newNiitAldangi } },
+          );
+        }
+      }
 
       if (Array.isArray(tulbur.avlaguud)) {
         const AvlagaTulsunTuukhModel = AvlagaTulsunTuukh(
@@ -211,7 +211,7 @@ exports.baritsaaniiGuilgeeKhiie = asyncHandler(async (req, res, next) => {
     }
     await Geree(req.body.tukhainBaaziinKholbolt)
       .findByIdAndUpdate({ _id: guilgee.gereeniiId }, updatequery)
-      .then((result) => {})
+      .then((result) => { })
       .catch((err) => {
         aldaaniiMsg = aldaaniiMsg + err.message;
         next(err);
@@ -533,15 +533,15 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                   var zardalDun = !body.garaasKhonogOruulakhEsekh
                     ? zardal.dun
                     : ekhniiSariinDunZasyaSync(
-                        body,
-                        turOgnoo,
-                        ekhlekhOgnoo,
-                        zardal.dun,
-                      );
+                      body,
+                      turOgnoo,
+                      ekhlekhOgnoo,
+                      zardal.dun,
+                    );
                   if (
                     zardal.ognoonuud?.length > 0 &&
                     moment(zardal.ognoonuud[0]).format("MM") ==
-                      moment(turOgnoo).format("MM")
+                    moment(turOgnoo).format("MM")
                   ) {
                     var khonog = parseFloat(
                       moment(zardal.ognoonuud[0]).format("DD"),
@@ -554,9 +554,9 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
                   if (
                     zardal.ognoonuud?.length > 0 &&
                     moment(zardal.ognoonuud[0]).format("MM") !=
-                      moment(zardal.ognoonuud[1]).format("MM") &&
+                    moment(zardal.ognoonuud[1]).format("MM") &&
                     moment(zardal.ognoonuud[1]).format("MM") ==
-                      moment(turOgnoo).format("MM")
+                    moment(turOgnoo).format("MM")
                   ) {
                     var niitKhonog = parseFloat(
                       moment(zardal.ognoonuud[1]).endOf("month").format("DD"),
@@ -580,13 +580,13 @@ exports.khuvaariUusgey = asyncHandler(async (req, res, next) => {
               khungulultuud.forEach((data) => {
                 if (
                   moment(turOgnoo) >=
-                    moment(
-                      moment(data.ognoonuud[0]).format("YYYY-MM-DD 00:00:00"),
-                    ) &&
+                  moment(
+                    moment(data.ognoonuud[0]).format("YYYY-MM-DD 00:00:00"),
+                  ) &&
                   moment(turOgnoo) <=
-                    moment(
-                      moment(data.ognoonuud[1]).format("YYYY-MM-DD 23:59:59"),
-                    )
+                  moment(
+                    moment(data.ognoonuud[1]).format("YYYY-MM-DD 23:59:59"),
+                  )
                 ) {
                   butsaakhJagsaalt.push({
                     tulukhDun: 0,
@@ -621,8 +621,8 @@ function ekhniiSariinDunZasyaSync(body, turOgnoo, ekhlekhOgnoo, dun) {
       : parseFloat(moment(ekhlekhOgnoo).endOf("month").format("DD"));
     var ashiglakhKhonog =
       body.garaasKhonogOruulakhEsekh &&
-      moment(body?.gereeniiOgnoo).isSame(ekhlekhOgnoo, "month") &&
-      moment(body?.gereeniiOgnoo).isSame(ekhlekhOgnoo, "year")
+        moment(body?.gereeniiOgnoo).isSame(ekhlekhOgnoo, "month") &&
+        moment(body?.gereeniiOgnoo).isSame(ekhlekhOgnoo, "year")
         ? body.ekhniiSariinKhonog
         : moment(ekhlekhOgnoo).endOf("month").diff(body.gereeniiOgnoo, "d") + 1;
     ashiglakhKhonog =
@@ -935,7 +935,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
                     await BankniiGuilgee(kholbolt).findByIdAndUpdate(x._id, {
                       magadlaltaiGereenuud: magadlaltaiGereenuud,
                     });
-                  } catch (saveError) {}
+                  } catch (saveError) { }
                 }
               });
             }
@@ -943,7 +943,7 @@ module.exports.tulultTaniya = async function tulultTaniya() {
         }
       }
     }
-  } catch (e) {}
+  } catch (e) { }
 };
 
 module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
@@ -1154,7 +1154,7 @@ module.exports.tulultTaniyaCGW = async function tulultTaniyaCGW(
         }
       }
     }
-  } catch (e) {}
+  } catch (e) { }
 };
 
 module.exports.aldangiBodyo = async function aldangiBodyo(
@@ -1636,7 +1636,7 @@ exports.tulultUstgaya = asyncHandler(async (req, res, next) => {
         });
       var dun = await tooZasya(
         (tuxainGuilgee.tulsunDun ? tuxainGuilgee.tulsunDun : 0) +
-          (tuxainGuilgee.tulsunAldangi ? tuxainGuilgee.tulsunAldangi : 0),
+        (tuxainGuilgee.tulsunAldangi ? tuxainGuilgee.tulsunAldangi : 0),
       );
       const archiveBeforeDate = new Date(tuxainGuilgee?.ognoo);
       archiveBeforeDate.setHours(0, 0, 0, 0);
@@ -1989,10 +1989,10 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         "avlaga.guilgeenuud.ognoo":
           req.body.ognoo && req.body.ognoo[1]
             ? {
-                $lte: req.body.uldegdelUdruurKharakhEsekh
-                  ? moment(req.body.ognoo[1]).endOf("day").toDate()
-                  : moment(req.body.ognoo[1]).endOf("month").toDate(),
-              }
+              $lte: req.body.uldegdelUdruurKharakhEsekh
+                ? moment(req.body.ognoo[1]).endOf("day").toDate()
+                : moment(req.body.ognoo[1]).endOf("month").toDate(),
+            }
             : { $exists: true },
       },
     },
@@ -2019,11 +2019,11 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
             $cond: [
               req.body.ognoo && req.body.ognoo[0]
                 ? {
-                    $lt: [
-                      "$avlaga.guilgeenuud.ognoo",
-                      new Date(req.body.ognoo[0]),
-                    ],
-                  }
+                  $lt: [
+                    "$avlaga.guilgeenuud.ognoo",
+                    new Date(req.body.ognoo[0]),
+                  ],
+                }
                 : false,
               { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
               0,
@@ -2035,11 +2035,11 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
             $cond: [
               req.body.ognoo && req.body.ognoo[0]
                 ? {
-                    $lt: [
-                      "$avlaga.guilgeenuud.ognoo",
-                      new Date(req.body.ognoo[0]),
-                    ],
-                  }
+                  $lt: [
+                    "$avlaga.guilgeenuud.ognoo",
+                    new Date(req.body.ognoo[0]),
+                  ],
+                }
                 : false,
               { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
               0,
@@ -2051,11 +2051,11 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
             $cond: [
               req.body.ognoo && req.body.ognoo[0]
                 ? {
-                    $lt: [
-                      "$avlaga.guilgeenuud.ognoo",
-                      new Date(req.body.ognoo[0]),
-                    ],
-                  }
+                  $lt: [
+                    "$avlaga.guilgeenuud.ognoo",
+                    new Date(req.body.ognoo[0]),
+                  ],
+                }
                 : false,
               { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
               0,
@@ -2098,7 +2098,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
           barilgiinId: req.body.barilgiinId,
         })
         .select(
-          "aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun avlaga.ekhniiUldegdel ekhniiUldegdel uldegdel",
+          "baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun avlaga.ekhniiUldegdel ekhniiUldegdel uldegdel",
         )
         .lean();
 
@@ -2116,9 +2116,6 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         ((result[0]?.ekhniiUldegdel || 0) + contractBeginning).toFixed(2),
       );
 
-      const aldangiinUldegdel = parseFloat(
-        (geree?.aldangiinUldegdel || 0).toFixed(2),
-      );
       const baritsaaniiUldegdel = parseFloat(
         (geree?.baritsaaniiUldegdel || 0).toFixed(2),
       );
@@ -2126,13 +2123,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
         (geree?.baritsaaAvakhDun || 0).toFixed(2),
       );
 
-      let niitTulsunAldangiMatch = { "avlaga.guilgeenuud.turul": "aldangi" };
-      if (req.body.ognoo && req.body.ognoo[0] && req.body.ognoo[1]) {
-        niitTulsunAldangiMatch["avlaga.guilgeenuud.ognoo"] = {
-          $gte: new Date(req.body.ognoo[0]),
-          $lte: new Date(req.body.ognoo[1]),
-        };
-      }
+
       const aldangiAggResult = await Geree(
         req.body.tukhainBaaziinKholbolt,
         true,
@@ -2145,11 +2136,27 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
           },
         },
         { $unwind: "$avlaga.guilgeenuud" },
-        { $match: niitTulsunAldangiMatch },
+        { $match: { "avlaga.guilgeenuud.tulsunAldangi": { $gt: 0 } } },
         {
           $group: {
             _id: null,
             niitTulsunAldangi: {
+              $sum: {
+                $cond: [
+                  req.body.ognoo && req.body.ognoo[0] && req.body.ognoo[1]
+                    ? {
+                      $and: [
+                        { $gte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.ognoo[0])] },
+                        { $lte: ["$avlaga.guilgeenuud.ognoo", new Date(req.body.ognoo[1])] },
+                      ],
+                    }
+                    : true,
+                  { $ifNull: ["$avlaga.guilgeenuud.tulsunAldangi", 0] },
+                  0,
+                ],
+              },
+            },
+            totalPaidAllTime: {
               $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunAldangi", 0] },
             },
           },
@@ -2158,6 +2165,31 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
       const niitTulsunAldangi = parseFloat(
         (aldangiAggResult[0]?.niitTulsunAldangi || 0).toFixed(2),
       );
+      const totalPaidAllTime = parseFloat(
+        (aldangiAggResult[0]?.totalPaidAllTime || 0).toFixed(2),
+      );
+
+
+      const tuukhAgg = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).aggregate([
+        { $match: { gereeniiId: geree._id.toString() } },
+        { $group: { _id: null, totalAccrued: { $sum: { $ifNull: ["$aldangi", 0] } } } },
+      ]);
+      const totalAccrued = parseFloat((tuukhAgg[0]?.totalAccrued || 0).toFixed(2));
+      const rawAldangi = totalAccrued - totalPaidAllTime;
+      const aldangiinUldegdel = parseFloat(
+        (Math.abs(rawAldangi) < 0.01 ? 0 : rawAldangi).toFixed(2),
+      );
+
+      console.log("[uldegdelBodyo]", {
+        gereeniiDugaar: req.body.gereeniiDugaar,
+        gereeId: geree?._id,
+        totalAccrued,
+        totalPaidAllTime,
+        rawAldangi,
+        aldangiinUldegdel,
+        niitTulsunAldangi,
+        tureesiinUldegdel,
+      });
 
       const baritsaaBalance = Math.max(
         0,
@@ -2251,7 +2283,7 @@ exports.khungulultKhadgalya = asyncHandler(async (req, res, next) => {
               (a) =>
                 (a.turul === "khuvaari" || a.turul === "avlaga") &&
                 moment(a.ognoo).format("YYYY/MM") ===
-                  moment(ognoo).format("YYYY/MM"),
+                moment(ognoo).format("YYYY/MM"),
             );
             if (filterGuilgeenuud?.length > 0) {
               var khyamdral = {
@@ -2519,8 +2551,8 @@ exports.talbainIdnuudOruulya = asyncHandler(async (req, res, next) => {
       }
     await Geree(req.body.tukhainBaaziinKholbolt)
       .bulkWrite(bulkOps)
-      .then((bulkWriteOpResult) => {})
-      .catch((err) => {});
+      .then((bulkWriteOpResult) => { })
+      .catch((err) => { });
     res.send("zasagdsanToo : " + gereenuud.length);
   } catch (err) {
     next(err);
@@ -3055,8 +3087,8 @@ exports.tsutsalgdanGuilgeeZasya = asyncHandler(async (req, res, next) => {
       }
       await Geree(req.body.tukhainBaaziinKholbolt)
         .bulkWrite(bulkOps)
-        .then((bulkWriteOpResult) => {})
-        .catch((err) => {});
+        .then((bulkWriteOpResult) => { })
+        .catch((err) => { });
       res.send(jagsaalt.length.toString());
     } else res.send("0");
   } catch (err) {
@@ -3322,8 +3354,8 @@ async function daraagiinTulukhOgnooZasya(gereeniiId, tukhainBaaziinKholbolt) {
     .findByIdAndUpdate(gereeniiId, {
       $set: { daraagiinTulukhOgnoo: tulukhOgnoo },
     })
-    .then((result) => {})
-    .catch((err) => {});
+    .then((result) => { })
+    .catch((err) => { });
 }
 
 exports.tulukhOgnooZasya = asyncHandler(async (req, res, next) => {
@@ -3528,9 +3560,9 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
           geree.tulukhUdur.forEach((udur) => {
             if (
               moment(unuudur).add(index, "month").set("date", udur) <=
-                moment(geree.duusakhOgnoo) &&
+              moment(geree.duusakhOgnoo) &&
               moment(unuudur).add(index, "month").set("date", udur) >=
-                moment().startOf("month")
+              moment().startOf("month")
             ) {
               var tukhainUdur = moment(unuudur)
                 .add(index, "month")
@@ -3561,9 +3593,9 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
                       return (
                         a.turul == "avlaga" &&
                         a.tulukhDun ==
-                          tooZasyaSync(
-                            zardal.tariff * talbai.talbainKhemjeeMetrKube,
-                          ) &&
+                        tooZasyaSync(
+                          zardal.tariff * talbai.talbainKhemjeeMetrKube,
+                        ) &&
                         moment(a.ognoo).isSame(tukhainUdur, "day") &&
                         a.tailbar == zardal.ner
                       );
@@ -3586,7 +3618,7 @@ exports.gereenuudZasya = asyncHandler(async (req, res, next) => {
                       return (
                         a.turul == "avlaga" &&
                         a.tulukhDun ==
-                          tooZasyaSync(zardal.tariff * talbai.talbainKhemjee) &&
+                        tooZasyaSync(zardal.tariff * talbai.talbainKhemjee) &&
                         moment(a.ognoo).isSame(tukhainUdur, "day") &&
                         a.tailbar == zardal.ner
                       );
@@ -3683,8 +3715,8 @@ exports.fcZasvarKhiie = asyncHandler(async (req, res, next) => {
     if (bulkOps.length > 0)
       await TogloomiinTuv(req.body.tukhainBaaziinKholbolt)
         .bulkWrite(bulkOps)
-        .then((bulkWriteOpResult) => {})
-        .catch((err) => {});
+        .then((bulkWriteOpResult) => { })
+        .catch((err) => { });
     res.send(bulkOps.length.toString());
   } catch (err) {
     next(err);
@@ -3751,8 +3783,8 @@ exports.avlagaZasay = asyncHandler(async (req, res, next) => {
       if (bulkAvlaga?.length > 0) {
         await Geree(req.body.tukhainBaaziinKholbolt)
           .bulkWrite(bulkAvlaga)
-          .then((bulkWriteOpResult) => {})
-          .catch((err) => {});
+          .then((bulkWriteOpResult) => { })
+          .catch((err) => { });
       }
       res.send(bulkAvlaga);
     }
@@ -3968,12 +4000,12 @@ module.exports.aldangiTegBolgoy = async function aldangiTegBolgoy(
           if (bulkOps && bulkOps.length > 0)
             await Geree(kholbolt)
               .bulkWrite(bulkOps)
-              .then((bulkWriteOpResult) => {})
-              .catch((err) => {});
+              .then((bulkWriteOpResult) => { })
+              .catch((err) => { });
         }
       }
     }
-  } catch (error) {}
+  } catch (error) { }
 };
 
 exports.daraagiinTulukhOgnooZasya = async function (
