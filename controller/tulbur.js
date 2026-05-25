@@ -2098,7 +2098,7 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
           barilgiinId: req.body.barilgiinId,
         })
         .select(
-          "baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun avlaga.ekhniiUldegdel ekhniiUldegdel uldegdel",
+          "aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun avlaga.ekhniiUldegdel ekhniiUldegdel uldegdel",
         )
         .lean();
 
@@ -2156,36 +2156,22 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
                 ],
               },
             },
-            totalPaidAllTime: {
-              $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunAldangi", 0] },
-            },
           },
         },
       ]);
       const niitTulsunAldangi = parseFloat(
         (aldangiAggResult[0]?.niitTulsunAldangi || 0).toFixed(2),
       );
-      const totalPaidAllTime = parseFloat(
-        (aldangiAggResult[0]?.totalPaidAllTime || 0).toFixed(2),
-      );
 
-
-      const tuukhAgg = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).aggregate([
-        { $match: { gereeniiId: geree._id.toString() } },
-        { $group: { _id: null, totalAccrued: { $sum: { $ifNull: ["$aldangi", 0] } } } },
-      ]);
-      const totalAccrued = parseFloat((tuukhAgg[0]?.totalAccrued || 0).toFixed(2));
-      const rawAldangi = totalAccrued - totalPaidAllTime;
+      const rawAldangi = geree?.aldangiinUldegdel || 0;
       const aldangiinUldegdel = parseFloat(
-        (Math.abs(rawAldangi) < 0.01 ? 0 : rawAldangi).toFixed(2),
+        (Math.abs(rawAldangi) < 1 ? 0 : rawAldangi).toFixed(2),
       );
 
       console.log("[uldegdelBodyo]", {
         gereeniiDugaar: req.body.gereeniiDugaar,
         gereeId: geree?._id,
-        totalAccrued,
-        totalPaidAllTime,
-        rawAldangi,
+        storedAldangiinUldegdel: geree?.aldangiinUldegdel,
         aldangiinUldegdel,
         niitTulsunAldangi,
         tureesiinUldegdel,
