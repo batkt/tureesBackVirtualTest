@@ -1,7 +1,5 @@
 const { db } = require("zevbackv2");
-const {
-  Uilchluulegch,
-} = require("parking-v2");
+const { Uilchluulegch } = require("parking-v2");
 const Baiguullaga = require("../models/baiguullaga");
 const { handleEbarimt } = require("./tokiEbarimtService");
 
@@ -28,6 +26,12 @@ async function kioskEbarimtAvya(req) {
     req,
     nuatTulukhEsekh,
   });
-  return ebarimtResult;
+  return {
+    ...ebarimtResult,
+    data: {
+      ...ebarimtResult.data,
+      eBarimtZogsoolNer: tuxainSalbar?.eBarimtZogsoolNer ?? "",
+    },
+  };
 }
 module.exports = { kioskEbarimtAvya };
