@@ -1614,7 +1614,7 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
         aldangiBodsonOgnoo: { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
       })
       .lean();
-    const penaltyDebit = aldangiGuilgeenuud.reduce((s, a) => s + (a.totalAldangi || 0), 0);
+    const penaltyDebit = aldangiGuilgeenuud.reduce((s, a) => s + (a.aldangi || 0), 0);
 
     const baritsaaAvakhDun = geree.baritsaaAvakhDun || 0;
     const baritsaaTulultArr = [...(geree.avlaga?.baritsaa || [])]
