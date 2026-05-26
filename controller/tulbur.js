@@ -1968,15 +1968,18 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
     ],
   };
 
-  var valTuluv = req.body.tsutsalsanTurul ? { $in: [-1] } : { $nin: [-1] };
-  var query = [
-    {
-      $match: {
+  var valTuluv = req.body.tsutsalsanTurul ? -1 : 1;
+  var firstMatch = req.body.gereeniiId
+    ? { _id: new mongoose.Types.ObjectId(req.body.gereeniiId), tuluv: valTuluv }
+    : {
         gereeniiDugaar: req.body.gereeniiDugaar,
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
         tuluv: valTuluv,
-      },
+      };
+  var query = [
+    {
+      $match: firstMatch,
     },
     {
       $unwind: {
@@ -2091,12 +2094,16 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
   Geree(req.body.tukhainBaaziinKholbolt, true)
     .aggregate(query)
     .then(async (result) => {
+      const gereeQuery = req.body.gereeniiId
+        ? { _id: new mongoose.Types.ObjectId(req.body.gereeniiId) }
+        : {
+            gereeniiDugaar: req.body.gereeniiDugaar,
+            baiguullagiinId: req.body.baiguullagiinId,
+            barilgiinId: req.body.barilgiinId,
+            tuluv: valTuluv,
+          };
       const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
-        .findOne({
-          gereeniiDugaar: req.body.gereeniiDugaar,
-          baiguullagiinId: req.body.baiguullagiinId,
-          barilgiinId: req.body.barilgiinId,
-        })
+        .findOne(gereeQuery)
         .select(
           "aldangiinUldegdel baritsaaniiUldegdel baritsaaTulsunDun baritsaaAvakhDun ekhniiUldegdel uldegdel",
         )
@@ -2168,7 +2175,10 @@ exports.uldegdelBodyo = asyncHandler(async (req, res, next) => {
 
       console.log("[uldegdelBodyo]", {
         gereeniiDugaar: req.body.gereeniiDugaar,
+        requestedGereeniiId: req.body.gereeniiId,
         gereeId: geree?._id,
+        contractBeginning,
+        rawAggregate: result[0]?.tureesiinUldegdel,
         storedAldangiinUldegdel: geree?.aldangiinUldegdel,
         aldangiinUldegdel,
         niitTulsunAldangi,
