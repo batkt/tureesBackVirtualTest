@@ -255,46 +255,38 @@ router
   .get(tokenShalgakh, (req, res, next) => {
     Geree(req.body.tukhainBaaziinKholbolt, true)
       .findById(req.params.gereeniiId)
-      .select("avlaga ekhniiUldegdel")
-      .lean()
+      .select("avlaga")
       .then((result) => {
         if (lodash.isArray(lodash.get(result, "avlaga.guilgeenuud"))) {
           var a = lodash
             .get(result, "avlaga.guilgeenuud")
             .filter(
               (a) =>
-                (a.ekhniiUldegdelEsekh && a.turul === "khuvaari") ||
-                ((a.ognoo < new Date(req.query.duusakhOgnoo) &&
+                (a.ognoo < new Date(req.query.duusakhOgnoo) &&
                   a.turul != "baritsaa" &&
-                  (parseFloat(a.tulsunDun) != 0 ||
-                    parseFloat(a.tulukhDun) != 0 ||
-                    parseFloat(a.khyamdral) != 0) &&
+                  (a.tulsunDun != 0 || a.tulukhDun != 0 || a.khyamdral != 0) &&
                   a.turul != "aldangi") ||
-                  (a.turul === "baritsaa" && parseFloat(a.tulsunDun) > 0)),
+                (a.turul === "baritsaa" && a.tulsunDun > 0),
             );
           if (!!req.query.shineOgnoo) {
             const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
             if (endOgnoo && startOgnoo) {
               a = a.filter(
                 (data) =>
-                  data.ekhniiUldegdelEsekh ||
-                  (data.ognoo < new Date(endOgnoo) &&
-                    data.ognoo >= new Date(startOgnoo)),
+                  data.ognoo < new Date(endOgnoo) &&
+                  data.ognoo >= new Date(startOgnoo),
               );
             }
           }
           a = lodash.orderBy(a, ["ognoo"], ["asc"]);
-          var contractBeginning = parseFloat(
-            result?.avlaga?.ekhniiUldegdel || result?.ekhniiUldegdel || 0,
-          );
-          var uldegdel = contractBeginning;
+          var uldegdel = 0;
           a.forEach((x) => {
             uldegdel =
               uldegdel +
               (x.tulukhDun ? x.tulukhDun : 0) -
               (x.tulsunDun ? x.tulsunDun : 0) -
               (x.khyamdral ? x.khyamdral : 0);
-            x.uldegdel = uldegdel;
+            a.uldegdel = uldegdel;
           });
           res.send(a);
         }
@@ -384,14 +376,9 @@ router
             .get(result, "avlaga.guilgeenuud")
             .filter(
               (a) =>
-                !(a.ekhniiUldegdelEsekh && a.turul === "khuvaari") &&
-                ((a.ognoo < new Date(req.query.duusakhOgnoo) &&
-                  a.turul != "baritsaa" &&
-                  (parseFloat(a.tulsunDun) != 0 ||
-                    parseFloat(a.tulukhDun) != 0 ||
-                    parseFloat(a.khyamdral) != 0) &&
-                  a.turul != "aldangi") ||
-                  (a.turul === "baritsaa" && parseFloat(a.tulsunDun) > 0)),
+                a.ognoo < new Date(req.query.duusakhOgnoo) &&
+                (a.turul === "aldangi" ||
+                  (a.turul === "bank" && a.tulsunAldangi > 0)),
             );
           if (!!req.query.shineOgnoo) {
             const { endOgnoo, startOgnoo } = JSON.parse(req.query.shineOgnoo);
@@ -470,7 +457,7 @@ router
   });
 
 router
-  .route("/geree/gereeniiDugaarlaltAvya")
+  .route("/gereeniiDugaarlaltAvya")
   .get(tokenShalgakh, async (req, res, next) => {
     try {
       var maxDugaar = 1;
@@ -5852,16 +5839,6 @@ router
           $set: { aldangiinUldegdel: req.body.aldangiDun },
         },
       );
-      const latestTuukh = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt)
-        .findOne({ gereeniiId: req.body.gereeniiId })
-        .sort({ aldangiBodsonOgnoo: -1 });
-      if (latestTuukh) {
-        await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).findByIdAndUpdate(
-          { _id: latestTuukh._id },
-          { $set: { niitAldangi: req.body.aldangiDun } },
-        );
-      }
-
       var aldangi = {
         baiguullagiinId: req.body.baiguullagiinId,
         barilgiinId: req.body.barilgiinId,
