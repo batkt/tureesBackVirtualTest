@@ -153,13 +153,38 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     var ekhlekhOgnoo = new Date(req.body.ekhlekhOgnoo);
     var duusakhOgnoo = new Date(req.body.duusakhOgnoo);
     var barilgiinId = req.body.barilgiinId;
+    var search = req.body.search;
+    var davkhar = req.body.davkhar;
+
     const showTsutslagdsanAvlagaColumn =
       !!req.body.showTsutslagdsanAvlagaColumn;
     const tuluvFilter = showTsutslagdsanAvlagaColumn
       ? {}
       : { tuluv: { $ne: -1 } };
+
+    let searchFilter = {};
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      searchFilter = {
+        $or: [
+          { register: searchRegex },
+          { customerTin: searchRegex },
+          { talbainDugaar: searchRegex },
+          { gereeniiDugaar: searchRegex },
+          { utas: searchRegex },
+          { ovog: searchRegex },
+          { ner: searchRegex },
+        ],
+      };
+    }
+
+    if (davkhar) {
+      searchFilter.davkhar = davkhar;
+    }
+
     var match = {
       "avlaga.guilgeenuud.ognoo": {
+        $gte: ekhlekhOgnoo,
         $lte: duusakhOgnoo,
       },
       $or: [
@@ -185,6 +210,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       ],
       baiguullagiinId: req.body.baiguullagiinId,
       ...tuluvFilter,
+      ...searchFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     let query = [
@@ -247,6 +273,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     match = {
       baiguullagiinId: req.body.baiguullagiinId,
       ...tuluvFilter,
+      ...searchFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
@@ -257,7 +284,14 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $group: {
           _id: "avlaga",
           dun: {
-            $sum: { $ifNull: ["$aldangiinUldegdel", 0] },
+            $sum: {
+              $convert: {
+                input: { $ifNull: ["$aldangiinUldegdel", 0] },
+                to: "double",
+                onError: 0,
+                onNull: 0
+              }
+            },
           },
           too: {
             $sum: 1,
@@ -266,9 +300,10 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       },
     ];
     var avlagaAldangi = await gereeObject.aggregate(query);
+    var aldangiDunTotal = avlagaAldangi?.[0]?.dun || 0;
     if (avlagaAldangi?.length > 0) {
       if (avlaga?.length > 0) {
-        for (const val of avlaga) val.dun += avlagaAldangi?.[0]?.dun;
+        for (const val of avlaga) val.dun += aldangiDunTotal;
       } else avlaga = avlagaAldangi;
     }
 
@@ -280,6 +315,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       "avlaga.guilgeenuud.turul": "voucher",
       baiguullagiinId: req.body.baiguullagiinId,
       ...tuluvFilter,
+      ...searchFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
@@ -333,6 +369,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       ],
       baiguullagiinId: req.body.baiguullagiinId,
       ...tuluvFilter,
+      ...searchFilter,
       uldegdel: {
         $gte: 0,
       },
@@ -395,6 +432,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $gte: ekhlekhOgnoo,
       },
       baiguullagiinId: req.body.baiguullagiinId,
+      ...searchFilter,
       $or: [
         {
           "avlaga.guilgeenuud.turul": {
@@ -471,6 +509,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $ne: "System",
       },
       baiguullagiinId: req.body.baiguullagiinId,
+      ...searchFilter,
       $or: [
         {
           "avlaga.guilgeenuud.turul": {
@@ -480,7 +519,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         {
           $and: [
             {
-              "avlaga.guilgeenuud.turul": {
+              "avlaga.baritsaa.ognoo": {
                 $in: ["baritsaa"],
               },
             },
@@ -544,6 +583,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       ],
       baiguullagiinId: req.body.baiguullagiinId,
       ...tuluvFilter,
+      ...searchFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
@@ -575,6 +615,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
     match = {
       baiguullagiinId: req.body.baiguullagiinId,
       tuluv: -1,
+      ...searchFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
@@ -669,6 +710,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
         $lte: duusakhOgnoo,
       },
       baiguullagiinId: req.body.baiguullagiinId,
+      ...searchFilter,
     };
     if (!!barilgiinId) match["barilgiinId"] = barilgiinId;
     query = [
@@ -709,6 +751,7 @@ exports.guilgeeniiToololtAvya = asyncHandler(async (req, res, next) => {
       khungulult,
       tsutslagdsanAvlaga,
       baritsaaToololt,
+      avlagaAldangi: aldangiDunTotal,
     });
   } catch (err) {
     next(err);
