@@ -1288,7 +1288,6 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
             $sum: {
               $add: [
                 { $ifNull: ["$guilgeenuud.tulsunDun", 0] },
-                { $ifNull: ["$guilgeenuud.tulsunAldangi", 0] },
                 { $ifNull: ["$guilgeenuud.tulsunBaritsaa", 0] },
                 { $ifNull: ["$guilgeenuud.orlogo", 0] }
               ]
