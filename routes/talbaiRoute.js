@@ -1570,24 +1570,29 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
 
     const geree = await Geree(req.body.tukhainBaaziinKholbolt, true)
       .findOne(gereeMatch2)
-      .select("+avlaga ekhniiUldegdel");
+      .select("+avlaga ekhniiUldegdel baritsaaAvakhDun talbainKhemjee");
 
     if (!geree) return res.json({ guilgeenuud: [], ekhniiUldegdel: 0 });
 
     const contractBeginning = parseFloat(geree?.ekhniiUldegdel || 0);
 
+    
+    const ekhniiGuilgeenuud = (geree.avlaga?.guilgeenuud || []).filter(
+      (g) =>
+        new Date(g.ognoo) < ekhlekhOgnoo &&
+        g.turul !== "aldangi" &&
+        (g.turul !== "baritsaa" || (g.tulsunDun || 0) > 0)
+    );
+    const ekhniiUldegdel = ekhniiGuilgeenuud.reduce(
+      (s, g) => s + (g.tulukhDun || 0) - (g.tulsunDun || 0) - (g.khyamdral || 0),
+      contractBeginning
+    );
+
+    
     const guilgeenuud = (geree.avlaga?.guilgeenuud || []).filter(
       (g) =>
         (g.turul !== "aldangi" || (g.tulsunDun || 0) > 0 || (g.tulsunAldangi || 0) > 0) &&
         (g.turul !== "baritsaa" || (g.tulsunDun || 0) > 0 || (g.tulsunBaritsaa || 0) > 0 || (g.orlogo || 0) > 0)
-    );
-
-    const guilgeenuudBeforeStart = guilgeenuud.filter(
-      (g) => new Date(g.ognoo) < ekhlekhOgnoo
-    );
-    const ekhniiUldegdel = guilgeenuudBeforeStart.reduce(
-      (s, g) => s + (g.tulukhDun || 0) - (g.tulsunDun || 0) - (g.khyamdral || 0),
-      contractBeginning
     );
 
     const periodGuilgeenuud = guilgeenuud
@@ -1598,10 +1603,33 @@ router.route("/avlagaTovchooDelgerengui").post(tokenShalgakh, async (req, res, n
       )
       .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
 
-    const etssiinUldegdel = periodGuilgeenuud.reduce(
-      (s, g) => s + (g.tulukhDun || 0) - (g.tulsunDun || 0) - (g.khyamdral || 0),
-      ekhniiUldegdel
+    
+    const periodRentUtilDebits = periodGuilgeenuud
+      .filter((g) => g.turul !== "aldangi" && g.turul !== "baritsaa")
+      .reduce((s, g) => s + (g.tulukhDun || 0), 0);
+
+    const aldangiGuilgeenuud = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt)
+      .find({
+        gereeniiId: geree._id.toString(),
+        aldangiBodsonOgnoo: { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+      })
+      .lean();
+    const penaltyDebit = aldangiGuilgeenuud.reduce((s, a) => s + (a.totalAldangi || 0), 0);
+
+    const baritsaaAvakhDun = geree.baritsaaAvakhDun || 0;
+    const baritsaaTulultArr = [...(geree.avlaga?.baritsaa || [])]
+      .sort((a, b) => new Date(a.ognoo) - new Date(b.ognoo));
+    const baritsaaniiUldegdelAtStart = baritsaaTulultArr
+      .filter((b) => new Date(b.ognoo) < ekhlekhOgnoo)
+      .reduce((s, b) => s + ((b.tulsunDun || 0) + (b.orlogo || 0)), 0);
+    const baritsaaOutstanding = Math.max(0, baritsaaAvakhDun - baritsaaniiUldegdelAtStart);
+
+    const periodKt = periodGuilgeenuud.reduce(
+      (s, g) => s + (g.tulsunDun || 0) + (g.tulsunBaritsaa || 0) + (g.orlogo || 0) + (g.khyamdral || 0),
+      0
     );
+
+    const etssiinUldegdel = ekhniiUldegdel + periodRentUtilDebits + penaltyDebit + baritsaaOutstanding - periodKt;
 
     res.json({
       ekhniiUldegdel,
