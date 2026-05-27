@@ -1394,6 +1394,8 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                   (a) => a._id.id.toString() === geree._id.id.toString(),
                 )?.tulsun || 0;
               var uldegdel = geree.uldegdel + umnukhUldegdel - tulsunDun;
+              console.log("start --->" + JSON.stringify(start));
+              console.log("end --->" + JSON.stringify(end));
               console.log("Uldegdel: " + uldegdel);
               console.log("umnukhUldegdel: " + umnukhUldegdel);
               console.log("tulsunDun: " + tulsunDun);
