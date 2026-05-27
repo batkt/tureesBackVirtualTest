@@ -2652,6 +2652,7 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
           barilgiinId: { $first: "$barilgiinId" },
           barilgiiinNer: { $first: "$barilgiiinNer" },
           talbainDugaar: { $first: "$talbainDugaar" },
+          uldegdel: { $first: "$uldegdel" },
           tulukhDun: {
             $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
           },
@@ -2660,6 +2661,14 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
           },
           khyamdral: {
             $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+          },
+          records: {
+            $push: {
+              ognoo: "$avlaga.guilgeenuud.ognoo",
+              tulukhDun: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
+              tailbar: "$avlaga.guilgeenuud.tailbar",
+              zardliinNer: "$avlaga.guilgeenuud.zardliinNer",
+            },
           },
         };
 
@@ -2709,6 +2718,13 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
             $group: {
               _id: { gereeniiDugaar: "$gereeniiDugaar", barilgiinId: "$barilgiinId" },
               khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
+              khRecords: {
+                $push: {
+                  ognoo: "$avlaga.guilgeenuud.ognoo",
+                  khyamdral: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+                  tailbar: "$avlaga.guilgeenuud.tailbar",
+                },
+              },
             },
           },
         ]),
@@ -2719,6 +2735,13 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
             $group: {
               _id: "$gereeniiDugaar",
               tulsunDun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
+              bankRecords: {
+                $push: {
+                  ognoo: "$avlaga.guilgeenuud.ognoo",
+                  tulsunDun: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+                  turul: "$avlaga.guilgeenuud.turul",
+                },
+              },
             },
           },
         ]),
@@ -2730,12 +2753,18 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
             r._id.gereeniiDugaar === kd._id.gereeniiDugaar &&
             (r._id.barilgiinId || "") === (kd._id.barilgiinId || "")
         );
-        if (row && kd.khyamdral > 0) row.khyamdral = (row.khyamdral || 0) + kd.khyamdral;
+        if (row && kd.khyamdral > 0) {
+          row.khyamdral = (row.khyamdral || 0) + kd.khyamdral;
+          row.khRecords = [...(row.khRecords || []), ...(kd.khRecords || [])];
+        }
       });
 
       bankData.forEach((bd) => {
         const row = rows.find((r) => r.gereeniiDugaar === bd._id);
-        if (row && bd.tulsunDun > 0) row.tulsunDun = (row.tulsunDun || 0) + bd.tulsunDun;
+        if (row && bd.tulsunDun > 0) {
+          row.tulsunDun = (row.tulsunDun || 0) + bd.tulsunDun;
+          row.bankRecords = [...(row.bankRecords || []), ...(bd.bankRecords || [])];
+        }
       });
     }
 
