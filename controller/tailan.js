@@ -11,6 +11,7 @@ const { Dans } = require("zevbackv2");
 const AshiglaltiinZardluud = require("../models/ashiglaltiinZardluud");
 const Ajiltan = require("../models/ajiltan");
 const Talbai = require("../models/talbai");
+const AldangiinTuukh = require("../models/aldangiinTuukh");
 
 const unguud = [
   "rgba(255, 99, 132, 0.5)",
@@ -2534,8 +2535,35 @@ exports.orlogiinTuruulaarAvya = asyncHandler(async (req, res, next) => {
       { $sort: { tulukhDun: -1 } },
     ];
 
-    var khariu = await gereeObject.aggregate(query);
-    res.send(khariu);
+    const aldangiMatch = {
+      baiguullagiinId: req.body.baiguullagiinId,
+      aldangiBodsonOgnoo: { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+    };
+    if (req.body.barilgiinId) aldangiMatch.barilgiinId = req.body.barilgiinId;
+
+    const [khariu, aldangiData] = await Promise.all([
+      gereeObject.aggregate(query),
+      AldangiinTuukh(req.body.tukhainBaaziinKholbolt).aggregate([
+        { $match: aldangiMatch },
+        { $group: { _id: null, tulukhDun: { $sum: { $ifNull: ["$aldangi", 0] } } } },
+      ]),
+    ]);
+
+    const aldangiTulukh = aldangiData?.[0]?.tulukhDun || 0;
+    const existingAldangi = khariu.find((a) => a._id === "aldangi");
+    const aldangiTulsun = existingAldangi?.tulsunDun || 0;
+
+    const filteredKhariu = khariu.filter((a) => a._id !== "aldangi");
+    if (aldangiTulukh > 0 || aldangiTulsun > 0) {
+      filteredKhariu.push({
+        _id: "aldangi",
+        tulukhDun: aldangiTulukh,
+        tulsunDun: aldangiTulsun,
+        khyamdral: 0,
+      });
+    }
+
+    res.send(filteredKhariu);
   } catch (err) {
     next(err);
   }
@@ -2576,9 +2604,11 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
           },
         }
       : {
-          _id: "$gereeniiDugaar",
+          _id: { gereeniiDugaar: "$gereeniiDugaar", barilgiinId: "$barilgiinId" },
           ner: { $first: "$ner" },
           gereeniiDugaar: { $first: "$gereeniiDugaar" },
+          barilgiinId: { $first: "$barilgiinId" },
+          barilgiiinNer: { $first: "$barilgiiinNer" },
           talbainDugaar: { $first: "$talbainDugaar" },
           tulukhDun: {
             $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },

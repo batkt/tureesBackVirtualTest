@@ -1154,12 +1154,13 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       },
       {
         $group: {
-          _id: "$gereeniiDugaar",
+          _id: { gereeniiDugaar: "$gereeniiDugaar", barilgiinId: "$barilgiinId" },
           gereeId: { $first: "$_id" },
           ner: { $first: "$ner" },
           register: { $first: "$register" },
           talbainDugaar: { $first: "$talbainDugaar" },
           barilgiiinNer: { $first: "$barilgiiinNer" },
+          barilgiinId: { $first: "$barilgiinId" },
           talbainKhemjee: { $first: "$talbainKhemjee" },
           tuluv: { $first: "$tuluv" },
           aldangiinUldegdel: { $first: "$aldangiinUldegdel" },
@@ -1174,7 +1175,7 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       {
         $project: {
           gereeId: 1,
-          ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, talbainKhemjee: 1, tuluv: 1,
+          ner: 1, register: 1, talbainDugaar: 1, barilgiiinNer: 1, barilgiinId: 1, talbainKhemjee: 1, tuluv: 1,
           aldangiinUldegdel: 1, baritsaaAvakhDun: 1, baritsaaniiUldegdel: 1, baritsaaniiUldegdelAtStart: 1,
           ekhniiUldegdel: { $subtract: ["$tulukh", { $add: ["$tulsun", "$khyamdral"] }] },
         },
@@ -1271,12 +1272,13 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       },
       {
         $group: {
-          _id: "$gereeniiDugaar",
+          _id: { gereeniiDugaar: "$gereeniiDugaar", barilgiinId: "$barilgiinId" },
           gereeId: { $first: "$_id" },
           ner: { $first: "$ner" },
           register: { $first: "$register" },
           talbainDugaar: { $first: "$talbainDugaar" },
           barilgiiinNer: { $first: "$barilgiiinNer" },
+          barilgiinId: { $first: "$barilgiinId" },
           talbainKhemjee: { $first: "$talbainKhemjee" },
           tuluv: { $first: "$tuluv" },
           aldangiinUldegdel: { $first: "$aldangiinUldegdel" },
@@ -1356,10 +1358,14 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
     });
 
     const periodMap = {};
-    periodData.forEach((p) => { periodMap[p._id] = p; });
+    periodData.forEach((p) => {
+      const key = `${p._id.gereeniiDugaar}|${p._id.barilgiinId || ""}`;
+      periodMap[key] = p;
+    });
 
     const result = ekhniiData.map((e) => {
-      const p = periodMap[e._id] || {};
+      const key = `${e._id.gereeniiDugaar}|${e._id.barilgiinId || ""}`;
+      const p = periodMap[key] || {};
       const ekh = e.ekhniiUldegdel || 0;
       const targetGereeId = e.gereeId || p.gereeId;
       const penaltyDebit = targetGereeId ? (aldangiMap[targetGereeId.toString()] || 0) : 0;
@@ -1383,11 +1389,12 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       const kt = tulsun + khyamdralTurees + khyamdralAshiglalt;
 
       return {
-        gereeniiDugaar: e._id,
+        gereeniiDugaar: e._id.gereeniiDugaar,
         ner: e.ner || p.ner,
         register: e.register || p.register,
         talbainDugaar: e.talbainDugaar || p.talbainDugaar,
         barilgiiinNer: e.barilgiiinNer || p.barilgiiinNer,
+        barilgiinId: e.barilgiinId || p.barilgiinId || e._id.barilgiinId,
         talbainKhemjee: e.talbainKhemjee || p.talbainKhemjee,
         ekhniiUldegdel: ekh,
         niitDt: dt,
@@ -1404,8 +1411,12 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
       };
     });
 
+    const ekhniiKeys = new Set(
+      ekhniiData.map((e) => `${e._id.gereeniiDugaar}|${e._id.barilgiinId || ""}`)
+    );
     periodData.forEach((p) => {
-      if (!ekhniiData.find((e) => e._id === p._id)) {
+      const key = `${p._id.gereeniiDugaar}|${p._id.barilgiinId || ""}`;
+      if (!ekhniiKeys.has(key)) {
         const tulsun = p.niitTulsun || 0;
         const khyamdralTurees = p.niitKhyamdralTurees || 0;
         const khyamdralAshiglalt = p.niitKhyamdralAshiglalt || 0;
@@ -1413,15 +1424,16 @@ router.route("/avlagaTovchoo").post(tokenShalgakh, async (req, res, next) => {
         const penaltyDebit = p.gereeId ? (aldangiMap[p.gereeId.toString()] || 0) : 0;
         const baritsaaAvakhDun = p.baritsaaAvakhDun || 0;
         const baritsaaniiUldegdelAtStart = p.baritsaaniiUldegdelAtStart || 0;
-       
+
         const baritsaaOutstanding = Math.max(0, baritsaaAvakhDun - baritsaaniiUldegdelAtStart);
         const dt = (p.niitDt || 0) + penaltyDebit + baritsaaOutstanding;
         result.push({
-          gereeniiDugaar: p._id,
+          gereeniiDugaar: p._id.gereeniiDugaar,
           ner: p.ner,
           register: p.register,
           talbainDugaar: p.talbainDugaar,
           barilgiiinNer: p.barilgiiinNer,
+          barilgiinId: p.barilgiinId || p._id.barilgiinId,
           talbainKhemjee: p.talbainKhemjee,
           ekhniiUldegdel: 0,
           niitDt: dt,
