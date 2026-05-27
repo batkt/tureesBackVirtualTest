@@ -1383,7 +1383,6 @@ module.exports.aldangiBodyo = async function aldangiBodyo(
                     },
                   },
                 },
-                { $match: { uldegdel: { $lt: 0 } } },
               ]);
               var umnukhUldegdel = 0;
               if (songosonGereenuud?.length > 0)
