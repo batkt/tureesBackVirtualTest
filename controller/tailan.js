@@ -2652,7 +2652,6 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
           barilgiinId: { $first: "$barilgiinId" },
           barilgiiinNer: { $first: "$barilgiiinNer" },
           talbainDugaar: { $first: "$talbainDugaar" },
-          uldegdel: { $first: "$uldegdel" },
           tulukhDun: {
             $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
           },
@@ -2766,6 +2765,54 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
           row.bankRecords = [...(row.bankRecords || []), ...(bd.bankRecords || [])];
         }
       });
+    }
+    if (!isBank && turul !== "baritsaa") {
+      const gereeniiDugaaruud = [...new Set(rows.map((r) => r.gereeniiDugaar).filter(Boolean))];
+      if (gereeniiDugaaruud.length > 0) {
+        const uldegdelBaseMatch = {
+          gereeniiDugaar: { $in: gereeniiDugaaruud },
+          baiguullagiinId: req.body.baiguullagiinId,
+          tuluv: { $ne: -1 },
+        };
+        if (req.body.barilgiinId) uldegdelBaseMatch["barilgiinId"] = req.body.barilgiinId;
+
+        const uldegdelData = await gereeObject.aggregate([
+          { $match: uldegdelBaseMatch },
+          { $unwind: { path: "$avlaga.guilgeenuud" } },
+          {
+            $match: {
+              $or: [
+                { "avlaga.guilgeenuud.turul": { $nin: ["aldangi", "baritsaa"] } },
+                {
+                  $and: [
+                    { "avlaga.guilgeenuud.turul": "baritsaa" },
+                    { "avlaga.guilgeenuud.tulsunDun": { $gt: 0 } },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            $group: {
+              _id: "$gereeniiDugaar",
+              tulukh: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
+              khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
+              tulsun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
+            },
+          },
+          {
+            $project: {
+              uldegdel: {
+                $max: [0, { $subtract: ["$tulukh", { $sum: ["$tulsun", "$khyamdral"] }] }],
+              },
+            },
+          },
+        ]);
+
+        const uldegdelMap = {};
+        uldegdelData.forEach((d) => { uldegdelMap[d._id] = d.uldegdel || 0; });
+        rows.forEach((r) => { r.uldegdel = uldegdelMap[r.gereeniiDugaar] || 0; });
+      }
     }
 
     res.send(rows);
