@@ -2549,8 +2549,8 @@ exports.orlogiinTuruulaarAvya = asyncHandler(async (req, res, next) => {
       ]),
     ]);
 
-    const aldangiTulukh = aldangiData?.[0]?.tulukhDun || 0;
     const existingAldangi = khariu.find((a) => a._id === "aldangi");
+    const aldangiTulukh = aldangiData?.[0]?.tulukhDun || existingAldangi?.tulukhDun || 0;
     const aldangiTulsun = existingAldangi?.tulsunDun || 0;
 
     const filteredKhariu = khariu.filter((a) => a._id !== "aldangi");
@@ -2637,6 +2637,37 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
           row.bankNer = dansInfo?.bank || row.dansniiDugaar;
         }
       }
+    }
+
+    // For non-bank, non-khungulult types: merge khyamdral from khungulult records per contract
+    if (!isBank && turul !== "khungulult" && turul !== "khyamdral" && turul !== "baritsaa") {
+      const khMatch = {
+        "avlaga.guilgeenuud.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+        "avlaga.guilgeenuud.turul": "khungulult",
+        baiguullagiinId: req.body.baiguullagiinId,
+        tuluv: { $ne: -1 },
+      };
+      if (req.body.barilgiinId) khMatch["barilgiinId"] = req.body.barilgiinId;
+
+      const khData = await gereeObject.aggregate([
+        { $unwind: { path: "$avlaga.guilgeenuud" } },
+        { $match: khMatch },
+        {
+          $group: {
+            _id: { gereeniiDugaar: "$gereeniiDugaar", barilgiinId: "$barilgiinId" },
+            khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
+          },
+        },
+      ]);
+
+      khData.forEach((kd) => {
+        const row = rows.find(
+          (r) =>
+            r._id.gereeniiDugaar === kd._id.gereeniiDugaar &&
+            (r._id.barilgiinId || "") === (kd._id.barilgiinId || "")
+        );
+        if (row && kd.khyamdral > 0) row.khyamdral = (row.khyamdral || 0) + kd.khyamdral;
+      });
     }
 
     res.send(rows);

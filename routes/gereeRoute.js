@@ -4959,11 +4959,13 @@ router
       const crypto = require("crypto");
       if (talbainuud != null && talbainuud.length > 0) {
         var talbainDugaaruud = [];
+        var talbainIds = [];
         var tooluuriinDugaaruud = "";
         var tatakhOgnoo = new Date(req.body.ognoo);
         talbainuud.forEach((a) => {
           tooluuriinDugaaruud = tooluuriinDugaaruud + a.tooluuriinDugaar + ",";
           talbainDugaaruud.push(a.kod);
+          talbainIds.push(a._id);
         });
         tooluuriinDugaaruud = tooluuriinDugaaruud.slice(0, -1);
         //talbainDugaaruud = "241008002701,241008002702,241008002703";
@@ -5016,7 +5018,10 @@ router
         butsaakhJagsaalt = [];
         var niitGereenuud = await Geree(req.body.tukhainBaaziinKholbolt, true)
           .find({
-            talbainDugaar: { $in: talbainDugaaruud },
+            $or: [
+              { talbainDugaar: { $in: talbainDugaaruud } },
+              { talbainIdnuud: { $in: talbainIds } },
+            ],
           })
           .select("+avlaga");
         for (const x of talbainuud) {
@@ -5027,7 +5032,9 @@ router
             var umnukhZaalt = 0;
             var guidliinKoep = 1;
             var relevantGereenuud = niitGereenuud.filter(
-              (a) => a.talbainDugaar == x.kod,
+              (a) =>
+                a.talbainDugaar == x.kod ||
+                (a.talbainIdnuud && a.talbainIdnuud.some((id) => id.toString() === x._id.toString())),
             );
             var activeGereenuud = relevantGereenuud.filter(
               (a) => a.tuluv === 1,
