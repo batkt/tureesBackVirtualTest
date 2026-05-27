@@ -2515,25 +2515,70 @@ exports.orlogiinTuruulaarAvya = asyncHandler(async (req, res, next) => {
     };
     if (req.body.barilgiinId) match["barilgiinId"] = req.body.barilgiinId;
 
-    let query = [
+   
+    const contractData = await gereeObject.aggregate([
       { $unwind: { path: "$avlaga.guilgeenuud" } },
       { $match: match },
       {
         $group: {
-          _id: "$avlaga.guilgeenuud.turul",
-          tulukhDun: {
-            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
-          },
-          tulsunDun: {
-            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
-          },
-          khyamdral: {
-            $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+          _id: "$gereeniiDugaar",
+          guilgeenuud: {
+            $push: {
+              turul: "$avlaga.guilgeenuud.turul",
+              tulukhDun: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
+              tulsunDun: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+              khyamdral: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+            },
           },
         },
       },
-      { $sort: { tulukhDun: -1 } },
-    ];
+    ]);
+
+    const PAYMENT_TURULS = ["bank", "qpay", "barter"];
+    const DISCOUNT_TURULS = ["khungulult", "khyamdral"];
+    const byTurul = {};
+
+    for (const contract of contractData) {
+      const { guilgeenuud } = contract;
+
+      const billingItems = guilgeenuud.filter(
+        (g) => !PAYMENT_TURULS.includes(g.turul) && !DISCOUNT_TURULS.includes(g.turul) && g.turul !== "aldangi"
+      );
+      const paymentItems = guilgeenuud.filter((g) => PAYMENT_TURULS.includes(g.turul));
+      const discountItems = guilgeenuud.filter((g) => DISCOUNT_TURULS.includes(g.turul));
+      const aldangiPayItems = guilgeenuud.filter((g) => g.turul === "aldangi");
+
+      const totalPayments = paymentItems.reduce((s, g) => s + (g.tulsunDun || 0), 0);
+      const totalDiscounts = discountItems.reduce((s, g) => s + (g.khyamdral || 0), 0);
+      const totalBilling = billingItems.reduce((s, g) => s + (g.tulukhDun || 0), 0);
+      for (const g of billingItems) {
+        const t = g.turul;
+        if (!byTurul[t]) byTurul[t] = { _id: t, tulukhDun: 0, tulsunDun: 0, khyamdral: 0 };
+        byTurul[t].tulukhDun += g.tulukhDun || 0;
+        if (totalBilling > 0) {
+          const prop = (g.tulukhDun || 0) / totalBilling;
+          byTurul[t].tulsunDun += totalPayments * prop;
+          byTurul[t].khyamdral += totalDiscounts * prop;
+        }
+      }
+      for (const g of paymentItems) {
+        const t = g.turul;
+        if (!byTurul[t]) byTurul[t] = { _id: t, tulukhDun: 0, tulsunDun: 0, khyamdral: 0 };
+        byTurul[t].tulsunDun += g.tulsunDun || 0;
+      }
+      for (const g of aldangiPayItems) {
+        if (!byTurul["aldangi"]) byTurul["aldangi"] = { _id: "aldangi", tulukhDun: 0, tulsunDun: 0, khyamdral: 0 };
+        byTurul["aldangi"].tulsunDun += g.tulsunDun || 0;
+      }
+    }
+    for (const [key, val] of Object.entries(byTurul)) {
+      if (!PAYMENT_TURULS.includes(key) && key !== "aldangi") {
+        val.tulsunDun = Math.round(val.tulsunDun);
+        val.khyamdral = Math.round(val.khyamdral);
+      }
+    }
+
+    const khariu = Object.values(byTurul).sort((a, b) => (b.tulukhDun || 0) - (a.tulukhDun || 0));
 
     const aldangiMatch = {
       baiguullagiinId: req.body.baiguullagiinId,
@@ -2541,12 +2586,9 @@ exports.orlogiinTuruulaarAvya = asyncHandler(async (req, res, next) => {
     };
     if (req.body.barilgiinId) aldangiMatch.barilgiinId = req.body.barilgiinId;
 
-    const [khariu, aldangiData] = await Promise.all([
-      gereeObject.aggregate(query),
-      AldangiinTuukh(req.body.tukhainBaaziinKholbolt).aggregate([
-        { $match: aldangiMatch },
-        { $group: { _id: null, tulukhDun: { $sum: { $ifNull: ["$aldangi", 0] } } } },
-      ]),
+    const aldangiData = await AldangiinTuukh(req.body.tukhainBaaziinKholbolt).aggregate([
+      { $match: aldangiMatch },
+      { $group: { _id: null, tulukhDun: { $sum: { $ifNull: ["$aldangi", 0] } } } },
     ]);
 
     const existingAldangi = khariu.find((a) => a._id === "aldangi");
@@ -2639,8 +2681,10 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
       }
     }
 
-    // For non-bank, non-khungulult types: merge khyamdral from khungulult records per contract
-    if (!isBank && turul !== "khungulult" && turul !== "khyamdral" && turul !== "baritsaa") {
+    const isBillingType =
+      !isBank && turul !== "khungulult" && turul !== "khyamdral" && turul !== "baritsaa";
+
+    if (isBillingType) {
       const khMatch = {
         "avlaga.guilgeenuud.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
         "avlaga.guilgeenuud.turul": "khungulult",
@@ -2649,15 +2693,35 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
       };
       if (req.body.barilgiinId) khMatch["barilgiinId"] = req.body.barilgiinId;
 
-      const khData = await gereeObject.aggregate([
-        { $unwind: { path: "$avlaga.guilgeenuud" } },
-        { $match: khMatch },
-        {
-          $group: {
-            _id: { gereeniiDugaar: "$gereeniiDugaar", barilgiinId: "$barilgiinId" },
-            khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
+      const bankMatch = {
+        "avlaga.guilgeenuud.ognoo": { $gte: ekhlekhOgnoo, $lte: duusakhOgnoo },
+        "avlaga.guilgeenuud.turul": { $in: ["bank", "qpay", "barter"] },
+        baiguullagiinId: req.body.baiguullagiinId,
+        tuluv: { $ne: -1 },
+      };
+      if (req.body.barilgiinId) bankMatch["barilgiinId"] = req.body.barilgiinId;
+
+      const [khData, bankData] = await Promise.all([
+        gereeObject.aggregate([
+          { $unwind: { path: "$avlaga.guilgeenuud" } },
+          { $match: khMatch },
+          {
+            $group: {
+              _id: { gereeniiDugaar: "$gereeniiDugaar", barilgiinId: "$barilgiinId" },
+              khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
+            },
           },
-        },
+        ]),
+        gereeObject.aggregate([
+          { $unwind: { path: "$avlaga.guilgeenuud" } },
+          { $match: bankMatch },
+          {
+            $group: {
+              _id: "$gereeniiDugaar",
+              tulsunDun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
+            },
+          },
+        ]),
       ]);
 
       khData.forEach((kd) => {
@@ -2667,6 +2731,11 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
             (r._id.barilgiinId || "") === (kd._id.barilgiinId || "")
         );
         if (row && kd.khyamdral > 0) row.khyamdral = (row.khyamdral || 0) + kd.khyamdral;
+      });
+
+      bankData.forEach((bd) => {
+        const row = rows.find((r) => r.gereeniiDugaar === bd._id);
+        if (row && bd.tulsunDun > 0) row.tulsunDun = (row.tulsunDun || 0) + bd.tulsunDun;
       });
     }
 
