@@ -1946,8 +1946,7 @@ exports.negtgelMedeelelAvya = asyncHandler(async (req, res, next) => {
                                                     $regexMatch: {
                                                       input:
                                                         "$avlaga.guilgeenuud.tailbar",
-                                                      regex:
-                                                        "Засвар үйлчилгээний зардал",
+                                                      regex: "Засвар",
                                                     },
                                                   },
                                                 ],
@@ -2561,22 +2560,35 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
 
     const groupStage = isBank
       ? {
-          _id: { gereeniiDugaar: "$gereeniiDugaar", dansniiDugaar: "$avlaga.guilgeenuud.dansniiDugaar" },
+          _id: {
+            gereeniiDugaar: "$gereeniiDugaar",
+            dansniiDugaar: "$avlaga.guilgeenuud.dansniiDugaar",
+          },
           ner: { $first: "$ner" },
           gereeniiDugaar: { $first: "$gereeniiDugaar" },
           talbainDugaar: { $first: "$talbainDugaar" },
           dansniiDugaar: { $first: "$avlaga.guilgeenuud.dansniiDugaar" },
-          tulsunDun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
-          tulukhDun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
+          tulsunDun: {
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+          },
+          tulukhDun: {
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
+          },
         }
       : {
           _id: "$gereeniiDugaar",
           ner: { $first: "$ner" },
           gereeniiDugaar: { $first: "$gereeniiDugaar" },
           talbainDugaar: { $first: "$talbainDugaar" },
-          tulukhDun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] } },
-          tulsunDun: { $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] } },
-          khyamdral: { $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] } },
+          tulukhDun: {
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulukhDun", 0] },
+          },
+          tulsunDun: {
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.tulsunDun", 0] },
+          },
+          khyamdral: {
+            $sum: { $ifNull: ["$avlaga.guilgeenuud.khyamdral", 0] },
+          },
         };
 
     const rows = await gereeObject.aggregate([
@@ -2589,7 +2601,9 @@ exports.orlogiinTurulDelgerengui = asyncHandler(async (req, res, next) => {
     if (isBank) {
       for (const row of rows) {
         if (row.dansniiDugaar) {
-          const dansInfo = await Dans(req.body.tukhainBaaziinKholbolt).findOne({ dugaar: row.dansniiDugaar });
+          const dansInfo = await Dans(req.body.tukhainBaaziinKholbolt).findOne({
+            dugaar: row.dansniiDugaar,
+          });
           row.bankNer = dansInfo?.bank || row.dansniiDugaar;
         }
       }
