@@ -258,6 +258,7 @@ router
           ebarimt.tasalbariinGuilgeeniiId = tukhainObject._id;
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
           ebarimt.barilgiinId = khariuObject.barilgiinId;
+          ebarimt.customerNo = khariuObject.customerNo;
           ebarimt.save().catch((err) => {
             next(err);
           });
