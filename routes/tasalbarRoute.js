@@ -259,6 +259,9 @@ router
           ebarimt.baiguullagiinId = khariuObject.baiguullagiinId;
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.customerNo = khariuObject.customerNo;
+          if (req.body.individualTin) {
+            ebarimt.customerTin = req.body.individualTin;
+          }
           ebarimt.save().catch((err) => {
             next(err);
           });

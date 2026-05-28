@@ -567,6 +567,9 @@ async function zogsoolNiitDungeerEbarimtShivye(
       ebarimt.barilgiinId = khariuObject.barilgiinId;
       ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
       ebarimt.customerNo = khariuObject.customerNo;
+      if (req.body.individualTin) {
+        ebarimt.customerTin = req.body.individualTin;
+      }
       ebarimt.save().catch((err) => {
         if (next) next(err);
       });
@@ -694,6 +697,9 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.togloomNer = khariuObject.togloomNer;
           ebarimt.togloomUtas = khariuObject.togloomUtas;
           ebarimt.customerNo = khariuObject.customerNo;
+          if (req.body.individualTin) {
+            ebarimt.customerTin = req.body.individualTin;
+          }
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -776,6 +782,9 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.barilgiinId = khariuObject.barilgiinId;
           ebarimt.mashiniiDugaar = khariuObject.mashiniiDugaar;
           ebarimt.customerNo = khariuObject.customerNo;
+          if (req.body.individualTin) {
+            ebarimt.customerTin = req.body.individualTin;
+          }
           ebarimt.save().catch((err) => {
             next(err);
           });
@@ -896,6 +905,9 @@ async function ebarimtShivye(req, res, next) {
           ebarimt.register = khariuObject.register;
           ebarimt.customerName = khariuObject.customerName;
           ebarimt.customerNo = khariuObject.customerNo;
+          if (req.body.individualTin) {
+            ebarimt.customerTin = req.body.individualTin;
+          }
           ebarimt.save().catch((err) => {
             next(err);
           });
