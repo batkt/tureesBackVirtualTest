@@ -68,7 +68,7 @@ router.get("/zogsooloosTatya", async (req, res, next) => {
       if (res1.rows && res1.rows.length > 0) {
         const objectString = JSON.stringify({ jagsaalt: res1.rows });
         var url = new URL(
-          "https://turees.zevtabs.mn/api/zogsoolOlnoorKhadgalya/",
+          "https://testvertual.zevtabs.mn/api/zogsoolOlnoorKhadgalya/",
         );
         const response = await instanceJson.post(url, { body: objectString });
       }
