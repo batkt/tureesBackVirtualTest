@@ -70,13 +70,13 @@ app.use(
   }),
 );
 // test;
-db.kholboltUusgey(
-  app,
-  "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin",
-);
+// db.kholboltUusgey(
+//   app,
+//   "mongodb://admin:Br1stelback1@127.0.0.1:27017/turees?authSource=admin",
+// );
 
 //production
-// db.kholboltUusgey(app);
+db.kholboltUusgey(app);
 
 app.use(
   express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }),
@@ -114,283 +114,283 @@ zuragPack(app);
 
 app.use(aldaaBarigch);
 
-if (process.env.NODE_APP_INSTANCE === "7") {
-  cron.schedule(
-    "*/6 * * * * ",
-    function () {
-      cgw.switchTDBCGW2(null, null, null);
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+// if (process.env.NODE_APP_INSTANCE === "7") {
+//   cron.schedule(
+//     "*/6 * * * * ",
+//     function () {
+//       cgw.switchTDBCGW2(null, null, null);
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  cron.schedule(
-    "*/5 * * * * ",
-    function () {
-      cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-}
+//   cron.schedule(
+//     "*/5 * * * * ",
+//     function () {
+//       cgw.bankniiKhuulgaTatajKhadgalya(null, null, null);
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+// }
 
-if (process.env.NODE_APP_INSTANCE === "6") {
-  cron.schedule(
-    "*/4 * * * * * ",
-    function () {
-      cgw.bankniiKhuulgaTatyaOirkhon();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-}
+// if (process.env.NODE_APP_INSTANCE === "6") {
+//   cron.schedule(
+//     "*/4 * * * * * ",
+//     function () {
+//       cgw.bankniiKhuulgaTatyaOirkhon();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+// }
 
-if (process.env.NODE_APP_INSTANCE === "5") {
-  cron.schedule(
-    "*/6 * * * * * ",
-    function () {
-      cgw.dotorZogsoolDavhkardsanMashin(null, null, null);
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-  cron.schedule(
-    "30 9 * * * ",
-    function () {
-      ajiltanController.orlogiinMsgIlgeeye("09:30");
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-  cron.schedule(
-    "1 7 * * * ",
-    function () {
-      ajiltanController.orlogiinMsgIlgeeye("07:00");
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-  cron.schedule(
-    "1 20 * * * ",
-    function () {
-      ajiltanController.orlogiinMsgIlgeeye("20:00");
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-  cron.schedule(
-    "1 22 * * * ",
-    function () {
-      ajiltanController.orlogiinMsgIlgeeye("22:00");
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-}
-if (process.env.NODE_APP_INSTANCE === "4") {
-  cron.schedule(
-    "30 0 0 * * * ",
-    async function () {
-      tulbur.aldangiBodyo();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-}
+// if (process.env.NODE_APP_INSTANCE === "5") {
+//   cron.schedule(
+//     "*/6 * * * * * ",
+//     function () {
+//       cgw.dotorZogsoolDavhkardsanMashin(null, null, null);
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+//   cron.schedule(
+//     "30 9 * * * ",
+//     function () {
+//       ajiltanController.orlogiinMsgIlgeeye("09:30");
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+//   cron.schedule(
+//     "1 7 * * * ",
+//     function () {
+//       ajiltanController.orlogiinMsgIlgeeye("07:00");
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+//   cron.schedule(
+//     "1 20 * * * ",
+//     function () {
+//       ajiltanController.orlogiinMsgIlgeeye("20:00");
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+//   cron.schedule(
+//     "1 22 * * * ",
+//     function () {
+//       ajiltanController.orlogiinMsgIlgeeye("22:00");
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+// }
+// if (process.env.NODE_APP_INSTANCE === "4") {
+//   cron.schedule(
+//     "30 0 0 * * * ",
+//     async function () {
+//       tulbur.aldangiBodyo();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+// }
 
-if (process.env.NODE_APP_INSTANCE === "3") {
-  cron.schedule(
-    "02 10 * * * ",
-    function () {
-      zogsool.zogsoolMsgIlgeeye();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+// if (process.env.NODE_APP_INSTANCE === "3") {
+//   cron.schedule(
+//     "02 10 * * * ",
+//     function () {
+//       zogsool.zogsoolMsgIlgeeye();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  cron.schedule(
-    "0 0 1 * *",
-    function () {
-      zogsool.khungulultKhugatsaaShinechlyaSar();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+//   cron.schedule(
+//     "0 0 1 * *",
+//     function () {
+//       zogsool.khungulultKhugatsaaShinechlyaSar();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  cron.schedule(
-    "3 0 * * *",
-    function () {
-      zogsool.khungulultKhugatsaaShinechlyaUdur();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+//   cron.schedule(
+//     "3 0 * * *",
+//     function () {
+//       zogsool.khungulultKhugatsaaShinechlyaUdur();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  cron.schedule(
-    "02 00 * * * ",
-    function () {
-      tulbur.gereeAutomataarSungaya();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-  cron.schedule(
-    "32 2 * * *",
-    function () {
-      talbainKhariltsagchiinTuluvUurchilyu();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-}
-if (process.env.NODE_APP_INSTANCE === "2") {
-  cron.schedule(
-    "*/8 * * * * * ",
-    function () {
-      tulbur.tulultTaniya();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-}
-if (process.env.NODE_APP_INSTANCE === "1") {
-  cron.schedule(
-    "*/7 * * * * * ",
-    function () {
-      tulbur.tulultTaniyaCGW();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-}
-if (process.env.NODE_APP_INSTANCE === "7") {
-  cron.schedule(
-    "10 5 * * * ",
-    function () {
-      zogsool.zogsoolTseverlye();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
-  cron.schedule(
-    "20 5 * * * ",
-    function () {
-      zogsool.zurchilteiTuvulBoluulakh();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+//   cron.schedule(
+//     "02 00 * * * ",
+//     function () {
+//       tulbur.gereeAutomataarSungaya();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+//   cron.schedule(
+//     "32 2 * * *",
+//     function () {
+//       talbainKhariltsagchiinTuluvUurchilyu();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+// }
+// if (process.env.NODE_APP_INSTANCE === "2") {
+//   cron.schedule(
+//     "*/8 * * * * * ",
+//     function () {
+//       tulbur.tulultTaniya();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+// }
+// if (process.env.NODE_APP_INSTANCE === "1") {
+//   cron.schedule(
+//     "*/7 * * * * * ",
+//     function () {
+//       tulbur.tulultTaniyaCGW();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+// }
+// if (process.env.NODE_APP_INSTANCE === "7") {
+//   cron.schedule(
+//     "10 5 * * * ",
+//     function () {
+//       zogsool.zogsoolTseverlye();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
+//   cron.schedule(
+//     "20 5 * * * ",
+//     function () {
+//       zogsool.zurchilteiTuvulBoluulakh();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  cron.schedule(
-    "30 5 * * * ",
-    async function () {
-      await zogsool.archiveUilchluulegchKhonog();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+//   cron.schedule(
+//     "30 5 * * * ",
+//     async function () {
+//       await zogsool.archiveUilchluulegchKhonog();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  cron.schedule(
-    "20 2 1 * * ",
-    function () {
-      ebarimt.archiveEbarimt();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+//   cron.schedule(
+//     "20 2 1 * * ",
+//     function () {
+//       ebarimt.archiveEbarimt();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  cron.schedule(
-    "10 2 * * * ",
-    function () {
-      ebarimt.archiveEbarimtKhonog();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+//   cron.schedule(
+//     "10 2 * * * ",
+//     function () {
+//       ebarimt.archiveEbarimtKhonog();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  cron.schedule(
-    "10 1 * * * ",
-    function () {
-      cgw.archiveBankGuilgeeKhonog();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+//   cron.schedule(
+//     "10 1 * * * ",
+//     function () {
+//       cgw.archiveBankGuilgeeKhonog();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  cron.schedule(
-    "20 1 5 * * ",
-    function () {
-      cgw.archiveBankGuilgeeRently();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+//   cron.schedule(
+//     "20 1 5 * * ",
+//     function () {
+//       cgw.archiveBankGuilgeeRently();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  cron.schedule(
-    "30 1 5 * * ",
-    function () {
-      cgw.archiveBankGuilgeeRentlyNoZogsool();
-    },
-    {
-      scheduled: true,
-      timezone: "Asia/Ulaanbaatar",
-    },
-  );
+//   cron.schedule(
+//     "30 1 5 * * ",
+//     function () {
+//       cgw.archiveBankGuilgeeRentlyNoZogsool();
+//     },
+//     {
+//       scheduled: true,
+//       timezone: "Asia/Ulaanbaatar",
+//     },
+//   );
 
-  // cron.schedule("5 1 1 5 *", async () => {
-  //   try {
-  //     await gereeService.gereeAshiglakhguiSaruud({}, {});
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // });
-}
+// cron.schedule("5 1 1 5 *", async () => {
+//   try {
+//     await gereeService.gereeAshiglakhguiSaruud({}, {});
+//   } catch (err) {
+//     console.error(err);
+//   }
+// });
+// }
 // cron.schedule(
 //   "10 13 * * * ",
 //   function () {
@@ -423,6 +423,6 @@ if (process.env.NODE_APP_INSTANCE === "7") {
 })();
 
 io.on("connection", (socket) => {
-  socket.on("disconnect", () => { });
+  socket.on("disconnect", () => {});
   socket.on("error", () => socket.disconnect(true));
 });
