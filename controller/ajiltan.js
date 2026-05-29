@@ -86,79 +86,80 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
       type: "logout",
     });
   }
-  duusakhOgnooAvya(
-    { register: baiguullaga.register, system: "Turees" },
-    async (khariu) => {
-      try {
-        if (khariu.success) {
-          if (!!khariu.salbaruud) {
-            var butsaakhSalbaruud = [];
-            butsaakhSalbaruud.push({
-              salbariinId: baiguullaga?.barilguud?.[0]?._id,
-              duusakhOgnoo: khariu.duusakhOgnoo,
-            });
-            for (const salbar of khariu.salbaruud) {
-              var tukhainSalbar = baiguullaga?.barilguud?.find((x) => {
-                return (
-                  !!x.licenseRegister && x.licenseRegister == salbar.register
-                );
-              });
-              if (!!tukhainSalbar) {
-                butsaakhSalbaruud.push({
-                  salbariinId: tukhainSalbar._id,
-                  duusakhOgnoo: salbar.license?.duusakhOgnoo,
-                });
-              }
-            }
-            butsaakhObject.salbaruud = butsaakhSalbaruud;
-          }
-          const jwt = await ajiltan.tokenUusgeye(
-            khariu.duusakhOgnoo,
-            butsaakhObject.salbaruud,
-            baiguullaga?.tokhirgoo?.tokenKhugatsaa || "12h",
-          );
-          butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
-          if (!!butsaakhObject.result) {
-            butsaakhObject.result = JSON.parse(
-              JSON.stringify(butsaakhObject.result),
-            );
-            butsaakhObject.result.salbaruud = butsaakhObject.salbaruud;
-            butsaakhObject.result.duusakhOgnoo = khariu.duusakhOgnoo;
-          }
-          butsaakhObject.token = jwt;
-          //doorxiig zogsooliinPos-d zoriulj oruulaw
-          if (!!baiguullaga?.tokhirgoo?.zogsoolNer)
-            butsaakhObject.result.zogsoolNer =
-              baiguullaga?.tokhirgoo?.zogsoolNer;
-          else butsaakhObject.result.zogsoolNer = baiguullaga.ner;
-          var source = req.headers["user-agent"];
-          var ua = useragent.parse(source);
-          var tuukh = new NevtreltiinTuukh(db.erunkhiiKholbolt)();
-          tuukh.ajiltniiId = ajiltan._id;
-          tuukh.ajiltniiNer = ajiltan.ner;
-          tuukh.ognoo = new Date();
-          tuukh.uildliinSystem = ua.os;
-          tuukh.ip = req.headers["x-real-ip"];
-          if (tuukh.ip && tuukh.ip.substr(0, 7) == "::ffff:") {
-            tuukh.ip = tuukh.ip.substr(7);
-          }
-          ua = Object.keys(ua).reduce(function (r, e) {
-            if (ua[e]) r[e] = ua[e];
-            return r;
-          }, {});
-          tuukh.browser = ua.browser;
-          tuukh.useragent = ua;
-          tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
-          tuukh.baiguullagiinRegister = baiguullaga.register;
-          await nevtreltiinTuukhKhadgalya(tuukh, db.erunkhiiKholbolt);
-          res.status(200).json(butsaakhObject);
-        } else throw new Error(khariu.msg);
-      } catch (err) {
-        next(err);
-      }
-    },
-    next,
-  );
+  res.status(200).json(butsaakhObject);
+  // duusakhOgnooAvya(
+  //   { register: baiguullaga.register, system: "Turees" },
+  //   async (khariu) => {
+  //     try {
+  //       if (khariu.success) {
+  //         if (!!khariu.salbaruud) {
+  //           var butsaakhSalbaruud = [];
+  //           butsaakhSalbaruud.push({
+  //             salbariinId: baiguullaga?.barilguud?.[0]?._id,
+  //             duusakhOgnoo: khariu.duusakhOgnoo,
+  //           });
+  //           for (const salbar of khariu.salbaruud) {
+  //             var tukhainSalbar = baiguullaga?.barilguud?.find((x) => {
+  //               return (
+  //                 !!x.licenseRegister && x.licenseRegister == salbar.register
+  //               );
+  //             });
+  //             if (!!tukhainSalbar) {
+  //               butsaakhSalbaruud.push({
+  //                 salbariinId: tukhainSalbar._id,
+  //                 duusakhOgnoo: salbar.license?.duusakhOgnoo,
+  //               });
+  //             }
+  //           }
+  //           butsaakhObject.salbaruud = butsaakhSalbaruud;
+  //         }
+  //         const jwt = await ajiltan.tokenUusgeye(
+  //           khariu.duusakhOgnoo,
+  //           butsaakhObject.salbaruud,
+  //           baiguullaga?.tokhirgoo?.tokenKhugatsaa || "12h",
+  //         );
+  //         butsaakhObject.duusakhOgnoo = khariu.duusakhOgnoo;
+  //         if (!!butsaakhObject.result) {
+  //           butsaakhObject.result = JSON.parse(
+  //             JSON.stringify(butsaakhObject.result),
+  //           );
+  //           butsaakhObject.result.salbaruud = butsaakhObject.salbaruud;
+  //           butsaakhObject.result.duusakhOgnoo = khariu.duusakhOgnoo;
+  //         }
+  //         butsaakhObject.token = jwt;
+  //         //doorxiig zogsooliinPos-d zoriulj oruulaw
+  //         if (!!baiguullaga?.tokhirgoo?.zogsoolNer)
+  //           butsaakhObject.result.zogsoolNer =
+  //             baiguullaga?.tokhirgoo?.zogsoolNer;
+  //         else butsaakhObject.result.zogsoolNer = baiguullaga.ner;
+  //         var source = req.headers["user-agent"];
+  //         var ua = useragent.parse(source);
+  //         var tuukh = new NevtreltiinTuukh(db.erunkhiiKholbolt)();
+  //         tuukh.ajiltniiId = ajiltan._id;
+  //         tuukh.ajiltniiNer = ajiltan.ner;
+  //         tuukh.ognoo = new Date();
+  //         tuukh.uildliinSystem = ua.os;
+  //         tuukh.ip = req.headers["x-real-ip"];
+  //         if (tuukh.ip && tuukh.ip.substr(0, 7) == "::ffff:") {
+  //           tuukh.ip = tuukh.ip.substr(7);
+  //         }
+  //         ua = Object.keys(ua).reduce(function (r, e) {
+  //           if (ua[e]) r[e] = ua[e];
+  //           return r;
+  //         }, {});
+  //         tuukh.browser = ua.browser;
+  //         tuukh.useragent = ua;
+  //         tuukh.baiguullagiinId = ajiltan.baiguullagiinId;
+  //         tuukh.baiguullagiinRegister = baiguullaga.register;
+  //         await nevtreltiinTuukhKhadgalya(tuukh, db.erunkhiiKholbolt);
+  //         res.status(200).json(butsaakhObject);
+  //       } else throw new Error(khariu.msg);
+  //     } catch (err) {
+  //       next(err);
+  //     }
+  //   },
+  //   next,
+  // );
 });
 
 async function khuuBodyo(dun, khuu) {
