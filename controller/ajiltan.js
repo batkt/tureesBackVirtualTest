@@ -86,7 +86,9 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
       type: "logout",
     });
   }
+  const start = Date.now();
   res.status(200).json(butsaakhObject);
+  console.log(`Query дууслаа: ${Date.now() - start}ms`);
   // duusakhOgnooAvya(
   //   { register: baiguullaga.register, system: "Turees" },
   //   async (khariu) => {
