@@ -87,9 +87,31 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
       type: "logout",
     });
   }
-  const start = Date.now();
+  const duusakhOgnoo = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
+  var butsaakhSalbaruud = [];
+  baiguullaga?.barilguud?.forEach((salbar) => {
+    butsaakhSalbaruud.push({
+      salbariinId: salbar._id,
+      duusakhOgnoo: duusakhOgnoo,
+    });
+  });
+  butsaakhObject.salbaruud = butsaakhSalbaruud;
+  const jwt = await ajiltan.tokenUusgeye(
+    duusakhOgnoo,
+    butsaakhObject.salbaruud,
+    baiguullaga?.tokhirgoo?.tokenKhugatsaa || "12h",
+  );
+  butsaakhObject.duusakhOgnoo = duusakhOgnoo;
+  if (!!butsaakhObject.result) {
+    butsaakhObject.result = JSON.parse(JSON.stringify(butsaakhObject.result));
+    butsaakhObject.result.salbaruud = butsaakhObject.salbaruud;
+    butsaakhObject.result.duusakhOgnoo = duusakhOgnoo;
+  }
+  butsaakhObject.token = jwt;
+  if (!!baiguullaga?.tokhirgoo?.zogsoolNer)
+    butsaakhObject.result.zogsoolNer = baiguullaga?.tokhirgoo?.zogsoolNer;
+  else butsaakhObject.result.zogsoolNer = baiguullaga.ner;
   res.status(200).json(butsaakhObject);
-  console.log(`Query дууслаа: ${Date.now() - start}ms`);
   // duusakhOgnooAvya(
   //   { register: baiguullaga.register, system: "Turees" },
   //   async (khariu) => {
