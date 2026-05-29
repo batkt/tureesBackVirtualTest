@@ -70,9 +70,10 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
     .catch((err) => {
       next(err);
     });
-  if (!ajiltan) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+  if (!ajiltan)
+    throw new aldaa("Хэрэглэгчийнggg нэр эсвэл нууц үг буруу байна!");
   var ok = await ajiltan.passwordShalgaya(req.body.nuutsUg);
-  if (!ok) throw new aldaa("Хэрэглэгчийн нэр эсвэл нууц үг буруу байна!");
+  if (!ok) throw new aldaa("Хэрэглэгчийн нggэр эсвэл нууц үг буруу байна!");
   var baiguullaga = await Baiguullaga(db.erunkhiiKholbolt).findById(
     ajiltan.baiguullagiinId,
   );
