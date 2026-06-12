@@ -111,6 +111,8 @@ exports.ajiltanNevtrey = asyncHandler(async (req, res, next) => {
   if (!!baiguullaga?.tokhirgoo?.zogsoolNer)
     butsaakhObject.result.zogsoolNer = baiguullaga?.tokhirgoo?.zogsoolNer;
   else butsaakhObject.result.zogsoolNer = baiguullaga.ner;
+  console.log("baiguullaga.ner --->" + baiguullaga.ner);
+  console.log("zogsoolNer --->" + butsaakhObject.result.zogsoolNer);
   res.status(200).json(butsaakhObject);
   // duusakhOgnooAvya(
   //   { register: baiguullaga.register, system: "Turees" },
